@@ -8,8 +8,8 @@ import javax.persistence.Entity;
  *
  */
 @Entity
-@DiscriminatorValue(value = "1")
-public class ActionCommand extends Action
+@DiscriminatorValue(value = "2")
+public class Action02Command extends Action
 {
 
     @Column(name = "command")

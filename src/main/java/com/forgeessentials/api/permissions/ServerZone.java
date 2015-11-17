@@ -336,7 +336,7 @@ public class ServerZone extends Zone
                 result.add(new GroupEntry(GROUP_PLAYERS, 1, 1));
 
             EntityPlayerMP player = ident.getPlayerMP();
-            if (player != null)
+            if (player != null && player.theItemInWorldManager != null)
                 switch (player.theItemInWorldManager.getGameType())
                 {
                 case ADVENTURE:

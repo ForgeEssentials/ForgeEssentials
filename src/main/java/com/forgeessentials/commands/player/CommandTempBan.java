@@ -73,10 +73,10 @@ public class CommandTempBan extends FEcmdModuleCommands
 
         if (arguments.isEmpty())
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-        int duration = arguments.parseInt();
+        long duration = arguments.parseLong();
 
         PlayerInfo pi = PlayerInfo.get(player.getUuid());
-        pi.startTimeout("tempban", duration * 1000);
+        pi.startTimeout("tempban", duration * 1000L);
         if (player.hasPlayer())
             player.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You have been banned for %s",
                     ChatOutputHandler.formatTimeDurationReadable(duration, true)));

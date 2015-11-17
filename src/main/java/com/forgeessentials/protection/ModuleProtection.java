@@ -65,6 +65,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 @FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true, canDisable = false)
 public class ModuleProtection
@@ -362,11 +363,26 @@ public class ModuleProtection
 
     public static String getItemPermission(ItemStack stack, boolean checkMeta)
     {
-        int dmg = stack.getItemDamage();
-        if (!checkMeta || dmg == 0 || dmg == 32767)
-            return ServerUtil.getItemPermission(stack.getItem());
-        else
-            return ServerUtil.getItemPermission(stack.getItem()) + "." + dmg;
+        try
+        {
+            int dmg = stack.getItemDamage();
+            if (!checkMeta || dmg == 0 || dmg == 32767)
+                return ServerUtil.getItemPermission(stack.getItem());
+            else
+                return ServerUtil.getItemPermission(stack.getItem()) + "." + dmg;
+        }
+        catch (Exception e)
+        {
+            String msg;
+            if (stack.getItem() == null)
+                msg = "Error getting item permission. Stack item is null";
+            else
+                msg = String.format("Error getting item permission for item %s", stack.getItem().getClass().getName());
+            if (!ForgeEssentials.isSafeMode())
+                throw new RuntimeException(msg);
+            LoggingHandler.felog.error(msg);
+            return "fe.error";
+        }
     }
 
     public static String getItemPermission(ItemStack stack)
@@ -414,6 +430,8 @@ public class ModuleProtection
 
     public static boolean canCraft(EntityPlayer player, ItemStack result)
     {
+        if (result == null)
+            return true;
         String permission = ModuleProtection.getCraftingPermission(result);
         debugPermission(player, permission);
         return PermissionManager.checkPermission(player, permission);

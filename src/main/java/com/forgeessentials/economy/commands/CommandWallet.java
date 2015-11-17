@@ -19,6 +19,7 @@ public class CommandWallet extends ParserCommandBase
 {
 
     public static final String PERM = ModuleEconomy.PERM_COMMAND + ".wallet";
+    public static final String PERM_OTHERS = PERM + ".others";
     public static final String PERM_MODIFY = PERM + ".modify";
 
     @Override
@@ -42,6 +43,7 @@ public class CommandWallet extends ParserCommandBase
     @Override
     public void registerExtraPermissions()
     {
+        APIRegistry.perms.registerPermission(PERM_OTHERS, PermissionLevel.OP, "Allows viewing other player's wallets");
         APIRegistry.perms.registerPermission(PERM_MODIFY, PermissionLevel.OP, "Allows modifying wallets");
     }
     
@@ -64,13 +66,15 @@ public class CommandWallet extends ParserCommandBase
         {
             if (!arguments.hasPlayer())
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-            arguments.confirm(Translator.format("Your wallet contains %s", APIRegistry.economy.getWallet(arguments.senderPlayer).toString()));
+            arguments.confirm(Translator.format("Your wallet contains %s", APIRegistry.economy.getWallet(arguments.ident).toString()));
             return;
         }
 
         UserIdent player = arguments.parsePlayer(true, false);
+        if (!player.equals(arguments.ident))
+            arguments.checkPermission(PERM_OTHERS);
+        
         Wallet wallet = APIRegistry.economy.getWallet(player);
-
         if (arguments.isEmpty())
         {
             arguments.confirm(Translator.format("Wallet of %s contains %s", player.getUsernameOrUuid(), wallet.toString()));

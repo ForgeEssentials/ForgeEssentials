@@ -377,9 +377,11 @@ public class Plot
     public static Plot define(WorldArea area, UserIdent owner) throws EventCancelledException, PlotRedefinedException
     {
         WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(area.getDimension());
-        for (AreaZone zone : worldZone.getAreaZones())
-            if (isPlot(zone) && zone.getArea().contains(area))
+        for (Plot zone : plots.values())
+            if (zone.getZone().getArea().contains(area) || zone.getZone().getArea().intersectsWith(area))
+            {
                 throw new PlotRedefinedException();
+            }
 
         if (isColumnMode(area.getDimension()))
             area = new WorldArea(area.getDimension(), area.getHighPoint().setY(MinecraftServer.getServer().getBuildLimit()), area.getLowPoint().setY(0));
@@ -438,7 +440,7 @@ public class Plot
         perms.registerPermission(PERM_COMMAND, PermissionLevel.TRUE, "Plot management command");
         perms.registerPermission(PERM_DEFINE, PermissionLevel.OP, "Allows to define plots without paying");
         perms.registerPermission(PERM_CLAIM, PermissionLevel.TRUE, "Allows to claim plots in exchange for money");
-        perms.registerPermission(PERM_DELETE, PermissionLevel.OP, "Allows a player to delete plots.");
+        perms.registerPermission(PERM_DELETE, PermissionLevel.OP, "Allows a player to delete any plots, including plots not owned by him.");
         perms.registerPermission(PERM_BUY, PermissionLevel.TRUE, "Allows buying plots");
         perms.registerPermission(PERM_SELL, PermissionLevel.OP, "Allows selling plots");
         perms.registerPermission(PERM_MODS, PermissionLevel.OP, "Allows managing plot administrators");

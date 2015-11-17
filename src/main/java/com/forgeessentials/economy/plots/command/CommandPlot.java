@@ -205,10 +205,14 @@ public class CommandPlot extends ParserCommandBase
 
     public static void parseDelete(CommandParserArgs arguments) throws CommandException
     {
-        arguments.checkPermission(Plot.PERM_DELETE);
         Plot plot = getPlot(arguments.sender);
-        arguments.confirm("Plot \"%s\" has been deleted.", plot.getNameNotNull());
-        Plot.deletePlot(plot);
+        if (plot.getOwner() != UserIdent.get(arguments.senderPlayer) || arguments.hasPermission(Plot.PERM_DELETE))
+        {
+            arguments.confirm("Plot \"%s\" has been deleted.", plot.getNameNotNull());
+            Plot.deletePlot(plot);
+        }
+        else
+            throw new TranslatedCommandException("You are not the owner of this plot, you can't delete it!");
     }
 
     public static void parseClaim(CommandParserArgs arguments) throws CommandException
@@ -650,6 +654,20 @@ public class CommandPlot extends ParserCommandBase
                 buyPrice = plotPrice;
         }
         final String buyPriceStr = APIRegistry.economy.toString(buyPrice);
+
+        if (!plot.hasOwner())
+        {
+            if (sellPrice < 0)
+            {
+                arguments.error(Translator.format("This plot is not for sale!"));
+                return;
+            }
+            if (buyPrice != sellPrice)
+            {
+                arguments.error(Translator.format("The fixed price of this plot is %s.", APIRegistry.economy.toString(sellPrice)));
+                return;
+            }
+        }
 
         QuestionerCallback handler = new QuestionerCallback() {
             @Override

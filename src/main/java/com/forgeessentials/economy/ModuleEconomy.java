@@ -284,12 +284,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     }
 
     @Override
-    public PlayerWallet getWallet(EntityPlayerMP player)
-    {
-        return getWallet(UserIdent.get(player));
-    }
-
-    @Override
     public String currency(long value)
     {
         if (value == 1)

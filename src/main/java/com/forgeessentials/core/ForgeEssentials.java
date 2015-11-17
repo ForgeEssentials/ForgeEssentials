@@ -52,6 +52,7 @@ import com.forgeessentials.commons.network.Packet7Remote;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.CommandFEInfo;
+import com.forgeessentials.core.commands.CommandFEWorldInfo;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandUuid;
 import com.forgeessentials.core.environment.Environment;
@@ -130,16 +131,20 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
 
-    protected File configDirectory;
+    protected static File configDirectory;
 
-    protected boolean debugMode = false;
+    protected static boolean debugMode = false;
 
-    public boolean logCommandsToConsole;
+    protected static boolean safeMode = false;
+
+    protected static boolean logCommandsToConsole;
 
     /* ------------------------------------------------------------ */
 
     public ForgeEssentials()
     {
+        safeMode = Boolean.parseBoolean(System.getProperty("fe.safemode"));
+
         LoggingHandler.init();
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
         Environment.check();
@@ -151,9 +156,12 @@ public class ForgeEssentials extends ConfigLoaderBase
     public void preInit(FMLPreInitializationEvent event)
     {
         LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
+        if (safeMode)
+        {
+            LoggingHandler.felog.warn("You are running FE in safe mode. Please only do so if requested to by the ForgeEssentials team.");
+        }
 
         // Initialize core configuration
-        Translator.load();
         initConfiguration();
         registerNetworkMessages();
 
@@ -258,6 +266,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandFeSettings());
         FECommandManager.registerCommand(new CommandWand());
         FECommandManager.registerCommand(new CommandUuid());
+        FECommandManager.registerCommand(new CommandFEWorldInfo());
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
             FECommandManager.registerCommand(new CommandPos(1));
@@ -417,11 +426,17 @@ public class ForgeEssentials extends ConfigLoaderBase
     @Override
     public void load(Configuration config, boolean isReload)
     {
+        if (isReload)
+            Translator.translations.clear();
+        Translator.load();
         if (!config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
             BuildInfo.cancelVersionCheck();
         configManager.setUseCanonicalConfig(config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false,
                 "For modules that support it, place their configs in this file.").getBoolean());
         debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean();
+        // safeMode = config.get(FEConfig.CONFIG_CAT, "safeMode", false,
+        // "Activates safe mode with will ignore some errors which would normally crash the game. "  +
+        // "Please only enable this after being instructed to do so by FE team in response to an issue on GitHub!").getBoolean();
         HelpFixer.hideWorldEditCommands = config.get(FEConfig.CONFIG_CAT, "hide_worldedit_help", true,
                 "Hide WorldEdit commands from /help and only show them in //help command").getBoolean();
         logCommandsToConsole = config.get(FEConfig.CONFIG_CAT, "logCommands", false, "Log commands to console").getBoolean();
@@ -446,12 +461,17 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public static File getFEDirectory()
     {
-        return instance.configDirectory;
+        return configDirectory;
     }
 
     public static boolean isDebug()
     {
-        return instance.debugMode;
+        return debugMode;
+    }
+
+    public static boolean isSafeMode()
+    {
+        return safeMode;
     }
 
 }

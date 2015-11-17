@@ -99,7 +99,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
         }
 
         ChatOutputHandler.chatConfirmation(player, Translator.format("You paid %d x %s", //
-                amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(player).toString()));
+                amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(UserIdent.get(player)).toString()));
 
         args = Arrays.copyOfRange(args, 4, args.length);
         MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player), StringUtils.join(args, " "));

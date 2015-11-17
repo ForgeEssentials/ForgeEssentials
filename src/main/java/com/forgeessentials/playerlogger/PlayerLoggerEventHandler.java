@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.playerlogger.entity.ActionBlock;
+import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -73,14 +73,14 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
                 ChatOutputHandler.chatNotification(event.entityPlayer, "Showing recent block changes (clicked block):");
         }
 
-        List<ActionBlock> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(point, null, info.checkStartTime, 4);
+        List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(point, null, info.checkStartTime, 4);
         if (changes.size() == 0 && !newCheck)
         {
             ChatOutputHandler.chatError(event.entityPlayer, "No more changes");
             return;
         }
 
-        for (ActionBlock change : changes)
+        for (Action01Block change : changes)
         {
             info.checkStartTime = change.time;
 

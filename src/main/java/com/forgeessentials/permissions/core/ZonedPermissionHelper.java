@@ -211,7 +211,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         return perm.startsWith("fe.protection.inventory.") || //
                 perm.startsWith("fe.protection.exist.") || //
-                perm.startsWith("fe.protection.use.");
+                perm.startsWith("fe.protection.use.") || //
+                perm.startsWith("fe.protection.craft.");
     }
 
     public static boolean isBlockPermission(String perm)

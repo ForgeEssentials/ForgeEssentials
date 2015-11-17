@@ -315,7 +315,7 @@ public abstract class ServerUtil
     public static String getItemPermission(Item item)
     {
         ResourceLocation loc = (ResourceLocation) GameData.getItemRegistry().getNameForObject(item);
-        return loc.getResourceDomain() + '.' + loc.getResourcePath();
+        return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
     }
 
     public static String getBlockName(Block block)
@@ -326,7 +326,7 @@ public abstract class ServerUtil
     public static String getBlockPermission(Block block)
     {
         ResourceLocation loc = (ResourceLocation) GameData.getBlockRegistry().getNameForObject(block);
-        return loc.getResourceDomain() + '.' + loc.getResourcePath();
+        return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
     }
 
     /* ------------------------------------------------------------ */

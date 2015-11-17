@@ -48,6 +48,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -57,8 +58,9 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.playerlogger.entity.Action;
-import com.forgeessentials.playerlogger.entity.ActionBlock;
-import com.forgeessentials.playerlogger.entity.ActionCommand;
+import com.forgeessentials.playerlogger.entity.Action01Block;
+import com.forgeessentials.playerlogger.entity.Action02Command;
+import com.forgeessentials.playerlogger.entity.Action03PlayerEvent.PlayerEventType;
 import com.forgeessentials.playerlogger.entity.Action_;
 import com.forgeessentials.playerlogger.entity.BlockData;
 import com.forgeessentials.playerlogger.entity.BlockData_;
@@ -70,6 +72,7 @@ import com.forgeessentials.playerlogger.event.LogEventCommand;
 import com.forgeessentials.playerlogger.event.LogEventExplosion;
 import com.forgeessentials.playerlogger.event.LogEventInteract;
 import com.forgeessentials.playerlogger.event.LogEventPlace;
+import com.forgeessentials.playerlogger.event.LogEventPlayerEvent;
 import com.forgeessentials.playerlogger.event.LogEventPostInteract;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -454,57 +457,57 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return predicate;
     }
 
-    public List<ActionBlock> getLoggedBlockChanges(WorldArea area, Date startTime, Date endTime, int maxResults)
+    public List<Action01Block> getLoggedBlockChanges(WorldArea area, Date startTime, Date endTime, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<ActionBlock> cQuery = cBuilder.createQuery(ActionBlock.class);
-        Root<ActionBlock> cRoot = cQuery.from(ActionBlock.class);
+        CriteriaQuery<Action01Block> cQuery = cBuilder.createQuery(Action01Block.class);
+        Root<Action01Block> cRoot = cQuery.from(Action01Block.class);
         cQuery.select(cRoot);
         cQuery.where(getActionPredicate(cRoot, area, startTime, endTime));
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
-        TypedQuery<ActionBlock> query = em.createQuery(cQuery);
+        TypedQuery<Action01Block> query = em.createQuery(cQuery);
         if (maxResults > 0)
             query.setMaxResults(maxResults);
         return executeQuery(query);
     }
 
-    public List<ActionBlock> getLoggedBlockChanges(WorldPoint point, Date startTime, Date endTime, int maxResults)
+    public List<Action01Block> getLoggedBlockChanges(WorldPoint point, Date startTime, Date endTime, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<ActionBlock> cQuery = cBuilder.createQuery(ActionBlock.class);
-        Root<ActionBlock> cRoot = cQuery.from(ActionBlock.class);
+        CriteriaQuery<Action01Block> cQuery = cBuilder.createQuery(Action01Block.class);
+        Root<Action01Block> cRoot = cQuery.from(Action01Block.class);
         cQuery.select(cRoot);
         cQuery.where(getActionPredicate(cRoot, point, startTime, endTime));
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
-        TypedQuery<ActionBlock> query = em.createQuery(cQuery);
+        TypedQuery<Action01Block> query = em.createQuery(cQuery);
         if (maxResults > 0)
             query.setMaxResults(maxResults);
         return executeQuery(query);
     }
 
-    public List<ActionCommand> getLoggedCommands(WorldArea area, Date startTime, Date endTime, int maxResults)
+    public List<Action02Command> getLoggedCommands(WorldArea area, Date startTime, Date endTime, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<ActionCommand> cQuery = cBuilder.createQuery(ActionCommand.class);
-        Root<ActionCommand> cRoot = cQuery.from(ActionCommand.class);
+        CriteriaQuery<Action02Command> cQuery = cBuilder.createQuery(Action02Command.class);
+        Root<Action02Command> cRoot = cQuery.from(Action02Command.class);
         cQuery.select(cRoot);
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
         cQuery.where(getActionPredicate(cRoot, area, startTime, endTime));
-        TypedQuery<ActionCommand> query = em.createQuery(cQuery);
+        TypedQuery<Action02Command> query = em.createQuery(cQuery);
         if (maxResults > 0)
             query.setMaxResults(maxResults);
         return executeQuery(query);
     }
 
-    public List<ActionCommand> getLoggedCommands(WorldPoint point, Date startTime, Date endTime, int maxResults)
+    public List<Action02Command> getLoggedCommands(WorldPoint point, Date startTime, Date endTime, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
-        CriteriaQuery<ActionCommand> cQuery = cBuilder.createQuery(ActionCommand.class);
-        Root<ActionCommand> cRoot = cQuery.from(ActionCommand.class);
+        CriteriaQuery<Action02Command> cQuery = cBuilder.createQuery(Action02Command.class);
+        Root<Action02Command> cRoot = cQuery.from(Action02Command.class);
         cQuery.select(cRoot);
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
         cQuery.where(getActionPredicate(cRoot, point, startTime, endTime));
-        TypedQuery<ActionCommand> query = em.createQuery(cQuery);
+        TypedQuery<Action02Command> query = em.createQuery(cQuery);
         if (maxResults > 0)
             query.setMaxResults(maxResults);
         return executeQuery(query);
@@ -597,30 +600,30 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /* ------------------------------------------------------------ */
     /* Player events */
 
-    // @SubscribeEvent(priority = EventPriority.LOWEST)
-    // public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
-    // {
-    // // TODO
-    // }
-    //
-    // @SubscribeEvent(priority = EventPriority.LOWEST)
-    // public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
-    // {
-    // // TODO
-    // }
-    //
-    // @SubscribeEvent(priority = EventPriority.LOWEST)
-    // public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent event)
-    // {
-    // // TODO
-    // }
-    //
-    // @SubscribeEvent(priority = EventPriority.LOWEST)
-    // public void playerChangedDimensionEvent(PlayerEvent.PlayerChangedDimensionEvent event)
-    // {
-    // // TODO
-    // }
-    //
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
+    {
+        logEvent(new LogEventPlayerEvent(event, PlayerEventType.LOGIN));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
+    {
+        logEvent(new LogEventPlayerEvent(event, PlayerEventType.LOGOUT));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent event)
+    {
+        logEvent(new LogEventPlayerEvent(event, PlayerEventType.RESPAWN));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerChangedDimensionEvent(PlayerEvent.PlayerChangedDimensionEvent event)
+    {
+        logEvent(new LogEventPlayerEvent(event, PlayerEventType.CHANGEDIM));
+    }
+
     // @SubscribeEvent(priority = EventPriority.LOWEST)
     // public void playerChangedZoneEvent(PlayerChangedZone event)
     // {

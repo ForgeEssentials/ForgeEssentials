@@ -8,8 +8,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
-import com.forgeessentials.playerlogger.entity.ActionBlock;
-import com.forgeessentials.playerlogger.entity.ActionBlock.ActionBlockType;
+import com.forgeessentials.playerlogger.entity.Action01Block;
+import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 
 public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
 {
@@ -24,7 +24,7 @@ public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
     {
         if (event.action != Action.LEFT_CLICK_BLOCK)
             return;
-        ActionBlock action = new ActionBlock();
+        Action01Block action = new Action01Block();
         action.time = new Date();
         action.player = getPlayer(event.entityPlayer.getPersistentID());
         action.world = getWorld(event.world.provider.getDimensionId());

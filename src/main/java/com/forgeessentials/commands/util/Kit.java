@@ -69,10 +69,11 @@ public class Kit
             if (timeout > 0)
             {
                 ChatOutputHandler.chatWarning(player,
-                        Translator.format("Kit cooldown active, %s to go!", ChatOutputHandler.formatTimeDurationReadable(timeout / 1000, true)));
+                        Translator.format("Kit cooldown active, %s to go!", ChatOutputHandler.formatTimeDurationReadable(timeout / 1000L, true)));
+                pi.startTimeout("KIT_" + name, 0);
                 return;
             }
-            pi.startTimeout("KIT_" + name, cooldown * 1000);
+            pi.startTimeout("KIT_" + name, cooldown * 1000L);
         }
 
         boolean couldNotGiveItems = false;

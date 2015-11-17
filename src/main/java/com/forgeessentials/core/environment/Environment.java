@@ -1,5 +1,6 @@
 package com.forgeessentials.core.environment;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -13,9 +14,6 @@ public class Environment
     private static boolean isClient = false;
 
     protected static boolean hasCauldron = false;
-
-    private static final String ALLOW_CAULDRON = "forgeessentials.allowCauldron";
-
     public static void check()
     {
         FMLCommonHandler.instance().registerCrashCallable(new FECrashCallable());
@@ -59,20 +57,15 @@ public class Environment
         {
             LoggingHandler.felog.error("You are attempting to run FE on Cauldron. This is completely unsupported.");
 
-            // good luck setting this - i had a very hard time doing so during debugging
-            if (System.getProperty(ALLOW_CAULDRON) != null && Boolean.parseBoolean(System.getProperty(ALLOW_CAULDRON)))
-            {
-                LoggingHandler.felog.error("Bad things may happen. By setting the environment variable you are proceeding at your own risk.");
-                LoggingHandler.felog.error("DO NOT BOTHER ANYONE IF YOU RUN INTO ISSUES.");
-                LoggingHandler.felog.error("You are highly recommended to uninstall FE and use bukkit plugins instead.");
-                hasCauldron = true;
-                return;
-            }
-
             LoggingHandler.felog.error("Bad things may happen. DO NOT BOTHER ANYONE ABOUT THIS CRASH - YOU WILL BE IGNORED");
             LoggingHandler.felog.error("Please uninstall FE from this Cauldron server installation. We recommend to use bukkit plugins instead.");
-            LoggingHandler.felog.error("The server will now shut down as a precaution against data loss.");
-            throw new RuntimeException("Sanity check failed: Detected Cauldron, bad things may happen to your server. Shutting down as a precaution.");
+            if (!ForgeEssentials.isSafeMode())
+            {
+                LoggingHandler.felog.error("The server will now shut down as a precaution against data loss.");
+                throw new RuntimeException("Sanity check failed: Detected Cauldron, bad things may happen to your server. Shutting down as a precaution.");
+            }
+            LoggingHandler.felog.error("FE safe mode has been enabled, you are proceeding at your own risk.");
+            LoggingHandler.felog.error("Sanity check failed: Detected Cauldron, bad things may happen to your server.");
         }
     }
 

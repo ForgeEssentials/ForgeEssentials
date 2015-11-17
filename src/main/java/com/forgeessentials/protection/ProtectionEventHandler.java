@@ -803,6 +803,8 @@ public class ProtectionEventHandler extends ServerEventHandler
             @Override
             public void run()
             {
+                if (packet == null)
+                    return;
                 player.playerNetServerHandler.sendPacket(packet);
             }
         });

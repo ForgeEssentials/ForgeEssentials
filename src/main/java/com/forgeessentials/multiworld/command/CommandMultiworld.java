@@ -181,8 +181,8 @@ public class CommandMultiworld extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        arguments.confirm(String.format("Multiworld %s:", world.getName()));
-        arguments.confirm(String.format("  DimID = %d", world.getDimensionId()));
+        arguments.confirm("Multiworld %s:", world.getName());
+        arguments.confirm("  DimID = %d", world.getDimensionId());
     }
 
     /**

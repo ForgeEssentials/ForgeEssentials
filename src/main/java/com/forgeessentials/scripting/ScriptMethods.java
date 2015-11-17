@@ -343,7 +343,7 @@ public final class ScriptMethods
             if (args.length > 2)
                 throw new SyntaxException("Too many arguments");
             long amount = Long.parseLong(args[0]);
-            Wallet src = APIRegistry.economy.getWallet((EntityPlayerMP) sender);
+            Wallet src = APIRegistry.economy.getWallet(UserIdent.get((EntityPlayerMP) sender));
             Wallet dst = null;
             if (args.length == 2)
             {
@@ -407,7 +407,7 @@ public final class ScriptMethods
             if (args.length < 2)
                 throw new SyntaxException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             PlayerInfo pi = PlayerInfo.get((EntityPlayer) sender);
-            pi.startTimeout(args[0], Integer.parseInt(args[1]));
+            pi.startTimeout(args[0], Long.parseLong(args[1]));
             return true;
         }
 

@@ -7,8 +7,8 @@ import javax.persistence.EntityManager;
 import net.minecraftforge.event.world.BlockEvent;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
-import com.forgeessentials.playerlogger.entity.ActionBlock;
-import com.forgeessentials.playerlogger.entity.ActionBlock.ActionBlockType;
+import com.forgeessentials.playerlogger.entity.Action01Block;
+import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 
 public class LogEventBreak extends PlayerLoggerEvent<BlockEvent.BreakEvent>
 {
@@ -24,7 +24,7 @@ public class LogEventBreak extends PlayerLoggerEvent<BlockEvent.BreakEvent>
     @Override
     public void process(EntityManager em)
     {
-        ActionBlock action = new ActionBlock();
+        Action01Block action = new Action01Block();
         action.time = date;
         action.player = getPlayer(event.getPlayer().getPersistentID());
         action.world = getWorld(event.world.provider.getDimensionId());

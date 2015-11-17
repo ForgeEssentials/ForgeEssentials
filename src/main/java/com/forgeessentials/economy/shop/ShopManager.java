@@ -50,6 +50,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.reflect.TypeToken;
 
 public class ShopManager extends ServerEventHandler implements ConfigLoader
@@ -274,7 +275,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         transactionStack.stackSize = shop.amount;
         IChatComponent itemName = transactionStack.getChatComponent();
 
-        Wallet wallet = APIRegistry.economy.getWallet((EntityPlayerMP) event.entityPlayer);
+        Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((EntityPlayerMP) event.entityPlayer));
 
         if (shop.sellPrice >= 0 && (shop.buyPrice < 0 || sameItem))
         {

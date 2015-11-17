@@ -44,7 +44,6 @@ public class PlayerInfo implements Loadable
 
     private WarpPoint lastDeathLocation;
 
-    @Expose(serialize = false)
     private long lastTeleportTime = 0;
 
     /* ------------------------------------------------------------ */
@@ -129,19 +128,23 @@ public class PlayerInfo implements Loadable
     public static PlayerInfo get(UUID uuid)
     {
         PlayerInfo info = playerInfoMap.get(uuid);
-        if (info == null)
+        if (info != null)
+            return info;
+
+        // Attempt to populate this info with some data from our storage
+        info = DataManager.getInstance().load(PlayerInfo.class, uuid.toString());
+        if (info != null)
         {
-            // Attempt to populate this info with some data from our storage.
-            info = DataManager.getInstance().load(PlayerInfo.class, uuid.toString());
-            if (info == null)
-            {
-                EntityPlayerMP player = UserIdent.getPlayerByUuid(uuid);
-                if (player != null)
-                    APIRegistry.getFEEventBus().post(new NoPlayerInfoEvent(player));
-                info = new PlayerInfo(uuid);
-            }
             playerInfoMap.put(uuid, info);
+            return info;
         }
+
+        // Create new player info data
+        EntityPlayerMP player = UserIdent.getPlayerByUuid(uuid);
+        info = new PlayerInfo(uuid);
+        playerInfoMap.put(uuid, info);
+        if (player != null)
+            APIRegistry.getFEEventBus().post(new NoPlayerInfoEvent(player));
         return info;
     }
 
@@ -291,7 +294,7 @@ public class PlayerInfo implements Loadable
      * @param milliseconds
      *            Timeout in milliseconds
      */
-    public void startTimeout(String name, int milliseconds)
+    public void startTimeout(String name, long milliseconds)
     {
         Date date = new Date();
         date.setTime(date.getTime() + milliseconds);
@@ -395,9 +398,11 @@ public class PlayerInfo implements Loadable
             // ChatOutputHandler.felog.info(String.format("Changing inventory group for %s from %s to %s",
             // ident.getUsernameOrUUID(), activeInventoryGroup, name));
             /*
-             * ChatOutputHandler.felog.info("Items in old inventory:"); for (int i = 0; i < ident.getPlayer().inventory.getSizeInventory(); i++) { ItemStack itemStack =
-             * ident.getPlayer().inventory.getStackInSlot(i); if (itemStack != null) ChatOutputHandler.felog.info("  " + itemStack.getDisplayName()); }
-             * ChatOutputHandler.felog.info("Items in new inventory:"); for (ItemStack itemStack : newInventory) if (itemStack != null) ChatOutputHandler.felog.info("  " +
+             * ChatOutputHandler.felog.info("Items in old inventory:"); for (int i = 0; i <
+             * ident.getPlayer().inventory.getSizeInventory(); i++) { ItemStack itemStack =
+             * ident.getPlayer().inventory.getStackInSlot(i); if (itemStack != null) ChatOutputHandler.felog.info("  " +
+             * itemStack.getDisplayName()); } ChatOutputHandler.felog.info("Items in new inventory:"); for (ItemStack
+             * itemStack : newInventory) if (itemStack != null) ChatOutputHandler.felog.info("  " +
              * itemStack.getDisplayName());
              */
 

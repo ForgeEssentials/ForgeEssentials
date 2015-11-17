@@ -117,6 +117,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
             if (!arguments.hasPermission(PERM + "." + kit.getName()))
                 throw new TranslatedCommandException("You are not allowed to use this kit");
             kit.giveKit(arguments.senderPlayer);
+            return;
         }
 
         arguments.checkPermission(PERM_ADMIN);
