@@ -231,7 +231,7 @@ public class ModuleProtection
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
             {
-                String itemPerm = "." + getItemId(item) + Zone.ALL_PERMS;
+                String itemPerm = "." + ServerUtil.getItemPermission(item) + Zone.ALL_PERMS;
                 String itemName = getItemName(item);
                 APIRegistry.perms.registerPermission(PERM_USE + itemPerm, PermissionLevel.TRUE, "USE " + itemName);
                 APIRegistry.perms.registerPermission(PERM_CRAFT + itemPerm, PermissionLevel.TRUE, "CRAFT " + itemName);
@@ -367,20 +367,15 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    public static String getItemId(Item item)
-    {
-        return GameData.getItemRegistry().getNameForObject(item).replace(':', '.').replace(' ', '_');
-    }
-
     public static String getItemPermission(ItemStack stack, boolean checkMeta)
     {
         try
         {
             int dmg = stack.getItemDamage();
             if (!checkMeta || dmg == 0 || dmg == 32767)
-                return getItemId(stack.getItem());
+                return ServerUtil.getItemPermission(stack.getItem());
             else
-                return getItemId(stack.getItem()) + "." + dmg;
+                return ServerUtil.getItemPermission(stack.getItem()) + "." + dmg;
         }
         catch (Exception e)
         {

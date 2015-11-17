@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandHandler;
@@ -17,6 +18,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.server.CommandMessage;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
 
@@ -26,6 +28,7 @@ import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public abstract class ServerUtil
@@ -303,6 +306,28 @@ public abstract class ServerUtil
     
     /* ------------------------------------------------------------ */
 
+    public static String getItemName(Item item)
+    {
+        return GameData.getItemRegistry().getNameForObject(item).toString();
+    }
+
+    public static String getItemPermission(Item item)
+    {
+        return GameData.getItemRegistry().getNameForObject(item).replace(':', '.').replace(' ', '_');
+    }
+
+    public static String getBlockName(Block block)
+    {
+        return GameData.getBlockRegistry().getNameForObject(block).toString();
+    }
+
+    public static String getBlockPermission(Block block)
+    {
+        return GameData.getBlockRegistry().getNameForObject(block).replace(':', '.').replace(' ', '_');
+    }
+
+    /* ------------------------------------------------------------ */
+
     public static void replaceCommand(Class<CommandMessage> clazz, ICommand newCommand)
     {
         try
@@ -365,5 +390,6 @@ public abstract class ServerUtil
         else
             LoggingHandler.felog.error(String.format("Could not find command /%s to replace", command));
     }
+
 
 }
