@@ -29,6 +29,7 @@ public class LoggingHandler
     static
     {
         addAppenderToAllConfigurations(logCache);
+        logCache.start();
     }
 
     public static void addAppenderToAllConfigurations(Appender appender)
