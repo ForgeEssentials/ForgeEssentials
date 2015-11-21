@@ -115,8 +115,8 @@ public class TeleportModule extends ConfigLoaderBase
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        String portalBlockName = config.get(Configuration.CATEGORY_GENERAL, "portalBlockName", "minecraft:glass_pane", "Name of the block to use as material for new portals.\n"
-                + "Does not override vanilla nether/end portals.\nSetting this to 'minecraft.portal' is unsupported.").getString();
-        PortalManager.portalBlock = GameData.getBlockRegistry().getObject(portalBlockName);
+        String portalBlockId = config.get(Configuration.CATEGORY_GENERAL, "portalBlock", "minecraft:glass_pane", "Name of the block to use as material for new portals.\n"
+                + "Does not override vanilla nether/end portals.\nSetting this to 'minecraft:portal' is currently not supported.").getString();
+        PortalManager.portalBlock = GameData.getBlockRegistry().getObject(portalBlockId);
     }
 }
