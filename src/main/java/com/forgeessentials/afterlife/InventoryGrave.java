@@ -36,7 +36,7 @@ public class InventoryGrave extends InventoryBasic
                 grave.inventory.add(is);
         }
         grave.setOpen(false);
-        if (grave.inventory.size() == 0)
+        if (grave.inventory.isEmpty())
             grave.remove(false);
         super.closeInventory();
     }
