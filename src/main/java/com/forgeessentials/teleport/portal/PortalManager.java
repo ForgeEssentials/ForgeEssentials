@@ -23,6 +23,7 @@ import com.forgeessentials.util.output.LoggingHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.registry.GameData;
 
 /**
  * 
@@ -36,18 +37,20 @@ public class PortalManager extends ServerEventHandler
 
     private static boolean mixinLoaded = false;
 
-    private static Block portalBlock = Blocks.portal;
+    public static Block portalBlock = Blocks.portal;
 
     public PortalManager()
     {
         super();
         instance = this;
+        /*
         mixinLoaded = FEMixinConfig.getInjectedPatches().contains("block.MixinBlockPortal_01");
         if (!mixinLoaded)
         {
             LoggingHandler.felog.error("Unable to apply portal block mixin. Will revert to glass panes for portals.");
             portalBlock = Blocks.glass_pane;
         }
+        */
     }
 
     public static PortalManager getInstance()
