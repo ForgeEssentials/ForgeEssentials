@@ -4,6 +4,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -11,13 +13,14 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.teleport.portal.CommandPortal;
 import com.forgeessentials.teleport.portal.PortalManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 @FEModule(name = "Teleport", parentMod = ForgeEssentials.class)
-public class TeleportModule
+public class TeleportModule extends ConfigLoaderBase
 {
 
     public static final String PERM_TP = "fe.teleport.tp";
@@ -107,4 +110,11 @@ public class TeleportModule
         APIRegistry.perms.registerPermission(PERM_WARP_ADMIN, PermissionLevel.OP);
     }
 
+    @Override
+    public void load(Configuration config, boolean isReload)
+    {
+        String portalBlockId = config.get(Configuration.CATEGORY_GENERAL, "portalBlock", "minecraft:glass_pane", "Name of the block to use as material for new portals.\n"
+                + "Does not override vanilla nether/end portals.\nSetting this to 'minecraft:portal' is currently not supported.").getString();
+        PortalManager.portalBlock = GameData.getBlockRegistry().getObject(portalBlockId);
+    }
 }

@@ -143,8 +143,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public ForgeEssentials()
     {
-        safeMode = Boolean.parseBoolean(System.getProperty("fe.safemode"));
-
+        initConfiguration();
         LoggingHandler.init();
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
         Environment.check();
@@ -161,8 +160,6 @@ public class ForgeEssentials extends ConfigLoaderBase
             LoggingHandler.felog.warn("You are running FE in safe mode. Please only do so if requested to by the ForgeEssentials team.");
         }
 
-        // Initialize core configuration
-        initConfiguration();
         registerNetworkMessages();
 
         // Init McStats
@@ -199,12 +196,12 @@ public class ForgeEssentials extends ConfigLoaderBase
         for (String module : ModuleLauncher.getModuleList())
             gModules.addPlotter(new ConstantPlotter(module, 1));
 
-        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildType(),
-                BuildInfo.getBuildHash()));
+        LoggingHandler.felog
+                .info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
         if (BuildInfo.isOutdated())
         {
             LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
-            LoggingHandler.felog.warn(String.format("WARNING! Using ForgeEssentials build #%d, latest build is #%d",//
+            LoggingHandler.felog.warn(String.format("WARNING! Using ForgeEssentials build #%d, latest build is #%d", //
                     BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
             LoggingHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
             LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
@@ -431,14 +428,13 @@ public class ForgeEssentials extends ConfigLoaderBase
         Translator.load();
         if (!config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
             BuildInfo.cancelVersionCheck();
-        configManager.setUseCanonicalConfig(config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false,
-                "For modules that support it, place their configs in this file.").getBoolean());
+        configManager.setUseCanonicalConfig(
+                config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false, "For modules that support it, place their configs in this file.").getBoolean());
         debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean();
-        // safeMode = config.get(FEConfig.CONFIG_CAT, "safeMode", false,
-        // "Activates safe mode with will ignore some errors which would normally crash the game. "  +
-        // "Please only enable this after being instructed to do so by FE team in response to an issue on GitHub!").getBoolean();
-        HelpFixer.hideWorldEditCommands = config.get(FEConfig.CONFIG_CAT, "hide_worldedit_help", true,
-                "Hide WorldEdit commands from /help and only show them in //help command").getBoolean();
+        safeMode = config.get(FEConfig.CONFIG_CAT, "safeMode", false, "Activates safe mode with will ignore some errors which would normally crash the game. "
+                + "Please only enable this after being instructed to do so by FE team in response to an issue on GitHub!").getBoolean();
+        HelpFixer.hideWorldEditCommands = config
+                .get(FEConfig.CONFIG_CAT, "hide_worldedit_help", true, "Hide WorldEdit commands from /help and only show them in //help command").getBoolean();
         logCommandsToConsole = config.get(FEConfig.CONFIG_CAT, "logCommands", false, "Log commands to console").getBoolean();
     }
 

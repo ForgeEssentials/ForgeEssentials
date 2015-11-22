@@ -17,12 +17,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.preloader.mixin.FEMixinConfig;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.LoggingHandler;
 
 /**
  * 
@@ -36,18 +34,20 @@ public class PortalManager extends ServerEventHandler
 
     private static boolean mixinLoaded = false;
 
-    private static Block portalBlock = Blocks.portal;
+    public static Block portalBlock = Blocks.portal;
 
     public PortalManager()
     {
         super();
         instance = this;
+        /*
         mixinLoaded = FEMixinConfig.getInjectedPatches().contains("block.MixinBlockPortal_01");
         if (!mixinLoaded)
         {
             LoggingHandler.felog.error("Unable to apply portal block mixin. Will revert to glass panes for portals.");
             portalBlock = Blocks.glass_pane;
         }
+        */
     }
 
     public static PortalManager getInstance()
