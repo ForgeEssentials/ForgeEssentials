@@ -3,6 +3,7 @@ package com.forgeessentials.signtools;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -95,7 +96,7 @@ public class SignToolsModule extends ConfigLoaderBase
 
                 else
                 {
-                    String send = signText[1] + " " + signText[2] + " " + signText[3];
+                    String send = signText[1].getUnformattedText() + " " + signText[2].getUnformattedText() + " " + signText[3].getUnformattedText();
                     MinecraftServer.getServer().getCommandManager().executeCommand(event.entityPlayer, send);
                     event.setCanceled(true);
                 }
