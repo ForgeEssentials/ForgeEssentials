@@ -1,4 +1,4 @@
-package com.forgeessentials.auth.lists;
+package com.forgeessentials.auth;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
