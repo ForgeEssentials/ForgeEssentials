@@ -509,7 +509,8 @@ public class PermissionCommandParser
                 zone.setPlayerPermission(ident, FEPermissions.SPAWN_BED, false);
                 arguments.confirm("Disabled bed-spawning for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName());
             }
-            arguments.confirm("Invalid argument. Use enable or disable.");
+            else
+                arguments.error("Invalid argument. Use enable or disable.");
             return;
         }
         case "clear":
@@ -944,7 +945,8 @@ public class PermissionCommandParser
                 zone.setGroupPermission(group, FEPermissions.SPAWN_BED, false);
                 arguments.confirm("Disabled bed-spawning for group %s in zone %s", group, zone.getName());
             }
-            arguments.confirm("Invalid argument. Use enable or disable.");
+            else
+                arguments.error("Invalid argument. Use enable or disable.");
             return;
         }
         case "clear":
@@ -1263,9 +1265,9 @@ public class PermissionCommandParser
 
     public static void denyDefault(PermissionList list)
     {
-        List<String> filter = Arrays.asList(ModuleProtection.PERM_BREAK, ModuleProtection.PERM_PLACE, ModuleProtection.PERM_INTERACT,
-                ModuleProtection.PERM_USE, ModuleProtection.PERM_INVENTORY, ModuleProtection.PERM_EXIST, ModuleProtection.PERM_CRAFT,
-                ModuleProtection.PERM_MOBSPAWN, ModuleProtection.PERM_DAMAGE_BY, ModuleProtection.PERM_DAMAGE_TO, FEPermissions.FE_INTERNAL);
+        List<String> filter = Arrays.asList(ModuleProtection.PERM_BREAK, ModuleProtection.PERM_PLACE, ModuleProtection.PERM_INTERACT, ModuleProtection.PERM_USE,
+                ModuleProtection.PERM_INVENTORY, ModuleProtection.PERM_EXIST, ModuleProtection.PERM_CRAFT, ModuleProtection.PERM_MOBSPAWN,
+                ModuleProtection.PERM_DAMAGE_BY, ModuleProtection.PERM_DAMAGE_TO, FEPermissions.FE_INTERNAL);
 
         RootZone rootZone = APIRegistry.perms.getServerZone().getRootZone();
         mainLoop: for (Entry<String, String> perm : rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).entrySet())
