@@ -39,6 +39,7 @@ import com.forgeessentials.core.mcstats.Metrics;
 import com.forgeessentials.core.mcstats.Metrics.Graph;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
@@ -140,6 +141,9 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     protected static boolean logCommandsToConsole;
 
+    @SuppressWarnings("unused")
+    private RespawnHandler respawnHandler;
+
     /* ------------------------------------------------------------ */
 
     public ForgeEssentials()
@@ -178,6 +182,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         wandHandler = new SelectionEventHandler();
         teleportHelper = new TeleportHelper();
         questioner = new Questioner();
+        respawnHandler = new RespawnHandler();
         APIRegistry.getFEEventBus().register(new CompatReiMinimap());
 
         // Load submodules
