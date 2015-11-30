@@ -14,6 +14,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
@@ -56,8 +57,8 @@ public class CommandParserArgs
         this.args = new LinkedList<String>(Arrays.asList(args));
         this.sender = sender;
         this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
-        this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null) : UserIdent
-                .get(senderPlayer);
+        this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null)
+                : UserIdent.get(senderPlayer);
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
@@ -313,6 +314,25 @@ public class CommandParserArgs
         catch (NumberFormatException e)
         {
             throw new TranslatedCommandException("Invalid number: %s", value);
+        }
+    }
+
+    public int parseInt(int min, int max) throws CommandException
+    {
+        checkTabCompletion();
+        String strValue = remove();
+        try
+        {
+            int value = Integer.parseInt(strValue);
+            if (value < min)
+                throw new NumberInvalidException("commands.generic.num.tooSmall", strValue, Integer.toString(min));
+            if (value > max)
+                throw new NumberInvalidException("commands.generic.num.tooBig", strValue, Integer.toString(max));
+            return value;
+        }
+        catch (NumberFormatException e)
+        {
+            throw new TranslatedCommandException("Invalid number: %s", strValue);
         }
     }
 
