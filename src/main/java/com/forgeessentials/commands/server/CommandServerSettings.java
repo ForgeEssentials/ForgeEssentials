@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldSettings.GameType;
@@ -17,6 +18,7 @@ import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -108,6 +110,7 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 String motd = ScriptArguments.process(arguments.toString(), null);
+                server.func_147134_at().func_151315_a(new ChatComponentText(ChatOutputHandler.formatColors(motd)));
                 server.setMOTD(motd);
                 server.setProperty("motd", motd);
                 server.saveProperties();
