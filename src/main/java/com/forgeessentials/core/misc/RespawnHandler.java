@@ -40,8 +40,6 @@ public class RespawnHandler
     public static WarpPoint getSpawn(EntityPlayer player, WarpPoint location)
     {
         UserIdent ident = UserIdent.get(player);
-        if (location == null)
-            location = new WarpPoint(player);
         String spawnProperty = APIRegistry.perms.getPermission(ident, location.toWorldPoint(), null,
                 GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident)), FEPermissions.SPAWN_LOC, true);
         if (spawnProperty != null)
@@ -56,8 +54,6 @@ public class RespawnHandler
     public static WarpPoint getPlayerSpawn(EntityPlayer player, WarpPoint location, boolean doDefaultSpawn)
     {
         UserIdent ident = UserIdent.get(player);
-        if (location == null)
-            location = new WarpPoint(player);
 
         boolean bedEnabled = APIRegistry.perms.checkUserPermission(ident, FEPermissions.SPAWN_BED);
         if (bedEnabled)
