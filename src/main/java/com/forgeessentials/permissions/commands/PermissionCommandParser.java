@@ -71,7 +71,7 @@ public class PermissionCommandParser
     // Variables for auto-complete
     private static final String[] parseMainArgs = { "user", "group", "global", "list", "test", "reload", "save", "debug" }; // "export",
                                                                                                                             // "promote",
-    private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
+    private static final String[] parseListArgs = { "zones", "perms", "users", "groups", "worlds" };
     private static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
             "denydefault" };
     private static final String[] parseGroupArgs = { "zone", "users", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
@@ -195,6 +195,9 @@ public class PermissionCommandParser
                 if (arguments.senderPlayer == null)
                     throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
                 listZones(arguments.senderPlayer, new WorldPoint(arguments.senderPlayer));
+                break;
+            case "worlds":
+                listWorlds(arguments.senderPlayer);
                 break;
             case "perms":
                 if (arguments.senderPlayer == null)
@@ -1227,6 +1230,17 @@ public class PermissionCommandParser
             if (zone.isHidden())
                 continue;
             ChatOutputHandler.chatNotification(sender, "  #" + zone.getId() + " " + zone.toString());
+        }
+    }
+
+    public static void listWorlds(ICommandSender sender)
+    {
+        ChatOutputHandler.chatNotification(sender, "World IDs:");
+        for (WorldZone zone : APIRegistry.perms.getServerZone().getWorldZones().values())
+        {
+            if (zone.isHidden())
+                continue;
+            ChatOutputHandler.chatNotification(sender, String.format("  DIM%d - #%d - ", zone.getDimensionID(), zone.getId(), zone.toString()));
         }
     }
 
