@@ -9,7 +9,6 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.dedicated.DedicatedServer;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -134,7 +133,7 @@ public class ScriptParser
                             cmdSender = new DoAsCommandSender(UserIdent.get((EntityPlayer) sender), sender);
                         ((DoAsCommandSender) cmdSender).setHideChatMessages(true);
                     }
-                    else if (sender == null || sender instanceof DedicatedServer)
+                    else if (sender == null || sender instanceof MinecraftServer)
                     {
                         if (!(cmdSender instanceof DoAsCommandSender))
                             cmdSender = new DoAsCommandSender(ZonedPermissionHelper.SERVER_IDENT, sender);
