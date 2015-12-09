@@ -277,7 +277,7 @@ public class CommandParserArgs
     {
         if (isTabCompletion && size() == 1)
         {
-            tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), APIRegistry.namedWorldHandler.listWorldNames());
+            tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), APIRegistry.namedWorldHandler.getWorldNames());
             throw new CancelParsingException();
         }
         if (isEmpty())

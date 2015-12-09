@@ -13,6 +13,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.commons.lang3.StringUtils;
@@ -336,7 +337,7 @@ public class PermissionCommandParser
                 arguments.error("Expected zone identifier.");
                 return;
             }
-            zone = parseZone(arguments, arguments.args.remove());
+            zone = parseZone(arguments);
             if (zone == null)
                 return;
             parseUserInner(arguments, ident, zone);
@@ -740,17 +741,7 @@ public class PermissionCommandParser
                 arguments.error("Expected zone identifier.");
                 return;
             }
-            if (arguments.isTabCompletion && arguments.args.size() == 1)
-            {
-                arguments.tabCompletion = new ArrayList<>();
-                for (Zone z : APIRegistry.perms.getZones())
-                {
-                    if (CommandBase.doesStringStartWith(arguments.args.peek(), z.getName()))
-                        arguments.tabCompletion.add(z.getName());
-                }
-                return;
-            }
-            zone = parseZone(arguments, arguments.args.remove());
+            zone = parseZone(arguments);
             if (zone == null)
                 return;
             parseGroupInner(arguments, group, zone);
@@ -1102,8 +1093,17 @@ public class PermissionCommandParser
         return completePermission(permission, APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
     }
 
-    public static Zone parseZone(CommandParserArgs arguments, String zoneId)
+    public static Zone parseZone(CommandParserArgs arguments)
     {
+        if (arguments.isTabCompletion && arguments.args.size() == 1)
+        {
+            for (Zone z : APIRegistry.perms.getZones())
+                arguments.tabCompleteWord(z.getName());
+            for (String n : APIRegistry.namedWorldHandler.getWorldNames())
+                arguments.tabCompleteWord(n);
+            return null;
+        }
+        String zoneId = arguments.remove();
         try
         {
             int intId = Integer.parseInt(zoneId);
@@ -1117,6 +1117,10 @@ public class PermissionCommandParser
             if (zone != null)
                 return zone;
 
+            WorldServer world = APIRegistry.namedWorldHandler.getWorld(zoneId);
+            if (world != null)
+                return APIRegistry.perms.getServerZone().getWorldZone(world.provider.dimensionId);
+
             arguments.error("No zone by the ID %s exists!", zoneId);
             return null;
         }
@@ -1125,10 +1129,13 @@ public class PermissionCommandParser
             for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
                 if (wz.getName().equals(zoneId))
                     return wz;
+            WorldServer world = APIRegistry.namedWorldHandler.getWorld(zoneId);
+            if (world != null)
+                return APIRegistry.perms.getServerZone().getWorldZone(world.provider.dimensionId);
 
             if (arguments.senderPlayer == null)
             {
-                arguments.error(Translator.translate("Cannot identify zones by name from console!"));
+                arguments.error(Translator.translate("Cannot identify areas by name from console!"));
                 return null;
             }
 
@@ -1240,7 +1247,8 @@ public class PermissionCommandParser
         {
             if (zone.isHidden())
                 continue;
-            ChatOutputHandler.chatNotification(sender, String.format("  DIM%d - #%d - ", zone.getDimensionID(), zone.getId(), zone.toString()));
+            ChatOutputHandler.chatNotification(sender, String.format("  %s (%d): #%d / %s", APIRegistry.namedWorldHandler.getWorldName(zone.getDimensionID()),
+                    zone.getDimensionID(), zone.getId(), zone.toString()));
         }
     }
 

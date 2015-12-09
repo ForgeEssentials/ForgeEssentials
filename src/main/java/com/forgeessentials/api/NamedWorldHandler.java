@@ -18,7 +18,7 @@ public interface NamedWorldHandler
 
     String getWorldName(int dimId);
 
-    List<String> listWorldNames();
+    List<String> getWorldNames();
 
     public static class DefaultNamedWorldHandler implements NamedWorldHandler
     {
@@ -66,7 +66,7 @@ public interface NamedWorldHandler
         }
 
         @Override
-        public List<String> listWorldNames()
+        public List<String> getWorldNames()
         {
             return new ArrayList<>(Arrays.asList(WORLD_NAME_SURFACE, WORLD_NAME_NETHER, WORLD_NAME_END));
         }
