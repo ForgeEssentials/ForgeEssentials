@@ -209,17 +209,18 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public static boolean isItemPermission(String perm)
     {
-        return perm.startsWith("fe.protection.inventory.") || //
-                perm.startsWith("fe.protection.exist.") || //
-                perm.startsWith("fe.protection.use.") || //
-                perm.startsWith("fe.protection.craft.");
+        return perm.startsWith(ModuleProtection.PERM_INVENTORY) || //
+                perm.startsWith(ModuleProtection.PERM_EXIST) || //
+                perm.startsWith(ModuleProtection.PERM_USE) || //
+                perm.startsWith(ModuleProtection.PERM_CRAFT);
     }
 
     public static boolean isBlockPermission(String perm)
     {
-        return perm.startsWith("fe.protection.place.") || //
-                perm.startsWith("fe.protection.break.") || //
-                perm.startsWith("fe.protection.interact.");
+        return perm.startsWith(ModuleProtection.PERM_PLACE) || //
+                perm.startsWith(ModuleProtection.PERM_BREAK) || //
+                perm.startsWith(ModuleProtection.PERM_EXPLODE) || //
+                perm.startsWith(ModuleProtection.PERM_INTERACT);
     }
 
     public void writePermissionlist()

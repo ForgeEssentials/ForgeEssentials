@@ -1287,7 +1287,7 @@ public class PermissionCommandParser
 
     public static void denyDefault(PermissionList list)
     {
-        List<String> filter = Arrays.asList(ModuleProtection.PERM_BREAK, ModuleProtection.PERM_PLACE, ModuleProtection.PERM_INTERACT, ModuleProtection.PERM_USE,
+        List<String> filter = Arrays.asList(ModuleProtection.PERM_BREAK, ModuleProtection.PERM_EXPLODE, ModuleProtection.PERM_PLACE, ModuleProtection.PERM_INTERACT, ModuleProtection.PERM_USE,
                 ModuleProtection.PERM_INVENTORY, ModuleProtection.PERM_EXIST, ModuleProtection.PERM_CRAFT, ModuleProtection.PERM_MOBSPAWN,
                 ModuleProtection.PERM_DAMAGE_BY, ModuleProtection.PERM_DAMAGE_TO, FEPermissions.FE_INTERNAL);
 
