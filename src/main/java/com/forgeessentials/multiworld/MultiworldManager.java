@@ -194,9 +194,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     }
 
     @Override
-    public List<String> listWorldNames()
+    public List<String> getWorldNames()
     {
-        List<String> names = parentNamedWorldHandler.listWorldNames();
+        List<String> names = parentNamedWorldHandler.getWorldNames();
         names.addAll(worlds.keySet());
         return names;
     }

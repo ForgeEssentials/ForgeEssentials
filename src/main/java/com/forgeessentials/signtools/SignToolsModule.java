@@ -64,9 +64,7 @@ public class SignToolsModule extends ConfigLoaderBase
                     e.text[i] = ChatOutputHandler.formatColors(e.text[i]);
                 }
             }
-
         }
-
     }
 
     /**
@@ -95,7 +93,7 @@ public class SignToolsModule extends ConfigLoaderBase
 
                 else
                 {
-                    String send = signText[1] + " " + signText[2] + " " + signText[3];
+                    String send = signText[1].getUnformattedText() + " " + signText[2].getUnformattedText() + " " + signText[3].getUnformattedText();
                     MinecraftServer.getServer().getCommandManager().executeCommand(event.entityPlayer, send);
                     event.setCanceled(true);
                 }

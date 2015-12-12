@@ -61,7 +61,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
             return;
         }
 
-        List<String> worldNames = APIRegistry.namedWorldHandler.listWorldNames();
+        List<String> worldNames = APIRegistry.namedWorldHandler.getWorldNames();
         worldNames.add(0, "list");
         arguments.tabComplete(worldNames);
         

@@ -8,8 +8,6 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.auth.lists.CommandVIP;
-import com.forgeessentials.auth.lists.CommandWhiteList;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -61,11 +59,7 @@ public class ModuleAuth extends ConfigLoaderBase
         handler = new AuthEventHandler();
 
         FECommandManager.registerCommand(new CommandAuth());
-        if (AuthEventHandler.whitelist)
-        {
-            FECommandManager.registerCommand(new CommandWhiteList());
-            FECommandManager.registerCommand(new CommandVIP());
-        }
+        FECommandManager.registerCommand(new CommandVIP());
     }
 
     @SubscribeEvent
@@ -82,7 +76,6 @@ public class ModuleAuth extends ConfigLoaderBase
         APIRegistry.perms.registerPermission("fe.auth.admin", PermissionLevel.OP);
         APIRegistry.perms.registerPermission("fe.auth", PermissionLevel.TRUE);
         APIRegistry.perms.registerPermission("fe.auth.vip", null);
-        APIRegistry.perms.registerPermission("fe.auth.whitelist", PermissionLevel.TRUE);
     }
 
     public static boolean vanillaMode()
@@ -138,9 +131,8 @@ public class ModuleAuth extends ConfigLoaderBase
     private static final String CFG_DESC_checkInterval = "Interval to check Vanill Auth service in minutes.";
     private static final String CFG_DESC_canMoveWithoutLogin = "Allow players not registered/not logged in with the authentication service to move in the world.";
     private static final String CFG_DESC_kickMsg = "Kick messages for banned/unwhitelisted players or when the server is full (not counting VIP slots";
-    private static final String CFG_DESC_authlists = "Alternative ban/whitelist/VIP/max players implementation. Make sure vipslots and offset added together is less than the amount of players specified in server.properties.";
+    private static final String CFG_DESC_authlists = "Alternative VIP/max players implementation. Make sure vipslots and offset added together is less than the amount of players specified in server.properties.";
     private static final String CFG_DESC_offset = "If you need to be able to have less than the amount of players specified in server.properties logged into your server, use this.";
-    private static final String CFG_DESC_whitelistEnabled = "Enable or disable the ForgeEssentials whitelist. Note that server.properties will be used if this is set to false.";
 
     @Override
     public void load(Configuration config, boolean isReload)
@@ -156,12 +148,9 @@ public class ModuleAuth extends ConfigLoaderBase
         config.addCustomCategoryComment(CONFIG_CATEGORY_LISTS, CFG_DESC_authlists);
         AuthEventHandler.offset = config.get(CONFIG_CATEGORY_LISTS, "offset", 0, CFG_DESC_offset).getInt();
         AuthEventHandler.vipslots = config.get(CONFIG_CATEGORY_LISTS, "vipslots", 0, "Amount of slots reserved for VIP players.").getInt();
-        AuthEventHandler.whitelist = config.get(CONFIG_CATEGORY_LISTS, "whitelistEnabled", false, CFG_DESC_whitelistEnabled).getBoolean(false);
 
         config.addCustomCategoryComment(CONFIG_CATEGORY_LISTS + ".kickmsg", CFG_DESC_kickMsg);
         AuthEventHandler.banned = config.get(CONFIG_CATEGORY_LISTS + ".kick", "bannedmsg", "You have been banned from this server.").getString();
-        AuthEventHandler.notwhitelisted = config.get(CONFIG_CATEGORY_LISTS + ".kick", "unwhitelistedmsg", "You are not whitelisted on this server.")
-                .getString();
         AuthEventHandler.notvip = config.get(CONFIG_CATEGORY_LISTS + ".kick", "notVIPmsg", "This server is full, and you are not a VIP.").getString();
     }
 

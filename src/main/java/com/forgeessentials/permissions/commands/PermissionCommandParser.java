@@ -13,6 +13,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.commons.lang3.StringUtils;
@@ -71,7 +72,7 @@ public class PermissionCommandParser
     // Variables for auto-complete
     private static final String[] parseMainArgs = { "user", "group", "global", "list", "test", "reload", "save", "debug" }; // "export",
                                                                                                                             // "promote",
-    private static final String[] parseListArgs = { "zones", "perms", "users", "groups" };
+    private static final String[] parseListArgs = { "zones", "perms", "users", "groups", "worlds" };
     private static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
             "denydefault" };
     private static final String[] parseGroupArgs = { "zone", "users", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
@@ -195,6 +196,9 @@ public class PermissionCommandParser
                 if (arguments.senderPlayer == null)
                     throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
                 listZones(arguments.senderPlayer, new WorldPoint(arguments.senderPlayer));
+                break;
+            case "worlds":
+                listWorlds(arguments.senderPlayer);
                 break;
             case "perms":
                 if (arguments.senderPlayer == null)
@@ -333,7 +337,7 @@ public class PermissionCommandParser
                 arguments.error("Expected zone identifier.");
                 return;
             }
-            zone = parseZone(arguments, arguments.args.remove());
+            zone = parseZone(arguments);
             if (zone == null)
                 return;
             parseUserInner(arguments, ident, zone);
@@ -509,7 +513,8 @@ public class PermissionCommandParser
                 zone.setPlayerPermission(ident, FEPermissions.SPAWN_BED, false);
                 arguments.confirm("Disabled bed-spawning for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName());
             }
-            arguments.confirm("Invalid argument. Use enable or disable.");
+            else
+                arguments.error("Invalid argument. Use enable or disable.");
             return;
         }
         case "clear":
@@ -736,17 +741,7 @@ public class PermissionCommandParser
                 arguments.error("Expected zone identifier.");
                 return;
             }
-            if (arguments.isTabCompletion && arguments.args.size() == 1)
-            {
-                arguments.tabCompletion = new ArrayList<>();
-                for (Zone z : APIRegistry.perms.getZones())
-                {
-                    if (CommandBase.doesStringStartWith(arguments.args.peek(), z.getName()))
-                        arguments.tabCompletion.add(z.getName());
-                }
-                return;
-            }
-            zone = parseZone(arguments, arguments.args.remove());
+            zone = parseZone(arguments);
             if (zone == null)
                 return;
             parseGroupInner(arguments, group, zone);
@@ -944,7 +939,8 @@ public class PermissionCommandParser
                 zone.setGroupPermission(group, FEPermissions.SPAWN_BED, false);
                 arguments.confirm("Disabled bed-spawning for group %s in zone %s", group, zone.getName());
             }
-            arguments.confirm("Invalid argument. Use enable or disable.");
+            else
+                arguments.error("Invalid argument. Use enable or disable.");
             return;
         }
         case "clear":
@@ -1097,8 +1093,17 @@ public class PermissionCommandParser
         return completePermission(permission, APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
     }
 
-    public static Zone parseZone(CommandParserArgs arguments, String zoneId)
+    public static Zone parseZone(CommandParserArgs arguments)
     {
+        if (arguments.isTabCompletion && arguments.args.size() == 1)
+        {
+            for (Zone z : APIRegistry.perms.getZones())
+                arguments.tabCompleteWord(z.getName());
+            for (String n : APIRegistry.namedWorldHandler.getWorldNames())
+                arguments.tabCompleteWord(n);
+            return null;
+        }
+        String zoneId = arguments.remove();
         try
         {
             int intId = Integer.parseInt(zoneId);
@@ -1112,6 +1117,10 @@ public class PermissionCommandParser
             if (zone != null)
                 return zone;
 
+            WorldServer world = APIRegistry.namedWorldHandler.getWorld(zoneId);
+            if (world != null)
+                return APIRegistry.perms.getServerZone().getWorldZone(world.provider.getDimensionId());
+
             arguments.error("No zone by the ID %s exists!", zoneId);
             return null;
         }
@@ -1120,10 +1129,13 @@ public class PermissionCommandParser
             for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
                 if (wz.getName().equals(zoneId))
                     return wz;
+            WorldServer world = APIRegistry.namedWorldHandler.getWorld(zoneId);
+            if (world != null)
+                return APIRegistry.perms.getServerZone().getWorldZone(world.provider.getDimensionId());
 
             if (arguments.senderPlayer == null)
             {
-                arguments.error(Translator.translate("Cannot identify zones by name from console!"));
+                arguments.error(Translator.translate("Cannot identify areas by name from console!"));
                 return null;
             }
 
@@ -1228,6 +1240,18 @@ public class PermissionCommandParser
         }
     }
 
+    public static void listWorlds(ICommandSender sender) throws CommandException
+    {
+        ChatOutputHandler.chatNotification(sender, "World IDs:");
+        for (WorldZone zone : APIRegistry.perms.getServerZone().getWorldZones().values())
+        {
+            if (zone.isHidden())
+                continue;
+            ChatOutputHandler.chatNotification(sender, String.format("  %s (%d): #%d / %s", APIRegistry.namedWorldHandler.getWorldName(zone.getDimensionID()),
+                    zone.getDimensionID(), zone.getId(), zone.toString()));
+        }
+    }
+
     public static void listGroups(ICommandSender sender) throws CommandException
     {
         if (!PermissionManager.checkPermission(sender, PERM_LIST_GROUPS))
@@ -1263,9 +1287,9 @@ public class PermissionCommandParser
 
     public static void denyDefault(PermissionList list)
     {
-        List<String> filter = Arrays.asList(ModuleProtection.PERM_BREAK, ModuleProtection.PERM_PLACE, ModuleProtection.PERM_INTERACT,
-                ModuleProtection.PERM_USE, ModuleProtection.PERM_INVENTORY, ModuleProtection.PERM_EXIST, ModuleProtection.PERM_CRAFT,
-                ModuleProtection.PERM_MOBSPAWN, ModuleProtection.PERM_DAMAGE_BY, ModuleProtection.PERM_DAMAGE_TO, FEPermissions.FE_INTERNAL);
+        List<String> filter = Arrays.asList(ModuleProtection.PERM_BREAK, ModuleProtection.PERM_EXPLODE, ModuleProtection.PERM_PLACE, ModuleProtection.PERM_INTERACT, ModuleProtection.PERM_USE,
+                ModuleProtection.PERM_INVENTORY, ModuleProtection.PERM_EXIST, ModuleProtection.PERM_CRAFT, ModuleProtection.PERM_MOBSPAWN,
+                ModuleProtection.PERM_DAMAGE_BY, ModuleProtection.PERM_DAMAGE_TO, FEPermissions.FE_INTERNAL);
 
         RootZone rootZone = APIRegistry.perms.getServerZone().getRootZone();
         mainLoop: for (Entry<String, String> perm : rootZone.getGroupPermissions(Zone.GROUP_DEFAULT).entrySet())
