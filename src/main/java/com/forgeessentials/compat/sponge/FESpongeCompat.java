@@ -3,9 +3,9 @@ package com.forgeessentials.compat.sponge;
 import javax.inject.Inject;
 
 import org.spongepowered.api.Game;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.state.ConstructionEvent;
-import org.spongepowered.api.event.state.PreInitializationEvent;
+import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameConstructionEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 
 import com.forgeessentials.commons.BuildInfo;
@@ -23,17 +23,17 @@ public class FESpongeCompat
     @Inject
     private Game game;
 
-    @Subscribe
-    public void checkEnvironment(ConstructionEvent e)
+    @Listener
+    public void checkEnvironment(GameConstructionEvent e)
     {
-        if (!game.getPlatform().getName().equals("Sponge"))
+        if (!game.getPlatform().getImplementation().getName().equals("SpongeForge"))
         {
             throw new RuntimeException("You must be running the Forge implementation of SpongeAPI on Minecraft Forge in order to load ForgeEssentials!");
         }
     }
 
-    @Subscribe
-    public void register(PreInitializationEvent e)
+    @Listener
+    public void register(GamePreInitializationEvent e)
     {
         Environment.registerSpongeCompatPlugin(game.getPluginManager().isLoaded("worldedit"));
     }

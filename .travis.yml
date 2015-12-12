@@ -1,10 +1,14 @@
-
 # Tell Travis this is a Java project.
 language: java
 
-# Tell Travis we don't need sudo,
-# so Travis uses containers.
-sudo: false
+# Tell Travis we use beta.
+sudo: required
+dist: trusty
+
+# Use Java 8 jdk.
+jdk:
+  - openjdk8
+  - oraclejdk8
 
 # Tell Travis to shut up.
 notifications:

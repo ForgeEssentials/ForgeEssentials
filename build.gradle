@@ -61,8 +61,8 @@ ext.baseVersion = "1.8.3"
 version = baseVersion + "." + buildNumber
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 // Set up forge options
 minecraft {
@@ -120,11 +120,13 @@ dependencies {
 	includeMod files('lib/worldedit-forge-mc1.8-6.1.1-SNAPSHOT-dist.jar')
 
 	// Shade Mixin library
-	shade group: "org.spongepowered", name: "mixin", version: "0.4.5-SNAPSHOT", changing: true
-	shadeClient group: "org.spongepowered", name: "mixin", version: "0.4.5-SNAPSHOT", changing: true
+	shade group: "org.spongepowered", name: "mixin", version: "0.4.8-SNAPSHOT", changing: true
+	shadeClient group: "org.spongepowered", name: "mixin", version: "0.4.8-SNAPSHOT", changing: true
 
     // Sponge
-    buildDep "org.spongepowered:sponge:1.8-1499-2.1DEV-642"
+    buildDep ("org.spongepowered:spongeforge:1.8-1577-2.1-DEV-894") {
+        transitive = false
+    }
 }
 
 /************************************************************
