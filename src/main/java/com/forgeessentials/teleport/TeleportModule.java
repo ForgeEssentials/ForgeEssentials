@@ -11,7 +11,6 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
-import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.teleport.portal.CommandPortal;
@@ -59,16 +58,11 @@ public class TeleportModule extends ConfigLoaderBase
 
     private PortalManager portalManager;
 
-    @SuppressWarnings("unused")
-    private RespawnHandler respawnHandler;
-
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
-
-        respawnHandler = new RespawnHandler();
 
         portalManager = new PortalManager();
     }

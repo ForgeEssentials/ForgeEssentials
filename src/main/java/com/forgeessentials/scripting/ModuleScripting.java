@@ -47,16 +47,22 @@ public class ModuleScripting extends ServerEventHandler
 
     public static enum ServerEventType
     {
-        START, STOP, LOGIN, LOGOUT, DEATH;
+        START, STOP, LOGIN, LOGOUT, DEATH, CRON;
     }
+
+    public static final long CRON_CHECK_INTERVAL = 1000;
 
     @FEModule.ModuleDir
     public static File moduleDir;
 
     public static File commandsDir;
 
+    protected long lastCronCheck;
+
     // Map < event name, List of scripts < lines of code > >
     public Map<ServerEventType, Map<String, List<String>>> scripts = new HashMap<>();
+
+    protected Map<String, Long> cronTimes = new HashMap<>();
 
     @SubscribeEvent
     public void load(FEModuleInitEvent event)
@@ -161,8 +167,11 @@ public class ModuleScripting extends ServerEventHandler
             cmd = new PatternCommand("god", "/god on|off [player]", null);
             cmd.getPatterns().put("on @p", Arrays.asList(new String[] { "permcheck fe.commands.god.others", //
                     "permset user @0 deny fe.protection.damageby.*", "$*/heal @player", "echo God mode turned ON for @0" }));
-            cmd.getPatterns().put("off @p", Arrays.asList(new String[] { //
-                    "permcheck fe.commands.god.others", "permset user %@ clear fe.protection.damageby.*", "echo God mode turned OFF for @0", }));
+            cmd.getPatterns()
+                    .put("off @p",
+                            Arrays.asList(new String[] { //
+                                    "permcheck fe.commands.god.others", "permset user %@ clear fe.protection.damageby.*",
+                                    "echo God mode turned OFF for @0", }));
             cmd.getPatterns().put("on", Arrays.asList(new String[] { //
                     "permcheck fe.commands.god", "permset user @player deny fe.protection.damageby.*", "$*/heal", "echo God mode ON", }));
             cmd.getPatterns().put("off", Arrays.asList(new String[] { //
@@ -191,6 +200,8 @@ public class ModuleScripting extends ServerEventHandler
             sender = MinecraftServer.getServer();
         for (Entry<String, List<String>> script : scripts.get(eventType).entrySet())
         {
+            if (script.getValue().isEmpty())
+                continue;
             try
             {
                 ScriptParser.run(script.getValue(), sender);
@@ -226,6 +237,64 @@ public class ModuleScripting extends ServerEventHandler
         {
             runEventScripts(ServerEventType.DEATH, (EntityPlayerMP) event.entityLiving);
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void serverTickEvent(ServerTickEvent event)
+    {
+        if (event.phase == Phase.START)
+            return;
+        if (System.currentTimeMillis() - lastCronCheck >= CRON_CHECK_INTERVAL)
+        {
+            lastCronCheck = System.currentTimeMillis();
+            for (Entry<String, List<String>> script : scripts.get(ServerEventType.CRON).entrySet())
+            {
+                List<String> lines = new ArrayList<>(script.getValue());
+                if (lines.size() < 2)
+                    continue;
+                String cronDef = lines.remove(0);
+                if (!checkCron(script.getKey(), cronDef))
+                    continue;
+                try
+                {
+                    ScriptParser.run(lines, MinecraftServer.getServer());
+                }
+                catch (CommandException | ScriptErrorException e)
+                {
+                    if (e.getMessage() != null && !e.getMessage().isEmpty())
+                        ChatOutputHandler.chatError(MinecraftServer.getServer(), e.getMessage());
+                }
+                catch (ScriptException e)
+                {
+                    LoggingHandler.felog.error(String.format("Error in script \"%s\": %s", script.getKey(), e.getMessage()));
+                }
+            }
+        }
+    }
+
+    protected boolean checkCron(String jobName, String cronDef)
+    {
+        cronDef.trim();
+        if (cronDef.charAt(0) != '#')
+            return false; // error
+        cronDef = cronDef.substring(1).trim();
+
+        long interval;
+        try
+        {
+            interval = Long.parseLong(cronDef);
+        }
+        catch (NumberFormatException e)
+        {
+            return false;
+        }
+
+        long lastTime = cronTimes.containsKey(jobName) ? cronTimes.get(jobName) : 0;
+        if (lastTime + interval * 1000 > System.currentTimeMillis())
+            return false;
+
+        cronTimes.put(jobName, System.currentTimeMillis());
+        return true;
     }
 
 }

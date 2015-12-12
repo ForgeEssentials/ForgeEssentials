@@ -133,6 +133,12 @@ public class ScriptParser
                             cmdSender = new DoAsCommandSender(UserIdent.get((EntityPlayer) sender), sender);
                         ((DoAsCommandSender) cmdSender).setHideChatMessages(true);
                     }
+                    else if (sender == null || sender instanceof MinecraftServer)
+                    {
+                        if (!(cmdSender instanceof DoAsCommandSender))
+                            cmdSender = new DoAsCommandSender(ZonedPermissionHelper.SERVER_IDENT, sender);
+                        ((DoAsCommandSender) cmdSender).setHideChatMessages(true);
+                    }
                     break;
                 case '/':
                     break modifierLoop;

@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -20,6 +22,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
+
+import org.apache.commons.codec.binary.Hex;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -173,8 +177,10 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         localhostOnly = config.get(CONFIG_CAT, "localhostOnly", true, "Allow connections from the web").getBoolean();
         hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of your server. Used for QR code generation.").getString();
         port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
-        useSSL = config.get(CONFIG_CAT, "use_ssl", false,
-                "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
+        useSSL = config
+                .get(CONFIG_CAT, "use_ssl", false,
+                        "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)")
+                .getBoolean();
         passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6, "Length of the randomly generated passkeys").getInt();
         if (mcServerStarted)
             startServer();
@@ -251,9 +257,9 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     public void registerHandler(RemoteHandler handler, String id)
     {
         if (handlers.containsKey(id))
-            throw new IllegalArgumentException(Translator.format(
-                    "Tried to register handler \"%s\" with ID \"%s\", but handler \"%s\" is already registered with that ID.", handler.getClass().getName(),
-                    id, handlers.get(id).getClass().getName()));
+            throw new IllegalArgumentException(
+                    Translator.format("Tried to register handler \"%s\" with ID \"%s\", but handler \"%s\" is already registered with that ID.",
+                            handler.getClass().getName(), id, handlers.get(id).getClass().getName()));
 
         handlers.put(id, handler);
         String perm = handler.getPermission();
@@ -320,7 +326,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     {
         return new File(DataManager.getInstance().getBasePath(), "RemotePasskeys.json");
     }
-    
+
     /**
      * Set and save a new passkey for a user
      * 
@@ -332,8 +338,27 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         if (passkey == null)
             passkeys.remove(userIdent);
         else
+        {
+            // TODO: Think about hashes passkeys
+            // passkey = hashPasskey(passkey);
             passkeys.put(userIdent, passkey);
+        }
         DataManager.save(passkeys, getSaveFile());
+    }
+
+    public static String hashPasskey(String passkey)
+    {
+        try
+        {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(passkey.getBytes());
+            passkey = Hex.encodeHexString(md.digest());
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            /* do nothing */
+        }
+        return passkey;
     }
 
     /**

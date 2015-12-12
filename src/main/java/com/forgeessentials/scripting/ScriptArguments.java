@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -624,6 +625,30 @@ public final class ScriptArguments
         public String getHelp()
         {
             return "Current MC world time";
+        }
+    };
+
+    public static ScriptArgument worldTimeClock = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            try
+            {
+                FEConfig.FORMAT_TIME.setTimeZone(TimeZone.getTimeZone("US"));
+                long ticks = MinecraftServer.getServer().getEntityWorld().getWorldTime();
+                Date time = new Date(ticks * 1000 * 60 * 60 * 24 / 24000 + 1000 * 60 * 60 * 6);
+                return FEConfig.FORMAT_TIME.format(time);
+            }
+            finally
+            {
+                FEConfig.FORMAT_TIME.setTimeZone(TimeZone.getDefault());
+            }
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Current MC world time formatted as H:MM";
         }
     };
 

@@ -139,6 +139,11 @@ public class WorldPoint extends Point
     {
         return getWorld().getBlockState(getBlockPos()).getBlock();
     }
+    
+    public int getBlockMeta()
+    {
+        return getWorld().getBlockMetadata(x, y, z);
+    }
 
     public TileEntity getTileEntity()
     {

@@ -213,10 +213,14 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
 
         UserIdent ident = UserIdent.get(event.getPlayer());
-        IBlockState blockState = event.world.getBlockState(event.pos);
-        String permission = ModuleProtection.getBlockBreakPermission(blockState);
+        Block block = event.world.getBlock(event.x, event.y, event.z);
+        String permission = ModuleProtection.getBlockBreakPermission(block, event.world, event.x, event.y, event.z);
         ModuleProtection.debugPermission(event.getPlayer(), permission);
         WorldPoint point = new WorldPoint(event);
+        Block block = point.getBlock();
+        int meta = point.getBlockMeta();
+        String permission = ModuleProtection.getBlockBreakPermission(block, meta);
+        ModuleProtection.debugPermission(event.getPlayer(), permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
@@ -339,10 +343,15 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        List<BlockPos> positions = event.explosion.func_180343_e();
+        List<BlockPos> positions = event.explosion.affectedBlockPositions;
         for (Iterator<BlockPos> it = positions.iterator(); it.hasNext();)
-            if (!APIRegistry.perms.checkUserPermission(null, new WorldPoint(event.world, it.next()), ModuleProtection.PERM_EXPLOSION_BLOCKDMG))
+        {
+            BlockPos pos = it.next();
+            WorldPoint point = new WorldPoint(event.world, pos);
+            String permission = ModuleProtection.getBlockExplosionPermission(point.getBlock(), point.getBlockMeta());
+            if (!APIRegistry.perms.checkUserPermission(null, point, permission))
                 it.remove();
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -641,7 +650,8 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (inventoryGroup == null)
             inventoryGroup = "default";
 
-        GameType lastGm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, event.beforePoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
+        GameType lastGm = stringToGameType(
+                APIRegistry.perms.getUserPermissionProperty(ident, event.beforePoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
         GameType gm = stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, event.afterPoint.toWorldPoint(), ModuleProtection.PERM_GAMEMODE));
         if (gm != GameType.NOT_SET || lastGm != GameType.NOT_SET)
         {
@@ -720,8 +730,8 @@ public class ProtectionEventHandler extends ServerEventHandler
                 center = new Vec3(center.xCoord, event.beforePoint.getY(), center.zCoord);
             }
             Vec3 delta = event.beforePoint.toVec3().subtract(center).normalize();
-            WarpPoint target = new WarpPoint(event.beforePoint.getDimension(), event.beforePoint.getX() - delta.xCoord,
-                    event.beforePoint.getY() - delta.yCoord, event.beforePoint.getZ() - delta.zCoord, event.afterPoint.getPitch(), event.afterPoint.getYaw());
+            WarpPoint target = new WarpPoint(event.beforePoint.getDimension(), event.beforePoint.getX() - delta.xCoord, event.beforePoint.getY() - delta.yCoord,
+                    event.beforePoint.getZ() - delta.zCoord, event.afterPoint.getPitch(), event.afterPoint.getYaw());
 
             TeleportHelper.doTeleport((EntityPlayerMP) event.entityPlayer, target);
             event.setCanceled(true);
@@ -732,16 +742,16 @@ public class ProtectionEventHandler extends ServerEventHandler
         String command = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_COMMAND);
         if (command != null && !command.isEmpty())
         {
-            int interval = ServerUtil.parseIntDefault(
-                    APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_COMMAND_INTERVAL), 0);
+            int interval = ServerUtil
+                    .parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_COMMAND_INTERVAL), 0);
             effects.add(new CommandEffect(ident.getPlayerMP(), interval, command));
         }
 
         int damage = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE), 0);
         if (damage > 0)
         {
-            int interval = ServerUtil.parseIntDefault(
-                    APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE_INTERVAL), 0);
+            int interval = ServerUtil
+                    .parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE_INTERVAL), 0);
             effects.add(new DamageEffect(ident.getPlayerMP(), interval, damage));
         }
 
@@ -749,8 +759,8 @@ public class ProtectionEventHandler extends ServerEventHandler
         String potion = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION);
         if (potion != null && !potion.isEmpty())
         {
-            int interval = ServerUtil.parseIntDefault(
-                    APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION_INTERVAL), 0);
+            int interval = ServerUtil
+                    .parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION_INTERVAL), 0);
             effects.add(new PotionEffect(ident.getPlayerMP(), interval, potion));
         }
 
@@ -803,8 +813,6 @@ public class ProtectionEventHandler extends ServerEventHandler
             @Override
             public void run()
             {
-                if (packet == null)
-                    return;
                 player.playerNetServerHandler.sendPacket(packet);
             }
         });
@@ -840,8 +848,8 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public static boolean anyCreativeModeAtPoint(EntityPlayer player, WorldPoint point)
     {
-        if (player != null
-                && stringToGameType(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(player), point, ModuleProtection.PERM_GAMEMODE)) == GameType.CREATIVE)
+        if (player != null && stringToGameType(
+                APIRegistry.perms.getUserPermissionProperty(UserIdent.get(player), point, ModuleProtection.PERM_GAMEMODE)) == GameType.CREATIVE)
             return true;
         for (String group : APIRegistry.perms.getServerZone().getGroups())
         {

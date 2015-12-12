@@ -81,6 +81,7 @@ public class ModuleProtection
 
     public final static String PERM_USE = BASE_PERM + ".use";
     public final static String PERM_BREAK = BASE_PERM + ".break";
+    public final static String PERM_EXPLODE = BASE_PERM + ".explode";
     public final static String PERM_PLACE = BASE_PERM + ".place";
     public final static String PERM_FIRE = BASE_PERM + ".fire";
     public final static String PERM_FIRE_DESTROY = PERM_FIRE + ".destroy";
@@ -93,7 +94,6 @@ public class ModuleProtection
     public final static String PERM_EXIST = BASE_PERM + ".exist";
     public static final String PERM_CRAFT = BASE_PERM + ".craft";
     public final static String PERM_EXPLOSION = BASE_PERM + ".explosion";
-    public final static String PERM_EXPLOSION_BLOCKDMG = PERM_EXPLOSION + ".blockdmg";
     public final static String PERM_NEEDSFOOD = BASE_PERM + ".needsfood";
     public static final String PERM_PRESSUREPLATE = BASE_PERM + ".pressureplate";
 
@@ -175,8 +175,7 @@ public class ModuleProtection
         APIRegistry.perms.registerPermissionProperty(PERM_INVENTORY_GROUP, "default",
                 "Inventory group property - can be set to any identifier to separate inventories for certain regions");
         APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, PermissionLevel.TRUE, "Allow interacting with entities (villagers, dogs, horses)");
-        APIRegistry.perms.registerPermission(PERM_EXPLOSION, PermissionLevel.TRUE, "(global) Allows explosions");
-        APIRegistry.perms.registerPermission(PERM_EXPLOSION_BLOCKDMG, PermissionLevel.TRUE, "(global) Allows explosions to damage blocks");
+        APIRegistry.perms.registerPermission(PERM_EXPLOSION, PermissionLevel.TRUE, "Allows explosions to occur");
         APIRegistry.perms.registerPermission(PERM_PRESSUREPLATE, PermissionLevel.TRUE, "Prevent players from triggering pressure plates");
         APIRegistry.perms.registerPermission(PERM_FIRE_DESTROY, PermissionLevel.TRUE, "Allow fire to destroy blocks");
         APIRegistry.perms.registerPermission(PERM_FIRE_SPREAD, PermissionLevel.TRUE, "Allow fire to spread");
@@ -242,6 +241,7 @@ public class ModuleProtection
         // Register blocks
         APIRegistry.perms.registerPermission(PERM_BREAK + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow breaking blocks");
         APIRegistry.perms.registerPermission(PERM_PLACE + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow placing blocks");
+        APIRegistry.perms.registerPermission(PERM_EXPLODE + Zone.ALL_PERMS, PermissionLevel.TRUE, "(global) Allows blocks to explode");
         APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow interacting with blocks (button, chest, workbench)");
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
@@ -250,6 +250,7 @@ public class ModuleProtection
             APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, PermissionLevel.TRUE, "BREAK " + blockName);
             APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, PermissionLevel.TRUE, "PLACE " + blockName);
             APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, PermissionLevel.TRUE, "INTERACT " + blockName);
+            APIRegistry.perms.registerPermission(PERM_EXPLODE + blockPerm, PermissionLevel.TRUE, "EXPLODE " + blockName);
         }
 
         // ----------------------------------------
@@ -357,6 +358,11 @@ public class ModuleProtection
     public static String getBlockInteractPermission(Block block, int meta)
     {
         return PERM_INTERACT + "." + getBlockPermission(block, meta);
+    }
+
+    public static String getBlockExplosionPermission(Block block, int meta)
+    {
+        return PERM_EXPLODE + "." + getBlockPermission(block, meta);
     }
 
     /* ------------------------------------------------------------ */

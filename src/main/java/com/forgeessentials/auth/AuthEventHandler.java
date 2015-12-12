@@ -30,8 +30,6 @@ public class AuthEventHandler
 
     public static String banned;
     public static String notvip;
-    public static String notwhitelisted;
-    public static boolean whitelist;
     public static int vipslots;
     public static int offset;
     public int counter;
@@ -216,13 +214,6 @@ public class AuthEventHandler
         }
 
         maxcounter = FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers() - vipslots - offset;
-        if (whitelist)
-        {
-            if (!PermissionManager.checkPermission(e.player, "fe.auth.isWhiteListed"))
-            {
-                ((EntityPlayerMP) e.player).playerNetServerHandler.kickPlayerFromServer(notwhitelisted);
-            }
-        }
         if (PermissionManager.checkPermission(e.player, "fe.auth.isVIP"))
         {
             return;
