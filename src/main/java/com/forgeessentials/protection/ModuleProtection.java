@@ -345,6 +345,11 @@ public class ModuleProtection
         return ModuleProtection.PERM_INTERACT + "." + getBlockPermission(blockState);
     }
 
+    public static String getBlockExplosionPermission(IBlockState blockState)
+    {
+        return ModuleProtection.PERM_EXPLODE + "." + getBlockPermission(blockState);
+    }
+
     public static String getBlockBreakPermission(Block block, int meta)
     {
         return PERM_BREAK + "." + getBlockPermission(block, meta);

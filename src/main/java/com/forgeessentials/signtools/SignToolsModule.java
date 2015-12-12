@@ -3,7 +3,6 @@ package com.forgeessentials.signtools;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -65,9 +64,7 @@ public class SignToolsModule extends ConfigLoaderBase
                     e.text[i] = ChatOutputHandler.formatColors(e.text[i]);
                 }
             }
-
         }
-
     }
 
     /**

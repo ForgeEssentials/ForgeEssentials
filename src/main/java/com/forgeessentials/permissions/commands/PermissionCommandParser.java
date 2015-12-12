@@ -1119,7 +1119,7 @@ public class PermissionCommandParser
 
             WorldServer world = APIRegistry.namedWorldHandler.getWorld(zoneId);
             if (world != null)
-                return APIRegistry.perms.getServerZone().getWorldZone(world.provider.dimensionId);
+                return APIRegistry.perms.getServerZone().getWorldZone(world.provider.getDimensionId());
 
             arguments.error("No zone by the ID %s exists!", zoneId);
             return null;
@@ -1131,7 +1131,7 @@ public class PermissionCommandParser
                     return wz;
             WorldServer world = APIRegistry.namedWorldHandler.getWorld(zoneId);
             if (world != null)
-                return APIRegistry.perms.getServerZone().getWorldZone(world.provider.dimensionId);
+                return APIRegistry.perms.getServerZone().getWorldZone(world.provider.getDimensionId());
 
             if (arguments.senderPlayer == null)
             {

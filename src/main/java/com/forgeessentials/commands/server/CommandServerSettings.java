@@ -7,12 +7,13 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraft.world.WorldSettings.GameType;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +25,7 @@ import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandServerSettings extends FEcmdModuleCommands
+public class CommandServerSettings extends ParserCommandBase
 {
 
     public static List<String> options = Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MotD", "spawnProtection", "gamemode");
@@ -48,7 +49,7 @@ public class CommandServerSettings extends FEcmdModuleCommands
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    public String getPermissionNode()
     {
         return ModuleCommands.PERM + "." + getCommandName();
     }
@@ -68,7 +69,7 @@ public class CommandServerSettings extends FEcmdModuleCommands
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             arguments.error("You can use this command only on dedicated servers");
@@ -123,7 +124,7 @@ public class CommandServerSettings extends FEcmdModuleCommands
             else
             {
                 String motd = ScriptArguments.process(arguments.toString(), null);
-                server.func_147134_at().func_151315_a(new ChatComponentText(ChatOutputHandler.formatColors(motd)));
+                server.getServerStatusResponse().setServerDescription(new ChatComponentText(ChatOutputHandler.formatColors(motd)));
                 server.setMOTD(motd);
                 setProperty("motd", motd);
                 arguments.confirm("Set MotD to %s", motd);
@@ -152,7 +153,7 @@ public class CommandServerSettings extends FEcmdModuleCommands
             break;
         case "difficulty":
             if (arguments.isEmpty())
-                arguments.confirm("Difficulty set to %s", server.func_147135_j());
+                arguments.confirm("Difficulty set to %s", server.getDifficulty());
             else
             {
                 EnumDifficulty difficulty = EnumDifficulty.getDifficultyEnum(arguments.parseInt());
@@ -171,16 +172,6 @@ public class CommandServerSettings extends FEcmdModuleCommands
     public boolean canConsoleUseCommand()
     {
         return true;
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args, BlockPos pos)
-    {
-        if (args.length == 1)
-        {
-            return getListOfStringsMatchingLastWord(args, options);
-        }
-        return null;
     }
 
     @Override

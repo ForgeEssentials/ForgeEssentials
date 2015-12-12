@@ -213,14 +213,10 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
 
         UserIdent ident = UserIdent.get(event.getPlayer());
-        Block block = event.world.getBlock(event.x, event.y, event.z);
-        String permission = ModuleProtection.getBlockBreakPermission(block, event.world, event.x, event.y, event.z);
+        IBlockState blockState = event.world.getBlockState(event.pos);
+        String permission = ModuleProtection.getBlockBreakPermission(blockState);
         ModuleProtection.debugPermission(event.getPlayer(), permission);
         WorldPoint point = new WorldPoint(event);
-        Block block = point.getBlock();
-        int meta = point.getBlockMeta();
-        String permission = ModuleProtection.getBlockBreakPermission(block, meta);
-        ModuleProtection.debugPermission(event.getPlayer(), permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
@@ -343,12 +339,12 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        List<BlockPos> positions = event.explosion.affectedBlockPositions;
+        List<BlockPos> positions = event.explosion.func_180343_e();
         for (Iterator<BlockPos> it = positions.iterator(); it.hasNext();)
         {
             BlockPos pos = it.next();
             WorldPoint point = new WorldPoint(event.world, pos);
-            String permission = ModuleProtection.getBlockExplosionPermission(point.getBlock(), point.getBlockMeta());
+            String permission = ModuleProtection.getBlockExplosionPermission(point.getWorld().getBlockState(pos));
             if (!APIRegistry.perms.checkUserPermission(null, point, permission))
                 it.remove();
         }
