@@ -124,7 +124,9 @@ dependencies {
 	shadeClient group: "org.spongepowered", name: "mixin", version: "0.4.8-SNAPSHOT", changing: true
 
     // Sponge
-    buildDep "org.spongepowered:spongeforge:1.8-1577-2.1-DEV-894"
+    buildDep ("org.spongepowered:spongeforge:1.8-1577-2.1-DEV-894") {
+        transitive = false
+    }
 }
 
 /************************************************************
