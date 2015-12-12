@@ -17,6 +17,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
@@ -299,6 +300,11 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
+        
+        UserIdent ident = null;
+        EntityLivingBase exploder = event.explosion.getExplosivePlacedBy();
+        if (exploder instanceof EntityPlayer)
+            ident = UserIdent.get((EntityPlayer) exploder);
 
         int cx = (int) Math.floor(event.explosion.explosionX);
         int cy = (int) Math.floor(event.explosion.explosionY);
@@ -315,7 +321,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 for (int iz = -1; iz != 1; iz = 1)
                 {
                     WorldPoint point = new WorldPoint(event.world, cx + s * ix, cy + s * iy, cz + s * iz);
-                    if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_EXPLOSION))
+                    if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_EXPLOSION))
                     {
                         event.setCanceled(true);
                         return;
@@ -336,13 +342,19 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
+        
+        UserIdent ident = null;
+        EntityLivingBase exploder = event.explosion.getExplosivePlacedBy();
+        if (exploder instanceof EntityPlayer)
+            ident = UserIdent.get((EntityPlayer) exploder);
+        
         List<ChunkPosition> positions = event.explosion.affectedBlockPositions;
         for (Iterator<ChunkPosition> it = positions.iterator(); it.hasNext();)
         {
             ChunkPosition pos = it.next();
             WorldPoint point = new WorldPoint(event.world, pos);
             String permission = ModuleProtection.getBlockExplosionPermission(point.getBlock(), point.getBlockMeta());
-            if (!APIRegistry.perms.checkUserPermission(null, point, permission))
+            if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
                 it.remove();
         }
     }
