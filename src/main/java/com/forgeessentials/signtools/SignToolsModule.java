@@ -3,6 +3,7 @@ package com.forgeessentials.signtools;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -59,9 +60,10 @@ public class SignToolsModule extends ConfigLoaderBase
         {
             for (int i = 0; i < e.text.length; i++)
             {
-                if (e.text[i].contains("&"))
+                if (e.text[i].getUnformattedText().contains("&"))
                 {
-                    e.text[i] = ChatOutputHandler.formatColors(e.text[i]);
+                    //needs fixing - colourize no longer works
+                    //String modified = ChatOutputHandler.formatColors(e.text[i].getUnformattedText());
                 }
             }
         }

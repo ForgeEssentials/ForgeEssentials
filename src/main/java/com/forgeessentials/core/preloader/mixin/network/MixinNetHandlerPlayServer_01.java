@@ -13,6 +13,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fe.event.world.SignEditEvent;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -54,10 +56,7 @@ public abstract class MixinNetHandlerPlayServer_01 implements INetHandlerPlaySer
                 return;
             }
 
-            IChatComponent[] lines = packetIn.func_180768_b(); // Forge: Prevent client from directly sending commands
-
-            // TODO Sign edit event
-            // if (!FEEventFactory.onSignEdit(lines)) { return; }
+            IChatComponent[] lines = onSignEditEvent(packetIn, playerEntity); if (lines != null){ return;}//FE: sign edit event
 
             for (int x = 0; x < tileentitysign.signText.length && x < lines.length; x++)
                 tileentitysign.signText[x] = new ChatComponentText(net.minecraft.util.EnumChatFormatting.getTextWithoutFormattingCodes(lines[x]
@@ -66,6 +65,17 @@ public abstract class MixinNetHandlerPlayServer_01 implements INetHandlerPlaySer
             tileentitysign.markDirty();
             worldserver.markBlockForUpdate(blockpos);
         }
+    }
+
+    private IChatComponent[] onSignEditEvent(C12PacketUpdateSign data, EntityPlayerMP player)
+    {
+        SignEditEvent e = new SignEditEvent(data.func_179722_a(), data.func_180768_b(), player);
+        if (MinecraftForge.EVENT_BUS.post(e))
+        {
+            return null;
+        }
+        return e.text;
+
     }
 
 }
