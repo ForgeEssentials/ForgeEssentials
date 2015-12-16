@@ -20,6 +20,7 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.FileUtils;
 
+import com.forgeessentials.api.ScriptHandler;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
@@ -44,13 +45,8 @@ import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 @FEModule(name = "Scripting", parentMod = ForgeEssentials.class, isCore = false)
-public class ModuleScripting extends ServerEventHandler
+public class ModuleScripting extends ServerEventHandler implements ScriptHandler
 {
-
-    public static enum ServerEventType
-    {
-        START, STOP, LOGIN, LOGOUT, DEATH, CRON;
-    }
 
     public static final long CRON_CHECK_INTERVAL = 1000;
 
@@ -61,10 +57,22 @@ public class ModuleScripting extends ServerEventHandler
 
     protected long lastCronCheck;
 
+    public static List<String> knownEventTypes = new ArrayList<>();
+
     // Map < event name, List of scripts < lines of code > >
-    public Map<ServerEventType, Map<String, List<String>>> scripts = new HashMap<>();
+    public Map<String, Map<String, List<String>>> scripts = new HashMap<>();
 
     protected Map<String, Long> cronTimes = new HashMap<>();
+
+    static
+    {
+        knownEventTypes.add("start");
+        knownEventTypes.add("stop");
+        knownEventTypes.add("login");
+        knownEventTypes.add("logout");
+        knownEventTypes.add("death");
+        knownEventTypes.add("cron");
+    }
 
     @SubscribeEvent
     public void load(FEModuleInitEvent event)
@@ -107,12 +115,12 @@ public class ModuleScripting extends ServerEventHandler
     public void loadScripts()
     {
         scripts = new HashMap<>();
-        for (ServerEventType eventType : ServerEventType.values())
+        for (String eventType : knownEventTypes)
         {
             Map<String, List<String>> scriptList = new HashMap<>();
             scripts.put(eventType, scriptList);
 
-            File path = new File(moduleDir, eventType.toString().toLowerCase());
+            File path = new File(moduleDir, eventType.toLowerCase());
             if (!path.exists())
             {
                 path.mkdirs();
@@ -152,13 +160,13 @@ public class ModuleScripting extends ServerEventHandler
     @SubscribeEvent
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
-        runEventScripts(ServerEventType.START, null);
+        runEventScripts("start", null);
     }
 
     @SubscribeEvent
     public void serverStopping(FEModuleServerStopEvent e)
     {
-        runEventScripts(ServerEventType.STOP, null);
+        runEventScripts("stop", null);
     }
 
     public static void createDefaultPatternCommands()
@@ -196,7 +204,7 @@ public class ModuleScripting extends ServerEventHandler
         PatternCommand.saveAll();
     }
 
-    public void runEventScripts(ServerEventType eventType, ICommandSender sender)
+    public void runEventScripts(String eventType, ICommandSender sender)
     {
         if (sender == null)
             sender = MinecraftServer.getServer();
@@ -223,13 +231,13 @@ public class ModuleScripting extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
     {
-        runEventScripts(ServerEventType.LOGIN, event.player);
+        runEventScripts("login", event.player);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        runEventScripts(ServerEventType.LOGOUT, event.player);
+        runEventScripts("logout", event.player);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -237,7 +245,7 @@ public class ModuleScripting extends ServerEventHandler
     {
         if (event.entityLiving instanceof EntityPlayerMP)
         {
-            runEventScripts(ServerEventType.DEATH, (EntityPlayerMP) event.entityLiving);
+            runEventScripts("death", (EntityPlayerMP) event.entityLiving);
         }
     }
 
@@ -249,7 +257,7 @@ public class ModuleScripting extends ServerEventHandler
         if (System.currentTimeMillis() - lastCronCheck >= CRON_CHECK_INTERVAL)
         {
             lastCronCheck = System.currentTimeMillis();
-            for (Entry<String, List<String>> script : scripts.get(ServerEventType.CRON).entrySet())
+            for (Entry<String, List<String>> script : scripts.get("cron").entrySet())
             {
                 List<String> lines = new ArrayList<>(script.getValue());
                 if (lines.size() < 2)
@@ -297,6 +305,11 @@ public class ModuleScripting extends ServerEventHandler
 
         cronTimes.put(jobName, System.currentTimeMillis());
         return true;
+    }
+
+    public void addScriptType(String key)
+    {
+        knownEventTypes.add(key);
     }
 
 }

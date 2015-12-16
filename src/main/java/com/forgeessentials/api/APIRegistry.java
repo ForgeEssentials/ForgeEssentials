@@ -30,6 +30,11 @@ public class APIRegistry
     public static IPermissionsHelper perms;
 
     /**
+     * Use to call scripting API functions, or to invoke a script run from outside the module.
+     */
+    public static ScriptHandler scripts;
+
+    /**
      * Allows identifying worlds by name. If you change this handler, remember to call the old one in your
      * implementation!
      */
