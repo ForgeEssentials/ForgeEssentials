@@ -73,7 +73,7 @@ public class VoteReceiver extends Thread
 
     public VoteReceiver(String host, int port) throws Exception
     {
-        if (0 == host.length())
+        if (host.isEmpty())
         {
             host = "0.0.0.0";
 
@@ -84,7 +84,7 @@ public class VoteReceiver extends Thread
             }
             catch (UnknownHostException var3)
             {
-                FMLLog.severe("Unable to determine local host IP, please set server-ip/hostname in the snooper config : " + var3.getMessage());
+                FMLLog.severe("Unable to determine local host IP, please set server-ip/hostname in the servervote config : " + var3.getMessage());
             }
         }
 

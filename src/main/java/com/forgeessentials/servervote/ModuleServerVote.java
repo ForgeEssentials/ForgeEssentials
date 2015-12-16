@@ -12,6 +12,7 @@ import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
@@ -37,6 +38,7 @@ public class ModuleServerVote
 
     public static VoteReceiver votifier;
     public static PrintWriter log;
+    public static final String scriptKey = "servervote";
 
     private HashMap<String, VoteEvent> offlineList = new HashMap<String, VoteEvent>();
 
@@ -55,6 +57,7 @@ public class ModuleServerVote
     {
         FMLCommonHandler.instance().bus().register(this);
         ForgeEssentials.getConfigManager().registerLoader("ServerVote", new ConfigServerVote());
+        APIRegistry.scripts.addScriptType(scriptKey);
     }
 
     @SubscribeEvent
@@ -191,13 +194,6 @@ public class ModuleServerVote
                     ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
         }
 
-        if (!ConfigServerVote.freeStuff.isEmpty())
-        {
-            for (ItemStack stack : ConfigServerVote.freeStuff)
-            {
-                LoggingHandler.felog.debug(stack.toString());
-                player.inventory.addItemStackToInventory(stack.copy());
-            }
-        }
+        APIRegistry.scripts.runEventScripts(scriptKey, player);
     }
 }

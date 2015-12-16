@@ -20,6 +20,7 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.FileUtils;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.ScriptHandler;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -31,6 +32,7 @@ import com.forgeessentials.scripting.command.CommandTimedTask;
 import com.forgeessentials.scripting.command.PatternCommand;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
@@ -72,6 +74,12 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         knownEventTypes.add("logout");
         knownEventTypes.add("death");
         knownEventTypes.add("cron");
+    }
+
+    @SubscribeEvent
+    public void preLoad(FEModulePreInitEvent e)
+    {
+        APIRegistry.scripts = this;
     }
 
     @SubscribeEvent
