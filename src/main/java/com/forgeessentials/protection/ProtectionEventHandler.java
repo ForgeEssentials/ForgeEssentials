@@ -18,6 +18,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.EnumStatus;
@@ -301,6 +302,11 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
+        UserIdent ident = null;
+        EntityLivingBase exploder = event.explosion.getExplosivePlacedBy();
+        if (exploder instanceof EntityPlayer)
+            ident = UserIdent.get((EntityPlayer) exploder);
+
         Vec3 center = event.explosion.getPosition();
         int cx = (int) Math.floor(center.xCoord);
         int cy = (int) Math.floor(center.yCoord);
@@ -318,7 +324,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 for (int iz = -1; iz != 1; iz = 1)
                 {
                     WorldPoint point = new WorldPoint(event.world, cx + s * ix, cy + s * iy, cz + s * iz);
-                    if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_EXPLOSION))
+                    if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_EXPLOSION))
                     {
                         event.setCanceled(true);
                         return;
@@ -339,6 +345,12 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
+
+        UserIdent ident = null;
+        EntityLivingBase exploder = event.explosion.getExplosivePlacedBy();
+        if (exploder instanceof EntityPlayer)
+            ident = UserIdent.get((EntityPlayer) exploder);
+
         List<BlockPos> positions = event.explosion.func_180343_e();
         for (Iterator<BlockPos> it = positions.iterator(); it.hasNext();)
         {

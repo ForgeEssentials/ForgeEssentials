@@ -31,7 +31,6 @@ public class ConfigServerVote extends ConfigLoaderBase
     public static boolean allowOfflineVotes;
     public static String msgAll = "";
     public static String msgVoter = "";
-    public static ArrayList<ItemStack> freeStuff = new ArrayList<ItemStack>();
 
     public File keyFolder;
 
@@ -50,8 +49,8 @@ public class ConfigServerVote extends ConfigLoaderBase
         String subcat = category + ".Votifier";
         config.addCustomCategoryComment(subcat, "This is for votifier compatibility only.");
 
-        hostname = config.get(subcat, "hostname", "").getString();
-        port = config.get(subcat, "port", "8192").getInt();
+        hostname = config.get(subcat, "hostname", "", "Set this to the hostname (or IP address) of your server.").getString();
+        port = config.get(subcat, "port", "8192", "The port which the vote receiver should listen on.").getInt();
 
         allowOfflineVotes = config.get(category, "allowOfflineVotes", true, "If false, votes of offline players will be canceled.").getBoolean(true);
         msgAll = config.get(category, "msgAll", "%player has voted for this server on %service.", "You can use color codes (&), %player and %service")
@@ -59,41 +58,6 @@ public class ConfigServerVote extends ConfigLoaderBase
         msgVoter = config.get(category, "msgVoter", "Thanks for voting for our server!", "You can use color codes (&), %player and %service").getString();
 
         flatfileLog = config.get(category, "flatFileLog", true, "Log the votes in \"votes.log\"").getBoolean(true);
-
-        String[] tempArray = config.get(category, "rewards", new String[] {}, "Format is like this: [amount]x<id>[:meta]").getStringList();
-
-        freeStuff.clear();
-        for (String temp : tempArray)
-        {
-            int amount = 1;
-            int meta = 0;
-
-            if (temp.contains("x"))
-            {
-                String[] temp2 = temp.split("x");
-                amount = Integer.parseInt(temp2[0]);
-                temp = temp2[1];
-            }
-
-            if (temp.contains(":"))
-            {
-                String[] temp2 = temp.split(":");
-                meta = Integer.parseInt(temp2[2]);
-                temp = temp2[0] + ":" + temp2[1];
-            }
-
-            Item item = GameData.getItemRegistry().getObject(temp);
-            
-            if (item == null) 
-            {
-                LoggingHandler.felog.warn("Found invalid item:" + temp);
-                continue;
-            }
-            
-            ItemStack stack = new ItemStack(item, amount, meta);
-            freeStuff.add(stack);
-            LoggingHandler.felog.debug("Added reward item stack: " + stack.getUnlocalizedName());
-        }
 
         loadKeys();
     }
