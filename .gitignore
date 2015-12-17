@@ -15,8 +15,9 @@
 /rundir/*
 /.gradle/*
 /.settings/*
-/.idea/*
 
+/.idea/*
+/.nb-gradle/*
 /eclipse/*
 
 /src/minecraft/
