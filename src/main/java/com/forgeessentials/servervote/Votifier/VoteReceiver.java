@@ -170,7 +170,7 @@ public class VoteReceiver extends Thread
                     if (ForgeEssentials.isDebug())
                     {
                         LoggingHandler.felog.error("Vote payload (for debugging):");
-                        LoggingHandler.felog.error(block);
+                        LoggingHandler.felog.error(new String(block));
                     }
                     throw new GeneralSecurityException();
                 }
