@@ -36,6 +36,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.servervote.ConfigServerVote;
 import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.servervote.VoteEvent;
@@ -165,6 +166,12 @@ public class VoteReceiver extends Thread
                 // Something went wrong in RSA.
                 if (!opcode.equals("VOTE"))
                 {
+                    LoggingHandler.felog.error("Could not decrypt vote payload!");
+                    if (ForgeEssentials.isDebug())
+                    {
+                        LoggingHandler.felog.error("Vote payload (for debugging):");
+                        LoggingHandler.felog.error(block);
+                    }
                     throw new GeneralSecurityException();
                 }
 
