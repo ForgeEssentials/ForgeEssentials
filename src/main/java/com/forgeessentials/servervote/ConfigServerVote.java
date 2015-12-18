@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.servervote.Votifier.VoteReceiver;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.fml.common.registry.GameData;
@@ -41,8 +42,6 @@ public class ConfigServerVote extends ConfigLoaderBase
     public static String hostname;
     public static Integer port;
 
-    public boolean flatfileLog;
-
     @Override
     public void load(Configuration config, boolean isReload)
     {
@@ -57,9 +56,22 @@ public class ConfigServerVote extends ConfigLoaderBase
                 .getString();
         msgVoter = config.get(category, "msgVoter", "Thanks for voting for our server!", "You can use color codes (&), %player and %service").getString();
 
-        flatfileLog = config.get(category, "flatFileLog", true, "Log the votes in \"votes.log\"").getBoolean(true);
-
         loadKeys();
+
+        if (isReload)
+        {
+            try
+            {
+                ModuleServerVote.votifier.shutdown();
+                ModuleServerVote.votifier = new VoteReceiver(ConfigServerVote.hostname, ConfigServerVote.port);
+                ModuleServerVote.votifier.start();
+            }
+            catch (Exception e1)
+            {
+                LoggingHandler.felog.error("Error closing Votifier compat thread.");
+                e1.printStackTrace();
+            }
+        }
     }
 
     private void loadKeys()

@@ -7,12 +7,10 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -25,7 +23,6 @@ import com.forgeessentials.servervote.Votifier.VoteReceiver;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 @FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false)
@@ -39,16 +36,11 @@ public class ModuleServerVote
     public static PrintWriter log;
     public static final String scriptKey = "servervote";
 
-    private HashMap<String, VoteEvent> offlineList = new HashMap<String, VoteEvent>();
+    private HashMap<String, VoteEvent> offlineList = new HashMap<>();
 
     public ModuleServerVote()
     {
         MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    public static void log(VoteEvent vote)
-    {
-        LoggingHandler.felog.debug("Got Vote from player " + vote.player + " by service " + vote.serviceName + " time " + vote.timeStamp);
     }
 
     @SubscribeEvent
@@ -69,8 +61,7 @@ public class ModuleServerVote
         }
         catch (Exception e1)
         {
-            FMLLog.severe("Error initializing Votifier compat.");
-            FMLLog.severe(e.toString());
+            LoggingHandler.felog.error("Error initializing Votifier compat.");
             e1.printStackTrace();
         }
 
@@ -121,8 +112,7 @@ public class ModuleServerVote
         }
         catch (Exception e1)
         {
-            FMLLog.severe("Error closing Votifier compat thread.");
-            FMLLog.severe(e.toString());
+            LoggingHandler.felog.error("Error closing Votifier compat thread.");
             e1.printStackTrace();
         }
 

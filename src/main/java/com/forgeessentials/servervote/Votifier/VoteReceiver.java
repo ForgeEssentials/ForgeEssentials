@@ -38,6 +38,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLLog;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.servervote.ConfigServerVote;
 import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.servervote.VoteEvent;
@@ -165,6 +166,12 @@ public class VoteReceiver extends Thread
                 // Something went wrong in RSA.
                 if (!opcode.equals("VOTE"))
                 {
+                    LoggingHandler.felog.error("Could not decrypt vote payload!");
+                    if (ForgeEssentials.isDebug())
+                    {
+                        LoggingHandler.felog.error("Vote payload (for debugging):");
+                        LoggingHandler.felog.error(new String(block));
+                    }
                     throw new GeneralSecurityException();
                 }
 
@@ -181,7 +188,7 @@ public class VoteReceiver extends Thread
                 // Create the vote.
                 VoteEvent vote = new VoteEvent(username, serviceName, address, timeStamp);
 
-                ModuleServerVote.log(vote);
+                ModuleServerVote.log.println(String.format("Vote received. Player: %s Service: %s, Time: %s", vote.player, vote.serviceName, vote.timeStamp));
 
                 EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(vote.player);
                 if (player == null)
@@ -191,12 +198,12 @@ public class VoteReceiver extends Thread
                         LoggingHandler.felog.debug("Player for vote not online, vote canceled.");
                         vote.setFeedback("notOnline");
                         vote.setCanceled(true);
-                        return;
                     }
-                    else
-                    {
-                        MinecraftForge.EVENT_BUS.post(vote);
-                    }
+                }
+
+                if (!vote.isCanceled())
+                {
+                    MinecraftForge.EVENT_BUS.post(vote);
                 }
 
                 // Clean up.

@@ -43,12 +43,6 @@ public class VoteEvent extends Event
     {
         try
         {
-            /*
-             * JSONObject json = new JSONObject(decoded); player = json.getString("player"); serviceName =
-             * json.getString("serviceName"); ip = json.getString("ip"); timeStamp =
-             * json.getJSONObject("timeStamp").getString("date"); sane = true;
-             */
-
             Gson gson = new Gson();
             JsonElement element = gson.fromJson(decoded, JsonElement.class);
             JsonObject json = element.getAsJsonObject();
