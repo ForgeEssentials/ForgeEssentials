@@ -56,7 +56,7 @@ public abstract class MixinNetHandlerPlayServer_01 implements INetHandlerPlaySer
                 return;
             }
 
-            IChatComponent[] lines = onSignEditEvent(packetIn, playerEntity); if (lines != null){ return;}//FE: sign edit event
+            IChatComponent[] lines = onSignEditEvent(packetIn, playerEntity); if (lines == null){ return;}//FE: sign edit event
 
             for (int x = 0; x < tileentitysign.signText.length && x < lines.length; x++)
                 tileentitysign.signText[x] = new ChatComponentText(net.minecraft.util.EnumChatFormatting.getTextWithoutFormattingCodes(lines[x]

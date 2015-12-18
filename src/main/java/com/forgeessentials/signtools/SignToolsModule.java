@@ -62,8 +62,7 @@ public class SignToolsModule extends ConfigLoaderBase
             {
                 if (e.text[i].getUnformattedText().contains("&"))
                 {
-                    //needs fixing - colourize no longer works
-                    //String modified = ChatOutputHandler.formatColors(e.text[i].getUnformattedText());
+                    e.text[i] = new ChatComponentText(ChatOutputHandler.formatColors(e.text[i].getUnformattedText()));
                 }
             }
         }
