@@ -23,6 +23,7 @@ import com.forgeessentials.servervote.Votifier.VoteReceiver;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 @FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false)
@@ -179,8 +180,7 @@ public class ModuleServerVote
 
         if (!ConfigServerVote.msgVoter.equals(""))
         {
-            ChatOutputHandler.sendMessage(player,
-                    ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
+            ChatOutputHandler.sendMessage(player, ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
         }
 
         APIRegistry.scripts.runEventScripts(scriptKey, player);
