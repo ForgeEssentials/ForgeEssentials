@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,7 +23,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -40,16 +38,11 @@ public class ModuleServerVote
     public static PrintWriter log;
     public static final String scriptKey = "servervote";
 
-    private HashMap<String, VoteEvent> offlineList = new HashMap<String, VoteEvent>();
+    private HashMap<String, VoteEvent> offlineList = new HashMap<>();
 
     public ModuleServerVote()
     {
         MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    public static void log(VoteEvent vote)
-    {
-        LoggingHandler.felog.debug("Got Vote from player " + vote.player + " by service " + vote.serviceName + " time " + vote.timeStamp);
     }
 
     @SubscribeEvent
@@ -70,8 +63,7 @@ public class ModuleServerVote
         }
         catch (Exception e1)
         {
-            FMLLog.severe("Error initializing Votifier compat.");
-            FMLLog.severe(e.toString());
+            LoggingHandler.felog.error("Error initializing Votifier compat.");
             e1.printStackTrace();
         }
 
@@ -122,8 +114,7 @@ public class ModuleServerVote
         }
         catch (Exception e1)
         {
-            FMLLog.severe("Error closing Votifier compat thread.");
-            FMLLog.severe(e.toString());
+            LoggingHandler.felog.error("Error closing Votifier compat thread.");
             e1.printStackTrace();
         }
 
