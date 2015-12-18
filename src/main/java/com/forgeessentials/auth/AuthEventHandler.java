@@ -5,6 +5,7 @@ import java.util.UUID;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -54,7 +55,7 @@ public class AuthEventHandler
         {
             return;
         }
-        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
+        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()) || event.entityPlayer instanceof FakePlayer)
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
@@ -65,7 +66,7 @@ public class AuthEventHandler
     public void onPlayerChat(ServerChatEvent event)
     {
         UUID username = event.player.getPersistentID();
-        if (!ModuleAuth.hasSession.contains(username))
+        if (!ModuleAuth.hasSession.contains(username) || event.player instanceof FakePlayer)
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.player, "Login required. Try /auth help.");
@@ -83,6 +84,10 @@ public class AuthEventHandler
             return;
         }
         EntityPlayer player = (EntityPlayer) event.sender;
+        if (player instanceof FakePlayer)
+        {
+            return;
+        }
         if (!ModuleAuth.hasSession.contains(player.getPersistentID()) && !(event.command instanceof CommandAuth))
         {
             event.setCanceled(true);
@@ -96,7 +101,7 @@ public class AuthEventHandler
         if (!(event.entityPlayer instanceof EntityPlayerMP))
             return;
 
-        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
+        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()) ||  event.entityPlayer instanceof FakePlayer)
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
@@ -109,7 +114,7 @@ public class AuthEventHandler
         if (!(event.entityPlayer instanceof EntityPlayerMP))
             return;
 
-        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
+        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()) ||  event.entityPlayer instanceof FakePlayer)
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
@@ -122,7 +127,7 @@ public class AuthEventHandler
         if (!(event.player instanceof EntityPlayerMP))
             return;
 
-        if (!ModuleAuth.hasSession.contains(event.player.getPersistentID()))
+        if (!ModuleAuth.hasSession.contains(event.player.getPersistentID()) ||  event.player instanceof FakePlayer)
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.player, "Login required. Try /auth help.");
@@ -136,7 +141,7 @@ public class AuthEventHandler
             return;
 
         boolean cancel = false;
-        if (!ModuleAuth.hasSession.contains(event.player.getPersistentID()))
+        if (!ModuleAuth.hasSession.contains(event.player.getPersistentID()) ||  event.player instanceof FakePlayer)
         {
             cancel = true;
             ChatOutputHandler.chatError(event.player, "Login required. Try /auth help.");
@@ -157,7 +162,7 @@ public class AuthEventHandler
         if (!(event.entityPlayer instanceof EntityPlayerMP))
             return;
 
-        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
+        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()) ||  event.entityPlayer instanceof FakePlayer)
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");
@@ -171,7 +176,7 @@ public class AuthEventHandler
             return;
 
         EntityPlayerMP player = (EntityPlayerMP) event.entityLiving;
-        if (!ModuleAuth.hasSession.contains(player.getPersistentID()))
+        if (!ModuleAuth.hasSession.contains(player.getPersistentID()) ||  player instanceof FakePlayer)
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(player, "Login required. Try /auth help.");
@@ -184,7 +189,7 @@ public class AuthEventHandler
         if (!(event.entityPlayer instanceof EntityPlayerMP))
             return;
 
-        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()))
+        if (!ModuleAuth.hasSession.contains(event.entityPlayer.getPersistentID()) ||  event.entityPlayer instanceof FakePlayer)
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(event.entityPlayer, "Login required. Try /auth help.");

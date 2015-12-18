@@ -12,6 +12,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -42,14 +43,16 @@ public class ModuleAuth extends ConfigLoaderBase
     private static AuthEventHandler handler;
     private static boolean oldEnabled = false;
 
-    @SubscribeEvent
-    public void preInit(FEModulePreInitEvent e)
+    @Preconditions
+    public boolean preInit()
     {
         // No Auth Module on client
-        if (e.getFMLEvent().getSide().isClient())
+        if (FMLCommonHandler.instance().getSide().isClient())
         {
-            ModuleLauncher.instance.unregister("AuthLogin");
+            return false;
         }
+
+        else return true;
     }
 
     @SubscribeEvent
