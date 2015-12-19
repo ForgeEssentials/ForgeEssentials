@@ -3,6 +3,7 @@ package com.forgeessentials.servervote;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Date;
 import java.util.HashMap;
@@ -76,7 +77,7 @@ public class ModuleServerVote
             {
                 logFile.createNewFile();
             }
-            log = new PrintWriter(logFile);
+            log = new PrintWriter(new FileWriter(logFile, true), true);
         }
         catch (Exception e1)
         {
