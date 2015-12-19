@@ -188,8 +188,6 @@ public class VoteReceiver extends Thread
                 // Create the vote.
                 VoteEvent vote = new VoteEvent(username, serviceName, address, timeStamp);
 
-                ModuleServerVote.log.println(String.format("Vote received. Player: %s Service: %s, Time: %s", vote.player, vote.serviceName, vote.timeStamp));
-
                 EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(vote.player);
                 if (player == null)
                 {
