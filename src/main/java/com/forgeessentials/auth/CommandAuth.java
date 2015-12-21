@@ -73,13 +73,13 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             // parse login
             if (args[0].equalsIgnoreCase("login"))
             {
-                if (!PlayerPassData.isRegistered(sender.getPersistentID()))
+                if (!ModuleAuth.isRegistered(sender.getPersistentID()))
                     throw new TranslatedCommandException("Player %s is not registered!", sender.getPersistentID());
 
-                if (PlayerPassData.checkPassword(sender.getPersistentID(), args[1]))
+                if (PasswordManager.checkPassword(sender.getPersistentID(), args[1]))
                 {
                     // login worked
-                    ModuleAuth.hasSession.add(sender.getPersistentID());
+                    ModuleAuth.authenticate(sender.getPersistentID());
                     ChatOutputHandler.chatConfirmation(sender, "Login successful.");
                     APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent(sender));
                 }
@@ -94,19 +94,19 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             // parse register
             else if (args[0].equalsIgnoreCase("register"))
             {
-                if (PlayerPassData.isRegistered(sender.getPersistentID()))
+                if (ModuleAuth.isRegistered(sender.getPersistentID()))
                     throw new TranslatedCommandException("Player %s is already registered!", sender.getPersistentID());
 
-                if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineReg)
+                if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineRegistration)
                     throw new TranslatedCommandException("Registrations have been disabled.");
 
-                PlayerPassData.setPassword(sender.getPersistentID(), args[1]);
+                PasswordManager.setPassword(sender.getPersistentID(), args[1]);
                 ChatOutputHandler.chatConfirmation(sender, "Registration successful.");
                 return;
             }
 
             // stop if unlogged.
-            if (!ModuleAuth.hasSession.contains(sender.getPersistentID()))
+            if (!ModuleAuth.isAuthenticated(sender))
                 throw new TranslatedCommandException("Login required. Try /auth help.");
 
             boolean isLogged = true;
@@ -132,7 +132,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 }
                 else
                 {
-                    ModuleAuth.hasSession.remove(player.getPersistentID());
+                    ModuleAuth.deauthenticate(player.getPersistentID());
                     ChatOutputHandler.chatConfirmation(sender,
                             Translator.format("Player %s was logged out from the authentication service.", player.getCommandSenderName()));
                     ChatOutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
@@ -156,10 +156,10 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 if (!hasAdmin)
                     throw new PermissionDeniedException();
 
-                if (!PlayerPassData.isRegistered(player.getPersistentID()))
+                if (!ModuleAuth.isRegistered(player.getPersistentID()))
                     throw new TranslatedCommandException("Player %s is not registered!", player.getCommandSenderName());
 
-                PlayerPassData.setPassword(player.getPersistentID(), null);
+                PasswordManager.setPassword(player.getPersistentID(), null);
                 ChatOutputHandler.chatConfirmation(sender,
                         Translator.format("Player %s has been removed from the authentication service.", player.getCommandSenderName()));
                 return;
@@ -174,7 +174,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
         // 3 args? must be a comtmand - player - pass
         else if (args.length == 3)
         {
-            if (!ModuleAuth.hasSession.contains(sender.getPersistentID()))
+            if (!ModuleAuth.isAuthenticated(sender))
                 throw new TranslatedCommandException("Login required. Try /auth help.");
 
             // parse changePass
@@ -186,16 +186,16 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                     return;
                 }
 
-                if (!PlayerPassData.isRegistered(sender.getPersistentID()))
+                if (!ModuleAuth.isRegistered(sender.getPersistentID()))
                     throw new TranslatedCommandException("Player %s is not registered!", sender.getCommandSenderName());
 
-                if (!PlayerPassData.checkPassword(sender.getPersistentID(), args[1]))
+                if (!PasswordManager.checkPassword(sender.getPersistentID(), args[1]))
                 {
                     ChatOutputHandler.chatConfirmation(sender, "Could not change the password - your old password is wrong");
                     return;
                 }
 
-                PlayerPassData.setPassword(sender.getPersistentID(), args[2]);
+                PasswordManager.setPassword(sender.getPersistentID(), args[2]);
                 ChatOutputHandler.chatConfirmation(sender, "Password change successful.");
                 return;
 
@@ -213,7 +213,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             {
                 if (!hasAdmin)
                     throw new PermissionDeniedException();
-                PlayerPassData.setPassword(player.getPersistentID(), args[2]);
+                PasswordManager.setPassword(player.getPersistentID(), args[2]);
                 ChatOutputHandler.chatConfirmation(sender, Translator.format("Password set for %s", player.getCommandSenderName()));
             }
         }
@@ -265,7 +265,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 }
                 else
                 {
-                    ModuleAuth.hasSession.remove(player.getPersistentID());
+                    ModuleAuth.deauthenticate(player.getPersistentID());
                     ChatOutputHandler.chatConfirmation(sender,
                             Translator.format("Player %s was logged out from the authentication service.", player.getCommandSenderName()));
                     ChatOutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
@@ -279,9 +279,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             }
             else if (args[0].equalsIgnoreCase("unregister"))
             {
-                if (!PlayerPassData.isRegistered(player.getPersistentID()))
+                if (!ModuleAuth.isRegistered(player.getPersistentID()))
                     throw new TranslatedCommandException("message.auth.error.notregisterred", args[1]);
-                PlayerPassData.setPassword(player.getPersistentID(), null);
+                PasswordManager.setPassword(player.getPersistentID(), null);
                 return;
             }
 
@@ -297,7 +297,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             // pasre setPass
             if (args[0].equalsIgnoreCase("setPass"))
             {
-                PlayerPassData.setPassword(player.getPersistentID(), args[2]);
+                PasswordManager.setPassword(player.getPersistentID(), args[2]);
                 ChatOutputHandler.chatConfirmation(sender, Translator.format("Password set for %s", player.getCommandSenderName()));
             }
         }

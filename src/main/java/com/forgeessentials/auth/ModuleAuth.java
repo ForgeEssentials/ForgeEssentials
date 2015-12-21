@@ -1,8 +1,12 @@
 package com.forgeessentials.auth;
 
 import java.util.HashSet;
+import java.util.TimerTask;
 import java.util.UUID;
 
+import net.minecraft.command.CommandHelp;
+import net.minecraft.command.ICommand;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
@@ -13,10 +17,9 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
-import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -29,38 +32,38 @@ public class ModuleAuth extends ConfigLoaderBase
     private static final String CONFIG_CATEGORY = "Auth";
     private static final String CONFIG_CATEGORY_LISTS = "Authlists";
 
-    public static boolean forceEnabled;
-    public static boolean checkVanillaAuthStatus;
+    static boolean forceEnabled;
+    static boolean allowOfflineRegistration;
+    static boolean canMoveWithoutLogin;
+    static boolean checkVanillaAuthStatus;
 
-    public static boolean allowOfflineReg;
-    public static boolean canMoveWithoutLogin;
+    private static HashSet<UUID> authenticatedUsers = new HashSet<>();
 
-    public static VanillaServiceChecker vanillaCheck;
-    public static HashSet<UUID> hasSession = new HashSet<>();
-    public static String salt = EncryptionHelper.generateSalt();
-    public static int checkInterval;
-    private static EncryptionHelper pwdEnc;
     private static AuthEventHandler handler;
-    private static boolean oldEnabled = false;
+
+    private static boolean isOnline = true;
+
+    private static TimerTask mojangServiceChecker = new TimerTask() {
+        @Override
+        public void run()
+        {
+            checkMojangStatus();
+        }
+
+    };
 
     @Preconditions
     public boolean preInit()
     {
-        // No Auth Module on client
         if (FMLCommonHandler.instance().getSide().isClient())
-        {
             return false;
-        }
-
-        else return true;
+        return true;
     }
 
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        pwdEnc = new EncryptionHelper();
         handler = new AuthEventHandler();
-
         FECommandManager.registerCommand(new CommandAuth());
         FECommandManager.registerCommand(new CommandVIP());
     }
@@ -68,47 +71,32 @@ public class ModuleAuth extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        if (checkVanillaAuthStatus && !forceEnabled)
-        {
-            vanillaCheck = new VanillaServiceChecker();
-            TaskRegistry.scheduleRepeated(vanillaCheck, checkInterval * 60 * 1000);
-        }
-
-        onStatusChange();
-
         APIRegistry.perms.registerPermission("fe.auth.admin", PermissionLevel.OP);
         APIRegistry.perms.registerPermission("fe.auth", PermissionLevel.TRUE);
         APIRegistry.perms.registerPermission("fe.auth.vip", null);
-    }
-
-    public static boolean vanillaMode()
-    {
-        return FMLCommonHandler.instance().getSidedDelegate().getServer().isServerInOnlineMode();
+        if (isEnabled())
+        {
+            MinecraftForge.EVENT_BUS.register(handler);
+            FMLCommonHandler.instance().bus().register(handler);
+        }
     }
 
     public static boolean isEnabled()
     {
-        if (forceEnabled)
-        {
-            return true;
-        }
-        else if (checkVanillaAuthStatus && !vanillaMode())
-        {
-            return true;
-        }
-
-        return false;
+        return forceEnabled || checkVanillaAuthStatus && !ServerUtil.isOnlineMode();
     }
 
-    public static void onStatusChange()
+    public static void checkMojangStatus()
     {
-        boolean change = oldEnabled != isEnabled();
-        oldEnabled = isEnabled();
-
-        if (!change)
-        {
+        boolean lastEnabled = isEnabled();
+        boolean lastOnline = isOnline;
+        isOnline = ServerUtil.getMojangServerStatus();
+        if (lastOnline == isOnline)
             return;
-        }
+
+        FMLCommonHandler.instance().getSidedDelegate().getServer().setOnlineMode(isOnline);
+        if (lastEnabled == isEnabled())
+            return;
 
         if (isEnabled())
         {
@@ -117,14 +105,59 @@ public class ModuleAuth extends ConfigLoaderBase
         }
         else
         {
-            MinecraftForge.EVENT_BUS.unregister(handler);
-            FMLCommonHandler.instance().bus().unregister(handler);
+            try
+            {
+                MinecraftForge.EVENT_BUS.unregister(handler);
+                FMLCommonHandler.instance().bus().unregister(handler);
+            }
+            catch (NullPointerException e)
+            {
+                /* catch forge bug */
+            }
         }
     }
 
-    public static String encrypt(String str)
+    /**
+     * Checks, if a player is registered
+     * 
+     * @param user
+     * @return
+     */
+    public static boolean isRegistered(UUID user)
     {
-        return pwdEnc.sha1(str);
+        return PasswordManager.hasPassword(user);
+    }
+
+    public static boolean isAuthenticated(UUID player)
+    {
+        return authenticatedUsers.contains(player);
+    }
+
+    public static boolean isAuthenticated(EntityPlayer player)
+    {
+        return isAuthenticated(player.getPersistentID());
+    }
+
+    public static void authenticate(UUID player)
+    {
+        authenticatedUsers.add(player);
+    }
+
+    public static void deauthenticate(UUID player)
+    {
+        authenticatedUsers.remove(player);
+    }
+
+    /**
+     * Check, if unauthenticated users are allowed to use this command
+     * 
+     * @param command
+     * @return
+     */
+    public static boolean isGuestCommand(ICommand command)
+    {
+        return command instanceof CommandAuth || //
+                command instanceof CommandHelp;
     }
 
     private static final String CFG_DESC_forceEnable = "Forces the authentication server to be loaded regardless of Minecraft auth services";
@@ -141,31 +174,26 @@ public class ModuleAuth extends ConfigLoaderBase
     public void load(Configuration config, boolean isReload)
     {
         config.addCustomCategoryComment(CONFIG_CATEGORY, "AuthModule configuration");
-        checkVanillaAuthStatus = config.get(CONFIG_CATEGORY, "autoEnable", false, CFG_DESC_autoEnable).getBoolean(false);
         canMoveWithoutLogin = config.get(CONFIG_CATEGORY, "canMoveWithoutLogin", false, CFG_DESC_canMoveWithoutLogin).getBoolean(false);
-        allowOfflineReg = config.get(CONFIG_CATEGORY, "allowOfflineReg", false, CFG_DESC_allowOfflineReg).getBoolean(false);
-        checkInterval = config.get(CONFIG_CATEGORY, "checkInterval", 10, CFG_DESC_checkInterval).getInt();
+        allowOfflineRegistration = config.get(CONFIG_CATEGORY, "allowOfflineReg", false, CFG_DESC_allowOfflineReg).getBoolean(false);
         forceEnabled = config.get(CONFIG_CATEGORY, "forceEnable", false, CFG_DESC_forceEnable).getBoolean(false);
-        salt = config.get(CONFIG_CATEGORY, "salt", salt, CFG_DESC_salt).getString();
+        PasswordManager.setSalt(config.get(CONFIG_CATEGORY, "salt", EncryptionHelper.generateSalt(), CFG_DESC_salt).getString());
 
         config.addCustomCategoryComment(CONFIG_CATEGORY_LISTS, CFG_DESC_authlists);
-        AuthEventHandler.offset = config.get(CONFIG_CATEGORY_LISTS, "offset", 0, CFG_DESC_offset).getInt();
-        AuthEventHandler.vipslots = config.get(CONFIG_CATEGORY_LISTS, "vipslots", 0, "Amount of slots reserved for VIP players.").getInt();
+        AuthEventHandler.reservedSlots = config.get(CONFIG_CATEGORY_LISTS, "offset", 0, CFG_DESC_offset).getInt();
+        AuthEventHandler.vipSlots = config.get(CONFIG_CATEGORY_LISTS, "vipslots", 0, "Amount of slots reserved for VIP players.").getInt();
 
         config.addCustomCategoryComment(CONFIG_CATEGORY_LISTS + ".kickmsg", CFG_DESC_kickMsg);
-        AuthEventHandler.banned = config.get(CONFIG_CATEGORY_LISTS + ".kick", "bannedmsg", "You have been banned from this server.").getString();
-        AuthEventHandler.notvip = config.get(CONFIG_CATEGORY_LISTS + ".kick", "notVIPmsg", "This server is full, and you are not a VIP.").getString();
-    }
+        AuthEventHandler.playerBannedMessage = config.get(CONFIG_CATEGORY_LISTS + ".kick", "bannedmsg", "You have been banned from this server.").getString();
+        AuthEventHandler.nonVipKickMessage = config.get(CONFIG_CATEGORY_LISTS + ".kick", "notVIPmsg", "This server is full, and you are not a VIP.")
+                .getString();
 
-    @Override
-    public void save(Configuration config)
-    {
-        config.get(CONFIG_CATEGORY, "allowOfflineReg", false, CFG_DESC_allowOfflineReg).set(allowOfflineReg);
-        config.get(CONFIG_CATEGORY, "checkInterval", "", CFG_DESC_checkInterval).set(checkInterval);
-        config.get(CONFIG_CATEGORY, "forceEnable", false, CFG_DESC_forceEnable).set(forceEnabled);
-        config.get(CONFIG_CATEGORY, "autoEnable", true, CFG_DESC_autoEnable).set(checkVanillaAuthStatus);
-        config.get(CONFIG_CATEGORY, "salt", "", CFG_DESC_salt).set(salt);
-
+        checkVanillaAuthStatus = config.get(CONFIG_CATEGORY, "autoEnable", false, CFG_DESC_autoEnable).getBoolean(false);
+        int authCheckerInterval = config.get(CONFIG_CATEGORY, "checkInterval", 10, CFG_DESC_checkInterval).getInt();
+        if (checkVanillaAuthStatus && !forceEnabled)
+            TaskRegistry.scheduleRepeated(mojangServiceChecker, authCheckerInterval * 60 * 1000);
+        else
+            TaskRegistry.remove(mojangServiceChecker);
     }
 
 }
