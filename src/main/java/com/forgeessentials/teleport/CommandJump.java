@@ -23,9 +23,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class CommandJump extends ForgeEssentialsCommandBase
 {
 
-    public static final String PERM = "fe.commands.jump";
-    public static final String PERM_TOOL = PERM + ".tool";
-
     public CommandJump()
     {
         MinecraftForge.EVENT_BUS.register(this);
@@ -46,19 +43,13 @@ public class CommandJump extends ForgeEssentialsCommandBase
     @Override
     public String getPermissionNode()
     {
-        return "fe.teleport.jump";
+        return TeleportModule.PERM_JUMP;
     }
 
     @Override
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.OP;
-    }
-
-    @Override
-    public void registerExtraPermissions()
-    {
-        APIRegistry.perms.registerPermission(PERM_TOOL, PermissionLevel.OP, "Allow jumping with a tool (default compass)");
     }
 
     @Override
@@ -92,7 +83,7 @@ public class CommandJump extends ForgeEssentialsCommandBase
         ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
         if (stack == null || stack.getItem() != Items.compass)
             return;
-        if (!PermissionManager.checkPermission(event.entityPlayer, PERM_TOOL))
+        if (!PermissionManager.checkPermission(event.entityPlayer, TeleportModule.PERM_JUMP_TOOL))
             return;
 
         jump((EntityPlayerMP) event.entityPlayer);
