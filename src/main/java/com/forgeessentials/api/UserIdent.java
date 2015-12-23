@@ -223,6 +223,11 @@ public class UserIdent
     {
         return get(uuidOrUsername, false);
     }
+    
+    public static synchronized UserIdent getVirtual(String username)
+    {
+        return get(UUID.nameUUIDFromBytes(username.getBytes()), username);
+    }
 
     public static synchronized void login(EntityPlayerMP player)
     {
@@ -556,5 +561,6 @@ public class UserIdent
         }
         return sb.toString();
     }
+
 
 }

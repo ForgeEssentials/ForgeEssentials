@@ -11,12 +11,12 @@ import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.util.FEcmdModuleCommands;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -49,7 +49,7 @@ public class CommandDoAs extends FEcmdModuleCommands
                 
             args = Arrays.copyOfRange(args, 1, args.length);
             String cmd = StringUtils.join(args, " ");
-            MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(ZonedPermissionHelper.SERVER_IDENT, player), cmd);
+            MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), cmd);
         }
 
         StringBuilder cmd = new StringBuilder(args.toString().length());

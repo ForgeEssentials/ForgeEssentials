@@ -19,6 +19,12 @@ import cpw.mods.fml.common.eventhandler.EventBus;
 public class APIRegistry
 {
 
+    public static final UserIdent IDENT_SERVER = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefefe", "$SERVER");
+
+    public static final UserIdent IDENT_CMDBLOCK = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefecb", "$COMMANDBLOCK");
+
+    public static final UserIdent IDENT_NPC = UserIdent.getVirtual("$NPC");
+
     /**
      * Use this to call API functions available in the economy module.
      */

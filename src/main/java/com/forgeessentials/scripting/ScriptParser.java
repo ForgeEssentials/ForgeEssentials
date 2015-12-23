@@ -12,8 +12,8 @@ import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -120,8 +120,8 @@ public class ScriptParser
                 {
                 case '$':
                     if (!(cmdSender instanceof DoAsCommandSender))
-                        cmdSender = new DoAsCommandSender(ZonedPermissionHelper.SERVER_IDENT, sender);
-                    ((DoAsCommandSender) cmdSender).setIdent(ZonedPermissionHelper.SERVER_IDENT);
+                        cmdSender = new DoAsCommandSender(APIRegistry.IDENT_SERVER, sender);
+                    ((DoAsCommandSender) cmdSender).setIdent(APIRegistry.IDENT_SERVER);
                     break;
                 case '?':
                     ignoreErrors = true;
@@ -136,7 +136,7 @@ public class ScriptParser
                     else if (sender == null || sender instanceof MinecraftServer)
                     {
                         if (!(cmdSender instanceof DoAsCommandSender))
-                            cmdSender = new DoAsCommandSender(ZonedPermissionHelper.SERVER_IDENT, sender);
+                            cmdSender = new DoAsCommandSender(APIRegistry.IDENT_SERVER, sender);
                         ((DoAsCommandSender) cmdSender).setHideChatMessages(true);
                     }
                     break;

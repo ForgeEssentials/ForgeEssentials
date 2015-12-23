@@ -286,7 +286,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
         String permission = (event instanceof FireEvent.Spread) ? ModuleProtection.PERM_FIRE_SPREAD : ModuleProtection.PERM_FIRE_DESTROY;
         WorldPoint point = new WorldPoint(event.world.provider.dimensionId, event.x, event.y, event.z);
-        if (!APIRegistry.perms.checkUserPermission(null, point, permission))
+        if (!APIRegistry.perms.checkUserPermission(APIRegistry.IDENT_SERVER, point, permission))
         {
             event.setCanceled(true);
             return;
@@ -301,17 +301,19 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
         
-        UserIdent ident = null;
+        UserIdent ident = APIRegistry.IDENT_SERVER;
         EntityLivingBase exploder = event.explosion.getExplosivePlacedBy();
         if (exploder instanceof EntityPlayer)
             ident = UserIdent.get((EntityPlayer) exploder);
+        else if (exploder instanceof EntityLiving)
+            ident = APIRegistry.IDENT_NPC;
 
         int cx = (int) Math.floor(event.explosion.explosionX);
         int cy = (int) Math.floor(event.explosion.explosionY);
         int cz = (int) Math.floor(event.explosion.explosionZ);
         int s = (int) Math.ceil(event.explosion.explosionSize);
 
-        if (!APIRegistry.perms.checkUserPermission(null, new WorldPoint(event.world, cx, cy, cz), ModuleProtection.PERM_EXPLOSION))
+        if (!APIRegistry.perms.checkUserPermission(ident, new WorldPoint(event.world, cx, cy, cz), ModuleProtection.PERM_EXPLOSION))
         {
             event.setCanceled(true);
             return;
@@ -329,7 +331,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 }
         // WorldArea area = new WorldArea(event.world, new Point(cx - s, cy - s, cz - s), new Point(cx + s, cy + s, cz +
         // s));
-        // if (!APIRegistry.perms.checkUserPermission(null, area, ModuleProtection.PERM_EXPLOSION))
+        // if (!APIRegistry.perms.checkUserPermission(ident, area, ModuleProtection.PERM_EXPLOSION))
         // {
         // event.setCanceled(true);
         // return;
@@ -347,6 +349,8 @@ public class ProtectionEventHandler extends ServerEventHandler
         EntityLivingBase exploder = event.explosion.getExplosivePlacedBy();
         if (exploder instanceof EntityPlayer)
             ident = UserIdent.get((EntityPlayer) exploder);
+        else if (exploder instanceof EntityLiving)
+            ident = APIRegistry.IDENT_NPC;
         
         List<ChunkPosition> positions = event.explosion.affectedBlockPositions;
         for (Iterator<ChunkPosition> it = positions.iterator(); it.hasNext();)
@@ -496,12 +500,12 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
         EntityLiving entity = (EntityLiving) event.entityLiving;
         WorldPoint point = new WorldPoint(entity);
-        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_NATURAL + "." + EntityList.getEntityString(entity)))
+        if (!APIRegistry.perms.checkUserPermission(APIRegistry.IDENT_SERVER, point, ModuleProtection.PERM_MOBSPAWN_NATURAL + "." + EntityList.getEntityString(entity)))
         {
             event.setResult(Result.DENY);
             return;
         }
-        if (!APIRegistry.perms.checkUserPermission(null, point, MobType.getMobType(entity).getSpawnPermission(false)))
+        if (!APIRegistry.perms.checkUserPermission(APIRegistry.IDENT_SERVER, point, MobType.getMobType(entity).getSpawnPermission(false)))
         {
             event.setResult(Result.DENY);
             return;
@@ -517,12 +521,12 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
         EntityLiving entity = (EntityLiving) event.entityLiving;
         WorldPoint point = new WorldPoint(entity);
-        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + "." + EntityList.getEntityString(entity)))
+        if (!APIRegistry.perms.checkUserPermission(APIRegistry.IDENT_SERVER, point, ModuleProtection.PERM_MOBSPAWN_FORCED + "." + EntityList.getEntityString(entity)))
         {
             event.setResult(Result.DENY);
             return;
         }
-        if (!APIRegistry.perms.checkUserPermission(null, point, MobType.getMobType(entity).getSpawnPermission(true)))
+        if (!APIRegistry.perms.checkUserPermission(APIRegistry.IDENT_SERVER, point, MobType.getMobType(entity).getSpawnPermission(true)))
         {
             event.setResult(Result.DENY);
             return;
@@ -875,7 +879,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (stack == null)
             return false;
-        return !APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.getItemBanPermission(stack));
+        return !APIRegistry.perms.checkUserPermission(APIRegistry.IDENT_SERVER, point, ModuleProtection.getItemBanPermission(stack));
     }
 
     public static boolean isInventoryItemBanned(UserIdent ident, ItemStack stack)

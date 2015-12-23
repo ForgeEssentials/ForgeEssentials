@@ -67,10 +67,6 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 public class ZonedPermissionHelper extends ServerEventHandler implements IPermissionsHelper, PermissionDebugger
 {
 
-    public static final UserIdent SERVER_IDENT = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefefe", "$SERVER");
-
-    public static final UserIdent CMDBLOCK_IDENT = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefecb", "$COMMANDBLOCK");
-
     public static final String PERMISSIONS_LIST_FILE = "PermissionsList.txt";
 
     public static final String PERMISSIONS_LIST_ITEMS_FILE = "PermissionList_Items.txt";
@@ -486,8 +482,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         event.serverZone.setGroupPermission(Zone.GROUP_CREATIVE, FEPermissions.GROUP, true);
         event.serverZone.setGroupPermission(Zone.GROUP_ADVENTURE, FEPermissions.GROUP, true);
 
-        event.serverZone.setPlayerPermission(SERVER_IDENT, "*", true);
-        event.serverZone.setPlayerPermission(CMDBLOCK_IDENT, "*", true);
+        event.serverZone.setPlayerPermission(APIRegistry.IDENT_SERVER, "*", true);
+        event.serverZone.setPlayerPermission(APIRegistry.IDENT_CMDBLOCK, "*", true);
     }
 
     @SubscribeEvent
@@ -719,7 +715,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         if (context.getSender() instanceof DoAsCommandSender)
             ident = ((DoAsCommandSender) context.getSender()).getUserIdent();
         else if (context.getSender() instanceof CommandBlockLogic)
-            ident = CMDBLOCK_IDENT;
+            ident = APIRegistry.IDENT_CMDBLOCK;
 
         if (context.getTargetLocationStart() != null)
         {

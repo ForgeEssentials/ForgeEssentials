@@ -26,7 +26,6 @@ import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.EventCancelledException;
@@ -126,7 +125,7 @@ public class Plot
 
     public boolean hasOwner()
     {
-        return owner != null && !owner.equals(ZonedPermissionHelper.SERVER_IDENT);
+        return owner != null && !owner.equals(APIRegistry.IDENT_SERVER);
     }
 
     public UserIdent getOwner()
