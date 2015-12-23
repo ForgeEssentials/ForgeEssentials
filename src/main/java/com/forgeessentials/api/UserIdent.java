@@ -25,6 +25,46 @@ import cpw.mods.fml.common.eventhandler.Event;
 public class UserIdent
 {
 
+    public static class ServerUserIdent extends UserIdent
+    {
+
+        private ServerUserIdent(UUID uuid, String username)
+        {
+            super(uuid, username, null);
+        }
+
+        @Override
+        public boolean isPlayer()
+        {
+            return false;
+        }
+
+    }
+
+    public static class NpcUserIdent extends UserIdent
+    {
+
+        private NpcUserIdent(UUID uuid, String username)
+        {
+            super(uuid, username, null);
+        }
+
+        @Override
+        public boolean isPlayer()
+        {
+            return false;
+        }
+
+        @Override
+        public boolean isNpc()
+        {
+            return true;
+        }
+
+    }
+
+    /* ------------------------------------------------------------ */
+
     public static class UserIdentInvalidatedEvent extends Event
     {
 
@@ -48,12 +88,12 @@ public class UserIdent
 
     /* ------------------------------------------------------------ */
 
-    private UUID uuid;
+    protected UUID uuid;
 
-    private String username;
+    protected String username;
 
     @Expose(serialize = false)
-    private int hashCode;
+    protected int hashCode;
 
     @Expose(serialize = false)
     protected WeakReference<EntityPlayer> player;
@@ -200,7 +240,8 @@ public class UserIdent
             if (ident != null)
                 return ident;
 
-            EntityPlayerMP player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
+            EntityPlayerMP player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername)
+                    : //
                     UserIdent.getPlayerByUsername(uuidOrUsername);
             if (player != null)
                 return get(player);
@@ -223,10 +264,39 @@ public class UserIdent
     {
         return get(uuidOrUsername, false);
     }
-    
-    public static synchronized UserIdent getVirtual(String username)
+
+    public static synchronized UserIdent getVirtualPlayer(String username)
     {
         return get(UUID.nameUUIDFromBytes(username.getBytes()), username);
+    }
+
+    public static synchronized ServerUserIdent getServer(String uuid, String username)
+    {
+        UUID _uuid = UUID.fromString(uuid);
+
+        UserIdent ident = byUuid.get(_uuid);
+        if (ident != null)
+            ident = byUsername.get(username);
+
+        if (ident == null || !(ident instanceof ServerUserIdent))
+            ident = new ServerUserIdent(_uuid, username);
+
+        return (ServerUserIdent) ident;
+    }
+
+    public static synchronized NpcUserIdent getNpc(String npcName)
+    {
+        String username = "$NPC" + (npcName == null ? "" : "_" + npcName.toUpperCase());
+        UUID _uuid = UUID.nameUUIDFromBytes(username.getBytes());
+
+        UserIdent ident = byUuid.get(_uuid);
+        if (ident != null)
+            ident = byUsername.get(username);
+
+        if (ident == null || !(ident instanceof NpcUserIdent))
+            ident = new NpcUserIdent(_uuid, username);
+
+        return (NpcUserIdent) ident;
     }
 
     public static synchronized void login(EntityPlayerMP player)
@@ -292,6 +362,26 @@ public class UserIdent
     public boolean isFakePlayer()
     {
         return getPlayer() instanceof FakePlayer;
+    }
+
+    /**
+     * Returns true for a normal UserIdent. Returns false for NPC or server UserIdents.
+     * 
+     * @return
+     */
+    public boolean isPlayer()
+    {
+        return true;
+    }
+
+    /**
+     * Returns false for a normal UserIdent. Returns true for NPC.
+     * 
+     * @return
+     */
+    public boolean isNpc()
+    {
+        return false;
     }
 
     /* ------------------------------------------------------------ */
@@ -375,10 +465,11 @@ public class UserIdent
             {
                 return new GameProfile(getOrGenerateUuid(), player.getCommandSenderName());
 
-                /*// Safeguard against stupid mods who set UUID to null
-                UserIdent playerIdent = UserIdent.byUsername.get(player.getCommandSenderName());
-                if (playerIdent != this)
-                    return playerIdent.getGameProfile();*/
+                /*
+                 * // Safeguard against stupid mods who set UUID to null UserIdent playerIdent =
+                 * UserIdent.byUsername.get(player.getCommandSenderName()); if (playerIdent != this) return
+                 * playerIdent.getGameProfile();
+                 */
             }
             else
             {
@@ -561,6 +652,5 @@ public class UserIdent
         }
         return sb.toString();
     }
-
 
 }
