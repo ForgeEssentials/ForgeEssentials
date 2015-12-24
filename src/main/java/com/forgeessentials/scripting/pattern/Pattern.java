@@ -18,7 +18,7 @@ public class Pattern
 
     public static enum ArgumentType
     {
-        NONE, PLAYER, GROUP, ZONE, DECIMAL, FLOAT;
+        NONE, PLAYER, GROUP, ZONE, DECIMAL, FLOAT, REST;
     }
 
     private String pattern;
@@ -31,10 +31,13 @@ public class Pattern
     {
         this.pattern = pattern;
         StringBuilder regex = new StringBuilder();
+        boolean mustEnd = false;
         for (String part : pattern.split(" "))
         {
             if (part.isEmpty())
                 continue;
+            if (mustEnd)
+                throw new IllegalArgumentException("Pattern must end after @*");
             if (regex.length() > 0)
                 regex.append("\\s+");
             if (part.charAt(0) == '@')
@@ -62,6 +65,16 @@ public class Pattern
                 case "zone":
                     regex.append("(\\d+)");
                     argumentTypes.add(ArgumentType.ZONE);
+                    break;
+                case "*":
+                    regex.append("(.*)");
+                    argumentTypes.add(ArgumentType.REST);
+                    mustEnd = true;
+                    break;
+                case "+":
+                    regex.append("(.+)");
+                    argumentTypes.add(ArgumentType.REST);
+                    mustEnd = true;
                     break;
                 case "":
                     regex.append("(\\S+)");
