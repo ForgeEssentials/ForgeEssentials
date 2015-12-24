@@ -300,7 +300,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        
+
         UserIdent ident = null;
         EntityLivingBase exploder = event.explosion.getExplosivePlacedBy();
         if (exploder instanceof EntityPlayer)
@@ -344,14 +344,14 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        
+
         UserIdent ident = null;
         EntityLivingBase exploder = event.explosion.getExplosivePlacedBy();
         if (exploder instanceof EntityPlayer)
             ident = UserIdent.get((EntityPlayer) exploder);
         else if (exploder instanceof EntityLiving)
             ident = APIRegistry.IDENT_NPC;
-        
+
         List<ChunkPosition> positions = event.explosion.affectedBlockPositions;
         for (Iterator<ChunkPosition> it = positions.iterator(); it.hasNext();)
         {
@@ -375,7 +375,9 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event.action == RIGHT_CLICK_AIR)
         {
             MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(event.entityPlayer);
-            if (mop == null)
+            if (mop == null && event.x == 0 && event.y == 0 && event.z == 0)
+                point = new WorldPoint(event.entityPlayer);
+            else if (mop == null)
                 point = new WorldPoint(event.world, event.x, event.y, event.z);
             else
                 point = new WorldPoint(event.world, mop.blockX, mop.blockY, mop.blockZ);
