@@ -72,7 +72,6 @@ public class Kit
             {
                 ChatOutputHandler.chatWarning(player,
                         Translator.format("Kit cooldown active, %s to go!", ChatOutputHandler.formatTimeDurationReadable(timeout / 1000L, true)));
-                pi.startTimeout("KIT_" + name, 0);
                 return;
             }
             pi.startTimeout("KIT_" + name, cooldown < 0 ? 10L * MILLISECONDS_PER_YEAR : cooldown * 1000L);

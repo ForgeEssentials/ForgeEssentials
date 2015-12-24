@@ -137,7 +137,10 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
                     if (!arguments.isEmpty())
                         cooldown = arguments.parseInt();
                     addKit(new Kit(arguments.senderPlayer, kitName, cooldown));
-                    arguments.confirm("Kit %s saved with cooldown %s", kitName, ChatOutputHandler.formatTimeDurationReadable(cooldown, true));
+                    if (cooldown < 0)
+                        arguments.confirm("Kit %s saved for one-time-use", kitName);
+                    else
+                        arguments.confirm("Kit %s saved with cooldown %s", kitName, ChatOutputHandler.formatTimeDurationReadable(cooldown, true));
                 }
             };
             if (kit == null)
