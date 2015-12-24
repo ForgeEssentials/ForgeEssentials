@@ -40,7 +40,6 @@ import net.minecraftforge.fml.common.FMLLog;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.servervote.ConfigServerVote;
-import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.servervote.VoteEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -187,8 +186,6 @@ public class VoteReceiver extends Thread
 
                 // Create the vote.
                 VoteEvent vote = new VoteEvent(username, serviceName, address, timeStamp);
-
-                ModuleServerVote.log.println(String.format("Vote received. Player: %s Service: %s, Time: %s", vote.player, vote.serviceName, vote.timeStamp));
 
                 EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(vote.player);
                 if (player == null)

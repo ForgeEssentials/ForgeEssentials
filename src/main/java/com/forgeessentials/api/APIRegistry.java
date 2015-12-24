@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.forgeessentials.api.UserIdent.NpcUserIdent;
+import com.forgeessentials.api.UserIdent.ServerUserIdent;
 import com.forgeessentials.api.economy.Economy;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.remote.FERemoteHandler;
@@ -18,6 +20,12 @@ import net.minecraftforge.fml.common.eventhandler.EventBus;
  */
 public class APIRegistry
 {
+
+    public static final ServerUserIdent IDENT_SERVER = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefefe", "$SERVER");
+
+    public static final ServerUserIdent IDENT_CMDBLOCK = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefecb", "$COMMANDBLOCK");
+
+    public static final NpcUserIdent IDENT_NPC = UserIdent.getNpc(null);
 
     /**
      * Use this to call API functions available in the economy module.

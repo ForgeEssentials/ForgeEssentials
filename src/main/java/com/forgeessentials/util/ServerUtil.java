@@ -1,6 +1,11 @@
 package com.forgeessentials.util;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -31,6 +36,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.google.common.base.Throwables;
 
 public abstract class ServerUtil
 {
@@ -305,6 +311,35 @@ public abstract class ServerUtil
         return MinecraftServer.getServer() != null && MinecraftServer.getServer().isServerRunning();
     }
     
+    public static boolean isOnlineMode()
+    {
+        return FMLCommonHandler.instance().getSidedDelegate().getServer().isServerInOnlineMode();
+    }
+
+    public static boolean getMojangServerStatus()
+    {
+        final String MC_SERVER = "http://session.minecraft.net/game/checkserver.jsp";
+        final String ONLINE = "NOT YET";
+        try
+        {
+            URL url = new URL(MC_SERVER);
+            try (BufferedReader stream = new BufferedReader(new InputStreamReader(url.openStream())))
+            {
+                String input = stream.readLine();
+                return ONLINE.equals(input);
+            }
+        }
+        catch (MalformedURLException e)
+        {
+            Throwables.propagate(e);
+            return false;
+        }
+        catch (IOException e)
+        {
+            return false;
+        }
+    }
+
     /* ------------------------------------------------------------ */
 
     public static String getItemName(Item item)

@@ -9,8 +9,8 @@ import net.minecraft.util.IChatComponent;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 
 public class DoAsCommandSender implements ICommandSender
 {
@@ -23,7 +23,7 @@ public class DoAsCommandSender implements ICommandSender
 
     public DoAsCommandSender()
     {
-        this.ident = ZonedPermissionHelper.SERVER_IDENT;
+        this.ident = APIRegistry.IDENT_SERVER;
         this.sender = MinecraftServer.getServer();
     }
 

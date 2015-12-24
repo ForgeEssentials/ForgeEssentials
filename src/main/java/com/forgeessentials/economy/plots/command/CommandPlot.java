@@ -29,7 +29,6 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
-import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.protection.MobType;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
@@ -529,7 +528,7 @@ public class CommandPlot extends ParserCommandBase
                 arguments.confirm("/plot set owner <player>: Set plot owner");
             UserIdent owner = plot.getOwner();
             if (owner == null)
-                owner = ZonedPermissionHelper.SERVER_IDENT;
+                owner = APIRegistry.IDENT_SERVER;
             arguments.confirm("Current plot owner: %s", owner.getUsernameOrUuid());
             return;
         }

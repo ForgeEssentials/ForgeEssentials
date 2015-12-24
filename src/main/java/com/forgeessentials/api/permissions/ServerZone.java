@@ -312,28 +312,21 @@ public class ServerZone extends Zone
         SortedSet<GroupEntry> result = getStoredPlayerGroupEntries(ident);
         if (ident != null)
         {
-            if (ident.isFakePlayer())
-            {
-                result.add(new GroupEntry(this, GROUP_FAKEPLAYERS));
-            }
+            // Include special groups
             if (MinecraftServer.getServer().getConfigurationManager().canSendCommands(ident.getGameProfile()))
             {
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
             }
-        }
-        // Check groups added through zones
-        if (point == null && ident != null && ident.hasPlayer())
-            point = new WorldPoint(ident.getPlayer());
-        if (ident != null && point != null)
-            for (Zone z : getZonesAt(point))
-                if (!(z instanceof ServerZone))
-                    result.addAll(z.getStoredPlayerGroupEntries(ident));
-        if (ident != null)
-        {
-            if (result.isEmpty())
+            if (ident.isFakePlayer())
+            {
+                result.add(new GroupEntry(this, GROUP_FAKEPLAYERS));
+            }
+            if (result.isEmpty() && ident.isPlayer())
                 result.add(new GroupEntry(this, GROUP_GUESTS));
             if (!ident.isFakePlayer())
                 result.add(new GroupEntry(GROUP_PLAYERS, 1, 1));
+            if (ident.isNpc())
+                result.add(new GroupEntry(GROUP_NPC, 1, 1));
 
             EntityPlayerMP player = ident.getPlayerMP();
             if (player != null && player.theItemInWorldManager != null)
@@ -349,6 +342,13 @@ public class ServerZone extends Zone
                     break;
                 }
         }
+        // Check groups added through zones
+        if (point == null && ident != null && ident.hasPlayer())
+            point = new WorldPoint(ident.getPlayer());
+        if (ident != null && point != null)
+            for (Zone z : getZonesAt(point))
+                if (!(z instanceof ServerZone))
+                    result.addAll(z.getStoredPlayerGroupEntries(ident));
         result.add(new GroupEntry(GROUP_DEFAULT, -1, -1));
         return result;
     }
@@ -553,7 +553,7 @@ public class ServerZone extends Zone
                     if (result != null)
                     {
                         if (rootZone.permissionDebugger != null)
-                            rootZone.permissionDebugger.debugPermission(zone, ident, null, permissionNode, node, result, point);
+                            rootZone.permissionDebugger.debugPermission(zone, ident, null, permissionNode, node, result, point, false);
                         return result;
                     }
                 }
@@ -580,7 +580,7 @@ public class ServerZone extends Zone
                         if (result != null)
                         {
                             if (rootZone.permissionDebugger != null)
-                                rootZone.permissionDebugger.debugPermission(zone, null, group, permissionNode, node, result, point);
+                                rootZone.permissionDebugger.debugPermission(zone, ident, group, permissionNode, node, result, point, true);
                             return result;
                         }
                     }
@@ -588,7 +588,7 @@ public class ServerZone extends Zone
             }
         }
         if (rootZone.permissionDebugger != null)
-            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, permissionNode, permissionNode, PERMISSION_TRUE, point);
+            rootZone.permissionDebugger.debugPermission(null, ident, GROUP_DEFAULT, permissionNode, permissionNode, PERMISSION_TRUE, point, true);
         return null;
     }
 
@@ -607,7 +607,7 @@ public class ServerZone extends Zone
                 if (result != null)
                 {
                     if (rootZone.permissionDebugger != null)
-                        rootZone.permissionDebugger.debugPermission(zone, ident, null, node, node, result, point);
+                        rootZone.permissionDebugger.debugPermission(zone, ident, null, node, node, result, point, false);
                     return result;
                 }
             }
@@ -631,18 +631,19 @@ public class ServerZone extends Zone
                     if (result != null)
                     {
                         if (rootZone.permissionDebugger != null)
-                            rootZone.permissionDebugger.debugPermission(zone, null, group, node, node, result, point);
+                            rootZone.permissionDebugger.debugPermission(zone, ident, group, node, node, result, point, true);
                         return result;
                     }
                 }
             }
         }
         if (rootZone.permissionDebugger != null)
-            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, node, node, "null", point);
+            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, node, node, "null", point, true);
         return null;
     }
 
-    public static PermissionCheckEvent postPermissionCheckEvent(Collection<Zone> zones, UserIdent ident, List<String> groups, List<String> nodes, boolean isProperty)
+    public static PermissionCheckEvent postPermissionCheckEvent(Collection<Zone> zones, UserIdent ident, List<String> groups, List<String> nodes,
+            boolean isProperty)
     {
         PermissionCheckEvent event = new PermissionCheckEvent(ident, zones, groups, nodes, isProperty);
         APIRegistry.FE_EVENTBUS.post(event);
@@ -652,7 +653,8 @@ public class ServerZone extends Zone
     public static interface PermissionDebugger
     {
 
-        void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value, WorldPoint point);
+        void debugPermission(Zone zone, UserIdent ident, String group, String permissionNode, String node, String value, WorldPoint point,
+                boolean isGroupPermission);
 
     }
 

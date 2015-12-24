@@ -1,6 +1,7 @@
 package net.minecraftforge.permission;
 
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
@@ -25,6 +26,8 @@ public final class PermissionManager
     protected static IPermissionProvider permissionProvider = new DefaultPermissionProvider();
 
     protected static PermissionManager instance = new PermissionManager();
+
+    protected static Map<ICommand, String> commandPermissions = new WeakHashMap<>();
 
     /* ------------------------------------------------------------ */
 
@@ -60,8 +63,8 @@ public final class PermissionManager
             provider = new DefaultPermissionProvider();
         if (!(permissionProvider instanceof DefaultPermissionProvider))
         {
-            FMLLog.severe("Registration of permission provider %s overwriting permission provider %s!", provider.getClass().getName(), permissionProvider
-                    .getClass().getName());
+            FMLLog.severe("Registration of permission provider %s overwriting permission provider %s!", provider.getClass().getName(),
+                    permissionProvider.getClass().getName());
         }
         permissionProvider = provider;
         FMLLog.fine("Registered permission provider %s", permissionProvider.getClass().getName());
@@ -83,6 +86,9 @@ public final class PermissionManager
             if (permission != null)
                 return permission;
         }
+        String permission = commandPermissions.get(command);
+        if (permission != null)
+            return permission;
         return DEFAULT_COMMAND_NODE + command.getCommandName();
     }
 
@@ -103,9 +109,33 @@ public final class PermissionManager
      */
     public static void registerCommandPermission(ICommand command)
     {
-        String permission = getCommandPermission(command);
-        PermissionLevel level = getCommandLevel(command);
-        registerPermission(permission, level);
+        registerPermission(getCommandPermission(command), getCommandLevel(command));
+    }
+
+    /**
+     * This method allows you to register permissions for commands that cannot implement the PermissionObject interface
+     * for any reason.
+     * 
+     * @param command
+     * @param permission
+     * @param permissionLevel
+     */
+    public static void registerCommandPermission(ICommand command, String permission, PermissionLevel permissionLevel)
+    {
+        commandPermissions.put(command, permission);
+        registerPermission(permission, permissionLevel);
+    }
+
+    /**
+     * This method allows you to register permissions for commands that cannot implement the PermissionObject interface
+     * for any reason.
+     * 
+     * @param command
+     * @param permission
+     */
+    public static void registerCommandPermission(ICommand command, String permission)
+    {
+        registerCommandPermission(command, permission, getCommandLevel(command));
     }
 
     /**
@@ -119,7 +149,8 @@ public final class PermissionManager
         @SuppressWarnings("unchecked")
         Map<String, ICommand> commands = MinecraftServer.getServer().getCommandManager().getCommands();
         for (ICommand command : commands.values())
-            registerCommandPermission(command);
+            if (!commandPermissions.containsKey(command))
+                registerCommandPermission(command);
     }
 
     /* ------------------------------------------------------------ */

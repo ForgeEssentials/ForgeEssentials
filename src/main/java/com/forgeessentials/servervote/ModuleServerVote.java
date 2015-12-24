@@ -3,11 +3,14 @@ package com.forgeessentials.servervote;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S02PacketChat;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -73,7 +76,7 @@ public class ModuleServerVote
             {
                 logFile.createNewFile();
             }
-            log = new PrintWriter(logFile);
+            log = new PrintWriter(new FileWriter(logFile, true), true);
         }
         catch (Exception e1)
         {
@@ -172,17 +175,20 @@ public class ModuleServerVote
 
     private static void doPlayer(EntityPlayerMP player, VoteEvent vote)
     {
+        log.println(String.format("Player %s voted on service %s on %s", vote.player, vote.serviceName, new Date(Long.parseLong(vote.timeStamp))));
         if (!ConfigServerVote.msgAll.equals(""))
         {
-            player.playerNetServerHandler.sendPacket(new S02PacketChat(new ChatComponentText(
+            MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(new S02PacketChat(new ChatComponentText(
                     ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
         }
 
         if (!ConfigServerVote.msgVoter.equals(""))
         {
-            ChatOutputHandler.sendMessage(player, ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
+            ChatOutputHandler.sendMessage(player,
+                    ChatOutputHandler.formatColors(ConfigServerVote.msgVoter.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
         }
 
         APIRegistry.scripts.runEventScripts(scriptKey, player);
     }
+    
 }

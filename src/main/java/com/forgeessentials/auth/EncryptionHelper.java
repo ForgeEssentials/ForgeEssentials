@@ -1,19 +1,24 @@
 package com.forgeessentials.auth;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-import com.forgeessentials.util.output.LoggingHandler;
+import org.apache.commons.codec.binary.Hex;
+
+import com.google.common.base.Throwables;
 
 public class EncryptionHelper
 {
-    private static final SecureRandom rand = new SecureRandom();
-    private static final char[] hex = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
-    private static final String saltChars = "ABCDEFGHIJGMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_=+[]{};:.,<>/?\\|~`";
-    private MessageDigest sha1;
 
-    public EncryptionHelper()
+    private static final SecureRandom rand = new SecureRandom();
+
+    private static final String saltChars = "ABCDEFGHIJGMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_=+[]{};:.,<>/?\\|~`";
+
+    private static MessageDigest sha1;
+
+    static
     {
         try
         {
@@ -21,42 +26,44 @@ public class EncryptionHelper
         }
         catch (NoSuchAlgorithmException e)
         {
-            // probably impossible too
+            throw Throwables.propagate(e);
         }
     }
 
     /**
-     * Should replicate PHP exactly.
+     * Hash a password. Should replicate PHP exactly.
      *
-     * @param s
+     * @param input
      * @return
      */
-    public String sha1(String s)
+    public static String sha1(String input)
     {
+        if (input == null)
+            return null;
         try
         {
-            byte[] array = (s + ModuleAuth.salt).getBytes("UTF-8");
+            byte[] array = input.getBytes("UTF-8");
             array = sha1.digest(array);
-            String hashed = byteArrayToHex(array);
-            return hashed;
+            return Hex.encodeHexString(array);
         }
-        catch (Throwable t)
+        catch (UnsupportedEncodingException e)
         {
-            LoggingHandler.felog.error("Unable to hash password", t);
+            throw Throwables.propagate(e);
         }
-
-        return "";
     }
 
-    private static String byteArrayToHex(byte[] bytes)
+    /**
+     * Hash password with salt. Should replicate PHP exactly.
+     *
+     * @param input
+     * @return
+     */
+    public static String sha1(String input, String salt)
     {
-        StringBuilder sb = new StringBuilder(bytes.length * 2);
-        for (final byte b : bytes)
-        {
-            sb.append(hex[(b & 0xF0) >> 4]);
-            sb.append(hex[b & 0x0F]);
-        }
-        return sb.toString();
+        if (input == null)
+            return null;
+        else
+            return sha1(input + salt);
     }
 
     public static String generateSalt()
@@ -67,12 +74,11 @@ public class EncryptionHelper
     public static String generateSalt(int length)
     {
         char[] array = new char[length];
-
         for (int i = 0; i < length; i++)
         {
             array[i] = saltChars.charAt(rand.nextInt(saltChars.length()));
         }
-
         return new String(array);
     }
+
 }

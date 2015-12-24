@@ -27,8 +27,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.Explosion;
@@ -306,6 +306,8 @@ public class ProtectionEventHandler extends ServerEventHandler
         EntityLivingBase exploder = event.explosion.getExplosivePlacedBy();
         if (exploder instanceof EntityPlayer)
             ident = UserIdent.get((EntityPlayer) exploder);
+        else if (exploder instanceof EntityLiving)
+            ident = APIRegistry.IDENT_NPC;
 
         Vec3 center = event.explosion.getPosition();
         int cx = (int) Math.floor(center.xCoord);
@@ -314,7 +316,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         float size = ReflectionHelper.getPrivateValue(Explosion.class, event.explosion, "field_77280_f", "explosionSize");
         int s = (int) Math.ceil(size);
 
-        if (!APIRegistry.perms.checkUserPermission(null, new WorldPoint(event.world, cx, cy, cz), ModuleProtection.PERM_EXPLOSION))
+        if (!APIRegistry.perms.checkUserPermission(ident, new WorldPoint(event.world, cx, cy, cz), ModuleProtection.PERM_EXPLOSION))
         {
             event.setCanceled(true);
             return;
@@ -332,7 +334,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 }
         // WorldArea area = new WorldArea(event.world, new Point(cx - s, cy - s, cz - s), new Point(cx + s, cy + s, cz +
         // s));
-        // if (!APIRegistry.perms.checkUserPermission(null, area, ModuleProtection.PERM_EXPLOSION))
+        // if (!APIRegistry.perms.checkUserPermission(ident, area, ModuleProtection.PERM_EXPLOSION))
         // {
         // event.setCanceled(true);
         // return;
@@ -350,6 +352,8 @@ public class ProtectionEventHandler extends ServerEventHandler
         EntityLivingBase exploder = event.explosion.getExplosivePlacedBy();
         if (exploder instanceof EntityPlayer)
             ident = UserIdent.get((EntityPlayer) exploder);
+        else if (exploder instanceof EntityLiving)
+            ident = APIRegistry.IDENT_NPC;
 
         List<BlockPos> positions = event.explosion.func_180343_e();
         for (Iterator<BlockPos> it = positions.iterator(); it.hasNext();)
@@ -357,7 +361,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             BlockPos pos = it.next();
             WorldPoint point = new WorldPoint(event.world, pos);
             String permission = ModuleProtection.getBlockExplosionPermission(point.getWorld().getBlockState(pos));
-            if (!APIRegistry.perms.checkUserPermission(null, point, permission))
+            if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
                 it.remove();
         }
     }
@@ -374,7 +378,9 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event.action == RIGHT_CLICK_AIR)
         {
             MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(event.entityPlayer);
-            if (mop == null)
+            if (mop == null && event.pos.getX() == 0 && event.pos.getY() == 0 && event.pos.getZ() == 0)
+                point = new WorldPoint(event.entityPlayer);
+            else if (mop == null)
                 point = new WorldPoint(event.entityPlayer.dimension, event.pos);
             else
                 point = new WorldPoint(event.entityPlayer.dimension, mop.func_178782_a());
@@ -499,6 +505,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
         EntityLiving entity = (EntityLiving) event.entityLiving;
         WorldPoint point = new WorldPoint(entity);
+        // TODO: Create a cache for spawn permissions
         if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_NATURAL + "." + EntityList.getEntityString(entity)))
         {
             event.setResult(Result.DENY);

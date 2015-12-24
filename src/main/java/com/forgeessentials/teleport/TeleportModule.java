@@ -56,6 +56,9 @@ public class TeleportModule extends ConfigLoaderBase
     public static final String PERM_WARP = "fe.teleport.warp";
     public static final String PERM_WARP_ADMIN = "fe.teleport.warp.admin";
 
+    public static final String PERM_JUMP = "fe.teleport.jump";
+    public static final String PERM_JUMP_TOOL = PERM_JUMP + ".tool";
+
     private PortalManager portalManager;
 
     @SubscribeEvent
@@ -102,6 +105,8 @@ public class TeleportModule extends ConfigLoaderBase
         APIRegistry.perms.registerPermission(PERM_TPA_SENDREQUEST, PermissionLevel.TRUE, "Allow sending teleport-to requests");
         APIRegistry.perms.registerPermission(PERM_TPAHERE_SENDREQUEST, PermissionLevel.TRUE, "Allow sending teleport-here requests");
         APIRegistry.perms.registerPermission(PERM_WARP_ADMIN, PermissionLevel.OP);
+
+        APIRegistry.perms.registerPermission(PERM_JUMP_TOOL, PermissionLevel.OP, "Allow jumping with a tool (default compass)");
     }
 
     @Override

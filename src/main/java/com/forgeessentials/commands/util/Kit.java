@@ -15,6 +15,8 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class Kit
 {
 
+    private static final long MILLISECONDS_PER_YEAR = 365L * 24L * 60L * 60L * 1000L;
+
     private String name;
 
     private int cooldown;
@@ -62,7 +64,7 @@ public class Kit
 
     public void giveKit(EntityPlayer player)
     {
-        if (!PermissionManager.checkPermission(player, CommandKit.PERM_BYPASS_COOLDOWN) && cooldown > 0)
+        if (!PermissionManager.checkPermission(player, CommandKit.PERM_BYPASS_COOLDOWN))
         {
             PlayerInfo pi = PlayerInfo.get(player.getPersistentID());
             long timeout = pi.getRemainingTimeout("KIT_" + name);
@@ -70,10 +72,9 @@ public class Kit
             {
                 ChatOutputHandler.chatWarning(player,
                         Translator.format("Kit cooldown active, %s to go!", ChatOutputHandler.formatTimeDurationReadable(timeout / 1000L, true)));
-                pi.startTimeout("KIT_" + name, 0);
                 return;
             }
-            pi.startTimeout("KIT_" + name, cooldown * 1000L);
+            pi.startTimeout("KIT_" + name, cooldown < 0 ? 10L * MILLISECONDS_PER_YEAR : cooldown * 1000L);
         }
 
         boolean couldNotGiveItems = false;
