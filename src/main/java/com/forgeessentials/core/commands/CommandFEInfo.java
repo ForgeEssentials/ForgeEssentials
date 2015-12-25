@@ -68,8 +68,7 @@ public class CommandFEInfo extends ParserCommandBase
         switch (subCmd)
         {
         case "reload":
-            ModuleLauncher.instance.reloadConfigs();
-            arguments.confirm("Reloaded configs. (may not work for all settings)");
+            CommandFeReload.reload(arguments.sender);
             break;
         case "modules":
             arguments.confirm("Loaded FE modules: " + StringUtils.join(ModuleLauncher.getModuleList(), ", "));

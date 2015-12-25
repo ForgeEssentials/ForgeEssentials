@@ -32,6 +32,7 @@ import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.CommandFEWorldInfo;
+import com.forgeessentials.core.commands.CommandFeReload;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandUuid;
 import com.forgeessentials.core.environment.Environment;
@@ -109,6 +110,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     public static final String PERM = "fe";
     public static final String PERM_CORE = PERM + ".core";
     public static final String PERM_INFO = PERM_CORE + ".info";
+    public static final String PERM_RELOAD = PERM_CORE + ".reload";
     public static final String PERM_VERSIONINFO = PERM_CORE + ".versioninfo";
 
     /* ------------------------------------------------------------ */
@@ -269,6 +271,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     private void registerCommands()
     {
         FECommandManager.registerCommand(new CommandFEInfo());
+        FECommandManager.registerCommand(new CommandFeReload());
         FECommandManager.registerCommand(new CommandFeSettings());
         FECommandManager.registerCommand(new CommandWand());
         FECommandManager.registerCommand(new CommandUuid());
