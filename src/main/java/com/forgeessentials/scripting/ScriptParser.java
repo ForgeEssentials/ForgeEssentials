@@ -199,7 +199,7 @@ public class ScriptParser
             }
             catch (NumberFormatException e)
             {
-                throw new CommandException(e.getMessage());
+                throw new CommandException("Invalid number format: " + e.getMessage());
             }
         }
     }

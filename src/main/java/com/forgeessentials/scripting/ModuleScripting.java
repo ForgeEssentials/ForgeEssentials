@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -92,7 +94,8 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         {
             writer.println("# Script arguments");
             writer.println();
-            for (Entry<String, ScriptArgument> item : ScriptArguments.getAll().entrySet())
+            SortedMap<String, ScriptArgument> sortedItems = new TreeMap<>(ScriptArguments.getAll());
+            for (Entry<String, ScriptArgument> item : sortedItems.entrySet())
             {
                 writer.println("## @" + item.getKey());
                 writer.println(item.getValue().getHelp());
@@ -107,7 +110,8 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         {
             writer.println("# Script methods");
             writer.println();
-            for (Entry<String, ScriptMethod> item : ScriptMethods.getAll().entrySet())
+            SortedMap<String, ScriptMethod> sortedItems = new TreeMap<>(ScriptMethods.getAll());
+            for (Entry<String, ScriptMethod> item : sortedItems.entrySet())
             {
                 writer.println("## " + item.getKey());
                 writer.println(item.getValue().getHelp());
@@ -212,6 +216,7 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         PatternCommand.saveAll();
     }
 
+    @Override
     public void runEventScripts(String eventType, ICommandSender sender)
     {
         if (sender == null)
@@ -315,6 +320,7 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         return true;
     }
 
+    @Override
     public void addScriptType(String key)
     {
         knownEventTypes.add(key);

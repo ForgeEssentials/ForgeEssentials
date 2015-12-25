@@ -90,6 +90,17 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param message
      *            The message to send
      */
+    public static void broadcast(String message)
+    {
+        broadcast(new ChatComponentText(message));;
+    }
+
+    /**
+     * Sends a message to all clients
+     *
+     * @param message
+     *            The message to send
+     */
     public static void broadcast(IChatComponent message)
     {
         MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
@@ -207,6 +218,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     }
 
     public static final Pattern FORMAT_CODE_PATTERN;
+
     static
     {
         String codes = "";
@@ -389,8 +401,8 @@ public final class ChatOutputHandler extends ConfigLoaderBase
             }
         }
         sb.append(StringEscapeUtils.escapeHtml4(message.substring(pos, message.length())));
-        //for (; pos < message.length(); pos++)
-        //    sb.append(message.charAt(pos));
+        // for (; pos < message.length(); pos++)
+        // sb.append(message.charAt(pos));
         for (int i = 0; i < tagCount; i++)
             sb.append("</span>");
         return sb.toString();
@@ -449,9 +461,9 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     {
         int weeks = (int) (TimeUnit.SECONDS.toDays(time) / 7);
         int days = (int) (TimeUnit.SECONDS.toDays(time) - 7 * weeks);
-        long hours = TimeUnit.SECONDS.toHours(time) - (TimeUnit.SECONDS.toDays(time) *24);
-        long minutes = TimeUnit.SECONDS.toMinutes(time) - (TimeUnit.SECONDS.toHours(time)* 60);
-        long seconds = TimeUnit.SECONDS.toSeconds(time) - (TimeUnit.SECONDS.toMinutes(time) *60);
+        long hours = TimeUnit.SECONDS.toHours(time) - (TimeUnit.SECONDS.toDays(time) * 24);
+        long minutes = TimeUnit.SECONDS.toMinutes(time) - (TimeUnit.SECONDS.toHours(time) * 60);
+        long seconds = TimeUnit.SECONDS.toSeconds(time) - (TimeUnit.SECONDS.toMinutes(time) * 60);
 
         StringBuilder sb = new StringBuilder();
         if (weeks != 0)
@@ -521,9 +533,10 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        config.addCustomCategoryComment(CONFIG_CAT, "This controls the colors of the various chats output by ForgeEssentials."
-                + "\nValid output colors are as follows:" + "\naqua, black, blue, dark_aqua, dark_blue, dark_gray, dark_green, dark_purple, dark_red"
-                + "\ngold, gray, green, light_purple, red, white, yellow");
+        config.addCustomCategoryComment(CONFIG_CAT,
+                "This controls the colors of the various chats output by ForgeEssentials." + "\nValid output colors are as follows:"
+                        + "\naqua, black, blue, dark_aqua, dark_blue, dark_gray, dark_green, dark_purple, dark_red"
+                        + "\ngold, gray, green, light_purple, red, white, yellow");
 
         setConfirmationColor(config.get(CONFIG_CAT, "confirmationColor", "green", "Defaults to green.").getString());
         setErrorColor(config.get(CONFIG_CAT, "errorOutputColor", "red", "Defaults to red.").getString());
