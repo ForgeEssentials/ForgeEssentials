@@ -1,6 +1,7 @@
 package com.forgeessentials.core;
 
 import java.io.File;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -100,6 +101,8 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     @Instance(value = MODID)
     public static ForgeEssentials instance;
+    
+    public static Random rnd = new Random();
 
     /* ------------------------------------------------------------ */
 

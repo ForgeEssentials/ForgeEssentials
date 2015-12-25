@@ -19,6 +19,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
@@ -469,7 +470,21 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`timeout <delay> <command...>`  \nMake another command run after a delay (in ms).\nCan be used with pattern commands to make more complex timed scripts.";
+            return "`timeout <delay> <command...>`  \nMake another command run after a delay (in ms).  \nCan be used with pattern commands to make more complex timed scripts.";
+        }
+    };
+
+    public static final ScriptMethod random = new ScriptMethod() {
+        @Override
+        public boolean process(final ICommandSender sender, String[] args)
+        {
+            return ForgeEssentials.rnd.nextInt(100) < Integer.parseInt(args[0]);
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`random <success-chance-in-percent>`  \nThis method will randomly success or fail.  \nIf it fails, the rest of the script will not be executed any more.";
         }
     };
 
