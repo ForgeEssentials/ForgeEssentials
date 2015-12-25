@@ -25,7 +25,7 @@ public class TileEntitySkullGrave extends TileEntitySkull
     {
         super.invalidate();
         WorldPoint point = new WorldPoint(worldObj, pos.getX(), pos.getY(), pos.getZ());
-        Grave grave = Grave.graves.get(point.toString());
+        Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
 

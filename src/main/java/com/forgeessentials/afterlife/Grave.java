@@ -118,26 +118,6 @@ public class Grave
 
     public void updateBlocks()
     {
-        IBlockState graveBlock = point.getWorld().getBlockState(point.getBlockPos());
-        if (graveBlock != blockState && graveBlock != Blocks.chest)
-        {
-            point.getWorld().setBlockState(point.getBlockPos(), blockState);
-            if (blockState == Blocks.skull)
-            {
-                TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
-                point.getWorld().setTileEntity(point.getBlockPos(), skull);
-            }
-        }
-        if (hasFencePost)
-        {
-            BlockPos fencePos = new BlockPos(point.getX(), point.getY() - 1, point.getZ());
-            if (point.getWorld().getBlockState(fencePos) != Blocks.oak_fence.getDefaultState())
-                point.getWorld().setBlockState(fencePos, Blocks.oak_fence.getDefaultState());
-        }
-    }
-
-    public void update()
-    {
         if (isProtected)
         {
             long currentTimeMillis = System.currentTimeMillis();
@@ -145,6 +125,31 @@ public class Grave
             lastTick = currentTimeMillis;
             if (protTime < 0)
                 isProtected = false;
+        }
+        
+        IBlockState graveBlock = point.getWorld().getBlockState(point.getBlockPos());
+        if (graveBlock != blockState && graveBlock != Blocks.chest)
+        {
+            // Grave is destroyed - repair if protection is still active
+            if (isProtected)
+            {
+                point.getWorld().setBlockState(point.getBlockPos(), blockState);
+                if (blockState == Blocks.skull)
+                {
+                    TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
+                    point.getWorld().setTileEntity(point.getBlockPos(), skull);
+                }
+            }
+            else
+            {
+                remove(true);
+            }
+        }
+        if (hasFencePost)
+        {
+            BlockPos fencePos = new BlockPos(point.getX(), point.getY() - 1, point.getZ());
+            if (point.getWorld().getBlockState(fencePos) != Blocks.oak_fence.getDefaultState())
+                point.getWorld().setBlockState(fencePos, Blocks.oak_fence.getDefaultState());
         }
     }
 
@@ -239,10 +244,7 @@ public class Grave
     public static void saveAll()
     {
         for (Grave grave : graves.values())
-        {
-            grave.update();
             DataManager.getInstance().save(grave, grave.getPosition().toString());
-        }
     }
 
 }
