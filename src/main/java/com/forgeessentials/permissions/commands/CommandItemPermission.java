@@ -1,6 +1,7 @@
 package com.forgeessentials.permissions.commands;
 
 import static com.forgeessentials.permissions.core.ItemPermissionManager.TAG_MODE;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,6 +16,7 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.permissions.core.ItemPermissionManager;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.ItemUtil;
 
 public class CommandItemPermission extends ParserCommandBase
 {
@@ -147,12 +149,7 @@ public class CommandItemPermission extends ParserCommandBase
 
     public static NBTTagCompound getOrCreatePermissionTag(ItemStack stack)
     {
-        NBTTagCompound stackTag = stack.getTagCompound();
-        if (stackTag == null)
-        {
-            stackTag = new NBTTagCompound();
-            stack.setTagCompound(stackTag);
-        }
+        NBTTagCompound stackTag = ItemUtil.getTagCompound(stack);
         NBTTagCompound tag = stackTag.getCompoundTag(ItemPermissionManager.TAG_BASE);
         stackTag.setTag(ItemPermissionManager.TAG_BASE, tag);
         return tag;

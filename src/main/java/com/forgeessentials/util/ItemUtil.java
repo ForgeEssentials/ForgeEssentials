@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 
@@ -61,6 +62,25 @@ public final class ItemUtil
             return sign.signText;
         }
         return null;
+    }
+
+    public static NBTTagCompound getTagCompound(ItemStack itemStack)
+    {
+        NBTTagCompound tag = itemStack.getTagCompound();
+        if (tag == null)
+        {
+            tag = new NBTTagCompound();
+            itemStack.setTagCompound(tag);
+        }
+        return tag;
+    }
+
+    
+    public static NBTTagCompound getCompoundTag(NBTTagCompound tag, String side)
+    {
+        NBTTagCompound subTag = tag.getCompoundTag(side);
+        tag.setTag(side, subTag);
+        return subTag;
     }
 
 }
