@@ -32,7 +32,7 @@ import com.google.gson.annotations.Expose;
 public class PatternCommand extends ForgeEssentialsCommandBase implements Loadable
 {
 
-    public static Map<String, PatternCommand> patternCommands = new HashMap<>();
+    protected static Map<String, PatternCommand> patternCommands = new HashMap<>();
 
     public static class CommandPattern extends Pattern
     {
@@ -61,6 +61,42 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
 
     @Expose(serialize = false)
     protected PatternParser<CommandPattern> parser;
+    
+    /* ------------------------------------------------------------ */
+
+    @Override
+    public void afterLoad()
+    {
+        if (extraPermissions == null)
+            extraPermissions = new HashMap<>();
+        patternCommands.put(name, this);
+        register();
+    }
+
+    public static Map<String, PatternCommand> getPatternCommands()
+    {
+        return patternCommands;
+    }
+
+    public static void loadAll()
+    {
+        patternCommands = DataManager.loadAll(PatternCommand.class, ModuleScripting.getPatternCommandsDir());
+    }
+
+    public static void saveAll()
+    {
+        DataManager.saveAll(patternCommands, ModuleScripting.getPatternCommandsDir());
+    }
+
+    public static void deregisterAll()
+    {
+        for (PatternCommand pattern : patternCommands.values())
+        {
+            pattern.deregister();
+        }
+    }
+    
+    /* ------------------------------------------------------------ */
 
     public PatternCommand(String name, String usage, String permission)
     {
@@ -76,33 +112,6 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
     {
         for (Entry<String, PermissionLevel> perm : extraPermissions.entrySet())
             APIRegistry.perms.registerPermission(perm.getKey(), perm.getValue(), String.format("Permission for Pattern command /%s", name));
-    }
-
-    @Override
-    public void afterLoad()
-    {
-        if (extraPermissions == null)
-            extraPermissions = new HashMap<>();
-        patternCommands.put(name, this);
-        register();
-    }
-
-    public static void loadAll()
-    {
-        patternCommands = DataManager.loadAll(PatternCommand.class, ModuleScripting.commandsDir);
-    }
-
-    public static void saveAll()
-    {
-        DataManager.saveAll(patternCommands, ModuleScripting.commandsDir);
-    }
-
-    public static void deregisterAll()
-    {
-        for (PatternCommand pattern : patternCommands.values())
-        {
-            pattern.deregister();
-        }
     }
 
     public Map<String, List<String>> getPatterns()

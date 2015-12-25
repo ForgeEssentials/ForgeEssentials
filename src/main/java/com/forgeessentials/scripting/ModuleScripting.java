@@ -30,7 +30,6 @@ import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
 import com.forgeessentials.scripting.ScriptParser.ScriptErrorException;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.ScriptMethod;
-import com.forgeessentials.scripting.command.CommandTimedTask;
 import com.forgeessentials.scripting.command.PatternCommand;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -55,33 +54,34 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
     public static final long CRON_CHECK_INTERVAL = 1000;
 
     @FEModule.ModuleDir
-    public static File moduleDir;
+    protected static File moduleDir;
 
-    public static File commandsDir;
+    protected static File commandsDir;
 
     protected long lastCronCheck;
 
-    public static List<String> knownEventTypes = new ArrayList<>();
+    /**
+     * Map < event name, List of scripts < lines of code > >
+     */
+    protected Map<String, Map<String, List<String>>> scripts = new HashMap<>();
 
-    // Map < event name, List of scripts < lines of code > >
-    public Map<String, Map<String, List<String>>> scripts = new HashMap<>();
-
+    /**
+     * Stores the time that scripts ran the last time
+     */
     protected Map<String, Long> cronTimes = new HashMap<>();
 
-    static
-    {
-        knownEventTypes.add("start");
-        knownEventTypes.add("stop");
-        knownEventTypes.add("login");
-        knownEventTypes.add("logout");
-        knownEventTypes.add("death");
-        knownEventTypes.add("cron");
-    }
+    /* ------------------------------------------------------------ */
 
     @SubscribeEvent
-    public void preLoad(FEModulePreInitEvent e)
+    public void preLoad(FEModulePreInitEvent event)
     {
         APIRegistry.scripts = this;
+        addScriptType("start");
+        addScriptType("stop");
+        addScriptType("login");
+        addScriptType("logout");
+        addScriptType("playerdeath");
+        addScriptType("cron");
     }
 
     @SubscribeEvent
@@ -124,15 +124,56 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         }
     }
 
-    public void loadScripts()
+    @SubscribeEvent
+    public void serverStarting(FEModuleServerInitEvent event)
     {
-        scripts = new HashMap<>();
-        for (String eventType : knownEventTypes)
-        {
-            Map<String, List<String>> scriptList = new HashMap<>();
-            scripts.put(eventType, scriptList);
+        reloadScripts();
+        PatternCommand.loadAll();
+        createDefaultPatternCommands();
+        PatternCommand.saveAll();
+    }
 
-            File path = new File(moduleDir, eventType.toLowerCase());
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void serverTickEvent(ServerTickEvent event)
+    {
+        if (event.phase != Phase.START)
+            runCronScripts();
+    }
+
+
+    @SubscribeEvent
+    public void reload(ConfigReloadEvent event)
+    {
+        PatternCommand.deregisterAll();
+
+        reloadScripts();
+        PatternCommand.loadAll();
+        createDefaultPatternCommands();
+        PatternCommand.saveAll();
+    }
+
+    public static File getPatternCommandsDir()
+    {
+        return commandsDir;
+    }
+    
+    /* ------------------------------------------------------------ */
+    /* Script handling */
+
+    @Override
+    public void addScriptType(String key)
+    {
+        scripts.putIfAbsent(key, new HashMap<String, List<String>>());
+    }
+
+    public void reloadScripts()
+    {
+        for (Entry<String, Map<String, List<String>>> entry : scripts.entrySet())
+        {
+            Map<String, List<String>> scriptList = entry.getValue();
+            scriptList.clear();
+
+            File path = new File(moduleDir, entry.getKey().toLowerCase());
             if (!path.exists())
             {
                 path.mkdirs();
@@ -158,33 +199,10 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         }
     }
 
-    @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
-    {
-        new CommandTimedTask().register();
-
-        loadScripts();
-        PatternCommand.loadAll();
-        createDefaultPatternCommands();
-        PatternCommand.saveAll();
-    }
-
-    @SubscribeEvent
-    public void serverStarted(FEModuleServerPostInitEvent e)
-    {
-        runEventScripts("start", null);
-    }
-
-    @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
-    {
-        runEventScripts("stop", null);
-    }
-
-    public static void createDefaultPatternCommands()
+    public void createDefaultPatternCommands()
     {
         PatternCommand cmd;
-        if (!PatternCommand.patternCommands.containsKey("god"))
+        if (!PatternCommand.getPatternCommands().containsKey("god"))
         {
             cmd = new PatternCommand("god", "/god on|off [player]", null);
             cmd.getPatterns().put("on @p", Arrays.asList(new String[] { "permcheck fe.commands.god.others", //
@@ -203,17 +221,6 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
             cmd.getExtraPermissions().put("fe.commands.god", PermissionLevel.OP);
             cmd.registerExtraPermissions();
         }
-    }
-
-    @SubscribeEvent
-    public void reload(ConfigReloadEvent e)
-    {
-        PatternCommand.deregisterAll();
-
-        loadScripts();
-        PatternCommand.loadAll();
-        createDefaultPatternCommands();
-        PatternCommand.saveAll();
     }
 
     @Override
@@ -241,32 +248,8 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
+    public void runCronScripts()
     {
-        runEventScripts("login", event.player);
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
-    {
-        runEventScripts("logout", event.player);
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public void onPlayerDeath(LivingDeathEvent event)
-    {
-        if (event.entityLiving instanceof EntityPlayerMP)
-        {
-            runEventScripts("death", (EntityPlayerMP) event.entityLiving);
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public void serverTickEvent(ServerTickEvent event)
-    {
-        if (event.phase == Phase.START)
-            return;
         if (System.currentTimeMillis() - lastCronCheck >= CRON_CHECK_INTERVAL)
         {
             lastCronCheck = System.currentTimeMillis();
@@ -295,7 +278,7 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         }
     }
 
-    protected boolean checkCron(String jobName, String cronDef)
+    public boolean checkCron(String jobName, String cronDef)
     {
         cronDef.trim();
         if (cronDef.charAt(0) != '#')
@@ -320,10 +303,40 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         return true;
     }
 
-    @Override
-    public void addScriptType(String key)
+    /* ------------------------------------------------------------ */
+    /* Events */
+
+    @SubscribeEvent
+    public void serverStarted(FEModuleServerPostInitEvent event)
     {
-        knownEventTypes.add(key);
+        runEventScripts("start", null);
+    }
+
+    @SubscribeEvent
+    public void serverStopping(FEModuleServerStopEvent event)
+    {
+        runEventScripts("stop", null);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
+    {
+        runEventScripts("login", event.player);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
+    {
+        runEventScripts("logout", event.player);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onPlayerDeath(LivingDeathEvent event)
+    {
+        if (event.entityLiving instanceof EntityPlayerMP)
+        {
+            runEventScripts("playerdeath", (EntityPlayerMP) event.entityLiving);
+        }
     }
 
 }
