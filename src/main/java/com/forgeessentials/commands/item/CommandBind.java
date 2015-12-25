@@ -1,7 +1,5 @@
 package com.forgeessentials.commands.item;
 
-import java.util.List;
-
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,19 +8,30 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.ItemUtil;
 
-public class CommandBind extends FEcmdModuleCommands
+public class CommandBind extends ParserCommandBase
 {
-    public static final String color = EnumChatFormatting.RESET + "" + EnumChatFormatting.AQUA;
+
+    private static final String TAG_NAME = "FEbinding";
+
+    public static final String LORE_TEXT_TAG = EnumChatFormatting.RESET.toString() + EnumChatFormatting.AQUA;
+
+    public CommandBind()
+    {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
     @Override
     public String getCommandName()
@@ -31,9 +40,15 @@ public class CommandBind extends FEcmdModuleCommands
     }
 
     @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "febind" };
+    }
+
+    @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/bind <left|right|clear> <command[args]> Bind a command to an object.";
+        return "/bind <left|right>: Bind a command to an item";
     }
 
     @Override
@@ -43,76 +58,102 @@ public class CommandBind extends FEcmdModuleCommands
     }
 
     @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".bind";
+    }
+
+    @Override
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.OP;
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    @SuppressWarnings("unchecked")
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
-        if (args.length == 0 || !(args[0].equalsIgnoreCase("left") || args[0].equalsIgnoreCase("right") || args[0].equalsIgnoreCase("clear")))
+        if (arguments.isEmpty())
         {
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            arguments.confirm("/bind <left|right> <command...>: Bind command to an item");
+            return;
         }
-        else if (sender.inventory.getCurrentItem() == null)
+
+        arguments.tabComplete("left", "right", "clear");
+        String side = arguments.remove().toLowerCase();
+
+        // If sub-command is "clear"
+        if (side.equals("clear"))
         {
+            if (!arguments.isTabCompletion)
+            {
+                ItemStack is = arguments.senderPlayer.inventory.getCurrentItem();
+                if (is == null)
+                    throw new TranslatedCommandException("You are not holding a valid item.");
+                NBTTagCompound tag = is.getTagCompound();
+                if (tag != null)
+                    tag.removeTag(TAG_NAME);
+                arguments.confirm("Cleared bound commands from item");
+            }
+            return;
+        }
+
+        // Get correct side
+        boolean isLeft = side.equals("left");
+        if (!isLeft && !side.equals("right"))
+            throw new TranslatedCommandException("Side must be either left or right");
+
+        if (arguments.isEmpty())
+        {
+            arguments.confirm("/bind " + side + " <command...>: Bind command to an item");
+            arguments.confirm("/bind " + side + " none: Clear bound command");
+            return;
+        }
+
+        ItemStack is = arguments.senderPlayer.inventory.getCurrentItem();
+        if (is == null)
             throw new TranslatedCommandException("You are not holding a valid item.");
+        NBTTagCompound tag = ItemUtil.getTagCompound(is);
+        NBTTagCompound bindTag = ItemUtil.getCompoundTag(tag, TAG_NAME);
+        NBTTagCompound display = tag.getCompoundTag("display");
+
+        if (arguments.isTabCompletion)
+        {
+            arguments.tabCompletion = MinecraftServer.getServer().func_180506_a(arguments.sender,
+                    arguments.toString().startsWith("/") ? arguments.toString() : "/" + arguments.toString(), arguments.sender.getPosition());
+            if ("none".startsWith(arguments.peek()))
+                arguments.tabCompletion.add(0, "none");
+            return;
+        }
+        if (arguments.peek().equals("none"))
+        {
+            bindTag.removeTag(side);
+            display.setTag("Lore", new NBTTagList());
+            arguments.confirm("Cleared " + side + " bound command from item");
         }
         else
         {
-            ItemStack is = sender.inventory.getCurrentItem();
-            if (!is.hasTagCompound())
-                is.setTagCompound(new NBTTagCompound());
-            if (args[0].equalsIgnoreCase("clear"))
+            String command = arguments.toString();
+            bindTag.setString(side, command);
+
+            String loreStart = LORE_TEXT_TAG + side + "> ";
+            NBTTagString loreTag = new NBTTagString(loreStart + command);
+
+            NBTTagList lore = display.getTagList("Lore", 9);
+            for (int i = 0; i < lore.tagCount(); ++i)
             {
-                is.getTagCompound().removeTag("FEbinding");
-                NBTTagCompound display = is.getTagCompound().getCompoundTag("display");
-                display.setTag("Lore", new NBTTagList());
-            }
-            else
-            {
-                StringBuilder cmd = new StringBuilder();
-                for (int i = 1; i < args.length; i++)
+                if (lore.getStringTagAt(i).startsWith(loreStart))
                 {
-                    cmd.append(args[i] + " ");
+                    lore.set(i, loreTag);
+                    arguments.confirm("Bound command to item");
+                    return;
                 }
-
-                NBTTagCompound nbt = is.getTagCompound().getCompoundTag("FEbinding");
-                nbt.setString(args[0].toLowerCase(), cmd.toString().trim());
-
-                NBTTagCompound display = is.getTagCompound().getCompoundTag("display");
-                NBTTagList list = display.getTagList("Lore", 9);
-                if (list.tagCount() != 0)
-                {
-                    System.out.println("NOT 0");
-                    for (int j = 0; j < list.tagCount(); ++j)
-                    {
-                        if (list.getCompoundTagAt(j).getString("FEbinding").startsWith(color + args[0].toLowerCase()))
-                        {
-                            System.out.println("Match found");
-                            list.removeTag(j);
-                        }
-                    }
-                }
-                list.appendTag(new NBTTagString(color + args[0].toLowerCase() + "> " + cmd));
-                display.setTag("Lore", list);
-
-                is.getTagCompound().setTag("display", display);
-                is.getTagCompound().setTag("FEbinding", nbt);
             }
-            ChatOutputHandler.chatConfirmation(sender, "Command bound to object.");
+            lore.appendTag(loreTag);
+            display.setTag("Lore", lore);
+            tag.setTag("display", display);
         }
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
-    {
-        if (args.length == 1)
-        {
-            return getListOfStringsMatchingLastWord(args, "left", "right", "clear");
-        }
-        return null;
+        arguments.confirm("Bound command to item");
     }
 
     @SubscribeEvent
@@ -121,30 +162,16 @@ public class CommandBind extends FEcmdModuleCommands
         if (!(event.entityPlayer instanceof EntityPlayerMP))
             return;
         ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
-        if (stack == null || !stack.getTagCompound().hasKey("FEbinding"))
+        if (stack == null || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TAG_NAME))
+            return;
+        NBTTagCompound nbt = stack.getTagCompound().getCompoundTag(TAG_NAME);
+
+        String command = event.action == Action.LEFT_CLICK_BLOCK ? nbt.getString("left") : nbt.getString("right");
+        if (command == null || command.isEmpty())
             return;
 
-        NBTTagCompound nbt = stack.getTagCompound().getCompoundTag("FEbinding");
-
-        String cmd;
-        switch (event.action)
-        {
-        case LEFT_CLICK_BLOCK:
-            cmd = nbt.getString("left");
-            break;
-        case RIGHT_CLICK_AIR:
-        case RIGHT_CLICK_BLOCK:
-            cmd = nbt.getString("right");
-            break;
-        default:
-            return;
-        }
-
-        if (cmd.isEmpty())
-            return;
-
-        MinecraftServer.getServer().getCommandManager().executeCommand(event.entityPlayer, cmd);
+        MinecraftServer.getServer().getCommandManager().executeCommand(event.entityPlayer, command);
         event.setCanceled(true);
     }
-    
+
 }

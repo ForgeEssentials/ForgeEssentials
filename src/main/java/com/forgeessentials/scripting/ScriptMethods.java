@@ -20,6 +20,8 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
@@ -68,6 +70,21 @@ public final class ScriptMethods
             throw new RuntimeException(e);
         }
     }
+
+    public static final ScriptMethod echo = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args)
+        {
+            ChatOutputHandler.sendMessage(sender, ChatOutputHandler.formatColors(StringUtils.join(args, " ")));
+            return true;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Send message without any special formatting to the player";
+        }
+    };
 
     public static final ScriptMethod confirm = new ScriptMethod() {
         @Override
@@ -141,6 +158,21 @@ public final class ScriptMethods
         public String getHelp()
         {
             return "Send error message to the player and fail script execution";
+        }
+    };
+
+    public static final ScriptMethod echoall = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args)
+        {
+            ChatOutputHandler.broadcast(ChatOutputHandler.formatColors(StringUtils.join(args, " ")));
+            return true;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Send message without any special formatting to all players";
         }
     };
 
@@ -418,11 +450,52 @@ public final class ScriptMethods
         }
     };
 
+    public static final ScriptMethod timeout = new ScriptMethod() {
+        @Override
+        public boolean process(final ICommandSender sender, String[] args)
+        {
+            final String commandline = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
+            long timeout = Long.parseLong(args[0]);
+            TaskRegistry.schedule(new Runnable() {
+                @Override
+                public void run()
+                {
+                    TaskRegistry.runLater(new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            MinecraftServer.getServer().getCommandManager().executeCommand(sender, commandline);
+                        }
+                    });
+                }
+            }, timeout);
+            return true;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`timeout <delay> <command...>`  \nMake another command run after a delay (in ms).  \nCan be used with pattern commands to make more complex timed scripts.";
+        }
+    };
+
+    public static final ScriptMethod random = new ScriptMethod() {
+        @Override
+        public boolean process(final ICommandSender sender, String[] args)
+        {
+            return ForgeEssentials.rnd.nextInt(100) < Integer.parseInt(args[0]);
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`random <success-chance-in-percent>`  \nThis method will randomly success or fail.  \nIf it fails, the rest of the script will not be executed any more.";
+        }
+    };
+
     static
     {
         registerAll();
-
-        add("echo", confirm);
 
         add("!permcheck", new ScriptMethod() {
             @Override

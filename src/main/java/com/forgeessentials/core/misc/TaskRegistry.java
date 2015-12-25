@@ -102,11 +102,11 @@ public class TaskRegistry extends ServerEventHandler
     /* ------------------------------------------------------------ */
     /* Timers */
 
-    public static void schedule(TimerTask task, long time)
+    public static void schedule(TimerTask task, long delay)
     {
         try
         {
-            timer.schedule(task, time);
+            timer.schedule(task, delay);
         }
         catch (IllegalStateException e)
         {
@@ -161,9 +161,9 @@ public class TaskRegistry extends ServerEventHandler
         return timerTask;
     }
 
-    public static void schedule(Runnable task, long time)
+    public static void schedule(Runnable task, long delay)
     {
-        schedule(getTimerTask(task, false), time);
+        schedule(getTimerTask(task, false), delay);
     }
 
     public static void scheduleRepeated(Runnable task, long interval)

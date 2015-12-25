@@ -49,7 +49,6 @@ public class PatternParser<T extends Pattern>
             for (int i = 0; i < matcher.groupCount(); i++)
             {
                 String arg = matcher.group(i + 1);
-                arguments.add(arg);
                 switch (pattern.argumentTypes.get(i))
                 {
                 case PLAYER:
@@ -58,13 +57,15 @@ public class PatternParser<T extends Pattern>
                         lastError = Translator.format("Could not find player %s", arg);
                         continue patternLoop;
                     }
+                    arguments.add(arg);
                     break;
                 case GROUP:
                     if (!APIRegistry.perms.groupExists(arg))
                     {
-                        lastError = Translator.format("Could not find player %s", arg);
+                        lastError = Translator.format("Could not find group %s", arg);
                         continue patternLoop;
                     }
+                    arguments.add(arg);
                     break;
                 case ZONE:
                     if (APIRegistry.perms.getZoneById(arg) == null)
@@ -72,10 +73,16 @@ public class PatternParser<T extends Pattern>
                         lastError = Translator.format("Could not find zone %s", arg);
                         continue patternLoop;
                     }
+                    arguments.add(arg);
+                    break;
+                case REST:
+                    for (String subArg : arg.split(" "))
+                        arguments.add(subArg);
                     break;
                 case DECIMAL:
                 case FLOAT:
                 case NONE:
+                    arguments.add(arg);
                     break;
                 }
             }

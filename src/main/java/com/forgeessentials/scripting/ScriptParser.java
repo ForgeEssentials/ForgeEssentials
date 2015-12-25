@@ -1,5 +1,7 @@
 package com.forgeessentials.scripting;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,7 +40,7 @@ public class ScriptParser
 
     }
 
-    private static final Pattern ARGUMENT_PATTERN = Pattern.compile("@(\\w+)(.*)");
+    private static final Pattern ARGUMENT_PATTERN = Pattern.compile("@([\\w*]+)(.*)");
 
     public static String[] processArguments(ICommandSender sender, String[] actionArgs, List<String> args)
     {
@@ -54,6 +56,27 @@ public class ScriptParser
             if (argument != null)
             {
                 actionArgs[i] = argument.process(sender) + rest;
+            }
+            else if (modifier.endsWith("*"))
+            {
+                try
+                {
+                    int idx = 0;
+                    if (modifier.length() > 1)
+                        idx = Integer.parseInt(modifier.substring(0, modifier.length() - 1));
+                    if (args == null || idx >= args.size())
+                        throw new SyntaxException("Missing argument @%d", idx);
+                    List<String> newArgs = new ArrayList<>(Arrays.asList(actionArgs));
+                    newArgs.remove(i);
+                    for (int j = idx; j < args.size(); j++)
+                        newArgs.add(i + j - idx, args.get(j));
+                    actionArgs = newArgs.toArray(new String[newArgs.size()]);
+                    actionArgs[actionArgs.length - 1] += rest;
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new SyntaxException("Unknown argument modifier \"%s\"", modifier);
+                }
             }
             else
             {
@@ -176,7 +199,7 @@ public class ScriptParser
             }
             catch (NumberFormatException e)
             {
-                throw new CommandException(e.getMessage());
+                throw new CommandException("Invalid number format: " + e.getMessage());
             }
         }
     }
