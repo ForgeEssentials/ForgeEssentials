@@ -77,6 +77,8 @@ public class RemoteCommandSender extends DoAsCommandSender
     @Override
     public void addChatMessage(IChatComponent chatComponent)
     {
+        // TODO: Instead of directly sending the messages to the client, cache them and send them all after the running
+        // command finished (only if enabled)
         ICommandSender receiver = MinecraftServer.getServer();
         if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
             receiver = session.getUserIdent().getPlayer();

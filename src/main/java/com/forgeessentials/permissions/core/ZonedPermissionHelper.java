@@ -22,6 +22,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
@@ -516,6 +517,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
         event.serverZone.setPlayerPermission(APIRegistry.IDENT_SERVER, "*", true);
         event.serverZone.setPlayerPermission(APIRegistry.IDENT_CMDBLOCK, "*", true);
+        event.serverZone.setPlayerPermission(APIRegistry.IDENT_RCON, "*", true);
     }
 
     @SubscribeEvent
@@ -748,6 +750,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             ident = ((DoAsCommandSender) context.getSender()).getUserIdent();
         else if (context.getSender() instanceof CommandBlockLogic)
             ident = APIRegistry.IDENT_CMDBLOCK;
+        else if (context.getSender() instanceof RConConsoleSource)
+            ident = APIRegistry.IDENT_RCON;
 
         if (context.getTargetLocationStart() != null)
         {

@@ -23,6 +23,8 @@ public class APIRegistry
 
     public static final ServerUserIdent IDENT_SERVER = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefefe", "$SERVER");
 
+    public static final ServerUserIdent IDENT_RCON = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefecc", "$RCON");
+
     public static final ServerUserIdent IDENT_CMDBLOCK = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefecb", "$COMMANDBLOCK");
 
     public static final NpcUserIdent IDENT_NPC = UserIdent.getNpc(null);
