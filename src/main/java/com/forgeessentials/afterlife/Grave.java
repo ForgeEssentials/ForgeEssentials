@@ -117,29 +117,6 @@ public class Grave
 
     public void updateBlocks()
     {
-        int x = point.getX();
-        int y = point.getY();
-        int z = point.getZ();
-        Block graveBlock = point.getWorld().getBlock(x, y, z);
-        if (graveBlock != block && graveBlock != Blocks.chest)
-        {
-            point.getWorld().setBlock(x, y, z, block, 1, 1);
-            if (block == Blocks.skull)
-            {
-                TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
-                point.getWorld().setTileEntity(x, y, z, skull);
-            }
-        }
-        if (hasFencePost)
-        {
-            Block fenceBlock = point.getWorld().getBlock(x, y - 1, z);
-            if (fenceBlock == Blocks.air)
-                point.getWorld().setBlock(x, y - 1, z, Blocks.fence);
-        }
-    }
-
-    public void update()
-    {
         if (isProtected)
         {
             long currentTimeMillis = System.currentTimeMillis();
@@ -147,6 +124,34 @@ public class Grave
             lastTick = currentTimeMillis;
             if (protTime < 0)
                 isProtected = false;
+        }
+        
+        int x = point.getX();
+        int y = point.getY();
+        int z = point.getZ();
+        Block graveBlock = point.getWorld().getBlock(x, y, z);
+        if (graveBlock != block && graveBlock != Blocks.chest)
+        {
+            // Grave is destroyed - repair if protection is still active
+            if (isProtected)
+            {
+                point.getWorld().setBlock(x, y, z, block, 1, 3);
+                if (block == Blocks.skull)
+                {
+                    TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
+                    point.getWorld().setTileEntity(x, y, z, skull);
+                }
+            }
+            else
+            {
+                remove(true);
+            }
+        }
+        if (hasFencePost)
+        {
+            Block fenceBlock = point.getWorld().getBlock(x, y - 1, z);
+            if (fenceBlock == Blocks.air)
+                point.getWorld().setBlock(x, y - 1, z, Blocks.fence);
         }
     }
 
@@ -197,8 +202,8 @@ public class Grave
         if (player.openContainer != player.inventoryContainer)
             player.closeScreen();
         player.getNextWindowId();
-        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, invGrave.getInventoryName(), invGrave.getSizeInventory(),
-                true));
+        player.playerNetServerHandler
+                .sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, invGrave.getInventoryName(), invGrave.getSizeInventory(), true));
         player.openContainer = new ContainerChest(player.inventory, invGrave);
         player.openContainer.windowId = player.currentWindowId;
         player.openContainer.addCraftingToCrafters(player);
@@ -237,10 +242,7 @@ public class Grave
     public static void saveAll()
     {
         for (Grave grave : graves.values())
-        {
-            grave.update();
             DataManager.getInstance().save(grave, grave.getPosition().toString());
-        }
     }
 
 }
