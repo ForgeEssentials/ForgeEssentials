@@ -101,7 +101,7 @@ public class CommandMultiworld extends ParserCommandBase
             return;
         }
         // Get the world name
-        String name = arguments.remove().toLowerCase();
+        String name = arguments.remove();
 
         // Get the provider
         String provider = MultiworldManager.PROVIDER_NORMAL;

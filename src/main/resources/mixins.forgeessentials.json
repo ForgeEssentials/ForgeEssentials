@@ -6,6 +6,7 @@
 		"command.MixinCommandHandler_01",
 		"entity.MixinEntityTracker_01",
 		"entity.MixinEntity_01",
+		"entity.item.MixinEntityItemFrame",
         "network.MixinNetHandlerPlayServer_01",
         "server.management.MixinItemInWorldManager_01",
         "item.crafting.MixinCraftingManager",

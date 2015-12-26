@@ -51,6 +51,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.fe.event.EntityAttackedEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.fe.event.world.PressurePlateEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -194,9 +195,29 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
 
         UserIdent ident = UserIdent.get(event.entityPlayer);
-        WorldPoint point = new WorldPoint(event.entityPlayer.dimension, (int) event.target.posX, (int) event.target.posY, (int) event.target.posZ);
+        WorldPoint point = new WorldPoint(event.target);
         String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + EntityList.getEntityString(event.target);
         ModuleProtection.debugPermission(event.entityPlayer, permission);
+        if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
+        {
+            event.setCanceled(true);
+            return;
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void entityAttackedEvent(EntityAttackedEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+
+        UserIdent ident = null;
+        if (event.source.getEntity() instanceof EntityPlayer)
+            ident = UserIdent.get((EntityPlayer) event.source.getEntity());
+        
+        WorldPoint point = new WorldPoint(event.entity);
+        String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + EntityList.getEntityString(event.entity);
+        ModuleProtection.debugPermission(ident == null ? null : ident.getPlayer(), permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
