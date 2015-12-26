@@ -4,7 +4,7 @@ import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fe.event.EntityAttackedEvent;
+import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
