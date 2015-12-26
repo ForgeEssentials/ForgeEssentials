@@ -1,4 +1,4 @@
-package net.minecraftforge.fe.event;
+package net.minecraftforge.fe.event.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.DamageSource;

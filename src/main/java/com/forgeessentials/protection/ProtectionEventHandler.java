@@ -49,7 +49,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
-import net.minecraftforge.fe.event.EntityAttackedEvent;
+import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.fe.event.world.PressurePlateEvent;
 
