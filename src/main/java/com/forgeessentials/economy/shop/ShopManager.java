@@ -28,6 +28,7 @@ import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.fe.event.EntityAttackedEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -152,36 +153,17 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         ChatOutputHandler.chatNotification(event.getPlayer(), Translator.translate("Shop destroyed"));
     }
 
-    /*@SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void damageEntityEvent(final Event event)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void entityAttackedEvent(EntityAttackedEvent event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        if (event instanceof BiomeEvent || 
-                event instanceof PermissionCheckEvent || 
-                event instanceof EntityConstructing || 
-                event instanceof LivingUpdateEvent || 
-                event instanceof EntityViewRenderEvent || 
-                event instanceof LivingSpawnEvent || 
-                event instanceof ServerTickEvent || 
-                event instanceof LivingJumpEvent || 
-                event instanceof PotentialSpawns || 
-                event instanceof PlaySoundAtEntityEvent || 
-                event instanceof EnteringChunk || 
-                event instanceof LivingFallEvent || 
-                event instanceof TickEvent || 
-                event instanceof PlayerOpenContainerEvent || 
-                event instanceof ChunkEvent || 
-                event instanceof LivingPackSizeEvent || 
-                event instanceof StartTracking || 
-                event instanceof StopTracking || 
-                event instanceof LivingHealEvent || 
-                event instanceof PlayerUseItemEvent ||
-                event instanceof EntityJoinWorldEvent)
+        final ShopData shop = shopFrameMap.get(event.entity.getPersistentID());
+        if (shop == null)
             return;
-        System.out.println(event.getClass());
-    }*/
-    
+        event.setCanceled(true);
+    }
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void attackEntityEvent(final AttackEntityEvent event)
     {
