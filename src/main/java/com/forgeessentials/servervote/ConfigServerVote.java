@@ -11,19 +11,14 @@ import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.ArrayList;
 
 import javax.xml.bind.DatatypeConverter;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.servervote.Votifier.VoteReceiver;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.registry.GameData;
 
 public class ConfigServerVote extends ConfigLoaderBase
 {

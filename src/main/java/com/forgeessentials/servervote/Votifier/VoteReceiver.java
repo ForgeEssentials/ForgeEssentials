@@ -29,6 +29,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 
@@ -38,7 +39,6 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.servervote.ConfigServerVote;
-import com.forgeessentials.servervote.ModuleServerVote;
 import com.forgeessentials.servervote.VoteEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
