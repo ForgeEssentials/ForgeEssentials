@@ -117,6 +117,12 @@ public class Grave
 
     public void updateBlocks()
     {
+        if (point.getWorld() == null)
+        {
+            DataManager.getInstance().delete(Grave.class, point.toString());
+            graves.remove(point);
+            return;
+        }
         if (isProtected)
         {
             long currentTimeMillis = System.currentTimeMillis();
