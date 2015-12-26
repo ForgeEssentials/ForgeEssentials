@@ -125,7 +125,7 @@ public class Grave
             if (protTime < 0)
                 isProtected = false;
         }
-        
+
         int x = point.getX();
         int y = point.getY();
         int z = point.getZ();
@@ -236,7 +236,11 @@ public class Grave
     {
         graves.clear();
         for (Grave grave : DataManager.getInstance().loadAll(Grave.class).values())
+        {
+            if (grave.getPosition().getWorld() == null)
+                continue;
             graves.put(grave.getPosition(), grave);
+        }
     }
 
     public static void saveAll()
