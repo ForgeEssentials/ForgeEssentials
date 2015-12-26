@@ -8,12 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import javax.imageio.ImageIO;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;

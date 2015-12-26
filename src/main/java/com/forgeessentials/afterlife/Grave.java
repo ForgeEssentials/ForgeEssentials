@@ -118,6 +118,12 @@ public class Grave
 
     public void updateBlocks()
     {
+        if (point.getWorld() == null)
+        {
+            DataManager.getInstance().delete(Grave.class, point.toString());
+            graves.remove(point);
+            return;
+        }
         if (isProtected)
         {
             long currentTimeMillis = System.currentTimeMillis();
@@ -126,7 +132,7 @@ public class Grave
             if (protTime < 0)
                 isProtected = false;
         }
-        
+
         IBlockState graveBlock = point.getWorld().getBlockState(point.getBlockPos());
         if (graveBlock != blockState && graveBlock != Blocks.chest)
         {
@@ -238,7 +244,11 @@ public class Grave
     {
         graves.clear();
         for (Grave grave : DataManager.getInstance().loadAll(Grave.class).values())
+        {
+            if (grave.getPosition().getWorld() == null)
+                continue;
             graves.put(grave.getPosition(), grave);
+        }
     }
 
     public static void saveAll()

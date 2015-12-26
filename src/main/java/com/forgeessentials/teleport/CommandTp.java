@@ -18,7 +18,6 @@ public class CommandTp extends CommandTeleport implements PermissionObject
 {
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 1)
