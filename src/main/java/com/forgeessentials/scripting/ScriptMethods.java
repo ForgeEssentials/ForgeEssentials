@@ -275,7 +275,12 @@ public final class ScriptMethods
             if (args.length < 1)
                 throw new SyntaxException("Missing argument for permcheck");
             if (!APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
-                throw new MissingPermissionException(args[0], args.length > 1 ? StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ") : "");
+            {
+                if (args.length > 1)
+                    throw new MissingPermissionException(args[0], StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " "));
+                else
+                    throw new MissingPermissionException(args[0]);
+            }
             return true;
         }
 
@@ -501,7 +506,12 @@ public final class ScriptMethods
                 if (args.length < 1)
                     throw new SyntaxException("Missing argument for permcheck");
                 if (APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
-                    throw new MissingPermissionException(args[0], args.length > 1 ? StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ") : "");
+                {
+                    if (args.length > 1)
+                        throw new MissingPermissionException(args[0], StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " "));
+                    else
+                        throw new MissingPermissionException(args[0]);
+                }
                 return true;
             }
 
