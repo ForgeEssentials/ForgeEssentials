@@ -102,11 +102,11 @@ configurations {
 dependencies {
 	// IRC
 	serverLib("org.pircbotx:pircbotx:2.0.1") {
-        // these are all packaged with the minecraft server jar
-        exclude module: 'guava'
-        exclude module: 'commons-lang3'
-        exclude module: 'commons-codec'
-    }
+		// these are all packaged with the minecraft server jar
+		exclude module: 'guava'
+		exclude module: 'commons-lang3'
+		exclude module: 'commons-codec'
+	}
 	
 	// Database libraries
 	serverLib "com.h2database:h2:1.3.175"
@@ -196,7 +196,7 @@ jar {
 		from sharedManifest
 		attributes (
 			"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
-            "MixinConfigs": "mixins.forgeessentials.json",
+			"MixinConfigs": "mixins.forgeessentials.json",
 			"FMLAT": "forgeessentials_at.cfg",
 		)
 	}
@@ -220,7 +220,7 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 		from sharedManifest
 		attributes (
 			"MixinConfigs": "mixins.forgeessentials.client.json",
-            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+			"TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
 		)
 	}
 }
@@ -315,10 +315,6 @@ artifacts {
 	archives clientJar
 }
 
-task wrapper(type: Wrapper) {
-	gradleVersion = "2.7"
-}
-
 /************************************************************
  * Configure maven publishing
  */
@@ -334,7 +330,7 @@ publishing {
 			artifactId "forgeessentials"
 			version baseVersion + "-SNAPSHOT"
 			if (System.getenv("PUBLISH_RELEASE"))
-				version baseVersion
+			version baseVersion
 
 			artifact deobfJar
 			// artifact sourceJar
@@ -342,14 +338,15 @@ publishing {
 
 			pom.withXml {
 				def dependenciesNode = asNode().appendNode("dependencies")
-				def allDeps = configurations.buildDep.allDependencies + 
-					configurations.serverLib.allDependencies + 
-					configurations.shade.allDependencies
+				def allDeps = configurations.buildDep.allDependencies + configurations.serverLib.allDependencies + configurations.shade.allDependencies
+				
 				allDeps.each {
 					def dependencyNode = dependenciesNode.appendNode("dependency")
+					
 					dependencyNode.appendNode("groupId", it.group)
 					dependencyNode.appendNode("artifactId", it.name)
 					dependencyNode.appendNode("version", it.version)
+					
 					if (it.group == "com.sk89q.worldedit") // Hack to get classifier for worldedit attached (bug https://issues.gradle.org/browse/GRADLE-3030)
 						dependencyNode.appendNode("classifier", "dev")
 				}
