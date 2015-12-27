@@ -78,6 +78,8 @@ public final class Translator
                 if (line.charAt(0) == '#')
                     continue;
                 String[] parts = line.split("=", 2);
+                if (parts.length < 2)
+                    continue;
                 translations.put(parts[0], parts[1].isEmpty() ? null : parts[1]);
             }
         }
