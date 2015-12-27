@@ -1,10 +1,10 @@
 package com.forgeessentials.core.misc;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
@@ -36,7 +36,7 @@ public class TaskRegistry extends ServerEventHandler
 
     protected static Timer timer = new Timer();
 
-    protected static Map<Runnable, TimerTask> runnableTasks = new HashMap<>();
+    protected static Map<Runnable, TimerTask> runnableTasks = new WeakHashMap<>();
 
     /* ------------------------------------------------------------ */
 

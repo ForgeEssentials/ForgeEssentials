@@ -107,8 +107,6 @@ public class ModuleChat
 
     public IrcHandler ircHandler;
 
-    public TimedMessageHandler timedMessageHandler;
-
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
@@ -119,7 +117,6 @@ public class ModuleChat
 
         ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, new ChatConfig());
 
-        timedMessageHandler = new TimedMessageHandler();
         ircHandler = new IrcHandler();
         censor = new Censor();
         mailer = new Mailer();
