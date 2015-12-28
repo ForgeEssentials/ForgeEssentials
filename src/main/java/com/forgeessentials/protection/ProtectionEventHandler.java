@@ -33,6 +33,7 @@ import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -94,6 +95,8 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     private boolean checkMajoritySleep;
 
+    private Set<Entity> attackedEntities = new HashSet<>();
+
     /* ------------------------------------------------------------ */
     /* Entity permissions */
 
@@ -121,24 +124,20 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
 
         // player -> entity
-        Entity target = event.target;
-        WorldPoint targetPos = new WorldPoint(event.target);
+        handleDamageToEntityEvent(event, event.target, sourceIdent);
+    }
 
-        String permission = ModuleProtection.PERM_DAMAGE_TO + "." + EntityList.getEntityString(target);
-        ModuleProtection.debugPermission(source, permission);
-        if (!APIRegistry.perms.checkUserPermission(sourceIdent, targetPos, permission))
-        {
-            event.setCanceled(true);
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void entityAttackedEvent(EntityAttackedEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || event.source.getEntity() == null)
             return;
-        }
 
-        permission = MobType.getMobType(target).getDamageToPermission();
-        ModuleProtection.debugPermission(source, permission);
-        if (!APIRegistry.perms.checkUserPermission(sourceIdent, targetPos, permission))
-        {
-            event.setCanceled(true);
-            return;
-        }
+        UserIdent ident = null;
+        if (event.source.getEntity() instanceof EntityPlayer)
+            ident = UserIdent.get((EntityPlayer) event.source.getEntity());
+
+        handleDamageToEntityEvent(event, event.entity, ident);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -168,7 +167,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             {
                 // non-player-entity (mob) -> player
                 Entity source = event.source.getEntity();
-                String permission = ModuleProtection.PERM_DAMAGE_BY + "." + EntityList.getEntityString(source);
+                String permission = ModuleProtection.PERM_DAMAGE_BY + "." + getEntityString(source);
                 ModuleProtection.debugPermission(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
@@ -203,24 +202,39 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void entityAttackedEvent(EntityAttackedEvent event)
+    public void handleDamageToEntityEvent(EntityEvent event, Entity target, UserIdent player)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-            return;
-
-        UserIdent ident = null;
-        if (event.source.getEntity() instanceof EntityPlayer)
-            ident = UserIdent.get((EntityPlayer) event.source.getEntity());
-        
-        WorldPoint point = new WorldPoint(event.entity);
-        String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + EntityList.getEntityString(event.entity);
-        ModuleProtection.debugPermission(ident == null ? null : ident.getPlayer(), permission);
-        if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
+        if (attackedEntities.add(target))
         {
-            event.setCanceled(true);
-            return;
+            WorldPoint point = new WorldPoint(target);
+            String permission = ModuleProtection.PERM_DAMAGE_TO + "." + getEntityString(target);
+            ModuleProtection.debugPermission(player == null ? null : player.getPlayer(), permission);
+            if (!APIRegistry.perms.checkUserPermission(player, point, permission))
+            {
+                event.setCanceled(true);
+                return;
+            }
+
+            MobType mobType = MobType.getMobType(target);
+            if (mobType != MobType.UNKNOWN && !(target instanceof EntityPlayer))
+            {
+                permission = mobType.getDamageToPermission();
+                ModuleProtection.debugPermission(player == null ? null : player.getPlayer(), permission);
+                if (!APIRegistry.perms.checkUserPermission(player, point, permission))
+                {
+                    event.setCanceled(true);
+                    return;
+                }
+            }
         }
+    }
+
+    private String getEntityString(Entity target)
+    {
+        if (target instanceof EntityPlayer)
+            return "Player";
+        String name = EntityList.getEntityString(target);
+        return name != null ? name : target.getClass().getSimpleName();
     }
 
     /* ------------------------------------------------------------ */
@@ -806,6 +820,8 @@ public class ProtectionEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void serverTickEvent(TickEvent.ServerTickEvent event)
     {
+        if (!attackedEntities.isEmpty())
+            attackedEntities.clear();
         if (event.side != Side.SERVER || event.phase == TickEvent.Phase.END)
             return;
         for (List<ZoneEffect> effects : zoneEffects.values())

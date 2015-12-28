@@ -8,7 +8,6 @@
 		"command.MixinCommandHandler_01",
 		"entity.MixinEntityTracker_01",
 		"entity.MixinEntity_01",
-		"entity.item.MixinEntityItemFrame",
         "server.management.MixinItemInWorldManager_01",
         "item.crafting.MixinCraftingManager",
         "block.MixinBlockFire_01",
