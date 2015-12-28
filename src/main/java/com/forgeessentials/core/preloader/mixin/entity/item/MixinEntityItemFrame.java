@@ -1,5 +1,6 @@
 package com.forgeessentials.core.preloader.mixin.entity.item;
 
+import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -12,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityItemFrame.class)
-public abstract class MixinEntityItemFrame extends EntityItemFrame
+public abstract class MixinEntityItemFrame extends EntityHanging
 {
 
     public MixinEntityItemFrame(World p_i1590_1_)
