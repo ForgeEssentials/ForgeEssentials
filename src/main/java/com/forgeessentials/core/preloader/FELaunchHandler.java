@@ -118,7 +118,6 @@ public class FELaunchHandler implements ITweaker
             extractLibraries();
         loadLibraries(classLoader);
         loadModules(classLoader);
-        Launch.classLoader.registerTransformer("com.forgeessentials.core.preloader.EventTransformer");
     }
 
     /* ------------------------------------------------------------ */
