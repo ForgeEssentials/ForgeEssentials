@@ -3,9 +3,7 @@ package com.forgeessentials.core.preloader;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin.SortingIndex;
 
-@SortingIndex(1001)
 public class FELoadingPlugin implements IFMLLoadingPlugin
 {
 
