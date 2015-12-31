@@ -94,7 +94,8 @@ import cpw.mods.fml.relauncher.Side;
  * Main mod class
  */
 
-@Mod(modid = ForgeEssentials.MODID, name = "Forge Essentials", version = BuildInfo.BASE_VERSION, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.4.1448,);after:WorldEdit")
+@Mod(modid = ForgeEssentials.MODID, name = "Forge Essentials", version = BuildInfo.BASE_VERSION, acceptableRemoteVersions = "*",
+        dependencies = "required-after:Forge@[10.13.4.1448,);after:WorldEdit")
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
@@ -102,7 +103,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     @Instance(value = MODID)
     public static ForgeEssentials instance;
-    
+
     public static Random rnd = new Random();
 
     /* ------------------------------------------------------------ */
@@ -153,6 +154,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public ForgeEssentials()
     {
+        // new TestClass().test();
         initConfiguration();
         LoggingHandler.init();
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
