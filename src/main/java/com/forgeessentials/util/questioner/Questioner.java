@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import net.minecraft.command.ICommandSender;
 
 import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -98,7 +99,7 @@ public class Questioner extends ServerEventHandler
         if (question != null)
             question.doAnswer(answer);
         else
-            ChatOutputHandler.chatError(target, "There is no question to answer!");
+            ChatOutputHandler.chatError(target, Translator.translate("There is no question to answer!"));
     }
 
     public static synchronized void tick()
