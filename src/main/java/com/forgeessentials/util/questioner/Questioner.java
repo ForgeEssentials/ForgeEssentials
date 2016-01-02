@@ -8,6 +8,7 @@ import net.minecraft.command.ICommandSender;
 
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -96,6 +97,8 @@ public class Questioner extends ServerEventHandler
         QuestionData question = questions.remove(target);
         if (question != null)
             question.doAnswer(answer);
+        else
+            ChatOutputHandler.chatError(target, "There is no question to answer!");
     }
 
     public static synchronized void tick()

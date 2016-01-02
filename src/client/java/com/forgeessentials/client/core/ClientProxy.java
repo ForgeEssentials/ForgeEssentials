@@ -9,6 +9,7 @@ import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.handler.CUIRenderrer;
 import com.forgeessentials.client.handler.PermissionOverlay;
 import com.forgeessentials.client.handler.QRRenderer;
+import com.forgeessentials.client.handler.QuestionerKeyHandler;
 import com.forgeessentials.client.handler.ReachDistanceHandler;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -48,7 +49,7 @@ public class ClientProxy extends CommonProxy
 
     /* ------------------------------------------------------------ */
 
-    public static boolean allowCUI, allowQRCodeRender, allowPermissionRender;
+    public static boolean allowCUI, allowQRCodeRender, allowPermissionRender, allowQnsShortButtons;
 
     public static float reachDistance;
 
@@ -128,6 +129,8 @@ public class ClientProxy extends CommonProxy
                 "Set to false to disable QR code rendering when you enter /remote qr.").getBoolean(true);
         allowPermissionRender = config.get(Configuration.CATEGORY_GENERAL, "allowPermRender", true,
                 "Set to false to disable visual indication of block/item permissions").getBoolean(true);
+        allowQnsShortButtons = config.get(Configuration.CATEGORY_GENERAL, "allowQnsShortButtons", true,
+                "Use shortcut buttons to answer questions. Defaults are F8 for yes and F9 for no, change in game options menu..").getBoolean(true);
 
         if (allowCUI)
             MinecraftForge.EVENT_BUS.register(cuiRenderer);
@@ -135,6 +138,8 @@ public class ClientProxy extends CommonProxy
             MinecraftForge.EVENT_BUS.register(qrCodeRenderer);
         if (allowPermissionRender)
             MinecraftForge.EVENT_BUS.register(permissionOverlay);
+        if (allowQnsShortButtons)
+            new QuestionerKeyHandler();
 
         config.save();
     }
