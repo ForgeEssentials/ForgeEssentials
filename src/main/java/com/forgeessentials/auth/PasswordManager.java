@@ -1,5 +1,7 @@
 package com.forgeessentials.auth;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.forgeessentials.data.v2.DataManager;
@@ -21,6 +23,8 @@ public class PasswordManager
     {
 
         private String password;
+
+        public List<UUID> sessions = new ArrayList<>();
 
         public PlayerPassData(String password)
         {
@@ -104,6 +108,32 @@ public class PasswordManager
     public static String encrypt(String str)
     {
         return EncryptionHelper.sha1(str, salt);
+    }
+
+    /**
+     * Checks if a player has an autologin session
+     * @param user
+     * @param session
+     * @return
+     */
+
+    public static boolean hasSession(UUID user, UUID session)
+    {
+        return getPassword(user).sessions.contains(session);
+    }
+
+    public static void addSession(UUID user, UUID session)
+    {
+        PlayerPassData pass = getPassword(user);
+        pass.sessions.add(session);
+        DataManager.getInstance().save(pass, user.toString());
+    }
+
+    public static void invalidateAllSessions(UUID user)
+    {
+        PlayerPassData pass = getPassword(user);
+        pass.sessions.clear();
+        DataManager.getInstance().save(pass, user.toString());
     }
 
 }

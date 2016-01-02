@@ -18,6 +18,7 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
+import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.google.gson.annotations.Expose;
@@ -469,7 +470,7 @@ public class PlayerInfo implements Loadable
     public void setHasFEClient(boolean status)
     {
         this.hasFEClient = status;
-        SelectionHandler.sendUpdate(ident.getPlayerMP());
+        APIRegistry.getFEEventBus().post(new ClientHandshakeEstablished(this.ident.getPlayer()));
     }
 
 }

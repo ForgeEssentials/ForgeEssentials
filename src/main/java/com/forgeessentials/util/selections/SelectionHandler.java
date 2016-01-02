@@ -2,14 +2,22 @@ package com.forgeessentials.util.selections;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
 import com.forgeessentials.util.output.LoggingHandler;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class SelectionHandler
 {
+    public SelectionHandler()
+    {
+        APIRegistry.getFEEventBus().register(this);
+    }
 
     public static ISelectionProvider selectionProvider = pickBestSelectionProvider();
 
@@ -43,6 +51,12 @@ public class SelectionHandler
                 LoggingHandler.felog.error("Error sending selection update to player");
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onClientConnect(ClientHandshakeEstablished e)
+    {
+        sendUpdate(e.getPlayer());
     }
 
 }
