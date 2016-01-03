@@ -18,6 +18,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -266,52 +267,59 @@ public final class ScriptMethods
         }
     };
 
-    public static final ScriptMethod permcheck = new ScriptMethod() {
-        @Override
-        public boolean process(ICommandSender sender, String[] args)
-        {
-            if (!(sender instanceof EntityPlayerMP))
-                throw new MissingPlayerException();
-            if (args.length < 1)
-                throw new SyntaxException("Missing argument for permcheck");
-            if (!APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
-            {
-                if (args.length > 1)
-                    throw new MissingPermissionException(args[0], StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " "));
-                else
-                    throw new MissingPermissionException(args[0]);
-            }
-            return true;
-        }
-
-        @Override
-        public String getHelp()
-        {
-            return "`permcheck <perm> [error message...]`  \nPermission check (with error message)";
-        }
-    };
+    protected static boolean getPermcheckResult(ICommandSender sender, String[] args)
+    {
+        if (!(sender instanceof EntityPlayerMP))
+            throw new MissingPlayerException();
+        if (args.length < 1)
+            throw new SyntaxException("Missing argument for permchecksilent");
+        UserIdent ident = UserIdent.get((EntityPlayerMP) sender);
+        String permission = args[0];
+        String value = args.length > 1 ? args[1] : Zone.PERMISSION_TRUE;
+        boolean result;
+        if (value.equals(Zone.PERMISSION_TRUE))
+            result = APIRegistry.perms.checkUserPermission(ident, permission);
+        else if (value.equals(Zone.PERMISSION_FALSE))
+            result = !APIRegistry.perms.checkUserPermission(ident, permission);
+        else
+            result = APIRegistry.perms.getUserPermissionProperty(ident, permission).equals(value);
+        return result;
+    }
 
     public static final ScriptMethod permchecksilent = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
         {
-            if (!(sender instanceof EntityPlayerMP))
-                return false;
-            if (args.length < 1)
-                throw new SyntaxException("Invalid argument count for permcheck");
-            if (!APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
-            {
-                if (args.length > 1)
-                    error.process(sender, Arrays.copyOfRange(args, 1, args.length));
-                return false;
-            }
-            return true;
+            return getPermcheckResult(sender, args);
         }
 
         @Override
         public String getHelp()
         {
-            return "`permchecksilent <perm>`  \nPermission check (without error message)";
+            return "`permchecksilent <perm> [value] [error message...]`  \nPermission check (without error message). "
+                    + "Use `true` or `false` as value for normal permission checks (default value is `true`)."
+                    + "Other values will cause a permission-property check.";
+        }
+    };
+
+    public static final ScriptMethod permcheck = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args)
+        {
+            if (getPermcheckResult(sender, args))
+                return true;
+            if (args.length > 2)
+                throw new MissingPermissionException(args[0], StringUtils.join(Arrays.copyOfRange(args, 2, args.length), " "));
+            else
+                throw new MissingPermissionException(args[0]);
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`permcheck <perm> [value] [error message...]`  \nPermission check (with error message). "
+                    + "Use `true` or `false` as value for normal permission checks (default value is `true`)."
+                    + "Other values will cause a permission-property check.";
         }
     };
 
@@ -496,51 +504,6 @@ public final class ScriptMethods
     static
     {
         registerAll();
-
-        add("!permcheck", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                if (!(sender instanceof EntityPlayerMP))
-                    throw new MissingPlayerException();
-                if (args.length < 1)
-                    throw new SyntaxException("Missing argument for permcheck");
-                if (APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
-                {
-                    if (args.length > 1)
-                        throw new MissingPermissionException(args[0], StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " "));
-                    else
-                        throw new MissingPermissionException(args[0]);
-                }
-                return true;
-            }
-
-            @Override
-            public String getHelp()
-            {
-                return "`!permcheck <perm> [error message...]`  \nNegated permission check (with error message)";
-            }
-        });
-
-        add("!permchecksilent", new ScriptMethod() {
-            @Override
-            public boolean process(ICommandSender sender, String[] args)
-            {
-                if (!(sender instanceof EntityPlayerMP))
-                    return false;
-                if (args.length != 1)
-                    throw new SyntaxException("Invalid argument count for permcheck");
-                if (APIRegistry.perms.checkUserPermission(UserIdent.get((EntityPlayerMP) sender), args[0]))
-                    return false;
-                return true;
-            }
-
-            @Override
-            public String getHelp()
-            {
-                return "`!permchecksilent <perm>`  \nNegated permission check (without error message)";
-            }
-        });
     }
 
 }

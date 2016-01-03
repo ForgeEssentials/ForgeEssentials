@@ -524,7 +524,10 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isEmpty())
         {
             if (arguments.hasPermission(Plot.PERM_SET_OWNER))
+            {
                 arguments.confirm("/plot set owner <player>: Set plot owner");
+                arguments.confirm("/plot set owner " + APIRegistry.IDENT_SERVER.getUsernameOrUuid() + ": Set plot owner to server");
+            }
             UserIdent owner = plot.getOwner();
             if (owner == null)
                 owner = APIRegistry.IDENT_SERVER;
