@@ -162,7 +162,8 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
     @Override
     public void addScriptType(String key)
     {
-        scripts.putIfAbsent(key, new HashMap<String, List<String>>());
+        if (!scripts.containsKey(key))
+            scripts.put(key, new HashMap<String, List<String>>());
     }
 
     public void reloadScripts()
