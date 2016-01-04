@@ -2,13 +2,14 @@ package com.forgeessentials.playerlogger;
 
 import java.sql.Blob;
 import java.util.Date;
-import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.playerlogger.entity.BlockData;
 import com.forgeessentials.playerlogger.entity.PlayerData;
 import com.forgeessentials.playerlogger.entity.WorldData;
@@ -39,14 +40,14 @@ public abstract class PlayerLoggerEvent<T extends Event>
         return ModulePlayerLogger.getLogger().getWorld(dimensionId);
     }
 
-    public PlayerData getPlayer(String name)
+    public PlayerData getPlayer(UserIdent ident)
     {
-        return ModulePlayerLogger.getLogger().getPlayer(name);
+        return ModulePlayerLogger.getLogger().getPlayer(ident.getUuid(), ident.getUsername());
     }
 
-    public PlayerData getPlayer(UUID uuid)
+    public PlayerData getPlayer(EntityPlayer player)
     {
-        return ModulePlayerLogger.getLogger().getPlayer(uuid);
+        return ModulePlayerLogger.getLogger().getPlayer(player.getPersistentID(), player.getCommandSenderName());
     }
 
     public Blob getTileEntityBlob(TileEntity tileEntity)

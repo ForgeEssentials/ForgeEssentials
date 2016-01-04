@@ -767,7 +767,7 @@ public class CommandPlot extends ParserCommandBase
     {
         Plot plot = Plot.getPlot(new WorldPoint(sender.getEntityWorld(), sender.getPlayerCoordinates()));
         if (plot == null)
-            throw new TranslatedCommandException("There is no plot at this position");
+            throw new TranslatedCommandException("There is no plot at this position. You have to stand inside it to use plot commands.");
         return plot;
     }
 

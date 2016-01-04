@@ -26,7 +26,7 @@ public class LogEventBreak extends PlayerLoggerEvent<BlockEvent.BreakEvent>
     {
         Action01Block action = new Action01Block();
         action.time = date;
-        action.player = getPlayer(event.getPlayer().getPersistentID());
+        action.player = getPlayer(event.getPlayer());
         action.world = getWorld(event.world.provider.dimensionId);
         action.block = getBlock(event.block);
         action.metadata = event.blockMetadata;

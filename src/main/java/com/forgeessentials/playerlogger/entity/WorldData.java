@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.google.gson.annotations.Expose;
-
 /**
  *
  */
@@ -20,7 +18,6 @@ public class WorldData
     public Integer id;
 
     @Column(name = "name")
-    @Expose(serialize = false)
     public String name;
 
 }

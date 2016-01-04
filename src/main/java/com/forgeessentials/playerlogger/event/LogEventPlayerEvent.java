@@ -25,7 +25,7 @@ public class LogEventPlayerEvent extends PlayerLoggerEvent<PlayerEvent>
         Action03PlayerEvent action = new Action03PlayerEvent();
         action.type = type;
         action.time = date;
-        action.player = getPlayer(event.player.getPersistentID());
+        action.player = getPlayer(event.player);
         action.world = getWorld(event.player.worldObj.provider.dimensionId);
         action.x = (int) event.player.posX;
         action.y = (int) event.player.posY;

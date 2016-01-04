@@ -1,8 +1,5 @@
 package com.forgeessentials.playerlogger;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import java.sql.Blob;
 import java.util.Date;
 import java.util.HashMap;
@@ -77,6 +74,8 @@ import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.relauncher.Side;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class PlayerLogger extends ServerEventHandler implements Runnable
 {
@@ -87,9 +86,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     private EntityManager em;
 
-    private Map<String, Long> blockCache = new HashMap<>();
+    private Map<String, Integer> blockCache = new HashMap<>();
 
-    private Map<Block, Long> blockTypeCache = new HashMap<>();
+    private Map<Block, Integer> blockTypeCache = new HashMap<>();
 
     private Map<UUID, Long> playerCache = new HashMap<>();
 
@@ -227,8 +226,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     // Utilities
 
     /**
-     * <b>NEVER</b> call this and do write operations with this entity manager unless you do it in a synchronized block
-     * with this object.
+     * <b>NEVER</b> call this and do write operations with this entity manager unless you do it in a synchronized block with this object.
      * 
      * <pre>
      * <code>synchronized (playerLogger) {
@@ -295,31 +293,36 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return em.getReference(WorldData.class, dimensionId);
     }
 
-    protected synchronized PlayerData getPlayer(String uuid)
+    protected synchronized PlayerData getPlayer(String uuid, String username)
     {
         PlayerData data = getOneOrNullResult(buildSimpleQuery(PlayerData.class, PlayerData_.uuid, uuid));
         if (data == null)
         {
             data = new PlayerData();
             data.uuid = uuid;
+            data.username = username;
             em.persist(data);
+        }
+        else if (data.username == null && username != null)
+        {
+            data.username = username;
         }
         return data;
     }
 
-    protected synchronized PlayerData getPlayer(UUID uuid)
+    protected synchronized PlayerData getPlayer(UUID uuid, String username)
     {
         Long id = playerCache.get(uuid);
         if (id != null)
             return em.getReference(PlayerData.class, id);
-        PlayerData data = getPlayer(uuid.toString());
+        PlayerData data = getPlayer(uuid.toString(), username);
         playerCache.put(uuid, data.id);
         return data;
     }
 
     protected synchronized BlockData getBlock(String name)
     {
-        Long id = blockCache.get(name);
+        Integer id = blockCache.get(name);
         if (id != null)
             return em.getReference(BlockData.class, id);
 
@@ -336,7 +339,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     protected synchronized BlockData getBlock(Block block)
     {
-        Long id = blockTypeCache.get(block);
+        Integer id = blockTypeCache.get(block);
         if (id != null)
             return em.getReference(BlockData.class, id);
         BlockData data = getBlock(GameData.getBlockRegistry().getNameForObject(block));
@@ -452,6 +455,34 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         if (endTime != null)
             predicate.getExpressions().add(cb.lessThan(root.get(Action_.time), cb.literal(endTime)));
         return predicate;
+    }
+
+    public List<Action> getLoggedActions(WorldArea area, Date startTime, Date endTime, int maxResults)
+    {
+        CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Action> cQuery = cBuilder.createQuery(Action.class);
+        Root<Action> cRoot = cQuery.from(Action.class);
+        cQuery.select(cRoot);
+        cQuery.where(getActionPredicate(cRoot, area, startTime, endTime));
+        cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
+        TypedQuery<Action> query = em.createQuery(cQuery);
+        if (maxResults > 0)
+            query.setMaxResults(maxResults);
+        return executeQuery(query);
+    }
+
+    public List<Action> getLoggedActions(WorldPoint point, Date startTime, Date endTime, int maxResults)
+    {
+        CriteriaBuilder cBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Action> cQuery = cBuilder.createQuery(Action.class);
+        Root<Action> cRoot = cQuery.from(Action.class);
+        cQuery.select(cRoot);
+        cQuery.where(getActionPredicate(cRoot, point, startTime, endTime));
+        cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
+        TypedQuery<Action> query = em.createQuery(cQuery);
+        if (maxResults > 0)
+            query.setMaxResults(maxResults);
+        return executeQuery(query);
     }
 
     public List<Action01Block> getLoggedBlockChanges(WorldArea area, Date startTime, Date endTime, int maxResults)

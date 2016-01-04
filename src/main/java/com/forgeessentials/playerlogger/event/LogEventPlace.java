@@ -25,7 +25,7 @@ public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.PlaceEvent>
     {
         Action01Block action = new Action01Block();
         action.time = new Date();
-        action.player = getPlayer(event.player.getPersistentID());
+        action.player = getPlayer(event.player);
         action.world = getWorld(event.world.provider.dimensionId);
         action.block = getBlock(event.block);
         action.metadata = metadata;
