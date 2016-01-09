@@ -98,10 +98,10 @@ public class ModulePlayerLogger
     @SubscribeEvent
     public void serverPostInit(FEModuleServerPostInitEvent e)
     {
-        if (PlayerLoggerConfig.daysToKeepLogs > 0)
+        if (PlayerLoggerConfig.logDuration > 0)
         {
             final Date startTime = new Date();
-            startTime.setTime(startTime.getTime() - TimeUnit.DAYS.toMillis(PlayerLoggerConfig.daysToKeepLogs));
+            startTime.setTime(startTime.getTime() - TimeUnit.DAYS.toMillis(PlayerLoggerConfig.logDuration));
             final String startTimeStr = startTime.toString();
 
             LoggingHandler.felog.info(String.format("Purging all playerlogger log data before %s. The server may lag while this is being done.", startTimeStr));

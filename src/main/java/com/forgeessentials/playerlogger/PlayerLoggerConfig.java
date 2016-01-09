@@ -15,7 +15,7 @@ public class PlayerLoggerConfig extends ConfigLoaderBase
     public static String databaseUsername;
     public static String databasePassword;
 
-    public static int daysToKeepLogs;
+    public static int logDuration;
 
     @Override
     public void load(Configuration config, boolean isReload)
@@ -26,7 +26,7 @@ public class PlayerLoggerConfig extends ConfigLoaderBase
                 "Database url. Filename for H2 or server address for MySql (e.g., \"localhost:3306/forgeessentials\").").getString();
         databaseUsername = config.get(CAT, "DB_user", "forgeessentials", "Database type. Available types are h2 and mysql.").getString();
         databasePassword = config.get(CAT, "DB_password", "forgeessentials", "Database type. Available types are h2 and mysql.").getString();
-        daysToKeepLogs = config.get(CAT, "daystokeepdata", 0, "Days to keep data saved in the database. Set to 0 to keep all data indefinitely.").getInt();
+        logDuration = config.get(CAT, "log_duration", 0, "Days to keep data saved in the database. Set to 0 to keep all data indefinitely.").getInt();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class PlayerLoggerConfig extends ConfigLoaderBase
         config.get(CAT, "DB_url", "ForgeEssentials/playerlogger", "Database url. Filename for H2 or server address for MySql.").set(databaseUrl);
         config.get(CAT, "DB_user", "forgeessentials", "Database type. Available types are h2 and mysql.").set(databaseUsername);
         config.get(CAT, "DB_password", "forgeessentials", "Database type. Available types are h2 and mysql.").set(databasePassword);
-        config.get(CAT, "daystokeepdata", 0, "Days to keep data saved in the database. Set to 0 to keep all data indefinitely.").set(daysToKeepLogs);
+        config.get(CAT, "daystokeepdata", 0, "Days to keep data saved in the database. Set to 0 to keep all data indefinitely.").set(logDuration);
     }
 
 }
