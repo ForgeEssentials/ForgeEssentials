@@ -1,5 +1,8 @@
 package com.forgeessentials.playerlogger;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -13,8 +16,10 @@ import com.forgeessentials.playerlogger.remote.serializer.BlockDataType;
 import com.forgeessentials.playerlogger.remote.serializer.PlayerDataType;
 import com.forgeessentials.playerlogger.remote.serializer.WorldDataType;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -88,6 +93,20 @@ public class ModulePlayerLogger
     {
         registerPermissions();
         logger.loadDatabase();
+    }
+
+    @SubscribeEvent
+    public void serverPostInit(FEModuleServerPostInitEvent e)
+    {
+        if (PlayerLoggerConfig.daysToKeepLogs > 0)
+        {
+            final Date startTime = new Date();
+            startTime.setTime(startTime.getTime() - TimeUnit.DAYS.toMillis(PlayerLoggerConfig.daysToKeepLogs));
+            final String startTimeStr = startTime.toString();
+
+            LoggingHandler.felog.info(String.format("Purging all playerlogger log data before %s. The server may lag while this is being done.", startTimeStr));
+            getLogger().purgeOldData(startTime);
+        }
     }
 
     private void registerPermissions()

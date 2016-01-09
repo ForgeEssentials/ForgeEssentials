@@ -235,7 +235,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             {
                 em.getTransaction().begin();
                 int count = q.executeUpdate();
-                System.out.println(String.format("Purged %d old Playerlogger entries", count));
+                LoggingHandler.felog.info(String.format("Purged %d old Playerlogger entries", count));
             }
             finally
             {
