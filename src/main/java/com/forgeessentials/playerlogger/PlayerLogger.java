@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -220,6 +221,27 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             return;
         thread = new Thread(this, "Playerlogger");
         thread.start();
+    }
+
+    // ============================================================
+
+    public void purgeOldData(Date startTime)
+    {
+        String hql = "delete from Action where time < :startTime";
+        Query q = em.createQuery(hql).setParameter("startTime", startTime);
+        synchronized (this)
+        {
+            try
+            {
+                em.getTransaction().begin();
+                int count = q.executeUpdate();
+                System.out.println(String.format("Purged %d old Playerlogger entries", count));
+            }
+            finally
+            {
+                em.getTransaction().commit();
+            }
+        }
     }
 
     // ============================================================
