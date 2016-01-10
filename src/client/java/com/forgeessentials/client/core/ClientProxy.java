@@ -52,7 +52,7 @@ public class ClientProxy extends CommonProxy
 
     /* ------------------------------------------------------------ */
 
-    public static boolean allowCUI, allowQRCodeRender, allowPermissionRender, allowQuestionerShortcuts;
+    public static boolean allowCUI, allowQRCodeRender, allowPermissionRender, allowQuestionerShortcuts, allowAuthAutoLogin;
 
     public static float reachDistance;
 
@@ -134,7 +134,9 @@ public class ClientProxy extends CommonProxy
         allowPermissionRender = config.get(Configuration.CATEGORY_GENERAL, "allowPermRender", true,
                 "Set to false to disable visual indication of block/item permissions").getBoolean(true);
         allowQuestionerShortcuts = config.get(Configuration.CATEGORY_GENERAL, "allowQuestionerShortcuts", true,
-                "Use shortcut buttons to answer questions. Defaults are F8 for yes and F9 for no, change in game options menu..").getBoolean(true);
+                "Use shortcut buttons to answer questions. Defaults are F8 for yes and F9 for no, change in game options menu.").getBoolean(true);
+        allowAuthAutoLogin = config.get(Configuration.CATEGORY_GENERAL, "allowAuthAutoLogin", true,
+                "Save tokens to automatically log in to servers using FE's Authentication Module.").getBoolean(true);
 
         if (allowCUI)
             MinecraftForge.EVENT_BUS.register(cuiRenderer);
