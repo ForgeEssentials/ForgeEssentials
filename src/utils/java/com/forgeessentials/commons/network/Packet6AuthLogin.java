@@ -16,6 +16,11 @@ public class Packet6AuthLogin implements IMessage
 
     public String hash;
 
+    // dummy ctor
+    public Packet6AuthLogin()
+    {
+    }
+
     public Packet6AuthLogin(int mode, String hash)
     {
         this.mode = mode;

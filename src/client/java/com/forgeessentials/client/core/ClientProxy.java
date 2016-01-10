@@ -170,7 +170,6 @@ public class ClientProxy extends CommonProxy
         {
             sentHandshake = true;
             sendClientHandshake();
-            System.out.println("yay");
         }
     }
 

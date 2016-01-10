@@ -24,11 +24,12 @@ public class PasswordManager
 
         private String password;
 
-        public List<UUID> sessions = new ArrayList<>();
+        public List<UUID> sessions;
 
         public PlayerPassData(String password)
         {
             this.password = password;
+            sessions = new ArrayList<>();
         }
 
         public boolean checkPassword(String plainPassword)
@@ -119,7 +120,10 @@ public class PasswordManager
 
     public static boolean hasSession(UUID user, UUID session)
     {
-        return getPassword(user).sessions.contains(session);
+        PlayerPassData pass = getPassword(user);
+        if (pass == null)
+            return false;
+        return pass.sessions.contains(session);
     }
 
     public static void addSession(UUID user, UUID session)

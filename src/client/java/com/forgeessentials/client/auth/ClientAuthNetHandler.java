@@ -13,13 +13,13 @@ public class ClientAuthNetHandler implements IMessageHandler<Packet6AuthLogin, I
     @Override
     public IMessage onMessage(Packet6AuthLogin message, MessageContext ctx)
     {
+        AuthAutoLogin.KEYSTORE = AuthAutoLogin.load();
         switch (message.mode)
         {
         case 0:
-            if (AuthAutoLogin.getKey(Minecraft.getMinecraft().func_147104_D().serverIP) != null)
-                return new Packet6AuthLogin(1, AuthAutoLogin.getKey(Minecraft.getMinecraft().func_147104_D().serverIP));
-            return new Packet6AuthLogin(1, "");
+            return new Packet6AuthLogin(1, AuthAutoLogin.getKey(Minecraft.getMinecraft().func_147104_D().serverIP));
         case 2:
+            System.out.println("yay");
             AuthAutoLogin.setKey(Minecraft.getMinecraft().func_147104_D().serverIP, message.hash);
             break;
         default:

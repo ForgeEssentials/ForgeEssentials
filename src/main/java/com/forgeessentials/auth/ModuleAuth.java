@@ -67,7 +67,6 @@ public class ModuleAuth extends ConfigLoaderBase
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        handler = new AuthEventHandler();
         FECommandManager.registerCommand(new CommandAuth());
         FECommandManager.registerCommand(new CommandVIP());
         NetworkUtils.registerMessage(new AuthNetHandler(), Packet6AuthLogin.class, 6, Side.SERVER);
@@ -81,8 +80,7 @@ public class ModuleAuth extends ConfigLoaderBase
         APIRegistry.perms.registerPermission("fe.auth.vip", null);
         if (isEnabled())
         {
-            MinecraftForge.EVENT_BUS.register(handler);
-            FMLCommonHandler.instance().bus().register(handler);
+            handler = new AuthEventHandler();
         }
     }
 

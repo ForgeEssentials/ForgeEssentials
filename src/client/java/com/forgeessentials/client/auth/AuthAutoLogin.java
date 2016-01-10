@@ -22,9 +22,17 @@ public class AuthAutoLogin
      */
     public static NBTTagCompound load()
     {
+        if (!KEYSTORE_DIR.exists())
+            KEYSTORE_DIR.mkdirs();
+
         try
         {
-            KEYSTORE_FILE = new File (KEYSTORE_DIR, FMLClientHandler.instance().getClient().thePlayer.getCommandSenderName() + ".dat");
+            KEYSTORE_FILE = new File(KEYSTORE_DIR, FMLClientHandler.instance().getClient().thePlayer.getCommandSenderName() + ".dat");
+            if (!KEYSTORE_FILE.exists())
+            {
+                KEYSTORE_FILE.createNewFile();
+                return new NBTTagCompound();
+            }
             return CompressedStreamTools.read(KEYSTORE_FILE);
         }
         catch (IOException ex)
@@ -60,6 +68,9 @@ public class AuthAutoLogin
      */
     public static String getKey(String serverIP)
     {
-        return KEYSTORE.getString(serverIP);
+        String key = KEYSTORE.getString(serverIP);
+        if (key == null)
+            return "";
+        else return key;
     }
 }

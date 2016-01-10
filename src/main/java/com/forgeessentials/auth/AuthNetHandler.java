@@ -3,7 +3,6 @@ package com.forgeessentials.auth;
 import java.util.UUID;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.client.auth.AuthAutoLogin;
 import com.forgeessentials.commons.network.Packet6AuthLogin;
 import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent.Source;
@@ -17,7 +16,6 @@ public class AuthNetHandler implements IMessageHandler<Packet6AuthLogin, IMessag
     @Override
     public IMessage onMessage(Packet6AuthLogin message, MessageContext ctx)
     {
-        AuthAutoLogin.KEYSTORE = AuthAutoLogin.load();
 
         switch(message.mode)
         {
