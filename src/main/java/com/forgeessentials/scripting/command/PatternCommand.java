@@ -61,7 +61,7 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
 
     @Expose(serialize = false)
     protected PatternParser<CommandPattern> parser;
-    
+
     /* ------------------------------------------------------------ */
 
     @Override
@@ -95,7 +95,7 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
             pattern.deregister();
         }
     }
-    
+
     /* ------------------------------------------------------------ */
 
     public PatternCommand(String name, String usage, String permission)
@@ -152,7 +152,10 @@ public class PatternCommand extends ForgeEssentialsCommandBase implements Loadab
         }
         catch (MissingPermissionException e)
         {
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            if (e.getMessage() != null)
+                throw new TranslatedCommandException(e.getMessage());
+            else
+                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         }
         catch (SyntaxException e)
         {

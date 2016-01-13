@@ -1,5 +1,7 @@
 package com.forgeessentials.auth;
 
+import java.util.UUID;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -20,11 +22,17 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.permission.PermissionManager;
 
+import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.Packet6AuthLogin;
+import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
+import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent;
+import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent.Source;
 import com.forgeessentials.util.events.PlayerMoveEvent;
+import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-public class AuthEventHandler
+public class AuthEventHandler extends ServerEventHandler
 {
 
     public static String playerBannedMessage;
@@ -37,6 +45,7 @@ public class AuthEventHandler
 
     public AuthEventHandler()
     {
+        super();
         LoggingHandler.felog.info("FEauth initialized. Enabled: " + ModuleAuth.isEnabled());
     }
 
@@ -212,6 +221,25 @@ public class AuthEventHandler
     public void playerLoggedOutEvent(PlayerLoggedOutEvent event)
     {
         ModuleAuth.deauthenticate(event.player.getPersistentID());
+    }
+
+    // autologin
+
+    @SubscribeEvent
+    public void onClientHandshake(ClientHandshakeEstablished e)
+    {
+        NetworkUtils.netHandler.sendTo(new Packet6AuthLogin(0, ""), e.getPlayer());
+    }
+
+    @SubscribeEvent
+    public void onAuthLogin(PlayerAuthLoginEvent e)
+    {
+        if (e.source == Source.COMMAND)
+        {
+            UUID token = UUID.randomUUID();
+            NetworkUtils.netHandler.sendTo(new Packet6AuthLogin(2, token.toString()), e.getPlayer());
+            PasswordManager.addSession(e.getPlayer().getPersistentID(), token);
+        }
     }
 
 }

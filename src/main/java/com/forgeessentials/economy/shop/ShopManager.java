@@ -154,7 +154,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void entityAttackedEvent(EntityAttackedEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || !(event.entity instanceof EntityItemFrame))
             return;
         final ShopData shop = shopFrameMap.get(event.entity.getPersistentID());
         if (shop == null)
@@ -165,7 +165,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void attackEntityEvent(final AttackEntityEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || !(event.target instanceof EntityItemFrame))
             return;
         final ShopData shop = shopFrameMap.get(event.target.getPersistentID());
         if (shop == null)

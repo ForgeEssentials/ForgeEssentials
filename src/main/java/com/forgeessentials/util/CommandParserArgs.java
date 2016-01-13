@@ -18,6 +18,7 @@ import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.permission.PermissionContext;
@@ -67,6 +68,12 @@ public class CommandParserArgs
     public CommandParserArgs(ICommand command, String[] args, ICommandSender sender)
     {
         this(command, args, sender, false);
+    }
+
+    public void sendMessage(IChatComponent message)
+    {
+        if (!isTabCompletion)
+            ChatOutputHandler.sendMessage(sender, message);
     }
 
     public void confirm(String message, Object... args)

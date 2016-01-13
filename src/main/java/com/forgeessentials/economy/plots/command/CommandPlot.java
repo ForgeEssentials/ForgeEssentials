@@ -525,7 +525,10 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isEmpty())
         {
             if (arguments.hasPermission(Plot.PERM_SET_OWNER))
+            {
                 arguments.confirm("/plot set owner <player>: Set plot owner");
+                arguments.confirm("/plot set owner " + APIRegistry.IDENT_SERVER.getUsernameOrUuid() + ": Set plot owner to server");
+            }
             UserIdent owner = plot.getOwner();
             if (owner == null)
                 owner = APIRegistry.IDENT_SERVER;
@@ -765,7 +768,7 @@ public class CommandPlot extends ParserCommandBase
     {
         Plot plot = Plot.getPlot(new WorldPoint(sender.getEntityWorld(), sender.getPosition()));
         if (plot == null)
-            throw new TranslatedCommandException("There is no plot at this position");
+            throw new TranslatedCommandException("There is no plot at this position. You have to stand inside it to use plot commands.");
         return plot;
     }
 

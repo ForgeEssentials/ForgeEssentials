@@ -11,7 +11,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class Questioner extends ServerEventHandler
 {
@@ -96,6 +98,8 @@ public class Questioner extends ServerEventHandler
         QuestionData question = questions.remove(target);
         if (question != null)
             question.doAnswer(answer);
+        else
+            ChatOutputHandler.chatError(target, Translator.translate("There is no question to answer!"));
     }
 
     public static synchronized void tick()

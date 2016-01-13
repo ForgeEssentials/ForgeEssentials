@@ -2,6 +2,7 @@ package com.forgeessentials.playerlogger.entity;
 
 import java.util.Date;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -29,13 +30,14 @@ import net.minecraft.util.BlockPos;
  */
 @Entity
 @Table(indexes = { //
-@Index(columnList = "player_id", name = "player_idx"), //
+        @Index(columnList = "player_id", name = "player_idx"), //
         @Index(columnList = "dimension", name = "world_idx"), //
         @Index(columnList = "x", name = "x_idx"), //
         @Index(columnList = "y", name = "y_idx"), //
         @Index(columnList = "z", name = "z_idx"), //
 })
 @Inheritance(strategy = InheritanceType.JOINED)
+@AttributeOverride(name = "action", column = @Column(name = "action", nullable = false, length = 8, insertable = false, updatable = false) )
 @DiscriminatorColumn(name = "action", discriminatorType = DiscriminatorType.INTEGER)
 @DiscriminatorValue(value = "0")
 public abstract class Action
@@ -45,6 +47,9 @@ public abstract class Action
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public Long id;
+
+    @Column(name = "action")
+    public Integer action;
 
     @Column(name = "time")
     @Temporal(TemporalType.TIMESTAMP)

@@ -88,12 +88,14 @@ import com.forgeessentials.util.selections.CommandExpandY;
 import com.forgeessentials.util.selections.CommandPos;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionEventHandler;
+import com.forgeessentials.util.selections.SelectionHandler;
 
 /**
  * Main mod class
  */
 
-@Mod(modid = ForgeEssentials.MODID, name = "Forge Essentials", version = BuildInfo.BASE_VERSION, acceptableRemoteVersions = "*", dependencies = "required-after:Forge@[10.13.4.1448,);after:WorldEdit")
+@Mod(modid = ForgeEssentials.MODID, name = "Forge Essentials", version = BuildInfo.BASE_VERSION, acceptableRemoteVersions = "*",
+        dependencies = "required-after:Forge@[10.13.4.1448,);after:WorldEdit")
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
@@ -101,7 +103,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     @Instance(value = MODID)
     public static ForgeEssentials instance;
-    
+
     public static Random rnd = new Random();
 
     /* ------------------------------------------------------------ */
@@ -152,6 +154,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public ForgeEssentials()
     {
+        // new TestClass().test();
         initConfiguration();
         LoggingHandler.init();
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
@@ -187,6 +190,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         teleportHelper = new TeleportHelper();
         questioner = new Questioner();
         respawnHandler = new RespawnHandler();
+        new SelectionHandler();
         APIRegistry.getFEEventBus().register(new CompatReiMinimap());
 
         // Load submodules

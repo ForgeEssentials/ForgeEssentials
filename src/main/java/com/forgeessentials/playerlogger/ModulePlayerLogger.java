@@ -1,16 +1,25 @@
 package com.forgeessentials.playerlogger;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.playerlogger.command.CommandPlayerlogger;
 import com.forgeessentials.playerlogger.command.CommandRollback;
+import com.forgeessentials.playerlogger.remote.serializer.BlockDataType;
+import com.forgeessentials.playerlogger.remote.serializer.PlayerDataType;
+import com.forgeessentials.playerlogger.remote.serializer.WorldDataType;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -66,6 +75,10 @@ public class ModulePlayerLogger
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
+        DataManager.addDataType(new WorldDataType());
+        DataManager.addDataType(new PlayerDataType());
+        DataManager.addDataType(new BlockDataType());
+        
         logger = new PlayerLogger();
         eventHandler = new PlayerLoggerEventHandler();
         ForgeEssentials.getConfigManager().registerLoader("PlayerLogger", new PlayerLoggerConfig());
@@ -80,6 +93,20 @@ public class ModulePlayerLogger
     {
         registerPermissions();
         logger.loadDatabase();
+    }
+
+    @SubscribeEvent
+    public void serverPostInit(FEModuleServerPostInitEvent e)
+    {
+        if (PlayerLoggerConfig.logDuration > 0)
+        {
+            final Date startTime = new Date();
+            startTime.setTime(startTime.getTime() - TimeUnit.DAYS.toMillis(PlayerLoggerConfig.logDuration));
+            final String startTimeStr = startTime.toString();
+
+            LoggingHandler.felog.info(String.format("Purging all playerlogger log data before %s. The server may lag while this is being done.", startTimeStr));
+            getLogger().purgeOldData(startTime);
+        }
     }
 
     private void registerPermissions()

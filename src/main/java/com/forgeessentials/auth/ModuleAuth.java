@@ -12,6 +12,8 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.Packet6AuthLogin;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -24,6 +26,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, defaultModule = false)
 public class ModuleAuth extends ConfigLoaderBase
@@ -36,6 +39,7 @@ public class ModuleAuth extends ConfigLoaderBase
     static boolean allowOfflineRegistration;
     static boolean canMoveWithoutLogin;
     static boolean checkVanillaAuthStatus;
+    static boolean allowAutoLogin;
 
     private static HashSet<UUID> authenticatedUsers = new HashSet<>();
 
@@ -63,9 +67,9 @@ public class ModuleAuth extends ConfigLoaderBase
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        handler = new AuthEventHandler();
         FECommandManager.registerCommand(new CommandAuth());
         FECommandManager.registerCommand(new CommandVIP());
+        NetworkUtils.registerMessage(new AuthNetHandler(), Packet6AuthLogin.class, 6, Side.SERVER);
     }
 
     @SubscribeEvent
@@ -76,8 +80,7 @@ public class ModuleAuth extends ConfigLoaderBase
         APIRegistry.perms.registerPermission("fe.auth.vip", null);
         if (isEnabled())
         {
-            MinecraftForge.EVENT_BUS.register(handler);
-            FMLCommonHandler.instance().bus().register(handler);
+            handler = new AuthEventHandler();
         }
     }
 
@@ -169,6 +172,7 @@ public class ModuleAuth extends ConfigLoaderBase
     private static final String CFG_DESC_kickMsg = "Kick messages for banned/unwhitelisted players or when the server is full (not counting VIP slots";
     private static final String CFG_DESC_authlists = "Alternative VIP/max players implementation. Make sure vipslots and offset added together is less than the amount of players specified in server.properties.";
     private static final String CFG_DESC_offset = "If you need to be able to have less than the amount of players specified in server.properties logged into your server, use this.";
+    private static final String CFG_DESC_autologin = "Allow players with the FEClient and the correct keys to automatically identify themselves with the auth engine.";
 
     @Override
     public void load(Configuration config, boolean isReload)
@@ -187,6 +191,7 @@ public class ModuleAuth extends ConfigLoaderBase
         AuthEventHandler.playerBannedMessage = config.get(CONFIG_CATEGORY_LISTS + ".kick", "bannedmsg", "You have been banned from this server.").getString();
         AuthEventHandler.nonVipKickMessage = config.get(CONFIG_CATEGORY_LISTS + ".kick", "notVIPmsg", "This server is full, and you are not a VIP.")
                 .getString();
+        allowAutoLogin = config.get(CONFIG_CATEGORY, "allowAutoLogin", true, CFG_DESC_autologin).getBoolean();
 
         checkVanillaAuthStatus = config.get(CONFIG_CATEGORY, "autoEnable", false, CFG_DESC_autoEnable).getBoolean(false);
         int authCheckerInterval = config.get(CONFIG_CATEGORY, "checkInterval", 10, CFG_DESC_checkInterval).getInt();

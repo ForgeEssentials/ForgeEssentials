@@ -140,7 +140,6 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
             runCronScripts();
     }
 
-
     @SubscribeEvent
     public void reload(ConfigReloadEvent event)
     {
@@ -156,14 +155,15 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
     {
         return commandsDir;
     }
-    
+
     /* ------------------------------------------------------------ */
     /* Script handling */
 
     @Override
     public void addScriptType(String key)
     {
-        scripts.putIfAbsent(key, new HashMap<String, List<String>>());
+        if (!scripts.containsKey(key))
+            scripts.put(key, new HashMap<String, List<String>>());
     }
 
     public void reloadScripts()
@@ -189,6 +189,8 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
                     for (String line : FileUtils.readLines(file))
                         script.add(line);
                     scriptList.put(file.getName(), script);
+                    if (entry.getKey().equals("cron"))
+                        cronTimes.put(file.getName(), System.currentTimeMillis());
                 }
                 catch (IOException e1)
                 {
@@ -263,7 +265,9 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
                     continue;
                 try
                 {
+                    cronTimes.put(script.getKey(), System.currentTimeMillis());
                     ScriptParser.run(lines, MinecraftServer.getServer());
+                    break;
                 }
                 catch (CommandException | ScriptErrorException e)
                 {
@@ -294,13 +298,9 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         {
             return false;
         }
-
         long lastTime = cronTimes.containsKey(jobName) ? cronTimes.get(jobName) : 0;
-        if (lastTime + interval * 1000 > System.currentTimeMillis())
-            return false;
-
-        cronTimes.put(jobName, System.currentTimeMillis());
-        return true;
+        long nextTime = lastTime + interval * 1000;
+        return nextTime <= System.currentTimeMillis();
     }
 
     /* ------------------------------------------------------------ */

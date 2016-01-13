@@ -12,7 +12,7 @@ import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 
 public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.PlaceEvent>
 {
-    
+
     public LogEventPlace(BlockEvent.PlaceEvent event)
     {
         super(event);
@@ -23,7 +23,7 @@ public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.PlaceEvent>
     {
         Action01Block action = new Action01Block();
         action.time = new Date();
-        action.player = getPlayer(event.player.getPersistentID());
+        action.player = getPlayer(event.player);
         action.world = getWorld(event.world.provider.getDimensionId());
         action.block = getBlock(event.state.getBlock());
         action.metadata = event.state.getBlock().getMetaFromState(event.state);

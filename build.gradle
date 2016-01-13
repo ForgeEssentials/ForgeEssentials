@@ -78,9 +78,19 @@ ext.sharedManifest = manifest {
 	attributes (
 		"BuildID": gitCommitHash,
 		"BuildNumber": buildNumber,
-		"TweakOrder": "0",
 		"FMLCorePluginContainsFMLMod": "true",
 		"ForceLoadAsMod": "true",
+	)
+}
+
+ext.serverManifest = manifest {
+	from sharedManifest
+	attributes (
+		"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
+		"TweakOrder": "0",
+		"FMLCorePlugin": "com.forgeessentials.core.preloader.FELoadingPlugin",
+        "MixinConfigs": "mixins.forgeessentials.json",
+		"FMLAT": "forgeessentials_at.cfg",
 	)
 }
 
@@ -120,8 +130,8 @@ dependencies {
 	includeMod files('lib/worldedit-forge-mc1.8-6.1.1-SNAPSHOT-dist.jar')
 
 	// Shade Mixin library
-	shade group: "org.spongepowered", name: "mixin", version: "0.4.5-SNAPSHOT", changing: true
-	shadeClient group: "org.spongepowered", name: "mixin", version: "0.4.5-SNAPSHOT", changing: true
+	shade group: "org.spongepowered", name: "mixin", version: "0.4.10-SNAPSHOT", changing: true
+	shadeClient group: "org.spongepowered", name: "mixin", version: "0.4.10-SNAPSHOT", changing: true
 }
 
 /************************************************************
@@ -193,12 +203,7 @@ jar {
 	}
 
 	manifest {
-		from sharedManifest
-		attributes (
-			"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
-            "MixinConfigs": "mixins.forgeessentials.json",
-			"FMLAT": "forgeessentials_at.cfg",
-		)
+		from serverManifest
 	}
 }
 
@@ -242,10 +247,7 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 	}
 
 	manifest {
-		from sharedManifest
-		attributes (
-			"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
-		)
+		from serverManifest
 	}
 }
 
@@ -260,10 +262,7 @@ task sourceJar(type: Jar) {
 	from sourceSets.main.allSource
 	
 	manifest {
-		from sharedManifest
-		attributes (
-			"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
-		)
+		from serverManifest
 	}
 }
 
@@ -316,7 +315,7 @@ artifacts {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = "2.7"
+	gradleVersion = "2.10"
 }
 
 /************************************************************

@@ -24,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
+import org.spongepowered.asm.mixin.MixinEnvironment.CompatibilityLevel;
 import org.spongepowered.asm.mixin.MixinEnvironment.Phase;
 
 public class FELaunchHandler implements ITweaker
@@ -79,9 +80,10 @@ public class FELaunchHandler implements ITweaker
         {
             tweaks.add("org.spongepowered.asm.launch.MixinTweaker");
         }
-
-        // Fix CoFH compatibility. Fixes #1903
+        
+        MixinEnvironment.setCompatibilityLevel(CompatibilityLevel.JAVA_7);
         MixinBootstrap.init();
+        // Fix CoFH compatibility. Fixes #1903
         MixinEnvironment.getEnvironment(Phase.PREINIT).addTransformerExclusion("cofh.asm.CoFHAccessTransformer");
 
         // Enable FastCraft compatibility mode

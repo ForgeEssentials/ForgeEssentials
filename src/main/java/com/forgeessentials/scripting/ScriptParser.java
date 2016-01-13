@@ -269,6 +269,12 @@ public class ScriptParser
 
         public final String permission;
 
+        public MissingPermissionException(String permission)
+        {
+            super();
+            this.permission = permission;
+        }
+
         public MissingPermissionException(String permission, String message)
         {
             super(message);

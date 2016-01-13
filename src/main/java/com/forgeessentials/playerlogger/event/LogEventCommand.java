@@ -9,6 +9,8 @@ import net.minecraftforge.event.CommandEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action02Command;
 
@@ -31,7 +33,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         if (event.sender instanceof EntityPlayer)
         {
             EntityPlayer player = ((EntityPlayer) event.sender);
-            action.player = getPlayer(player.getPersistentID());
+            action.player = getPlayer(player);
             action.world = getWorld(player.worldObj.provider.getDimensionId());
             action.x = (int) player.posX;
             action.y = (int) player.posY;
@@ -40,7 +42,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         else if (event.sender instanceof CommandBlockLogic)
         {
             CommandBlockLogic block = ((CommandBlockLogic) event.sender);
-            action.player = getPlayer("commandblock");
+            action.player = getPlayer(UserIdent.getVirtualPlayer("commandblock"));
             action.world = getWorld(block.getEntityWorld().provider.getDimensionId());
             BlockPos pos = block.getPosition();
             action.x = pos.getX();
