@@ -11,9 +11,12 @@ import net.minecraftforge.fe.event.world.SignEditEvent;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -95,9 +98,12 @@ public class SignToolsModule extends ConfigLoaderBase
 
                 else
                 {
-                    String send = signText[1] + " " + signText[2] + " " + signText[3];
-                    MinecraftServer.getServer().getCommandManager().executeCommand(e.entityPlayer, send);
-                    e.setCanceled(true);
+                    String send = StringUtils.join(ServerUtil.dropFirst(signText), " ");
+                    if (send != null)
+                    {
+                        MinecraftServer.getServer().getCommandManager().executeCommand(e.entityPlayer, send);
+                        e.setCanceled(true);
+                    }
                 }
 
             }
