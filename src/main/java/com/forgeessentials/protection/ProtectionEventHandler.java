@@ -69,6 +69,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.PermissionEvent.Group;
+import com.forgeessentials.api.permissions.PermissionEvent.User;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -850,6 +852,28 @@ public class ProtectionEventHandler extends ServerEventHandler
     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
     {
         zoneEffects.remove(event.player.getPersistentID());
+    }
+
+    @SubscribeEvent
+    public void permissionChange(User.ModifyPermission e)
+    {
+        sendPermissionUpdate(e.ident, true);
+    }
+
+    @SubscribeEvent
+    public void permissionChange(User.ModifyGroups e)
+    {
+        sendPermissionUpdate(e.ident, true);
+    }
+
+    @SubscribeEvent
+    public void permissionChange(Group.ModifyPermission e)
+    {
+        for (UserIdent ident : e.serverZone.getGroupPlayers().get(e.group))
+        {
+            if (ident.hasPlayer())
+                sendPermissionUpdate(ident, true);
+        }
     }
 
     /* ------------------------------------------------------------ */
