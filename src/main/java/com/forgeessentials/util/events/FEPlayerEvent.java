@@ -38,7 +38,6 @@ public class FEPlayerEvent extends PlayerEvent
      */
     public static class PlayerAFKEvent extends FEPlayerEvent
     {
-
         public final boolean afk;
 
         public PlayerAFKEvent(EntityPlayer player, boolean afk)
@@ -46,7 +45,6 @@ public class FEPlayerEvent extends PlayerEvent
             super(player);
             this.afk = afk;
         }
-
     }
 
     /**
@@ -54,11 +52,24 @@ public class FEPlayerEvent extends PlayerEvent
      */
     public static class PlayerAuthLoginEvent extends FEPlayerEvent
     {
+        public enum Source
+        {
+            COMMAND, AUTOLOGIN
+        }
 
-        public PlayerAuthLoginEvent(EntityPlayer player)
+        public final Source source;
+        public PlayerAuthLoginEvent(EntityPlayer player, Source source)
+        {
+            super(player);
+            this.source = source;
+        }
+    }
+
+    public static class ClientHandshakeEstablished extends FEPlayerEvent
+    {
+        public ClientHandshakeEstablished(EntityPlayer player)
         {
             super(player);
         }
-
     }
 }

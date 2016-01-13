@@ -7,6 +7,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
+import com.forgeessentials.client.auth.ClientAuthNetHandler;
 import com.forgeessentials.client.handler.CUIRenderrer;
 import com.forgeessentials.client.handler.PermissionOverlay;
 import com.forgeessentials.client.handler.QRRenderer;
@@ -20,6 +21,7 @@ import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.Packet2Reach;
 import com.forgeessentials.commons.network.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.Packet5Noclip;
+import com.forgeessentials.commons.network.Packet6AuthLogin;
 import com.forgeessentials.commons.network.Packet7Remote;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -50,7 +52,7 @@ public class ClientProxy extends CommonProxy
 
     /* ------------------------------------------------------------ */
 
-    public static boolean allowCUI, allowQRCodeRender, allowPermissionRender, allowQuestionerShortcuts;
+    public static boolean allowCUI, allowQRCodeRender, allowPermissionRender, allowQuestionerShortcuts, allowAuthAutoLogin;
 
     public static float reachDistance;
 
@@ -108,6 +110,7 @@ public class ClientProxy extends CommonProxy
                 return null;
             }
         }, Packet5Noclip.class, 5, Side.CLIENT);
+        NetworkUtils.registerMessage(new ClientAuthNetHandler(), Packet6AuthLogin.class, 6, Side.CLIENT);
         NetworkUtils.registerMessage(qrCodeRenderer, Packet7Remote.class, 7, Side.CLIENT);
     }
 
@@ -131,7 +134,9 @@ public class ClientProxy extends CommonProxy
         allowPermissionRender = config.get(Configuration.CATEGORY_GENERAL, "allowPermRender", true,
                 "Set to false to disable visual indication of block/item permissions").getBoolean(true);
         allowQuestionerShortcuts = config.get(Configuration.CATEGORY_GENERAL, "allowQuestionerShortcuts", true,
-                "Use shortcut buttons to answer questions. Defaults are F8 for yes and F9 for no, change in game options menu..").getBoolean(true);
+                "Use shortcut buttons to answer questions. Defaults are F8 for yes and F9 for no, change in game options menu.").getBoolean(true);
+        allowAuthAutoLogin = config.get(Configuration.CATEGORY_GENERAL, "allowAuthAutoLogin", true,
+                "Save tokens to automatically log in to servers using FE's Authentication Module.").getBoolean(true);
 
         if (allowCUI)
             MinecraftForge.EVENT_BUS.register(cuiRenderer);
