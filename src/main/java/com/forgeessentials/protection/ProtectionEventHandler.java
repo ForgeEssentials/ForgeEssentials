@@ -866,6 +866,8 @@ public class ProtectionEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void permissionChange(Group.ModifyPermission e)
     {
+        if (e.serverZone.getGroupPlayers().get(e.group) == null)
+            return;
         for (UserIdent ident : e.serverZone.getGroupPlayers().get(e.group))
         {
             if (ident.hasPlayer())
