@@ -370,3 +370,7 @@ publishing {
 		}
 	}
 }
+
+task cleanUpDevStuff(type: Delete, dependsOn: "publish") {
+    delete deobfJar, sourceJar, javadocJar
+}
