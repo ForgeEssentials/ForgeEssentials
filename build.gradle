@@ -336,8 +336,8 @@ publishing {
 				version baseVersion
 
 			artifact deobfJar
-			// artifact sourceJar
-			// artifact javadocJar
+			artifact sourceJar
+			artifact javadocJar
 
 			pom.withXml {
 				def dependenciesNode = asNode().appendNode("dependencies")
