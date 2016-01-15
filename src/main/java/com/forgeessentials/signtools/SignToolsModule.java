@@ -1,5 +1,6 @@
 package com.forgeessentials.signtools;
 
+import net.minecraft.init.Items;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
@@ -30,7 +31,7 @@ public class SignToolsModule extends ConfigLoaderBase
 
     public static final String COLOURIZE_PERM = "fe.signs.colourize";
     
-    private static boolean allowSignCommands;
+    private static boolean allowSignCommands, allowSignEdit;
 
     @SubscribeEvent
     public void onLoad(FEModuleInitEvent e)
@@ -85,15 +86,22 @@ public class SignToolsModule extends ConfigLoaderBase
         }
 
         TileEntity te = event.entityPlayer.worldObj.getTileEntity(event.pos);
-        if (te != null)
+        if (te != null && te instanceof TileEntitySign)
         {
-            if (te instanceof TileEntitySign)
+            if (allowSignEdit && e.entityPlayer.getCurrentEquippedItem().getItem().equals(Items.sign) && e.entityPlayer.isSneaking())
             {
-                IChatComponent[] signText = ((TileEntitySign) te).signText;
-                if (!signText[0].getUnformattedTextForChat().equals("[command]"))
+                if (PermissionManager.checkPermission(e.entityPlayer, "fe.protection.use.minecraft.sign"))
                 {
-                    return;
+                    e.entityPlayer.func_146100_a(te);
+                    e.setCanceled(true);
                 }
+            }
+
+            IChatComponent[] signText = ((TileEntitySign) te).signText;
+            if (!signText[0].equals("[command]"))
+            {
+                return;
+            }
 
                 else
                 {
@@ -105,8 +113,6 @@ public class SignToolsModule extends ConfigLoaderBase
                     }
                 }
 
-            }
-
         }
 
     }
@@ -116,5 +122,6 @@ public class SignToolsModule extends ConfigLoaderBase
     {
         // this is NOT a permprop because perms are checked against the player anyway
         allowSignCommands = config.getBoolean("allowSignCommands", "Signs", true, "Allow commands to be run when right clicking signs.");
+        allowSignEdit = config.getBoolean("allowSignEditing", "Signs", true, "Allow players to edit a sign by right clicking on it with a sign item while sneaking.");
     }
 }

@@ -1,12 +1,6 @@
 package com.forgeessentials.compat.sponge;
 
-import javax.inject.Inject;
 
-import org.spongepowered.api.Game;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.state.ConstructionEvent;
-import org.spongepowered.api.event.state.PreInitializationEvent;
-import org.spongepowered.api.plugin.Plugin;
 
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.core.environment.Environment;
@@ -16,10 +10,12 @@ import com.forgeessentials.core.environment.Environment;
  *
  * Watch this space, more to come.
  */
-@Plugin(id = "forgeessentials", name = "FESpongeCompat", version = BuildInfo.BASE_VERSION)
+//@Plugin(id = "forgeessentials", name = "FESpongeCompat", version = BuildInfo.BASE_VERSION)
 public class FESpongeCompat
 {
 
+    /*
+    to update for Sponge 3.0 and MC 1.8.9
     @Inject
     private Game game;
 
@@ -37,4 +33,5 @@ public class FESpongeCompat
     {
         Environment.registerSpongeCompatPlugin(game.getPluginManager().isLoaded("worldedit"));
     }
+    */
 }

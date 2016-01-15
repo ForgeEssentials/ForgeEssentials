@@ -57,7 +57,7 @@ def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
-ext.baseVersion = "1.8.3"
+ext.baseVersion = "1.8.4"
 version = baseVersion + "." + buildNumber
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
@@ -336,8 +336,8 @@ publishing {
 				version baseVersion
 
 			artifact deobfJar
-			// artifact sourceJar
-			// artifact javadocJar
+			artifact sourceJar
+			artifact javadocJar
 
 			pom.withXml {
 				def dependenciesNode = asNode().appendNode("dependencies")
@@ -369,4 +369,8 @@ publishing {
 			maven { url "file://${project.projectDir}/build/repo" }
 		}
 	}
+}
+
+task cleanUpDevStuff(type: Delete, dependsOn: "publish") {
+    delete deobfJar, sourceJar, javadocJar
 }
