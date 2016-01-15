@@ -49,6 +49,7 @@ import com.forgeessentials.chat.irc.command.CommandReply;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
+import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -441,6 +442,13 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         {
             sendMessage(Translator.format("* %s %s", event.sender.getCommandSenderName(), StringUtils.join(event.parameters, " ")));
         }
+    }
+
+    @SubscribeEvent
+    public void welcomeNewPlayers(NoPlayerInfoEvent e)
+    {
+        if (showGameEvents)
+            sendMessage(Translator.format("New player %s has joined the server!", e.getPlayer()));
     }
 
     /* ------------------------------------------------------------ */
