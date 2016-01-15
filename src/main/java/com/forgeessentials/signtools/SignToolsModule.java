@@ -88,12 +88,12 @@ public class SignToolsModule extends ConfigLoaderBase
         TileEntity te = event.entityPlayer.worldObj.getTileEntity(event.pos);
         if (te != null && te instanceof TileEntitySign)
         {
-            if (allowSignEdit && e.entityPlayer.getCurrentEquippedItem().getItem().equals(Items.sign) && e.entityPlayer.isSneaking())
+            if (allowSignEdit && event.entityPlayer.getCurrentEquippedItem().getItem().equals(Items.sign) && event.entityPlayer.isSneaking())
             {
-                if (PermissionManager.checkPermission(e.entityPlayer, "fe.protection.use.minecraft.sign"))
+                if (PermissionManager.checkPermission(event.entityPlayer, "fe.protection.use.minecraft.sign"))
                 {
-                    e.entityPlayer.func_146100_a(te);
-                    e.setCanceled(true);
+                    event.entityPlayer.func_175141_a((TileEntitySign) te);
+                    event.setCanceled(true);
                 }
             }
 
