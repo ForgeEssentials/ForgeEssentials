@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.Opcodes;
@@ -120,7 +121,7 @@ public class MethodInjector implements Comparable<MethodInjector>
 
                 // TODO: Cache @Local info
                 List<String> localAliases = ASMUtil.getAnnotationValue(aLocal, "value");
-                localAliases = new ArrayList<>(localAliases);
+                localAliases = localAliases == null ? new ArrayList<String>() : new ArrayList<>(localAliases);
                 localAliases.add(injector.localVariables.get(i + isNonStatic).name);
                 locals.add(localAliases);
 
@@ -298,7 +299,14 @@ public class MethodInjector implements Comparable<MethodInjector>
                         }
                     }
                     if (varNode == null)
-                        throw new InjectionException(String.format("Could not find local variable", localNames.get(0)));
+                    {
+                        String message = String.format("Could not find local variable [%s]", StringUtils.join(localNames, ", "));
+                        System.err.println(message);
+                        System.err.println("Found local variables:");
+                        for (LocalVariableNode lvn : targetMethod.localVariables)
+                            System.err.println(String.format("  %s: %s", lvn.name, lvn.desc));
+                        throw new InjectionException(message);
+                    }
                     vn.var = varNode.index;
                 }
                 else if (vn.var >= injectorArgumentCount)
