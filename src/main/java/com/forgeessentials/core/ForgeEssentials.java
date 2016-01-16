@@ -190,12 +190,12 @@ public class ForgeEssentials extends ConfigLoaderBase
         teleportHelper = new TeleportHelper();
         questioner = new Questioner();
         respawnHandler = new RespawnHandler();
-        new SelectionHandler();
         APIRegistry.getFEEventBus().register(new CompatReiMinimap());
 
         // Load submodules
         moduleLauncher = new ModuleLauncher();
         moduleLauncher.preLoad(event);
+        new SelectionHandler();
     }
 
     @EventHandler

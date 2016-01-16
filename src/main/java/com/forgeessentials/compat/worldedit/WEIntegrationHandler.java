@@ -41,10 +41,4 @@ public class WEIntegrationHandler
         PermissionManager.registerPermission("worldedit.selection.*", PermissionLevel.TRUE);
     }
 
-    @SubscribeEvent
-    public void onWorldLoad(WorldEvent.Load e)
-    {
-        SelectionHandler.selectionProvider = new WESelectionHandler();
-    }
-
 }

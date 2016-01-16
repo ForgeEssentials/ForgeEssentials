@@ -28,8 +28,8 @@ public abstract class MixinBlockFire extends BlockFire
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlock(IIILnet/minecraft/block/Block;II)Z", shift = Shift.LAST_LABEL) )
     public void handleTryCatchFireA(World world, BlockPos pos, int chance, Random rnd, int argValue1, EnumFacing face, CallbackInfo ci)
     {
-        System.out.println("Injector: Fire destroyed block and spread to below block");
-        if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(pos, world, this, argValue1)))
+        //System.out.println("Injector: Fire destroyed block and spread to below block");
+        if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(x, y, z, world, this, argValue1)))
         {
             ci.doReturn();
         }
@@ -40,8 +40,8 @@ public abstract class MixinBlockFire extends BlockFire
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockToAir(III)Z", shift = Shift.LAST_LABEL) )
     public void handleTryCatchFireB(World world, BlockPos pos, int chance, Random rnd, int argValue1, EnumFacing face, CallbackInfo ci)
     {
-        System.out.println("Injector: Fire destroyed block");
-        if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(pos, world, this, argValue1)))
+        //System.out.println("Injector: Fire destroyed block");
+        if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(x, y, z, world, this, argValue1)))
         {
             ci.doReturn();
         }
@@ -53,7 +53,7 @@ public abstract class MixinBlockFire extends BlockFire
     public void updateTick(World world, int sourceX, int sourceY, int sourceZ, Random rnd, CallbackInfo ci, @Local("p_149674_2_") int x,
             @Local("p_149674_4_") int y, @Local("p_149674_3_") int z)
     {
-        System.out.println(String.format("Injector: Fire spreading to other block from [%d,%d,%d] to [%d,%d,%d]", sourceX, sourceY, sourceZ, x, y, z));
+        //System.out.println(String.format("Injector: Fire spreading to other block from [%d,%d,%d] to [%d,%d,%d]", sourceX, sourceY, sourceZ, x, y, z));
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Spread(x, y, z, world, this, 3, sourceX, sourceY, sourceZ)))
         {
             ci.doReturn();
