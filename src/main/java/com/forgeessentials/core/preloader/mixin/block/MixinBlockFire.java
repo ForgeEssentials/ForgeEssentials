@@ -30,7 +30,7 @@ public abstract class MixinBlockFire extends Block
     public void handleTryCatchFireA(World world, int x, int y, int z, int chance, Random p_149841_6_, int argValue1, ForgeDirection face, CallbackInfo ci)
     {
         System.out.println("Mixin : Fire destroyed block and spread to below block");
-        if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(x, y, z, world, this, argValue1)))
+        if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, x, y, z)))
         {
             ci.cancel();
         }
@@ -41,7 +41,7 @@ public abstract class MixinBlockFire extends Block
     public void handleTryCatchFireB(World world, int x, int y, int z, int chance, Random rnd, int argValue1, ForgeDirection face, CallbackInfo ci)
     {
         System.out.println("Mixin : Fire destroyed block");
-        if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(x, y, z, world, this, argValue1)))
+        if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, x, y, z)))
         {
             ci.cancel();
         }
@@ -54,7 +54,7 @@ public abstract class MixinBlockFire extends Block
             boolean isHighHumidity, byte b0, int x, int y, int z)
     {
         System.out.println(String.format("Mixin : Fire spreading to other block from [%d,%d,%d] to [%d,%d,%d]", sourceX, sourceY, sourceZ, x, y, z));
-        if (MinecraftForge.EVENT_BUS.post(new FireEvent.Spread(x, y, z, world, this, 3, sourceX, sourceY, sourceZ)))
+        if (MinecraftForge.EVENT_BUS.post(new FireEvent.Spread(world, x, y, z, sourceX, sourceY, sourceZ)))
         {
             ci.cancel();
         }

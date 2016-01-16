@@ -371,6 +371,6 @@ publishing {
 	}
 }
 
-task cleanUpDevStuff(type: Delete, dependsOn: "publish") {
-    delete deobfJar, sourceJar, javadocJar
+task cleanPlublishArtifacts(type: Delete, dependsOn: "publish") {
+    delete javadocJar
 }

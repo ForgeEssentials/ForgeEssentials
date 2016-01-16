@@ -1,16 +1,16 @@
 package net.minecraftforge.fe.event.world;
 
-import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
+
 import cpw.mods.fml.common.eventhandler.Cancelable;
 
 public class FireEvent extends BlockEvent
 {
 
-    public FireEvent(int x, int y, int z, World world, Block block, int blockMetadata)
+    public FireEvent(World world, int x, int y, int z)
     {
-        super(x, y, z, world, block, blockMetadata);
+        super(x, y, z, world, world.getBlock(x, y, z), world.getBlockMetadata(x, y, z));
     }
 
     /**
@@ -19,9 +19,9 @@ public class FireEvent extends BlockEvent
     @Cancelable
     public static class Destroy extends FireEvent
     {
-        public Destroy(int x, int y, int z, World world, Block block, int meta)
+        public Destroy(World world, int x, int y, int z)
         {
-            super(x, y, z, world, block, meta);
+            super(world, x, y, z);
         }
     }
 
@@ -34,9 +34,9 @@ public class FireEvent extends BlockEvent
 
         public final int sourceX, sourceY, sourceZ;
 
-        public Spread(int x, int y, int z, World world, Block block, int meta, int sourceX, int sourceY, int sourceZ)
+        public Spread(World world, int x, int y, int z, int sourceX, int sourceY, int sourceZ)
         {
-            super(x, y, z, world, block, meta);
+            super(world, x, y, z);
             this.sourceX = sourceX;
             this.sourceY = sourceY;
             this.sourceZ = sourceZ;

@@ -27,11 +27,11 @@ public class CommandExpandY extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(EntityPlayerMP player, String[] args)
     {
-        Selection sel = SelectionHandler.selectionProvider.getSelection(player);
+        Selection sel = SelectionHandler.getSelection(player);
         if (sel == null)
             throw new TranslatedCommandException("Invalid selection.");
-        SelectionHandler.selectionProvider.setStart(player, sel.getStart().setY(0));
-        SelectionHandler.selectionProvider.setEnd(player, sel.getEnd().setY(MinecraftServer.getServer().getBuildLimit()));
+        SelectionHandler.setStart(player, sel.getStart().setY(0));
+        SelectionHandler.setEnd(player, sel.getEnd().setY(MinecraftServer.getServer().getBuildLimit()));
         ChatOutputHandler.chatConfirmation(player, "Selection expanded from bottom to top.");
     }
 

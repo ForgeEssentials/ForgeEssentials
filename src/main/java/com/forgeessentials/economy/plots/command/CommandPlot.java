@@ -182,7 +182,7 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        Selection selection = SelectionHandler.selectionProvider.getSelection(arguments.senderPlayer);
+        Selection selection = SelectionHandler.getSelection(arguments.senderPlayer);
         if (selection == null || !selection.isValid())
             throw new TranslatedCommandException("Need a valid selection to define a plot");
 
@@ -221,7 +221,7 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        Selection selection = SelectionHandler.selectionProvider.getSelection(arguments.senderPlayer);
+        Selection selection = SelectionHandler.getSelection(arguments.senderPlayer);
         if (selection == null || !selection.isValid())
             throw new TranslatedCommandException("Need a valid selection to define a plot");
 
@@ -358,7 +358,7 @@ public class CommandPlot extends ParserCommandBase
     public static void parseSelect(CommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
-        SelectionHandler.selectionProvider.select(arguments.senderPlayer, plot.getDimension(), plot.getZone().getArea());
+        SelectionHandler.select(arguments.senderPlayer, plot.getDimension(), plot.getZone().getArea());
         arguments.confirm("Selected plot");
     }
 

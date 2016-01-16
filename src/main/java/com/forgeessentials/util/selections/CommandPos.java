@@ -46,11 +46,11 @@ public class CommandPos extends ForgeEssentialsCommandBase
 
                 if (type == 1)
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(x, y, z));
+                    SelectionHandler.setStart(player, new Point(x, y, z));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(x, y, z));
+                    SelectionHandler.setEnd(player, new Point(x, y, z));
                 }
 
                 ChatOutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -83,11 +83,11 @@ public class CommandPos extends ForgeEssentialsCommandBase
 
             if (type == 1)
             {
-                SelectionHandler.selectionProvider.setStart(player, new Point(x, y, z));
+                SelectionHandler.setStart(player, new Point(x, y, z));
             }
             else
             {
-                SelectionHandler.selectionProvider.setEnd(player, new Point(x, y, z));
+                SelectionHandler.setEnd(player, new Point(x, y, z));
             }
 
             ChatOutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
@@ -109,11 +109,11 @@ public class CommandPos extends ForgeEssentialsCommandBase
 
         if (type == 1)
         {
-            SelectionHandler.selectionProvider.setStart(player, point);
+            SelectionHandler.setStart(player, point);
         }
         else
         {
-            SelectionHandler.selectionProvider.setEnd(player, point);
+            SelectionHandler.setEnd(player, point);
         }
 
         ChatOutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
