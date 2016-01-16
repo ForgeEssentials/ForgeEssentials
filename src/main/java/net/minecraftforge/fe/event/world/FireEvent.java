@@ -1,6 +1,5 @@
 package net.minecraftforge.fe.event.world;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
@@ -9,9 +8,9 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
 public class FireEvent extends BlockEvent
 {
 
-    public FireEvent(World world, BlockPos pos, IBlockState state)
+    public FireEvent(World world, BlockPos pos)
     {
-        super(world, pos, state);
+        super(world, pos, world.getBlockState(pos));
     }
 
     /**
@@ -20,9 +19,9 @@ public class FireEvent extends BlockEvent
     @Cancelable
     public static class Destroy extends FireEvent
     {
-        public Destroy(World world, BlockPos pos, IBlockState state)
+        public Destroy(World world, BlockPos pos)
         {
-            super(world, pos, state);
+            super(world, pos);
         }
     }
 
@@ -35,9 +34,9 @@ public class FireEvent extends BlockEvent
 
         public final BlockPos source;
 
-        public Spread(World world, BlockPos pos, IBlockState state, BlockPos source)
+        public Spread(World world, BlockPos pos, BlockPos source)
         {
-            super(world, pos, state);
+            super(world, pos);
             this.source = source;
         }
 
