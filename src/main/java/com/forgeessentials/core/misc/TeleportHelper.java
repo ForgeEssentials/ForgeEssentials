@@ -38,7 +38,7 @@ public class TeleportHelper extends ServerEventHandler
         @Override
         public boolean placeInExistingPortal(Entity par1Entity, double par2, double par4, double par6, float par8)
         {
-            return false;
+            return super.placeInExistingPortal(par1Entity, par2, par4, par6, par8);
         }
 
         @Override
@@ -50,7 +50,7 @@ public class TeleportHelper extends ServerEventHandler
         @Override
         public void placeInPortal(Entity entity, double x, double y, double z, float rotationYaw)
         {
-            /* do nothing */
+            super.placeInPortal(entity, x, y, z, rotationYaw);
         }
 
     }
