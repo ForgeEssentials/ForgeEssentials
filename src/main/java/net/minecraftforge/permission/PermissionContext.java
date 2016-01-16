@@ -4,8 +4,10 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 /**
  * Class to hold all information regarding a permission check
@@ -175,6 +177,13 @@ public class PermissionContext
     public boolean isPlayer()
     {
         return player instanceof EntityPlayer;
+    }
+
+    public boolean isRCon()
+    {
+        if (FMLCommonHandler.instance().getSide().isServer())
+            return sender instanceof RConConsoleSource;
+        else return false; // rcon doesn't exist on clients
     }
 
 }
