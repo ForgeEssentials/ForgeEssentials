@@ -371,6 +371,6 @@ publishing {
 	}
 }
 
-task cleanPlublishArtifacts(type: Delete, dependsOn: "publish") {
+task publishAndClean(type: Delete, dependsOn: "publish") {
     delete javadocJar
 }
