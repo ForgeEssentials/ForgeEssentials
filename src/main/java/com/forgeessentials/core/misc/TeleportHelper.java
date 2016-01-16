@@ -39,7 +39,7 @@ public class TeleportHelper extends ServerEventHandler
         @Override
         public boolean func_180620_b(Entity entity, float yaw)
         {
-            return false;
+            return super.func_180620_b(entity, yaw);
         }
 
         @Override
@@ -51,6 +51,7 @@ public class TeleportHelper extends ServerEventHandler
         @Override
         public void func_180266_a(Entity entity, float yaw)
         {
+            super.func_180266_a(entity, yaw);
         }
 
     }
