@@ -71,7 +71,7 @@ public class CommandJump extends ForgeEssentialsCommandBase
         MovingObjectPosition mo = PlayerUtil.getPlayerLookingSpot(player, 500);
         if (mo == null)
             throw new TranslatedCommandException("The spot you are looking at is too far away to teleport.");
-        BlockPos pos = mo.func_178782_a();
+        BlockPos pos = mo.getBlockPos();
         TeleportHelper.teleport(player, new WarpPoint(player.getEntityWorld().provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(),
                 player.rotationPitch, player.rotationYaw));
     }
@@ -95,7 +95,7 @@ public class CommandJump extends ForgeEssentialsCommandBase
         }
         catch (CommandException ce)
         {
-            ChatComponentTranslation msg = new ChatComponentTranslation(ce.getMessage(), ce.getErrorOjbects());
+            ChatComponentTranslation msg = new ChatComponentTranslation(ce.getMessage(), ce.getErrorObjects());
             msg.getChatStyle().setColor(EnumChatFormatting.RED);
             event.entityPlayer.addChatMessage(msg);
         }

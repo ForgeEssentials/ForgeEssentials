@@ -50,8 +50,8 @@ import java.util.UUID;
 import java.util.zip.GZIPOutputStream;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -177,7 +177,7 @@ public class Metrics {
         if (isOptOut()) {
             return false;
         }
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
         return true;
     }
 
@@ -219,7 +219,7 @@ public class Metrics {
      * Stop processing
      */
     public void stop() {
-        FMLCommonHandler.instance().bus().unregister(this);
+        MinecraftForge.EVENT_BUS.unregister(this);
     }
 
     /**

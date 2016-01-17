@@ -25,13 +25,13 @@ import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +41,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(NetHandlerPlayServer.class)
-public abstract class MixinNetHandlerPlayServer_02 implements INetHandlerPlayServer, IUpdatePlayerListBox
+public abstract class MixinNetHandlerPlayServer_02 implements INetHandlerPlayServer, ITickable
 {
 
     private static final Logger logger = LogManager.getLogger(NetHandlerPlayServer.class);
@@ -56,7 +56,7 @@ public abstract class MixinNetHandlerPlayServer_02 implements INetHandlerPlaySer
     @Overwrite
     public void processVanilla250Packet(C17PacketCustomPayload packetIn)
     {
-        PacketThreadUtil.func_180031_a(packetIn, this, this.playerEntity.getServerForPlayer());
+        PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.playerEntity.getServerForPlayer());
         PacketBuffer packetbuffer;
         ItemStack itemstack;
         ItemStack itemstack1;
@@ -71,7 +71,7 @@ public abstract class MixinNetHandlerPlayServer_02 implements INetHandlerPlaySer
 
                 if (itemstack != null)
                 {
-                    if (!ItemWritableBook.validBookPageTagContents(itemstack.getTagCompound()))
+                    if (!ItemWritableBook.isNBTValid(itemstack.getTagCompound()))
                     {
                         throw new IOException("Invalid book tag!");
                     }
@@ -195,7 +195,7 @@ public abstract class MixinNetHandlerPlayServer_02 implements INetHandlerPlaySer
 
                         if (entity instanceof EntityMinecartCommandBlock)
                         {
-                            commandblocklogic = ((EntityMinecartCommandBlock)entity).func_145822_e();
+                            commandblocklogic = ((EntityMinecartCommandBlock)entity).getCommandBlockLogic();
                         }
                     }
 
@@ -205,14 +205,14 @@ public abstract class MixinNetHandlerPlayServer_02 implements INetHandlerPlaySer
                     if (commandblocklogic != null)
                     {
                         commandblocklogic.setCommand(s1);
-                        commandblocklogic.func_175573_a(flag);
+                        commandblocklogic.setTrackOutput(flag);
 
                         if (!flag)
                         {
-                            commandblocklogic.func_145750_b((IChatComponent)null);
+                            commandblocklogic.setLastOutput((IChatComponent)null);
                         }
 
-                        commandblocklogic.func_145756_e();
+                        commandblocklogic.updateCommand();
                         this.playerEntity.addChatMessage(new ChatComponentTranslation("advMode.setCommand.success", new Object[] {s1}));
                     }
                 }

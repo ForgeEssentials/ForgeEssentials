@@ -119,7 +119,7 @@ public class CommandBind extends ParserCommandBase
 
         if (arguments.isTabCompletion)
         {
-            arguments.tabCompletion = MinecraftServer.getServer().func_180506_a(arguments.sender,
+            arguments.tabCompletion = MinecraftServer.getServer().getTabCompletions(arguments.sender,
                     arguments.toString().startsWith("/") ? arguments.toString() : "/" + arguments.toString(), arguments.sender.getPosition());
             if ("none".startsWith(arguments.peek()))
                 arguments.tabCompletion.add(0, "none");

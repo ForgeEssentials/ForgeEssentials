@@ -78,7 +78,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_BLEND);
 
-            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
 
@@ -97,14 +97,14 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
         }
         else if (event.isCancelable() && event.type == ElementType.CROSSHAIRS)
         {
-            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
 
             MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
             if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK)
             {
-                IBlockState block = Minecraft.getMinecraft().theWorld.getBlockState(mop.func_178782_a());
+                IBlockState block = Minecraft.getMinecraft().theWorld.getBlockState(mop.getBlockPos());
                 int blockId = GameData.getBlockRegistry().getId(block.getBlock());
                 if (permissions.breakIds.contains(blockId))
                 {
@@ -118,13 +118,16 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
 
     public void drawTexturedRect(double xPos, double yPos, double width, double height)
     {
+        /*
+        TODO update to 1.8.9
+
         WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
         renderer.startDrawingQuads();
         renderer.addVertexWithUV(xPos, yPos + height, zLevel, 0, 1);
         renderer.addVertexWithUV(xPos + width, yPos + height, zLevel, 1, 1);
         renderer.addVertexWithUV(xPos + width, yPos, zLevel, 1, 0);
         renderer.addVertexWithUV(xPos, yPos, zLevel, 0, 0);
-        Tessellator.getInstance().draw();
+        Tessellator.getInstance().draw();*/
     }
 
 }

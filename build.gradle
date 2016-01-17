@@ -19,7 +19,7 @@ buildscript {
 
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT"
+		classpath "net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
 	}
@@ -38,7 +38,7 @@ repositories {
 	}
 }
 
-apply plugin: "forge"
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 /************************************************************
  * General configuration
@@ -57,17 +57,19 @@ def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
-ext.baseVersion = "1.8.4"
+ext.baseVersion = "1.8.5"
 version = baseVersion + "." + buildNumber
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 // Set up forge options
 minecraft {
-	version = "1.8-11.14.3.1450"
+	version = "1.8.9-11.15.0.1699"
 	runDir = "rundir"
+	
+	mappings = "snapshot_20160115"
 	
 	replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
 	replace "_VERSION_", project.version
@@ -126,8 +128,13 @@ dependencies {
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
-    buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-mc1.8", version: "6.1.1-SNAPSHOT", classifier: "dev", changing: true
-	includeMod files('lib/worldedit-forge-mc1.8-6.1.1-SNAPSHOT-dist.jar')
+    //buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-1.8.9", version: "6.1.1-SNAPSHOT", changing: true
+    buildDep "com.sk89q.worldedit:worldedit-core:6.1.1-SNAPSHOT"
+    buildDep "com.sk89q.worldedit:worldedit-forge-mc1.8.9:6.1.1:dev"
+	includeMod files('lib/worldedit-forge-mc1.8.9-6.1.1-SNAPSHOT-dist.jar')
+	
+	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
+	buildDep 'org.spongepowered:spongeapi:3.0.0'
 
 	// Shade Mixin library
 	shade group: "org.spongepowered", name: "mixin", version: "0.4.10-SNAPSHOT", changing: true
@@ -139,14 +146,22 @@ dependencies {
  */
 
 sourceSets {
+    def deps = [
+		configurations.forgeGradleMcDeps,
+		configurations.forgeGradleMc,
+		configurations.provided
+	]
 	utils {
 		compileClasspath = files(configurations.compile, sourceSets.api.output)
+		compileClasspath += files deps
 	}
 	main {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+		compileClasspath += files deps
 	}
 	client {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+		compileClasspath += files deps
 	}
 }
 
@@ -233,7 +248,6 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 /************************************************************
  * Deobfuscated server jar
  * Dependency name for maven = com.forgeessentials:forgeessentials:<version>:
- */
 
 task deobfJar(dependsOn: "classes", type: Jar) {
 	classifier = "dev"
@@ -250,11 +264,6 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 		from serverManifest
 	}
 }
-
-/************************************************************
- * Configure Mixin tweaks 
- */
-
 task sourceJar(type: Jar) {
 	classifier = "sources"
 	appendix = minecraft.version
@@ -265,6 +274,7 @@ task sourceJar(type: Jar) {
 		from serverManifest
 	}
 }
+*/
 
 /************************************************************
  * Configure API javadoc
@@ -289,28 +299,56 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
  * Configure reobfuscation
  */
 
-def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
-def mixinClientSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixinsClient.srg"
-afterEvaluate {
-	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
-	tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinClientSrg}"]
+ext.minecraftPlugin = plugins.getPlugin('net.minecraftforge.gradle.forge')
+ext.DIR_MCP_MAPPINGS = net.minecraftforge.gradle.common.Constants.DIR_MCP_MAPPINGS
+
+// Copy the current srgs to the build dir so the user doesn't have to go hunting for them
+task copySrgs(type: Copy, dependsOn: 'genSrgs') {
+    from minecraftPlugin.delayedFile("$DIR_MCP_MAPPINGS/srgs")
+
+    include '**/*.srg'
+    into 'build/srgs'
 }
 
+setupDecompWorkspace.dependsOn copySrgs
+setupDevWorkspace.dependsOn copySrgs
+compileJava.dependsOn copySrgs
+compileClientJava.dependsOn copySrgs
+
+def mixinSrg = "$buildDir/srgs" + File.separator + "mcp-srg.srg"
+//def mixinClientSrg = "$DIR_MCP_MAPPINGS/srgs" + File.separator + "mixinsClient.srg"
+
+afterEvaluate {
+	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${mixinSrg}"]
+	tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${mixinSrg}"]
+}
 reobf {
-	addExtraSrgFile mixinSrg
-	addExtraSrgFile mixinClientSrg
+    jar {
+        //addSecondarySrgFile mixinSrg
+    }
+
+    clientJar {
+        classpath = sourceSets.main.compileClasspath
+        //addSecondarySrgFile mixinClientSrg
+    }
+}
+
+/*
+reobf {
+	addSecondarySrgFile mixinSrg
+	//addSecondarySrgFile mixinClientSrg
 	reobf (clientJar) { reobfSpec ->
 		reobfSpec.classpath = sourceSets.main.compileClasspath
 	}
 }
-
+*/
 /************************************************************
  * Others
  */
 
 // Add default artifacts for task "build"
 artifacts {
-	archives deobfJar
+	//archives deobfJar
 	archives clientJar
 }
 
@@ -325,7 +363,7 @@ task wrapper(type: Wrapper) {
 apply plugin: "maven-publish"
 
 publishing {
-	tasks.publish.dependsOn "deobfJar"
+	//tasks.publish.dependsOn "deobfJar"
 
 	publications {
 		mavenJava (MavenPublication) {
@@ -335,8 +373,8 @@ publishing {
 			if (System.getenv("PUBLISH_RELEASE"))
 				version baseVersion
 
-			artifact deobfJar
-			artifact sourceJar
+			//artifact deobfJar
+			//artifact sourceJar
 			artifact javadocJar
 
 			pom.withXml {
@@ -372,5 +410,5 @@ publishing {
 }
 
 task cleanUpDevStuff(type: Delete, dependsOn: "publish") {
-    delete deobfJar, sourceJar, javadocJar
+    //delete deobfJar, sourceJar, javadocJar
 }

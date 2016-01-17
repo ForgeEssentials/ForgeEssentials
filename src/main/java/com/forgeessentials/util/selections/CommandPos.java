@@ -100,9 +100,9 @@ public class CommandPos extends ForgeEssentialsCommandBase
         if (mop == null)
             throw new TranslatedCommandException("You must first look at the ground!");
 
-        x = mop.func_178782_a().getX();
-        y = mop.func_178782_a().getY();
-        z = mop.func_178782_a().getZ();
+        x = mop.getBlockPos().getX();
+        y = mop.getBlockPos().getY();
+        z = mop.getBlockPos().getZ();
 
         WorldPoint point = new WorldPoint(player.dimension, x, y, z);
         if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point, getPermissionNode()))

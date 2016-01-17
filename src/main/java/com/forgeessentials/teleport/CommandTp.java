@@ -35,7 +35,7 @@ public class CommandTp extends CommandTeleport implements PermissionObject
             }
             else
             {
-                entity = func_175768_b(sender, args[0]);
+                entity = getEntity(sender, args[0]);
                 b0 = 1;
             }
 
@@ -48,11 +48,11 @@ public class CommandTp extends CommandTeleport implements PermissionObject
                 else if (entity.worldObj != null)
                 {
                     int i = b0 + 1;
-                    CommandBase.CoordinateArg argX = func_175770_a(entity.posX, args[b0], true);
-                    CommandBase.CoordinateArg argY = func_175767_a(entity.posY, args[i++], 0, 0, false);
-                    CommandBase.CoordinateArg argZ = func_175770_a(entity.posZ, args[i++], true);
-                    CommandBase.CoordinateArg argPitch = func_175770_a(entity.rotationYaw, args.length > i ? args[i++] : "~", false);
-                    CommandBase.CoordinateArg argYaw = func_175770_a(entity.rotationPitch, args.length > i ? args[i] : "~", false);
+                    CommandBase.CoordinateArg argX = parseCoordinate(entity.posX, args[b0], true);
+                    CommandBase.CoordinateArg argY = parseCoordinate(entity.posY, args[i++], 0, 0, false);
+                    CommandBase.CoordinateArg argZ = parseCoordinate(entity.posZ, args[i++], true);
+                    CommandBase.CoordinateArg argPitch = parseCoordinate(entity.rotationYaw, args.length > i ? args[i++] : "~", false);
+                    CommandBase.CoordinateArg argYaw = parseCoordinate(entity.rotationPitch, args.length > i ? args[i] : "~", false);
                     float pitch;
 
                     if (entity instanceof EntityPlayerMP)
@@ -104,7 +104,7 @@ public class CommandTp extends CommandTeleport implements PermissionObject
             }
             else
             {
-                Entity targetEntity = func_175768_b(sender, args[args.length - 1]);
+                Entity targetEntity = getEntity(sender, args[args.length - 1]);
                 if (targetEntity instanceof EntityPlayerMP)
                 {
                     WarpPoint pos = new WarpPoint(targetEntity.worldObj.provider.getDimensionId(), targetEntity.posX, targetEntity.posY, targetEntity.posZ,

@@ -7,6 +7,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameData;
 
@@ -54,7 +55,7 @@ public class TickTaskBlockFinder implements TickTask
         this.centerZ = (int) player.posZ;
         world = player.worldObj;
 
-        block = GameData.getBlockRegistry().getObject(id);
+        block = GameData.getBlockRegistry().getObject(new ResourceLocation(id));
         if (block == null)
         {
             try

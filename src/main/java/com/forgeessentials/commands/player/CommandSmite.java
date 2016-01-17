@@ -70,7 +70,7 @@ public class CommandSmite extends FEcmdModuleCommands
             }
             else
             {
-                BlockPos pos = mop.func_178782_a();
+                BlockPos pos = mop.getBlockPos();
                 sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, pos.getX(), pos.getY(), pos.getZ()));
                 ChatOutputHandler.chatConfirmation(sender, "I hope that didn't start a fire.");
             }

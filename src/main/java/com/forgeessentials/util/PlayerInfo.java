@@ -20,7 +20,6 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
-import com.forgeessentials.util.selections.SelectionHandler;
 import com.google.gson.annotations.Expose;
 
 public class PlayerInfo implements Loadable

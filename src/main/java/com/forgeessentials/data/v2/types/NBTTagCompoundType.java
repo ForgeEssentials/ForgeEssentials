@@ -106,12 +106,12 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                 case TAG_FLOAT:
                     typeId = "f";
                     for (int i = 0; i < tagList.tagCount(); i++)
-                        jsonArray.add(new JsonPrimitive(tagList.getFloat(i)));
+                        jsonArray.add(new JsonPrimitive(tagList.getFloatAt(i)));
                     break;
                 case TAG_DOUBLE:
                     typeId = "d";
                     for (int i = 0; i < tagList.tagCount(); i++)
-                        jsonArray.add(new JsonPrimitive(tagList.getDouble(i)));
+                        jsonArray.add(new JsonPrimitive(tagList.getDoubleAt(i)));
                     break;
                 case TAG_STRING:
                     typeId = "S";
@@ -128,7 +128,7 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                     for (int i = 0; i < tagList.tagCount(); i++)
                     {
                         JsonArray innerValues = new JsonArray();
-                        int[] values = tagList.getIntArray(i);
+                        int[] values = tagList.getIntArrayAt(i);
                         for (int v : values)
                             innerValues.add(new JsonPrimitive(v));
                         jsonArray.add(innerValues);

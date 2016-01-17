@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.data.v2.DataManager.DataType;
@@ -62,7 +63,7 @@ public class ItemStackType implements DataType<ItemStack>
             int damage = getSafeJsonInt(obj.get(DAMAGE), 0);
 
             // Get and check item
-            Item item = GameData.getItemRegistry().getObject(itemID);
+            Item item = GameData.getItemRegistry().getObject(new ResourceLocation(itemID));
             if (item == null)
                 return null;
 

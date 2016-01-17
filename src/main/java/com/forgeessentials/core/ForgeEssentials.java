@@ -10,7 +10,6 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -159,7 +158,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         LoggingHandler.init();
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
         Environment.check();
-        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -325,7 +323,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         // Do permission registration in first server tick.
         // TODO This can be removed if the Permission API gets accepted!
-        FMLCommonHandler.instance().bus().register(new CommandPermissionRegistrationHandler());
+        MinecraftForge.EVENT_BUS.register(new CommandPermissionRegistrationHandler());
     }
 
     public static final class CommandPermissionRegistrationHandler
@@ -334,7 +332,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         public void serverTickEvent(ServerTickEvent event)
         {
             PermissionManager.registerCommandPermissions();
-            FMLCommonHandler.instance().bus().unregister(this);
+            MinecraftForge.EVENT_BUS.unregister(this);
         }
     }
 

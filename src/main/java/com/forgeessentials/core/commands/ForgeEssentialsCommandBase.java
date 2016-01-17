@@ -191,10 +191,10 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
         return arraylist;
     }
 
-    public static List<String> getListOfStringsMatchingLastWord(String[] args, Collection<String> possibleMatches)
+    /*public static List<String> getListOfStringsMatchingLastWord(String[] args, Collection<?> possibleMatches)
     {
         return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
-    }
+    }*/
 
     public static List<String> getListOfStringsMatchingLastWord(String arg, String... possibleMatches)
     {
@@ -229,7 +229,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
         return arraylist;
     }
 
-    @Override
     public int compareTo(Object o)
     {
         if (o instanceof ICommand)

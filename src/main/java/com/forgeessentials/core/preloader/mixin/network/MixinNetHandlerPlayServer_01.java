@@ -6,12 +6,13 @@ import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.C12PacketUpdateSign;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.world.SignEditEvent;
@@ -21,7 +22,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(NetHandlerPlayServer.class)
-public abstract class MixinNetHandlerPlayServer_01 implements INetHandlerPlayServer, IUpdatePlayerListBox
+public abstract class MixinNetHandlerPlayServer_01 implements INetHandlerPlayServer, ITickable
 {
 
     @Shadow
@@ -34,10 +35,10 @@ public abstract class MixinNetHandlerPlayServer_01 implements INetHandlerPlaySer
     @Overwrite
     public void processUpdateSign(C12PacketUpdateSign packetIn)
     {
-        PacketThreadUtil.func_180031_a(packetIn, this, this.playerEntity.getServerForPlayer());
+        PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.playerEntity.getServerForPlayer());
         this.playerEntity.markPlayerActive();
         WorldServer worldserver = this.serverController.worldServerForDimension(this.playerEntity.dimension);
-        BlockPos blockpos = packetIn.func_179722_a();
+        BlockPos blockpos = packetIn.getPosition();
 
         if (worldserver.isBlockLoaded(blockpos))
         {
@@ -48,19 +49,20 @@ public abstract class MixinNetHandlerPlayServer_01 implements INetHandlerPlaySer
                 return;
             }
 
-            TileEntitySign tileentitysign = (TileEntitySign) tileentity;
+            TileEntitySign tileentitysign = (TileEntitySign)tileentity;
 
-            if (!tileentitysign.getIsEditable() || tileentitysign.func_145911_b() != this.playerEntity)
+            if (!tileentitysign.getIsEditable() || tileentitysign.getPlayer() != this.playerEntity)
             {
                 this.serverController.logWarning("Player " + this.playerEntity.getName() + " just tried to change non-editable sign");
                 return;
             }
 
-            IChatComponent[] lines = onSignEditEvent(packetIn, playerEntity); if (lines == null){ return;}//FE: sign edit event
+            IChatComponent[] aichatcomponent = onSignEditEvent(packetIn, playerEntity); if (aichatcomponent == null){ return;}//FE: sign edit event
 
-            for (int x = 0; x < tileentitysign.signText.length && x < lines.length; x++)
-                tileentitysign.signText[x] = new ChatComponentText(net.minecraft.util.EnumChatFormatting.getTextWithoutFormattingCodes(lines[x]
-                        .getUnformattedText()));
+            for (int i = 0; i < aichatcomponent.length; ++i)
+            {
+                tileentitysign.signText[i] = new ChatComponentText(EnumChatFormatting.getTextWithoutFormattingCodes(aichatcomponent[i].getUnformattedText()));
+            }
 
             tileentitysign.markDirty();
             worldserver.markBlockForUpdate(blockpos);
@@ -69,7 +71,7 @@ public abstract class MixinNetHandlerPlayServer_01 implements INetHandlerPlaySer
 
     private IChatComponent[] onSignEditEvent(C12PacketUpdateSign data, EntityPlayerMP player)
     {
-        SignEditEvent e = new SignEditEvent(data.func_179722_a(), data.func_180768_b(), player);
+        SignEditEvent e = new SignEditEvent(data.getPosition(), data.getLines(), player);
         if (MinecraftForge.EVENT_BUS.post(e))
         {
             return null;

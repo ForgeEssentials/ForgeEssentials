@@ -42,7 +42,7 @@ public final class MapperUtil
         {
             for (int iz = 0; iz < 16; iz++)
             {
-                int iy = chunk.getHeight(ix, iz);
+                int iy = chunk.getHeight(new BlockPos(ix, 0, iz));
                 for (; iy >= 0; iy--)
                 {
                     Block block = chunk.getBlock(ix, iy, iz);

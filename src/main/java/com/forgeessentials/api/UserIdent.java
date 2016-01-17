@@ -603,7 +603,7 @@ public class UserIdent
 
     public static GameProfile getGameProfileByUuid(UUID uuid)
     {
-        GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().func_152652_a(uuid);
+        GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getProfileByUUID(uuid);
         return profile;
     }
 

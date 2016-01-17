@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.network.play.server.S23PacketBlockChange;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.registry.GameData;
@@ -79,7 +80,7 @@ public class RollbackInfo
                 }
                 else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
                 {
-                    Block block = GameData.getBlockRegistry().getObject(change.block.name);
+                    Block block = GameData.getBlockRegistry().getObject(new ResourceLocation(change.block.name));
                     sendBlockChange(player, change, block.getStateFromMeta(change.metadata));
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " RESTORED " +
                     // change.block.name + ":" + change.metadata);
@@ -93,7 +94,7 @@ public class RollbackInfo
                 Action01Block change = lastChanges.get(i);
                 if (change.type == ActionBlockType.PLACE)
                 {
-                    Block block = GameData.getBlockRegistry().getObject(change.block.name);
+                    Block block = GameData.getBlockRegistry().getObject(new ResourceLocation(change.block.name));
                     sendBlockChange(player, change, block.getStateFromMeta(change.metadata));
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REPLACED " +
                     // change.block.name);
@@ -123,7 +124,7 @@ public class RollbackInfo
             else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
             {
                 WorldServer world = DimensionManager.getWorld(change.world.id);
-                Block block = GameData.getBlockRegistry().getObject(change.block.name);
+                Block block = GameData.getBlockRegistry().getObject(new ResourceLocation(change.block.name));
                 world.setBlockState(change.getBlockPos(), block.getStateFromMeta(change.metadata), 3);
                 world.setTileEntity(change.getBlockPos(), PlayerLogger.blobToTileEntity(change.entity));
                 System.out.println(change.time + " RESTORED " + change.block.name + ":" + change.metadata);
@@ -160,7 +161,7 @@ public class RollbackInfo
     public static void sendBlockChange(EntityPlayerMP player, Action01Block change, IBlockState newState)
     {
         S23PacketBlockChange packet = new S23PacketBlockChange(DimensionManager.getWorld(change.world.id), change.getBlockPos());
-        packet.field_148883_d = newState;
+        packet.blockState = newState;
         player.playerNetServerHandler.sendPacket(packet);
     }
 

@@ -122,7 +122,7 @@ public class CommandButcherTickTask implements TickTask
                     if (world.getChunkProvider().chunkExists(chunkX, chunkZ))
                     {
                         List<EntityLiving> list = new LinkedList<EntityLiving>();
-                        world.getChunkFromChunkCoords(chunkX, chunkZ).func_177430_a(EntityLiving.class, aabb, list, null);
+                        world.getChunkFromChunkCoords(chunkX, chunkZ).getEntitiesOfTypeWithinAAAB(EntityLiving.class, aabb, list, null);
                         for (EntityLiving entity : list)
                         {
                             checkEntity(entity);

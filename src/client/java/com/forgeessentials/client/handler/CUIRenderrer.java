@@ -125,6 +125,9 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
      */
     private static void renderBox()
     {
+        /*
+        TODO update to 1.8.9
+
         WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
         renderer.startDrawing(GL11.GL_LINES);
 
@@ -167,7 +170,7 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
         renderer.addVertex(-0.5, 0.5, -0.5);
         renderer.addVertex(-0.5, 0.5, 0.5);
 
-        Tessellator.getInstance().draw();
+        Tessellator.getInstance().draw();*/
     }
 
     @Override

@@ -24,7 +24,7 @@ public class WorldServerMultiworld extends WorldServer
             Profiler profilerIn, Multiworld world)
     {
         super(mcServer, saveHandler, info, dimensionId, profilerIn);
-        this.mapStorage = worldServer.func_175693_T();
+        this.mapStorage = worldServer.getMapStorage();
         this.worldScoreboard = worldServer.getScoreboard();
         this.worldTeleporter = new SimpleTeleporter(this);
         this.world = world;

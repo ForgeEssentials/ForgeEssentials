@@ -50,7 +50,6 @@ public class ModuleServerVote
     @SubscribeEvent
     public void init(FEModuleInitEvent e)
     {
-        FMLCommonHandler.instance().bus().register(this);
         ForgeEssentials.getConfigManager().registerLoader("ServerVote", new ConfigServerVote());
         APIRegistry.scripts.addScriptType(scriptKey);
     }

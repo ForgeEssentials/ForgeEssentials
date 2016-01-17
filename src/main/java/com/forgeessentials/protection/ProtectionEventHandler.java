@@ -392,7 +392,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         else if (exploder instanceof EntityLiving)
             ident = APIRegistry.IDENT_NPC;
 
-        List<BlockPos> positions = event.explosion.func_180343_e();
+        List<BlockPos> positions = event.explosion.getAffectedBlockPositions();
         for (Iterator<BlockPos> it = positions.iterator(); it.hasNext();)
         {
             BlockPos pos = it.next();
@@ -420,7 +420,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             else if (mop == null)
                 point = new WorldPoint(event.entityPlayer.dimension, event.pos);
             else
-                point = new WorldPoint(event.entityPlayer.dimension, mop.func_178782_a());
+                point = new WorldPoint(event.entityPlayer.dimension, mop.getBlockPos());
         }
         else
             point = new WorldPoint(event.entityPlayer.dimension, event.pos);
@@ -517,7 +517,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         if (percentage >= FEConfig.majoritySleep && percentage < 1)
         {
-            if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle"))
+            if (world.getGameRules().getBoolean("doDaylightCycle"))
             {
                 long time = world.getWorldInfo().getWorldTime() + 24000L;
                 world.getWorldInfo().setWorldTime(time - time % 24000L);
@@ -973,7 +973,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 }
                 if (isInventoryItemBanned(ident, stack))
                 {
-                    EntityItem droppedItem = player.func_146097_a(stack, true, false);
+                    EntityItem droppedItem = player.dropItem(stack, true, false);
                     droppedItem.motionX = 0;
                     droppedItem.motionY = 0;
                     droppedItem.motionZ = 0;
