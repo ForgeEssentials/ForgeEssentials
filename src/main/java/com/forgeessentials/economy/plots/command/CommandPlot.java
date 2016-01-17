@@ -97,7 +97,7 @@ public class CommandPlot extends ParserCommandBase
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return "/buyplot [amount]: Offer to buy the plot you are standing in. Owner needs to approve the transaction if plot not up for sale.";
+        return "/plot Manage plots.";
     }
 
     @Override
