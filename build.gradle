@@ -372,5 +372,5 @@ publishing {
 }
 
 task publishAndClean(type: Delete, dependsOn: "publish") {
-    delete javadocJar
+    delete javadocJar, sourceJar
 }
