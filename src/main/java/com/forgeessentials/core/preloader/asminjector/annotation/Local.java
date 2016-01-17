@@ -15,6 +15,6 @@ public @interface Local
      *
      * @return possible local variable names
      */
-    public String[] value();
+    public String[] value() default "";
 
 }

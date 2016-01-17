@@ -37,9 +37,9 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         @Override
-        public boolean func_180620_b(Entity entity, float yaw)
+        public boolean placeInExistingPortal(Entity entity, float yaw)
         {
-            return super.func_180620_b(par1Entity, par2, par4, par6, par8);
+            return super.placeInExistingPortal(entity, yaw);
         }
 
         @Override
@@ -49,9 +49,9 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         @Override
-        public void func_180266_a(Entity entity, float yaw)
+        public void placeInPortal(Entity entity, float yaw)
         {
-            super.func_180266_a(entity, rotationYaw);
+            super.placeInPortal(entity, yaw);
         }
 
     }
