@@ -179,6 +179,7 @@ public class ModuleAuth extends ConfigLoaderBase
     public void load(Configuration config, boolean isReload)
     {
         config.addCustomCategoryComment(CONFIG_CATEGORY, "AuthModule configuration");
+        EncryptionHelper.algorithm = config.get(CONFIG_CATEGORY, "encryptionAlgorithm", "SHA1", CFG_DESC_encryption).getString();
         canMoveWithoutLogin = config.get(CONFIG_CATEGORY, "canMoveWithoutLogin", false, CFG_DESC_canMoveWithoutLogin).getBoolean(false);
         allowOfflineRegistration = config.get(CONFIG_CATEGORY, "allowOfflineReg", false, CFG_DESC_allowOfflineReg).getBoolean(false);
         forceEnabled = config.get(CONFIG_CATEGORY, "forceEnable", false, CFG_DESC_forceEnable).getBoolean(false);
@@ -193,7 +194,6 @@ public class ModuleAuth extends ConfigLoaderBase
         AuthEventHandler.nonVipKickMessage = config.get(CONFIG_CATEGORY_LISTS + ".kick", "notVIPmsg", "This server is full, and you are not a VIP.")
                 .getString();
         allowAutoLogin = config.get(CONFIG_CATEGORY, "allowAutoLogin", true, CFG_DESC_autologin).getBoolean();
-        EncryptionHelper.algorithm = config.get(CONFIG_CATEGORY, "encryptionAlgorithm", "SHA1", CFG_DESC_encryption).getString();
 
         checkVanillaAuthStatus = config.get(CONFIG_CATEGORY, "autoEnable", false, CFG_DESC_autoEnable).getBoolean(false);
         int authCheckerInterval = config.get(CONFIG_CATEGORY, "checkInterval", 10, CFG_DESC_checkInterval).getInt();

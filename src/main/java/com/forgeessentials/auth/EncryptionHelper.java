@@ -24,6 +24,8 @@ public class EncryptionHelper
     {
         try
         {
+            if (algorithm == null)
+                algorithm = "SHA1"; // just in case
             sha1 = MessageDigest.getInstance(algorithm);
         }
         catch (NoSuchAlgorithmException e)
