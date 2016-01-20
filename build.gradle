@@ -80,6 +80,7 @@ ext.sharedManifest = manifest {
 		"BuildNumber": buildNumber,
 		"FMLCorePluginContainsFMLMod": "true",
 		"ForceLoadAsMod": "true",
+        "MixinCompatibilityLevel": "51",
 	)
 }
 
