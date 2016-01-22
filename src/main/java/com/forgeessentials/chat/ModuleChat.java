@@ -182,7 +182,7 @@ public class ModuleChat
 
         APIRegistry.perms.registerPermissionDescription(PERM, "Chat permissions");
         APIRegistry.perms.registerPermission(PERM_CHAT, PermissionLevel.TRUE, "Allow players to use the public chat");
-        APIRegistry.perms.registerPermission(PERM_COLOR, PermissionLevel.TRUE, "Allow players to use colours in the public chat");
+        APIRegistry.perms.registerPermission(PERM_COLOR, PermissionLevel.TRUE, "Allow players to use colors in the public chat");
         APIRegistry.perms.registerPermission(PERM_URL, PermissionLevel.TRUE, "Allow players to post clickable links in public chat.");
         APIRegistry.perms.registerPermissionProperty(PERM_TEXTFORMAT, "", "Textformat colors. USE ONLY THE COLOR CHARACTERS AND NO &");
         APIRegistry.perms.registerPermissionProperty(PERM_PLAYERFORMAT, "", "Text to show in front of the player name in chat messages");

@@ -28,7 +28,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class SignToolsModule extends ConfigLoaderBase
 {
 
-    public static final String COLOURIZE_PERM = "fe.signs.colourize";
+    public static final String COLORIZE_PERM = "fe.signs.colorize";
     
     private static boolean allowSignCommands, allowSignEdit;
 
@@ -42,20 +42,18 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void registerPerms(FEModuleServerInitEvent e)
     {
-        PermissionManager.registerPermission(COLOURIZE_PERM, PermissionLevel.TRUE);
+        PermissionManager.registerPermission(COLORIZE_PERM, PermissionLevel.TRUE);
     }
 
     /**
-     * works the same as the old /colourize command
-     * 
-     * Note: Colour is the UK variant of Color
+     * works the same as the old /colorize command
      * 
      * @param e
      */
     @SubscribeEvent
     public void onSignEdit(SignEditEvent e)
     {
-        if (!PermissionManager.checkPermission(e.editor, COLOURIZE_PERM))
+        if (!PermissionManager.checkPermission(e.editor, COLORIZE_PERM))
         {
             return;
         }
