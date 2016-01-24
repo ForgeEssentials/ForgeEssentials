@@ -8,19 +8,26 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.play.server.S07PacketRespawn;
+import net.minecraft.network.play.server.S1DPacketEntityEffect;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.Teleporter;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 
@@ -36,9 +43,10 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         @Override
-        public boolean placeInExistingPortal(Entity par1Entity, double par2, double par4, double par6, float par8)
+        public boolean placeInExistingPortal(Entity entity, double x, double y, double z, float rotationYaw)
         {
-            return super.placeInExistingPortal(par1Entity, par2, par4, par6, par8);
+            entity.setLocationAndAngles(x, y, z, rotationYaw, entity.rotationPitch);
+            return true;
         }
 
         @Override
@@ -50,7 +58,7 @@ public class TeleportHelper extends ServerEventHandler
         @Override
         public void placeInPortal(Entity entity, double x, double y, double z, float rotationYaw)
         {
-            super.placeInPortal(entity, x, y, z, rotationYaw);
+            placeInExistingPortal(entity, x, y, z, rotationYaw);
         }
 
     }
@@ -186,17 +194,29 @@ public class TeleportHelper extends ServerEventHandler
 
     public static void doTeleport(EntityPlayerMP player, WarpPoint point)
     {
+        if (point.getWorld() == null)
+        {
+            LoggingHandler.felog.error("Error teleporting player. Target world is NULL");
+            return;
+        }
         // TODO: Handle teleportation of mounted entity
         player.mountEntity(null);
 
         if (player.dimension != point.getDimension())
-            MinecraftServer.getServer().getConfigurationManager()
-                    .transferPlayerToDimension(player, point.getDimension(), new SimpleTeleporter(point.getWorld()));
+        {
+            SimpleTeleporter teleporter = new SimpleTeleporter(point.getWorld());
+            transferPlayerToDimension(player, point.getDimension(), teleporter);
+        }
         player.playerNetServerHandler.setPlayerLocation(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
 
     public static void doTeleportEntity(Entity entity, WarpPoint point)
     {
+        if (entity instanceof EntityPlayerMP)
+        {
+            doTeleport((EntityPlayerMP) entity, point);
+            return;
+        }
         if (entity.dimension != point.getDimension())
             entity.travelToDimension(point.getDimension());
         entity.setLocationAndAngles(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
@@ -216,6 +236,59 @@ public class TeleportHelper extends ServerEventHandler
                 }
             }
         }
+    }
+
+    public static void transferPlayerToDimension(EntityPlayerMP player, int dimension, Teleporter teleporter)
+    {
+        int oldDim = player.dimension;
+        MinecraftServer mcServer = MinecraftServer.getServer();
+
+        WorldServer oldWorld = mcServer.worldServerForDimension(player.dimension);
+        player.dimension = dimension;
+        WorldServer newWorld = mcServer.worldServerForDimension(player.dimension);
+        player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, newWorld.difficultySetting,
+                newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType())); // Forge: Use new dimensions information
+        oldWorld.removePlayerEntityDangerously(player);
+        player.isDead = false;
+
+        transferEntityToWorld(player, oldDim, oldWorld, newWorld, teleporter);
+
+        mcServer.getConfigurationManager().func_72375_a(player, oldWorld);
+        player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw,
+                player.rotationPitch);
+        player.theItemInWorldManager.setWorld(newWorld);
+        mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
+        mcServer.getConfigurationManager().syncPlayerInventory(player);
+        Iterator<?> iterator = player.getActivePotionEffects().iterator();
+        while (iterator.hasNext())
+        {
+            PotionEffect potioneffect = (PotionEffect) iterator.next();
+            player.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(player.getEntityId(), potioneffect));
+        }
+        FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDim, dimension);
+    }
+
+    public static void transferEntityToWorld(Entity entity, int oldDim, WorldServer oldWorld, WorldServer newWorld, Teleporter teleporter)
+    {
+        WorldProvider pOld = oldWorld.provider;
+        WorldProvider pNew = newWorld.provider;
+        double moveFactor = pOld.getMovementFactor() / pNew.getMovementFactor();
+        double d0 = entity.posX * moveFactor;
+        double d1 = entity.posZ * moveFactor;
+        double d3 = entity.posX;
+        double d4 = entity.posY;
+        double d5 = entity.posZ;
+        float f = entity.rotationYaw;
+        d0 = MathHelper.clamp_int((int) d0, -29999872, 29999872);
+        d1 = MathHelper.clamp_int((int) d1, -29999872, 29999872);
+        if (entity.isEntityAlive())
+        {
+            entity.setLocationAndAngles(d0, entity.posY, d1, entity.rotationYaw, entity.rotationPitch);
+            teleporter.placeInPortal(entity, d3, d4, d5, f);
+            newWorld.spawnEntityInWorld(entity);
+            newWorld.updateEntityWithOptionalForce(entity, false);
+        }
+        entity.setWorld(newWorld);
     }
 
 }
