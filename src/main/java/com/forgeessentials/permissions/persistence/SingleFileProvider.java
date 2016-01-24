@@ -35,6 +35,7 @@ public class SingleFileProvider extends ZonePersistenceProvider
             ServerZone serverZone = DataManager.getGson().fromJson(in, ServerZone.class);
             if (serverZone == null)
                 return null;
+            serverZone.afterLoad();
             readUserGroupPermissions(serverZone);
             return serverZone;
         }
