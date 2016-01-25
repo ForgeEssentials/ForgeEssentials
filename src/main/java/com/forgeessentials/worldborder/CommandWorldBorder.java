@@ -119,7 +119,8 @@ public class CommandWorldBorder extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm("Worldborder center at %s", border.getCenter());
-            arguments.confirm("/wb center here: Set worldborder center");
+            arguments.confirm("/wb center here: Set worldborder center to player position");
+            arguments.confirm("/wb center X Z: Set worldborder center to coordinates");
             return;
         }
 
@@ -127,17 +128,19 @@ public class CommandWorldBorder extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        String subCommand = arguments.remove().toLowerCase();
-        switch (subCommand)
+        if (arguments.peek().equalsIgnoreCase("here"))
         {
-        case "here":
             border.setCenter(new Point(arguments.senderPlayer));
             border.save();
             arguments.confirm("Worldborder center set to current location");
-            break;
-        default:
-            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
+            return;
         }
+
+        int x = arguments.parseInt();
+        int z = arguments.parseInt();
+        border.setCenter(new Point(x, 64, z));
+        border.save();
+        arguments.confirm("Worldborder center set to [%d, %d]", x, z);
     }
 
     public static void parseRadius(CommandParserArgs arguments, WorldBorder border)
