@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.util.Constants.NBT;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -15,7 +16,6 @@ import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.PermissionCheckEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
-import com.forgeessentials.data.v2.types.NBTTagCompoundType;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -137,7 +137,7 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
 
     public static NBTTagList getSettingsTag(NBTTagCompound tag)
     {
-        NBTTagList settings = tag.getTagList(TAG_SETTINGS, NBTTagCompoundType.TAG_STRING);
+        NBTTagList settings = tag.getTagList(TAG_SETTINGS, NBT.TAG_STRING);
         return settings;
     }
 
