@@ -1,13 +1,11 @@
 package com.forgeessentials.worldborder;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
@@ -80,7 +78,7 @@ public class CommandWorldBorder extends ParserCommandBase
             return;
         }
 
-        WorldBorder border = ModuleWorldBorder.getInstance().getBorder((WorldServer) arguments.senderPlayer.worldObj, new WorldPoint(arguments.senderPlayer));
+        WorldBorder border = ModuleWorldBorder.getInstance().getBorder(arguments.senderPlayer.worldObj);
 
         arguments.tabComplete("center", "disable", "enable", "shape", "size");
         String subCommand = arguments.remove().toLowerCase();
