@@ -296,7 +296,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
     {
         config.addCustomCategoryComment(CATEGORY, "Automated spam");
         setInterval(config.get(CATEGORY, "inverval", 60, "Interval in seconds. 0 to disable").getInt());
-        enabled = config.get(CATEGORY, "enabled", true).getBoolean();
+        enabled = config.get(CATEGORY, "enabled", false).getBoolean();
         shuffle = config.get(CATEGORY, "shuffle", false).getBoolean();
         messages = new ArrayList<String>(Arrays.asList(config.get(CATEGORY, "messages", MESSAGES_DEFAULT, MESSAGES_HELP).getStringList()));
         initMessageOrder();

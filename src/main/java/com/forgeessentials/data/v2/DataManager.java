@@ -17,6 +17,7 @@ import net.minecraft.util.IChatComponent;
 
 import org.apache.commons.io.FileUtils;
 
+import com.forgeessentials.data.v2.types.BlockType;
 import com.forgeessentials.data.v2.types.ItemStackType;
 import com.forgeessentials.data.v2.types.NBTTagCompoundType;
 import com.forgeessentials.data.v2.types.UserIdentType;
@@ -63,6 +64,7 @@ public class DataManager
         addDataType(new UserIdentType());
         addDataType(new ItemStackType());
         addDataType(new NBTTagCompoundType());
+        addDataType(new BlockType());
         addDataType(IChatComponent.class, new IChatComponent.Serializer());
     }
 
