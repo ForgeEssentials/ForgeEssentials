@@ -19,7 +19,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionContext;
 
 import org.apache.commons.lang3.StringUtils;
@@ -280,7 +280,7 @@ public class CommandParserArgs
             tabCompletion.add(completion);
     }
 
-    public World parseWorld()
+    public WorldServer parseWorld()
     {
         if (isTabCompletion && size() == 1)
         {
@@ -290,7 +290,7 @@ public class CommandParserArgs
         if (isEmpty())
         {
             if (senderPlayer != null)
-                return senderPlayer.worldObj;
+                return (WorldServer) senderPlayer.worldObj;
             else
                 throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
         }
@@ -301,7 +301,7 @@ public class CommandParserArgs
             {
                 if (senderPlayer == null)
                     throw new TranslatedCommandException("\"here\" cannot be used in console.");
-                return senderPlayer.worldObj;
+                return (WorldServer) senderPlayer.worldObj;
             }
             else
             {
