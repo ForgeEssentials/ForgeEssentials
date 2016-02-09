@@ -732,6 +732,8 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public void sendPermissionUpdate(UserIdent ident, boolean reset)
     {
+        if (!ident.hasPlayer()) // we can only send perm updates to players
+            return;
         if (!PlayerInfo.get(ident).getHasFEClient())
             return;
 
