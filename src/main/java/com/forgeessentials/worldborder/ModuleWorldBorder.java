@@ -180,7 +180,7 @@ public class ModuleWorldBorder extends ServerEventHandler
         WorldBorder border = borders.get(world);
         if (border == null)
         {
-            border = new WorldBorder(new Point(0, 0, 0), DEFAULT_SIZE, DEFAULT_SIZE);
+            border = new WorldBorder(new Point(0, 0, 0), DEFAULT_SIZE, DEFAULT_SIZE, world.provider.dimensionId);
             borders.put((WorldServer) world, border);
         }
         return border;
