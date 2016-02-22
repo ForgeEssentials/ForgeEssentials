@@ -81,6 +81,12 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             {
                 page = parseIntBounded(sender, args[1], 0, pages);
             }
+
+            if (ModuleTickets.ticketList.size() == 0)
+            {
+                ChatOutputHandler.chatNotification(sender, c + "There are no tickets!");
+                return;
+            }
             ChatOutputHandler.chatNotification(sender, c + "--- Ticket List ---");
             for (int i = page * 7; i < (page + 1) * 7; i++)
             {
@@ -94,7 +100,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
                     break;
                 }
             }
-            ChatOutputHandler.chatNotification(sender, c + Translator.format("--- Page %1$d of %2$d ---", page, pages));
+            ChatOutputHandler.chatNotification(sender, c + Translator.format("--- Page %1$d of %2$d ---", page + 1, pages + 1));
             return;
         }
 
@@ -106,7 +112,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
                 throw new TranslatedCommandException("message.error.illegalCategory", args[1]);
 
             String msg = "";
-            for (String var : Arrays.copyOfRange(args, 2, args.length - 1))
+            for (String var : Arrays.copyOfRange(args, 2, args.length))
             {
                 msg += " " + var;
             }
@@ -137,9 +143,15 @@ public class CommandTicket extends ForgeEssentialsCommandBase
         {
             if (args.length != 2)
                 throw new TranslatedCommandException("Usage: /ticket del <id>");
-            int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID);
-            ModuleTickets.ticketList.remove(ModuleTickets.getID(id));
-            ChatOutputHandler.chatConfirmation(sender, c + Translator.format("Your ticket has been removed. ID: %d", id));
+            int id = Integer.parseInt(args[1]);
+            Ticket toRemove = ModuleTickets.getID(id);
+            if (toRemove == null)
+            {
+                ChatOutputHandler.chatError(sender, Translator.format("No such ticket with ID %d!", id));
+                return;
+            }
+            ModuleTickets.ticketList.remove(toRemove);
+            ChatOutputHandler.chatConfirmation(sender, c + Translator.format("Your ticket with ID %d has been removed.", id));
         }
     }
 
