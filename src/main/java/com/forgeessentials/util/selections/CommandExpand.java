@@ -30,7 +30,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
     {
-        Selection sel = SelectionHandler.selectionProvider.getSelection(player);
+        Selection sel = SelectionHandler.getSelection(player);
         if (sel == null)
             throw new TranslatedCommandException("Invalid selection.");
 
@@ -45,72 +45,66 @@ public class CommandExpand extends ForgeEssentialsCommandBase
             {
                 if (sel.getStart().getX() < sel.getEnd().getX())
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(sel.getStart().getX() - expandby, sel.getStart().getY(), sel.getStart()
-                            .getZ()));
+                    SelectionHandler.setStart(player, new Point(sel.getStart().getX() - expandby, sel.getStart().getY(), sel.getStart().getZ()));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
+                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
                 }
             }
             else if (z == 1)
             {
                 if (sel.getStart().getZ() < sel.getEnd().getZ())
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ()
-                            + expandby));
+                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() + expandby));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
+                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
                 }
             }
             else if (x == 1)
             {
                 if (sel.getStart().getX() < sel.getEnd().getX())
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(sel.getStart().getX() + expandby, sel.getStart().getY(), sel.getStart()
-                            .getZ()));
+                    SelectionHandler.setStart(player, new Point(sel.getStart().getX() + expandby, sel.getStart().getY(), sel.getStart().getZ()));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
+                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
                 }
             }
             else if (z == -1)
             {
                 if (sel.getStart().getZ() < sel.getEnd().getZ())
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ()
-                            - expandby));
+                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() - expandby));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
+                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
                 }
             }
             else if (y == 1)
             {
                 if (sel.getStart().getY() > sel.getEnd().getY())
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() + expandby, sel.getStart()
-                            .getZ()));
+                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() + expandby, sel.getStart().getZ()));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
+                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
                 }
             }
             else if (y == -1)
             {
                 if (sel.getStart().getY() < sel.getEnd().getY())
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() - expandby, sel.getStart()
-                            .getZ()));
+                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() - expandby, sel.getStart().getZ()));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
+                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
                 }
             }
             ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
@@ -138,72 +132,66 @@ public class CommandExpand extends ForgeEssentialsCommandBase
             {
                 if (sel.getStart().getZ() < sel.getEnd().getZ())
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ()
-                            - expandby));
+                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() - expandby));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
+                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
                 }
             }
             else if (args[0].equalsIgnoreCase("east") || args[1].equalsIgnoreCase("east"))
             {
                 if (sel.getStart().getX() > sel.getEnd().getX())
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(sel.getStart().getX() + expandby, sel.getStart().getY(), sel.getStart()
-                            .getZ()));
+                    SelectionHandler.setStart(player, new Point(sel.getStart().getX() + expandby, sel.getStart().getY(), sel.getStart().getZ()));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
+                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
                 }
             }
             else if (args[0].equalsIgnoreCase("south") || args[1].equalsIgnoreCase("south"))
             {
                 if (sel.getStart().getZ() > sel.getEnd().getZ())
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ()
-                            + expandby));
+                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() + expandby));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
+                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
                 }
             }
             else if (args[0].equalsIgnoreCase("west") || args[1].equalsIgnoreCase("west"))
             {
                 if (sel.getStart().getX() < sel.getEnd().getX())
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(sel.getStart().getX() - expandby, sel.getStart().getY(), sel.getStart()
-                            .getZ()));
+                    SelectionHandler.setStart(player, new Point(sel.getStart().getX() - expandby, sel.getStart().getY(), sel.getStart().getZ()));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
+                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
                 }
             }
             else if (args[0].equalsIgnoreCase("up") || args[1].equalsIgnoreCase("up"))
             {
                 if (sel.getStart().getZ() > sel.getEnd().getZ())
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() + expandby, sel.getStart()
-                            .getZ()));
+                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() + expandby, sel.getStart().getZ()));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
+                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
                 }
             }
             else if (args[0].equalsIgnoreCase("down") || args[1].equalsIgnoreCase("down"))
             {
                 if (sel.getStart().getY() < sel.getEnd().getY())
                 {
-                    SelectionHandler.selectionProvider.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() - expandby, sel.getStart()
-                            .getZ()));
+                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() - expandby, sel.getStart().getZ()));
                 }
                 else
                 {
-                    SelectionHandler.selectionProvider.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
+                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
                 }
             }
             else

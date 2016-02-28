@@ -14,6 +14,8 @@ public class EncryptionHelper
 
     private static final SecureRandom rand = new SecureRandom();
 
+    protected static String algorithm;
+
     private static final String saltChars = "ABCDEFGHIJGMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-_=+[]{};:.,<>/?\\|~`";
 
     private static MessageDigest sha1;
@@ -22,7 +24,9 @@ public class EncryptionHelper
     {
         try
         {
-            sha1 = MessageDigest.getInstance("SHA1");
+            if (algorithm == null)
+                algorithm = "SHA1"; // just in case
+            sha1 = MessageDigest.getInstance(algorithm);
         }
         catch (NoSuchAlgorithmException e)
         {

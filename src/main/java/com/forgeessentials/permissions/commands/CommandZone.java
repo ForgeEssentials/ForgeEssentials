@@ -219,7 +219,7 @@ public class CommandZone extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
         
-        AreaBase selection = SelectionHandler.selectionProvider.getSelection(arguments.senderPlayer);
+        AreaBase selection = SelectionHandler.getSelection(arguments.senderPlayer);
         if (selection == null)
             throw new TranslatedCommandException("No selection available. Please select a region first.");
 
@@ -287,7 +287,7 @@ public class CommandZone extends ParserCommandBase
             throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
 
         AreaBase area = areaZone.getArea();
-        SelectionHandler.selectionProvider.select(arguments.senderPlayer, worldZone.getDimensionID(), area);
+        SelectionHandler.select(arguments.senderPlayer, worldZone.getDimensionID(), area);
         arguments.confirm("Area \"%s\" has been selected.", areaName);
     }
 

@@ -24,12 +24,13 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
 
-public class Grave
+public class Grave implements Loadable
 {
 
     protected static Map<Point, Grave> graves = new HashMap<Point, Grave>();
@@ -47,6 +48,8 @@ public class Grave
     protected boolean hasFencePost;
 
     protected boolean isProtected = true;
+
+    protected Block block = Blocks.skull;
 
     @Expose(serialize = false)
     private boolean opened;
@@ -114,6 +117,13 @@ public class Grave
             TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
             point.getWorld().setTileEntity(point.getBlockPos(), skull);
         }
+    }
+
+    @Override
+    public void afterLoad()
+    {
+        if (block == null)
+            block = Blocks.skull;
     }
 
     public void updateBlocks()
@@ -217,6 +227,8 @@ public class Grave
     {
         for (ItemStack is : inventory)
         {
+            if (is == null || is.getItem() == null)
+                continue;
             EntityItem entity = new EntityItem(point.getWorld(), point.getX(), point.getY(), point.getZ(), is);
             point.getWorld().spawnEntityInWorld(entity);
         }

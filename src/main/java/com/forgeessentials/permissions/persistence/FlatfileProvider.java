@@ -29,6 +29,7 @@ import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.LoggingHandler;
 
 public class FlatfileProvider extends ZonePersistenceProvider
@@ -60,9 +61,14 @@ public class FlatfileProvider extends ZonePersistenceProvider
 
     // ------------------------------------------------------------
 
-    public FlatfileProvider(File basePath)
+    public FlatfileProvider()
     {
-        this.basePath = basePath;
+        this.basePath = new File(ServerUtil.getWorldPath(), "FEData/permissions");
+    }
+
+    public FlatfileProvider(File path)
+    {
+        this.basePath = path;
     }
 
     // ------------------------------------------------------------

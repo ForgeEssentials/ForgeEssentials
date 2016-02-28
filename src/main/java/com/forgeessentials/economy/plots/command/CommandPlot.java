@@ -98,7 +98,7 @@ public class CommandPlot extends ParserCommandBase
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
-        return "/buyplot [amount]: Offer to buy the plot you are standing in. Owner needs to approve the transaction if plot not up for sale.";
+        return "/plot Manage plots.";
     }
 
     @Override
@@ -183,7 +183,7 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        Selection selection = SelectionHandler.selectionProvider.getSelection(arguments.senderPlayer);
+        Selection selection = SelectionHandler.getSelection(arguments.senderPlayer);
         if (selection == null || !selection.isValid())
             throw new TranslatedCommandException("Need a valid selection to define a plot");
 
@@ -214,7 +214,7 @@ public class CommandPlot extends ParserCommandBase
             throw new TranslatedCommandException("You are not the owner of this plot, you can't delete it!");
     }
 
-    public static void parseClaim(CommandParserArgs arguments) throws CommandException
+    public static void parseClaim(final CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(Plot.PERM_CLAIM);
         arguments.requirePlayer();
@@ -222,31 +222,63 @@ public class CommandPlot extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        Selection selection = SelectionHandler.selectionProvider.getSelection(arguments.senderPlayer);
+        final Selection selection = SelectionHandler.getSelection(arguments.senderPlayer);
         if (selection == null || !selection.isValid())
             throw new TranslatedCommandException("Need a valid selection to define a plot");
 
-        long price = Plot.getCalculatedPrice(selection);
-        Wallet wallet = APIRegistry.economy.getWallet(arguments.ident);
-        if (!wallet.covers(price))
-            throw new ModuleEconomy.CantAffordException();
+        final long price = Plot.getCalculatedPrice(selection);
 
-        checkLimits(arguments, selection);
+        QuestionerCallback handler = new QuestionerCallback() {
+            @Override
+            public void respond(Boolean response)
+            {
+                if (response == null)
+                {
+                    arguments.error("Claim request timed out");
+                    return;
+                }
+                if (response == false)
+                {
+                    arguments.error("Canceled");
+                    return;
+                }
+                try
+                {
+                    Wallet wallet = APIRegistry.economy.getWallet(arguments.ident);
+                    if (!wallet.covers(price))
+                        throw new ModuleEconomy.CantAffordException();
 
-        try
+                    checkLimits(arguments, selection);
+
+                    try
+                    {
+                        Plot.define(selection, arguments.ident);
+                        wallet.withdraw(price);
+                        arguments.confirm("Plot created for %s!", APIRegistry.economy.toString(price));
+                    }
+                    catch (PlotRedefinedException e)
+                    {
+                        throw new TranslatedCommandException("There is already a plot defined in this area");
+                    }
+                    catch (EventCancelledException e)
+                    {
+                        throw new TranslatedCommandException("Plot creation cancelled");
+                    }
+                }
+                catch (CommandException e)
+                {
+                    arguments.error(e.getMessage());
+                }
+            }
+        };
+        if (arguments.sender instanceof DoAsCommandSender)
         {
-            Plot.define(selection, arguments.ident);
-            wallet.withdraw(price);
-            arguments.confirm("Plot created for %s!", APIRegistry.economy.toString(price));
+            handler.respond(true);
+            return;
         }
-        catch (PlotRedefinedException e)
-        {
-            throw new TranslatedCommandException("There is already a plot defined in this area");
-        }
-        catch (EventCancelledException e)
-        {
-            throw new TranslatedCommandException("Plot creation cancelled");
-        }
+        String message = Translator.format("Really claim this plot for %s", APIRegistry.economy.toString(price));
+        Questioner.addChecked(arguments.sender, message, handler, 30);
+
     }
 
     private static void checkLimits(CommandParserArgs arguments, WorldArea newArea) throws CommandException
@@ -359,7 +391,7 @@ public class CommandPlot extends ParserCommandBase
     public static void parseSelect(CommandParserArgs arguments) throws CommandException
     {
         Plot plot = getPlot(arguments.sender);
-        SelectionHandler.selectionProvider.select(arguments.senderPlayer, plot.getDimension(), plot.getZone().getArea());
+        SelectionHandler.select(arguments.senderPlayer, plot.getDimension(), plot.getZone().getArea());
         arguments.confirm("Selected plot");
     }
 

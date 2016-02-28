@@ -19,8 +19,8 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.PermissionDeniedException;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent;
-import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent.Source;
+import com.forgeessentials.util.events.PlayerAuthLoginEvent;
+import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandAuth extends ForgeEssentialsCommandBase
@@ -83,10 +83,11 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                     // login worked
                     ModuleAuth.authenticate(sender.getPersistentID());
                     ChatOutputHandler.chatConfirmation(sender, "Login successful.");
-                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent(sender, Source.COMMAND));
+                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(sender, Source.COMMAND));
                 }
                 else
                 {
+                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Failure(sender));
                     throw new TranslatedCommandException("Login failed.");
                 }
 

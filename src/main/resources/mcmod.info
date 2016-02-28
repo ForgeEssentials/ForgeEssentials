@@ -4,7 +4,7 @@
   "description": "A suite of server mods for Minecraft Forge",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "https://github.com/ForgeEssentials/ForgeEssentialsMain",
+  "url": "https://github.com/ForgeEssentials/ForgeEssentials",
   "updateUrl": "",
   "authorList": [
 	"AbrarSyed",

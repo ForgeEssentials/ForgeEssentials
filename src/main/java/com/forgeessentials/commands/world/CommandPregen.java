@@ -16,7 +16,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
 import net.minecraft.world.gen.ChunkProviderServer;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -41,8 +40,6 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     private WorldServer world;
 
     private boolean fullPregen;
-
-    private int speed;
 
     private AreaShape shape;
 
@@ -70,8 +67,6 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     private int totalChunks;
 
-    private boolean autoSpeed;
-
     @Override
     public String getCommandName()
     {
@@ -87,7 +82,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/pregen start [speed] [true|false] [dim]";
+        return "/pregen start [dim]";
     }
 
     @Override
@@ -120,7 +115,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             else
             {
                 arguments.confirm("No pregen running");
-                arguments.notify("/pregen start [<speed>|auto] [dim]");
+                arguments.notify("/pregen start [full-pregen] [dim]");
             }
             return;
         }
@@ -154,32 +149,10 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         }
 
         world = null;
-        speed = 1;
-        autoSpeed = false;
         fullPregen = true;
         if (!arguments.isEmpty())
-        {
-            autoSpeed = arguments.peek().equalsIgnoreCase("auto");
-            if (!autoSpeed)
-                speed = arguments.parseInt();
-            if (!arguments.isEmpty())
-            {
-                world = DimensionManager.getWorld(arguments.parseInt());
-                if (world == null)
-                    throw new TranslatedCommandException("This world does not exist");
-                if (!arguments.isEmpty())
-                {
-                    fullPregen = arguments.parseBoolean();
-                }
-            }
-        }
-        if (world == null)
-        {
-            if (arguments.senderPlayer == null)
-                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-            else
-                world = (WorldServer) arguments.senderPlayer.worldObj;
-        }
+            fullPregen = arguments.parseBoolean();
+        world = arguments.parseWorld();
 
         WorldBorder border = ModuleWorldBorder.getInstance().getBorder(world);
         if (border == null)
@@ -241,13 +214,9 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
         double tps = ServerUtil.getTPS();
         if (totalTicks % 80 == 0)
-            notifyPlayers(String.format("Pregen: %d/%d chunks, s:%d, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ * 4, speed, tps,
+            notifyPlayers(String.format("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ * 4, tps,
                     providerServer.getLoadedChunkCount()));
-        if (autoSpeed && totalTicks % 160 == 0 && tps >= 60 && speed < 16)
-            speed++;
-        if (autoSpeed && totalTicks % 20 == 0 && tps < 25 && speed > 1)
-            speed--;
-        for (int i = 0; i < speed; i++)
+        for (int i = 0; i < 1; i++)
         {
             int skippedChunks = 0;
             while (true)
@@ -263,7 +232,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                 if (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F))
                 {
                     skippedChunks++;
-                    if (skippedChunks > 100)
+                    if (skippedChunks > 16 * 16)
                         break;
                     else
                         continue;

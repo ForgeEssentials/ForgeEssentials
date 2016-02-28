@@ -15,7 +15,6 @@ import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -75,13 +74,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     {
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
             return;
-
-        WorldBorder border = WorldBorder.load(event.world);
-        if (border != null)
-        {
-            border.world = event.world;
-            borders.put((WorldServer) event.world, border);
-        }
+        getBorder(event.world);
     }
 
     @SubscribeEvent
@@ -184,17 +177,11 @@ public class ModuleWorldBorder extends ServerEventHandler
 
     public WorldBorder getBorder(World world)
     {
-        return borders.get(world);
-    }
-
-    public WorldBorder getBorder(WorldServer world, WorldPoint center)
-    {
         WorldBorder border = borders.get(world);
         if (border == null)
         {
-            border = new WorldBorder(center, DEFAULT_SIZE, DEFAULT_SIZE);
-            border.world = world;
-            borders.put(world, border);
+            border = new WorldBorder(new Point(0, 0, 0), DEFAULT_SIZE, DEFAULT_SIZE, world.provider.getDimensionId());
+            borders.put((WorldServer) world, border);
         }
         return border;
     }

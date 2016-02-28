@@ -47,24 +47,6 @@ public class FEPlayerEvent extends PlayerEvent
         }
     }
 
-    /**
-     * Fired when a player logs in to the AuthLogin system. Thrown by auth module.
-     */
-    public static class PlayerAuthLoginEvent extends FEPlayerEvent
-    {
-        public enum Source
-        {
-            COMMAND, AUTOLOGIN
-        }
-
-        public final Source source;
-        public PlayerAuthLoginEvent(EntityPlayer player, Source source)
-        {
-            super(player);
-            this.source = source;
-        }
-    }
-
     public static class ClientHandshakeEstablished extends FEPlayerEvent
     {
         public ClientHandshakeEstablished(EntityPlayer player)

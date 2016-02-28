@@ -175,7 +175,7 @@ public class ModuleServerVote
 
     private static void doPlayer(EntityPlayerMP player, VoteEvent vote)
     {
-        log.println(String.format("Player %s voted on service %s on %s", vote.player, vote.serviceName, new Date(Long.parseLong(vote.timeStamp))));
+        log.println(String.format("Player %s voted on service %s on %s", vote.player, vote.serviceName, vote.timeStamp));
         if (!ConfigServerVote.msgAll.equals(""))
         {
             MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(new S02PacketChat(new ChatComponentText(

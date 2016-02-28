@@ -10,16 +10,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.data.v2.Loadable;
 import com.google.gson.annotations.Expose;
 
 /**
  * {@link WorldZone} covers the entirety of a world. Third lowest in priority with next being {@link ServerZone}.
  */
-public class WorldZone extends Zone
+public class WorldZone extends Zone implements Loadable
 {
 
     @Expose(serialize = false)
-    private ServerZone serverZone;
+    protected ServerZone serverZone;
 
     private int dimensionID;
 
@@ -43,6 +44,13 @@ public class WorldZone extends Zone
         this(serverZone, dimensionID, serverZone.nextZoneID());
     }
 
+    @Override
+    public void afterLoad()
+    {
+        for (AreaZone zone : areaZones)
+            zone.worldZone = this;
+    }
+    
     @Override
     public boolean isPlayerInZone(EntityPlayer player)
     {
@@ -126,5 +134,6 @@ public class WorldZone extends Zone
         sortAreaZones();
         setDirty();
     }
+
 
 }

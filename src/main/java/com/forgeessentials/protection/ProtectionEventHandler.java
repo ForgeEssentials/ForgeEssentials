@@ -171,7 +171,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             {
                 // non-player-entity (mob) -> player
                 Entity source = event.source.getEntity();
-                String permission = ModuleProtection.PERM_DAMAGE_BY + "." + getEntityString(source);
+                String permission = ModuleProtection.PERM_DAMAGE_BY + "." + getEntityName(source);
                 ModuleProtection.debugPermission(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
@@ -211,7 +211,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (attackedEntities.add(target))
         {
             WorldPoint point = new WorldPoint(target);
-            String permission = ModuleProtection.PERM_DAMAGE_TO + "." + getEntityString(target);
+            String permission = ModuleProtection.PERM_DAMAGE_TO + "." + getEntityName(target);
             ModuleProtection.debugPermission(player == null ? null : player.getPlayer(), permission);
             if (!APIRegistry.perms.checkUserPermission(player, point, permission))
             {
@@ -231,14 +231,6 @@ public class ProtectionEventHandler extends ServerEventHandler
                 }
             }
         }
-    }
-
-    private String getEntityString(Entity target)
-    {
-        if (target instanceof EntityPlayer)
-            return "Player";
-        String name = EntityList.getEntityString(target);
-        return name != null ? name : target.getClass().getSimpleName();
     }
 
     /* ------------------------------------------------------------ */
@@ -735,6 +727,8 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public void sendPermissionUpdate(UserIdent ident, boolean reset)
     {
+        if (!ident.hasPlayer()) // we can only send perm updates to players
+            return;
         if (!PlayerInfo.get(ident).getHasFEClient())
             return;
 
@@ -879,6 +873,14 @@ public class ProtectionEventHandler extends ServerEventHandler
     }
 
     /* ------------------------------------------------------------ */
+
+    public static String getEntityName(Entity target)
+    {
+        if (target instanceof EntityPlayer)
+            return "Player";
+        String name = EntityList.getEntityString(target);
+        return name != null ? name : target.getClass().getSimpleName();
+    }
 
     public static void updateBrokenTileEntity(final EntityPlayerMP player, final TileEntity te)
     {

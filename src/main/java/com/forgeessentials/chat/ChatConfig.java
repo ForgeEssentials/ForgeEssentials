@@ -20,7 +20,7 @@ public class ChatConfig extends ConfigLoaderBase
 
     private static final String MUTEDCMD_HELP = "All commands in here will be blocked if the player is muted.";
 
-    private static final String WELCOME_MESSAGE = "Welcome messages for new players. Can be colour formatted (supports script arguments)";
+    private static final String WELCOME_MESSAGE = "Welcome messages for new players. Can be color formatted (supports script arguments)";
 
     private static final String LOGIN_MESSAGE = "Login message shown each time the player logs in (supports script arguments)";
 

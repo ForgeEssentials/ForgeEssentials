@@ -120,7 +120,7 @@ public class CommandRollback extends ParserCommandBase
         if (rollbacks.containsKey(args.senderPlayer.getPersistentID()))
             cancelRollback(args);
 
-        Selection area = SelectionHandler.selectionProvider.getSelection(args.senderPlayer);
+        Selection area = SelectionHandler.getSelection(args.senderPlayer);
         if (area == null)
             throw new TranslatedCommandException("No selection available. Please select a region first.");
 

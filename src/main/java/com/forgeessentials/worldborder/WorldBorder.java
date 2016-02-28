@@ -37,8 +37,7 @@ public class WorldBorder implements Loadable
 
     private List<WorldBorderEffect> effects = new ArrayList<>();
 
-    @Expose(serialize = false)
-    World world;
+    int dimID;
 
     @Expose(serialize = false)
     private AreaBase area;
@@ -46,7 +45,7 @@ public class WorldBorder implements Loadable
     @Expose(serialize = false)
     private Map<EntityPlayer, Set<WorldBorderEffect>> activeEffects = new WeakHashMap<>();
 
-    public WorldBorder(Point center, int xSize, int zSize)
+    public WorldBorder(Point center, int xSize, int zSize, int dimID)
     {
         this.center = center;
         this.size = new Point(xSize, 0, zSize);
@@ -173,7 +172,7 @@ public class WorldBorder implements Loadable
     public void save()
     {
         // TODO: Better way to identify dimensions
-        String key = Integer.toString(world.provider.getDimensionId());
+        String key = Integer.toString(dimID);
         DataManager.getInstance().save(this, key);
     }
 

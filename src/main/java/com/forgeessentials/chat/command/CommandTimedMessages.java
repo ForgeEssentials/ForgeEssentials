@@ -38,15 +38,17 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
 
     public static final String[] MESSAGES_DEFAULT = new String[] { "This server runs ForgeEssentials server management mod" };
 
-    protected List<String> messages = new ArrayList<>();
+    protected static List<String> messages = new ArrayList<>();
+
+    protected static int interval;
+
+    protected static boolean shuffle;
+
+    protected static boolean enabled;
 
     protected List<Integer> messageOrder = new ArrayList<>();
 
-    protected int interval;
-
     protected int currentIndex;
-
-    protected boolean shuffle;
 
     public CommandTimedMessages()
     {
@@ -221,7 +223,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
     @Override
     public void run()
     {
-        if (messages.isEmpty())
+        if (messages.isEmpty() || !enabled)
             return;
         if (currentIndex >= messages.size())
             currentIndex = 0;
@@ -259,11 +261,11 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
     {
         if (interval < 0)
             interval = 0;
-        if (this.interval == interval)
+        if (CommandTimedMessages.interval == interval)
             return;
-        if (this.interval > 0)
+        if (CommandTimedMessages.interval > 0)
             TaskRegistry.remove(this);
-        this.interval = interval;
+        CommandTimedMessages.interval = interval;
         if (interval > 0)
             TaskRegistry.scheduleRepeated(this, interval * 1000);
     }
@@ -296,7 +298,8 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
     {
         config.addCustomCategoryComment(CATEGORY, "Automated spam");
         setInterval(config.get(CATEGORY, "inverval", 60, "Interval in seconds. 0 to disable").getInt());
-        shuffle = config.get(CATEGORY, "shuffle", false).getBoolean(false);
+        enabled = config.get(CATEGORY, "enabled", false).getBoolean();
+        shuffle = config.get(CATEGORY, "shuffle", false).getBoolean();
         messages = new ArrayList<String>(Arrays.asList(config.get(CATEGORY, "messages", MESSAGES_DEFAULT, MESSAGES_HELP).getStringList()));
         initMessageOrder();
     }

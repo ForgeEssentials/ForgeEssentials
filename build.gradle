@@ -80,6 +80,7 @@ ext.sharedManifest = manifest {
 		"BuildNumber": buildNumber,
 		"FMLCorePluginContainsFMLMod": "true",
 		"ForceLoadAsMod": "true",
+        "MixinCompatibilityLevel": "JAVA_7",
 	)
 }
 
@@ -371,6 +372,6 @@ publishing {
 	}
 }
 
-task cleanUpDevStuff(type: Delete, dependsOn: "publish") {
-    delete deobfJar, sourceJar, javadocJar
+task publishAndClean(type: Delete, dependsOn: "publish") {
+    delete javadocJar, sourceJar
 }

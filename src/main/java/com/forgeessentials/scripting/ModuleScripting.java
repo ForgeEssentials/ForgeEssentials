@@ -15,7 +15,6 @@ import java.util.TreeMap;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -37,8 +36,6 @@ import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -76,12 +73,8 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
     public void preLoad(FEModulePreInitEvent event)
     {
         APIRegistry.scripts = this;
-        addScriptType("start");
-        addScriptType("stop");
-        addScriptType("login");
-        addScriptType("logout");
-        addScriptType("playerdeath");
-        addScriptType("cron");
+        new ScriptEventHandler();
+
     }
 
     @SubscribeEvent
@@ -255,7 +248,7 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         if (System.currentTimeMillis() - lastCronCheck >= CRON_CHECK_INTERVAL)
         {
             lastCronCheck = System.currentTimeMillis();
-            for (Entry<String, List<String>> script : scripts.get("cron").entrySet())
+            for (Entry<String, List<String>> script : scripts.get(ScriptEventHandler.SCRIPTKEY_CRON).entrySet())
             {
                 List<String> lines = new ArrayList<>(script.getValue());
                 if (lines.size() < 2)
@@ -302,41 +295,4 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         long nextTime = lastTime + interval * 1000;
         return nextTime <= System.currentTimeMillis();
     }
-
-    /* ------------------------------------------------------------ */
-    /* Events */
-
-    @SubscribeEvent
-    public void serverStarted(FEModuleServerPostInitEvent event)
-    {
-        runEventScripts("start", null);
-    }
-
-    @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent event)
-    {
-        runEventScripts("stop", null);
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
-    {
-        runEventScripts("login", event.player);
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
-    {
-        runEventScripts("logout", event.player);
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public void onPlayerDeath(LivingDeathEvent event)
-    {
-        if (event.entityLiving instanceof EntityPlayerMP)
-        {
-            runEventScripts("playerdeath", (EntityPlayerMP) event.entityLiving);
-        }
-    }
-
 }

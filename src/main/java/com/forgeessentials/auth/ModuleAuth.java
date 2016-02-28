@@ -164,20 +164,22 @@ public class ModuleAuth extends ConfigLoaderBase
     }
 
     private static final String CFG_DESC_forceEnable = "Forces the authentication server to be loaded regardless of Minecraft auth services";
-    private static final String CFG_DESC_autoEnable = "Forces the authentication server to be loaded regardless of Minecraft auth services";
+    private static final String CFG_DESC_autoEnable = "Enable the authentication service automatically if Minecraft auth services are not available";
     private static final String CFG_DESC_allowOfflineReg = "Allows people to register usernames while server is offline. Don't allow this for primarily Online servers.";
     private static final String CFG_DESC_salt = "The salt to be used when hashing passwords";
-    private static final String CFG_DESC_checkInterval = "Interval to check Vanill Auth service in minutes.";
+    private static final String CFG_DESC_checkInterval = "Interval to check Vanilla Auth service in minutes.";
     private static final String CFG_DESC_canMoveWithoutLogin = "Allow players not registered/not logged in with the authentication service to move in the world.";
     private static final String CFG_DESC_kickMsg = "Kick messages for banned/unwhitelisted players or when the server is full (not counting VIP slots";
     private static final String CFG_DESC_authlists = "Alternative VIP/max players implementation. Make sure vipslots and offset added together is less than the amount of players specified in server.properties.";
     private static final String CFG_DESC_offset = "If you need to be able to have less than the amount of players specified in server.properties logged into your server, use this.";
     private static final String CFG_DESC_autologin = "Allow players with the FEClient and the correct keys to automatically identify themselves with the auth engine.";
+    private static final String CFG_DESC_encryption = "Encryption standard to use. Note that changing this will invalidate all passwords. Accepts the following: SHA1, SHA-256, MD5";
 
     @Override
     public void load(Configuration config, boolean isReload)
     {
         config.addCustomCategoryComment(CONFIG_CATEGORY, "AuthModule configuration");
+        EncryptionHelper.algorithm = config.get(CONFIG_CATEGORY, "encryptionAlgorithm", "SHA1", CFG_DESC_encryption).getString();
         canMoveWithoutLogin = config.get(CONFIG_CATEGORY, "canMoveWithoutLogin", false, CFG_DESC_canMoveWithoutLogin).getBoolean(false);
         allowOfflineRegistration = config.get(CONFIG_CATEGORY, "allowOfflineReg", false, CFG_DESC_allowOfflineReg).getBoolean(false);
         forceEnabled = config.get(CONFIG_CATEGORY, "forceEnable", false, CFG_DESC_forceEnable).getBoolean(false);

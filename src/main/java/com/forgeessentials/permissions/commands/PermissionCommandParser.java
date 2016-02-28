@@ -32,6 +32,9 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
+import com.forgeessentials.permissions.persistence.FlatfileProvider;
+import com.forgeessentials.permissions.persistence.JsonProvider;
+import com.forgeessentials.permissions.persistence.SingleFileProvider;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.DoAsCommandSender;
@@ -97,33 +100,7 @@ public class PermissionCommandParser
             switch (arguments.args.remove().toLowerCase())
             {
             case "save":
-                arguments.checkPermission(PERM_SAVE);
-                arguments.tabComplete("disable", "enable");
-                if (arguments.isTabCompletion)
-                    return;
-                if (arguments.isEmpty())
-                {
-                    ModulePermissions.permissionHelper.setDirty(false);
-                    ModulePermissions.permissionHelper.save();
-                    arguments.confirm("Permissions saved!");
-                }
-                else
-                {
-                    String action = arguments.remove().toLowerCase();
-                    switch (action)
-                    {
-                    case "enable":
-                        ModulePermissions.permissionHelper.disableAutoSave = false;
-                        arguments.confirm("Permission saving enabled");
-                        break;
-                    case "disable":
-                        ModulePermissions.permissionHelper.disableAutoSave = true;
-                        arguments.confirm("Permission saving disabled");
-                        break;
-                    default:
-                        throw new TranslatedCommandException.InvalidSyntaxException();
-                    }
-                }
+                parseSave(arguments);
                 break;
             case "reload":
                 arguments.checkPermission(PERM_RELOAD);
@@ -167,6 +144,49 @@ public class PermissionCommandParser
             default:
                 arguments.error("Unknown command argument");
                 break;
+            }
+        }
+    }
+
+    public static void parseSave(CommandParserArgs arguments) throws CommandException
+    {
+        arguments.checkPermission(PERM_SAVE);
+        arguments.tabComplete("disable", "enable", "flatfile", "singlejson", "json");
+        if (arguments.isTabCompletion)
+            return;
+        if (arguments.isEmpty())
+        {
+            ModulePermissions.permissionHelper.setDirty(false);
+            ModulePermissions.permissionHelper.save();
+            arguments.confirm("Permissions saved!");
+        }
+        else
+        {
+            String action = arguments.remove().toLowerCase();
+            switch (action)
+            {
+            case "enable":
+                ModulePermissions.permissionHelper.disableAutoSave = false;
+                arguments.confirm("Permission saving enabled");
+                break;
+            case "disable":
+                ModulePermissions.permissionHelper.disableAutoSave = true;
+                arguments.confirm("Permission saving disabled");
+                break;
+            case "flatfile":
+                new FlatfileProvider().save(APIRegistry.perms.getServerZone());
+                arguments.confirm("Permissions saved to flatfile format");
+                break;
+            case "singlejson":
+                new SingleFileProvider().save(APIRegistry.perms.getServerZone());
+                arguments.confirm("Permissions saved to single-json format");
+                break;
+            case "json":
+                new JsonProvider().save(APIRegistry.perms.getServerZone());
+                arguments.confirm("Permissions saved to json format");
+                break;
+            default:
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, action);
             }
         }
     }
@@ -1287,7 +1307,8 @@ public class PermissionCommandParser
 
     public static void denyDefault(PermissionList list)
     {
-        List<String> filter = Arrays.asList(ModuleProtection.PERM_BREAK, ModuleProtection.PERM_EXPLODE, ModuleProtection.PERM_PLACE, ModuleProtection.PERM_INTERACT, ModuleProtection.PERM_USE,
+        List<String> filter = Arrays.asList(ModuleProtection.PERM_BREAK, ModuleProtection.PERM_EXPLODE, ModuleProtection.PERM_PLACE,
+                ModuleProtection.PERM_INTERACT, ModuleProtection.PERM_USE,
                 ModuleProtection.PERM_INVENTORY, ModuleProtection.PERM_EXIST, ModuleProtection.PERM_CRAFT, ModuleProtection.PERM_MOBSPAWN,
                 ModuleProtection.PERM_DAMAGE_BY, ModuleProtection.PERM_DAMAGE_TO, FEPermissions.FE_INTERNAL);
 

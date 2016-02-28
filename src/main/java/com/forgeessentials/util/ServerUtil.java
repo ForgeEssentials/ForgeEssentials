@@ -355,7 +355,7 @@ public abstract class ServerUtil
 
     public static String getBlockName(Block block)
     {
-        return GameData.getBlockRegistry().getNameForObject(block).toString();
+        return (String) GameData.getBlockRegistry().getNameForObject(block);
     }
 
     public static String getBlockPermission(Block block)
