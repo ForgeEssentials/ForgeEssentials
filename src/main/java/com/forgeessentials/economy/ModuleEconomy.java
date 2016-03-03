@@ -2,10 +2,14 @@ package com.forgeessentials.economy;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -16,6 +20,7 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
+import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -45,6 +50,7 @@ import com.forgeessentials.economy.commands.CommandTrade;
 import com.forgeessentials.economy.commands.CommandWallet;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.economy.shop.ShopManager;
+import com.forgeessentials.protection.ProtectionEventHandler;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -76,6 +82,8 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public static final String PERM_COMMANDPRICE = PERM + ".cmdprice";
 
     public static final String PERM_PRICE = PERM + ".price";
+    public static final String PERM_BOUNTY = PERM + ".bounty";
+    public static final String PERM_BOUNTY_MESSAGE = PERM_BOUNTY + ".message";
 
     public static final String CONFIG_CATEGORY = "Economy";
     public static final String CATEGORY_ITEM = CONFIG_CATEGORY + Configuration.CATEGORY_SPLITTER + "ItemPrices";
@@ -109,8 +117,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         FECommandManager.registerCommand(new CommandSellprice());
     }
 
+    @SuppressWarnings("unchecked")
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FEModuleServerInitEvent event)
     {
         APIRegistry.perms.registerPermissionProperty(PERM_XP_MULTIPLIER, "0",
                 "XP to currency conversion rate (integer, a zombie drops around 5 XP, 0 to disable)");
@@ -118,6 +127,13 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         APIRegistry.perms.registerPermissionProperty(PERM_CURRENCY_SINGULAR, "coin", "Name of currency (singular)");
         APIRegistry.perms.registerPermissionProperty(PERM_STARTBUDGET, "100", "Starting amount of money for players");
         APIRegistry.perms.registerPermissionDescription(PERM_PRICE, "Default prices for items in economy");
+
+        APIRegistry.perms.registerPermissionDescription(PERM_BOUNTY, "Bounty for killing entities (ex.: fe.economy.bounty.Skeleton = 5)");
+        APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, PermissionLevel.TRUE, "Whether to show a message if a bounty is given");
+        for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.stringToClassMapping).entrySet())
+            if (EntityLiving.class.isAssignableFrom(e.getValue()))
+                APIRegistry.perms.registerPermissionProperty(PERM_BOUNTY + "." + e.getKey(), "0");
+
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHTOLL, "",
                 "Penalty for players to pay when they die. If set to lesser than 1, value is taken as a factor of the player's wallet balance.");
 
@@ -242,7 +258,22 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             if (loss <= 0)
                 return;
             wallet.set(newAmount);
-            ChatOutputHandler.chatNotification((ICommandSender) e.entity, Translator.format("You lost %s from dying", APIRegistry.economy.currency(loss)));
+            ChatOutputHandler.chatNotification((ICommandSender) e.entity, Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
+        }
+
+        if (e.source.getEntity() instanceof EntityPlayerMP)
+        {
+            UserIdent killer = UserIdent.get((EntityPlayerMP) e.source.getEntity());
+            String permission = PERM_BOUNTY + "." + ProtectionEventHandler.getEntityName(e.entityLiving);
+            double bounty = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(killer, permission), 0);
+            if (bounty > 0)
+            {
+                Wallet wallet = APIRegistry.economy.getWallet(killer);
+                wallet.add(bounty);
+                if (APIRegistry.perms.checkUserPermission(killer, PERM_BOUNTY_MESSAGE))
+                    ChatOutputHandler.chatNotification(killer.getPlayer(),
+                            Translator.format("You received %s as bounty", APIRegistry.economy.toString((long) bounty)));
+            }
         }
     }
 

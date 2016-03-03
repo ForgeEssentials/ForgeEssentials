@@ -2,13 +2,11 @@ package com.forgeessentials.worldborder;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
@@ -81,7 +79,7 @@ public class CommandWorldBorder extends ParserCommandBase
             return;
         }
 
-        WorldBorder border = ModuleWorldBorder.getInstance().getBorder((WorldServer) arguments.senderPlayer.worldObj, new WorldPoint(arguments.senderPlayer));
+        WorldBorder border = ModuleWorldBorder.getInstance().getBorder(arguments.senderPlayer.worldObj);
 
         arguments.tabComplete("center", "disable", "enable", "shape", "size");
         String subCommand = arguments.remove().toLowerCase();
@@ -120,7 +118,8 @@ public class CommandWorldBorder extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm("Worldborder center at %s", border.getCenter());
-            arguments.confirm("/wb center here: Set worldborder center");
+            arguments.confirm("/wb center here: Set worldborder center to player position");
+            arguments.confirm("/wb center X Z: Set worldborder center to coordinates");
             return;
         }
 
@@ -128,17 +127,19 @@ public class CommandWorldBorder extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        String subCommand = arguments.remove().toLowerCase();
-        switch (subCommand)
+        if (arguments.peek().equalsIgnoreCase("here"))
         {
-        case "here":
             border.setCenter(new Point(arguments.senderPlayer));
             border.save();
             arguments.confirm("Worldborder center set to current location");
-            break;
-        default:
-            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
+            return;
         }
+
+        int x = arguments.parseInt();
+        int z = arguments.parseInt();
+        border.setCenter(new Point(x, 64, z));
+        border.save();
+        arguments.confirm("Worldborder center set to [%d, %d]", x, z);
     }
 
     public static void parseRadius(CommandParserArgs arguments, WorldBorder border) throws CommandException

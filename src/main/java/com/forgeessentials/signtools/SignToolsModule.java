@@ -26,7 +26,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class SignToolsModule extends ConfigLoaderBase
 {
 
-    public static final String COLOURIZE_PERM = "fe.signs.colourize";
+    public static final String COLORIZE_PERM = "fe.signs.colorize";
     
     private static boolean allowSignCommands, allowSignEdit;
 
@@ -40,20 +40,18 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void registerPerms(FEModuleServerInitEvent e)
     {
-        PermissionManager.registerPermission(COLOURIZE_PERM, PermissionLevel.TRUE);
+        PermissionManager.registerPermission(COLORIZE_PERM, PermissionLevel.TRUE);
     }
 
     /**
-     * works the same as the old /colourize command
-     * 
-     * Note: Colour is the UK variant of Color
+     * works the same as the old /colorize command
      * 
      * @param e
      */
     @SubscribeEvent
     public void onSignEdit(SignEditEvent e)
     {
-        if (!PermissionManager.checkPermission(e.editor, COLOURIZE_PERM))
+        if (!PermissionManager.checkPermission(e.editor, COLORIZE_PERM))
         {
             return;
         }
@@ -85,13 +83,18 @@ public class SignToolsModule extends ConfigLoaderBase
         TileEntity te = event.entityPlayer.worldObj.getTileEntity(event.pos);
         if (te != null && te instanceof TileEntitySign)
         {
-            if (allowSignEdit && event.entityPlayer.getCurrentEquippedItem().getItem().equals(Items.sign) && event.entityPlayer.isSneaking())
+            if (allowSignEdit && event.entityPlayer.isSneaking())
             {
-                if (PermissionManager.checkPermission(event.entityPlayer, "fe.protection.use.minecraft.sign"))
+                if(event.entityPlayer.getCurrentEquippedItem().getItem()!= null)
                 {
-                    event.entityPlayer.openEditSign((TileEntitySign) te);
-                    event.setCanceled(true);
+                    if (event.entityPlayer.getCurrentEquippedItem().getItem().equals(Items.sign) &&
+                            PermissionManager.checkPermission(event.entityPlayer, "fe.protection.use.minecraft.sign"))
+                    {
+                        event.entityPlayer.openEditSign((TileEntitySign) te);
+                        event.setCanceled(true);
+                    }
                 }
+
             }
 
             IChatComponent[] signText = ((TileEntitySign) te).signText;

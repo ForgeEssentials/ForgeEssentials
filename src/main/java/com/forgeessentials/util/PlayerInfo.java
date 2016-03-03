@@ -412,6 +412,7 @@ public class PlayerInfo implements Loadable
             inventoryGroups.put(name, null);
             // Save the new active inventory-group
             activeInventoryGroup = name;
+            this.save();
         }
     }
 

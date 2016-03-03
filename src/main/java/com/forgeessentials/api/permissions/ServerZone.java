@@ -23,13 +23,13 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.data.v2.Loadable;
 import com.google.gson.annotations.Expose;
 
 /**
- * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being
- * {@link RootZone}.
+ * {@link ServerZone} contains every player on the whole server. Has second lowest priority with next being {@link RootZone}.
  */
-public class ServerZone extends Zone
+public class ServerZone extends Zone implements Loadable
 {
 
     @Expose(serialize = false)
@@ -64,6 +64,16 @@ public class ServerZone extends Zone
         this.rootZone = rootZone;
         this.rootZone.setServerZone(this);
         addZone(this.rootZone);
+    }
+
+    @Override
+    public void afterLoad()
+    {
+        for (WorldZone zone : worldZones.values())
+        {
+            zone.serverZone = this;
+            zone.afterLoad();
+        }
     }
 
     // ------------------------------------------------------------

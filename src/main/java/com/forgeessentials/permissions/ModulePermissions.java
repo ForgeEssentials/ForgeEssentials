@@ -28,6 +28,7 @@ import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
 import com.forgeessentials.permissions.persistence.JsonProvider;
 import com.forgeessentials.permissions.persistence.SQLProvider;
+import com.forgeessentials.permissions.persistence.SingleFileProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.ServerUtil;
@@ -46,7 +47,7 @@ public class ModulePermissions extends ConfigLoaderBase
 
     private static final String CONFIG_CAT = "Permissions";
 
-    private static final String PERSISTENCE_HELP = "Choose a permission persistence backend (flatfile, sql, json). DO NOT use SQL, unless you really need to use it.";
+    private static final String PERSISTENCE_HELP = "Choose a permission persistence backend (flatfile, sql, json, singlejson). DO NOT use SQL, unless you really need to use it.";
 
     public static ZonedPermissionHelper permissionHelper;
 
@@ -59,7 +60,7 @@ public class ModulePermissions extends ConfigLoaderBase
 
     @SuppressWarnings("unused")
     private ItemPermissionManager itemPermissionManager;
-    
+
     public ModulePermissions()
     {
         // Earliest initialization of permission system possible
@@ -67,7 +68,7 @@ public class ModulePermissions extends ConfigLoaderBase
         APIRegistry.perms = permissionHelper;
         PermissionManager.setPermissionProvider(permissionHelper);
     }
-    
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void preLoad(FEModulePreInitEvent e)
     {
@@ -114,14 +115,15 @@ public class ModulePermissions extends ConfigLoaderBase
             permissionHelper.setPersistenceProvider(new SQLProvider(dbConnector.getChosenConnection(), dbConnector.getActiveType()));
             break;
         case "json":
-            permissionHelper.setPersistenceProvider(new JsonProvider(new File(ServerUtil.getWorldPath(), "FEData/json")));
+            permissionHelper.setPersistenceProvider(new JsonProvider());
             break;
         case "flatfile":
-        default:
-        {
-            permissionHelper.setPersistenceProvider(new FlatfileProvider(new File(ServerUtil.getWorldPath(), "FEData/permissions")));
+            permissionHelper.setPersistenceProvider(new FlatfileProvider());
             break;
-        }
+        case "singlejson":
+        default:
+            permissionHelper.setPersistenceProvider(new SingleFileProvider());
+            break;
         }
         permissionHelper.load();
         permissionScheduler.loadAll();
@@ -205,7 +207,7 @@ public class ModulePermissions extends ConfigLoaderBase
     @Override
     public void load(Configuration config, boolean isReload)
     {
-        persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "flatfile", PERSISTENCE_HELP).getString();
+        persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "singlejson", PERSISTENCE_HELP).getString();
         dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
     }
 

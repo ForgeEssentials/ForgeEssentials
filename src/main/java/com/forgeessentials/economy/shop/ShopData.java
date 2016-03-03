@@ -59,6 +59,8 @@ public class ShopData
     @Expose(serialize = false, deserialize = false)
     protected ItemStack item;
 
+    private int stock;
+
     /* ------------------------------------------------------------ */
 
     public ShopData(WorldPoint point, EntityItemFrame frame)
@@ -152,7 +154,11 @@ public class ShopData
 
     public ItemStack getItemStack()
     {
-        return isValid ? item : null;
+        if (!isValid)
+            return null;
+        ItemStack itemStackCopy = item.copy();
+        item.stackSize = amount;
+        return itemStackCopy;
     }
 
     public WorldPoint getSignPosition()
@@ -228,6 +234,16 @@ public class ShopData
         double D = 1.4;
         AxisAlignedBB aabb = AxisAlignedBB.fromBounds(x - D, y - D, z - D, x + D, y + D, z + D);
         return aabb;
+    }
+
+    public int getStock()
+    {
+        return stock;
+    }
+
+    public void setStock(int stock)
+    {
+        this.stock = stock;
     }
 
 }

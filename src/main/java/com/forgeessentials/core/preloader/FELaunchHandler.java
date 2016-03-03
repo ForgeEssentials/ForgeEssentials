@@ -81,7 +81,6 @@ public class FELaunchHandler implements ITweaker
             tweaks.add("org.spongepowered.asm.launch.MixinTweaker");
         }
         
-        MixinEnvironment.setCompatibilityLevel(CompatibilityLevel.JAVA_7);
         MixinBootstrap.init();
         // Fix CoFH compatibility. Fixes #1903
         MixinEnvironment.getEnvironment(Phase.PREINIT).addTransformerExclusion("cofh.asm.CoFHAccessTransformer");

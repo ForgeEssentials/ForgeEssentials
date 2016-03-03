@@ -132,7 +132,7 @@ public class CommandPortal extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        Selection selection = SelectionHandler.selectionProvider.getSelection(arguments.senderPlayer);
+        Selection selection = SelectionHandler.getSelection(arguments.senderPlayer);
         if (selection == null || !selection.isValid())
             throw new TranslatedCommandException("Missing selection");
 

@@ -62,10 +62,13 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     public static final String PERM_USE = PERM_BASE + ".use";
 
     public static final String MSG_MODIFY_DENIED = "You are not allowed to modify shops!";
+    public static final String STOCK_HELP = "If disabled, shops have an infinite stock. Otherwise players can only buy items, that have been sold to the shop before";
 
     public static final String CONFIG_FILE = "EconomyConfig";
 
     public static final Set<String> shopTags = new HashSet<String>();
+
+    public static boolean useStock;
 
     protected static Set<ShopData> shops = new HashSet<ShopData>();
 
@@ -281,8 +284,8 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             return;
         }
 
-        boolean sameItem = shop.getItemStack().getItem() == equippedItem;
-        ItemStack transactionStack = shop.getItemStack().copy();
+        ItemStack transactionStack = shop.getItemStack();
+        boolean sameItem = transactionStack.getItem() == equippedItem;
         transactionStack.stackSize = shop.amount;
         IChatComponent itemName = transactionStack.getChatComponent();
 
@@ -308,6 +311,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             if (removedAmount < transactionStack.stackSize)
                 removedAmount += ModuleEconomy.tryRemoveItems(event.entityPlayer, transactionStack, transactionStack.stackSize - removedAmount);
             wallet.add(shop.sellPrice);
+            shop.setStock(shop.getStock() + 1);
 
             String price = APIRegistry.economy.toString(shop.sellPrice);
             ChatComponentTranslation msg = new ChatComponentTranslation("Sold %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
@@ -316,12 +320,19 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         }
         else
         {
+            if (useStock && shop.getStock() <= 0)
+            {
+                ChatOutputHandler.chatError(event.entityPlayer, "Shop stock is empty");
+                return;
+            }
             if (!wallet.withdraw(shop.buyPrice))
             {
                 String errorMsg = Translator.format("You do not have enough %s in your wallet", APIRegistry.economy.currency(2));
                 ChatOutputHandler.chatError(event.entityPlayer, errorMsg);
                 return;
             }
+            if (useStock)
+                shop.setStock(shop.getStock() - 1);
             PlayerUtil.give(event.entityPlayer, transactionStack);
             String price = APIRegistry.economy.toString(shop.buyPrice);
             ChatComponentTranslation msg = new ChatComponentTranslation("Bought %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
@@ -364,6 +375,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     @Override
     public void load(Configuration config, boolean isReload)
     {
+        useStock = config.getBoolean(CONFIG_FILE, "use_stock", false, STOCK_HELP);
         String[] tags = config.get(CONFIG_FILE, "shopTags", shopTags.toArray(new String[shopTags.size()])).getStringList();
         shopTags.clear();
         for (String tag : tags)

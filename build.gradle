@@ -70,7 +70,7 @@ minecraft {
 	runDir = "rundir"
 	
 	mappings = "snapshot_20160115"
-	
+
 	replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
 	replace "_VERSION_", project.version
 }
@@ -82,6 +82,7 @@ ext.sharedManifest = manifest {
 		"BuildNumber": buildNumber,
 		"FMLCorePluginContainsFMLMod": "true",
 		"ForceLoadAsMod": "true",
+        "MixinCompatibilityLevel": "JAVA_7",
 	)
 }
 
@@ -132,7 +133,7 @@ dependencies {
     buildDep "com.sk89q.worldedit:worldedit-core:6.1.1-SNAPSHOT"
     buildDep "com.sk89q.worldedit:worldedit-forge-mc1.8.9:6.1.1:dev"
 	includeMod files('lib/worldedit-forge-mc1.8.9-6.1.1-SNAPSHOT-dist.jar')
-	
+
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
 	buildDep 'org.spongepowered:spongeapi:3.0.0'
 
@@ -409,6 +410,6 @@ publishing {
 	}
 }
 
-task cleanUpDevStuff(type: Delete, dependsOn: "publish") {
-    //delete deobfJar, sourceJar, javadocJar
+task publishAndClean(type: Delete, dependsOn: "publish") {
+    delete javadocJar, sourceJar
 }

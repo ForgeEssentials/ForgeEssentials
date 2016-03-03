@@ -86,7 +86,6 @@ import com.forgeessentials.util.selections.CommandExpand;
 import com.forgeessentials.util.selections.CommandExpandY;
 import com.forgeessentials.util.selections.CommandPos;
 import com.forgeessentials.util.selections.CommandWand;
-import com.forgeessentials.util.selections.SelectionEventHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 
 /**
@@ -122,8 +121,6 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     protected static TaskRegistry tasks = new TaskRegistry();
 
-    protected static SelectionEventHandler wandHandler;
-
     protected static ForgeEssentialsEventFactory factory;
 
     protected static TeleportHelper teleportHelper;
@@ -148,6 +145,9 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     @SuppressWarnings("unused")
     private RespawnHandler respawnHandler;
+
+    @SuppressWarnings("unused")
+    private SelectionHandler selectionHandler;
 
     /* ------------------------------------------------------------ */
 
@@ -184,16 +184,15 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         // Register core submodules
         factory = new ForgeEssentialsEventFactory();
-        wandHandler = new SelectionEventHandler();
         teleportHelper = new TeleportHelper();
         questioner = new Questioner();
         respawnHandler = new RespawnHandler();
+        selectionHandler = new SelectionHandler();
         APIRegistry.getFEEventBus().register(new CompatReiMinimap());
 
         // Load submodules
         moduleLauncher = new ModuleLauncher();
         moduleLauncher.preLoad(event);
-        new SelectionHandler();
     }
 
     @EventHandler

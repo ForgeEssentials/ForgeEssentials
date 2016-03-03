@@ -70,7 +70,8 @@ public class CommandHeal extends FEcmdModuleCommands
 
     public void heal(EntityPlayer target)
     {
-        target.heal(20);
+        float toHealBy = target.getMaxHealth() - target.getHealth();
+        target.heal(toHealBy);
         target.extinguish();
         target.getFoodStats().addStats(20, 1.0F);
         ChatOutputHandler.chatConfirmation(target, "You were healed.");

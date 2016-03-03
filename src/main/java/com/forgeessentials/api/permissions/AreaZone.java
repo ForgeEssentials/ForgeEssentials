@@ -17,7 +17,7 @@ public class AreaZone extends Zone implements Comparable<AreaZone>
 {
 
     @Expose(serialize = false)
-    private WorldZone worldZone;
+    protected WorldZone worldZone;
 
     private String name;
 

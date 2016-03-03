@@ -25,8 +25,8 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet6AuthLogin;
 import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
-import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent;
-import com.forgeessentials.util.events.FEPlayerEvent.PlayerAuthLoginEvent.Source;
+import com.forgeessentials.util.events.PlayerAuthLoginEvent;
+import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -232,7 +232,7 @@ public class AuthEventHandler extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void onAuthLogin(PlayerAuthLoginEvent e)
+    public void onAuthLogin(PlayerAuthLoginEvent.Success e)
     {
         if (e.source == Source.COMMAND)
         {
