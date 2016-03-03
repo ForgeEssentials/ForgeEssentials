@@ -15,6 +15,10 @@ buildscript {
 			name = "sonatype"
 			url = "https://oss.sonatype.org/content/repositories/snapshots/"
 		}
+        maven {
+            name = "sponge"
+            url = "http://repo.spongepowered.org/maven/"
+        }
 		jcenter()
 
 	}
@@ -22,6 +26,7 @@ buildscript {
 		classpath "net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
+        classpath 'org.spongepowered:mixingradle:0.3-SNAPSHOT'
 	}
 
 }
@@ -39,6 +44,7 @@ repositories {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
 
 /************************************************************
  * General configuration
@@ -246,6 +252,11 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 	}
 }
 
+mixin {
+    add sourceSets.main, "main.refmap.json"
+    add sourceSets.client, "client.refmap.json"
+}
+
 /************************************************************
  * Deobfuscated server jar
  * Dependency name for maven = com.forgeessentials:forgeessentials:<version>:
@@ -300,49 +311,12 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
  * Configure reobfuscation
  */
 
-ext.minecraftPlugin = plugins.getPlugin('net.minecraftforge.gradle.forge')
-ext.DIR_MCP_MAPPINGS = net.minecraftforge.gradle.common.Constants.DIR_MCP_MAPPINGS
-
-// Copy the current srgs to the build dir so the user doesn't have to go hunting for them
-task copySrgs(type: Copy, dependsOn: 'genSrgs') {
-    from minecraftPlugin.delayedFile("$DIR_MCP_MAPPINGS/srgs")
-
-    include '**/*.srg'
-    into 'build/srgs'
-}
-
-setupDecompWorkspace.dependsOn copySrgs
-setupDevWorkspace.dependsOn copySrgs
-compileJava.dependsOn copySrgs
-compileClientJava.dependsOn copySrgs
-
-def mixinSrg = "$buildDir/srgs" + File.separator + "mcp-srg.srg"
-//def mixinClientSrg = "$DIR_MCP_MAPPINGS/srgs" + File.separator + "mixinsClient.srg"
-
-afterEvaluate {
-	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${mixinSrg}"]
-	tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${mixinSrg}"]
-}
 reobf {
-    jar {
-        //addSecondarySrgFile mixinSrg
-    }
-
     clientJar {
         classpath = sourceSets.main.compileClasspath
-        //addSecondarySrgFile mixinClientSrg
     }
 }
 
-/*
-reobf {
-	addSecondarySrgFile mixinSrg
-	//addSecondarySrgFile mixinClientSrg
-	reobf (clientJar) { reobfSpec ->
-		reobfSpec.classpath = sourceSets.main.compileClasspath
-	}
-}
-*/
 /************************************************************
  * Others
  */

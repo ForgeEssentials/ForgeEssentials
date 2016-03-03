@@ -41,7 +41,7 @@ public abstract class MixinItemInWorldManager_01
     abstract boolean isCreative();
 
     @Overwrite
-    public boolean func_180236_a(EntityPlayer player, World world, ItemStack item, BlockPos pos, EnumFacing side, float dx, float dy, float dz)
+    public boolean activateBlockOrUseItem(EntityPlayer player, World world, ItemStack item, BlockPos pos, EnumFacing side, float dx, float dy, float dz)
     {
         if (this.gameType == WorldSettings.GameType.SPECTATOR)
         {
