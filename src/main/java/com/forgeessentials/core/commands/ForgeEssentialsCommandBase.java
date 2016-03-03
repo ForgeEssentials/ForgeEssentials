@@ -211,11 +211,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
         return arraylist;
     }
 
-    public static List<String> getListOfStringsMatchingLastWord(String[] args, String... possibleMatches)
-    {
-        return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
-    }
-
     public static List<String> completePlayername(String arg)
     {
         List<String> arraylist = new ArrayList<>();
@@ -229,17 +224,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
         return arraylist;
     }
 
-    public int compareTo(Object o)
-    {
-        if (o instanceof ICommand)
-            return this.compareTo((ICommand) o);
-        return 0;
-    }
-
     /**
      * Parse int with support for relative int.
      *
-     * @param sender
      * @param string
      * @param relativeStart
      * @return
@@ -261,7 +248,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
     /**
      * Parse double with support for relative values.
      *
-     * @param sender
      * @param string
      * @param relativeStart
      * @return
