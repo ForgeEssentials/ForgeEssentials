@@ -74,6 +74,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     {
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
             return;
+        borders.put((WorldServer) event.world, WorldBorder.load(event.world));
         getBorder(event.world);
     }
 
