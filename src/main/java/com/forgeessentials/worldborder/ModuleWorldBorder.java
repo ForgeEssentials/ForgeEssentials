@@ -124,7 +124,7 @@ public class ModuleWorldBorder extends ServerEventHandler
             Set<WorldBorderEffect> newActiveEffects = new HashSet<>();
             if (!PermissionManager.checkPermission(player, PERM_BYPASS))
                 for (WorldBorderEffect effect : border.getEffects())
-                    if (minBorderDistance <= effect.getTiggerDistance())
+                    if (minBorderDistance <= effect.getTriggerDistance())
                         newActiveEffects.add(effect);
 
             // Deactivate old effects and update current ones
@@ -162,7 +162,7 @@ public class ModuleWorldBorder extends ServerEventHandler
         for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
             WorldBorder border = getBorder(player.worldObj);
-            if (border != null)
+            if (border != null && border.isEnabled())
             {
                 Set<WorldBorderEffect> effects = border.getActiveEffects(player);
                 if (effects != null)

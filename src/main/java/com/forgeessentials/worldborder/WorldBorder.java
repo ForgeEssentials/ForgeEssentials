@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.AreaBase;
@@ -50,30 +51,6 @@ public class WorldBorder implements Loadable
         this.center = center;
         this.size = new Point(xSize, 0, zSize);
         updateArea();
-
-        WorldBorderEffect effect = new EffectMessage();
-        effect.triggerDistance = 16;
-        effects.add(effect);
-
-        effect = new EffectDamage();
-        effect.triggerDistance = 8;
-        effects.add(effect);
-
-        effect = new EffectKnockback();
-        effect.triggerDistance = 0;
-        effects.add(effect);
-
-        effect = new EffectKick();
-        effect.triggerDistance = -1000;
-        effects.add(effect);
-
-        effect = new EffectPotion();
-        effect.triggerDistance = -1000;
-        effects.add(effect);
-
-        effect = new EffectCommand();
-        effect.triggerDistance = -1000;
-        effects.add(effect);
     }
 
     @Override
@@ -118,6 +95,11 @@ public class WorldBorder implements Loadable
     {
         this.size = size;
         updateArea();
+    }
+
+    public void addEffect(WorldBorderEffect effect)
+    {
+        effects.add(effect);
     }
 
     public List<WorldBorderEffect> getEffects()
