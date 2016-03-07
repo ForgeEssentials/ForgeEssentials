@@ -25,6 +25,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.worldborder.effect.EffectBlock;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -123,9 +124,14 @@ public class ModuleWorldBorder extends ServerEventHandler
             // Check which effects are active
             Set<WorldBorderEffect> newActiveEffects = new HashSet<>();
             if (!PermissionManager.checkPermission(player, PERM_BYPASS))
+            {
+                if (minBorderDistance <= 0)
+                    new EffectBlock().playerMove(border, event);
+
                 for (WorldBorderEffect effect : border.getEffects())
                     if (minBorderDistance <= effect.getTriggerDistance())
                         newActiveEffects.add(effect);
+            }
 
             // Deactivate old effects and update current ones
             Set<WorldBorderEffect> activeEffects = border.getOrCreateActiveEffects(player);

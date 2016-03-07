@@ -1,6 +1,7 @@
 package com.forgeessentials.worldborder;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.StringUtils;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -216,9 +217,14 @@ public class CommandWorldBorder extends ParserCommandBase
             {
                 arguments.notify("No effects are currently applied on this worldborder!");
             }
-            arguments.confirm("/wb effect <add [command|damage|kick|knockback|message|potion|smite] <trigger> | remove <index>");
+            arguments.confirm("/wb effect <add [command|damage|kick|knockback|message|potion|smite|block] <trigger> | remove <index>");
             return;
         }
+
+        arguments.tabComplete("add", "remove");
+        if (arguments.isTabCompletion)
+            return;
+
         String subCommand = arguments.remove().toLowerCase();
         switch (subCommand)
         {
@@ -237,7 +243,7 @@ public class CommandWorldBorder extends ParserCommandBase
             }
             break;
         default:
-            arguments.error("Wrong syntax! Try /wb effect <add [command|damage|kick|knockback|message|potion|smite] <trigger> | remove <index>");
+            arguments.error("Wrong syntax! Try /wb effect <add [command|damage|kick|knockback|message|potion|smite|block] <trigger> | remove <index>");
         }
 
         border.save();
@@ -246,12 +252,24 @@ public class CommandWorldBorder extends ParserCommandBase
 
     public static void addEffect(WorldBorder border, CommandParserArgs arguments)
     {
+        if (arguments.isEmpty())
+        {
+            arguments.error("No effect provided! How about trying one of these:");
+            arguments.error("command, damage, kick, knockback, message, potion ,smite");
+            return;
+        }
+
+        arguments.tabComplete("command", "damage", "kick", "knockback", "message", "potion" ,"smite");
+        if (arguments.isTabCompletion)
+            return;
+
         String subCommand = arguments.remove().toLowerCase();
         int trigger = Integer.parseInt(arguments.remove().toLowerCase());
         WorldBorderEffect effect = WorldBorderEffects.valueOf(subCommand.toUpperCase()).get();
         if (effect == null)
         {
-            arguments.error("There was a problem initializing Worldborder effects.");
+            arguments.error(String.format("Could not find an effect with name %s, how about trying one of these:", subCommand));
+            arguments.error("command, damage, kick, knockback, message, potion ,smite");
             return;
         }
         if (effect.provideArguments(arguments.toArray()))
@@ -262,7 +280,7 @@ public class CommandWorldBorder extends ParserCommandBase
         }
         else
         {
-            arguments.error("Wrong syntax! How about trying " + effect.getSyntax());
+            arguments.error("Wrong syntax! How about trying <triggerdistance> " + effect.getSyntax());
         }
     }
 

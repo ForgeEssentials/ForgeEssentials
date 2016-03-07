@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.AreaBase;
@@ -17,12 +16,6 @@ import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
-import com.forgeessentials.worldborder.effect.EffectCommand;
-import com.forgeessentials.worldborder.effect.EffectDamage;
-import com.forgeessentials.worldborder.effect.EffectKick;
-import com.forgeessentials.worldborder.effect.EffectKnockback;
-import com.forgeessentials.worldborder.effect.EffectMessage;
-import com.forgeessentials.worldborder.effect.EffectPotion;
 import com.google.gson.annotations.Expose;
 
 public class WorldBorder implements Loadable

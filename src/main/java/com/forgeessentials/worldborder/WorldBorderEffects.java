@@ -1,6 +1,7 @@
 package com.forgeessentials.worldborder;
 
 import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.worldborder.effect.EffectBlock;
 import com.forgeessentials.worldborder.effect.EffectCommand;
 import com.forgeessentials.worldborder.effect.EffectDamage;
 import com.forgeessentials.worldborder.effect.EffectKick;
@@ -17,7 +18,8 @@ public enum WorldBorderEffects
     KNOCKBACK(EffectKnockback.class),
     MESSAGE(EffectMessage.class),
     POTION(EffectPotion.class),
-    SMITE(EffectSmite.class);
+    SMITE(EffectSmite.class),
+    BLOCK(EffectBlock.class);
 
     public Class clazz;
 
