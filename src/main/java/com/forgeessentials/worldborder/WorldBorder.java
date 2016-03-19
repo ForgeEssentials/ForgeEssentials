@@ -43,6 +43,7 @@ public class WorldBorder implements Loadable
     {
         this.center = center;
         this.size = new Point(xSize, 0, zSize);
+        this.dimID = dimID;
         updateArea();
     }
 
