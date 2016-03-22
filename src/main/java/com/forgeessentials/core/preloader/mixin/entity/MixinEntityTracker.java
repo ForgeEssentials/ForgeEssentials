@@ -11,12 +11,18 @@ import org.spongepowered.asm.mixin.Shadow;
 import com.forgeessentials.core.preloader.api.EntityTrackerHelper;
 
 @Mixin(EntityTracker.class)
-public abstract class MixinEntityTracker_01 implements EntityTrackerHelper
+public class MixinEntityTracker implements EntityTrackerHelper
 {
 
     @Shadow
     private IntHashMap trackedEntityIDs = new IntHashMap();
 
+    /**
+     * Provides support for vanish functionality.
+     *
+     * @param entity the entity
+     * @return the entity tracker entry
+     */
     @Override
     public EntityTrackerEntry getEntityTrackerEntry(Entity entity)
     {

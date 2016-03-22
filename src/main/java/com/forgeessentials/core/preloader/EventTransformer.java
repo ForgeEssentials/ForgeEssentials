@@ -17,15 +17,12 @@ public class EventTransformer implements IClassTransformer
 
     private ClassInjector attackEntityFromInjector;
 
-    private ClassInjector fireEventInjector;
-
     private ClassInjector testInjector;
 
     public EventTransformer()
     {
         testInjector = ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinTest", isObfuscated);
         attackEntityFromInjector = ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinEntity", isObfuscated);
-        fireEventInjector = ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinBlockFire", isObfuscated);
     }
 
     @Override
@@ -39,7 +36,6 @@ public class EventTransformer implements IClassTransformer
         // Apply transformers
         transformed |= testInjector == null ? false : testInjector.inject(classNode);
         transformed |= attackEntityFromInjector.inject(classNode);
-        transformed |= fireEventInjector.inject(classNode);
 
         if (!transformed)
             return bytes;
