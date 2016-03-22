@@ -81,6 +81,7 @@ public class ModuleAuth extends ConfigLoaderBase
         if (isEnabled())
         {
             handler = new AuthEventHandler();
+            handler.enable(true);
         }
     }
 
@@ -103,15 +104,13 @@ public class ModuleAuth extends ConfigLoaderBase
 
         if (isEnabled())
         {
-            MinecraftForge.EVENT_BUS.register(handler);
-            FMLCommonHandler.instance().bus().register(handler);
+            handler.enable(true);
         }
         else
         {
             try
             {
-                MinecraftForge.EVENT_BUS.unregister(handler);
-                FMLCommonHandler.instance().bus().unregister(handler);
+                handler.enable(false);
             }
             catch (NullPointerException e)
             {
