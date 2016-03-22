@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import cpw.mods.fml.common.eventhandler.Event;
 
 @Mixin(ItemInWorldManager.class)
-public abstract class MixinItemInWorldManager_01
+public abstract class MixinItemInWorldManager
 {
 
     @Shadow
@@ -32,6 +32,7 @@ public abstract class MixinItemInWorldManager_01
     @Shadow
     abstract boolean isCreative();
 
+    // Fixes a few Forge bugs, and adds PlayerPostInteractEvent.
     @Overwrite
     public boolean activateBlockOrUseItem(EntityPlayer player, World world, ItemStack item, int x, int y, int z, int side, float dx, float dy, float dz)
     {
