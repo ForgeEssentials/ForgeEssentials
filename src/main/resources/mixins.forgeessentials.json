@@ -10,7 +10,7 @@
 		"entity.MixinEntity_01",
         "server.management.MixinItemInWorldManager_01",
         "item.crafting.MixinCraftingManager",
-        
+        "tileentity.MixinMobSpawnerBaseLogic",
         "block.MixinBlock",
         "fml.common.MixinEventBus"
 	]
