@@ -38,6 +38,28 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     {
         if (args.length == 0)
         {
+            if (!ModuleAuth.isEnabled())
+            {
+                ChatOutputHandler.chatWarning(sender, "The authentication service has been disabled by your server admin.");
+                return;
+            }
+
+            if (ModuleAuth.isRegistered(sender.getPersistentID()))
+            {
+                if (ModuleAuth.isAuthenticated(sender))
+                {
+                    ChatOutputHandler.chatNotification(sender, "You are logged in to the auth service.");
+                }
+                else
+                {
+                    ChatOutputHandler.chatNotification(sender, "You are registered with the auth service, but you are not logged in.");
+                }
+            }
+            else
+            {
+                ChatOutputHandler.chatWarning(sender, "You are not registered with the auth service.");
+            }
+
             throw new TranslatedCommandException("command.auth.usage");
         }
 
