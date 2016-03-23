@@ -11,6 +11,7 @@
         "fml.common.eventhandler.MixinEventBus",
         "item.crafting.MixinCraftingManager",
         "network.MixinNetHandlerPlayServer",
-        "server.management.MixinItemInWorldManager"
+        "server.management.MixinItemInWorldManager",
+        "tileentity.MixinMobSpawnerBaseLogic"
 	]
 }

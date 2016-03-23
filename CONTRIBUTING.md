@@ -21,6 +21,11 @@ If you open ForgeEssentials in your IDE, you must turn on annotation processing,
     To find its location, check the referenced libraries in the project settings. It should be located somewhere in  
     `$HOME/.gradle/caches/modules-2/files-2.1/org.hibernate/hibernate-jpamodelgen/4.3.7.Final`
 
+### IntelliJ IDEA
+- Go to `Settings > Build, Execution and Deployment > Compiler > Annotation Processors`
+ - Check `Enable annotation processing`
+ - Under `Annotation Processors`, add this fully qualified name: `org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor`
+
 # Notes
 1. Please consider squashing all commits before initially submitting pull requests
 2. For a local `.gitignore` use `.git/info/exclude`
