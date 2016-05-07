@@ -355,7 +355,13 @@ public abstract class ServerUtil
 
     public static String getBlockName(Block block)
     {
-        return (String) GameData.getBlockRegistry().getNameForObject(block);
+        Object o = GameData.getBlockRegistry().getNameForObject(block);
+        if(o instanceof ResourceLocation){
+            ResourceLocation rl = (ResourceLocation) o;
+            return rl.getResourcePath();
+        } else {
+            return (String) o;
+        }
     }
 
     public static String getBlockPermission(Block block)
