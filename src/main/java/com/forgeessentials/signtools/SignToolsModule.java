@@ -98,7 +98,7 @@ public class SignToolsModule extends ConfigLoaderBase
             }
 
             IChatComponent[] signText = ((TileEntitySign) te).signText;
-            if (!signText[0].equals("[command]"))
+            if (!signText[0].getUnformattedText().equals("[command]"))
             {
                 return;
             }
@@ -106,7 +106,7 @@ public class SignToolsModule extends ConfigLoaderBase
                 else
                 {
                     String send = signText[1].getUnformattedText() + " " + signText[2].getUnformattedText() + " " + signText[3].getUnformattedText();
-                    if (send != null)
+                    if (send != null && MinecraftServer.getServer().getCommandManager() != null)
                     {
                         MinecraftServer.getServer().getCommandManager().executeCommand(event.entityPlayer, send);
                         event.setCanceled(true);
