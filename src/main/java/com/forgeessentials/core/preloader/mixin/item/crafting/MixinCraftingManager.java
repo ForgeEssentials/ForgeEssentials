@@ -46,7 +46,7 @@ public abstract class MixinCraftingManager
             if (recipe.matches(inventory, world))
             {
                 ItemStack result = recipe.getCraftingResult(inventory);
-                if (ModuleProtection.canCraft(player, result))
+                if (player == null || ModuleProtection.canCraft(player, result))
                 {
                     cir.setReturnValue(result);
                     return;
