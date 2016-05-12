@@ -270,7 +270,9 @@ public final class ScriptMethods
     protected static boolean getPermcheckResult(ICommandSender sender, String[] args)
     {
         if (!(sender instanceof EntityPlayerMP))
-            throw new MissingPlayerException();
+            if (sender instanceof MinecraftServer)
+                return true;
+            else throw new MissingPlayerException();
         if (args.length < 1)
             throw new SyntaxException("Missing argument for permchecksilent");
         UserIdent ident = UserIdent.get((EntityPlayerMP) sender);
