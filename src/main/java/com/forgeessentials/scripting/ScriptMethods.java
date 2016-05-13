@@ -502,7 +502,233 @@ public final class ScriptMethods
             return "`random <success-chance-in-percent>`  \nThis method will randomly success or fail.  \nIf it fails, the rest of the script will not be executed any more.";
         }
     };
+	
+	public static final ScriptMethod expCheck = new ScriptMethod() {
+        @Override
+        public boolean process(final ICommandSender sender, String[] args)
+        {
+            if (args.length >= 1)
+			{
+				if (!(sender instanceof EntityPlayerMP))
+					throw new MissingPlayerException();
+				
+				int experienceLevel = Integer.parseInt(args[1]);
+				String operator = args.length >= 2 ? args[2] : "EQ";
+				if (operator.equals("EQ"))
+				{
+					return ((EntityPlayerMP) sender).experienceLevel == experienceLevel;
+				}
+				else if (operator.equals("LT"))
+				{
+					return ((EntityPlayerMP) sender).experienceLevel < experienceLevel;
+				}
+				else if (operator.equals("LTE"))
+				{
+					return ((EntityPlayerMP) sender).experienceLevel <= experienceLevel;
+				}
+				else if (operator.equals("GT"))
+				{
+					return ((EntityPlayerMP) sender).experienceLevel > experienceLevel;
+				}
+				else if (operator.equals("GTE"))
+				{
+					return ((EntityPlayerMP) sender).experienceLevel >= experienceLevel;
+				}
+				else
+					return false;
+			}
+			else
+				return false;
+        }
 
+        @Override
+        public String getHelp()
+        {
+            return "`expCheck <expLevel> [operator -- LT, LTE, GT, GTE, or EQ]`  \nThis method will check the expLevel of a player and compare it to a given value. If no operator is specified, EQ will be used as default";
+        }
+    };
+	
+	public static final ScriptMethod expSet = new ScriptMethod() {
+        @Override
+        public boolean process(final ICommandSender sender, String[] args)
+        {
+            if (args.length >= 1)
+			{
+				if (!(sender instanceof EntityPlayerMP))
+					throw new MissingPlayerException();
+				
+				int experienceLevel = Integer.parseInt(args[1]);
+				int oldExperienceLevel = ((EntityPlayerMP) sender).experienceLevel;
+				if (oldExperienceLevel > experienceLevel)
+				{
+					for (int i = oldExperienceLevel; i > experienceLevel; i--)
+					{
+						((EntityPlayerMP) sender).experienceLevel --;
+						((EntityPlayerMP) sender).experienceTotal -= ((EntityPlayerMP) sender).xpBarCap();						
+					}
+				}
+				else if (oldExperienceLevel < experienceLevel)
+				{
+					for (int i = oldExperienceLevel; i < experienceLevel; i++)
+					{
+						((EntityPlayerMP) sender).experienceTotal += ((EntityPlayerMP) sender).xpBarCap();
+						((EntityPlayerMP) sender).experienceLevel ++;
+					}
+				}
+				
+				return true;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`expSet <expLevel>`  \nThis method will set the command sender's expLevel to the specified value.";
+        }
+    };
+	
+	public static final ScriptMethod hungerCheck = new ScriptMethod() {
+        @Override
+        public boolean process(final ICommandSender sender, String[] args)
+        {
+            if (args.length >= 1)
+			{
+				if (!(sender instanceof EntityPlayerMP))
+					throw new MissingPlayerException();
+				
+				int hunger = Integer.parseInt(args[1]);
+				String operator = args.length >= 2 ? args[2] : "EQ";
+				if (operator.equals("EQ"))
+				{
+					return ((EntityPlayerMP) sender).getFoodStats().getFoodLevel() == hunger;
+				}
+				else if (operator.equals("LT"))
+				{
+					return ((EntityPlayerMP) sender).getFoodStats().getFoodLevel() < hunger;
+				}
+				else if (operator.equals("LTE"))
+				{
+					return ((EntityPlayerMP) sender).getFoodStats().getFoodLevel() <= hunger;
+				}
+				else if (operator.equals("GT"))
+				{
+					return ((EntityPlayerMP) sender).getFoodStats().getFoodLevel() > hunger;
+				}
+				else if (operator.equals("GTE"))
+				{
+					return ((EntityPlayerMP) sender).getFoodStats().getFoodLevel() >= hunger;
+				}
+				else
+					return false;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`hungerCheck <hunger> [operator -- LT, LTE, GT, GTE, or EQ]`  \nThis method will check the hunger of a player and compare it to a given value. If no operator is specified, EQ will be used as default";
+        }
+    };
+	
+	public static final ScriptMethod hungerSet = new ScriptMethod() {
+        @Override
+        public boolean process(final ICommandSender sender, String[] args)
+        {
+            if (args.length >= 1)
+			{
+				if (!(sender instanceof EntityPlayerMP))
+					throw new MissingPlayerException();
+				
+				int hungerneeded = Integer.parseInt(args[1]) - ((EntityPlayerMP) sender).getFoodStats().getFoodLevel();
+				((EntityPlayerMP) sender).getFoodStats().addStats(hungerneeded, 0);
+				
+				return true;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`hungerSet <hunger>`  \nThis method will set the command sender's hunger to the specified value.";
+        }
+    };
+	
+	public static final ScriptMethod saturationCheck = new ScriptMethod() {
+        @Override
+        public boolean process(final ICommandSender sender, String[] args)
+        {
+            if (args.length >= 1)
+			{
+				if (!(sender instanceof EntityPlayerMP))
+					throw new MissingPlayerException();
+				
+				float saturation = Float.parseFloat(args[1]);
+				String operator = args.length >= 2 ? args[2] : "EQ";
+				if (operator.equals("EQ"))
+				{
+					return ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel() == saturation;
+				}
+				else if (operator.equals("LT"))
+				{
+					return ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel() < saturation;
+				}
+				else if (operator.equals("LTE"))
+				{
+					return ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel() <= saturation;
+				}
+				else if (operator.equals("GT"))
+				{
+					return ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel() > saturation;
+				}
+				else if (operator.equals("GTE"))
+				{
+					return ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel() >= saturation;
+				}
+				else
+					return false;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`saturationCheck <saturation> [operator -- LT, LTE, GT, GTE, or EQ]`  \nThis method will check the saturation of a player and compare it to a given value. If no operator is specified, EQ will be used as default";
+        }
+    };
+	
+	public static final ScriptMethod saturationSet = new ScriptMethod() {
+        @Override
+        public boolean process(final ICommandSender sender, String[] args)
+        {
+            if (args.length >= 1)
+			{
+				if (!(sender instanceof EntityPlayerMP))
+					throw new MissingPlayerException();
+				
+				float saturationneeded = Float.parseFloat(args[1]) - ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel();
+				((EntityPlayerMP) sender).getFoodStats().addStats(0, saturationneeded);
+				
+				return true;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`saturationSet <saturation>`  \nThis method will set the command sender's saturation to the specified value.";
+        }
+    };
+	
     static
     {
         registerAll();

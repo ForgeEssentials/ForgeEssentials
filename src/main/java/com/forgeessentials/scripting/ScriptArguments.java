@@ -717,6 +717,22 @@ public final class ScriptArguments
             return "Number of unique players on the server at all time";
         }
     };
+	
+	public static ScriptArgument exp = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            return Integer.toString(((EntityPlayerMP) sender).experienceLevel);
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Returns the expLevel of the command sender";
+        }
+    };
 
     static
     {
