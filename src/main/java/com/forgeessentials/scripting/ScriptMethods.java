@@ -10,6 +10,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.FoodStats;
 import net.minecraftforge.common.DimensionManager;
 
 import org.apache.commons.lang3.StringUtils;
@@ -681,7 +682,20 @@ public final class ScriptMethods
             return "`hungerCheck <hunger> [operator -- LT, LTE, GT, GTE, or EQ -- case insensitive]`  \nThis method will check the hunger of a player and compare it to a given value, where LT refers to the player hunger being less than the inputed value.\nIf no operator is specified, equals (EQ) will be used as default.\nYou can also use ==,<,<=,>,>= in place of EQ,LT,LTE,GT,GTE.";
         }
     };
-	
+    private static Field foodLevel;
+    private static Field foodSaturationLevel;
+    public static void initHungerRelection()
+    {
+    	try {
+			foodLevel = FoodStats.class.getDeclaredField("foodLevel");
+			foodSaturationLevel = FoodStats.class.getDeclaredField("foodSaturationLevel");
+			foodLevel.setAccessible(true);
+			foodSaturationLevel.setAccessible(true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 	public static final ScriptMethod hungerSet = new ScriptMethod() {
         @Override
         public boolean process(final ICommandSender sender, String[] args)
@@ -691,8 +705,15 @@ public final class ScriptMethods
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
 				
-				int hungerneeded = Integer.parseInt(args[0]) - ((EntityPlayerMP) sender).getFoodStats().getFoodLevel();
-				((EntityPlayerMP) sender).getFoodStats().addStats(hungerneeded, 0);
+				//int hungerneeded = Integer.parseInt(args[0]) - ((EntityPlayerMP) sender).getFoodStats().getFoodLevel();
+				//((EntityPlayerMP) sender).getFoodStats().addStats(hungerneeded, 0);
+				
+				try {
+					foodLevel.set(((EntityPlayerMP) sender).getFoodStats(), args[0]);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				return true;
 			}
@@ -716,10 +737,16 @@ public final class ScriptMethods
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
 				
-				int hungerdiff = Integer.parseInt(args[0]);
+				//int hungerdiff = Integer.parseInt(args[0]);
 				
-				((EntityPlayerMP) sender).getFoodStats().addStats(hungerdiff, 0);
+				//((EntityPlayerMP) sender).getFoodStats().addStats(hungerdiff, 0);
 				
+				try {
+					foodLevel.set(((EntityPlayerMP) sender).getFoodStats(),((EntityPlayerMP) sender).getFoodStats().getFoodLevel() + args[0]);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				return true;
 			}
 			else
@@ -787,8 +814,15 @@ public final class ScriptMethods
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
 				
-				float saturationneeded = Float.parseFloat(args[0]) - ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel();
-				((EntityPlayerMP) sender).getFoodStats().addStats(0, saturationneeded);
+				//float saturationneeded = Float.parseFloat(args[0]) - ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel();
+				//((EntityPlayerMP) sender).getFoodStats().addStats(0, saturationneeded);
+				
+				try {
+					foodSaturationLevel.set(((EntityPlayerMP) sender).getFoodStats(),args[0]);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				return true;
 			}
@@ -812,9 +846,16 @@ public final class ScriptMethods
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
 				
-				float saturationdiff = Float.parseFloat(args[0]);
+				//float saturationdiff = Float.parseFloat(args[0]);
 				
-				((EntityPlayerMP) sender).getFoodStats().addStats(0, saturationdiff);
+				//((EntityPlayerMP) sender).getFoodStats().addStats(0, saturationdiff);
+
+				try {
+					foodSaturationLevel.set(((EntityPlayerMP) sender).getFoodStats(),((EntityPlayerMP) sender).getFoodStats().getSaturationLevel() + args[0]);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				return true;
 			}
@@ -966,13 +1007,14 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`gmSet <gamemode>`  \nThis method will set the command sender's gamemode to the specified value.";
+            return "`gmset <gamemode>`  \nThis method will set the command sender's gamemode to the specified value.";
         }
     };
 	
     static
     {
         registerAll();
+        initHungerRelection();
     }
 
 }
