@@ -561,10 +561,13 @@ public final class ScriptMethods
 		}
 		else if (expDiff < 0)
 		{
-			for (int i = expDiff; i > 0; i--)
+			for (int i = 0; i > expDiff; i--)
 			{
-				ep.experienceLevel --;
-				ep.experienceTotal -= ep.xpBarCap();						
+				if (ep.experienceLevel > 0)
+				{
+					ep.experienceLevel --;
+					ep.experienceTotal -= ep.xpBarCap();
+				}
 			}
 		}
 	}
