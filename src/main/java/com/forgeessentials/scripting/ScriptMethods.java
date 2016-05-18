@@ -75,7 +75,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod echo = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             ChatOutputHandler.sendMessage(sender, ChatOutputHandler.formatColors(StringUtils.join(args, " ")));
             return true;
@@ -90,7 +90,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod confirm = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             ChatOutputHandler.chatConfirmation(sender, StringUtils.join(args, " "));
             return true;
@@ -105,7 +105,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod notify = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             ChatOutputHandler.chatNotification(sender, StringUtils.join(args, " "));
             return true;
@@ -120,7 +120,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod warn = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             ChatOutputHandler.chatWarning(sender, StringUtils.join(args, " "));
             return true;
@@ -135,7 +135,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod error = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             ChatOutputHandler.chatError(sender, StringUtils.join(args, " "));
             return true;
@@ -150,7 +150,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod fail = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             ChatOutputHandler.chatError(sender, StringUtils.join(args, " "));
             return false;
@@ -165,7 +165,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod echoall = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             ChatOutputHandler.broadcast(ChatOutputHandler.formatColors(StringUtils.join(args, " ")));
             return true;
@@ -180,7 +180,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod confirmall = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(StringUtils.join(args, " ")));
             return true;
@@ -195,7 +195,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod notifyall = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             ChatOutputHandler.broadcast(ChatOutputHandler.notification(StringUtils.join(args, " ")));
             return true;
@@ -210,7 +210,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod warnall = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             ChatOutputHandler.broadcast(ChatOutputHandler.warning(StringUtils.join(args, " ")));
             return true;
@@ -225,7 +225,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod errorall = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             ChatOutputHandler.broadcast(ChatOutputHandler.error(StringUtils.join(args, " ")));
             return true;
@@ -240,7 +240,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod failall = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             ChatOutputHandler.broadcast(ChatOutputHandler.error(StringUtils.join(args, " ")));
             return false;
@@ -255,7 +255,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod permset = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             CommandParserArgs arguments = new CommandParserArgs(null, args, MinecraftServer.getServer());
             PermissionCommandParser.parseMain(arguments);
@@ -292,7 +292,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod permchecksilent = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             return getPermcheckResult(sender, args);
         }
@@ -308,7 +308,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod permcheck = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (getPermcheckResult(sender, args))
                 return true;
@@ -329,7 +329,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod teleport = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length < 1)
                 throw new SyntaxException("Missing player argument for teleport");
@@ -378,7 +378,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod pay = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
@@ -415,7 +415,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod checkTimeout = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (!(sender instanceof EntityPlayer))
                 throw new MissingPlayerException();
@@ -444,7 +444,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod startTimeout = new ScriptMethod() {
         @Override
-        public boolean process(ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (!(sender instanceof EntityPlayer))
                 throw new MissingPlayerException();
@@ -464,7 +464,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod timeout = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(final ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             final String commandline = StringUtils.join(Arrays.copyOfRange(args, 1, args.length), " ");
             long timeout = Long.parseLong(args[0]);
@@ -493,7 +493,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod random = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             return ForgeEssentials.rnd.nextInt(100) < Integer.parseInt(args[0]);
         }
@@ -505,9 +505,9 @@ public final class ScriptMethods
         }
     };
 	
-	public static final ScriptMethod expCheck = new ScriptMethod() {
+	public static final ScriptMethod expcheck = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -546,7 +546,7 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`expCheck <expLevel> [operator -- LT, LTE, GT, GTE, or EQ -- case insensitive]`  \nThis method will check the expLevel of a player and compare it to a given value, where LT refers to the player expLevel being less than the inputed value.\nIf no operator is specified, equals (EQ) will be used as default.\nYou can also use ==,<,<=,>,>= in place of EQ,LT,LTE,GT,GTE.";
+            return "`expcheck <expLevel> [operator -- LT, LTE, GT, GTE, or EQ -- case insensitive]`  \nThis method will check the expLevel of a player and compare it to a given value, where LT refers to the player expLevel being less than the inputed value.\nIf no operator is specified, equals (EQ) will be used as default.\nYou can also use ==,<,<=,>,>= in place of EQ,LT,LTE,GT,GTE.";
         }
     };
 	public static void expAddInternal(EntityPlayerMP ep, int expDiff)
@@ -571,9 +571,9 @@ public final class ScriptMethods
 			}
 		}
 	}
-	public static final ScriptMethod expSet = new ScriptMethod() {
+	public static final ScriptMethod expset = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -611,13 +611,13 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`expSet <expLevel>`  \nThis method will set the command sender's expLevel to the specified value.";
+            return "`expset <expLevel>`  \nThis method will set the command sender's expLevel to the specified value.";
         }
     };
 	
-	public static final ScriptMethod expAdd = new ScriptMethod() {
+	public static final ScriptMethod expadd = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -637,13 +637,13 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`expAdd <expLevel>`  \nThis method will add the specified signed value to the command sender's expLevel.";
+            return "`expadd <expLevel>`  \nThis method will add the specified signed value to the command sender's expLevel.";
         }
     };
 	
-	public static final ScriptMethod hungerCheck = new ScriptMethod() {
+	public static final ScriptMethod hungercheck = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -682,7 +682,7 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`hungerCheck <hunger> [operator -- LT, LTE, GT, GTE, or EQ -- case insensitive]`  \nThis method will check the hunger of a player and compare it to a given value, where LT refers to the player hunger being less than the inputed value.\nIf no operator is specified, equals (EQ) will be used as default.\nYou can also use ==,<,<=,>,>= in place of EQ,LT,LTE,GT,GTE.";
+            return "`hungercheck <hunger> [operator -- LT, LTE, GT, GTE, or EQ -- case insensitive]`  \nThis method will check the hunger of a player and compare it to a given value, where LT refers to the player hunger being less than the inputed value.\nIf no operator is specified, equals (EQ) will be used as default.\nYou can also use ==,<,<=,>,>= in place of EQ,LT,LTE,GT,GTE.";
         }
     };
     private static Field foodLevel;
@@ -695,13 +695,12 @@ public final class ScriptMethods
 			foodLevel.setAccessible(true);
 			foodSaturationLevel.setAccessible(true);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
-	public static final ScriptMethod hungerSet = new ScriptMethod() {
+	public static final ScriptMethod hungerset = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {        	
             if (args.length >= 1)
 			{
@@ -718,7 +717,6 @@ public final class ScriptMethods
 		        	}
 					foodLevel.set(((EntityPlayerMP) sender).getFoodStats(), Integer.parseInt(args[0]));
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -731,13 +729,13 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`hungerSet <hunger>`  \nThis method will set the command sender's hunger to the specified value.";
+            return "`hungerset <hunger>`  \nThis method will set the command sender's hunger to the specified value.";
         }
     };
 	
-	public static final ScriptMethod hungerAdd = new ScriptMethod() {
+	public static final ScriptMethod hungeradd = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -755,7 +753,6 @@ public final class ScriptMethods
 		        	}
 					foodLevel.set(((EntityPlayerMP) sender).getFoodStats(),((EntityPlayerMP) sender).getFoodStats().getFoodLevel() + Integer.parseInt(args[0]));
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				return true;
@@ -767,13 +764,13 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`hungerAdd <hunger>`  \nThis method will add the specified signed value to the command sender's hunger.";
+            return "`hungeradd <hunger>`  \nThis method will add the specified signed value to the command sender's hunger.";
         }
     };
 	
-	public static final ScriptMethod saturationCheck = new ScriptMethod() {
+	public static final ScriptMethod saturationcheck = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -812,13 +809,13 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`saturationCheck <saturation> [operator -- LT, LTE, GT, GTE, or EQ -- case insensitive]`  \nThis method will check the saturation of a player and compare it to a given value, where LT refers to the player saturation being less than the inputed value.\nIf no operator is specified, equals (EQ) will be used as default.\nYou can also use ==,<,<=,>,>= in place of EQ,LT,LTE,GT,GTE.";
+            return "`saturationcheck <saturation> [operator -- LT, LTE, GT, GTE, or EQ -- case insensitive]`  \nThis method will check the saturation of a player and compare it to a given value, where LT refers to the player saturation being less than the inputed value.\nIf no operator is specified, equals (EQ) will be used as default.\nYou can also use ==,<,<=,>,>= in place of EQ,LT,LTE,GT,GTE.";
         }
     };
 	
-	public static final ScriptMethod saturationSet = new ScriptMethod() {
+	public static final ScriptMethod saturationset = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -835,7 +832,6 @@ public final class ScriptMethods
 		        	}
 					foodSaturationLevel.set(((EntityPlayerMP) sender).getFoodStats(),Float.parseFloat(args[0]));
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -848,13 +844,13 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`saturationSet <saturation>`  \nThis method will set the command sender's saturation to the specified value.";
+            return "`saturationset <saturation>`  \nThis method will set the command sender's saturation to the specified value.";
         }
     };
 	
-	public static final ScriptMethod saturationAdd = new ScriptMethod() {
+	public static final ScriptMethod saturationadd = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -872,7 +868,6 @@ public final class ScriptMethods
 		        	}
 					foodSaturationLevel.set(((EntityPlayerMP) sender).getFoodStats(),((EntityPlayerMP) sender).getFoodStats().getSaturationLevel() + Float.parseFloat(args[0]));
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -885,13 +880,13 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`saturationAdd <saturation>`  \nThis method will add the specified signed value to the command sender's saturation.";
+            return "`saturationadd <saturation>`  \nThis method will add the specified signed value to the command sender's saturation.";
         }
     };
 	
-	public static final ScriptMethod healthCheck = new ScriptMethod() {
+	public static final ScriptMethod healthcheck = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -930,13 +925,13 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`healthCheck <health> [operator -- LT, LTE, GT, GTE, or EQ -- case insensitive]`  \nThis method will check the health of a player and compare it to a given value, where LT refers to the player health being less than the inputed value.\nIf no operator is specified, equals (EQ) will be used as default.\nYou can also use ==,<,<=,>,>= in place of EQ,LT,LTE,GT,GTE.";
+            return "`healthcheck <health> [operator -- LT, LTE, GT, GTE, or EQ -- case insensitive]`  \nThis method will check the health of a player and compare it to a given value, where LT refers to the player health being less than the inputed value.\nIf no operator is specified, equals (EQ) will be used as default.\nYou can also use ==,<,<=,>,>= in place of EQ,LT,LTE,GT,GTE.";
         }
     };
 	
-	public static final ScriptMethod healthSet = new ScriptMethod() {
+	public static final ScriptMethod healthset = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -955,13 +950,13 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`healthSet <health>`  \nThis method will set the command sender's health to the specified value.";
+            return "`healthset <health>`  \nThis method will set the command sender's health to the specified value.";
         }
     };
 	
-	public static final ScriptMethod healthAdd = new ScriptMethod() {
+	public static final ScriptMethod healthadd = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -979,13 +974,13 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`healthAdd <health>`  \nThis method will add the specified signed value to the command sender's health.";
+            return "`healthadd <health>`  \nThis method will add the specified signed value to the command sender's health.";
         }
     };
 	
-	public static final ScriptMethod gmCheck = new ScriptMethod() {
+	public static final ScriptMethod gmcheck = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -1002,13 +997,13 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`gmCheck <gamemode>`  \nThis method will check if the gamemode of the player is equal to the given value.";
+            return "`gmcheck <gamemode>`  \nThis method will check if the gamemode of the player is equal to the given value.";
         }
     };
 	
-	public static final ScriptMethod gmSet = new ScriptMethod() {
+	public static final ScriptMethod gmset = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
         {
             if (args.length >= 1)
 			{
@@ -1029,7 +1024,165 @@ public final class ScriptMethods
             return "`gmset <gamemode>`  \nThis method will set the command sender's gamemode to the specified value.";
         }
     };
-	
+    
+    public static final ScriptMethod set = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
+        {
+            if (args.length >= 2)
+			{
+            	variableMap.put(args[0], args[1]);
+				return true;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`set <var> <value>`  \nThis method will set the specified variable to a specified value.";
+        }
+    };
+    
+    public static final ScriptMethod round = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
+        {
+            if (args.length >= 1)
+			{
+            	variableMap.put(args[0], Long.toString(Math.round(Double.parseDouble(variableMap.get(args[0])))));
+				return true;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`round <var>`  \nThis method will round the specified variable.";
+        }
+    };
+    
+    public static final ScriptMethod floor = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
+        {
+            if (args.length >= 1)
+			{
+            	variableMap.put(args[0], Double.toString(Math.floor(Double.parseDouble(variableMap.get(args[0])))));
+				return true;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`floor <var>`  \nThis method will compute the floor function on the specified variable.";
+        }
+    };
+    
+    public static final ScriptMethod ceil = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
+        {
+            if (args.length >= 1)
+			{
+            	variableMap.put(args[0], Double.toString(Math.ceil(Double.parseDouble(variableMap.get(args[0])))));
+				return true;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`ceil <var>`  \nThis method will compute the ceiling function on the specified variable.";
+        }
+    };
+    
+    public static final ScriptMethod inc = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
+        {
+            if (args.length >= 1)
+			{
+            	variableMap.put(args[0], Double.toString(Double.parseDouble(variableMap.get(args[0])) + args.length > 1 ? Double.parseDouble(args[1]) : 1));
+				return true;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`inc <var> <value>`  \nThis method will  increment the specified variable by <value> or 1 if <value> is not present.";
+        }
+    };
+    
+    public static final ScriptMethod mul = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
+        {
+            if (args.length >= 2)
+			{
+            	variableMap.put(args[0], Double.toString(Double.parseDouble(variableMap.get(args[0])) * Double.parseDouble(args[1])));
+				return true;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`mul <var> <value>`  \nThis method will  multiply the specified variable by <value>.";
+        }
+    };
+    
+    public static final ScriptMethod div = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
+        {
+            if (args.length >= 2)
+			{
+            	variableMap.put(args[0], Double.toString(Double.parseDouble(variableMap.get(args[0])) / Double.parseDouble(args[1])));
+				return true;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`div <var> <value>`  \nThis method will  divide the specified variable by <value>.";
+        }
+    };
+    public static final ScriptMethod mod = new ScriptMethod() {
+        @Override
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap)
+        {
+            if (args.length >= 2)
+			{
+            	variableMap.put(args[0], Double.toString(Double.parseDouble(variableMap.get(args[0])) % Double.parseDouble(args[1])));
+				return true;
+			}
+			else
+				return false;
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "`mod <var> <value>`  \nThis method will compute the remainder when the specified variable is divided by <value>";
+        }
+    };
     static
     {
         registerAll();

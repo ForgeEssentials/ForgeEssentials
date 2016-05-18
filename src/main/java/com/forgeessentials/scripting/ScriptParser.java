@@ -1,8 +1,6 @@
 package com.forgeessentials.scripting;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,15 +15,18 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.util.DoAsCommandSender;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 public class ScriptParser
 {
-
+	public static int loopSize = 100;
+	public static int maxOperationTime = 1000;
+	
     public static interface ScriptMethod
     {
 
-        public boolean process(ICommandSender sender, String[] args);
+        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap);
 
         public String getHelp();
 
@@ -42,7 +43,8 @@ public class ScriptParser
 
     private static final Pattern ARGUMENT_PATTERN = Pattern.compile("@([\\w*]+)(.*)");
 
-    public static String[] processArguments(ICommandSender sender, String[] actionArgs, List<String> args)
+    //Java is pass by reference!  No need to return anything if if the reference is not changed
+    public static void processArguments(ICommandSender sender, String[] actionArgs, List<String> args)
     {
         for (int i = 0; i < actionArgs.length; i++)
         {
@@ -93,9 +95,80 @@ public class ScriptParser
                 }
             }
         }
-        return actionArgs;
     }
-
+    private static final Pattern CONDITION_PATTERN = Pattern.compile("'([^']*)'[\\s]*([!=<>]+)[\\s]*'([^']*)'[\\s]*([\\S]*)[\\s]*([\\S]*)");
+    public static boolean parseCondition(String conditionalString, String[] actionsout)
+    {
+    	Matcher condM = CONDITION_PATTERN.matcher(conditionalString);
+    	if (condM.find())
+    	{
+	    	String var0 = condM.group(1);
+	    	String op = condM.group(2);
+	    	String var1 = condM.group(3);
+	    	if (actionsout != null && actionsout.length >= 2)
+	    	{
+	    		actionsout[0] = condM.group(4);
+	    		actionsout[1] = condM.group(5);
+	    	}
+	    	Double n0 = toNumber(var0);
+	    	Double n1 = toNumber(var1);
+	    	System.out.println(var0);
+	    	System.out.println(var1);
+	    	System.out.println(actionsout[0]);
+	    	System.out.println(actionsout[1]);
+	    	if (n0 == null || n1 == null) //Not a number, treat as a string comparison	    	
+	    		if (op.equals("=="))
+	    			return var0.equals(var1);
+	    		else if (op.equals("!="))
+	    			return !var0.equals(var1);
+	    		else
+	    			throw new SyntaxException("Invalid Operator for String Comparison! Allowed operators are '==' and '!='");	    	
+	    	else
+	    	{
+	    		double num0 = n0;
+	    		double num1 = n1;
+	    		if (op.equals("=="))
+	    			return num0 == num1;	    		
+	    		else if (op.equals("!="))	    		
+	    			return num0 != num1;	    		
+	    		else if (op.equals(">="))	    		
+	    			return num0 >= num1;	    		
+	    		else if (op.equals("<="))	    		
+	    			return num0 <= num1;	    		
+	    		else if (op.equals(">"))	    		
+	    			return num0 > num1;	    		
+	    		else if (op.equals("<"))	    		
+	    			return num0 < num1;	    		
+	    		else
+	    			throw new SyntaxException("Invalid Operator for Numeric Comparison! Allowed operators are '==', '!-', '>=', '<=', '>', and '<'.");
+	    	}
+	    	
+    	}
+    	throw new SyntaxException("Invalid conditional syntax! Required syntax is: 'value' == 'value' labelTrue labelFalse");
+    }
+    private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\$([\\w*]+)");
+    public static void processVariables(String[] args, Map<String,String> variableMap)
+    {
+    	if (variableMap != null)
+    	{
+    		for (int i = 0; i < args.length; i++)
+    		{
+    			Matcher m = VARIABLE_PATTERN.matcher(args[i]);
+    			while (m.find())
+    			{
+    				String var = m.group(1);
+    				if (variableMap.containsKey(var))
+    				{
+    					args[i] = args[i].replaceFirst("\\Q" + m.group() + "\\E", variableMap.get(var));
+    				}
+    				else
+    				{
+    					args[i] = args[i].replaceFirst("\\Q" + m.group() + "\\E",var);
+    				}
+    			}
+    		}
+    	}
+    }
     public static void run(List<String> script)
     {
         run(script, null);
@@ -108,18 +181,147 @@ public class ScriptParser
 
     public static boolean run(List<String> script, ICommandSender sender, List<String> args)
     {
-        for (String action : script)
-            if (!run(action, sender, args))
+    	String[] gotoLabel = new String[1];
+    	HashMap<String,String> variableMap = new HashMap<String,String>(); 
+    	HashMap<String,Integer> labels = new HashMap<String,Integer>();
+    	gotoLabel[0] = null;
+    	int line = 0;
+    	long time = System.currentTimeMillis();
+    	String lastGoto = "";
+    	int looppos = 0;
+        while (line < script.size())
+        {
+            if (!run(script.get(line), sender, args, gotoLabel, variableMap, labels, line))
                 return false;
+            if (labels.containsKey(gotoLabel[0]))
+            {
+            	if (lastGoto.equals(gotoLabel[0]))
+            		looppos++;
+            	else
+            	{
+            		looppos = 0;
+            		lastGoto = gotoLabel[0];
+            	}
+            	line = labels.get(gotoLabel[0]);
+            	gotoLabel[0] = null;
+            }
+            line++;
+            if (looppos > loopSize && loopSize > -1)
+            	throw new ScriptErrorException("Program has been in the same loop too long (Greater than " + loopSize +  " iterations) and was automatically killed!");            	
+            
+            
+            if (System.currentTimeMillis() - time > maxOperationTime)
+            	throw new ScriptErrorException("Program has been running for longer than " + (float) maxOperationTime / 1000 +  " seconds and was automatically killed!");
+            
+        }
+        if (gotoLabel[0] != null)
+        	throw new ScriptErrorException("End of program reached before label matching: " + gotoLabel[0] + " was found!");
+        
         return true;
     }
 
+    public static Double toNumber(String num)
+    {
+    	try
+    	{
+    		return Double.parseDouble(num);
+    	} catch (NumberFormatException e)
+    	{
+    		return null;
+    	}
+    }    
+    private static final Pattern EXPRESSION_PATTERN = Pattern.compile("\\{([^}]*)\\}");
+    private static final Pattern OPERATION_PATTERN = Pattern.compile("(\\d+\\.?\\d*)\\s*([+\\-*/%])\\s*(.+)");
+    private static final Pattern PRIMARY_PATTERN = Pattern.compile("\\d+\\.?\\d*");
+    public static double computeExpression(String expr)
+    {
+    	Matcher m = PRIMARY_PATTERN.matcher(expr);
+    	if (m.matches())
+    	{
+    		return Double.parseDouble(m.group());
+    	}
+    	else
+    	{
+    		m = OPERATION_PATTERN.matcher(expr);
+    		if (m.matches())
+    		{
+    			double d = Double.parseDouble(m.group(1));
+    			String op = m.group(2);
+    			String expr2 = m.group(3);
+    			if (op.equals("+"))
+    				d+=computeExpression(expr2);
+    			else if (op.equals("-"))
+    				d-=computeExpression(expr2);
+    			else if (op.equals("*"))
+    				d*=computeExpression(expr2);
+    			else if (op.equals("/"))
+    				d/=computeExpression(expr2);
+    			else if (op.equals("%"))
+    				d%=computeExpression(expr2);
+    			return d;
+    		}
+    		return 0;
+    	}
+    }
+    public static String[] processExpressions(String args)
+    {    	
+    	Matcher m = EXPRESSION_PATTERN.matcher(args);
+    	while (m.find())
+    	{
+    		String expr = m.group(1);    		
+    		args = args.replaceFirst("\\Q" + m.group() + "\\E", Double.toString(computeExpression(expr)));
+    	}
+    	return args.split(" ");
+    }
     public static boolean run(String action, ICommandSender sender, List<String> argumentValues)
+    {
+    	return run(action,sender,argumentValues,null, null,null, 0);
+    }
+    public static boolean run(String action, ICommandSender sender, List<String> argumentValues, String[] gotoLabel, Map<String,String> variableMap, HashMap<String,Integer> labels, int line)
     {
         String[] args = action.split(" ", 2);
         String cmd = args[0].toLowerCase();
-        args = args.length > 1 ? args[1].split(" ") : new String[0];
-        args = processArguments(sender, args, argumentValues);
+        String arguments =  args.length > 1 ? args[1] : "";
+        args = args.length > 1 ? args[1].split(" ") : new String[0];        
+        /*args = */processArguments(sender, args, argumentValues); //Java is pass by reference, assignment is not required.
+        processVariables(args, variableMap); //Same here
+        args = processExpressions(StringUtils.join(args," ")); //This needs to reassign the value because expressions can contain whitespace
+        //TODO: Process Expressions
+        if (gotoLabel != null) //Disable gotoProcessing if gotoLabel == null
+        {    
+        	if (cmd.equals("label"))
+        	{
+        		labels.put(args[0].toLowerCase(), line);
+        		return true;
+        	}
+        	if (gotoLabel[0] != null)
+        		return true;
+	        else if (cmd.equals("goto"))
+	        {
+	        	gotoLabel[0] = args[0].toLowerCase();
+	        	return true;
+	        }
+	        else if (cmd.equals("if"))
+	        {
+	        	String[] output = new String[2];
+	        	//simple if processing
+	        	if (parseCondition(StringUtils.join(args," ").toLowerCase(),output))
+	        	{
+	        		gotoLabel[0] = output[0];
+	        	}
+	        	else
+	        	{
+	        		gotoLabel[0] = output[1];
+	        	}
+	        	return true;
+	        	
+	        }        	
+        }
+        /*if (cmd.equals("set"))
+        {
+        	variableMap.put(args[0], StringUtils.join(Arrays.copyOfRange(args, 1,args.length)," "));
+        	return true;
+        }*/
         if (cmd.isEmpty())
             throw new SyntaxException("Could not handle script action \"%s\"", action);
 
@@ -183,7 +385,7 @@ public class ScriptParser
             }
             return true;
         }
-        default:
+        default:        	
             boolean canFail = false;
             if (cmd.length() > 1 && cmd.charAt(0) == '?')
             {
@@ -195,7 +397,7 @@ public class ScriptParser
                 throw new SyntaxException("Unknown script method \"%s\"", cmd);
             try
             {
-                return method.process(sender, args) | canFail;
+                return method.process(sender, args, variableMap) | canFail;
             }
             catch (NumberFormatException e)
             {
