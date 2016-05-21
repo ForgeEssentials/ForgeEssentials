@@ -26,6 +26,9 @@ If you open ForgeEssentials in your IDE, you must turn on annotation processing,
  - Check `Enable annotation processing`
  - Under `Annotation Processors`, add this fully qualified name: `org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor`
 
+ ### If all else fails
+ - Manually add the "PL Generated Files.jar" library in the 'lib' folder to your workspace.
+
 # Notes
 1. Please consider squashing all commits before initially submitting pull requests
 2. For a local `.gitignore` use `.git/info/exclude`
