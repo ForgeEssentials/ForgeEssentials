@@ -8,6 +8,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,9 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.sun.org.apache.xpath.internal.Arg;
+
+import akka.pattern.Patterns;
 
 public class ScriptParser
 {
@@ -26,7 +30,7 @@ public class ScriptParser
     public static interface ScriptMethod
     {
 
-        public boolean process(ICommandSender sender, String[] args, Map<String,String> variableMap);
+        public boolean process(ICommandSender sender, String[] args);
 
         public String getHelp();
 
@@ -41,23 +45,21 @@ public class ScriptParser
 
     }
 
-    private static final Pattern ARGUMENT_PATTERN = Pattern.compile("@([\\w*]+)(.*)");
+    private static final Pattern ARGUMENT_PATTERN = Pattern.compile("@([\\w*]+)\\.?");
 
     //Java is pass by reference!  No need to return anything if if the reference is not changed
-    public static void processArguments(ICommandSender sender, String[] actionArgs, List<String> args)
+    public static String processArguments(ICommandSender sender, String actionArgs, List<String> args)
     {
-        for (int i = 0; i < actionArgs.length; i++)
+        Matcher matcher = ARGUMENT_PATTERN.matcher(actionArgs);
+        while (matcher.find())
         {
-            Matcher matcher = ARGUMENT_PATTERN.matcher(actionArgs[i]);
-            if (!matcher.matches())
-                continue;
             String modifier = matcher.group(1).toLowerCase();
-            String rest = matcher.group(2);
 
             ScriptArgument argument = ScriptArguments.get(modifier);
             if (argument != null)
             {
-                actionArgs[i] = argument.process(sender) + rest;
+                actionArgs = matcher.replaceFirst(Matcher.quoteReplacement(argument.process(sender)));
+                matcher.reset(actionArgs);
             }
             else if (modifier.endsWith("*"))
             {
@@ -68,12 +70,16 @@ public class ScriptParser
                         idx = Integer.parseInt(modifier.substring(0, modifier.length() - 1));
                     if (args == null || idx >= args.size())
                         throw new SyntaxException("Missing argument @%d", idx);
-                    List<String> newArgs = new ArrayList<>(Arrays.asList(actionArgs));
-                    newArgs.remove(i);
-                    for (int j = idx; j < args.size(); j++)
-                        newArgs.add(i + j - idx, args.get(j));
-                    actionArgs = newArgs.toArray(new String[newArgs.size()]);
-                    actionArgs[actionArgs.length - 1] += rest;
+                    List<String> newArgs = new ArrayList<>(args);
+                    //newArgs.remove(i);
+                    //for (int j = idx; j < args.size(); j++)
+                        //newArgs.add(i + j - idx, args.get(j));
+                    for (int j = 0; j < idx; j++)
+                    	newArgs.remove(j);
+                    actionArgs = matcher.replaceFirst(Matcher.quoteReplacement(StringUtils.join(newArgs," ")));
+                    matcher.reset(actionArgs);
+                    //actionArgs = newArgs.toArray(new String[newArgs.size()]);
+                    //actionArgs[actionArgs.length - 1] += rest;
                 }
                 catch (NumberFormatException e)
                 {
@@ -87,7 +93,8 @@ public class ScriptParser
                     int idx = Integer.parseInt(modifier);
                     if (args == null || idx >= args.size())
                         throw new SyntaxException("Missing argument @%d", idx);
-                    actionArgs[i] = args.get(idx) + rest;
+                    actionArgs = matcher.replaceFirst(Matcher.quoteReplacement(args.get(idx)));
+                    matcher.reset(actionArgs);
                 }
                 catch (NumberFormatException e)
                 {
@@ -95,34 +102,33 @@ public class ScriptParser
                 }
             }
         }
+        return actionArgs;
+        
     }
-    private static final Pattern CONDITION_PATTERN = Pattern.compile("'([^']*)'[\\s]*([!=<>]+)[\\s]*'([^']*)'[\\s]*([\\S]*)[\\s]*([\\S]*)");
-    public static boolean parseCondition(String conditionalString, String[] actionsout)
+    //==|(
+    private static final Pattern CONDITION_PATTERN = Pattern.compile("([^!=<>]*)(==|!=|>=|<=|>|<)([^!=<>]*)");
+    private static final Pattern TRAILING_WHITESPACE_PATTERN = Pattern.compile("\\s*((?:\\S*(?:\\s*\\S*)*?))\\s*$");
+    public static Boolean parseCondition(String conditionalString)
     {
     	Matcher condM = CONDITION_PATTERN.matcher(conditionalString);
     	if (condM.find())
     	{
-	    	String var0 = condM.group(1);
+    		Matcher twp = TRAILING_WHITESPACE_PATTERN.matcher(condM.group(1));
+    		twp.matches();
+	    	String var0 = twp.group(1);
 	    	String op = condM.group(2);
-	    	String var1 = condM.group(3);
-	    	if (actionsout != null && actionsout.length >= 2)
-	    	{
-	    		actionsout[0] = condM.group(4);
-	    		actionsout[1] = condM.group(5);
-	    	}
-	    	Double n0 = toNumber(var0);
-	    	Double n1 = toNumber(var1);
-	    	System.out.println(var0);
-	    	System.out.println(var1);
-	    	System.out.println(actionsout[0]);
-	    	System.out.println(actionsout[1]);
+	    	twp.reset(condM.group(3));
+	    	twp.matches();
+	    	String var1 = twp.group(1);
+	    	Double n0 = ExpressionParser.computeExpression(var0);
+	    	Double n1 = ExpressionParser.computeExpression(var1);
 	    	if (n0 == null || n1 == null) //Not a number, treat as a string comparison	    	
 	    		if (op.equals("=="))
 	    			return var0.equals(var1);
 	    		else if (op.equals("!="))
 	    			return !var0.equals(var1);
 	    		else
-	    			throw new SyntaxException("Invalid Operator for String Comparison! Allowed operators are '==' and '!='");	    	
+	    			return null;	    	
 	    	else
 	    	{
 	    		double num0 = n0;
@@ -140,34 +146,35 @@ public class ScriptParser
 	    		else if (op.equals("<"))	    		
 	    			return num0 < num1;	    		
 	    		else
-	    			throw new SyntaxException("Invalid Operator for Numeric Comparison! Allowed operators are '==', '!-', '>=', '<=', '>', and '<'.");
+	    			return null; //Should never return
 	    	}
 	    	
     	}
-    	throw new SyntaxException("Invalid conditional syntax! Required syntax is: 'value' == 'value' labelTrue labelFalse");
+    	return null;
+    	
     }
-    private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\$([\\w*]+)");
-    public static void processVariables(String[] args, Map<String,String> variableMap)
+    private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\$(\\w)\\.?");
+    public static String processVariables(String args, Map<String,String> variableMap)
     {
     	if (variableMap != null)
     	{
-    		for (int i = 0; i < args.length; i++)
-    		{
-    			Matcher m = VARIABLE_PATTERN.matcher(args[i]);
-    			while (m.find())
-    			{
-    				String var = m.group(1);
-    				if (variableMap.containsKey(var))
-    				{
-    					args[i] = args[i].replaceFirst("\\Q" + m.group() + "\\E", variableMap.get(var));
-    				}
-    				else
-    				{
-    					args[i] = args[i].replaceFirst("\\Q" + m.group() + "\\E",var);
-    				}
-    			}
-    		}
+			Matcher m = VARIABLE_PATTERN.matcher(args);
+			while (m.find())
+			{
+				String var = m.group(1);
+				
+				String value = null;
+				if (variableMap.containsKey(var))
+					value = variableMap.get(var);
+				if (value == null)
+					value = "null";
+				args = m.replaceFirst(Matcher.quoteReplacement(value));
+				m.reset(args);
+				//args[i] = args[i].replaceFirst("\\Q" + Matcher.quoteReplacement(m.group()) + "\\E",Matcher.quoteReplacement(value));
+			}
     	}
+    	
+    	return args;
     }
     public static void run(List<String> script)
     {
@@ -220,56 +227,27 @@ public class ScriptParser
         return true;
     }
 
-    public static Double toNumber(String num)
-    {
-    	try
-    	{
-    		return Double.parseDouble(num);
-    	} catch (NumberFormatException e)
-    	{
-    		return null;
-    	}
-    }    
-    private static final Pattern EXPRESSION_PATTERN = Pattern.compile("\\{([^}]*)\\}");
-    private static final Pattern OPERATION_PATTERN = Pattern.compile("(\\d+\\.?\\d*)\\s*([+\\-*/%])\\s*(.+)");
-    private static final Pattern PRIMARY_PATTERN = Pattern.compile("\\d+\\.?\\d*");
-    public static double computeExpression(String expr)
-    {
-    	Matcher m = PRIMARY_PATTERN.matcher(expr);
-    	if (m.matches())
-    	{
-    		return Double.parseDouble(m.group());
-    	}
-    	else
-    	{
-    		m = OPERATION_PATTERN.matcher(expr);
-    		if (m.matches())
-    		{
-    			double d = Double.parseDouble(m.group(1));
-    			String op = m.group(2);
-    			String expr2 = m.group(3);
-    			if (op.equals("+"))
-    				d+=computeExpression(expr2);
-    			else if (op.equals("-"))
-    				d-=computeExpression(expr2);
-    			else if (op.equals("*"))
-    				d*=computeExpression(expr2);
-    			else if (op.equals("/"))
-    				d/=computeExpression(expr2);
-    			else if (op.equals("%"))
-    				d%=computeExpression(expr2);
-    			return d;
-    		}
-    		return 0;
-    	}
-    }
-    public static String[] processExpressions(String args)
+    
+    
+    
+    
+
+    private static final Pattern EXPRESSION_PATTERN = Pattern.compile("\\$\\{([^}]*)\\}");
+    public static String[] parseExpressions(String args)
     {    	
+    	//System.out.println(args);
     	Matcher m = EXPRESSION_PATTERN.matcher(args);
     	while (m.find())
     	{
-    		String expr = m.group(1);    		
-    		args = args.replaceFirst("\\Q" + m.group() + "\\E", Double.toString(computeExpression(expr)));
+    		Double out = ExpressionParser.computeExpression(m.group(1));
+    		if (out != null)
+    		{    			
+    			args = m.replaceFirst(out.toString());
+				m.reset(args);
+    		}
+    		else
+    			throw new SyntaxException("Expression: " + m.group(1).replaceAll("\\s*", "") + ", contains invalid tokens!");
+    		//TODO: Order of Operations Parsing
     	}
     	return args.split(" ");
     }
@@ -281,12 +259,10 @@ public class ScriptParser
     {
         String[] args = action.split(" ", 2);
         String cmd = args[0].toLowerCase();
-        String arguments =  args.length > 1 ? args[1] : "";
-        args = args.length > 1 ? args[1].split(" ") : new String[0];        
-        /*args = */processArguments(sender, args, argumentValues); //Java is pass by reference, assignment is not required.
-        processVariables(args, variableMap); //Same here
-        args = processExpressions(StringUtils.join(args," ")); //This needs to reassign the value because expressions can contain whitespace
-        //TODO: Process Expressions
+        String arguments =  args.length > 1 ? args[1] : ""; //Keep Arguments as a single unit until all processing is done   
+        arguments = processArguments(sender, arguments, argumentValues);
+        arguments = processVariables(arguments, variableMap);
+        args = parseExpressions(arguments);
         if (gotoLabel != null) //Disable gotoProcessing if gotoLabel == null
         {    
         	if (cmd.equals("label"))
@@ -301,27 +277,63 @@ public class ScriptParser
 	        	gotoLabel[0] = args[0].toLowerCase();
 	        	return true;
 	        }
+        	//TODO: Change if to use expressions
 	        else if (cmd.equals("if"))
 	        {
-	        	String[] output = new String[2];
+	        	String labelTrue = args[args.length-2];
+	        	String labelFalse = args[args.length-1];
+	        	
 	        	//simple if processing
-	        	if (parseCondition(StringUtils.join(args," ").toLowerCase(),output))
+	        	String cond = StringUtils.join(Arrays.copyOf(args,args.length-2)," ");
+	        	Boolean b = parseCondition(cond);
+	        	if (b == null)
+	        		throw new SyntaxException("Invalid conditional syntax:" + cond + "Required syntax is: <expr> <op> <expr>, where valid operators are '==', and '!-', plus ('>=', '<=', '>', and '<') for Numeric Comparisons only.");
+	        	else if (b)
 	        	{
-	        		gotoLabel[0] = output[0];
+	        		gotoLabel[0] = labelTrue;
 	        	}
 	        	else
 	        	{
-	        		gotoLabel[0] = output[1];
+	        		gotoLabel[0] = labelFalse;
 	        	}
 	        	return true;
 	        	
 	        }        	
         }
-        /*if (cmd.equals("set"))
+        if (cmd.equals("set"))
         {
-        	variableMap.put(args[0], StringUtils.join(Arrays.copyOfRange(args, 1,args.length)," "));
+        	String expr = StringUtils.join(Arrays.copyOfRange(args, 1, args.length)," ");
+        	Double d = ExpressionParser.computeExpression(expr);
+        	if (d != null)
+        		expr = d.toString();
+        	variableMap.put(args[0], expr);
         	return true;
-        }*/
+        }
+        else if (args.length >= 2)
+        {
+	        if (cmd.equals("loadp"))
+	        {
+	        	UserIdent ident = UserIdent.get((EntityPlayerMP) sender);
+	        	variableMap.put(args[0],APIRegistry.perms.getUserPermissionProperty(ident, "fe.vars." + args[1]));
+	        	return true;
+	        }
+	        else if (cmd.equals("loadg"))
+	        {
+	        	variableMap.put(args[0],APIRegistry.perms.getGlobalPermissionProperty("fe.vars." + args[1]));
+	        	return true;
+	        }
+	        else if (cmd.equals("storep"))
+	        {
+	        	UserIdent ident = UserIdent.get((EntityPlayerMP) sender);
+	        	APIRegistry.perms.setPlayerPermissionProperty(ident, "fe.vars." + args[1],variableMap.get(args[0]));        	
+	        	return true;
+	        }
+	        else if (cmd.equals("storeg"))
+	        {
+	        	APIRegistry.perms.setGroupPermissionProperty("_ALL_","fe.vars." + args[1],variableMap.get(args[0]));        	
+	        	return true;
+	        }
+        }
         if (cmd.isEmpty())
             throw new SyntaxException("Could not handle script action \"%s\"", action);
 
@@ -397,7 +409,7 @@ public class ScriptParser
                 throw new SyntaxException("Unknown script method \"%s\"", cmd);
             try
             {
-                return method.process(sender, args, variableMap) | canFail;
+                return method.process(sender, args) | canFail;
             }
             catch (NumberFormatException e)
             {
