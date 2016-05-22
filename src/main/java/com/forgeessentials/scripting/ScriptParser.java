@@ -313,7 +313,11 @@ public class ScriptParser
         {
 	        if (cmd.equals("loadp"))
 	        {
-	        	UserIdent ident = UserIdent.get((EntityPlayerMP) sender);
+	        	UserIdent ident;
+	        	if (sender instanceof EntityPlayerMP)
+	        		ident = UserIdent.get((EntityPlayerMP) sender);
+	        	else
+	        		ident = UserIdent.getServer(null, "$" + sender.getCommandSenderName().toLowerCase());
 	        	variableMap.put(args[0],APIRegistry.perms.getUserPermissionProperty(ident, "fe.vars." + args[1]));
 	        	return true;
 	        }
@@ -324,7 +328,12 @@ public class ScriptParser
 	        }
 	        else if (cmd.equals("storep"))
 	        {
-	        	UserIdent ident = UserIdent.get((EntityPlayerMP) sender);
+	        	UserIdent ident;
+	        	if (sender instanceof EntityPlayerMP)
+	        		ident = UserIdent.get((EntityPlayerMP) sender);
+	        	else
+	        		ident = UserIdent.getServer(null, "$" + sender.getCommandSenderName().toLowerCase());
+	        	
 	        	APIRegistry.perms.setPlayerPermissionProperty(ident, "fe.vars." + args[1],variableMap.get(args[0]));        	
 	        	return true;
 	        }
