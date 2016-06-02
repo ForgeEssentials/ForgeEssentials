@@ -49,6 +49,15 @@ public class AuthEventHandler extends ServerEventHandler
         LoggingHandler.felog.info("FEauth initialized. Enabled: " + ModuleAuth.isEnabled());
     }
 
+    protected void enable(boolean status)
+    {
+        if (status)
+        {
+            register();
+        }
+        else unregister();
+    }
+
     public static boolean isPlayer(Object player)
     {
         return player != null && player.getClass().equals(EntityPlayerMP.class);
@@ -228,7 +237,12 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void onClientHandshake(ClientHandshakeEstablished e)
     {
-        NetworkUtils.netHandler.sendTo(new Packet6AuthLogin(0, ""), e.getPlayer());
+        if (!ModuleAuth.isEnabled())
+            return;
+        if (ModuleAuth.isRegistered(e.getPlayer().getPersistentID())  && !ModuleAuth.isAuthenticated(e.getPlayer()))
+        {
+            NetworkUtils.netHandler.sendTo(new Packet6AuthLogin(0, ""), e.getPlayer());
+        }
     }
 
     @SubscribeEvent

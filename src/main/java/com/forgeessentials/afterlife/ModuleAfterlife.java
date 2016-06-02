@@ -173,7 +173,14 @@ public class ModuleAfterlife extends ServerEventHandler
             ChatOutputHandler.chatError(event.getPlayer(), Translator.translate("You may not defile the grave of a player"));
             return;
         }
-        grave.remove(true);
+        if (grave.canOpen(event.getPlayer()))
+        {
+            grave.remove(true);
+        }
+        else
+        {
+            event.setCanceled(true);
+        }
     }
 
 }

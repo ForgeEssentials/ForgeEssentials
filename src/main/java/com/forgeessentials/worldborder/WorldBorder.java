@@ -16,12 +16,6 @@ import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
-import com.forgeessentials.worldborder.effect.EffectCommand;
-import com.forgeessentials.worldborder.effect.EffectDamage;
-import com.forgeessentials.worldborder.effect.EffectKick;
-import com.forgeessentials.worldborder.effect.EffectKnockback;
-import com.forgeessentials.worldborder.effect.EffectMessage;
-import com.forgeessentials.worldborder.effect.EffectPotion;
 import com.google.gson.annotations.Expose;
 
 public class WorldBorder implements Loadable
@@ -49,31 +43,8 @@ public class WorldBorder implements Loadable
     {
         this.center = center;
         this.size = new Point(xSize, 0, zSize);
+        this.dimID = dimID;
         updateArea();
-
-        WorldBorderEffect effect = new EffectMessage();
-        effect.triggerDistance = 16;
-        effects.add(effect);
-
-        effect = new EffectDamage();
-        effect.triggerDistance = 8;
-        effects.add(effect);
-
-        effect = new EffectKnockback();
-        effect.triggerDistance = 0;
-        effects.add(effect);
-
-        effect = new EffectKick();
-        effect.triggerDistance = -1000;
-        effects.add(effect);
-
-        effect = new EffectPotion();
-        effect.triggerDistance = -1000;
-        effects.add(effect);
-
-        effect = new EffectCommand();
-        effect.triggerDistance = -1000;
-        effects.add(effect);
     }
 
     @Override
@@ -118,6 +89,11 @@ public class WorldBorder implements Loadable
     {
         this.size = size;
         updateArea();
+    }
+
+    public void addEffect(WorldBorderEffect effect)
+    {
+        effects.add(effect);
     }
 
     public List<WorldBorderEffect> getEffects()

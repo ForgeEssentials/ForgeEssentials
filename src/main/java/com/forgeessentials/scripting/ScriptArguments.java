@@ -32,6 +32,8 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.ImmutableMap;
 
+import com.forgeessentials.core.ForgeEssentials;
+
 public final class ScriptArguments
 {
 
@@ -715,6 +717,36 @@ public final class ScriptArguments
         public String getHelp()
         {
             return "Number of unique players on the server at all time";
+        }
+    };
+	
+	public static ScriptArgument exp = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            if (!(sender instanceof EntityPlayerMP))
+                throw new MissingPlayerException();
+            return Integer.toString(((EntityPlayerMP) sender).experienceLevel);
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Returns the expLevel of the command sender";
+        }
+    };
+	
+	public static ScriptArgument random = new ScriptArgument() {
+        @Override
+        public String process(ICommandSender sender)
+        {
+            return Integer.toString(ForgeEssentials.rnd.nextInt(33554432) - 16777216);
+        }
+
+        @Override
+        public String getHelp()
+        {
+            return "Returns a random integer between -16777216 and 16777215 inclusive.";
         }
     };
 

@@ -144,8 +144,8 @@ dependencies {
 	buildDep 'org.spongepowered:spongeapi:3.0.0'
 
 	// Shade Mixin library
-	shade group: "org.spongepowered", name: "mixin", version: "0.4.10-SNAPSHOT", changing: true
-	shadeClient group: "org.spongepowered", name: "mixin", version: "0.4.10-SNAPSHOT", changing: true
+	shade group: "org.spongepowered", name: "mixin", version: "0.5.3-SNAPSHOT", changing: true
+	shadeClient group: "org.spongepowered", name: "mixin", version: "0.5.3-SNAPSHOT", changing: true
 }
 
 /************************************************************
