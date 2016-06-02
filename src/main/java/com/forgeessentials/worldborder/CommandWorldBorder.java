@@ -202,7 +202,7 @@ public class CommandWorldBorder extends ParserCommandBase
         }
     }
 
-    public static void parseEffect(CommandParserArgs arguments, WorldBorder border)
+    public static void parseEffect(CommandParserArgs arguments, WorldBorder border) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -251,7 +251,7 @@ public class CommandWorldBorder extends ParserCommandBase
 
     }
 
-    public static void addEffect(WorldBorder border, CommandParserArgs arguments)
+    public static void addEffect(WorldBorder border, CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {

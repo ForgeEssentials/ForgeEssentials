@@ -1,23 +1,32 @@
 package com.forgeessentials.core.preloader.mixin.server.management;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.management.ItemInWorldManager;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldSettings;
+import net.minecraft.world.WorldSettings.GameType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-
-import cpw.mods.fml.common.eventhandler.Event;
 
 @Mixin(ItemInWorldManager.class)
 public abstract class MixinItemInWorldManager
@@ -30,71 +39,95 @@ public abstract class MixinItemInWorldManager
     private World theWorld;
 
     @Shadow
+    private GameType gameType;
+
+    @Shadow
     abstract boolean isCreative();
 
-    // Fixes a few Forge bugs, and adds PlayerPostInteractEvent.
     @Overwrite
-    public boolean activateBlockOrUseItem(EntityPlayer player, World world, ItemStack item, int x, int y, int z, int side, float dx, float dy, float dz)
+    public boolean activateBlockOrUseItem(EntityPlayer player, World worldIn, ItemStack stack, BlockPos pos, EnumFacing side, float offsetX, float offsetY, float offsetZ)
     {
-        PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_BLOCK, x, y, z, side, world);
-        if (event.isCanceled())
+        if (this.gameType == WorldSettings.GameType.SPECTATOR)
         {
-            // PATCH: Fix a Forge bug related to fake players
-            if (thisPlayerMP.playerNetServerHandler != null)
-                thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, theWorld));
+            TileEntity tileentity = worldIn.getTileEntity(pos);
+
+            if (tileentity instanceof ILockableContainer)
+            {
+                Block block = worldIn.getBlockState(pos).getBlock();
+                ILockableContainer ilockablecontainer = (ILockableContainer)tileentity;
+
+                if (ilockablecontainer instanceof TileEntityChest && block instanceof BlockChest)
+                {
+                    ilockablecontainer = ((BlockChest)block).getLockableContainer(worldIn, pos);
+                }
+
+                if (ilockablecontainer != null)
+                {
+                    player.displayGUIChest(ilockablecontainer);
+                    return true;
+                }
+            }
+            else if (tileentity instanceof IInventory)
+            {
+                player.displayGUIChest((IInventory)tileentity);
+                return true;
+            }
+
             return false;
         }
-
-        // PATCH: Fix a Forge bug allowing onItemUseFirst to trigger even if event.useItem is set to DENY
-        if (event.useItem != Event.Result.DENY && item != null && item.getItem().onItemUseFirst(item, player, world, x, y, z, side, dx, dy, dz))
+        else
         {
-            // PATCH: Add event to get actual result of interaction
-            MinecraftForge.EVENT_BUS.post(new PlayerPostInteractEvent(player, world, item, x, y, z, side, dx, dy, dz));
-            if (item.stackSize <= 0)
-                ForgeEventFactory.onPlayerDestroyItem(thisPlayerMP, item);
-            return true;
-        }
-
-        Block block = world.getBlock(x, y, z);
-        boolean useBlock = !player.isSneaking() || player.getHeldItem() == null;
-        if (!useBlock)
-            useBlock = player.getHeldItem().getItem().doesSneakBypassUse(world, x, y, z, player);
-        boolean result = false;
-
-        if (useBlock)
-        {
-            if (event.useBlock != Event.Result.DENY)
+            net.minecraftforge.event.entity.player.PlayerInteractEvent event = net.minecraftforge.event.ForgeEventFactory.onPlayerInteract(player,
+                    net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, worldIn, pos, side);
+            if (event.isCanceled())
             {
-                result = block.onBlockActivated(world, x, y, z, player, side, dx, dy, dz);
-                // PATCH: Add event to get actual result of interaction
-                if (result)
-                    MinecraftForge.EVENT_BUS.post(new PlayerPostInteractEvent(player, world, block, x, y, z, side, dx, dy, dz));
-            }
-            else
-            {
-                // PATCH: Fix a Forge bug related to fake players
                 if (thisPlayerMP.playerNetServerHandler != null)
-                    thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, theWorld));
-                result = event.useItem != Event.Result.ALLOW;
+                    thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos));
+                return false;
             }
-        }
 
-        if (item != null && !result && event.useItem != Event.Result.DENY)
-        {
-            int meta = item.getItemDamage();
-            int size = item.stackSize;
-            result = item.tryPlaceItemIntoWorld(player, world, x, y, z, side, dx, dy, dz);
-            if (isCreative())
+            if (stack != null && stack.getItem().onItemUseFirst(stack, player, worldIn, pos, side, offsetX, offsetY, offsetZ))
             {
-                item.setItemDamage(meta);
-                item.stackSize = size;
+                MinecraftForge.EVENT_BUS.post(new PlayerPostInteractEvent(player, worldIn, worldIn.getBlockState(pos), pos, side, offsetX, offsetY, offsetZ));
+                if (stack.stackSize <= 0) net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(thisPlayerMP, stack);
+                return true;
             }
-            if (item.stackSize <= 0)
-                ForgeEventFactory.onPlayerDestroyItem(thisPlayerMP, item);
-            if (result)
-                MinecraftForge.EVENT_BUS.post(new PlayerPostInteractEvent(player, world, item, x, y, z, side, dx, dy, dz));
-        }
 
-        return result;
+            IBlockState iblockstate = worldIn.getBlockState(pos);
+            boolean isAir = worldIn.isAirBlock(pos);
+            boolean useBlock = !player.isSneaking() || player.getHeldItem() == null;
+            if (!useBlock) useBlock = player.getHeldItem().getItem().doesSneakBypassUse(worldIn, pos, player);
+            boolean result = false;
+
+            if (useBlock)
+            {
+                if (event.useBlock != net.minecraftforge.fml.common.eventhandler.Event.Result.DENY)
+                {
+                    result = iblockstate.getBlock().onBlockActivated(worldIn, pos, iblockstate, player, side, offsetX, offsetY, offsetZ);
+                    // PATCH: Add event to get actual result of interaction
+                    if (result)
+                        MinecraftForge.EVENT_BUS.post(new PlayerPostInteractEvent(player, worldIn, iblockstate, pos, side, offsetX, offsetY, offsetZ));
+                }
+                else
+                {
+                    if (thisPlayerMP.playerNetServerHandler != null)
+                        thisPlayerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos));
+                    result = event.useItem != Event.Result.ALLOW;
+                }
+            }
+            if (stack != null && !result && event.useItem != net.minecraftforge.fml.common.eventhandler.Event.Result.DENY)
+            {
+                int meta = stack.getMetadata();
+                int size = stack.stackSize;
+                result = stack.onItemUse(player, worldIn, pos, side, offsetX, offsetY, offsetZ);
+                if (isCreative())
+                {
+                    stack.setItemDamage(meta);
+                    stack.stackSize = size;
+                }
+                if (stack.stackSize <= 0) net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(thisPlayerMP, stack);
+            }
+            return result;
+        }
     }
 }
