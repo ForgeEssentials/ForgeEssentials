@@ -2,15 +2,11 @@
 	"package": "com.forgeessentials.core.preloader.mixin",
 	"plugin": "com.forgeessentials.core.preloader.mixin.FEMixinConfig",
 	"mixins": [
-		"player.MixinEntityPlayer_01",
-		"command.MixinCommandHandler_01",
-		"entity.MixinEntityTracker_01",
-		"entity.MixinEntity_01",
-		"network.MixinNetHandlerPlayServer_01",
-        "server.management.MixinItemInWorldManager_01",
-        "item.crafting.MixinCraftingManager",
-
-        "block.MixinBlock",
-        "fml.common.MixinEventBus"
+		"player.MixinEntityPlayer",
+		"command.MixinCommandHandler",
+		"entity.MixinEntity",
+		"network.MixinNetHandlerPlayServer",
+        "server.management.MixinItemInWorldManager",
+        "item.crafting.MixinCraftingManager"
 	]
 }

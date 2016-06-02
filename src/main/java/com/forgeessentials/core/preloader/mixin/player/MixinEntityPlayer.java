@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(EntityPlayerMP.class)
-public abstract class MixinEntityPlayer_01
+public abstract class MixinEntityPlayer
 {
     
     @Overwrite
