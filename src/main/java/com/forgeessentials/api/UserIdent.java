@@ -491,7 +491,7 @@ public class UserIdent
         String[] parts = string.substring(1, string.length() - 1).split("\\|", 2);
         try
         {
-            return get(UUID.fromString(parts[0]), parts[1]);
+            return get(UUID.fromString(parts[0]), parts[1].equals("null") ? null : parts[1]);
         }
         catch (IllegalArgumentException e)
         {

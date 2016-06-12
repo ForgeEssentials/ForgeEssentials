@@ -303,7 +303,8 @@ public class PermissionCommandParser
         UserIdent ident = arguments.parsePlayer(false, false);
         if (!ident.hasUuid())
             arguments.error("Player %s not found. playername will be used, but may be inaccurate.", ident.getUsername());
-
+        else if (!ident.hasUsername())
+            arguments.error("Player uuid %s not found. uuid will be used, but may be inaccurate.", ident.getUuid());
         parseUserInner(arguments, ident, null);
     }
 
