@@ -255,7 +255,7 @@ public class ScriptParser
     {
     	return run(action,sender,argumentValues,null, null,null, 0);
     }
-    public static boolean run(String action, ICommandSender sender, List<String> argumentValues, String[] gotoLabel, Map<String,String> variableMap, HashMap<String,Integer> labels, int line)
+    public static boolean run(String action, ICommandSender sender, List<String> argumentValues, String[] gotoLabel, Map<String,String> variableMap, HashMap<String,Integer> labels, int line) throws CommandException
     {
         String[] args = action.split(" ", 2);
         String cmd = args[0].toLowerCase();
@@ -317,7 +317,7 @@ public class ScriptParser
 	        	if (sender instanceof EntityPlayerMP)
 	        		ident = UserIdent.get((EntityPlayerMP) sender);
 	        	else
-	        		ident = UserIdent.getServer(null, "$" + sender.getCommandSenderName().toLowerCase());
+	        		ident = UserIdent.getServer(null, "$" + sender.getName().toLowerCase());
 	        	variableMap.put(args[0],APIRegistry.perms.getUserPermissionProperty(ident, "fe.vars." + args[1]));
 	        	return true;
 	        }
@@ -332,7 +332,7 @@ public class ScriptParser
 	        	if (sender instanceof EntityPlayerMP)
 	        		ident = UserIdent.get((EntityPlayerMP) sender);
 	        	else
-	        		ident = UserIdent.getServer(null, "$" + sender.getCommandSenderName().toLowerCase());
+	        		ident = UserIdent.getServer(null, "$" + sender.getName().toLowerCase());
 
 	        	APIRegistry.perms.setPlayerPermissionProperty(ident, "fe.vars." + args[1],variableMap.get(args[0]));
 	        	return true;
