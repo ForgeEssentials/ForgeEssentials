@@ -2,8 +2,10 @@ package com.forgeessentials.commands.player;
 
 import java.util.List;
 
+import com.forgeessentials.core.ForgeEssentials;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -79,6 +81,8 @@ public class CommandTempBan extends FEcmdModuleCommands
         if (player.hasPlayer())
             player.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You have been banned for %s",
                     ChatOutputHandler.formatTimeDurationReadable(duration, true)));
+        ChatOutputHandler.sendMessage(MinecraftServer.getServer(),Translator.format("Player %s, has been temporarily banned for %s",player.getUsername(), ChatOutputHandler.formatTimeDurationReadable(duration, true)));
+
     }
     
 }
