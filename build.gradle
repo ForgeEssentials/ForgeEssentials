@@ -9,6 +9,10 @@ buildscript {
 			name = "sonatype"
 			url = "https://oss.sonatype.org/content/repositories/releases/"
 		}
+        maven {
+            name = "sponge"
+            url = "http://repo.spongepowered.org/maven/"
+        }
 		mavenCentral()
 		mavenLocal()
 		maven {
@@ -22,6 +26,7 @@ buildscript {
 		classpath "net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
+        classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
 	}
 
 }
@@ -39,6 +44,7 @@ repositories {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
 
 /************************************************************
  * General configuration
@@ -252,8 +258,8 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 }
 
 mixin {
-    add sourceSets.main, "main.refmap.json"
-    add sourceSets.client, "client.refmap.json"
+    add sourceSets.main, "mixins.forgeessentials.refmap.json"
+    add sourceSets.client, "mixins.forgeessentials.client.refmap.json"
 }
 
 /************************************************************
@@ -308,7 +314,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 
 /************************************************************
  * Configure reobfuscation
- */
+ *
 
 def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
 def mixinClientSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixinsClient.srg"
@@ -316,6 +322,7 @@ afterEvaluate {
 	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}", "-AoutRefMapFile=${serverRefMap}"]
 	tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinClientSrg}", "-AoutRefMapFile=${clientRefMap}"]
 }
+*/
 
 reobf {
     clientJar {
