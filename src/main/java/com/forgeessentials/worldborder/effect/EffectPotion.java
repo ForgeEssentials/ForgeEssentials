@@ -11,44 +11,45 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 
+/**
+ * Expected syntax: <interval> <effect> <seconds> <amplifier>
+ */
 public class EffectPotion extends WorldBorderEffect implements Loadable
 {
 
-    public static class PotionEffectData
-    {
+    public int id;
 
-        public int id;
+    public int duration;
 
-        public int duration;
+    public int modifier;
 
-        public int modifier;
-
-        public PotionEffectData(int id, int duration, int modifier)
-        {
-            this.id = id;
-            this.duration = duration;
-            this.modifier = modifier;
-        }
-
-    }
-
-    public List<PotionEffectData> potionEffects;
-
-    public int interval = 2000;
+    public int interval;
 
     public EffectPotion()
     {
-        potionEffects = new ArrayList<>();
-        potionEffects.add(new PotionEffectData(9, 5, 0));
+    }
+
+    @Override
+    public boolean provideArguments(String[] args)
+    {
+        if (args.length < 4)
+            return false;
+        interval = Integer.parseInt(args[0]);
+        id = Integer.parseInt(args[1]);
+        duration = Integer.parseInt(args[2]);
+        modifier = Integer.parseInt(args[3]);
+
+        return true;
     }
 
     @Override
     public void afterLoad()
     {
-        if (potionEffects == null)
+        if ((Integer) id == null)
         {
-            potionEffects = new ArrayList<>();
-            potionEffects.add(new PotionEffectData(9, 5, 0));
+            id = 9;
+            duration = 5;
+            modifier = 0;
         }
     }
 
@@ -56,7 +57,7 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
     public void activate(WorldBorder border, EntityPlayerMP player)
     {
         if (interval <= 0)
-            doEffect(player);
+            player.addPotionEffect(new PotionEffect(id, duration, modifier));
     }
 
     @Override
@@ -67,15 +68,19 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            doEffect(player);
+            player.addPotionEffect(new PotionEffect(id, duration, modifier));
             pi.startTimeout(this.getClass().getName(), interval * 1000);
         }
     }
 
-    public void doEffect(EntityPlayerMP player)
+    public String getSyntax()
     {
-        for (PotionEffectData effect : potionEffects)
-            player.addPotionEffect(new PotionEffect(effect.id, effect.duration, effect.modifier));
+        return "<interval> <effect> <seconds> <amplifier>";
+    }
+
+    public String toString()
+    {
+        return String.format("potion interval: %d1 id: %d2 duration: %d3 amplifier: %d4", interval, id, duration, modifier);
     }
 
 }

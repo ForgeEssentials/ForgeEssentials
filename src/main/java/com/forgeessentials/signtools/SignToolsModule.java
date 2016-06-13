@@ -89,7 +89,7 @@ public class SignToolsModule extends ConfigLoaderBase
         {
             if (allowSignEdit && e.entityPlayer.isSneaking())
             {
-                if(e.entityPlayer.getCurrentEquippedItem().getItem()!= null)
+                if(e.entityPlayer.getCurrentEquippedItem()!= null)
                 {
                     if (e.entityPlayer.getCurrentEquippedItem().getItem().equals(Items.sign) &&
                             PermissionManager.checkPermission(e.entityPlayer, "fe.protection.use.minecraft.sign"))

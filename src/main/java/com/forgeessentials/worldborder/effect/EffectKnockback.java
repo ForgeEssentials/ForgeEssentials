@@ -11,6 +11,13 @@ import com.forgeessentials.worldborder.WorldBorderEffect;
 public class EffectKnockback extends WorldBorderEffect
 {
 
+    // no argument
+    @Override
+    public boolean provideArguments(String[] args)
+    {
+        return true;
+    }
+
     @Override
     public void playerMove(WorldBorder border, PlayerMoveEvent event)
     {
@@ -35,6 +42,16 @@ public class EffectKnockback extends WorldBorderEffect
         if (player.ridingEntity != null)
             player.ridingEntity.setLocationAndAngles(p.getX(), p.getY(), p.getZ(), player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
         player.playerNetServerHandler.setPlayerLocation(p.getX(), p.getY(), p.getZ(), player.rotationYaw, player.rotationPitch);
+    }
+
+    public String toString()
+    {
+        return "knockback trigger: " + triggerDistance;
+    }
+
+    public String getSyntax()
+    {
+        return "";
     }
     
 }

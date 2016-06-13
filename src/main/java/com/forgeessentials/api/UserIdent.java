@@ -272,10 +272,13 @@ public class UserIdent
 
     public static synchronized ServerUserIdent getServer(String uuid, String username)
     {
-        UUID _uuid = UUID.fromString(uuid);
+    	
+        UUID _uuid = null;
+        if (uuid != null)
+        	_uuid = UUID.fromString(uuid);
 
         UserIdent ident = byUuid.get(_uuid);
-        if (ident != null)
+        if (ident == null)
             ident = byUsername.get(username);
 
         if (ident == null || !(ident instanceof ServerUserIdent))

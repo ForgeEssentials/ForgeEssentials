@@ -21,7 +21,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @Mixin(BlockPortal.class)
-public abstract class MixinBlockPortal_01 extends BlockPortal
+public abstract class MixinBlockPortal extends BlockPortal
 {
 
     @Override

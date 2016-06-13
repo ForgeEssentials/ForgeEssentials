@@ -131,8 +131,8 @@ dependencies {
 	includeMod files("lib/worldedit-forge-mc1.7.10-6.1.1-SNAPSHOT-dist.jar")
 
 	// Shade Mixin library
-	shade group: "org.spongepowered", name: "mixin", version: "0.4.10-SNAPSHOT", changing: true
-	shadeClient group: "org.spongepowered", name: "mixin", version: "0.4.10-SNAPSHOT", changing: true
+	shade group: "org.spongepowered", name: "mixin", version: "0.5.6-SNAPSHOT", changing: true
+	shadeClient group: "org.spongepowered", name: "mixin", version: "0.5.6-SNAPSHOT", changing: true
 }
 
 /************************************************************
@@ -190,6 +190,9 @@ jar.doLast {
 	delete (serverLibArchive.archivePath)
 }
 
+def serverRefMap = "${tasks.compileJava.temporaryDir}" + File.separator + "mixins.forgeessentials.refmap.json"
+def clientRefMap = "${tasks.compileClientJava.temporaryDir}" + File.separator + "mixins.forgeessentials.client.refmap.json"
+
 // Configure server jar (default)
 jar {
 	dependsOn "serverLibArchive"
@@ -202,6 +205,7 @@ jar {
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 	}
+    from serverRefMap
 
 	manifest {
 		from serverManifest
@@ -218,6 +222,7 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 	
 	from sourceSets.client.output
 	from sourceSets.utils.output
+    from clientRefMap
 	configurations.shadeClient.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 	}
@@ -293,8 +298,8 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
 def mixinClientSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixinsClient.srg"
 afterEvaluate {
-	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}"]
-	tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinClientSrg}"]
+	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}", "-AoutRefMapFile=${serverRefMap}"]
+	tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinClientSrg}", "-AoutRefMapFile=${clientRefMap}"]
 }
 
 reobf {

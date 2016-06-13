@@ -1,6 +1,7 @@
 package com.forgeessentials.worldborder;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.StringUtils;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -107,6 +108,9 @@ public class CommandWorldBorder extends ParserCommandBase
         case "size":
             parseRadius(arguments, border);
             break;
+        case "effect":
+            parseEffect(arguments, border);
+            break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
         }
@@ -194,6 +198,89 @@ public class CommandWorldBorder extends ParserCommandBase
             break;
         default:
             throw new TranslatedCommandException("Unknown shape type %s", subCommand);
+        }
+    }
+
+    public static void parseEffect(CommandParserArgs arguments, WorldBorder border)
+    {
+        if (arguments.isEmpty())
+        {
+            if (!border.getEffects().isEmpty())
+            {
+                arguments.notify("Effects applied on this worldborder:");
+                for (WorldBorderEffect effect : border.getEffects())
+                {
+                    arguments.notify(String.format("%d: %s", border.getEffects().indexOf(effect), effect.toString()));
+                }
+            }
+            else
+            {
+                arguments.notify("No effects are currently applied on this worldborder!");
+            }
+            arguments.confirm("/wb effect <add [command|damage|kick|knockback|message|potion|smite|block] <trigger> | remove <index>");
+            return;
+        }
+
+        arguments.tabComplete("add", "remove");
+        if (arguments.isTabCompletion)
+            return;
+
+        String subCommand = arguments.remove().toLowerCase();
+        switch (subCommand)
+        {
+        case "add":
+            addEffect(border, arguments);
+            break;
+        case "remove":
+            int index = Integer.parseInt(arguments.remove().toLowerCase());
+            if (border.getEffects().size() >= index && border.getEffects().remove(border.getEffects().get(index)))
+            arguments.confirm("Removed effect");
+            else
+            {
+                arguments.error("No such effect!");
+                arguments.error("Try using /wb effect to view all available effects.");
+                arguments.error("Each one is identified by a number, use that to identify the effect you want to remove.");
+            }
+            break;
+        default:
+            arguments.error("Wrong syntax! Try /wb effect <add [command|damage|kick|knockback|message|potion|smite|block] <trigger> | remove <index>");
+        }
+
+        border.save();
+
+    }
+
+    public static void addEffect(WorldBorder border, CommandParserArgs arguments)
+    {
+        if (arguments.isEmpty())
+        {
+            arguments.error("No effect provided! How about trying one of these:");
+            arguments.error("command, damage, kick, knockback, message, potion ,smite");
+            return;
+        }
+
+        arguments.tabComplete("command", "damage", "kick", "knockback", "message", "potion" ,"smite");
+        if (arguments.isTabCompletion)
+            return;
+
+        String subCommand = arguments.remove().toLowerCase();
+        int trigger = Integer.parseInt(arguments.remove().toLowerCase());
+        WorldBorderEffect effect = WorldBorderEffects.valueOf(subCommand.toUpperCase()).get();
+        if (effect == null)
+        {
+            arguments.error(String.format("Could not find an effect with name %s, how about trying one of these:", subCommand));
+            arguments.error("command, damage, kick, knockback, message, potion ,smite");
+            return;
+        }
+        if (effect.provideArguments(arguments.toArray()))
+        {
+            effect.triggerDistance = trigger;
+            border.addEffect(effect);
+            arguments.confirm("Effect added!");
+        }
+        else
+        {
+            arguments.error("Wrong syntax! How about trying <triggerdistance> " + effect.getSyntax());
         }
     }
 
