@@ -736,6 +736,8 @@ public final class ScriptArguments
         }
     };
 	
+    //Should be removed (randi function replaces it better)
+    @Deprecated
 	public static ScriptArgument random = new ScriptArgument() {
         @Override
         public String process(ICommandSender sender)
@@ -746,7 +748,7 @@ public final class ScriptArguments
         @Override
         public String getHelp()
         {
-            return "Returns a random integer between -16777216 and 16777215 inclusive.";
+            return "Returns a random integer between -16777216 and 16777215 inclusive. (Deprecated, may be removed in a later update.  Use expression functions instead.) ";
         }
     };
 

@@ -1,6 +1,7 @@
 {
 	"package": "com.forgeessentials.client.mixin",
 	"plugin": "com.forgeessentials.client.mixin.FEClientMixinConfig",
+    "refmap": "mixins.forgeessentials.client.refmap.json",
 	"mixins": [
 		"MixinPlayerControllerMP"
 	]

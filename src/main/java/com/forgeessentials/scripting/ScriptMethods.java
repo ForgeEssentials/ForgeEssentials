@@ -272,13 +272,13 @@ public final class ScriptMethods
 
     protected static boolean getPermcheckResult(ICommandSender sender, String[] args)
     {
-        if (!(sender instanceof EntityPlayerMP))
-            if (sender instanceof MinecraftServer)
-                return true;
-            else throw new MissingPlayerException();
         if (args.length < 1)
             throw new SyntaxException("Missing argument for permchecksilent");
-        UserIdent ident = UserIdent.get((EntityPlayerMP) sender);
+        UserIdent ident;
+        if (sender instanceof EntityPlayerMP)
+        	ident = UserIdent.get((EntityPlayerMP) sender);
+        else
+        	ident = UserIdent.getServer("", "" + sender.getCommandSenderName().toLowerCase());
         String permission = args[0];
         String value = args.length > 1 ? args[1] : Zone.PERMISSION_TRUE;
         boolean result;
@@ -494,7 +494,7 @@ public final class ScriptMethods
 
     public static final ScriptMethod random = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             return ForgeEssentials.rnd.nextInt(100) < Integer.parseInt(args[0]);
         }
@@ -508,7 +508,7 @@ public final class ScriptMethods
 	
 	public static final ScriptMethod expCheck = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -574,7 +574,7 @@ public final class ScriptMethods
 	}
 	public static final ScriptMethod expSet = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -618,7 +618,7 @@ public final class ScriptMethods
 	
 	public static final ScriptMethod expAdd = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -644,7 +644,7 @@ public final class ScriptMethods
 	
 	public static final ScriptMethod hungerCheck = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -696,13 +696,12 @@ public final class ScriptMethods
 			foodLevel.setAccessible(true);
 			foodSaturationLevel.setAccessible(true);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
 	public static final ScriptMethod hungerSet = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {        	
             if (args.length >= 1)
 			{
@@ -719,7 +718,6 @@ public final class ScriptMethods
 		        	}
 					foodLevel.set(((EntityPlayerMP) sender).getFoodStats(), Integer.parseInt(args[0]));
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -738,7 +736,7 @@ public final class ScriptMethods
 	
 	public static final ScriptMethod hungerAdd = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -756,7 +754,6 @@ public final class ScriptMethods
 		        	}
 					foodLevel.set(((EntityPlayerMP) sender).getFoodStats(),((EntityPlayerMP) sender).getFoodStats().getFoodLevel() + Integer.parseInt(args[0]));
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				return true;
@@ -774,7 +771,7 @@ public final class ScriptMethods
 	
 	public static final ScriptMethod saturationCheck = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -819,7 +816,7 @@ public final class ScriptMethods
 	
 	public static final ScriptMethod saturationSet = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -836,7 +833,6 @@ public final class ScriptMethods
 		        	}
 					foodSaturationLevel.set(((EntityPlayerMP) sender).getFoodStats(),Float.parseFloat(args[0]));
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -855,7 +851,7 @@ public final class ScriptMethods
 	
 	public static final ScriptMethod saturationAdd = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -873,7 +869,6 @@ public final class ScriptMethods
 		        	}
 					foodSaturationLevel.set(((EntityPlayerMP) sender).getFoodStats(),((EntityPlayerMP) sender).getFoodStats().getSaturationLevel() + Float.parseFloat(args[0]));
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -892,7 +887,7 @@ public final class ScriptMethods
 	
 	public static final ScriptMethod healthCheck = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -937,7 +932,7 @@ public final class ScriptMethods
 	
 	public static final ScriptMethod healthSet = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -962,7 +957,7 @@ public final class ScriptMethods
 	
 	public static final ScriptMethod healthAdd = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -986,7 +981,7 @@ public final class ScriptMethods
 	
 	public static final ScriptMethod gmCheck = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -1009,7 +1004,7 @@ public final class ScriptMethods
 	
 	public static final ScriptMethod gmSet = new ScriptMethod() {
         @Override
-        public boolean process(final ICommandSender sender, String[] args)
+        public boolean process(ICommandSender sender, String[] args)
         {
             if (args.length >= 1)
 			{
@@ -1027,10 +1022,9 @@ public final class ScriptMethods
         @Override
         public String getHelp()
         {
-            return "`gmset <gamemode>`  \nThis method will set the command sender's gamemode to the specified value.";
+            return "`gmSet <gamemode>`  \nThis method will set the command sender's gamemode to the specified value.";
         }
     };
-	
     static
     {
         registerAll();
