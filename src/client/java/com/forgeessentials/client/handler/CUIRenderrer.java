@@ -3,6 +3,7 @@ package com.forgeessentials.client.handler;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -125,52 +126,50 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
      */
     private static void renderBox()
     {
-        /*
-        TODO update to 1.8.9
+        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
 
-        WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
-        renderer.startDrawing(GL11.GL_LINES);
+        wr.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
 
         // FRONT
-        renderer.addVertex(-0.5, -0.5, -0.5);
-        renderer.addVertex(-0.5, 0.5, -0.5);
+        wr.pos(-0.5, -0.5, -0.5).endVertex();
+        wr.pos(-0.5, 0.5, -0.5).endVertex();
 
-        renderer.addVertex(-0.5, 0.5, -0.5);
-        renderer.addVertex(0.5, 0.5, -0.5);
+        wr.pos(-0.5, 0.5, -0.5).endVertex();
+        wr.pos(0.5, 0.5, -0.5).endVertex();
 
-        renderer.addVertex(0.5, 0.5, -0.5);
-        renderer.addVertex(0.5, -0.5, -0.5);
+        wr.pos(0.5, 0.5, -0.5).endVertex();
+        wr.pos(0.5, -0.5, -0.5).endVertex();
 
-        renderer.addVertex(0.5, -0.5, -0.5);
-        renderer.addVertex(-0.5, -0.5, -0.5);
+        wr.pos(0.5, -0.5, -0.5).endVertex();
+        wr.pos(-0.5, -0.5, -0.5).endVertex();
 
         // BACK
-        renderer.addVertex(-0.5, -0.5, 0.5);
-        renderer.addVertex(-0.5, 0.5, 0.5);
+        wr.pos(-0.5, -0.5, 0.5).endVertex();
+        wr.pos(-0.5, 0.5, 0.5).endVertex();
 
-        renderer.addVertex(-0.5, 0.5, 0.5);
-        renderer.addVertex(0.5, 0.5, 0.5);
+        wr.pos(-0.5, 0.5, 0.5).endVertex();
+        wr.pos(0.5, 0.5, 0.5).endVertex();
 
-        renderer.addVertex(0.5, 0.5, 0.5);
-        renderer.addVertex(0.5, -0.5, 0.5);
+        wr.pos(0.5, 0.5, 0.5).endVertex();
+        wr.pos(0.5, -0.5, 0.5).endVertex();
 
-        renderer.addVertex(0.5, -0.5, 0.5);
-        renderer.addVertex(-0.5, -0.5, 0.5);
+        wr.pos(0.5, -0.5, 0.5).endVertex();
+        wr.pos(-0.5, -0.5, 0.5).endVertex();
 
         // betweens.
-        renderer.addVertex(0.5, 0.5, -0.5);
-        renderer.addVertex(0.5, 0.5, 0.5);
+        wr.pos(0.5, 0.5, -0.5).endVertex();
+        wr.pos(0.5, 0.5, 0.5).endVertex();
 
-        renderer.addVertex(0.5, -0.5, -0.5);
-        renderer.addVertex(0.5, -0.5, 0.5);
+        wr.pos(0.5, -0.5, -0.5).endVertex();
+        wr.pos(0.5, -0.5, 0.5).endVertex();
 
-        renderer.addVertex(-0.5, -0.5, -0.5);
-        renderer.addVertex(-0.5, -0.5, 0.5);
+        wr.pos(-0.5, -0.5, -0.5).endVertex();
+        wr.pos(-0.5, -0.5, 0.5).endVertex();
 
-        renderer.addVertex(-0.5, 0.5, -0.5);
-        renderer.addVertex(-0.5, 0.5, 0.5);
+        wr.pos(-0.5, 0.5, -0.5).endVertex();
+        wr.pos(-0.5, 0.5, 0.5).endVertex();
 
-        Tessellator.getInstance().draw();*/
+        Tessellator.getInstance().draw();
     }
 
     @Override
