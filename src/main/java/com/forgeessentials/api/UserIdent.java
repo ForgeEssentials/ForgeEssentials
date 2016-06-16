@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.output.LoggingHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
@@ -214,11 +216,28 @@ public class UserIdent
         else
         {
             String name = player.getCommandSenderName();
-            if (name != null && !name.equals(ident.username))
+
+            String newname = name + "_" + ident.uuid.hashCode();
+            if (name != null && !name.equals(ident.username) && !newname.equals(ident.username))
             {
-                byUsername.remove(ident.username);
+                if (byUsername.containsKey(name.toLowerCase()))
+                {
+                    try
+                    {
+                        throw new Throwable();
+                    }
+                    catch (Throwable t)
+                    {
+                        LoggingHandler.felog.fatal("Duplicate Player Error:\nA fake player, '" + name + "' is trying to change its name to one that already exists in the database.\nThis is not a forge essentials error! It is being caused by another mod.\nI have renamed this player to '"
+                                + newname + "' to prevent forge essentials from failing to start up, but this is a mod error cause you can only have one player name per uuid.\nI have printed the stack trace to give you some more details on what mod is misbehaving.");
+                        t.printStackTrace();
+                    }
+
+                    name = newname;
+                }
+                byUsername.remove(ident.username != null ? ident.username.toLowerCase() : null);
                 ident.username = name;
-                byUsername.put(ident.username, ident);
+                byUsername.put(ident.username.toLowerCase(), ident);
             }
         }
         if (ident.player == null || ident.player.get() != player)
@@ -489,19 +508,20 @@ public class UserIdent
         if (string.charAt(0) != '(' || string.charAt(string.length() - 1) != ')' || string.indexOf('|') < 0)
             throw new IllegalArgumentException("UserIdent string needs to be in the format \"(<uuid>|<username>)\"");
         String[] parts = string.substring(1, string.length() - 1).split("\\|", 2);
+        UUID id = null;
+        String str = parts[1] != null && !parts[1].isEmpty() ? parts[1] : null;
         try
         {
-            return get(UUID.fromString(parts[0]), parts[1].equals("null") ? null : parts[1]);
+            id = UUID.fromString(parts[0]);
         }
         catch (IllegalArgumentException e)
-        {
-            return get((UUID) null, parts[1]);
-        }
+        {}
+        return get(id,str);
     }
 
     public String toSerializeString()
     {
-        return "(" + (uuid == null ? "" : uuid.toString()) + "|" + username + ")";
+        return "(" + (uuid == null ? "" : uuid.toString()) + "|" + (username == null ? "" : username) + ")";
     }
 
     @Override
