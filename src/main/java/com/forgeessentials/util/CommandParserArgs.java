@@ -163,7 +163,21 @@ public class CommandParserArgs
             else
             {
                 UserIdent ident = UserIdent.get(name, sender, mustExist);
+                if (resolveMissing && (ident == null || !ident.hasUuid()) || !ident.hasUsername())
+                {
+                    String url;
+                    try
+                    {
+                        url = "https://api.mojang.com/user/profiles/" + UserIdent.stringToUUID(name).toString() + "/names";
 
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+
+                        url = "https://api.mojang.com/users/profiles/minecraft/" + name;
+                    }
+                    //TODO: Fetch user data from mojang api
+                }
                 if (mustExist && (ident == null || !ident.hasUuid()) || !ident.hasUsername())
                     throw new TranslatedCommandException("Player %s not found", name);
                 else if (mustBeOnline && !ident.hasPlayer())

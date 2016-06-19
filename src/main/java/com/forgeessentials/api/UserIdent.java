@@ -27,6 +27,27 @@ import cpw.mods.fml.common.eventhandler.Event;
 public class UserIdent
 {
 
+    public static UUID hexStringToUUID(String s)
+    {
+        if (s.length() != 32)
+            throw new IllegalArgumentException();
+        byte[] data = new byte[32];
+        for (int i = 0; i < 32; i++)
+        {
+            data[i] = (byte) s.charAt(i);
+        }
+        return UUID.nameUUIDFromBytes(data);
+    }
+
+    public static UUID stringToUUID(String s)
+    {
+        if (s.length() == 32)
+            return hexStringToUUID(s);
+        else
+            return UUID.fromString(s);
+
+    }
+
     public static class ServerUserIdent extends UserIdent
     {
 
@@ -251,7 +272,7 @@ public class UserIdent
             throw new IllegalArgumentException();
         try
         {
-            return get(UUID.fromString(uuidOrUsername));
+            return get(stringToUUID(uuidOrUsername));
         }
         catch (IllegalArgumentException e)
         {
