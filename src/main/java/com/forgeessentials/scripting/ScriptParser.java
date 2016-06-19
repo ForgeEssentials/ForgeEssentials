@@ -256,6 +256,8 @@ public class ScriptParser
     }
     public static boolean run(String action, ICommandSender sender, List<String> argumentValues, String[] gotoLabel, Map<String,String> variableMap, HashMap<String,Integer> labels, int line)
     {
+        if (action.isEmpty()) //Don't fail from an empty string
+            return true;
         String[] args = action.split(" ", 2);
         String cmd = args[0].toLowerCase();
         String arguments =  args.length > 1 ? args[1] : ""; //Keep Arguments as a single unit until all processing is done   
