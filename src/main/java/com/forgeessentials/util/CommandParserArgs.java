@@ -1,9 +1,14 @@
 package com.forgeessentials.util;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.stream.JsonReader;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -30,6 +35,8 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.registry.GameData;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  *
@@ -162,22 +169,7 @@ public class CommandParserArgs
             }
             else
             {
-                UserIdent ident = UserIdent.get(name, sender, mustExist);
-                if (resolveMissing && (ident == null || !ident.hasUuid()) || !ident.hasUsername())
-                {
-                    String url;
-                    try
-                    {
-                        url = "https://api.mojang.com/user/profiles/" + UserIdent.stringToUUID(name).toString() + "/names";
-
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-
-                        url = "https://api.mojang.com/users/profiles/minecraft/" + name;
-                    }
-                    //TODO: Fetch user data from mojang api
-                }
+                UserIdent ident = UserIdent.get(name, sender, mustExist, resolveMissing);
                 if (mustExist && (ident == null || !ident.hasUuid()) || !ident.hasUsername())
                     throw new TranslatedCommandException("Player %s not found", name);
                 else if (mustBeOnline && !ident.hasPlayer())

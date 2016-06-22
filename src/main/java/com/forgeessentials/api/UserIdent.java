@@ -1,6 +1,11 @@
 package com.forgeessentials.api;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -8,6 +13,8 @@ import java.util.UUID;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +30,8 @@ import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.eventhandler.Event;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class UserIdent
 {
@@ -154,36 +163,56 @@ public class UserIdent
     }
 
     /* ------------------------------------------------------------ */
-
     public static synchronized UserIdent get(UUID uuid, String username)
+    {
+        return get(uuid,username, false, false);
+    }
+    public static synchronized UserIdent get(UUID uuid, String username, boolean mustExist)
+    {
+        return get(uuid,username, mustExist, false);
+    }
+    public static synchronized UserIdent get(UUID uuid, String username, boolean mustExist, boolean resolveMissing)
     {
         if (uuid == null && (username == null || username.isEmpty()))
             throw new IllegalArgumentException();
-
+        UserIdent ident = null;
         if (uuid != null)
-        {
-            UserIdent ident = byUuid.get(uuid);
-            if (ident != null)
-                return ident;
-        }
+            ident = byUuid.get(uuid);
+
 
         if (username != null)
         {
-            UserIdent ident = byUsername.get(username.toLowerCase());
-            if (ident != null)
-            {
-                if (uuid != null && ident.uuid == null)
-                    ident.uuid = uuid;
-                return ident;
-            }
-        }
+            ident = byUsername.get(username.toLowerCase());
 
-        return new UserIdent(uuid, username, UserIdent.getPlayerByUuid(uuid));
+        }
+        if (ident != null)
+        {
+            if (uuid != null && ident.uuid == null)
+                ident.uuid = uuid;
+            if (username != null && ident.username == null)
+                ident.username = username;
+            if (resolveMissing)
+                if (ident.uuid == null && ident.username != null)
+                    ident.uuid = resolveMissingUUID(ident.username);
+                else if (ident.uuid != null && ident.username == null)
+                    ident.username = resolveMissingUsername(ident.uuid);
+            return ident;
+        }
+        else
+        if (resolveMissing)
+            if (uuid == null && username != null)
+                uuid = resolveMissingUUID(username);
+            else if (uuid != null && username == null)
+                username = resolveMissingUsername(uuid);
+
+        return (mustExist && (uuid == null || username == null) ) ? null : new UserIdent(uuid, username, UserIdent.getPlayerByUuid(uuid));
     }
+
+
 
     public static synchronized UserIdent get(String uuid, String username)
     {
-        return get(uuid != null && !uuid.isEmpty() ? UUID.fromString(uuid) : null, username);
+        return get(uuid != null && !uuid.isEmpty() ? stringToUUID(uuid) : null, username);
     }
 
     public static synchronized UserIdent get(UUID uuid)
@@ -191,11 +220,12 @@ public class UserIdent
         if (uuid == null)
             throw new IllegalArgumentException();
 
-        UserIdent ident = byUuid.get(uuid);
+        return get(uuid,null);
+        /*UserIdent ident = byUuid.get(uuid);
         if (ident != null)
             return ident;
 
-        return new UserIdent(uuid, null, UserIdent.getPlayerByUuid(uuid));
+        return new UserIdent(uuid, null, UserIdent.getPlayerByUuid(uuid));*/
     }
 
     public static synchronized UserIdent getFromUuid(String uuid)
@@ -204,7 +234,7 @@ public class UserIdent
             return null;
         try
         {
-            return get(UUID.fromString(uuid));
+            return get(stringToUUID(uuid));
         }
         catch (IllegalArgumentException e)
         {
@@ -266,27 +296,82 @@ public class UserIdent
         return ident;
     }
 
+    public static UUID resolveMissingUUID(String name)
+    {
+        String url = "https://api.mojang.com/users/profiles/minecraft/" + name;
+        String data = fetchData(url,"id");
+        if (data != null)
+            return stringToUUID(data);
+        return null;
+    }
+    public static String resolveMissingUsername(UUID id)
+    {
+        String url = "https://api.mojang.com/user/profiles/" + id.toString().replace("-","") + "/names";
+        return fetchData(url,"name");
+    }
+    public static String fetchData(String url,String id)
+    {
+        try
+        {
+            LoggingHandler.felog.debug("Fetching " + id +  " from " + url);
+            URL uri = new URL(url);
+            HttpsURLConnection huc = (HttpsURLConnection) uri.openConnection();
+            InputStream is;
+            JsonReader jr = new JsonReader(new InputStreamReader( is = huc.getInputStream()));
+            if (is.available() > 0 && jr.hasNext())
+            {
+                jr.beginObject();
+                String name = null;
+
+                while (jr.hasNext())
+                    if (jr.peek() == JsonToken.NAME)
+                        name = jr.nextName();
+                    else
+                    {
+                        if (jr.peek() == JsonToken.STRING)
+                            if (name.equals(id))
+                                return jr.nextString();
+                        name = null;
+                    }
+                jr.endObject();
+            }
+
+            return null;
+        }
+        catch (MalformedURLException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static synchronized UserIdent get(String uuidOrUsername, ICommandSender sender, boolean mustExist)
+    {
+        return get(uuidOrUsername,sender,mustExist,false);
+    }
+    public static synchronized UserIdent get(String uuidOrUsername, ICommandSender sender, boolean mustExist, boolean resolveMissing)
     {
         if (uuidOrUsername == null)
             throw new IllegalArgumentException();
         try
         {
-            return get(stringToUUID(uuidOrUsername));
+            return get(stringToUUID(uuidOrUsername),null,mustExist,resolveMissing);
         }
         catch (IllegalArgumentException e)
         {
-            UserIdent ident = byUsername.get(uuidOrUsername.toLowerCase());
+            UserIdent ident = get(null,uuidOrUsername.toLowerCase(), mustExist, resolveMissing);
             if (ident != null)
                 return ident;
 
-            EntityPlayerMP player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername)
-                    : //
+            EntityPlayerMP player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
                     UserIdent.getPlayerByUsername(uuidOrUsername);
             if (player != null)
                 return get(player);
 
-            return mustExist ? null : new UserIdent(null, uuidOrUsername, null);
+            return null;
         }
     }
 
@@ -537,7 +622,7 @@ public class UserIdent
         }
         catch (IllegalArgumentException e)
         {}
-        return get(id,str);
+        return get(id,str,false,true);
     }
 
     public String toSerializeString()
