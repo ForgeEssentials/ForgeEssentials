@@ -205,7 +205,7 @@ public class UserIdent
             username = resolveMissing ? resolveMissingUsername(uuid) : null;
 
 
-        return (mustExist && (uuid == null || username == null) ) ? ident : new UserIdent(uuid, username, UserIdent.getPlayerByUuid(uuid));
+        return ident != null ? ident : (mustExist && (uuid == null || username == null) ) ? null : new UserIdent(uuid, username, UserIdent.getPlayerByUuid(uuid));
     }
 
 
