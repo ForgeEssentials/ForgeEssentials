@@ -178,34 +178,34 @@ public class UserIdent
         UserIdent ident = null;
         if (uuid != null)
             ident = byUuid.get(uuid);
-
-
-        if (username != null)
-        {
+        if (ident == null && username != null)
             ident = byUsername.get(username.toLowerCase());
 
-        }
+
         if (ident != null)
         {
             if (uuid != null && ident.uuid == null)
+                //UUIDs should never be allowed to be renamed
                 ident.uuid = uuid;
             if (username != null && ident.username == null)
+                //TODO: Decide on below
+                //Should case be extended to rename a ident obj if the ident username
+                //was different than the given one.
+                //This has always occurred for EntityPlayers but should it be generalized
+                //to all idents?
+                //If so, logic at 269 should be moved here
+                //!username.equals(ident.username))
                 ident.username = username;
-            if (resolveMissing)
-                if (ident.uuid == null && ident.username != null)
-                    ident.uuid = resolveMissingUUID(ident.username);
-                else if (ident.uuid != null && ident.username == null)
-                    ident.username = resolveMissingUsername(ident.uuid);
-            return ident;
+            username = ident.username;
+            uuid = ident.uuid;
         }
-        else
-        if (resolveMissing)
-            if (uuid == null && username != null)
-                uuid = resolveMissingUUID(username);
-            else if (uuid != null && username == null)
-                username = resolveMissingUsername(uuid);
+        if (uuid == null && username != null)
+            uuid = resolveMissing ? resolveMissingUUID(username) : null;
+        else if (uuid != null && username == null)
+            username = resolveMissing ? resolveMissingUsername(uuid) : null;
 
-        return (mustExist && (uuid == null || username == null) ) ? null : new UserIdent(uuid, username, UserIdent.getPlayerByUuid(uuid));
+
+        return (mustExist && (uuid == null || username == null) ) ? ident : new UserIdent(uuid, username, UserIdent.getPlayerByUuid(uuid));
     }
 
 
@@ -247,6 +247,10 @@ public class UserIdent
         return player instanceof EntityPlayerMP ? get((EntityPlayerMP) player) : null;
     }
 
+    //TODO: Rework to remove duplicate code as nessisary
+    //Should probably use get(UUID,String) as an underlying method for logic.
+    //Does not need mustExist or resolveMissing cause an entity player already exists, and all Real players are complete.
+    //Fake players may not be complete, but will probably not resolve to a uuid and even if they do, they should not masquerade as a valid player just by knowing their name/uuid.
     public static synchronized UserIdent get(EntityPlayerMP player)
     {
         if (player == null)
@@ -402,9 +406,7 @@ public class UserIdent
         if (uuid != null)
         	_uuid = UUID.fromString(uuid);
 
-        UserIdent ident = byUuid.get(_uuid);
-        if (ident == null)
-            ident = byUsername.get(username);
+        UserIdent ident = get(_uuid,username,true);
 
         if (ident == null || !(ident instanceof ServerUserIdent))
             ident = new ServerUserIdent(_uuid, username);
@@ -417,9 +419,7 @@ public class UserIdent
         String username = "$NPC" + (npcName == null ? "" : "_" + npcName.toUpperCase());
         UUID _uuid = UUID.nameUUIDFromBytes(username.getBytes());
 
-        UserIdent ident = byUuid.get(_uuid);
-        if (ident != null)
-            ident = byUsername.get(username);
+        UserIdent ident = get(_uuid,username,true);
 
         if (ident == null || !(ident instanceof NpcUserIdent))
             ident = new NpcUserIdent(_uuid, username);
@@ -427,6 +427,7 @@ public class UserIdent
         return (NpcUserIdent) ident;
     }
 
+    //Should probably be modified to have less duplicate code by utilizing the get method is possible
     public static synchronized void login(EntityPlayerMP player)
     {
         UserIdent ident = byUuid.get(player.getPersistentID());
