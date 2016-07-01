@@ -277,16 +277,10 @@ public class UserIdent
             {
                 if (byUsername.containsKey(name.toLowerCase()))
                 {
-                    try
-                    {
-                        throw new Throwable();
-                    }
-                    catch (Throwable t)
-                    {
-                        LoggingHandler.felog.fatal("Duplicate Player Error:\nA fake player, '" + name + "' is trying to change its name to one that already exists in the database.\nThis is not a forge essentials error! It is being caused by another mod.\nI have renamed this player to '"
-                                + newname + "' to prevent forge essentials from failing to start up, but this is a mod error cause you can only have one player name per uuid.\nI have printed the stack trace to give you some more details on what mod is misbehaving.");
-                        t.printStackTrace();
-                    }
+                    new Exception().printStackTrace();
+
+                    LoggingHandler.felog.fatal("Duplicate Player Error:\nA fake player, '" + name + "' is trying to change its name to one that already exists in the database.\nThis is not a forge essentials error! It is being caused by another mod.\nI have renamed this player to '"
+                            + newname + "' to prevent forge essentials from failing to start up, but this is a mod error cause you can only have one player name per uuid.\nI have printed the stack trace to give you some more details on what mod is misbehaving.");
 
                     name = newname;
                 }
