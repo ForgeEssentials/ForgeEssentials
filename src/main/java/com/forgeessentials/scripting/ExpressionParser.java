@@ -88,7 +88,7 @@ public class ExpressionParser {
 		public double execute(double... inputs)
 		{
 			double n0 = inputs[0];
-			double n1 = inputs[1];
+			double n1 = numArgs() >= 2 ? inputs[1] : 0;
 			if (this == Operator.Add)
 				n0 += n1;
 			else if (this == Operator.Sub)
@@ -101,6 +101,8 @@ public class ExpressionParser {
 				n0 %= n1;
 			else if (this == Operator.Pow)
 				n0 = Math.pow(n0, n1);
+            else if (this == Operator.Neg)
+                n0 = -n0;
 			else
 				return 0;
 			return n0;
@@ -113,6 +115,12 @@ public class ExpressionParser {
 		}
 		public static Operator Add = new Operator(1,true,"Add");
 		public static Operator Sub = new Operator(1,true,"Sub");
+		public static Operator Neg = new Operator(1,true,"Neg") {
+			@Override public int numArgs()
+			{
+				return 1;
+			}
+		};
 		public static Operator Mul = new Operator(2,true,"Mul");
 		public static Operator Div = new Operator(2,true,"Div");
 		public static Operator Mod = new Operator(2,true,"Mod");
@@ -413,9 +421,17 @@ public class ExpressionParser {
     		}
     		else if (t instanceof Operator)
     		{
-    			if (lastTokenWasNumber != null && !lastTokenWasNumber && !opStack.isEmpty() && t != Operator.LeftParen && t != Operator.RightParen && !(t instanceof Function))
+    			if (lastTokenWasNumber == null || !lastTokenWasNumber)// && !opStack.isEmpty() && t != Operator.LeftParen && t != Operator.RightParen && !(t instanceof Function))
     			{
-    				Operator op = opStack.peek();
+                    if (t == Operator.Sub)
+                    {
+                        opStack.push(Operator.Neg);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+    				/*Operator op = opStack.peek();
     				if (t == Operator.Sub)
 					{
     					if (op == Operator.Add)
@@ -438,7 +454,7 @@ public class ExpressionParser {
     						return null;
     				}
     				else
-	    				return null;
+	    				return null;*/
     				
     			}
     			else
