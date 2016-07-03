@@ -2,8 +2,10 @@ package com.forgeessentials.commands.player;
 
 import java.util.List;
 
+import com.forgeessentials.api.APIRegistry;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -68,17 +70,19 @@ public class CommandTempBan extends FEcmdModuleCommands
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-        UserIdent player = arguments.parsePlayer(true, false);
+        UserIdent player = arguments.parsePlayer(true, false,true);
 
         if (arguments.isEmpty())
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-        long duration = arguments.parseLong();
-
+        long duration = arguments.parseTimeReadable();
         PlayerInfo pi = PlayerInfo.get(player.getUuid());
         pi.startTimeout("tempban", duration * 1000L);
+        String reason = arguments.toString();
         if (player.hasPlayer())
-            player.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You have been banned for %s",
-                    ChatOutputHandler.formatTimeDurationReadable(duration, true)));
+            player.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You have been banned %s for %s",
+                    ChatOutputHandler.formatTimeDurationReadable(duration, true),reason));
+        ChatOutputHandler.sendMessage(MinecraftServer.getServer(),Translator.format("Player %s, has been temporarily banned %s for %s",player.getUsername(), ChatOutputHandler.formatTimeDurationReadable(duration, true), reason));
+        APIRegistry.perms.setPlayerPermissionProperty(player,"tempban.reason",reason);
     }
     
 }

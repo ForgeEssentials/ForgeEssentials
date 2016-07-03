@@ -247,7 +247,6 @@ public class ScriptParser
     		}
     		else
     			throw new SyntaxException("Expression: " + m.group(1).replaceAll("\\s*", "") + ", contains invalid tokens!");
-    		//TODO: Order of Operations Parsing
     	}
     	return args.split(" ");
     }
@@ -257,6 +256,8 @@ public class ScriptParser
     }
     public static boolean run(String action, ICommandSender sender, List<String> argumentValues, String[] gotoLabel, Map<String,String> variableMap, HashMap<String,Integer> labels, int line)
     {
+        if (action.isEmpty()) //Don't fail from an empty string
+            return true;
         String[] args = action.split(" ", 2);
         String cmd = args[0].toLowerCase();
         String arguments =  args.length > 1 ? args[1] : ""; //Keep Arguments as a single unit until all processing is done   
@@ -277,7 +278,6 @@ public class ScriptParser
 	        	gotoLabel[0] = args[0].toLowerCase();
 	        	return true;
 	        }
-        	//TODO: Change if to use expressions
 	        else if (cmd.equals("if"))
 	        {
 	        	String labelTrue = args[args.length-2];

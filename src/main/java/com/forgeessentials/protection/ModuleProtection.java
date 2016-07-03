@@ -198,7 +198,7 @@ public class ModuleProtection
 
         // ----------------------------------------
         // Register mobs
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN + Zone.PERMISSION_ASTERIX, PermissionLevel.TRUE, "(global) Allow spawning of mobs");
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN + Zone.ALL_PERMS, PermissionLevel.TRUE, "(global) Allow spawning of mobs");
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + Zone.ALL_PERMS, PermissionLevel.TRUE,
                 "(global) Allow natural spawning of mobs (random spawn)");
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, PermissionLevel.TRUE,

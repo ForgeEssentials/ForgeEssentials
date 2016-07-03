@@ -1,11 +1,20 @@
 package com.forgeessentials.api;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.output.LoggingHandler;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,8 +31,31 @@ import com.mojang.authlib.GameProfile;
 
 import cpw.mods.fml.common.eventhandler.Event;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class UserIdent
 {
+
+    public static UUID hexStringToUUID(String s)
+    {
+        if (s.length() != 32)
+            throw new IllegalArgumentException();
+        byte[] data = new byte[32];
+        for (int i = 0; i < 32; i++)
+        {
+            data[i] = (byte) s.charAt(i);
+        }
+        return UUID.nameUUIDFromBytes(data);
+    }
+
+    public static UUID stringToUUID(String s)
+    {
+        if (s.length() == 32)
+            return hexStringToUUID(s);
+        else
+            return UUID.fromString(s);
+
+    }
 
     public static class ServerUserIdent extends UserIdent
     {
@@ -131,36 +163,56 @@ public class UserIdent
     }
 
     /* ------------------------------------------------------------ */
-
     public static synchronized UserIdent get(UUID uuid, String username)
+    {
+        return get(uuid,username, false, false);
+    }
+    public static synchronized UserIdent get(UUID uuid, String username, boolean mustExist)
+    {
+        return get(uuid,username, mustExist, false);
+    }
+    public static synchronized UserIdent get(UUID uuid, String username, boolean mustExist, boolean resolveMissing)
     {
         if (uuid == null && (username == null || username.isEmpty()))
             throw new IllegalArgumentException();
-
+        UserIdent ident = null;
         if (uuid != null)
-        {
-            UserIdent ident = byUuid.get(uuid);
-            if (ident != null)
-                return ident;
-        }
+            ident = byUuid.get(uuid);
+        if (ident == null && username != null)
+            ident = byUsername.get(username.toLowerCase());
 
-        if (username != null)
-        {
-            UserIdent ident = byUsername.get(username.toLowerCase());
-            if (ident != null)
-            {
-                if (uuid != null && ident.uuid == null)
-                    ident.uuid = uuid;
-                return ident;
-            }
-        }
 
-        return new UserIdent(uuid, username, UserIdent.getPlayerByUuid(uuid));
+        if (ident != null)
+        {
+            if (uuid != null && ident.uuid == null)
+                //UUIDs should never be allowed to be renamed
+                ident.uuid = uuid;
+            if (username != null && ident.username == null)
+                //TODO: Decide on below
+                //Should case be extended to rename a ident obj if the ident username
+                //was different than the given one.
+                //This has always occurred for EntityPlayers but should it be generalized
+                //to all idents?
+                //If so, logic at 269 should be moved here
+                //!username.equals(ident.username))
+                ident.username = username;
+            username = ident.username;
+            uuid = ident.uuid;
+        }
+        if (uuid == null && username != null)
+            uuid = resolveMissing ? resolveMissingUUID(username) : null;
+        else if (uuid != null && username == null)
+            username = resolveMissing ? resolveMissingUsername(uuid) : null;
+
+
+        return ident != null ? ident : (mustExist && (uuid == null || username == null) ) ? null : new UserIdent(uuid, username, UserIdent.getPlayerByUuid(uuid));
     }
+
+
 
     public static synchronized UserIdent get(String uuid, String username)
     {
-        return get(uuid != null && !uuid.isEmpty() ? UUID.fromString(uuid) : null, username);
+        return get(uuid != null && !uuid.isEmpty() ? stringToUUID(uuid) : null, username);
     }
 
     public static synchronized UserIdent get(UUID uuid)
@@ -168,11 +220,12 @@ public class UserIdent
         if (uuid == null)
             throw new IllegalArgumentException();
 
-        UserIdent ident = byUuid.get(uuid);
+        return get(uuid,null);
+        /*UserIdent ident = byUuid.get(uuid);
         if (ident != null)
             return ident;
 
-        return new UserIdent(uuid, null, UserIdent.getPlayerByUuid(uuid));
+        return new UserIdent(uuid, null, UserIdent.getPlayerByUuid(uuid));*/
     }
 
     public static synchronized UserIdent getFromUuid(String uuid)
@@ -181,7 +234,7 @@ public class UserIdent
             return null;
         try
         {
-            return get(UUID.fromString(uuid));
+            return get(stringToUUID(uuid));
         }
         catch (IllegalArgumentException e)
         {
@@ -194,6 +247,10 @@ public class UserIdent
         return player instanceof EntityPlayerMP ? get((EntityPlayerMP) player) : null;
     }
 
+    //TODO: Rework to remove duplicate code as nessisary
+    //Should probably use get(UUID,String) as an underlying method for logic.
+    //Does not need mustExist or resolveMissing cause an entity player already exists, and all Real players are complete.
+    //Fake players may not be complete, but will probably not resolve to a uuid and even if they do, they should not masquerade as a valid player just by knowing their name/uuid.
     public static synchronized UserIdent get(EntityPlayerMP player)
     {
         if (player == null)
@@ -214,11 +271,22 @@ public class UserIdent
         else
         {
             String name = player.getCommandSenderName();
-            if (name != null && !name.equals(ident.username))
+
+            String newname = name + "_" + ident.uuid.hashCode();
+            if (name != null && !name.equals(ident.username) && !newname.equals(ident.username))
             {
-                byUsername.remove(ident.username);
+                if (byUsername.containsKey(name.toLowerCase()))
+                {
+                    new Exception().printStackTrace();
+
+                    LoggingHandler.felog.fatal("Duplicate Player Error:\nA fake player, '" + name + "' is trying to change its name to one that already exists in the database.\nThis is not a forge essentials error! It is being caused by another mod.\nI have renamed this player to '"
+                            + newname + "' to prevent forge essentials from failing to start up, but this is a mod error cause you can only have one player name per uuid.\nI have printed the stack trace to give you some more details on what mod is misbehaving.");
+
+                    name = newname;
+                }
+                byUsername.remove(ident.username != null ? ident.username.toLowerCase() : null);
                 ident.username = name;
-                byUsername.put(ident.username, ident);
+                byUsername.put(ident.username.toLowerCase(), ident);
             }
         }
         if (ident.player == null || ident.player.get() != player)
@@ -226,27 +294,82 @@ public class UserIdent
         return ident;
     }
 
+    public static UUID resolveMissingUUID(String name)
+    {
+        String url = "https://api.mojang.com/users/profiles/minecraft/" + name;
+        String data = fetchData(url,"id");
+        if (data != null)
+            return stringToUUID(data);
+        return null;
+    }
+    public static String resolveMissingUsername(UUID id)
+    {
+        String url = "https://api.mojang.com/user/profiles/" + id.toString().replace("-","") + "/names";
+        return fetchData(url,"name");
+    }
+    public static String fetchData(String url,String id)
+    {
+        try
+        {
+            LoggingHandler.felog.debug("Fetching " + id +  " from " + url);
+            URL uri = new URL(url);
+            HttpsURLConnection huc = (HttpsURLConnection) uri.openConnection();
+            InputStream is;
+            JsonReader jr = new JsonReader(new InputStreamReader( is = huc.getInputStream()));
+            if (is.available() > 0 && jr.hasNext())
+            {
+                jr.beginObject();
+                String name = null;
+
+                while (jr.hasNext())
+                    if (jr.peek() == JsonToken.NAME)
+                        name = jr.nextName();
+                    else
+                    {
+                        if (jr.peek() == JsonToken.STRING)
+                            if (name.equals(id))
+                                return jr.nextString();
+                        name = null;
+                    }
+                jr.endObject();
+            }
+
+            return null;
+        }
+        catch (MalformedURLException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static synchronized UserIdent get(String uuidOrUsername, ICommandSender sender, boolean mustExist)
+    {
+        return get(uuidOrUsername,sender,mustExist,false);
+    }
+    public static synchronized UserIdent get(String uuidOrUsername, ICommandSender sender, boolean mustExist, boolean resolveMissing)
     {
         if (uuidOrUsername == null)
             throw new IllegalArgumentException();
         try
         {
-            return get(UUID.fromString(uuidOrUsername));
+            return get(stringToUUID(uuidOrUsername),null,mustExist,resolveMissing);
         }
         catch (IllegalArgumentException e)
         {
-            UserIdent ident = byUsername.get(uuidOrUsername.toLowerCase());
+            UserIdent ident = get(null,uuidOrUsername.toLowerCase(), mustExist, resolveMissing);
             if (ident != null)
                 return ident;
 
-            EntityPlayerMP player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername)
-                    : //
+            EntityPlayerMP player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
                     UserIdent.getPlayerByUsername(uuidOrUsername);
             if (player != null)
                 return get(player);
 
-            return mustExist ? null : new UserIdent(null, uuidOrUsername, null);
+            return null;
         }
     }
 
@@ -277,9 +400,7 @@ public class UserIdent
         if (uuid != null)
         	_uuid = UUID.fromString(uuid);
 
-        UserIdent ident = byUuid.get(_uuid);
-        if (ident == null)
-            ident = byUsername.get(username);
+        UserIdent ident = get(_uuid,username,true);
 
         if (ident == null || !(ident instanceof ServerUserIdent))
             ident = new ServerUserIdent(_uuid, username);
@@ -292,9 +413,7 @@ public class UserIdent
         String username = "$NPC" + (npcName == null ? "" : "_" + npcName.toUpperCase());
         UUID _uuid = UUID.nameUUIDFromBytes(username.getBytes());
 
-        UserIdent ident = byUuid.get(_uuid);
-        if (ident != null)
-            ident = byUsername.get(username);
+        UserIdent ident = get(_uuid,username,true);
 
         if (ident == null || !(ident instanceof NpcUserIdent))
             ident = new NpcUserIdent(_uuid, username);
@@ -302,6 +421,7 @@ public class UserIdent
         return (NpcUserIdent) ident;
     }
 
+    //Should probably be modified to have less duplicate code by utilizing the get method is possible
     public static synchronized void login(EntityPlayerMP player)
     {
         UserIdent ident = byUuid.get(player.getPersistentID());
@@ -489,19 +609,20 @@ public class UserIdent
         if (string.charAt(0) != '(' || string.charAt(string.length() - 1) != ')' || string.indexOf('|') < 0)
             throw new IllegalArgumentException("UserIdent string needs to be in the format \"(<uuid>|<username>)\"");
         String[] parts = string.substring(1, string.length() - 1).split("\\|", 2);
+        UUID id = null;
+        String str = parts[1] != null && !parts[1].isEmpty() ? parts[1] : null;
         try
         {
-            return get(UUID.fromString(parts[0]), parts[1]);
+            id = UUID.fromString(parts[0]);
         }
         catch (IllegalArgumentException e)
-        {
-            return get((UUID) null, parts[1]);
-        }
+        {}
+        return get(id,str,false,true);
     }
 
     public String toSerializeString()
     {
-        return "(" + (uuid == null ? "" : uuid.toString()) + "|" + username + ")";
+        return "(" + (uuid == null ? "" : uuid.toString()) + "|" + (username == null ? "" : username) + ")";
     }
 
     @Override

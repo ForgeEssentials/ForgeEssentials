@@ -1,14 +1,22 @@
 package com.forgeessentials.util;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.google.gson.stream.JsonReader;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -35,6 +43,8 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.registry.GameData;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  *
@@ -138,7 +148,11 @@ public class CommandParserArgs
         return parsePlayer(mustExist, false);
     }
 
-    public UserIdent parsePlayer(boolean mustExist, boolean mustBeOnline)
+    public UserIdent parsePlayer(boolean mustExist, boolean mustBeOnline) {
+        return parsePlayer(mustExist,mustBeOnline,false);
+    }
+
+    public UserIdent parsePlayer(boolean mustExist, boolean mustBeOnline, boolean resolveMissing)
     {
         if (isTabCompletion && size() == 1)
         {
@@ -163,8 +177,8 @@ public class CommandParserArgs
             }
             else
             {
-                UserIdent ident = UserIdent.get(name, sender, mustExist);
-                if (mustExist && (ident == null || !ident.hasUuid()))
+                UserIdent ident = UserIdent.get(name, sender, mustExist, resolveMissing);
+                if (mustExist && (ident == null || !ident.hasUuid()) || !ident.hasUsername())
                     throw new TranslatedCommandException("Player %s not found", name);
                 else if (mustBeOnline && !ident.hasPlayer())
                     throw new TranslatedCommandException("Player %s is not online", name);
@@ -343,6 +357,45 @@ public class CommandParserArgs
         }
     }
 
+    public static final Pattern pattern = Pattern.compile("(\\d+)([wdhms]?)\\s*");
+    public long parseTimeReadable()
+    {
+        checkTabCompletion();
+        int time = 0;
+        String s = toString();
+        Matcher m = pattern.matcher(s);
+        while (m.find())
+        {
+            long t = Long.parseLong(m.group(1));
+            String mod = m.group(2);
+            int tmod = 1;
+            switch (mod)
+            {
+                case "w":
+                    tmod = 604800;
+                    break;
+                case "d":
+                    tmod = 86400;
+                    break;
+                case "h":
+                    tmod = 3600;
+                    break;
+                case "m":
+                    tmod = 60;
+                    break;
+                case "s":
+                    break;
+                default:
+                    break;
+            }
+            time += t*tmod;
+            m.reset(s = m.replaceFirst(""));
+        }
+
+        args.clear();
+        args.addAll(new LinkedList<>(Arrays.asList(s.split(" "))));
+        return time;
+    }
     public long parseLong()
     {
         checkTabCompletion();
