@@ -222,7 +222,7 @@ public class UserIdent
             {
                 byUsername.remove(ident.username);
                 ident.username = name;
-                byUsername.put(ident.username, ident);
+                byUsername.put(ident.username.toLowerCase(), ident);
             }
         }
         if (ident.player == null || ident.player.get() != player)
