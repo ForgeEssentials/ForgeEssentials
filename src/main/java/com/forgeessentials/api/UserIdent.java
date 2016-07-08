@@ -129,6 +129,8 @@ public class UserIdent
                 byUuid.put(this.uuid, this);
             if (identUsername != null && identUsername.charAt(0) != '@')
                 byUsername.put(identUsername.toLowerCase(), this);
+            
+            // TODO: Contact Mojang servers to get UUID if null?
         }
     }
 
