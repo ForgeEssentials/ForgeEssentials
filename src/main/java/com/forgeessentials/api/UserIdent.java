@@ -111,6 +111,8 @@ public class UserIdent
 
     private UserIdent(UUID identUuid, String identUsername, EntityPlayerMP identPlayer)
     {
+        if (identUsername != null && identUsername.isEmpty())
+            identUsername = null;
         player = identPlayer == null ? null : new WeakReference<EntityPlayer>(identPlayer);
         if (identPlayer != null)
         {
@@ -136,6 +138,8 @@ public class UserIdent
     {
         if (uuid == null && (username == null || username.isEmpty()))
             throw new IllegalArgumentException();
+        if (username != null && username.isEmpty())
+            username = null;
 
         if (uuid != null)
         {
@@ -272,10 +276,10 @@ public class UserIdent
 
     public static synchronized ServerUserIdent getServer(String uuid, String username)
     {
-    	
+
         UUID _uuid = null;
         if (uuid != null)
-        	_uuid = UUID.fromString(uuid);
+            _uuid = UUID.fromString(uuid);
 
         UserIdent ident = byUuid.get(_uuid);
         if (ident == null)
@@ -437,8 +441,8 @@ public class UserIdent
     }
 
     /**
-     * Returns the player's UUID, or a generated one if it is not available. Use this if you need to make sure that
-     * there is always a UUID available (for example for storage in maps).
+     * Returns the player's UUID, or a generated one if it is not available. Use this if you need to make sure that there is always a UUID available (for example for storage in
+     * maps).
      * 
      * @return
      */
@@ -469,9 +473,8 @@ public class UserIdent
                 return new GameProfile(getOrGenerateUuid(), player.getCommandSenderName());
 
                 /*
-                 * // Safeguard against stupid mods who set UUID to null UserIdent playerIdent =
-                 * UserIdent.byUsername.get(player.getCommandSenderName()); if (playerIdent != this) return
-                 * playerIdent.getGameProfile();
+                 * // Safeguard against stupid mods who set UUID to null UserIdent playerIdent = UserIdent.byUsername.get(player.getCommandSenderName()); if (playerIdent != this)
+                 * return playerIdent.getGameProfile();
                  */
             }
             else
@@ -501,7 +504,7 @@ public class UserIdent
 
     public String toSerializeString()
     {
-        return "(" + (uuid == null ? "" : uuid.toString()) + "|" + username + ")";
+        return "(" + (uuid == null ? "" : uuid.toString()) + "|" + (username != null ? username : "") + ")";
     }
 
     @Override
