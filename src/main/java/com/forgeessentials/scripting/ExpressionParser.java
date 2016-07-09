@@ -1,5 +1,8 @@
 package com.forgeessentials.scripting;
 
+import com.forgeessentials.core.ForgeEssentials;
+import com.google.common.collect.ImmutableMap;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -8,9 +11,6 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.forgeessentials.core.ForgeEssentials;
-import com.google.common.collect.ImmutableMap;
 
 public class ExpressionParser
 {
@@ -91,7 +91,7 @@ public class ExpressionParser
         public int numArgs()
         {
             return 2;
-        };
+        }
 
         public final String name;
 
@@ -103,7 +103,7 @@ public class ExpressionParser
         public double execute(double... inputs)
         {
             double n0 = inputs[0];
-            double n1 = inputs[1];
+            double n1 = numArgs() >= 2 ? inputs[1] : 0;
             if (this == Operator.Add)
                 n0 += n1;
             else if (this == Operator.Sub)
@@ -116,6 +116,8 @@ public class ExpressionParser
                 n0 %= n1;
             else if (this == Operator.Pow)
                 n0 = Math.pow(n0, n1);
+            else if (this == Operator.Neg)
+                n0 = -n0;
             else
                 return 0;
             return n0;
@@ -130,6 +132,13 @@ public class ExpressionParser
 
         public static Operator Add = new Operator(1, true, "Add");
         public static Operator Sub = new Operator(1, true, "Sub");
+        public static Operator Neg = new Operator(1, true, "Neg")
+        {
+            @Override public int numArgs()
+            {
+                return 1;
+            }
+        };
         public static Operator Mul = new Operator(2, true, "Mul");
         public static Operator Div = new Operator(2, true, "Div");
         public static Operator Mod = new Operator(2, true, "Mod");
@@ -177,8 +186,7 @@ public class ExpressionParser
     {
         public final String extendedDocumentation;
 
-        @Override
-        public String getDocumentation()
+        @Override public String getDocumentation()
         {
             return super.getDocumentation() + "\nThis function: " + extendedDocumentation;
         }
@@ -217,178 +225,167 @@ public class ExpressionParser
 
         private static HashMap<String, Function> functions = new HashMap<>();
 
-        public static Function floor = new Function("floor", "Returns the largest integer less than or equal to it's input") {
+        public static Function floor = new Function("floor", "Returns the largest integer less than or equal to it's input")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 return Math.floor(input[0]);
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 1;
             }
 
         };
-        public static Function ceil = new Function("ceil", "Returns the smallest integer greater than or equal to it's input") {
+        public static Function ceil = new Function("ceil", "Returns the smallest integer greater than or equal to it's input")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 return Math.ceil(input[0]);
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 1;
             }
 
         };
 
-        public static Function round = new Function("round", "Returns it's input rounded to the nearest integer") {
+        public static Function round = new Function("round", "Returns it's input rounded to the nearest integer")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 return Math.round(input[0]);
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 1;
             }
 
         };
-        public static Function sin = new Function("sin", "Returns the sine of it's input") {
+        public static Function sin = new Function("sin", "Returns the sine of it's input")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 return Math.sin(input[0]);
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 1;
             }
 
         };
-        public static Function cos = new Function("cos", "Returns the cosine of it's input") {
+        public static Function cos = new Function("cos", "Returns the cosine of it's input")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 return Math.cos(input[0]);
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 1;
             }
 
         };
-        public static Function tan = new Function("tan", "Returns the tangent of it's input") {
+        public static Function tan = new Function("tan", "Returns the tangent of it's input")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 return Math.tan(input[0]);
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 1;
             }
 
         };
-        public static Function asin = new Function("asin", "Returns the arc sine of it's input") {
+        public static Function asin = new Function("asin", "Returns the arc sine of it's input")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 return Math.asin(input[0]);
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 1;
             }
 
         };
-        public static Function acos = new Function("acos", "Returns the arc cosine of it's input") {
+        public static Function acos = new Function("acos", "Returns the arc cosine of it's input")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 return Math.acos(input[0]);
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 1;
             }
 
         };
-        public static Function atan = new Function("atan", "Returns the arc tangent of it's input") {
+        public static Function atan = new Function("atan", "Returns the arc tangent of it's input")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 return Math.atan(input[0]);
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 1;
             }
 
         };
-        public static Function max = new Function("max", "Returns the max of 2 inputs") {
+        public static Function max = new Function("max", "Returns the max of 2 inputs")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 return Math.max(input[0], input[1]);
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 2;
             }
 
         };
 
-        public static Function min = new Function("min", "Returns the min of 2 inputs") {
+        public static Function min = new Function("min", "Returns the min of 2 inputs")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 return Math.max(input[0], input[1]);
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 2;
             }
 
         };
 
-        public static Function randi = new Function("randi", "Returns a random integer bounded by it's 2 inputs") {
+        public static Function randi = new Function("randi", "Returns a random integer bounded by it's 2 inputs")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 int min = (int) input[0];
                 int max = (int) input[1];
@@ -400,24 +397,22 @@ public class ExpressionParser
                 return ForgeEssentials.rnd.nextInt(range) + min;
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 2;
             }
 
         };
 
-        public static Function randf = new Function("randf", "Returns a random floating point value between 0.0 and 1.0") {
+        public static Function randf = new Function("randf", "Returns a random floating point value between 0.0 and 1.0")
+        {
 
-            @Override
-            public double execute(double... input)
+            @Override public double execute(double... input)
             {
                 return ForgeEssentials.rnd.nextDouble();
             }
 
-            @Override
-            public int numArgs()
+            @Override public int numArgs()
             {
                 return 0;
             }
@@ -456,34 +451,16 @@ public class ExpressionParser
             }
             else if (t instanceof Operator)
             {
-                if (lastTokenWasNumber != null && !lastTokenWasNumber && !opStack.isEmpty() && t != Operator.LeftParen && t != Operator.RightParen
-                        && !(t instanceof Function))
+                if (lastTokenWasNumber == null || !lastTokenWasNumber)
                 {
-                    Operator op = opStack.peek();
                     if (t == Operator.Sub)
                     {
-                        if (op == Operator.Add)
-                        {
-                            opStack.pop();
-                            opStack.push(Operator.Sub);
-                        }
-                        else if (op == Operator.Sub)
-                        {
-                            opStack.pop();
-                            opStack.push(Operator.Add);
-                        }
-                        else
-                            return null;
-
-                    }
-                    else if (t == Operator.Add)
-                    {
-                        if (op != Operator.Add && op != Operator.Sub)
-                            return null;
+                        opStack.push(Operator.Neg);
                     }
                     else
+                    {
                         return null;
-
+                    }
                 }
                 else
                 {
