@@ -41,7 +41,8 @@ public class UserIdent
             super(uuid, username, null);
         }
 
-        @Override public boolean isPlayer()
+        @Override
+        public boolean isPlayer()
         {
             return false;
         }
@@ -56,12 +57,14 @@ public class UserIdent
             super(uuid, username, null);
         }
 
-        @Override public boolean isPlayer()
+        @Override
+        public boolean isPlayer()
         {
             return false;
         }
 
-        @Override public boolean isNpc()
+        @Override
+        public boolean isNpc()
         {
             return true;
         }
@@ -97,9 +100,11 @@ public class UserIdent
 
     protected String username;
 
-    @Expose(serialize = false) protected int hashCode;
+    @Expose(serialize = false)
+    protected int hashCode;
 
-    @Expose(serialize = false) protected WeakReference<EntityPlayer> player;
+    @Expose(serialize = false)
+    protected WeakReference<EntityPlayer> player;
 
     /* ------------------------------------------------------------ */
 
@@ -139,7 +144,6 @@ public class UserIdent
                 username = UserIdentUtils.resolveMissingUsername(uuid);
         }
     }
-
 
     /* ------------------------------------------------------------ */
 
@@ -515,19 +519,22 @@ public class UserIdent
         return "(" + (uuid == null ? "" : uuid.toString()) + "|" + (username != null ? username : "") + ")";
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return toSerializeString();
     }
 
-    @Override public int hashCode()
+    @Override
+    public int hashCode()
     {
         if (hashCode != 0)
             return hashCode;
         return hashCode = getOrGenerateUuid().hashCode();
     }
 
-    @Override public boolean equals(Object other)
+    @Override
+    public boolean equals(Object other)
     {
         if (this == other)
         {
