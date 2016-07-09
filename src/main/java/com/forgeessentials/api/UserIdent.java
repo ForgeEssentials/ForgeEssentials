@@ -1,11 +1,12 @@
 package com.forgeessentials.api;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
-
+import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.LoggingHandler;
+import com.google.gson.annotations.Expose;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import com.mojang.authlib.GameProfile;
+import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,11 +17,17 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
-import com.forgeessentials.util.ServerUtil;
-import com.google.gson.annotations.Expose;
-import com.mojang.authlib.GameProfile;
-
-import cpw.mods.fml.common.eventhandler.Event;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 
 public class UserIdent
 {
@@ -33,8 +40,7 @@ public class UserIdent
             super(uuid, username, null);
         }
 
-        @Override
-        public boolean isPlayer()
+        @Override public boolean isPlayer()
         {
             return false;
         }
@@ -49,14 +55,12 @@ public class UserIdent
             super(uuid, username, null);
         }
 
-        @Override
-        public boolean isPlayer()
+        @Override public boolean isPlayer()
         {
             return false;
         }
 
-        @Override
-        public boolean isNpc()
+        @Override public boolean isNpc()
         {
             return true;
         }
@@ -92,11 +96,9 @@ public class UserIdent
 
     protected String username;
 
-    @Expose(serialize = false)
-    protected int hashCode;
+    @Expose(serialize = false) protected int hashCode;
 
-    @Expose(serialize = false)
-    protected WeakReference<EntityPlayer> player;
+    @Expose(serialize = false) protected WeakReference<EntityPlayer> player;
 
     /* ------------------------------------------------------------ */
 
@@ -129,11 +131,89 @@ public class UserIdent
                 byUuid.put(this.uuid, this);
             if (identUsername != null && identUsername.charAt(0) != '@')
                 byUsername.put(identUsername.toLowerCase(), this);
-            
-            // TODO: Contact Mojang servers to get UUID if null?
+
+            if (uuid == null && username != null)
+                uuid = resolveMissingUUID(username);
+            else if (uuid != null && username == null)
+                username = resolveMissingUsername(uuid);
         }
     }
 
+    public static UUID hexStringToUUID(String s)
+    {
+        if (s.length() != 32)
+            throw new IllegalArgumentException();
+        byte[] data = new byte[32];
+        for (int i = 0; i < 32; i++)
+        {
+            data[i] = (byte) s.charAt(i);
+        }
+        return UUID.nameUUIDFromBytes(data);
+    }
+
+    public static UUID stringToUUID(String s)
+    {
+        if (s.length() == 32)
+            return hexStringToUUID(s);
+        else
+            return UUID.fromString(s);
+
+    }
+
+    public static UUID resolveMissingUUID(String name)
+    {
+        String url = "https://api.mojang.com/users/profiles/minecraft/" + name;
+        String data = fetchData(url, "id");
+        if (data != null)
+            return stringToUUID(data);
+        return null;
+    }
+
+    public static String resolveMissingUsername(UUID id)
+    {
+        String url = "https://api.mojang.com/user/profiles/" + id.toString().replace("-", "") + "/names";
+        return fetchData(url, "name");
+    }
+
+    public static String fetchData(String url, String id)
+    {
+        try
+        {
+            LoggingHandler.felog.debug("Fetching " + id + " from " + url);
+            URL uri = new URL(url);
+            HttpsURLConnection huc = (HttpsURLConnection) uri.openConnection();
+            InputStream is;
+            JsonReader jr = new JsonReader(new InputStreamReader(is = huc.getInputStream()));
+            if (is.available() > 0 && jr.hasNext())
+            {
+                jr.beginObject();
+                String name = null;
+
+                while (jr.hasNext())
+                    if (jr.peek() == JsonToken.NAME)
+                        name = jr.nextName();
+                    else
+                    {
+                        if (jr.peek() == JsonToken.STRING)
+                            if (name.equals(id))
+                                return jr.nextString();
+                        name = null;
+                    }
+                jr.endObject();
+            }
+
+            return null;
+        }
+        catch (MalformedURLException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
     /* ------------------------------------------------------------ */
 
     public static synchronized UserIdent get(UUID uuid, String username)
@@ -246,8 +326,7 @@ public class UserIdent
             if (ident != null)
                 return ident;
 
-            EntityPlayerMP player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername)
-                    : //
+            EntityPlayerMP player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
                     UserIdent.getPlayerByUsername(uuidOrUsername);
             if (player != null)
                 return get(player);
@@ -375,7 +454,7 @@ public class UserIdent
 
     /**
      * Returns true for a normal UserIdent. Returns false for NPC or server UserIdents.
-     * 
+     *
      * @return
      */
     public boolean isPlayer()
@@ -385,7 +464,7 @@ public class UserIdent
 
     /**
      * Returns false for a normal UserIdent. Returns true for NPC.
-     * 
+     *
      * @return
      */
     public boolean isNpc()
@@ -445,7 +524,7 @@ public class UserIdent
     /**
      * Returns the player's UUID, or a generated one if it is not available. Use this if you need to make sure that there is always a UUID available (for example for storage in
      * maps).
-     * 
+     *
      * @return
      */
     public UUID getOrGenerateUuid()
@@ -457,7 +536,7 @@ public class UserIdent
 
     /**
      * Returns a different UUID generated by the username
-     * 
+     *
      * @return
      */
     public UUID getUsernameUuid()
@@ -509,22 +588,19 @@ public class UserIdent
         return "(" + (uuid == null ? "" : uuid.toString()) + "|" + (username != null ? username : "") + ")";
     }
 
-    @Override
-    public String toString()
+    @Override public String toString()
     {
         return toSerializeString();
     }
 
-    @Override
-    public int hashCode()
+    @Override public int hashCode()
     {
         if (hashCode != 0)
             return hashCode;
         return hashCode = getOrGenerateUuid().hashCode();
     }
 
-    @Override
-    public boolean equals(Object other)
+    @Override public boolean equals(Object other)
     {
         if (this == other)
         {
