@@ -126,6 +126,7 @@ public class DataManager
         }
         catch (Throwable e)
         {
+            LoggingHandler.felog.error(String.format("Error saving data to %s", file.getName()), e);
             Throwables.propagate(e);
         }
     }
