@@ -17,6 +17,7 @@ import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.permission.PermissionManager;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet6AuthLogin;
 import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
@@ -255,6 +256,13 @@ public class AuthEventHandler extends ServerEventHandler
             NetworkUtils.netHandler.sendTo(new Packet6AuthLogin(2, token.toString()), e.getPlayer());
             PasswordManager.addSession(e.getPlayer().getPersistentID(), token);
         }
+        APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_SUCCESS, e.getPlayer());
+    }
+
+    @SubscribeEvent
+    public void onAuthLoginFail(PlayerAuthLoginEvent.Failure e)
+    {
+        APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_FAILURE, e.getPlayer());
     }
 
 }
