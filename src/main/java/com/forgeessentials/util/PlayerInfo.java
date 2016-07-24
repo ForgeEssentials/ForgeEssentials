@@ -1,17 +1,5 @@
 package com.forgeessentials.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
@@ -20,8 +8,18 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
-import com.forgeessentials.util.selections.SelectionHandler;
 import com.google.gson.annotations.Expose;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class PlayerInfo implements Loadable
 {
@@ -125,8 +123,12 @@ public class PlayerInfo implements Loadable
     }
 
     /* ------------------------------------------------------------ */
-
     public static PlayerInfo get(UUID uuid)
+    {
+        return get(uuid, null);
+    }
+
+    public static PlayerInfo get(UUID uuid, String username)
     {
         PlayerInfo info = playerInfoMap.get(uuid);
         if (info != null)
@@ -141,7 +143,7 @@ public class PlayerInfo implements Loadable
         }
 
         // Create new player info data
-        EntityPlayerMP player = UserIdent.getPlayerByUuid(uuid);
+        EntityPlayerMP player = UserIdent.get(uuid, username).getPlayerMP();
         info = new PlayerInfo(uuid);
         playerInfoMap.put(uuid, info);
         if (player != null)
@@ -151,7 +153,7 @@ public class PlayerInfo implements Loadable
 
     public static PlayerInfo get(EntityPlayer player)
     {
-        return get(player.getPersistentID());
+        return get(player.getPersistentID(), player.getCommandSenderName());
     }
 
     public static PlayerInfo get(UserIdent ident)
@@ -261,7 +263,7 @@ public class PlayerInfo implements Loadable
 
     /**
      * Check, if a timeout passed
-     * 
+     *
      * @param name
      * @return true, if the timeout passed
      */
@@ -289,11 +291,9 @@ public class PlayerInfo implements Loadable
 
     /**
      * Start a named timeout. Use {@link #checkTimeout(String)} to check if the timeout has passed.
-     * 
-     * @param name
-     *            Unique name of the timeout
-     * @param milliseconds
-     *            Timeout in milliseconds
+     *
+     * @param name         Unique name of the timeout
+     * @param milliseconds Timeout in milliseconds
      */
     public void startTimeout(String name, long milliseconds)
     {
