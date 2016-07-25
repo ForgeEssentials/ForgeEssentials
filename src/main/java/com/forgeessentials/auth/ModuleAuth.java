@@ -34,6 +34,8 @@ public class ModuleAuth extends ConfigLoaderBase
 
     private static final String CONFIG_CATEGORY = "Auth";
     private static final String CONFIG_CATEGORY_LISTS = "Authlists";
+    protected static final String SCRIPT_KEY_SUCCESS = "AuthLoginSuccess";
+    protected static final String SCRIPT_KEY_FAILURE = "AuthLoginFailure";
 
     static boolean forceEnabled;
     static boolean allowOfflineRegistration;
@@ -83,6 +85,8 @@ public class ModuleAuth extends ConfigLoaderBase
             handler = new AuthEventHandler();
             handler.enable(true);
         }
+        APIRegistry.scripts.addScriptType(SCRIPT_KEY_SUCCESS);
+        APIRegistry.scripts.addScriptType(SCRIPT_KEY_FAILURE);
     }
 
     public static boolean isEnabled()
