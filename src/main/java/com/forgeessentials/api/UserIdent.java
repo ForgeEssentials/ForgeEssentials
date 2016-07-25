@@ -166,8 +166,11 @@ public class UserIdent
             UserIdent ident = byUsername.get(username.toLowerCase());
             if (ident != null)
             {
-                if (uuid != null && ident.uuid == null)
+                if (uuid != null && ident.uuid != uuid)
+                {
                     ident.uuid = uuid;
+                    byUuid.put(uuid,ident);
+                }
                 return ident;
             }
         }
