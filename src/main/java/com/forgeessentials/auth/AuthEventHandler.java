@@ -250,7 +250,7 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void onAuthLogin(PlayerAuthLoginEvent.Success e)
     {
-        if (e.source == Source.COMMAND)
+        if (e.source == Source.COMMAND && ModuleAuth.allowAutoLogin)
         {
             UUID token = UUID.randomUUID();
             NetworkUtils.netHandler.sendTo(new Packet6AuthLogin(2, token.toString()), e.getPlayer());

@@ -164,7 +164,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 }
             }
             // parse ./auth setpass
-            else if (args[0].equalsIgnoreCase("setPass"))
+            else if (args[0].equalsIgnoreCase("setpass"))
             {
                 if (!hasAdmin)
                 {
