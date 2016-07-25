@@ -37,7 +37,7 @@ public class MixinNetHandlerPlayServer
             method = "processUpdateSign",
             at = @At(
                     value = "INVOKE",
-                    target = "net/minecraft/network/play/client/C12PacketUpdateSign;getLines()V"
+                    target = "Lnet/minecraft/network/play/client/C12PacketUpdateSign;getLines()[Lnet/minecraft/util/IChatComponent;"
             ),
             require = 1
     )
