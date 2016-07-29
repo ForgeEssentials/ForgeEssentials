@@ -132,7 +132,8 @@ public class ExpressionParser
 
         public static Operator Add = new Operator(1, true, "Add");
         public static Operator Sub = new Operator(1, true, "Sub");
-        public static Operator Neg = new Operator(1, true, "Neg") {
+        public static Operator Neg = new Operator(1, true, "Neg")
+        {
             @Override
             public int numArgs()
             {
@@ -226,7 +227,8 @@ public class ExpressionParser
 
         private static HashMap<String, Function> functions = new HashMap<>();
 
-        public static Function floor = new Function("floor", "Returns the largest integer less than or equal to it's input") {
+        public static Function floor = new Function("floor", "Returns the largest integer less than or equal to it's input")
+        {
 
             @Override
             public double execute(double... input)
@@ -241,7 +243,8 @@ public class ExpressionParser
             }
 
         };
-        public static Function ceil = new Function("ceil", "Returns the smallest integer greater than or equal to it's input") {
+        public static Function ceil = new Function("ceil", "Returns the smallest integer greater than or equal to it's input")
+        {
 
             @Override
             public double execute(double... input)
@@ -257,7 +260,8 @@ public class ExpressionParser
 
         };
 
-        public static Function round = new Function("round", "Returns it's input rounded to the nearest integer") {
+        public static Function round = new Function("round", "Returns it's input rounded to the nearest integer")
+        {
 
             @Override
             public double execute(double... input)
@@ -272,7 +276,8 @@ public class ExpressionParser
             }
 
         };
-        public static Function sin = new Function("sin", "Returns the sine of it's input") {
+        public static Function sin = new Function("sin", "Returns the sine of it's input")
+        {
 
             @Override
             public double execute(double... input)
@@ -287,7 +292,8 @@ public class ExpressionParser
             }
 
         };
-        public static Function cos = new Function("cos", "Returns the cosine of it's input") {
+        public static Function cos = new Function("cos", "Returns the cosine of it's input")
+        {
 
             @Override
             public double execute(double... input)
@@ -302,7 +308,8 @@ public class ExpressionParser
             }
 
         };
-        public static Function tan = new Function("tan", "Returns the tangent of it's input") {
+        public static Function tan = new Function("tan", "Returns the tangent of it's input")
+        {
 
             @Override
             public double execute(double... input)
@@ -317,7 +324,8 @@ public class ExpressionParser
             }
 
         };
-        public static Function asin = new Function("asin", "Returns the arc sine of it's input") {
+        public static Function asin = new Function("asin", "Returns the arc sine of it's input")
+        {
 
             @Override
             public double execute(double... input)
@@ -332,7 +340,8 @@ public class ExpressionParser
             }
 
         };
-        public static Function acos = new Function("acos", "Returns the arc cosine of it's input") {
+        public static Function acos = new Function("acos", "Returns the arc cosine of it's input")
+        {
 
             @Override
             public double execute(double... input)
@@ -347,7 +356,8 @@ public class ExpressionParser
             }
 
         };
-        public static Function atan = new Function("atan", "Returns the arc tangent of it's input") {
+        public static Function atan = new Function("atan", "Returns the arc tangent of it's input")
+        {
 
             @Override
             public double execute(double... input)
@@ -362,7 +372,8 @@ public class ExpressionParser
             }
 
         };
-        public static Function max = new Function("max", "Returns the max of 2 inputs") {
+        public static Function max = new Function("max", "Returns the max of 2 inputs")
+        {
 
             @Override
             public double execute(double... input)
@@ -378,7 +389,8 @@ public class ExpressionParser
 
         };
 
-        public static Function min = new Function("min", "Returns the min of 2 inputs") {
+        public static Function min = new Function("min", "Returns the min of 2 inputs")
+        {
 
             @Override
             public double execute(double... input)
@@ -394,7 +406,8 @@ public class ExpressionParser
 
         };
 
-        public static Function randi = new Function("randi", "Returns a random integer bounded by it's 2 inputs") {
+        public static Function randi = new Function("randi", "Returns a random integer bounded by it's 2 inputs")
+        {
 
             @Override
             public double execute(double... input)
@@ -417,7 +430,8 @@ public class ExpressionParser
 
         };
 
-        public static Function randf = new Function("randf", "Returns a random floating point value between 0.0 and 1.0") {
+        public static Function randf = new Function("randf", "Returns a random floating point value between 0.0 and 1.0")
+        {
 
             @Override
             public double execute(double... input)
@@ -465,7 +479,7 @@ public class ExpressionParser
             }
             else if (t instanceof Operator)
             {
-                if (lastTokenWasNumber == null || !lastTokenWasNumber)
+                if ((lastTokenWasNumber == null || !lastTokenWasNumber) && t != Operator.LeftParen && t != Operator.RightParen && !(t instanceof Function))
                 {
                     if (t == Operator.Sub)
                     {
