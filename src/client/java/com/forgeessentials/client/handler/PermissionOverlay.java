@@ -7,6 +7,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -78,7 +79,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glEnable(GL11.GL_BLEND);
 
-            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
 
@@ -97,14 +98,14 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
         }
         else if (event.isCancelable() && event.type == ElementType.CROSSHAIRS)
         {
-            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+            ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
 
             MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
             if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK)
             {
-                IBlockState block = Minecraft.getMinecraft().theWorld.getBlockState(mop.func_178782_a());
+                IBlockState block = Minecraft.getMinecraft().theWorld.getBlockState(mop.getBlockPos());
                 int blockId = GameData.getBlockRegistry().getId(block.getBlock());
                 if (permissions.breakIds.contains(blockId))
                 {
@@ -118,12 +119,12 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
 
     public void drawTexturedRect(double xPos, double yPos, double width, double height)
     {
-        WorldRenderer renderer = Tessellator.getInstance().getWorldRenderer();
-        renderer.startDrawingQuads();
-        renderer.addVertexWithUV(xPos, yPos + height, zLevel, 0, 1);
-        renderer.addVertexWithUV(xPos + width, yPos + height, zLevel, 1, 1);
-        renderer.addVertexWithUV(xPos + width, yPos, zLevel, 1, 0);
-        renderer.addVertexWithUV(xPos, yPos, zLevel, 0, 0);
+        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        wr.pos(xPos, yPos + height, zLevel).tex(0, 1).endVertex();
+        wr.pos(xPos + width, yPos + height, zLevel).tex(1, 1).endVertex();
+        wr.pos(xPos + width, yPos, zLevel).tex(1, 0).endVertex();
+        wr.pos(xPos, yPos, zLevel).tex(0, 0).endVertex();
         Tessellator.getInstance().draw();
     }
 

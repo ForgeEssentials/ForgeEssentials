@@ -1,7 +1,7 @@
 package com.forgeessentials.teleport;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.config.Configuration;
@@ -65,7 +65,6 @@ public class TeleportModule extends ConfigLoaderBase
     public void load(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this);
 
         portalManager = new PortalManager();
     }
@@ -114,6 +113,6 @@ public class TeleportModule extends ConfigLoaderBase
     {
         String portalBlockId = config.get(Configuration.CATEGORY_GENERAL, "portalBlock", "minecraft:glass_pane", "Name of the block to use as material for new portals.\n"
                 + "Does not override vanilla nether/end portals.\nSetting this to 'minecraft:portal' is currently not supported.").getString();
-        PortalManager.portalBlock = GameData.getBlockRegistry().getObject(portalBlockId);
+        PortalManager.portalBlock = GameData.getBlockRegistry().getObject(new ResourceLocation(portalBlockId));
     }
 }

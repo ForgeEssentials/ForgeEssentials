@@ -235,7 +235,7 @@ public class CommandMultiworld extends ParserCommandBase
             {
                 arguments.confirm("Game rules for %s:", world.getName());
                 for (String rule : rules.getRules())
-                    arguments.confirm(rule + " = " + rules.getGameRuleStringValue(rule));
+                    arguments.confirm(rule + " = " + rules.getString(rule));
             }
             return;
         }
@@ -247,7 +247,7 @@ public class CommandMultiworld extends ParserCommandBase
         if (arguments.isEmpty())
         {
             // Check gamerule
-            arguments.confirm(rule + " = " + rules.getGameRuleStringValue(rule));
+            arguments.confirm(rule + " = " + rules.getString(rule));
             return;
         }
 

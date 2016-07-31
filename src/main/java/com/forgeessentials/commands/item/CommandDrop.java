@@ -15,6 +15,7 @@ import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.tileentity.TileEntityDropper;
 import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.permission.PermissionLevel;
@@ -81,7 +82,7 @@ public class CommandDrop extends FEcmdModuleCommands
         String var7 = args[3];
         Item item = CommandBase.getItemByText(sender, var7);
         int var8 = parseInt(args[4], 0, Integer.MAX_VALUE);
-        int var9 = parseInt(args[5], 1, GameData.getItemRegistry().getObject(var7).getItemStackLimit());
+        int var9 = parseInt(args[5], 1, GameData.getItemRegistry().getObject(new ResourceLocation(var7)).getItemStackLimit());
         ItemStack tmpStack;
 
         TileEntity tileEntity = world.getTileEntity(pos);

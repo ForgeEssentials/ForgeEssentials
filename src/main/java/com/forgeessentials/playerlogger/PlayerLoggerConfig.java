@@ -21,11 +21,11 @@ public class PlayerLoggerConfig extends ConfigLoaderBase
     public void load(Configuration config, boolean isReload)
     {
         config.addCustomCategoryComment(CAT, "PlayerLogger config");
-        databaseType = config.get(CAT, "DB_type", "h2", "Database typ (h2 / mysql). DO NOT USE MYSQL UNLESS YOU REALLY NEED TO!").getString();
-        databaseUrl = config.get(CAT, "DB_url", "./ForgeEssentials/playerlogger",
+        databaseType = config.get(CAT, "DB_type", "h2", "Database type (h2 / mysql). DO NOT USE MYSQL UNLESS YOU REALLY NEED TO!").getString();
+        databaseUrl = config.get(CAT, "DB_url", "ForgeEssentials/playerlogger",
                 "Database url. Filename for H2 or server address for MySql (e.g., \"localhost:3306/forgeessentials\").").getString();
-        databaseUsername = config.get(CAT, "DB_user", "forgeessentials", "Database type. Available types are h2 and mysql.").getString();
-        databasePassword = config.get(CAT, "DB_password", "forgeessentials", "Database type. Available types are h2 and mysql.").getString();
+        databaseUsername = config.get(CAT, "DB_user", "forgeessentials", "Database user.").getString();
+        databasePassword = config.get(CAT, "DB_password", "forgeessentials", "Database password.").getString();
         logDuration = config.get(CAT, "log_duration", 0, "Days to keep data saved in the database. Set to 0 to keep all data indefinitely.").getInt();
     }
 
@@ -35,8 +35,8 @@ public class PlayerLoggerConfig extends ConfigLoaderBase
         config.addCustomCategoryComment(CAT, "Configure the backup system.");
         config.get(CAT, "DB_type", "h2", "Database type. Available types are h2 and mysql.").set(databaseType);
         config.get(CAT, "DB_url", "ForgeEssentials/playerlogger", "Database url. Filename for H2 or server address for MySql.").set(databaseUrl);
-        config.get(CAT, "DB_user", "forgeessentials", "Database type. Available types are h2 and mysql.").set(databaseUsername);
-        config.get(CAT, "DB_password", "forgeessentials", "Database type. Available types are h2 and mysql.").set(databasePassword);
+        config.get(CAT, "DB_user", "forgeessentials", "Database user.").set(databaseUsername);
+        config.get(CAT, "DB_password", "forgeessentials", "Database password.").set(databasePassword);
         config.get(CAT, "daystokeepdata", 0, "Days to keep data saved in the database. Set to 0 to keep all data indefinitely.").set(logDuration);
     }
 

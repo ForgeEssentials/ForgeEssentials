@@ -8,7 +8,6 @@ import java.util.SortedSet;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -69,7 +68,6 @@ public class ModuleFactions extends ConfigLoaderBase
 
     public ModuleFactions()
     {
-        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.FE_EVENTBUS.register(this);
     }

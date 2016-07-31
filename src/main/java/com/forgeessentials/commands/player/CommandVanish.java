@@ -7,6 +7,7 @@ import java.util.Set;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityTrackerEntry;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S19PacketEntityStatus;
 import net.minecraft.world.WorldServer;
@@ -17,7 +18,6 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.preloader.api.EntityTrackerHelper;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandVanish extends ParserCommandBase
@@ -108,24 +108,25 @@ public class CommandVanish extends ParserCommandBase
         EntityPlayerMP player = ident.getPlayerMP();
         WorldServer world = (WorldServer) player.worldObj;
         @SuppressWarnings("unchecked")
-        List<EntityPlayerMP> players = world.playerEntities;
+        List<EntityPlayer> players = world.playerEntities;
         if (vanish)
         {
             vanishedPlayers.add(ident);
             S19PacketEntityStatus packet = new S19PacketEntityStatus(player, (byte) 3);
-            for (EntityPlayerMP otherPlayer : players)
+            for (EntityPlayer otherPlayer : players)
                 if (otherPlayer != player)
-                    otherPlayer.playerNetServerHandler.sendPacket(packet);
+                    ((EntityPlayerMP)otherPlayer).playerNetServerHandler.sendPacket(packet);
         }
         else
         {
             vanishedPlayers.remove(ident);
-            EntityTrackerEntry tracker = ((EntityTrackerHelper) world.getEntityTracker()).getEntityTrackerEntry(player);
-            for (EntityPlayerMP otherPlayer : players)
+            EntityTrackerEntry tracker = world.getEntityTracker().trackedEntityHashTable.lookup(player.getEntityId());
+                    //((EntityTrackerHelper) world.getEntityTracker()).getEntityTrackerEntry(player);
+            for (EntityPlayer otherPlayer : players)
                 if (otherPlayer != player)
                 {
                     tracker.trackingPlayers.remove(otherPlayer);
-                    tracker.updatePlayerEntity(otherPlayer);
+                    tracker.updatePlayerEntity((EntityPlayerMP)otherPlayer);
                 }
         }
     }

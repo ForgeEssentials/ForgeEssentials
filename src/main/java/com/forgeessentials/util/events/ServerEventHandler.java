@@ -6,7 +6,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ServerEventHandler
@@ -32,7 +31,6 @@ public class ServerEventHandler
             return;
         registered = true;
         MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this);
     }
 
     protected void unregister()
@@ -42,14 +40,6 @@ public class ServerEventHandler
             try
             {
                 MinecraftForge.EVENT_BUS.unregister(this);
-            }
-            catch (NullPointerException ex)
-            {
-                // event handler was not registered to begin with
-            }
-            try
-            {
-                FMLCommonHandler.instance().bus().unregister(this);
             }
             catch (NullPointerException ex)
             {

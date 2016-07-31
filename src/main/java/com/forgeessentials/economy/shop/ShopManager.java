@@ -226,7 +226,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(event.entityPlayer);
             if (mop == null)
                 return;
-            point = new WorldPoint(event.world, mop.func_178782_a());
+            point = new WorldPoint(event.world, mop.getBlockPos());
         }
         else
             point = new WorldPoint(event.world, event.pos);

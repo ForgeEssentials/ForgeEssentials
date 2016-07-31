@@ -81,6 +81,7 @@ public class ModuleAuth extends ConfigLoaderBase
         if (isEnabled())
         {
             handler = new AuthEventHandler();
+            handler.enable(true);
         }
     }
 
@@ -103,15 +104,13 @@ public class ModuleAuth extends ConfigLoaderBase
 
         if (isEnabled())
         {
-            MinecraftForge.EVENT_BUS.register(handler);
-            FMLCommonHandler.instance().bus().register(handler);
+            handler.enable(true);
         }
         else
         {
             try
             {
-                MinecraftForge.EVENT_BUS.unregister(handler);
-                FMLCommonHandler.instance().bus().unregister(handler);
+                handler.enable(false);
             }
             catch (NullPointerException e)
             {
@@ -193,7 +192,7 @@ public class ModuleAuth extends ConfigLoaderBase
         AuthEventHandler.playerBannedMessage = config.get(CONFIG_CATEGORY_LISTS + ".kick", "bannedmsg", "You have been banned from this server.").getString();
         AuthEventHandler.nonVipKickMessage = config.get(CONFIG_CATEGORY_LISTS + ".kick", "notVIPmsg", "This server is full, and you are not a VIP.")
                 .getString();
-        allowAutoLogin = config.get(CONFIG_CATEGORY, "allowAutoLogin", true, CFG_DESC_autologin).getBoolean();
+        allowAutoLogin = config.get(CONFIG_CATEGORY, "allowAutoLogin", false, CFG_DESC_autologin).getBoolean();
 
         checkVanillaAuthStatus = config.get(CONFIG_CATEGORY, "autoEnable", false, CFG_DESC_autoEnable).getBoolean(false);
         int authCheckerInterval = config.get(CONFIG_CATEGORY, "checkInterval", 10, CFG_DESC_checkInterval).getInt();

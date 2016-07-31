@@ -38,7 +38,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -76,7 +75,6 @@ public class ModulePermissions extends ConfigLoaderBase
         itemPermissionManager = new ItemPermissionManager();
 
         MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this);
 
         FECommandManager.registerCommand(new CommandZone());
         FECommandManager.registerCommand(new CommandPermissions());

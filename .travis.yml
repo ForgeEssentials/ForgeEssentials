@@ -2,6 +2,9 @@
 # Tell Travis this is a Java project.
 language: java
 
+jdk:
+  - oraclejdk8
+
 # Tell Travis we don't need sudo,
 # so Travis uses containers.
 sudo: false

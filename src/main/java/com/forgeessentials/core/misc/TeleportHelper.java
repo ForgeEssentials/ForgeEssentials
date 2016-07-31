@@ -44,13 +44,12 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         @Override
-        public boolean func_180620_b(Entity entity, float yaw)
+        public void placeInPortal(Entity entity, float yaw)
         {
             int i = MathHelper.floor_double(entity.posX);
             int j = MathHelper.floor_double(entity.posY) - 1;
             int k = MathHelper.floor_double(entity.posZ);
             entity.setLocationAndAngles((double)i, (double)j, (double)k, entity.rotationYaw, 0.0F);
-            return true;
         }
 
         @Override
@@ -60,9 +59,10 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         @Override
-        public void func_180266_a(Entity entity, float yaw)
+        public boolean placeInExistingPortal(Entity entity, float yaw)
         {
-            func_180620_b(entity, yaw);
+            placeInPortal(entity, yaw);
+            return true;
         }
 
     }
@@ -257,7 +257,7 @@ public class TeleportHelper extends ServerEventHandler
 
         transferEntityToWorld(player, oldDim, oldWorld, newWorld, teleporter);
 
-        mcServer.getConfigurationManager().func_72375_a(player, oldWorld);
+        mcServer.getConfigurationManager().preparePlayer(player, oldWorld);
         player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw,
                 player.rotationPitch);
         player.theItemInWorldManager.setWorld(newWorld);
@@ -288,7 +288,7 @@ public class TeleportHelper extends ServerEventHandler
         if (entity.isEntityAlive())
         {
             entity.setLocationAndAngles(d0, entity.posY, d1, entity.rotationYaw, entity.rotationPitch);
-            teleporter.func_180266_a(entity, f);
+            teleporter.placeInPortal(entity, f);
             newWorld.spawnEntityInWorld(entity);
             newWorld.updateEntityWithOptionalForce(entity, false);
         }

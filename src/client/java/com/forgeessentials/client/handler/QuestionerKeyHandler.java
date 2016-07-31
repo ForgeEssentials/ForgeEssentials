@@ -4,9 +4,9 @@ import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 
@@ -23,7 +23,7 @@ public class QuestionerKeyHandler
     {
         ClientRegistry.registerKeyBinding(yes);
         ClientRegistry.registerKeyBinding(no);
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
     @SubscribeEvent
     public void onKeyPress(KeyInputEvent e)
@@ -32,11 +32,11 @@ public class QuestionerKeyHandler
         {
             return;
         }
-        if (yes.getIsKeyPressed())
+        if (yes.isPressed())
         {
             FMLClientHandler.instance().getClientPlayerEntity().sendChatMessage("/yes");
         }
-        else if (no.getIsKeyPressed())
+        else if (no.isPressed())
         {
             FMLClientHandler.instance().getClientPlayerEntity().sendChatMessage("/no");
         }

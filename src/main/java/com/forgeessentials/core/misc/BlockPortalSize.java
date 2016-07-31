@@ -36,7 +36,7 @@ public class BlockPortalSize
         }
 
         for (BlockPos blockpos1 = p_i45694_2_; p_i45694_2_.getY() > blockpos1.getY() - 21 && p_i45694_2_.getY() > 0
-                && this.func_150857_a(worldIn.getBlockState(p_i45694_2_.offsetDown()).getBlock()); p_i45694_2_ = p_i45694_2_.offsetDown())
+                && this.func_150857_a(worldIn.getBlockState(p_i45694_2_.down()).getBlock()); p_i45694_2_ = p_i45694_2_.down())
         {
             ;
         }
@@ -70,7 +70,7 @@ public class BlockPortalSize
             BlockPos blockpos1 = p_180120_1_.offset(p_180120_2_, i);
 
             if (!this.func_150857_a(this.field_150867_a.getBlockState(blockpos1).getBlock())
-                    || this.field_150867_a.getBlockState(blockpos1.offsetDown()).getBlock() != Blocks.obsidian)
+                    || this.field_150867_a.getBlockState(blockpos1.down()).getBlock() != Blocks.obsidian)
             {
                 break;
             }
@@ -89,7 +89,7 @@ public class BlockPortalSize
         {
             for (i = 0; i < this.field_150868_h; ++i)
             {
-                BlockPos blockpos = this.field_150861_f.offset(this.field_150866_c, i).offsetUp(this.field_150862_g);
+                BlockPos blockpos = this.field_150861_f.offset(this.field_150866_c, i).up(this.field_150862_g);
                 Block block = this.field_150867_a.getBlockState(blockpos).getBlock();
 
                 if (!this.func_150857_a(block))
@@ -124,7 +124,7 @@ public class BlockPortalSize
 
         for (i = 0; i < this.field_150868_h; ++i)
         {
-            if (this.field_150867_a.getBlockState(this.field_150861_f.offset(this.field_150866_c, i).offsetUp(this.field_150862_g)).getBlock() != Blocks.obsidian)
+            if (this.field_150867_a.getBlockState(this.field_150861_f.offset(this.field_150866_c, i).up(this.field_150862_g)).getBlock() != Blocks.obsidian)
             {
                 this.field_150862_g = 0;
                 break;
@@ -162,8 +162,8 @@ public class BlockPortalSize
 
             for (int j = 0; j < this.field_150862_g; ++j)
             {
-                this.field_150867_a.setBlockState(blockpos.offsetUp(j),
-                        Blocks.portal.getDefaultState().withProperty(BlockPortal.field_176550_a, this.field_150865_b), 2);
+                this.field_150867_a.setBlockState(blockpos.up(j),
+                        Blocks.portal.getDefaultState().withProperty(BlockPortal.AXIS, this.field_150865_b), 2);
             }
         }
     }

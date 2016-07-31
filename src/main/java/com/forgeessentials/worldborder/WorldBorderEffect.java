@@ -18,10 +18,19 @@ public abstract class WorldBorderEffect
         this.triggerDistance = triggerDistance;
     }
 
-    public double getTiggerDistance()
+    public double getTriggerDistance()
     {
         return triggerDistance;
     }
+
+    /**
+     * returns false if arguments are not as expected
+     * @param args
+     * @return
+     */
+    public abstract boolean provideArguments(String[] args);
+
+    public abstract String getSyntax();
 
     public void activate(WorldBorder border, EntityPlayerMP player)
     {

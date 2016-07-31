@@ -16,6 +16,7 @@ import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -99,7 +100,7 @@ public class Grave implements Loadable
         String blockName = APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_BLOCK);
         if (blockName != null && !blockName.isEmpty())
         {
-            Block b = GameData.getBlockRegistry().getObject(blockName);
+            Block b = GameData.getBlockRegistry().getObject(new ResourceLocation(blockName));
             if (b != null)
                 this.blockState = b.getDefaultState();
         }
@@ -220,7 +221,7 @@ public class Grave implements Loadable
                 .getSizeInventory()));
         player.openContainer = new ContainerChest(player.inventory, invGrave, player);
         player.openContainer.windowId = player.currentWindowId;
-        player.openContainer.addCraftingToCrafters(player);
+        player.openContainer.onCraftGuiOpened(player);
     }
 
     protected void dropItems()

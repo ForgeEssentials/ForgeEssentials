@@ -69,7 +69,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
         if (spawn == null)
             throw new TranslatedCommandException("No bed found.");
 
-        spawn = EntityPlayer.func_180467_a(player.worldObj, spawn, true);
+        spawn = EntityPlayer.getBedSpawnLocation(player.worldObj, spawn, true);
         if (spawn == null)
             throw new TranslatedCommandException("Your bed has been obstructed.");
 

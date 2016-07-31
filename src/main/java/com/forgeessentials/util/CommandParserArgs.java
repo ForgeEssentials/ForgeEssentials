@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
@@ -382,6 +384,57 @@ public class CommandParserArgs
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_INVALID_ARGUMENT, value);
         }
+    }
+
+    public static final Pattern timeFormatPattern = Pattern.compile("(\\d+)(\\w+)?");
+
+    public long parseTimeReadable() throws CommandException
+    {
+        checkTabCompletion();
+        String value = remove();
+        Matcher m = timeFormatPattern.matcher(value);
+        if (!m.matches())
+        {
+            throw new TranslatedCommandException("Invalid time format: %s", value);
+        }
+
+        long result = Long.parseLong(m.group(1));
+
+        switch (m.group(2))
+        {
+        case "s":
+        case "second":
+        case "seconds":
+            result *= 1000;
+            break;
+        case "m":
+        case "minute":
+        case "minutes":
+            result *= 1000 * 60;
+            break;
+        case "h":
+        case "hour":
+        case "hours":
+            result *= 1000 * 60 * 60;
+            break;
+        case "d":
+        case "day":
+        case "days":
+            result *= 1000 * 60 * 60 * 24;
+            break;
+        case "w":
+        case "week":
+        case "weeks":
+            result *= 1000 * 60 * 60 * 24 * 7;
+            break;
+        case "month":
+        case "months":
+            result *= 1000 * 60 * 60 * 24 * 30;
+            break;
+        default:
+            throw new TranslatedCommandException("Invalid time format: %s", value);
+        }
+        return result;
     }
 
     public void checkTabCompletion() throws CommandException

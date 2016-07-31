@@ -197,7 +197,7 @@ public class ModuleProtection
 
         // ----------------------------------------
         // Register mobs
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN + Zone.PERMISSION_ASTERIX, PermissionLevel.TRUE, "(global) Allow spawning of mobs");
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN + Zone.ALL_PERMS, PermissionLevel.TRUE, "(global) Allow spawning of mobs");
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + Zone.ALL_PERMS, PermissionLevel.TRUE,
                 "(global) Allow natural spawning of mobs (random spawn)");
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, PermissionLevel.TRUE,
@@ -386,9 +386,9 @@ public class ModuleProtection
         {
             String msg;
             if (stack.getItem() == null)
-                msg = "Error getting item permission. Stack item is null";
+                msg = "Error getting item permission. Stack item is null. Please report this error (except for TF) and try enabling FE safe-mode.";
             else
-                msg = String.format("Error getting item permission for item %s", stack.getItem().getClass().getName());
+                msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.", stack.getItem().getClass().getName());
             if (!ForgeEssentials.isSafeMode())
                 throw new RuntimeException(msg);
             LoggingHandler.felog.error(msg);

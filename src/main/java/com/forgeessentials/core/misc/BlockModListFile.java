@@ -45,10 +45,6 @@ public class BlockModListFile
                     {
                         url = mod.getMetadata().url;
                     }
-                    if (!mod.getMetadata().updateUrl.isEmpty())
-                    {
-                        url = mod.getMetadata().updateUrl;
-                    }
                     out.println(mod.getName() + ";" + mod.getVersion() + ";" + url);
                 }
             }

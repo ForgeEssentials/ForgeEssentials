@@ -15,12 +15,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -88,12 +85,12 @@ public class SignToolsModule extends ConfigLoaderBase
         {
             if (allowSignEdit && event.entityPlayer.isSneaking())
             {
-                if(event.entityPlayer.getCurrentEquippedItem().getItem()!= null)
+                if(event.entityPlayer.getCurrentEquippedItem()!= null)
                 {
                     if (event.entityPlayer.getCurrentEquippedItem().getItem().equals(Items.sign) &&
                             PermissionManager.checkPermission(event.entityPlayer, "fe.protection.use.minecraft.sign"))
                     {
-                        event.entityPlayer.func_175141_a((TileEntitySign) te);
+                        event.entityPlayer.openEditSign((TileEntitySign) te);
                         event.setCanceled(true);
                     }
                 }

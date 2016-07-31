@@ -12,7 +12,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
@@ -33,7 +32,6 @@ public class RespawnHandler
     public RespawnHandler()
     {
         MinecraftForge.EVENT_BUS.register(this);
-        FMLCommonHandler.instance().bus().register(this);
     }
 
     public static WarpPoint getSpawn(EntityPlayer player, WarpPoint location)
@@ -59,7 +57,7 @@ public class RespawnHandler
         {
             BlockPos spawn = player.getBedLocation(player.dimension);
             if (spawn != null)
-                spawn = EntityPlayer.func_180467_a(player.worldObj, spawn, true);
+                spawn = EntityPlayer.getBedSpawnLocation(player.worldObj, spawn, true);
             if (spawn != null)
             {
                 // Bed seems OK, so just return null to let default MC code handle respawn
