@@ -120,13 +120,11 @@ public class ScriptEventHandler extends ServerEventHandler
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent (priority = EventPriority.LOWEST)
     public void playerSleep(PlayerSleepInBedEvent e)
     {
-        if (e.result.equals(EntityPlayer.EnumStatus.OK))
-        {
-            APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERSLEEP,e.entityPlayer);
-        }
+        if (e.result == null || e.result.equals(EntityPlayer.EnumStatus.OK))
+            APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERSLEEP, e.entityPlayer);
     }
 
     @SubscribeEvent
