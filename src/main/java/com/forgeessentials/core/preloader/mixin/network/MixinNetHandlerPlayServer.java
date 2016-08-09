@@ -31,7 +31,6 @@ public class MixinNetHandlerPlayServer
      * Post {@link SignEditEvent} to the event bus.
      *
      * @param packet the update sign packet
-     * @param ci the callback info
      */
     @Redirect(
             method = "processUpdateSign",
@@ -41,7 +40,7 @@ public class MixinNetHandlerPlayServer
             ),
             require = 1
     )
-    private IChatComponent[] getLines(C12PacketUpdateSign packet, CallbackInfo ci)
+    private IChatComponent[] getLines(C12PacketUpdateSign packet)
     {
         SignEditEvent event = new SignEditEvent(packet.getPosition(), packet.getLines(), this.playerEntity);
         if (MinecraftForge.EVENT_BUS.post(event))
@@ -65,7 +64,7 @@ public class MixinNetHandlerPlayServer
      * @param dest the destination array
      * @param destPos starting position in the destination array
      * @param length the number of array elements to be copied
-     */
+     *
     @Redirect(
             method = "processUpdateSign",
             at = @At(
@@ -82,6 +81,7 @@ public class MixinNetHandlerPlayServer
         System.arraycopy(this.signLines, srcPos, dest, destPos, length);
         this.signLines = null;
     }
+    */
 
     /**
      * Check if the player has permission to use command blocks.

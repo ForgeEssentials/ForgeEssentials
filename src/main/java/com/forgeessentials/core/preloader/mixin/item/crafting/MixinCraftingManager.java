@@ -28,7 +28,7 @@ public abstract class MixinCraftingManager
      * @param world the world
      */
     @Overwrite
-    private ItemStack findMatchingRecipe(InventoryCrafting inventory, World world)
+    public ItemStack findMatchingRecipe(InventoryCrafting inventory, World world)
     {
         EntityPlayer player = ModuleProtection.getCraftingPlayer(inventory);
         for (IRecipe irecipe : this.recipes)

@@ -5,6 +5,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -61,7 +62,9 @@ public class SignToolsModule extends ConfigLoaderBase
             {
                 if (e.text[i].getUnformattedText().contains("&"))
                 {
-                    e.text[i] = new ChatComponentText(ChatOutputHandler.formatColors(e.text[i].getUnformattedText()));
+                    ChatComponentText text = new ChatComponentText(ChatOutputHandler.formatColors(e.text[i].getUnformattedText()));
+                    ChatOutputHandler.applyFormatting(text.getChatStyle(), ChatOutputHandler.enumChatFormattings("0123456789AaBbCcDdEeFfKkLlMmNnOoRr"));
+                    e.text[i] = text;
                 }
             }
         }
