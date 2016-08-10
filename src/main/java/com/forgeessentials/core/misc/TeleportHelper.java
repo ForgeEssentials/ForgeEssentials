@@ -129,7 +129,7 @@ public class TeleportHelper extends ServerEventHandler
             throw new TranslatedCommandException("You are not allowed to teleport from here.");
         if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_TO))
             throw new TranslatedCommandException("You are not allowed to teleport to that location.");
-        if (player.dimension != point.getDimension() && !APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_CROSSDIM))
+        if (player.dimension != point.getDimension() && (!APIRegistry.perms.checkPermission(player, TELEPORT_CROSSDIM) || !APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_CROSSDIM)))
             throw new TranslatedCommandException("You are not allowed to teleport across dimensions.");
 
         // Get and check teleport cooldown
