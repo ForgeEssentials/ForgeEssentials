@@ -46,8 +46,9 @@ For assistance in setting up a workspace to contribute to ForgeEssentials, pleas
 ForgeEssentials Team
 ================
 Active
-- [olee](https://github.com/olee) (lead developer, permissions, protection, multiworld)
+- [olee](https://github.com/olee) - lead developer, perms, protection, multiworld - currently only active as lead, not as dev
 - [luacs1998](https://github.com/luacs1998)
+- [spacebuilder2020](https://github.com/spacebuilder2020) - active newcomer (*olee: want more ppl like this guy here!*)
 
 Inactive
 - [Malkierian](https://github.com/Malkierian)
