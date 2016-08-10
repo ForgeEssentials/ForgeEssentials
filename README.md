@@ -4,7 +4,7 @@ ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEsse
 The code on this branch is for Minecraft 1.7.10.  
 **We are looking for developers. Please contact us on IRC if you are interested in contributing!**
 
-## The project is currently inactive, please don't expect timely fixes of bugs or that your ticket will be answered quickly.
+## We are few developers with not soo much time at hand - we will try to handle important bugs fast
 
 # Help
 For general help about ForgeEssentials and tutorials, please check the **[Wiki](https://github.com/ForgeEssentials/ForgeEssentials/wiki)** pages.
