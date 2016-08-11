@@ -1,49 +1,5 @@
 package com.forgeessentials.playerlogger;
 
-import java.sql.Blob;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.SingularAttribute;
-import javax.sql.rowset.serial.SerialBlob;
-
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBed;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemDoor;
-import net.minecraft.item.ItemRedstone;
-import net.minecraft.item.ItemSkull;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.WorldSettings.GameType;
-import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.ExplosionEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
-
-import org.hibernate.jpa.criteria.predicate.CompoundPredicate;
-
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -64,9 +20,9 @@ import com.forgeessentials.playerlogger.event.LogEventInteract;
 import com.forgeessentials.playerlogger.event.LogEventPlace;
 import com.forgeessentials.playerlogger.event.LogEventPlayerEvent;
 import com.forgeessentials.playerlogger.event.LogEventPostInteract;
+import com.forgeessentials.playerlogger.event.LogEventWorldLoad;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -77,6 +33,47 @@ import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBed;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemDoor;
+import net.minecraft.item.ItemRedstone;
+import net.minecraft.item.ItemSkull;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.WorldSettings.GameType;
+import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
+import org.hibernate.jpa.criteria.predicate.CompoundPredicate;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.SingularAttribute;
+import javax.sql.rowset.serial.SerialBlob;
+import java.sql.Blob;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PlayerLogger extends ServerEventHandler implements Runnable
 {
@@ -211,6 +208,14 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 {
                     em.clear();
                 }
+                try
+                {
+                    Thread.sleep(1);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -249,13 +254,13 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /**
      * <b>NEVER</b> call this and do write operations with this entity manager unless you do it in a synchronized block with this object.
-     * 
+     * <p>
      * <pre>
      * <code>synchronized (playerLogger) {
      *      playerLogger.getEntityManager().doShit();
      * }</code>
      * </pre>
-     * 
+     *
      * @return entity manager
      */
     public EntityManager getEntityManager()
@@ -447,7 +452,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         CompoundPredicate predicate = (CompoundPredicate) cb.and();
         if (area != null)
         {
-            predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(area.getDimension())));
+            predicate.getExpressions().add(cb.equal(root.<Integer>get(Action_.world.getName()), cb.literal(area.getDimension())));
             Point lp = area.getLowPoint();
             Point hp = area.getHighPoint();
             predicate.getExpressions().add(cb.between(root.get(Action_.x), cb.literal(lp.getX()), cb.literal(hp.getX())));
@@ -467,7 +472,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         CompoundPredicate predicate = (CompoundPredicate) cb.and();
         if (point != null)
         {
-            predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(point.getDimension())));
+            predicate.getExpressions().add(cb.equal(root.<Integer>get(Action_.world.getName()), cb.literal(point.getDimension())));
             predicate.getExpressions().add(cb.equal(root.get(Action_.x), cb.literal(point.getX())));
             predicate.getExpressions().add(cb.equal(root.get(Action_.y), cb.literal(point.getY())));
             predicate.getExpressions().add(cb.equal(root.get(Action_.z), cb.literal(point.getZ())));
@@ -569,15 +574,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void worldLoad(WorldEvent.Load event)
     {
-        WorldData world = em.find(WorldData.class, event.world.provider.dimensionId);
-        if (world == null)
+        if (em != null && em.find(WorldData.class, event.world.provider.dimensionId) == null)
         {
-            em.getTransaction().begin();
-            world = new WorldData();
-            world.id = event.world.provider.dimensionId;
-            world.name = event.world.provider.getDimensionName();
-            em.persist(world);
-            em.getTransaction().commit();
+            logEvent(new LogEventWorldLoad(event));
         }
     }
 
