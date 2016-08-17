@@ -277,7 +277,7 @@ public final class ScriptMethods
         if (sender instanceof EntityPlayerMP)
         	ident = UserIdent.get((EntityPlayerMP) sender);
         else
-        	ident = UserIdent.getServer("", "" + sender.getCommandSenderName().toLowerCase());
+        	ident = UserIdent.getServer(null, "$" + sender.getCommandSenderName().toLowerCase());
         String permission = args[0];
         String value = args.length > 1 ? args[1] : Zone.PERMISSION_TRUE;
         boolean result;

@@ -294,7 +294,13 @@ public class UserIdent
 
         UUID _uuid = null;
         if (uuid != null)
-            _uuid = UUID.fromString(uuid);
+            try
+            {
+                _uuid = UUID.fromString(uuid);
+            }catch (IllegalArgumentException e)
+            {
+                //If UUID is invalid, lookup by username
+            }
 
         UserIdent ident = byUuid.get(_uuid);
         if (ident == null)
