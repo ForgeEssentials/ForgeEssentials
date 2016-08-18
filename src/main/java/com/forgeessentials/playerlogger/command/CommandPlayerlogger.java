@@ -76,14 +76,44 @@ public class CommandPlayerlogger extends ParserCommandBase
                 break;
             case "filter":
                 //filter event type shown (player, command, block, explosion)
+                String subCmd3 = arguments.remove().toLowerCase();
+                switch (subCmd3)
+                {
+                case "player":
+                    break;
+                case "command":
+                    break;
+                case "block":
+                    break;
+                case "explosion":
+                    break;
+                default:
+                    throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
+                }
                 break;
             default:
-                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd2);
             }
             break;
         case "search":
             long duration = arguments.parseTimeReadable();
-            
+            if (!arguments.isEmpty())
+            {
+                subCmd2 = arguments.remove().toLowerCase();
+                switch (subCmd2)
+                {
+                case "player":
+                    break;
+                case "command":
+                    break;
+                case "block":
+                    break;
+                case "explosion":
+                    break;
+                default:
+                    throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd2);
+                }
+            }
             break;
         case "stats":
             if (arguments.isTabCompletion)
