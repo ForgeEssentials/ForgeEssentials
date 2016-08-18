@@ -67,6 +67,24 @@ public class CommandPlayerlogger extends ParserCommandBase
         String subCmd = arguments.remove().toLowerCase();
         switch (subCmd)
         {
+        case "picker":
+            String subCmd2 = arguments.remove().toLowerCase();
+            switch (subCmd2)
+            {
+            case "range":
+                //Set the lookup range of the picker tool (Clock)
+                break;
+            case "filter":
+                //filter event type shown (player, command, block, explosion)
+                break;
+            default:
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            }
+            break;
+        case "search":
+            long duration = arguments.parseTimeReadable();
+            
+            break;
         case "stats":
             if (arguments.isTabCompletion)
                 return;
