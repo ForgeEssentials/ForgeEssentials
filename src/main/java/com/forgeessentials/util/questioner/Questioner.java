@@ -3,6 +3,7 @@ package com.forgeessentials.util.questioner;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Iterator;
 
 import net.minecraft.command.ICommandSender;
 
@@ -104,9 +105,14 @@ public class Questioner extends ServerEventHandler
 
     public static synchronized void tick()
     {
-        for (Entry<ICommandSender, QuestionData> question : questions.entrySet())
-            if (question.getValue().isTimeout())
-                cancel(question.getKey());
+        Iterator<Entry<ICommandSender, QuestionData>> it = questions.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<ICommandSender, QuestionData> question = it.next();
+            if (question.getValue().isTimeout()) {
+				it.remove();
+				question.getValue().doAnswer(null);
+            }
+        }
     }
 
     public static void cancel(ICommandSender target)
