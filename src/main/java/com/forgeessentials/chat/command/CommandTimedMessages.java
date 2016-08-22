@@ -152,7 +152,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             return;
         arguments.confirm("List of messages:");
         for (int i = 0; i < messages.size(); i++)
-            arguments.sendMessage(new ChatComponentTranslation("%d: %s", i, formatMessage(messages.get(i))));
+            arguments.sendMessage(new ChatComponentTranslation(String.format("%d: %s", i, formatMessage(messages.get(i)))));
     }
 
     public void parseDelete(CommandParserArgs arguments)
