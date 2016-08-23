@@ -23,8 +23,7 @@ public class MixinBlockFire
             value = "INVOKE",
             target = "Lnet/minecraft/world/World;setBlock(IIILnet/minecraft/block/Block;II)Z"
         ),
-        cancellable = true,
-        remap = false
+        cancellable = true
     )
     public void handleTryCatchFire(World world, int x, int y, int z, int chance, Random random, int argValue1, ForgeDirection face, CallbackInfo ci)
     {
@@ -53,8 +52,7 @@ public class MixinBlockFire
             value = "INVOKE",
             target = "Lnet/minecraft/world/World;setBlockToAir(III)Z"
         ),
-        cancellable = true,
-        remap = false
+        cancellable = true
     )
     public void handleTryCatchFireAir(World world, int x, int y, int z, int chance, Random random, int argValue1, ForgeDirection face, CallbackInfo ci)
     {
@@ -75,7 +73,7 @@ public class MixinBlockFire
         locals = LocalCapture.CAPTURE_FAILEXCEPTION
     )
     public void updateTick(World world, int sourceX, int sourceY, int sourceZ, Random rnd, CallbackInfo ci, boolean isFireSource, int blockMeta,
-                           boolean isHighHumidity, byte b0, int x, int y, int z)
+                           boolean isHighHumidity, byte b0, int x, int z, int y)
     {
         //System.out.println(String.format("Mixin : Fire spreading to other block from [%d,%d,%d] to [%d,%d,%d]", sourceX, sourceY, sourceZ, x, y, z));
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Spread(world, x, y, z, sourceX, sourceY, sourceZ)))
