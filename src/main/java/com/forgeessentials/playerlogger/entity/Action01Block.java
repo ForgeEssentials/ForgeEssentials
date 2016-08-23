@@ -36,7 +36,7 @@ public class Action01Block extends Action
 
     public static enum ActionBlockType
     {
-        PLACE, BREAK, DETONATE, USE_LEFT, USE_RIGHT
+        PLACE, BREAK, DETONATE, USE_LEFT, USE_RIGHT, BURN
     }
 
 }

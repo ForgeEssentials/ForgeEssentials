@@ -41,6 +41,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
+import net.minecraftforge.fe.event.world.FireEvent;
 
 import org.hibernate.jpa.criteria.predicate.CompoundPredicate;
 
@@ -59,6 +60,7 @@ import com.forgeessentials.playerlogger.entity.PlayerData;
 import com.forgeessentials.playerlogger.entity.PlayerData_;
 import com.forgeessentials.playerlogger.entity.WorldData;
 import com.forgeessentials.playerlogger.event.LogEventBreak;
+import com.forgeessentials.playerlogger.event.LogEventBurn;
 import com.forgeessentials.playerlogger.event.LogEventCommand;
 import com.forgeessentials.playerlogger.event.LogEventExplosion;
 import com.forgeessentials.playerlogger.event.LogEventInteract;
@@ -660,6 +662,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 return;
         }
         logEvent(new LogEventPostInteract(event));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void fireEvent(FireEvent.Destroy event)
+    {
+        logEvent(new LogEventBurn(event));
     }
 
     /* ------------------------------------------------------------ */
