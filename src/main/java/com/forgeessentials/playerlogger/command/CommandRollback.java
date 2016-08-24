@@ -143,7 +143,7 @@ public class CommandRollback extends ParserCommandBase
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
 
         if (!args.isEmpty()) {
-            int seconds = parseInt(args.sender, args.remove());
+            int seconds = (int)args.parseTimeReadable();
             rb.step(backward ? -seconds : seconds);
         }
         else if (backward)
