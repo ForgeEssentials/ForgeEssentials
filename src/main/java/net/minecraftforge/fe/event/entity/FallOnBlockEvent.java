@@ -21,7 +21,7 @@ public class FallOnBlockEvent extends EntityEvent
     
     public final Block block;
     
-    public float speed;
+    public float fallHeight;
 
     public FallOnBlockEvent(Entity entity, World world, int x, int y, int z, Block block, float speed)
     {
@@ -31,7 +31,7 @@ public class FallOnBlockEvent extends EntityEvent
         this.y = y;
         this.z = z;
         this.block = block;
-        this.speed = speed;
+        this.fallHeight = speed;
     }
 
 }
