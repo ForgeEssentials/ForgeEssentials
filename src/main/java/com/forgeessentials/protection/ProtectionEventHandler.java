@@ -328,6 +328,8 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
+        if (event.fallHeight < 0.5) // Permission checks only for at least 1-block high fall events
+            return;
 
         EntityPlayerMP player = (event.entity instanceof EntityPlayerMP) ? (EntityPlayerMP) event.entity : null;
         UserIdent ident = player == null ? null : UserIdent.get(player);

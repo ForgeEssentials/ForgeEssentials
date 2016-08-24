@@ -22,16 +22,18 @@ public abstract class MixinBlock extends Block
     }
 
     @Inject(target = "onFallenUpon(Lnet/minecraft/world/World;IIILnet/minecraft/entity/Entity;F)V", aliases = "onFallenUpon=func_149746_a", at = @At("HEAD"))
-    protected void onFallenUpon_event(World world, int x, int y, int z, Entity entity, float speed, CallbackInfo ci)
+    protected void onFallenUpon_event(World world, int x, int y, int z, Entity entity, float fallHeight, CallbackInfo ci)
     {
-        if (!world.isRemote && speed > 0.5)
+        // Going down a slab: speed ~ 0.4
+        // Going down a block: speed ~ 0.7
+        if (!world.isRemote && fallHeight > 0.2)
         {
-            FallOnBlockEvent event = new FallOnBlockEvent(entity, world, x, y, z, this, speed);
+            FallOnBlockEvent event = new FallOnBlockEvent(entity, world, x, y, z, this, fallHeight);
             if (MinecraftForge.EVENT_BUS.post(event))
             {
                 ci.doReturn();
             }
-            speed = event.speed;
+            fallHeight = event.fallHeight;
         }
     }
 
