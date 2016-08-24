@@ -1,5 +1,8 @@
 package com.forgeessentials.playerlogger.command;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -109,6 +112,7 @@ public class CommandRollback extends ParserCommandBase
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void startRollback(CommandParserArgs args)
     {
         args.checkPermission(PERM_PREVIEW);
@@ -122,10 +126,30 @@ public class CommandRollback extends ParserCommandBase
         Selection area = SelectionHandler.getSelection(args.senderPlayer);
         if (area == null)
             throw new TranslatedCommandException("No selection available. Please select a region first.");
+        
+        int step = -60;
+        if (!args.isEmpty()) {
+            String time = args.remove();
+            try
+            {
+                SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+                Date parsedDate = format.parse(time);
+                Date currentDate = new Date();
+                Date date = new Date();
+                date.setSeconds(parsedDate.getSeconds());
+                date.setMinutes(parsedDate.getMinutes());
+                date.setHours(parsedDate.getHours());
+                step = (int)((date.getTime() - currentDate.getTime()) / 1000);
+            }
+            catch (ParseException e)
+            {
+                throw new TranslatedCommandException("Invalid time format: %s", time);
+            }
+        }
 
         RollbackInfo rb = new RollbackInfo(args.senderPlayer, area);
         rollbacks.put(args.senderPlayer.getPersistentID(), rb);
-        rb.stepBackward();
+        rb.step(step);
         rb.previewChanges();
 
         ChatOutputHandler.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
@@ -136,7 +160,7 @@ public class CommandRollback extends ParserCommandBase
         args.checkPermission(PERM_PREVIEW);
 
         if (!args.isEmpty())
-            sec = (int) args.parseTimeReadable() * sec;
+            sec = (int) (args.parseTimeReadable() / 1000) * sec;
 
         if (args.isTabCompletion)
             return;
@@ -228,7 +252,8 @@ public class CommandRollback extends ParserCommandBase
 
     private static void help(ICommandSender sender)
     {
-        ChatOutputHandler.chatConfirmation(sender, "/rollback [minutes]: Start rollback");
+        ChatOutputHandler.chatConfirmation(sender, "/rollback: Start rollback");
+        ChatOutputHandler.chatConfirmation(sender, "/rollback start [time]: Start rollback at specified time");
         ChatOutputHandler.chatConfirmation(sender, "/rollback + [sec]: Go forward in time");
         ChatOutputHandler.chatConfirmation(sender, "/rollback - [sec]: Go back in time");
         ChatOutputHandler.chatConfirmation(sender, "/rollback play [speed]: Playback changes like a video");

@@ -34,8 +34,6 @@ public class RollbackInfo
 
     List<Action01Block> changes;
 
-    private int timeStep = -60;
-
     public PlaybackTask task;
 
     public RollbackInfo(EntityPlayerMP player, Selection area)
@@ -43,22 +41,6 @@ public class RollbackInfo
         this.player = player;
         this.area = area;
         this.setTime(new Date());
-    }
-
-    @SuppressWarnings("deprecation")
-    public void stepBackward()
-    {
-        timeStep *= timeStep < 0 ? 1.25 : -0.25;
-        timeStep -= 1;
-        getTime().setSeconds(getTime().getSeconds() + timeStep);
-    }
-
-    @SuppressWarnings("deprecation")
-    public void stepForward()
-    {
-        timeStep *= timeStep > 0 ? 1.25 : -0.25;
-        timeStep += 1;
-        getTime().setSeconds(getTime().getSeconds() + timeStep);
     }
 
     @SuppressWarnings("deprecation")
