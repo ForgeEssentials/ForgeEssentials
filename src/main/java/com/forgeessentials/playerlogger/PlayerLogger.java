@@ -1,38 +1,28 @@
 package com.forgeessentials.playerlogger;
 
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.WorldArea;
-import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.playerlogger.entity.Action;
-import com.forgeessentials.playerlogger.entity.Action01Block;
-import com.forgeessentials.playerlogger.entity.Action02Command;
-import com.forgeessentials.playerlogger.entity.Action03PlayerEvent.PlayerEventType;
-import com.forgeessentials.playerlogger.entity.Action_;
-import com.forgeessentials.playerlogger.entity.BlockData;
-import com.forgeessentials.playerlogger.entity.BlockData_;
-import com.forgeessentials.playerlogger.entity.PlayerData;
-import com.forgeessentials.playerlogger.entity.PlayerData_;
-import com.forgeessentials.playerlogger.entity.WorldData;
-import com.forgeessentials.playerlogger.event.LogEventBreak;
-import com.forgeessentials.playerlogger.event.LogEventCommand;
-import com.forgeessentials.playerlogger.event.LogEventExplosion;
-import com.forgeessentials.playerlogger.event.LogEventInteract;
-import com.forgeessentials.playerlogger.event.LogEventPlace;
-import com.forgeessentials.playerlogger.event.LogEventPlayerEvent;
-import com.forgeessentials.playerlogger.event.LogEventPostInteract;
-import com.forgeessentials.playerlogger.event.LogEventWorldLoad;
-import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.LoggingHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.registry.GameData;
-import cpw.mods.fml.relauncher.Side;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import java.sql.Blob;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.SingularAttribute;
+import javax.sql.rowset.serial.SerialBlob;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -51,29 +41,45 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
+
 import org.hibernate.jpa.criteria.predicate.CompoundPredicate;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.SingularAttribute;
-import javax.sql.rowset.serial.SerialBlob;
-import java.sql.Blob;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldArea;
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.playerlogger.entity.Action;
+import com.forgeessentials.playerlogger.entity.Action01Block;
+import com.forgeessentials.playerlogger.entity.Action02Command;
+import com.forgeessentials.playerlogger.entity.Action03PlayerEvent.PlayerEventType;
+import com.forgeessentials.playerlogger.entity.Action_;
+import com.forgeessentials.playerlogger.entity.BlockData;
+import com.forgeessentials.playerlogger.entity.BlockData_;
+import com.forgeessentials.playerlogger.entity.PlayerData;
+import com.forgeessentials.playerlogger.entity.PlayerData_;
+import com.forgeessentials.playerlogger.entity.WorldData;
+import com.forgeessentials.playerlogger.event.LogEventBreak;
+import com.forgeessentials.playerlogger.event.LogEventCommand;
+import com.forgeessentials.playerlogger.event.LogEventExplosion;
+import com.forgeessentials.playerlogger.event.LogEventInteract;
+import com.forgeessentials.playerlogger.event.LogEventPlace;
+import com.forgeessentials.playerlogger.event.LogEventPlayerEvent;
+import com.forgeessentials.playerlogger.event.LogEventPlayerPositions;
+import com.forgeessentials.playerlogger.event.LogEventPostInteract;
+import com.forgeessentials.playerlogger.event.LogEventWorldLoad;
+import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.LoggingHandler;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.eventhandler.Event.Result;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.relauncher.Side;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 public class PlayerLogger extends ServerEventHandler implements Runnable
 {
@@ -92,29 +98,38 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /* ------------------------------------------------------------ */
 
-    private ConcurrentLinkedQueue<PlayerLoggerEvent<?>> eventQueue = new ConcurrentLinkedQueue<PlayerLoggerEvent<?>>();
+    private ConcurrentLinkedQueue<PlayerLoggerEvent<?>> eventQueue = new ConcurrentLinkedQueue<>();
 
     /* ------------------------------------------------------------ */
 
     /**
      * Closes any existing database connection and frees resources
      */
-    protected void close()
+    protected synchronized void close()
     {
+        TaskRegistry.remove(playerPositionTimer);
+
+        eventQueue.clear();
         blockCache.clear();
         blockTypeCache.clear();
         playerCache.clear();
 
         if (em != null && em.isOpen())
+        {
             em.close();
+            em = null;
+        }
         if (entityManagerFactory != null && entityManagerFactory.isOpen())
+        {
             entityManagerFactory.close();
+            entityManagerFactory = null;
+        }
     }
 
     /**
      * Initialize the database connection
      */
-    protected void loadDatabase()
+    protected synchronized void loadDatabase()
     {
         close();
 
@@ -144,6 +159,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         // entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_eclipselink_" +
         // PlayerLoggerConfig.databaseType, properties);
         em = entityManagerFactory.createEntityManager();
+
+        if (PlayerLoggerConfig.playerPositionInterval > 0)
+            TaskRegistry.scheduleRepeated(playerPositionTimer, (int) (PlayerLoggerConfig.playerPositionInterval * 1000));
     }
 
     @Override
@@ -208,20 +226,22 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 {
                     em.clear();
                 }
-                try
-                {
-                    Thread.sleep(1);
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
+            }
+            try
+            {
+                // Try to give other threads some time to enter synchronized blocks
+                Thread.sleep(1);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
             }
         }
     }
 
     protected void startThread()
     {
+        // TODO: Instead of creating a new thread all the time, try to use one single thread in waiting mode
         if (thread != null && thread.isAlive())
             return;
         thread = new Thread(this, "Playerlogger");
@@ -230,22 +250,19 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     // ============================================================
 
-    public void purgeOldData(Date startTime)
+    public synchronized void purgeOldData(Date startTime)
     {
         String hql = "delete from Action where time < :startTime";
         Query q = em.createQuery(hql).setParameter("startTime", startTime);
-        synchronized (this)
+        try
         {
-            try
-            {
-                em.getTransaction().begin();
-                int count = q.executeUpdate();
-                LoggingHandler.felog.info(String.format("Purged %d old Playerlogger entries", count));
-            }
-            finally
-            {
-                em.getTransaction().commit();
-            }
+            em.getTransaction().begin();
+            int count = q.executeUpdate();
+            LoggingHandler.felog.info(String.format("Purged %d old Playerlogger entries", count));
+        }
+        finally
+        {
+            em.getTransaction().commit();
         }
     }
 
@@ -255,6 +272,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /**
      * <b>NEVER</b> call this and do write operations with this entity manager unless you do it in a synchronized block with this object.
      * <p>
+     * 
      * <pre>
      * <code>synchronized (playerLogger) {
      *      playerLogger.getEntityManager().doShit();
@@ -452,7 +470,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         CompoundPredicate predicate = (CompoundPredicate) cb.and();
         if (area != null)
         {
-            predicate.getExpressions().add(cb.equal(root.<Integer>get(Action_.world.getName()), cb.literal(area.getDimension())));
+            predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(area.getDimension())));
             Point lp = area.getLowPoint();
             Point hp = area.getHighPoint();
             predicate.getExpressions().add(cb.between(root.get(Action_.x), cb.literal(lp.getX()), cb.literal(hp.getX())));
@@ -472,7 +490,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         CompoundPredicate predicate = (CompoundPredicate) cb.and();
         if (point != null)
         {
-            predicate.getExpressions().add(cb.equal(root.<Integer>get(Action_.world.getName()), cb.literal(point.getDimension())));
+            predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(point.getDimension())));
             predicate.getExpressions().add(cb.equal(root.get(Action_.x), cb.literal(point.getX())));
             predicate.getExpressions().add(cb.equal(root.get(Action_.y), cb.literal(point.getY())));
             predicate.getExpressions().add(cb.equal(root.get(Action_.z), cb.literal(point.getZ())));
@@ -571,13 +589,20 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /* ------------------------------------------------------------ */
     /* World events */
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public synchronized void worldLoad(WorldEvent.Load event)
-    {
-        if (em != null && em.find(WorldData.class, event.world.provider.dimensionId) == null)
+    protected Runnable playerPositionTimer = new Runnable() {
+        @Override
+        public void run()
         {
-            logEvent(new LogEventWorldLoad(event));
+            logEvent(new LogEventPlayerPositions());
+            startThread();
         }
+    };
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void worldLoad(WorldEvent.Load event)
+    {
+        logEvent(new LogEventWorldLoad(event));
+        startThread();
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

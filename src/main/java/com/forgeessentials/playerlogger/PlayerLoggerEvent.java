@@ -14,9 +14,7 @@ import com.forgeessentials.playerlogger.entity.BlockData;
 import com.forgeessentials.playerlogger.entity.PlayerData;
 import com.forgeessentials.playerlogger.entity.WorldData;
 
-import cpw.mods.fml.common.eventhandler.Event;
-
-public abstract class PlayerLoggerEvent<T extends Event>
+public abstract class PlayerLoggerEvent<T>
 {
     public Date date;
 

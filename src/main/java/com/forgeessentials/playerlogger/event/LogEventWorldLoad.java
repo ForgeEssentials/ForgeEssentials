@@ -1,14 +1,12 @@
 package com.forgeessentials.playerlogger.event;
 
-import com.forgeessentials.playerlogger.PlayerLoggerEvent;
-import com.forgeessentials.playerlogger.entity.WorldData;
-import net.minecraftforge.event.world.WorldEvent;
-
 import javax.persistence.EntityManager;
 
-/**
- * Created by spacebuilder2020 on 8/10/2016.
- */
+import net.minecraftforge.event.world.WorldEvent;
+
+import com.forgeessentials.playerlogger.PlayerLoggerEvent;
+import com.forgeessentials.playerlogger.entity.WorldData;
+
 public class LogEventWorldLoad extends PlayerLoggerEvent<WorldEvent.Load>
 {
 
@@ -16,12 +14,17 @@ public class LogEventWorldLoad extends PlayerLoggerEvent<WorldEvent.Load>
     {
         super(event);
     }
+    
     @Override
     public void process(EntityManager em)
     {
-        WorldData world = new WorldData();
-        world.id = event.world.provider.dimensionId;
-        world.name = event.world.provider.getDimensionName();
-        em.persist(world);
+        if (em != null && em.find(WorldData.class, event.world.provider.dimensionId) == null)
+        {
+            WorldData world = new WorldData();
+            world.id = event.world.provider.dimensionId;
+            world.name = event.world.provider.getDimensionName();
+            em.persist(world);
+        }
     }
+    
 }

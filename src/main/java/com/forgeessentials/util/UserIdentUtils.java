@@ -1,10 +1,5 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.util.output.LoggingHandler;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-
-import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,11 +7,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
-/**
- * Created by alexa on 7/9/2016.
- */
+import javax.net.ssl.HttpsURLConnection;
+
+import com.forgeessentials.util.output.LoggingHandler;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+
 public class UserIdentUtils
 {
+
     public static UUID hexStringToUUID(String s)
     {
         if (s.length() != 32)
@@ -61,25 +60,26 @@ public class UserIdentUtils
             URL uri = new URL(url);
             HttpsURLConnection huc = (HttpsURLConnection) uri.openConnection();
             InputStream is;
-            JsonReader jr = new JsonReader(new InputStreamReader(is = huc.getInputStream()));
-            if (is.available() > 0 && jr.hasNext())
+            try (JsonReader jr = new JsonReader(new InputStreamReader(is = huc.getInputStream())))
             {
-                jr.beginObject();
-                String name = null;
+                if (is.available() > 0 && jr.hasNext())
+                {
+                    jr.beginObject();
+                    String name = null;
 
-                while (jr.hasNext())
-                    if (jr.peek() == JsonToken.NAME)
-                        name = jr.nextName();
-                    else
-                    {
-                        if (jr.peek() == JsonToken.STRING)
-                            if (name.equals(id))
-                                return jr.nextString();
-                        name = null;
-                    }
-                jr.endObject();
+                    while (jr.hasNext())
+                        if (jr.peek() == JsonToken.NAME)
+                            name = jr.nextName();
+                        else
+                        {
+                            if (jr.peek() == JsonToken.STRING)
+                                if (name.equals(id))
+                                    return jr.nextString();
+                            name = null;
+                        }
+                    jr.endObject();
+                }
             }
-
             return null;
         }
         catch (MalformedURLException e)
@@ -92,4 +92,5 @@ public class UserIdentUtils
         }
         return null;
     }
+
 }

@@ -2,11 +2,10 @@ package com.forgeessentials.playerlogger.event;
 
 import java.sql.Blob;
 
-import com.forgeessentials.playerlogger.PlayerLogger;
-
 import net.minecraft.block.Block;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import com.forgeessentials.playerlogger.PlayerLogger;
 
 public class CachedBlockData
 {

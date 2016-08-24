@@ -13,10 +13,12 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.commons.selections.Selection;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLogger;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.Lists;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -59,13 +61,21 @@ public class RollbackInfo
         getTime().setSeconds(getTime().getSeconds() + timeStep);
     }
 
+    @SuppressWarnings("deprecation")
+    public void step(int seconds)
+    {
+        getTime().setSeconds(getTime().getSeconds() + seconds);
+    }
+
     public void previewChanges()
     {
+        ChatOutputHandler.chatNotification(player, Translator.format("Showing changes before %s", time.toString()));
+        
         List<Action01Block> lastChanges = changes;
         if (lastChanges == null)
             lastChanges = new ArrayList<>();
 
-        changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(area, getTime(), null, 0);
+        changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(area, time, null, 0);
         if (lastChanges.size() < changes.size())
         {
             for (int i = lastChanges.size(); i < changes.size(); i++)
@@ -177,7 +187,7 @@ public class RollbackInfo
         @SuppressWarnings("deprecation")
         public void run()
         {
-            rb.getTime().setSeconds(rb.getTime().getSeconds() - speed);
+            rb.getTime().setSeconds(rb.getTime().getSeconds() + speed);
             rb.previewChanges();
         }
 

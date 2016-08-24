@@ -1,17 +1,18 @@
 package com.forgeessentials.playerlogger.event;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import net.minecraft.block.material.Material;
+import net.minecraft.world.ChunkPosition;
+import net.minecraftforge.event.world.ExplosionEvent;
+
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 import com.forgeessentials.playerlogger.entity.WorldData;
-import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
-import net.minecraft.world.ChunkPosition;
-import net.minecraftforge.event.world.ExplosionEvent;
-
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate>
 {

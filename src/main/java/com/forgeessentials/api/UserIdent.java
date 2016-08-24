@@ -1,13 +1,11 @@
 package com.forgeessentials.api;
 
-import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.UserIdentUtils;
-import com.forgeessentials.util.output.LoggingHandler;
-import com.google.gson.annotations.Expose;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.mojang.authlib.GameProfile;
-import cpw.mods.fml.common.eventhandler.Event;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,17 +16,12 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.UserIdentUtils;
+import com.google.gson.annotations.Expose;
+import com.mojang.authlib.GameProfile;
+
+import cpw.mods.fml.common.eventhandler.Event;
 
 public class UserIdent
 {
