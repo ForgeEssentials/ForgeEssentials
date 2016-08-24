@@ -35,7 +35,9 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
     }
 
     public Map<EntityPlayer, LoggerCheckInfo> playerInfo = new WeakHashMap<>();
-
+    public static int pickerRange = 1;
+    public static int eventType  = 0b1111;
+    public static String searchCriteria = "";
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {

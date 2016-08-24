@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.persistence.TypedQuery;
 
+import com.forgeessentials.playerlogger.PlayerLoggerEvent;
+import com.forgeessentials.playerlogger.PlayerLoggerEventHandler;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
@@ -73,22 +75,38 @@ public class CommandPlayerlogger extends ParserCommandBase
             {
             case "range":
                 //Set the lookup range of the picker tool (Clock)
+                PlayerLoggerEventHandler.pickerRange = arguments.parseInt();
+
                 break;
             case "filter":
                 //filter event type shown (player, command, block, explosion)
-                String subCmd3 = arguments.remove().toLowerCase();
-                switch (subCmd3)
+                PlayerLoggerEventHandler.eventType = 0;
+                while (!arguments.isEmpty())
                 {
-                case "player":
-                    break;
-                case "command":
-                    break;
-                case "block":
-                    break;
-                case "explosion":
-                    break;
-                default:
-                    throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
+                    String subCmd3 = arguments.remove().toLowerCase();
+                    switch (subCmd3)
+                    {
+                    case "player":
+                        PlayerLoggerEventHandler.eventType |= 0b1;
+                        break;
+                    case "command":
+                        PlayerLoggerEventHandler.eventType |= 0b01;
+                        break;
+                    case "block":
+                        PlayerLoggerEventHandler.eventType |= 0b001;
+                        break;
+                    case "explosion":
+                        PlayerLoggerEventHandler.eventType |= 0b0001;
+                        break;
+                    case "all":
+                        PlayerLoggerEventHandler.eventType = 0b1111;
+                        break;
+                    default:
+                        if (arguments.isEmpty())
+                            PlayerLoggerEventHandler.searchCriteria = subCmd3;
+                        else
+                            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
+                    }
                 }
                 break;
             default:
@@ -97,23 +115,37 @@ public class CommandPlayerlogger extends ParserCommandBase
             break;
         case "search":
             long duration = arguments.parseTimeReadable();
-            if (!arguments.isEmpty())
+            //filter event type shown (player, command, block, explosion)
+            PlayerLoggerEventHandler.eventType = 0;
+            while (!arguments.isEmpty())
             {
-                subCmd2 = arguments.remove().toLowerCase();
-                switch (subCmd2)
+                String subCmd3 = arguments.remove().toLowerCase();
+                switch (subCmd3)
                 {
                 case "player":
+                    PlayerLoggerEventHandler.eventType |= 0b1;
                     break;
                 case "command":
+                    PlayerLoggerEventHandler.eventType |= 0b01;
                     break;
                 case "block":
+                    PlayerLoggerEventHandler.eventType |= 0b001;
                     break;
                 case "explosion":
+                    PlayerLoggerEventHandler.eventType |= 0b0001;
+                    break;
+                case "all":
+                    PlayerLoggerEventHandler.eventType = 0b1111;
                     break;
                 default:
-                    throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd2);
+                    if (arguments.isEmpty())
+                        PlayerLoggerEventHandler.searchCriteria = subCmd3;
+                    else
+                        throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
                 }
             }
+
+
             break;
         case "stats":
             if (arguments.isTabCompletion)
