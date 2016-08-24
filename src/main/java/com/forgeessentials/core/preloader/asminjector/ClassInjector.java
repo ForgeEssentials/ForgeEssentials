@@ -30,7 +30,9 @@ public class ClassInjector
 
     protected ClassNode injectorClass;
 
-    protected List<String> classes;
+    protected List<String> classes = new ArrayList<>();
+
+    protected List<String> excludedClasses = new ArrayList<>();
 
     protected Map<String, Set<MethodInjector>> injectors = new HashMap<>();
 
@@ -45,7 +47,7 @@ public class ClassInjector
             throw new IllegalInjectorException("Missing @" + Mixin.class.getSimpleName() + " annotation");
 
         // Initialize class filter
-        classes = ASMUtil.getAnnotationValue(aMain, "targets");
+        classes = ASMUtil.getAnnotationValue(aMain, "classNames");
         if (classes == null)
             classes = new ArrayList<>();
 
@@ -54,6 +56,12 @@ public class ClassInjector
         if (classTypes != null)
             for (Type type : classTypes)
                 classes.add(type.getClassName());
+
+        // Initialize exclude filter
+        List<Type> excludedClassTypes = ASMUtil.getAnnotationValue(aMain, "exclude");
+        if (excludedClassTypes != null)
+            for (Type type : excludedClassTypes)
+                excludedClasses.add(type.getClassName());
 
         log.info(String.format("Scanning injector class %s", classNode.name));
 
@@ -75,7 +83,7 @@ public class ClassInjector
             if (useAliases)
                 aliases = ASMUtil.keyValueListToMap(ASMUtil.<List<String>> getAnnotationValue(aInject, "aliases"));
             else
-                aliases = new HashMap<String, String>();
+                aliases = new HashMap<>();
             if (useAliases)
                 injectTarget = replaceAliases(injectTarget, aliases);
 
@@ -195,13 +203,13 @@ public class ClassInjector
     public boolean handles(String className)
     {
         String normalizedName = ASMUtil.javaName(className);
+        if (excludedClasses.contains(normalizedName))
+            return false;
+        if (classes.size() == 0)
+            return true;
         for (String cls : classes)
-        {
-            if (cls.equals("*"))
-                return true;
             if (normalizedName.equals(cls))
                 return true;
-        }
         return false;
     }
 

@@ -456,7 +456,7 @@ public class MethodInjector implements Comparable<MethodInjector>
      */
     private synchronized void createLabelMappings()
     {
-        labelMappings = new HashMap<LabelNode, LabelNode>();
+        labelMappings = new HashMap<>();
         for (AbstractInsnNode i = injector.instructions.getFirst(); i != null; i = i.getNext())
             if (i instanceof LabelNode)
                 labelMappings.put((LabelNode) i, new LabelNode());

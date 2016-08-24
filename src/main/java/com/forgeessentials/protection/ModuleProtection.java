@@ -84,6 +84,7 @@ public class ModuleProtection
     public final static String PERM_BREAK = BASE_PERM + ".break";
     public final static String PERM_EXPLODE = BASE_PERM + ".explode";
     public final static String PERM_PLACE = BASE_PERM + ".place";
+    public final static String PERM_TRAMPLE = BASE_PERM + ".trample";
     public final static String PERM_FIRE = BASE_PERM + ".fire";
     public final static String PERM_FIRE_DESTROY = PERM_FIRE + ".destroy";
     public final static String PERM_FIRE_SPREAD = PERM_FIRE + ".spread";
@@ -256,6 +257,7 @@ public class ModuleProtection
         // Register blocks
         APIRegistry.perms.registerPermission(PERM_BREAK + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow breaking blocks");
         APIRegistry.perms.registerPermission(PERM_PLACE + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow placing blocks");
+        APIRegistry.perms.registerPermission(PERM_TRAMPLE + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow trampling on blocks");
         APIRegistry.perms.registerPermission(PERM_EXPLODE + Zone.ALL_PERMS, PermissionLevel.TRUE, "(global) Allows blocks to explode");
         APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow interacting with blocks (button, chest, workbench)");
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
@@ -264,6 +266,7 @@ public class ModuleProtection
             String blockName = block.getLocalizedName();
             APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, PermissionLevel.TRUE, "BREAK " + blockName);
             APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, PermissionLevel.TRUE, "PLACE " + blockName);
+            APIRegistry.perms.registerPermission(PERM_TRAMPLE + blockPerm, PermissionLevel.TRUE, "PLACE " + blockName);
             APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, PermissionLevel.TRUE, "INTERACT " + blockName);
             APIRegistry.perms.registerPermission(PERM_EXPLODE + blockPerm, PermissionLevel.TRUE, "EXPLODE " + blockName);
         }
@@ -368,6 +371,11 @@ public class ModuleProtection
     public static String getBlockBreakPermission(Block block, int meta)
     {
         return PERM_BREAK + "." + getBlockPermission(block, meta);
+    }
+
+    public static String getBlockTramplePermission(Block block, int meta)
+    {
+        return PERM_TRAMPLE + "." + getBlockPermission(block, meta);
     }
 
     public static String getBlockPlacePermission(Block block, int meta)

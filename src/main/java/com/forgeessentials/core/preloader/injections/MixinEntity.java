@@ -11,7 +11,7 @@ import com.forgeessentials.core.preloader.asminjector.annotation.At;
 import com.forgeessentials.core.preloader.asminjector.annotation.Inject;
 import com.forgeessentials.core.preloader.asminjector.annotation.Mixin;
 
-@Mixin(value = {}, targets = "*")
+@Mixin(exclude = { Entity.class })
 public abstract class MixinEntity extends Entity
 {
 
@@ -20,7 +20,7 @@ public abstract class MixinEntity extends Entity
         super(world);
     }
 
-    @Inject(target = "attackEntityFrom(Lnet/minecraft/util/DamageSource;F)Z", aliases = "attackEntityFrom=func_70097_a", at = @At("HEAD") )
+    @Inject(target = "attackEntityFrom(Lnet/minecraft/util/DamageSource;F)Z", aliases = "attackEntityFrom=func_70097_a", at = @At("HEAD"))
     protected void attackEntityFrom_event(DamageSource damageSource, float damage, CallbackInfo ci)
     {
         EntityAttackedEvent event = new EntityAttackedEvent(this, damageSource, damage);
