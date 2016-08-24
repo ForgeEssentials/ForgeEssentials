@@ -156,7 +156,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             // living -> player (fall-damage, mob, dispenser, lava)
             EntityPlayer target = (EntityPlayer) event.entityLiving;
             {
-                String permission = ModuleProtection.PERM_DAMAGE_BY + "." + event.source.damageType;
+                String permission = event.source.isExplosion() ? ModuleProtection.PERM_DAMAGE_BY + ".explosion" : ModuleProtection.PERM_DAMAGE_BY + "." + event.source.damageType;
                 ModuleProtection.debugPermission(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
@@ -255,7 +255,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (PlayerInfo.get(ident).getHasFEClient())
             {
                 int blockId = GameData.getBlockRegistry().getId(block);
-                Set<Integer> ids = new HashSet<Integer>();
+                Set<Integer> ids = new HashSet<>();
                 ids.add(blockId);
                 NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, null, ids), ident.getPlayerMP());
             }
@@ -435,7 +435,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
             {
                 int itemId = GameData.getItemRegistry().getId(stack.getItem());
-                Set<Integer> ids = new HashSet<Integer>();
+                Set<Integer> ids = new HashSet<>();
                 ids.add(itemId);
                 NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, ids, null), ident.getPlayerMP());
             }
@@ -729,7 +729,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!PlayerInfo.get(ident).getHasFEClient())
             return;
 
-        Set<Integer> placeIds = new HashSet<Integer>();
+        Set<Integer> placeIds = new HashSet<>();
 
         ModulePermissions.permissionHelper.disableDebugMode(true);
 

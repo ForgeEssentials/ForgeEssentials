@@ -127,12 +127,25 @@ public class ModuleProtection
             EntityIronGolem.class, EntitySnowman.class,
             // EntityWaterMob
             EntitySquid.class,
-    /* -- end of list -- */
+            /* -- end of list -- */
     };
 
-    private static final DamageSource[] damageByTypes = new DamageSource[] { DamageSource.anvil, DamageSource.cactus, DamageSource.drown, DamageSource.fall,
-            DamageSource.fallingBlock, DamageSource.generic, DamageSource.inFire, DamageSource.inWall, DamageSource.lava, DamageSource.magic,
-            DamageSource.onFire, DamageSource.outOfWorld, DamageSource.starve, DamageSource.wither };
+    private static final DamageSource[] damageByTypes = new DamageSource[] {
+        DamageSource.anvil,
+        DamageSource.cactus,
+        DamageSource.drown,
+        DamageSource.fall,
+        DamageSource.fallingBlock,
+        DamageSource.generic,
+        DamageSource.inFire,
+        DamageSource.inWall,
+        DamageSource.lava,
+        DamageSource.magic,
+        DamageSource.onFire,
+        DamageSource.outOfWorld,
+        DamageSource.starve,
+        DamageSource.wither,
+    };
 
     public static Map<UUID, String> debugModePlayers = new HashMap<>();
 
@@ -195,6 +208,7 @@ public class ModuleProtection
         {
             APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + dmgType.getDamageType(), PermissionLevel.TRUE);
         }
+        APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + ".explosion", PermissionLevel.TRUE);
 
         // ----------------------------------------
         // Register mobs
@@ -389,7 +403,8 @@ public class ModuleProtection
             if (stack.getItem() == null)
                 msg = "Error getting item permission. Stack item is null. Please report this error (except for TF) and try enabling FE safe-mode.";
             else
-                msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.", stack.getItem().getClass().getName());
+                msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.",
+                        stack.getItem().getClass().getName());
             if (!ForgeEssentials.isSafeMode())
                 throw new RuntimeException(msg, e);
             LoggingHandler.felog.error(msg);
