@@ -142,7 +142,11 @@ public class CommandRollback extends ParserCommandBase
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
 
-        if (backward)
+        if (!args.isEmpty()) {
+            int seconds = (int)args.parseTimeReadable() / 1000;
+            rb.step(backward ? -seconds : seconds);
+        }
+        else if (backward)
             rb.stepBackward();
         else
             rb.stepForward();
@@ -233,9 +237,9 @@ public class CommandRollback extends ParserCommandBase
 
     private static void help(ICommandSender sender)
     {
-        ChatOutputHandler.chatConfirmation(sender, "/rollback [minutes]: Start rollback");
-        ChatOutputHandler.chatConfirmation(sender, "/rollback + [min] [sec]: Go back in time");
-        ChatOutputHandler.chatConfirmation(sender, "/rollback - [min] [sec]: Go forward in time");
+        ChatOutputHandler.chatConfirmation(sender, "/rollback: Start rollback");
+        ChatOutputHandler.chatConfirmation(sender, "/rollback + [duration]: Go back in time");
+        ChatOutputHandler.chatConfirmation(sender, "/rollback - [duration]: Go forward in time");
         ChatOutputHandler.chatConfirmation(sender, "/rollback confirm: Confirm changes");
         ChatOutputHandler.chatConfirmation(sender, "/rollback cancel: Cancel rollback");
     }

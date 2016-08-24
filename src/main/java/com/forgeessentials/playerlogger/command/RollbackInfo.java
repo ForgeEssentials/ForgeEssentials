@@ -43,20 +43,24 @@ public class RollbackInfo
         this.setTime(new Date());
     }
 
-    @SuppressWarnings("deprecation")
     public void stepBackward()
     {
         timeStep *= timeStep < 0 ? 1.25 : -0.25;
         timeStep -= 1;
-        getTime().setSeconds(getTime().getSeconds() + timeStep);
+        step(timeStep);
     }
 
-    @SuppressWarnings("deprecation")
     public void stepForward()
     {
         timeStep *= timeStep > 0 ? 1.25 : -0.25;
         timeStep += 1;
-        getTime().setSeconds(getTime().getSeconds() + timeStep);
+        step(timeStep);
+    }
+
+    @SuppressWarnings("deprecation")
+    public void step(int seconds)
+    {
+        getTime().setSeconds(getTime().getSeconds() + seconds);
     }
 
     public void previewChanges()
@@ -77,7 +81,7 @@ public class RollbackInfo
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REMOVED " +
                     // change.block.name);
                 }
-                else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
+                else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
                 {
                     sendBlockChange(player, change, GameData.getBlockRegistry().getObject(change.block.name), change.metadata);
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " RESTORED " +
@@ -96,7 +100,7 @@ public class RollbackInfo
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REPLACED " +
                     // change.block.name);
                 }
-                else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
+                else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
                 {
                     sendBlockChange(player, change, Blocks.air, 0);
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REBROKE " +
@@ -118,10 +122,11 @@ public class RollbackInfo
                 world.setBlockToAir(change.x, change.y, change.z);
                 System.out.println(change.time + " REMOVED " + change.block.name);
             }
-            else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
+            else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
             {
                 WorldServer world = DimensionManager.getWorld(change.world.id);
                 world.setBlock(change.x, change.y, change.z, GameData.getBlockRegistry().getObject(change.block.name), change.metadata, 3);
+                world.setBlockMetadataWithNotify(change.x, change.y, change.z, change.metadata, 3);
                 world.setTileEntity(change.x, change.y, change.z, PlayerLogger.blobToTileEntity(change.entity));
                 System.out.println(change.time + " RESTORED " + change.block.name + ":" + change.metadata);
             }

@@ -14,6 +14,7 @@ import com.forgeessentials.playerlogger.entity.PlayerData;
 import com.forgeessentials.playerlogger.entity.PlayerData_;
 import com.forgeessentials.playerlogger.entity.WorldData;
 import com.forgeessentials.playerlogger.event.LogEventBreak;
+import com.forgeessentials.playerlogger.event.LogEventBurn;
 import com.forgeessentials.playerlogger.event.LogEventCommand;
 import com.forgeessentials.playerlogger.event.LogEventExplosion;
 import com.forgeessentials.playerlogger.event.LogEventInteract;
@@ -23,6 +24,7 @@ import com.forgeessentials.playerlogger.event.LogEventPostInteract;
 import com.forgeessentials.playerlogger.event.LogEventWorldLoad;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event.Result;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -51,6 +53,8 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
+import net.minecraftforge.fe.event.world.FireEvent;
+
 import org.hibernate.jpa.criteria.predicate.CompoundPredicate;
 
 import javax.persistence.EntityManager;
@@ -64,6 +68,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.sql.rowset.serial.SerialBlob;
+
 import java.sql.Blob;
 import java.util.Date;
 import java.util.HashMap;
@@ -635,6 +640,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 return;
         }
         logEvent(new LogEventPostInteract(event));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void fireEvent(FireEvent.Destroy event)
+    {
+        logEvent(new LogEventBurn(event));
     }
 
     /* ------------------------------------------------------------ */
