@@ -391,7 +391,7 @@ public class ModuleProtection
             else
                 msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.", stack.getItem().getClass().getName());
             if (!ForgeEssentials.isSafeMode())
-                throw new RuntimeException(msg);
+                throw new RuntimeException(msg, e);
             LoggingHandler.felog.error(msg);
             return "fe.error";
         }
