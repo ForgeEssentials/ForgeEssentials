@@ -1,5 +1,9 @@
 package com.forgeessentials.playerlogger.event;
 
+import java.sql.Blob;
+
+import com.forgeessentials.playerlogger.PlayerLogger;
+
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -15,7 +19,7 @@ public class CachedBlockData
 
     public final int metadata;
 
-    public final TileEntity tileEntity;
+    public final Blob tileEntityBlob;
 
     public CachedBlockData(World world, int x, int z, int y)
     {
@@ -24,7 +28,7 @@ public class CachedBlockData
         this.z = y;
         this.block = world.getBlock(x, z, y);
         this.metadata = world.getBlockMetadata(x, z, y);
-        this.tileEntity = world.getTileEntity(x, z, y);
+        this.tileEntityBlob = PlayerLogger.tileEntityToBlob(world.getTileEntity(x, z, y));
     }
 
 }
