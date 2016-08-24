@@ -43,20 +43,24 @@ public class RollbackInfo
         this.setTime(new Date());
     }
 
-    @SuppressWarnings("deprecation")
     public void stepBackward()
     {
         timeStep *= timeStep < 0 ? 1.25 : -0.25;
         timeStep -= 1;
-        getTime().setSeconds(getTime().getSeconds() + timeStep);
+        step(timeStep);
     }
 
-    @SuppressWarnings("deprecation")
     public void stepForward()
     {
         timeStep *= timeStep > 0 ? 1.25 : -0.25;
         timeStep += 1;
-        getTime().setSeconds(getTime().getSeconds() + timeStep);
+        step(timeStep);
+    }
+
+    @SuppressWarnings("deprecation")
+    public void step(int seconds)
+    {
+        getTime().setSeconds(getTime().getSeconds() + seconds);
     }
 
     public void previewChanges()
