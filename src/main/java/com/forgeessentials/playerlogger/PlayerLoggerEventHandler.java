@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldArea;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -40,25 +42,14 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
     public static int eventType  = 0b1111;
     public static String searchCriteria = "";
 
-    private WorldPoint[] getPoints(WorldPoint wp)
+    private WorldArea getPoints(WorldPoint wp)
     {
         return getPoints(wp,pickerRange);
     }
-    private WorldPoint[] getPoints(WorldPoint wp, int radius)
+    private WorldArea getPoints(WorldPoint wp, int radius)
     {
         int x1 = wp.getX() - radius, x2 = wp.getX() + radius, y1 = wp.getY() - radius, y2 = wp.getY() + radius, z1 = wp.getZ() - radius, z2 = wp.getZ() + radius, dia = radius*2;
-        WorldPoint pts[] = new WorldPoint[dia*dia*dia];
-        for (int i = x1; i <= x2; i++)
-        {
-            for (int j = y1; j <= y2; j++)
-            {
-                for (int k = z1; k <= z2; k++)
-                {
-                    pts[i*dia*dia + j*dia + k] = new WorldPoint(wp.getDimension(),i,j,k);
-                }
-            }
-        }
-        return pts;
+        return new WorldArea(wp.getDimension(),new Point(x1,y1,z1), new Point(x2,y2,z2));
     }
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
@@ -98,12 +89,8 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
             else
                 ChatOutputHandler.chatNotification(event.entityPlayer, "Showing recent block changes (clicked block):");
         }
-        WorldPoint points[] = getPoints(point);
-        List<Action01Block> changes = new ArrayList<>();
-        for (int i = 0; i < points.length; i++)
-        {
-            changes.addAll(ModulePlayerLogger.getLogger().getLoggedBlockChanges(point, null, info.checkStartTime, 4));
-        }
+        List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getPoints(point), null, info.checkStartTime, 4);
+
         if (changes.size() == 0 && !newCheck)
         {
             ChatOutputHandler.chatError(event.entityPlayer, "No more changes");
