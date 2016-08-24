@@ -159,7 +159,7 @@ public class ClassInjector
         if (!handles(target.name))
             return false;
 
-        boolean genericInject = classes.contains("*");
+        boolean genericInject = classes.isEmpty();
         if (!genericInject)
             log.info(String.format("Starting injection into %s", ASMUtil.javaName(target.name)));
 
