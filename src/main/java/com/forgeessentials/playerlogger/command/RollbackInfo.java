@@ -132,6 +132,7 @@ public class RollbackInfo
             {
                 WorldServer world = DimensionManager.getWorld(change.world.id);
                 world.setBlock(change.x, change.y, change.z, GameData.getBlockRegistry().getObject(change.block.name), change.metadata, 3);
+                world.setBlockMetadataWithNotify(change.x, change.y, change.z, change.metadata, 3);
                 world.setTileEntity(change.x, change.y, change.z, PlayerLogger.blobToTileEntity(change.entity));
                 System.out.println(change.time + " RESTORED " + change.block.name + ":" + change.metadata);
             }
