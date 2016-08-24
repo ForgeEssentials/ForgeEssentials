@@ -1,5 +1,6 @@
 package com.forgeessentials.playerlogger;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +36,30 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
     }
 
     public Map<EntityPlayer, LoggerCheckInfo> playerInfo = new WeakHashMap<>();
-    public static int pickerRange = 1;
+    public static int pickerRange = 0;
     public static int eventType  = 0b1111;
     public static String searchCriteria = "";
+
+    private WorldPoint[] getPoints(WorldPoint wp)
+    {
+        return getPoints(wp,pickerRange);
+    }
+    private WorldPoint[] getPoints(WorldPoint wp, int radius)
+    {
+        int x1 = wp.getX() - radius, x2 = wp.getX() + radius, y1 = wp.getY() - radius, y2 = wp.getY() + radius, z1 = wp.getZ() - radius, z2 = wp.getZ() + radius, dia = radius*2;
+        WorldPoint pts[] = new WorldPoint[dia*dia*dia];
+        for (int i = x1; i <= x2; i++)
+        {
+            for (int j = y1; j <= y2; j++)
+            {
+                for (int k = z1; k <= z2; k++)
+                {
+                    pts[i*dia*dia + j*dia + k] = new WorldPoint(wp.getDimension(),i,j,k);
+                }
+            }
+        }
+        return pts;
+    }
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
@@ -76,8 +98,12 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
             else
                 ChatOutputHandler.chatNotification(event.entityPlayer, "Showing recent block changes (clicked block):");
         }
-
-        List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(point, null, info.checkStartTime, 4);
+        WorldPoint points[] = getPoints(point);
+        List<Action01Block> changes = new ArrayList<>();
+        for (int i = 0; i < points.length; i++)
+        {
+            changes.addAll(ModulePlayerLogger.getLogger().getLoggedBlockChanges(point, null, info.checkStartTime, 4));
+        }
         if (changes.size() == 0 && !newCheck)
         {
             ChatOutputHandler.chatError(event.entityPlayer, "No more changes");
