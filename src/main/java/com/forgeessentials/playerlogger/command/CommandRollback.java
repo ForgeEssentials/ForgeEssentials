@@ -254,8 +254,8 @@ public class CommandRollback extends ParserCommandBase
     {
         ChatOutputHandler.chatConfirmation(sender, "/rollback: Start rollback");
         ChatOutputHandler.chatConfirmation(sender, "/rollback start [time]: Start rollback at specified time");
-        ChatOutputHandler.chatConfirmation(sender, "/rollback + [sec]: Go forward in time");
-        ChatOutputHandler.chatConfirmation(sender, "/rollback - [sec]: Go back in time");
+        ChatOutputHandler.chatConfirmation(sender, "/rollback + [duration]: Go forward in time");
+        ChatOutputHandler.chatConfirmation(sender, "/rollback - [duration]: Go back in time");
         ChatOutputHandler.chatConfirmation(sender, "/rollback play [speed]: Playback changes like a video");
         ChatOutputHandler.chatConfirmation(sender, "/rollback stop: Stop playback");
         ChatOutputHandler.chatConfirmation(sender, "/rollback confirm: Confirm changes");
