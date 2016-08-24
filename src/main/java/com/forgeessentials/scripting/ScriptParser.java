@@ -252,7 +252,7 @@ public class ScriptParser
                 throw new SyntaxException("Expression: " + m.group(1).replaceAll("\\s*", "") + ", contains invalid tokens!");
             // TODO: Order of Operations Parsing
         }
-        return args.split(" ");
+        return args.equals("") ? new String[0] :args.split(" ");
     }
 
     public static boolean run(String action, ICommandSender sender, List<String> argumentValues)
