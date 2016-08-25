@@ -9,7 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S07PacketRespawn;
@@ -23,6 +22,7 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fe.event.entity.EntityPortalEvent;
@@ -264,13 +264,13 @@ public class TeleportHelper extends ServerEventHandler
             ident = UserIdent.get((EntityPlayer) e.entity);
         else if (e.entity instanceof EntityLiving)
             ident = APIRegistry.IDENT_NPC;
-        WorldPoint pointFrom = new WorldPoint(e.world, e.x, e.y, e.z);
-        WorldPoint pointTo = new WorldPoint(e.targetDimension, e.targetX, e.targetY, e.targetZ);
+        WorldPoint pointFrom = new WorldPoint(e.world, e.pos);
+        WorldPoint pointTo = new WorldPoint(e.targetDimension, e.target);
         if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_PORTALFROM))
             e.setCanceled(true);
         if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_PORTALTO))
             e.setCanceled(true);
-        if (e.world.provider.dimensionId != e.targetDimension) {
+        if (e.world.provider.getDimensionId() != e.targetDimension) {
             if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_CROSSDIM_PORTALFROM))
                 e.setCanceled(true);
             if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_CROSSDIM_PORTALTO))
