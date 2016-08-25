@@ -1,10 +1,12 @@
 package com.forgeessentials.scripting;
 
-import com.forgeessentials.util.events.PlayerMoveEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
+import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
@@ -15,9 +17,6 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
-import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 
 /**
  * Miscellaneous event handler for scripts.
@@ -40,6 +39,7 @@ public class ScriptEventHandler extends ServerEventHandler
     public static final String SCRIPTKEY_PLAYERINTERACT_USE = "interact_use";
     public static final String SCRIPTKEY_PLAYERSLEEP = "sleep";
     public static final String SCRIPTKEY_PLAYERWAKE = "wake";
+
     public ScriptEventHandler()
     {
         super();
@@ -59,6 +59,7 @@ public class ScriptEventHandler extends ServerEventHandler
         APIRegistry.scripts.addScriptType(SCRIPTKEY_PLAYERSLEEP);
         APIRegistry.scripts.addScriptType(SCRIPTKEY_PLAYERWAKE);
     }
+
     @SubscribeEvent
     public void serverStarted(FEModuleServerPostInitEvent event)
     {
@@ -104,9 +105,10 @@ public class ScriptEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void playerRespawn(PlayerEvent.PlayerRespawnEvent e)
     {
-        APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERRESPAWN,e.player);
+        APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERRESPAWN, e.player);
     }
-    @SubscribeEvent (priority = EventPriority.LOWEST)
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerInteract(PlayerInteractEvent e)
     {
         if (!(e.entityPlayer instanceof FakePlayer))
@@ -120,7 +122,7 @@ public class ScriptEventHandler extends ServerEventHandler
         }
     }
 
-    @SubscribeEvent (priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerSleep(PlayerSleepInBedEvent e)
     {
         if (e.result == null || e.result.equals(EntityPlayer.EnumStatus.OK))
@@ -130,7 +132,7 @@ public class ScriptEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void playerWake(PlayerWakeUpEvent e)
     {
-        APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERWAKE,e.entityPlayer);
+        APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERWAKE, e.entityPlayer);
     }
 
 }

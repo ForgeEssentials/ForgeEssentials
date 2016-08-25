@@ -1,7 +1,6 @@
 package com.forgeessentials.worldborder;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.StringUtils;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -234,7 +233,7 @@ public class CommandWorldBorder extends ParserCommandBase
         case "remove":
             int index = Integer.parseInt(arguments.remove().toLowerCase());
             if (border.getEffects().size() >= index && border.getEffects().remove(border.getEffects().get(index)))
-            arguments.confirm("Removed effect");
+                arguments.confirm("Removed effect");
             else
             {
                 arguments.error("No such effect!");
@@ -259,7 +258,7 @@ public class CommandWorldBorder extends ParserCommandBase
             return;
         }
 
-        arguments.tabComplete("command", "damage", "kick", "knockback", "message", "potion" ,"smite");
+        arguments.tabComplete("command", "damage", "kick", "knockback", "message", "potion", "smite");
         if (arguments.isTabCompletion)
             return;
 
