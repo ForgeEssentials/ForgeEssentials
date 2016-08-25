@@ -1,10 +1,13 @@
 package com.forgeessentials.playerlogger;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldArea;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -35,7 +38,19 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
     }
 
     public Map<EntityPlayer, LoggerCheckInfo> playerInfo = new WeakHashMap<>();
+    public static int pickerRange = 0;
+    public static int eventType  = 0b1111;
+    public static String searchCriteria = "";
 
+    private WorldArea getPoints(WorldPoint wp)
+    {
+        return getPoints(wp,pickerRange);
+    }
+    private WorldArea getPoints(WorldPoint wp, int radius)
+    {
+        int x1 = wp.getX() - radius, x2 = wp.getX() + radius, y1 = wp.getY() - radius, y2 = wp.getY() + radius, z1 = wp.getZ() - radius, z2 = wp.getZ() + radius, dia = radius*2;
+        return new WorldArea(wp.getDimension(),new Point(x1,y1,z1), new Point(x2,y2,z2));
+    }
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
@@ -75,28 +90,31 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
                 ChatOutputHandler.chatNotification(event.entityPlayer, "Showing recent block changes (clicked block):");
         }
 
-        List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(point, null, info.checkStartTime, 4);
-        if (changes.size() == 0 && !newCheck)
+        if ((0b001 & eventType) != 0)
         {
-            ChatOutputHandler.chatError(event.entityPlayer, "No more changes");
-            return;
-        }
+            List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getPoints(point), null, info.checkStartTime, 4);
 
-        for (Action01Block change : changes)
-        {
-            info.checkStartTime = change.time;
-
-            String msg = String.format("%1$tm/%1$te %1$tH:%1$tM:%1$tS", change.time);
-            if (change.player != null)
+            if (changes.size() == 0 && !newCheck)
             {
-                UserIdent player = UserIdent.get(change.player.uuid);
-                msg += " " + player.getUsernameOrUuid();
+                ChatOutputHandler.chatError(event.entityPlayer, "No more changes");
+                return;
             }
-            msg += ": ";
 
-            String blockName = change.block != null ? change.block.name : "";
-            if (blockName.contains(":"))
-                blockName = blockName.split(":", 2)[1];
+            for (Action01Block change : changes)
+            {
+                info.checkStartTime = change.time;
+
+                String msg = String.format("%1$tm/%1$te %1$tH:%1$tM:%1$tS", change.time);
+                if (change.player != null)
+                {
+                    UserIdent player = UserIdent.get(change.player.uuid);
+                    msg += " " + player.getUsernameOrUuid();
+                }
+                msg += ": ";
+
+                String blockName = change.block != null ? change.block.name : "";
+                if (blockName.contains(":"))
+                    blockName = blockName.split(":", 2)[1];
 
             switch (change.type)
             {
@@ -123,6 +141,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
             }
             ChatOutputHandler.chatConfirmation(event.entityPlayer, msg);
         }
+        //Add other Action events (Command, Player, Explosion, etc)
     }
 
 }
