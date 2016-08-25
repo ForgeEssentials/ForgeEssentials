@@ -3,6 +3,8 @@
 	"plugin": "com.forgeessentials.core.preloader.mixin.FEMixinConfig",
     "refmap": "mixins.forgeessentials.refmap.json",
 	"mixins": [
+        "block.MixinBlockPortal",
+        "block.MixinBlockEndPortal",
 		"entity.player.MixinEntityPlayerMP",
 		"command.MixinCommandHandler",
 		"entity.MixinEntity",
