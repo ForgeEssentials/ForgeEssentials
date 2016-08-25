@@ -8,6 +8,9 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S07PacketRespawn;
 import net.minecraft.network.play.server.S1DPacketEntityEffect;
@@ -22,10 +25,12 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -111,8 +116,12 @@ public class TeleportHelper extends ServerEventHandler
     public static final String TELEPORT_WARMUP = "fe.teleport.warmup";
     public static final String TELEPORT_CROSSDIM_FROM = "fe.teleport.crossdim.from";
     public static final String TELEPORT_CROSSDIM_TO = "fe.teleport.crossdim.to";
+    public static final String TELEPORT_CROSSDIM_PORTALFROM = "fe.teleport.crossdim.portalfrom";
+    public static final String TELEPORT_CROSSDIM_PORTALTO = "fe.teleport.crossdim.portalto";
     public static final String TELEPORT_FROM = "fe.teleport.from";
     public static final String TELEPORT_TO = "fe.teleport.to";
+    public static final String TELEPORT_PORTALFROM = "fe.teleport.portalfrom";
+    public static final String TELEPORT_PORTALTO = "fe.teleport.portalto";
 
     private static Map<UUID, TeleportInfo> tpInfos = new HashMap<>();
 
@@ -244,6 +253,28 @@ public class TeleportHelper extends ServerEventHandler
                     it.remove();
                 }
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void entityPortalEvent(EntityPortalEvent e)
+    {
+        UserIdent ident = null;
+        if (e.entity instanceof EntityPlayer)
+            ident = UserIdent.get((EntityPlayer) e.entity);
+        else if (e.entity instanceof EntityLiving)
+            ident = APIRegistry.IDENT_NPC;
+        WorldPoint pointFrom = new WorldPoint(e.world, e.x, e.y, e.z);
+        WorldPoint pointTo = new WorldPoint(e.targetDimension, e.targetX, e.targetY, e.targetZ);
+        if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_PORTALFROM))
+            e.setCanceled(true);
+        if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_PORTALTO))
+            e.setCanceled(true);
+        if (e.world.provider.dimensionId != e.targetDimension) {
+            if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_CROSSDIM_PORTALFROM))
+                e.setCanceled(true);
+            if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_CROSSDIM_PORTALTO))
+                e.setCanceled(true);
         }
     }
 
