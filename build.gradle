@@ -261,6 +261,7 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 /************************************************************
  * Deobfuscated server jar
  * Dependency name for maven = com.forgeessentials:forgeessentials:<version>:
+ * */
 
 task deobfJar(dependsOn: "classes", type: Jar) {
 	classifier = "dev"
@@ -277,6 +278,7 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 		from serverManifest
 	}
 }
+/*
 task sourceJar(type: Jar) {
 	classifier = "sources"
 	appendix = minecraft.version
@@ -287,7 +289,7 @@ task sourceJar(type: Jar) {
 		from serverManifest
 	}
 }
-*/
+
 
 /************************************************************
  * Configure API javadoc
@@ -345,7 +347,7 @@ publishing {
 			if (System.getenv("PUBLISH_RELEASE"))
 				version baseVersion
 
-			//artifact deobfJar
+			artifact deobfJar
 			//artifact sourceJar
 			artifact javadocJar
 
