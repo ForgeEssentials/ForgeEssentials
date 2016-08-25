@@ -169,10 +169,12 @@ sourceSets {
 	main {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
 		compileClasspath += files deps
+        refMap = "mixins.forgeessentials.refmap.json"
 	}
 	client {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
 		compileClasspath += files deps
+        refMap = "mixins.forgeessentials.client.refmap.json"
 	}
 }
 
@@ -215,9 +217,6 @@ jar.doLast {
 	delete (serverLibArchive.archivePath)
 }
 
-def serverRefMap = "${tasks.compileJava.temporaryDir}" + File.separator + "mixins.forgeessentials.refmap.json"
-def clientRefMap = "${tasks.compileClientJava.temporaryDir}" + File.separator + "mixins.forgeessentials.client.refmap.json"
-
 // Configure server jar (default)
 jar {
 	dependsOn "serverLibArchive"
@@ -230,7 +229,6 @@ jar {
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 	}
-    from serverRefMap
 
 	manifest {
 		from serverManifest
@@ -247,7 +245,6 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 	
 	from sourceSets.client.output
 	from sourceSets.utils.output
-    from clientRefMap
 	configurations.shadeClient.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 	}
@@ -259,11 +256,6 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
             "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
 		)
 	}
-}
-
-mixin {
-    add sourceSets.main, "mixins.forgeessentials.refmap.json"
-    add sourceSets.client, "mixins.forgeessentials.client.refmap.json"
 }
 
 /************************************************************
@@ -315,18 +307,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 	
 	manifest { from sharedManifest }
 }
-
-/************************************************************
- * Configure reobfuscation
- *
-
-def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
-def mixinClientSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixinsClient.srg"
-afterEvaluate {
-	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}", "-AoutRefMapFile=${serverRefMap}"]
-	tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinClientSrg}", "-AoutRefMapFile=${clientRefMap}"]
-}
-*/
 
 reobf {
     clientJar {
