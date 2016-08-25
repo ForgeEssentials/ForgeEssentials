@@ -1,5 +1,8 @@
 package com.forgeessentials.core.preloader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 
@@ -15,17 +18,12 @@ public class EventTransformer implements IClassTransformer
 
     public static final boolean isObfuscated = !((boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
 
-    private ClassInjector attackEntityFromInjector;
-
-    private ClassInjector blockInjector;
-
-    // private ClassInjector testInjector;
+    private List<ClassInjector> injectors = new ArrayList<>();
 
     public EventTransformer()
     {
-        // testInjector = ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinTest", isObfuscated);
-        attackEntityFromInjector = ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinEntity", isObfuscated);
-        blockInjector = ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinBlock", isObfuscated);
+        injectors.add(ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinEntity", isObfuscated));
+        injectors.add(ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinBlock", isObfuscated));
     }
 
     @Override
@@ -37,12 +35,12 @@ public class EventTransformer implements IClassTransformer
         boolean transformed = false;
 
         // Apply transformers
-        // transformed |= testInjector.inject(classNode);
-        transformed |= attackEntityFromInjector.inject(classNode);
-        transformed |= blockInjector.inject(classNode);
+        for (ClassInjector injector : injectors)
+            transformed |= injector.inject(classNode);
 
         if (!transformed)
             return bytes;
+
         ClassWriter writer = new ASMClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(writer);
         return writer.toByteArray();
