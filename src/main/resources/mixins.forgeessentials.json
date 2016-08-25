@@ -4,7 +4,9 @@
     "refmap": "mixins.forgeessentials.refmap.json",
     "mixins": [
         "block.MixinBlock",
+        "block.MixinBlockEndPortal",
         "block.MixinBlockFire",
+        "block.MixinBlockPortal",
         "command.MixinCommandHandler",
         "entity.MixinEntity",
         "entity.MixinEntityTracker",
