@@ -1,13 +1,9 @@
 package com.forgeessentials.playerlogger;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.WorldArea;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -17,6 +13,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -33,24 +31,30 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
 
         public WorldPoint checkPoint;
 
-        public Date checkStartTime;
+        public long checkStartId;
 
     }
 
     public Map<EntityPlayer, LoggerCheckInfo> playerInfo = new WeakHashMap<>();
+
     public static int pickerRange = 0;
-    public static int eventType  = 0b1111;
+
+    public static int eventType = 0b1111;
+
     public static String searchCriteria = "";
 
-    private WorldArea getPoints(WorldPoint wp)
+    private WorldArea getAreaAround(WorldPoint wp)
     {
-        return getPoints(wp,pickerRange);
+        return getAreaAround(wp, pickerRange);
     }
-    private WorldArea getPoints(WorldPoint wp, int radius)
+
+    private WorldArea getAreaAround(WorldPoint wp, int radius)
     {
-        int x1 = wp.getX() - radius, x2 = wp.getX() + radius, y1 = wp.getY() - radius, y2 = wp.getY() + radius, z1 = wp.getZ() - radius, z2 = wp.getZ() + radius, dia = radius*2;
-        return new WorldArea(wp.getDimension(),new Point(x1,y1,z1), new Point(x2,y2,z2));
+        return new WorldArea(wp.getDimension(),
+                new Point(wp.getX() - radius, wp.getY() - radius, wp.getZ() - radius),
+                new Point(wp.getX() + radius, wp.getY() + radius, wp.getZ() + radius));
     }
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
@@ -83,7 +87,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         if (newCheck)
         {
             info.checkPoint = point;
-            info.checkStartTime = new Date();
+            info.checkStartId = 0;
             if (event.action == Action.RIGHT_CLICK_BLOCK)
                 ChatOutputHandler.chatNotification(event.entityPlayer, "Showing recent block changes (clicked side):");
             else
@@ -92,7 +96,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
 
         if ((0b00100 & eventType) != 0)
         {
-            List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getPoints(point), null, info.checkStartTime, 4);
+            List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getAreaAround(point), null, null, info.checkStartId, 4);
 
             if (changes.size() == 0 && !newCheck)
             {
@@ -102,7 +106,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
 
             for (Action01Block change : changes)
             {
-                info.checkStartTime = change.time;
+                info.checkStartId = change.id;
 
                 String msg = String.format("%1$tm/%1$te %1$tH:%1$tM:%1$tS", change.time);
                 if (change.player != null)
@@ -142,7 +146,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
                 ChatOutputHandler.chatConfirmation(event.entityPlayer, msg);
             }
         }
-        //Add other Action events (Command, Player, Explosion, etc)
+        // Add other Action events (Command, Player, Explosion, etc)
     }
 
 }

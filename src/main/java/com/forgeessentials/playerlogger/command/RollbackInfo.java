@@ -57,7 +57,7 @@ public class RollbackInfo
         if (lastChanges == null)
             lastChanges = new ArrayList<>();
 
-        changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(area, time, null, 0);
+        changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(area, time, null, 0, 0);
         if (lastChanges.size() < changes.size())
         {
             for (int i = lastChanges.size(); i < changes.size(); i++)
