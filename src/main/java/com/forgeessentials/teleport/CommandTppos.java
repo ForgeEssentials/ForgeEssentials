@@ -22,12 +22,37 @@ public class CommandTppos extends ForgeEssentialsCommandBase
     /**
      * Spawn point for each dimension
      */
-    public static HashMap<Integer, Point> spawnPoints = new HashMap<Integer, Point>();
+    public static HashMap<Integer, Point> spawnPoints = new HashMap<>();
 
     @Override
     public String getCommandName()
     {
         return "tppos";
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+
+        return "/tppos <x y z>: Teleport to a position.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return TeleportModule.PERM_TPPOS;
     }
 
     @Override
@@ -47,18 +72,6 @@ public class CommandTppos extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_TPPOS;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1 || args.length == 2)
@@ -71,16 +84,4 @@ public class CommandTppos extends ForgeEssentialsCommandBase
         }
     }
 
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.TRUE;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-
-        return "/tppos <x y z> Teleport to a position.";
-    }
 }

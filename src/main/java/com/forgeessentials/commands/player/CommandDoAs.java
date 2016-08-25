@@ -32,6 +32,37 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
     }
 
     @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+
+        return "/doas <player> <command> Run a command as another player.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".doas";
+    }
+
+    @Override
+    public void registerExtraPermissions()
+    {
+        PermissionManager.registerPermission("fe.commands.doas.console", PermissionLevel.OP);
+    }
+
+    @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
         if (args.length == 0)
@@ -47,7 +78,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
 
             if (args.length < 2)
                 throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-                
+
             args = Arrays.copyOfRange(args, 1, args.length);
             String cmd = StringUtils.join(args, " ");
             MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), cmd);
@@ -71,12 +102,6 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1)
@@ -87,31 +112,6 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
         {
             return null;
         }
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-
-        return "/doas <player> <command> Run a command as another player.";
-    }
-
-    @Override
-    public void registerExtraPermissions()
-    {
-        PermissionManager.registerPermission("fe.commands.doas.console", PermissionLevel.OP);
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

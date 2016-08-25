@@ -23,7 +23,38 @@ public class CommandTop extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "top";
+        return "fetop";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "top" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+
+        return "/top <player> Teleport you or another player to the top of the world.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return TeleportModule.PERM_TOP;
     }
 
     @Override
@@ -80,18 +111,6 @@ public class CommandTop extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_TOP;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1)
@@ -102,19 +121,6 @@ public class CommandTop extends ForgeEssentialsCommandBase
         {
             return null;
         }
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.TRUE;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-
-        return "/top <player> Teleport you or another player to the top of the world.";
     }
 
 }

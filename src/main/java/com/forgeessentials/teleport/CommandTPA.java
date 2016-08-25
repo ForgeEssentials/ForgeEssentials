@@ -33,9 +33,9 @@ public class CommandTPA extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public boolean canConsoleUseCommand()
     {
-        return TeleportModule.PERM_TPA;
+        return false;
     }
 
     @Override
@@ -45,16 +45,16 @@ public class CommandTPA extends ParserCommandBase
     }
 
     @Override
+    public String getPermissionNode()
+    {
+        return TeleportModule.PERM_TPA;
+    }
+
+    @Override
     public void registerExtraPermissions()
     {
         APIRegistry.perms.registerPermission(PERM_HERE, PermissionLevel.TRUE, "Allow teleporting other players to your own location (inversed TPA)");
         APIRegistry.perms.registerPermission(PERM_LOCATION, PermissionLevel.OP, "Allow teleporting other players to any location");
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
     }
 
     @Override

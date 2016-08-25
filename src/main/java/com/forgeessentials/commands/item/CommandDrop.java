@@ -28,19 +28,37 @@ public class CommandDrop extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "drop";
+        return "fedrop";
     }
 
     @Override
-    public int getRequiredPermissionLevel()
+    public String[] getDefaultAliases()
     {
-        return 2;
+        return new String[] { "drop" };
     }
 
     @Override
     public String getCommandUsage(ICommandSender par1ICommandSender)
     {
         return "/drop <X> <Y> <Z> <ItemID> <Meta> <Qty>";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".drop";
     }
 
     @SuppressWarnings("deprecation")
@@ -242,12 +260,6 @@ public class CommandDrop extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         EntityPlayerMP playermp = UserIdent.getPlayerByMatchOrUsername(sender, sender.getCommandSenderName());
@@ -258,17 +270,5 @@ public class CommandDrop extends ForgeEssentialsCommandBase
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
         processCommand(sender, args);
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 }

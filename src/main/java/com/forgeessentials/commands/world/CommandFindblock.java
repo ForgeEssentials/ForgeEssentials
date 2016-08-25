@@ -35,7 +35,13 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     public void loadData()
     {
     }
-    
+
+    @Override
+    public String getCommandName()
+    {
+        return "findblock";
+    }
+
     @Override
     public String[] getDefaultAliases()
     {
@@ -43,9 +49,27 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     }
 
     @Override
-    public String getCommandName()
+    public String getCommandUsage(ICommandSender sender)
     {
-        return "findblock";
+        return "/fb <block> [meta] [max distance] [amount of blocks] [speed] Finds a block.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".findblock";
     }
 
     /*
@@ -59,7 +83,7 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
             throw new TranslatedCommandException(getCommandUsage(sender));
         }
         String id = args[0];
-        //int meta = parseInt(sender, args[1]);
+        // int meta = parseInt(sender, args[1]);
         int meta = (args.length < 2) ? 0 : parseIntWithMin(sender, args[1], 0);
         int range = (args.length < 3) ? defaultRange : parseIntWithMin(sender, args[2], 1);
         int amount = (args.length < 4) ? defaultCount : parseIntWithMin(sender, args[3], 1);
@@ -69,17 +93,11 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1)
         {
-            List<String> names = new ArrayList<String>();
+            List<String> names = new ArrayList<>();
             for (Item i : GameData.getItemRegistry().typeSafeIterable())
             {
                 names.add(i.getUnlocalizedName());
@@ -102,24 +120,6 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
         {
             throw new TranslatedCommandException(getCommandUsage(sender));
         }
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/fb <block> [meta] [max distance] [amount of blocks] [speed] Finds a block.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

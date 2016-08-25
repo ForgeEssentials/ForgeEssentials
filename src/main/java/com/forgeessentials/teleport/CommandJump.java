@@ -30,9 +30,15 @@ public class CommandJump extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "jump";
+        return "fejump";
     }
 
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "jump" };
+    }
+    
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
@@ -40,9 +46,9 @@ public class CommandJump extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public boolean canConsoleUseCommand()
     {
-        return TeleportModule.PERM_JUMP;
+        return false;
     }
 
     @Override
@@ -52,9 +58,9 @@ public class CommandJump extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
+    public String getPermissionNode()
     {
-        return false;
+        return TeleportModule.PERM_JUMP;
     }
 
     @Override

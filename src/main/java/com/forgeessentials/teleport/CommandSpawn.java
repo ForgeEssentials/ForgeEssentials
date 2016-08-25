@@ -26,7 +26,44 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "spawn";
+        return "fespawn";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "spawn" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        if (sender instanceof EntityPlayer)
+        {
+            return "/spawn [player] Teleport you or another player to their spawn point.";
+        }
+        else
+        {
+            return "/spawn <player> Teleport a player to their spawn point.";
+        }
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return TeleportModule.PERM_SPAWN;
     }
 
     @Override
@@ -93,18 +130,6 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_SPAWN;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1)
@@ -117,22 +142,4 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
         }
     }
 
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.TRUE;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/spawn [player] Teleport you or another player to their spawn point.";
-        }
-        else
-        {
-            return "/spawn <player> Teleport a player to their spawn point.";
-        }
-    }
 }

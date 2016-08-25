@@ -24,6 +24,31 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase
     }
 
     @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+
+        return "/setspawn (here|x y z) | (bed enable|disable)";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return PERM_SETSPAWN;
+    }
+
+    @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
@@ -41,31 +66,6 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
         PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return PERM_SETSPAWN;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-
-        return "/setspawn (here|x y z) | (bed enable|disable)";
     }
 
 }

@@ -51,9 +51,9 @@ public class CommandPersonalWarp extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public boolean canConsoleUseCommand()
     {
-        return PERM;
+        return false;
     }
 
     @Override
@@ -63,18 +63,18 @@ public class CommandPersonalWarp extends ParserCommandBase
     }
 
     @Override
+    public String getPermissionNode()
+    {
+        return PERM;
+    }
+
+    @Override
     public void registerExtraPermissions()
     {
         APIRegistry.perms.registerPermission(PERM_SET, PermissionLevel.OP, "Allow setting personal warps");
         APIRegistry.perms.registerPermission(PERM_DELETE, PermissionLevel.OP, "Allow deleting personal warps");
         APIRegistry.perms.registerPermissionProperty(PERM_LIMIT, "10", "Maximal personal warp count");
         APIRegistry.perms.registerPermissionPropertyOp(PERM_LIMIT, "false");
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
     }
 
     public static PersonalWarp getWarps(EntityPlayerMP player)

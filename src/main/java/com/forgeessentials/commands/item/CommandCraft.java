@@ -14,7 +14,37 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "craft";
+        return "fecraft";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "craft" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/craft Open a crafting window.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".craft";
     }
 
     @Override
@@ -31,29 +61,5 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/craft Open a crafting window.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 }

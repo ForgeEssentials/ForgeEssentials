@@ -13,7 +13,6 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.preloader.api.EntityTrackerHelper;
@@ -26,18 +25,30 @@ public class CommandVanish extends ParserCommandBase
 
     public static final String PERM_OTHERS = PERM + ".others";
 
-    private static Set<UserIdent> vanishedPlayers = new HashSet<UserIdent>();
+    private static Set<UserIdent> vanishedPlayers = new HashSet<>();
 
     @Override
     public String getCommandName()
     {
-        return "vanish";
+        return "fevanish";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "vanish" };
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
         return "/vanish: Become invisible";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
     }
 
     @Override
@@ -49,19 +60,13 @@ public class CommandVanish extends ParserCommandBase
     @Override
     public String getPermissionNode()
     {
-        return ModuleCommands.PERM + "." + getCommandName();
+        return PERM;
     }
 
     @Override
     public void registerExtraPermissions()
     {
         APIRegistry.perms.registerPermission(PERM_OTHERS, PermissionLevel.OP, "Allow to vanish other players");
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
     }
 
     @Override

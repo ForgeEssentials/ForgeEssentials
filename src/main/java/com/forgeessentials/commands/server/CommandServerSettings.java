@@ -37,21 +37,33 @@ public class CommandServerSettings extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/serversettings [option] [value]: View or change server settings (server.properties)";
-    }
-
-    @Override
     public String[] getDefaultAliases()
     {
         return new String[] { "ss" };
     }
 
     @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/serversettings [option] [value]: View or change server settings (server.properties)";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
     public String getPermissionNode()
     {
-        return ModuleCommands.PERM + "." + getCommandName();
+        return ModuleCommands.PERM + ".serversettings";
     }
 
     @SideOnly(Side.SERVER)
@@ -83,6 +95,7 @@ public class CommandServerSettings extends ParserCommandBase
 
         arguments.tabComplete(options);
         String subCmd = arguments.remove().toLowerCase();
+
         switch (subCmd)
         {
         case "allowflight":
@@ -91,6 +104,8 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 boolean allowFlight = arguments.parseBoolean();
+                if (arguments.isTabCompletion)
+                    return;
                 server.setAllowFlight(allowFlight);
                 setProperty("allow-flight", allowFlight);
                 arguments.confirm("Set allow-flight to %s", Boolean.toString(allowFlight));
@@ -102,6 +117,8 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 boolean allowPvP = arguments.parseBoolean();
+                if (arguments.isTabCompletion)
+                    return;
                 server.setAllowPvp(allowPvP);
                 setProperty("pvp", allowPvP);
                 arguments.confirm("Set pvp to %s", Boolean.toString(allowPvP));
@@ -113,6 +130,8 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 int buildLimit = arguments.parseInt(0, Integer.MAX_VALUE);
+                if (arguments.isTabCompletion)
+                    return;
                 server.setBuildLimit(buildLimit);
                 setProperty("max-build-height", buildLimit);
                 arguments.confirm("Set max-build-height to %d", buildLimit);
@@ -124,6 +143,8 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 String motd = ScriptArguments.process(arguments.toString(), null);
+                if (arguments.isTabCompletion)
+                    return;
                 server.func_147134_at().func_151315_a(new ChatComponentText(ChatOutputHandler.formatColors(motd)));
                 server.setMOTD(motd);
                 setProperty("motd", motd);
@@ -136,6 +157,8 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 int spawnSize = arguments.parseInt(0, Integer.MAX_VALUE);
+                if (arguments.isTabCompletion)
+                    return;
                 setProperty("spawn-protection", spawnSize);
                 arguments.confirm("Set spawn-protection to %d", spawnSize);
             }
@@ -145,7 +168,10 @@ public class CommandServerSettings extends ParserCommandBase
                 arguments.confirm("Default gamemode set to %s", server.getGameType().getName());
             else
             {
-                GameType gamemode = WorldSettings.GameType.getByID(arguments.parseInt());
+                int gameModeId = arguments.parseInt();
+                if (arguments.isTabCompletion)
+                    return;
+                GameType gamemode = WorldSettings.GameType.getByID(gameModeId);
                 server.setGameType(gamemode);
                 setProperty("gamemode", gamemode.ordinal());
                 arguments.confirm("Set default gamemode to %s", gamemode.getName());
@@ -156,7 +182,10 @@ public class CommandServerSettings extends ParserCommandBase
                 arguments.confirm("Difficulty set to %s", server.func_147135_j());
             else
             {
-                EnumDifficulty difficulty = EnumDifficulty.getDifficultyEnum(arguments.parseInt());
+                int difficultyId = arguments.parseInt();
+                if (arguments.isTabCompletion)
+                    return;
+                EnumDifficulty difficulty = EnumDifficulty.getDifficultyEnum(difficultyId);
                 server.func_147139_a(difficulty);
                 setProperty("difficulty", difficulty.ordinal());
                 arguments.confirm("Set difficulty to %s", difficulty.name());
@@ -166,31 +195,6 @@ public class CommandServerSettings extends ParserCommandBase
         default:
             arguments.error(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
-    {
-        if (args.length == 1)
-        {
-            return getListOfStringsMatchingLastWord(args, options);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
     }
 
 }

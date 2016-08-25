@@ -16,7 +16,13 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "duplicate";
+        return "feduplicate";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "duplicate" };
     }
 
     @Override
@@ -26,15 +32,21 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
     }
 
     @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.OP;
     }
 
     @Override
-    public boolean canConsoleUseCommand()
+    public String getPermissionNode()
     {
-        return false;
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
     @Override
@@ -51,13 +63,8 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
         ItemStack newStack = stack.copy();
         if (stackSize > 0)
             newStack.stackSize = stackSize;
-        
+
         PlayerUtil.give(player, newStack);
     }
 
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
-    }
 }

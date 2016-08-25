@@ -19,10 +19,55 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandRepair extends ForgeEssentialsCommandBase
 {
+
     @Override
     public String getCommandName()
     {
-        return "repair";
+        return "ferepair";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "repair" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        if (sender instanceof EntityPlayer)
+        {
+            return "/repair [player] Repairs the item you or another player is holding.";
+        }
+        else
+        {
+            return "/repair <player> Repairs the item the player is holding.";
+        }
+
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".repair";
+    }
+
+    @Override
+    public void registerExtraPermissions()
+    {
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
     }
 
     @Override
@@ -77,18 +122,6 @@ public class CommandRepair extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public void registerExtraPermissions()
-    {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1)
@@ -99,32 +132,6 @@ public class CommandRepair extends ForgeEssentialsCommandBase
         {
             return null;
         }
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/repair [player] Repairs the item you or another player is holding.";
-        }
-        else
-        {
-            return "/repair <player> Repairs the item the player is holding.";
-        }
-
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

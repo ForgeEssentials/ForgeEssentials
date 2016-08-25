@@ -35,6 +35,30 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     }
 
     @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/vchest Open a virtual chest";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".virtualchest";
+    }
+
+    @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
         EntityPlayerMP player = sender;
@@ -52,24 +76,6 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/vchest Open a virtual chest";
-    }
-
-    @Override
     public void loadConfig(Configuration config, String category)
     {
         size = config.get(category, "VirtualChestRows", 6, "1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").getInt(6) * 9;
@@ -80,12 +86,6 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     public void loadData()
     {
         /* do nothing */
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

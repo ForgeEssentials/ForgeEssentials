@@ -48,13 +48,37 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "getcommandbook";
+        return "fecommandbook";
     }
 
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[] { "cmdb", "gcmdb" };
+        return new String[] { "bmdbook", "commandbook" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/commandbook: Get a command book listing all commands.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".commandbook";
     }
 
     @Override
@@ -74,7 +98,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
             }
         }
 
-        Set<String> pages = new TreeSet<String>();
+        Set<String> pages = new TreeSet<>();
         for (Object cmdObj : MinecraftServer.getServer().getCommandManager().getCommands().values())
         {
             ICommand cmd = (ICommand) cmdObj;
@@ -110,30 +134,6 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
         ItemStack is = new ItemStack(Items.written_book);
         is.setTagCompound(tag);
         sender.inventory.addItemStackToInventory(is);
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.TRUE;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/getcommandbook Get a command book listing all commands.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

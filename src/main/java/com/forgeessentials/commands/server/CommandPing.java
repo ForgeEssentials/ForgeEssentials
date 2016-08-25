@@ -12,24 +12,19 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandPing extends ForgeEssentialsCommandBase implements ConfigurableCommand
 {
+
     public String response = "Pong! %time";
 
     @Override
     public String getCommandName()
     {
-        return "ping";
+        return "feping";
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public String[] getDefaultAliases()
     {
-        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
-        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
+        return new String[] { "ping" };
     }
 
     @Override
@@ -42,6 +37,24 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".ping";
+    }
+
+    @Override
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    {
+        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
+    }
+
+    @Override
+    public void processCommandConsole(ICommandSender sender, String[] args)
+    {
+        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
     }
 
     @Override
@@ -62,10 +75,4 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
         /* do nothing */
     }
 
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
-    }
-    
 }

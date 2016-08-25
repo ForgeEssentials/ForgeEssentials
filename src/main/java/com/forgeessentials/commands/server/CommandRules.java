@@ -46,7 +46,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
 
     public ArrayList<String> loadRules()
     {
-        ArrayList<String> rules = new ArrayList<String>();
+        ArrayList<String> rules = new ArrayList<>();
 
         if (!rulesFile.exists())
         {
@@ -132,7 +132,51 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     @Override
     public String getCommandName()
     {
-        return "rules";
+        return "ferules";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "rules" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        // Needs elaboration.
+        if (sender instanceof EntityPlayer)
+        {
+            return "/rules [#|add|remove|move|change|help|book] Gets or sets the rules of the server.";
+        }
+        else
+        {
+            return "/rules [#|add|remove|move|change|help] Gets or sets the rules of the server.";
+        }
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".rules";
+    }
+
+    @Override
+    public void registerExtraPermissions()
+    {
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".edit", PermissionLevel.OP);
     }
 
     @Override
@@ -151,14 +195,14 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             NBTTagCompound tag = new NBTTagCompound();
             NBTTagList pages = new NBTTagList();
 
-            HashMap<String, String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap<>();
 
             for (int i = 0; i < rules.size(); i++)
             {
                 map.put(EnumChatFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n", EnumChatFormatting.RESET + ChatOutputHandler.formatColors(rules.get(i)));
             }
 
-            SortedSet<String> keys = new TreeSet<String>(map.keySet());
+            SortedSet<String> keys = new TreeSet<>(map.keySet());
             for (String name : keys)
             {
                 pages.appendTag(new NBTTagString(name + map.get(name)));
@@ -341,18 +385,6 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public void registerExtraPermissions()
-    {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".edit", PermissionLevel.OP);
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1)
@@ -361,7 +393,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         }
         else if (args.length == 2)
         {
-            List<String> opt = new ArrayList<String>();
+            List<String> opt = new ArrayList<>();
             for (int i = 1; i < rules.size() + 1; i++)
             {
                 opt.add(i + "");
@@ -370,7 +402,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         }
         else if (args.length == 3 && args[0].equalsIgnoreCase("move"))
         {
-            List<String> opt = new ArrayList<String>();
+            List<String> opt = new ArrayList<>();
             for (int i = 1; i < rules.size() + 2; i++)
             {
                 opt.add(i + "");
@@ -380,26 +412,6 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         else
         {
             return null;
-        }
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.TRUE;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        // Needs elaboration.
-        if (sender instanceof EntityPlayer)
-        {
-            return "/rules [#|add|remove|move|change|help|book] Gets or sets the rules of the server.";
-        }
-        else
-        {
-            return "/rules [#|add|remove|move|change|help] Gets or sets the rules of the server.";
         }
     }
 
@@ -414,12 +426,6 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     public void loadData()
     {
         /* do nothing */
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

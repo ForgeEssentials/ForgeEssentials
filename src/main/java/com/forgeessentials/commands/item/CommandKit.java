@@ -41,7 +41,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
 
     public static String kitForNewPlayers;
 
-    public static Map<String, Kit> kits = new HashMap<String, Kit>();
+    public static Map<String, Kit> kits = new HashMap<>();
 
     public CommandKit()
     {
@@ -51,7 +51,13 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     @Override
     public String getCommandName()
     {
-        return "kit";
+        return "fekit";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "kit" };
     }
 
     @Override
@@ -61,9 +67,9 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public String getPermissionNode()
+    public boolean canConsoleUseCommand()
     {
-        return PERM;
+        return false;
     }
 
     @Override
@@ -73,21 +79,21 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
+    public String getPermissionNode()
+    {
+        return PERM;
+    }
+
+    @Override
     public void registerExtraPermissions()
     {
         APIRegistry.perms.registerPermission(PERM_ADMIN, PermissionLevel.OP);
         APIRegistry.perms.registerPermission(PERM_BYPASS_COOLDOWN, PermissionLevel.OP);
     }
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
     public List<String> getAvailableKits(CommandParserArgs arguments)
     {
-        List<String> availableKits = new ArrayList<String>();
+        List<String> availableKits = new ArrayList<>();
         for (Kit kit : kits.values())
             if (arguments.hasPermission(PERM + "." + kit.getName()))
                 availableKits.add(kit.getName());

@@ -29,12 +29,37 @@ public class CommandTp extends ForgeEssentialsCommandBase
     /**
      * Spawn point for each dimension
      */
-    public static HashMap<Integer, Point> spawnPoints = new HashMap<Integer, Point>();
+    public static HashMap<Integer, Point> spawnPoints = new HashMap<>();
 
     @Override
     public String getCommandName()
     {
         return "tp";
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+
+        return "/tp [player] <player|xyz>: Teleport to a location.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return TeleportModule.PERM_TP;
     }
 
     @Override
@@ -147,18 +172,6 @@ public class CommandTp extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_TP;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
         if (args.length == 1 || args.length == 2)
@@ -171,16 +184,4 @@ public class CommandTp extends ForgeEssentialsCommandBase
         }
     }
 
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-
-        return "/tp [player] <player|<x> <y> <z>> Teleport to a location.";
-    }
 }

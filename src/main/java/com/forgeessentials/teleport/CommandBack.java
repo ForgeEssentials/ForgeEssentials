@@ -17,7 +17,13 @@ public class CommandBack extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "back";
+        return "feback";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "back" };
     }
 
     @Override
@@ -33,15 +39,15 @@ public class CommandBack extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_BACK;
-    }
-
-    @Override
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return TeleportModule.PERM_BACK;
     }
 
     @Override

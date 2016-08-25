@@ -19,10 +19,48 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandRemove extends ForgeEssentialsCommandBase
 {
+
     @Override
     public String getCommandName()
     {
-        return "remove";
+        return "feremove";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "remove" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        if (sender instanceof EntityPlayer)
+        {
+            return "/remove <radius> [x, y, z] Removes all items within a specified radius from yourself or the given coordinates.";
+        }
+        else
+        {
+            return "/remove <radius> <x, y, z> Removes all items within a specified radius from the given coordinates.";
+        }
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".remove";
     }
 
     @SuppressWarnings("unchecked")
@@ -102,37 +140,6 @@ public class CommandRemove extends ForgeEssentialsCommandBase
             entity.setDead();
         }
         ChatOutputHandler.chatConfirmation(sender, Translator.format("%d items removed.", counter));
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/remove <radius> [x, y, z] Removes all items within a specified radius from yourself or the given coordinates.";
-        }
-        else
-        {
-            return "/remove <radius> <x, y, z> Removes all items within a specified radius from the given coordinates.";
-        }
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

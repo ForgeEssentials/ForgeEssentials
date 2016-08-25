@@ -26,15 +26,9 @@ public class CommandBiome extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public String getCommandUsage(ICommandSender sender)
     {
-        return ModuleCommands.PERM + ".biome";
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
+        return "/febiome: Biome info tool";
     }
 
     @Override
@@ -44,9 +38,15 @@ public class CommandBiome extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public PermissionLevel getPermissionLevel()
     {
-        return "/febiome: Biome info tool";
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".biome";
     }
 
     @Override
