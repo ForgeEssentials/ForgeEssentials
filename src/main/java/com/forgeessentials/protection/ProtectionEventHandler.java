@@ -244,7 +244,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         UserIdent ident = UserIdent.get(event.getPlayer());
         WorldPoint point = new WorldPoint(event);
-        
+
         String permission = ModuleProtection.getBlockBreakPermission(event.block, event.blockMetadata);
         ModuleProtection.debugPermission(event.getPlayer(), permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
@@ -336,7 +336,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         WorldPoint point = new WorldPoint(event.world, event.x, event.y, event.z);
         Block block = event.block;
         int meta = point.getBlockMeta();
-        
+
         String permission = ModuleProtection.getBlockTramplePermission(block, meta);
         ModuleProtection.debugPermission(player, permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
@@ -905,7 +905,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public static void updateBrokenTileEntity(final EntityPlayerMP player, final TileEntity te)
     {
-        if (player == null)
+        if (player == null || player.playerNetServerHandler == null)
             return;
         final Packet packet = te.getDescriptionPacket();
         if (packet == null)
@@ -914,7 +914,8 @@ public class ProtectionEventHandler extends ServerEventHandler
             @Override
             public void run()
             {
-                player.playerNetServerHandler.sendPacket(packet);
+                if (player.playerNetServerHandler != null)
+                    player.playerNetServerHandler.sendPacket(packet);
             }
         });
     }
