@@ -90,7 +90,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
                 ChatOutputHandler.chatNotification(event.entityPlayer, "Showing recent block changes (clicked block):");
         }
 
-        if ((0b001 & eventType) != 0)
+        if ((0b00100 & eventType) != 0)
         {
             List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getPoints(point), null, info.checkStartTime, 4);
 
