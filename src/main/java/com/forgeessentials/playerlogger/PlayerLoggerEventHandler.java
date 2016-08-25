@@ -116,30 +116,31 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
                 if (blockName.contains(":"))
                     blockName = blockName.split(":", 2)[1];
 
-            switch (change.type)
-            {
-            case PLACE:
-                msg += String.format("PLACED %s", blockName);
-                break;
-            case BREAK:
-                msg += String.format("BROKE %s", blockName);
-                break;
-            case DETONATE:
-                msg += String.format("EXPLODED %s", blockName);
-                break;
-            case USE_LEFT:
-                msg += String.format("LEFT CLICK %s", blockName);
-                break;
-            case USE_RIGHT:
-                msg += String.format("RIGHT CLICK %s", blockName);
-                break;
-            case BURN:
-                msg += String.format("BURN %s", blockName);
-                break;
-            default:
-                continue;
+                switch (change.type)
+                {
+                case PLACE:
+                    msg += String.format("PLACED %s", blockName);
+                    break;
+                case BREAK:
+                    msg += String.format("BROKE %s", blockName);
+                    break;
+                case DETONATE:
+                    msg += String.format("EXPLODED %s", blockName);
+                    break;
+                case USE_LEFT:
+                    msg += String.format("LEFT CLICK %s", blockName);
+                    break;
+                case USE_RIGHT:
+                    msg += String.format("RIGHT CLICK %s", blockName);
+                    break;
+                case BURN:
+                    msg += String.format("BURN %s", blockName);
+                    break;
+                default:
+                    continue;
+                }
+                ChatOutputHandler.chatConfirmation(event.entityPlayer, msg);
             }
-            ChatOutputHandler.chatConfirmation(event.entityPlayer, msg);
         }
         //Add other Action events (Command, Player, Explosion, etc)
     }
