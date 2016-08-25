@@ -21,6 +21,8 @@ public class CommandDelayedAction extends ParserCommandBase
     {
         long time = arguments.parseTimeReadable();
         final String execute = StringUtils.join(arguments.args.iterator(), " ");
+        if (arguments.isTabCompletion)
+            return;
         TaskRegistry.schedule(new TimerTask()
         {
             @Override
