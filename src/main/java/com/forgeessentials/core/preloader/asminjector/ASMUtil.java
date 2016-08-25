@@ -91,7 +91,7 @@ public final class ASMUtil
         ClassNode classNode = classCache.get(className);
         if (classNode == null)
         {
-            try (InputStream is = getClassResourceStream(className))
+            try (InputStream is = getClassResourceStream(untransformName(className)))
             {
                 if (is == null)
                     return null;
@@ -121,7 +121,7 @@ public final class ASMUtil
 
     public static InputStream getClassResourceStream(String name)
     {
-        InputStream is = ASMUtil.class.getResourceAsStream("/" + resourceName(name) + ".class");
+        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("/" + resourceName(name) + ".class");
         return is;
     }
 
