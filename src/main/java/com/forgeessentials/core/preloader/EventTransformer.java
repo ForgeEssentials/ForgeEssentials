@@ -1,11 +1,15 @@
 package com.forgeessentials.core.preloader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
+import com.forgeessentials.core.preloader.asminjector.ASMClassWriter;
 import com.forgeessentials.core.preloader.asminjector.ASMUtil;
 import com.forgeessentials.core.preloader.asminjector.ClassInjector;
 
@@ -14,11 +18,12 @@ public class EventTransformer implements IClassTransformer
 
     public static final boolean isObfuscated = !((boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"));
 
-    private ClassInjector attackEntityFromInjector;
+    private List<ClassInjector> injectors = new ArrayList<>();
 
     public EventTransformer()
     {
-        attackEntityFromInjector = ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinEntity", isObfuscated);
+        injectors.add(ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinEntity", isObfuscated));
+        injectors.add(ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinBlock", isObfuscated));
     }
 
     @Override
@@ -30,14 +35,13 @@ public class EventTransformer implements IClassTransformer
         boolean transformed = false;
 
         // Apply transformers
-        // transformed |= testInjector.inject(classNode);
-        transformed |= attackEntityFromInjector.inject(classNode);
+        for (ClassInjector injector : injectors)
+            transformed |= injector.inject(classNode);
 
         if (!transformed)
             return bytes;
 
-        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-        // ClassWriter writer = new ASMClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+        ClassWriter writer = new ASMClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(writer);
         return writer.toByteArray();
     }
