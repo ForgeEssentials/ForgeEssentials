@@ -19,6 +19,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.sql.rowset.serial.SerialBlob;
@@ -42,8 +43,6 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
-
-import org.hibernate.jpa.criteria.predicate.CompoundPredicate;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -466,10 +465,10 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return changes;
     }
 
-    protected CompoundPredicate getActionPredicate(Root<? extends Action> root, WorldArea area, Date startTime, Date endTime)
+    protected Predicate getActionPredicate(Root<? extends Action> root, WorldArea area, Date startTime, Date endTime)
     {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CompoundPredicate predicate = (CompoundPredicate) cb.and();
+        Predicate predicate = cb.and();
         if (area != null)
         {
             predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(area.getDimension())));
@@ -486,10 +485,10 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return predicate;
     }
 
-    protected CompoundPredicate getActionPredicate(Root<? extends Action> root, WorldPoint point, Date startTime, Date endTime)
+    protected Predicate getActionPredicate(Root<? extends Action> root, WorldPoint point, Date startTime, Date endTime)
     {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CompoundPredicate predicate = (CompoundPredicate) cb.and();
+        Predicate predicate = cb.and();
         if (point != null)
         {
             predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(point.getDimension())));
