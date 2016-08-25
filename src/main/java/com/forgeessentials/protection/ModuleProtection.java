@@ -83,6 +83,7 @@ public class ModuleProtection
     public final static String PERM_BREAK = BASE_PERM + ".break";
     public final static String PERM_EXPLODE = BASE_PERM + ".explode";
     public final static String PERM_PLACE = BASE_PERM + ".place";
+    public final static String PERM_TRAMPLE = BASE_PERM + ".trample";
     public final static String PERM_FIRE = BASE_PERM + ".fire";
     public final static String PERM_FIRE_DESTROY = PERM_FIRE + ".destroy";
     public final static String PERM_FIRE_SPREAD = PERM_FIRE + ".spread";
@@ -126,12 +127,25 @@ public class ModuleProtection
             EntityIronGolem.class, EntitySnowman.class,
             // EntityWaterMob
             EntitySquid.class,
-    /* -- end of list -- */
+            /* -- end of list -- */
     };
 
-    private static final DamageSource[] damageByTypes = new DamageSource[] { DamageSource.anvil, DamageSource.cactus, DamageSource.drown, DamageSource.fall,
-            DamageSource.fallingBlock, DamageSource.generic, DamageSource.inFire, DamageSource.inWall, DamageSource.lava, DamageSource.magic,
-            DamageSource.onFire, DamageSource.outOfWorld, DamageSource.starve, DamageSource.wither };
+    private static final DamageSource[] damageByTypes = new DamageSource[] {
+        DamageSource.anvil,
+        DamageSource.cactus,
+        DamageSource.drown,
+        DamageSource.fall,
+        DamageSource.fallingBlock,
+        DamageSource.generic,
+        DamageSource.inFire,
+        DamageSource.inWall,
+        DamageSource.lava,
+        DamageSource.magic,
+        DamageSource.onFire,
+        DamageSource.outOfWorld,
+        DamageSource.starve,
+        DamageSource.wither,
+    };
 
     public static Map<UUID, String> debugModePlayers = new HashMap<>();
 
@@ -194,6 +208,7 @@ public class ModuleProtection
         {
             APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + dmgType.getDamageType(), PermissionLevel.TRUE);
         }
+        APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + ".explosion", PermissionLevel.TRUE);
 
         // ----------------------------------------
         // Register mobs
@@ -241,6 +256,7 @@ public class ModuleProtection
         // Register blocks
         APIRegistry.perms.registerPermission(PERM_BREAK + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow breaking blocks");
         APIRegistry.perms.registerPermission(PERM_PLACE + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow placing blocks");
+        APIRegistry.perms.registerPermission(PERM_TRAMPLE + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow trampling on blocks");
         APIRegistry.perms.registerPermission(PERM_EXPLODE + Zone.ALL_PERMS, PermissionLevel.TRUE, "(global) Allows blocks to explode");
         APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow interacting with blocks (button, chest, workbench)");
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
@@ -249,6 +265,7 @@ public class ModuleProtection
             String blockName = block.getLocalizedName();
             APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, PermissionLevel.TRUE, "BREAK " + blockName);
             APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, PermissionLevel.TRUE, "PLACE " + blockName);
+            APIRegistry.perms.registerPermission(PERM_TRAMPLE + blockPerm, PermissionLevel.TRUE, "PLACE " + blockName);
             APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, PermissionLevel.TRUE, "INTERACT " + blockName);
             APIRegistry.perms.registerPermission(PERM_EXPLODE + blockPerm, PermissionLevel.TRUE, "EXPLODE " + blockName);
         }
@@ -335,6 +352,11 @@ public class ModuleProtection
         return ModuleProtection.PERM_BREAK + "." + getBlockPermission(blockState);
     }
 
+    public static String getBlockTramplePermission(IBlockState blockState)
+    {
+        return PERM_TRAMPLE + "." + getBlockPermission(blockState);
+    }
+
     public static String getBlockPlacePermission(IBlockState blockState)
     {
         return ModuleProtection.PERM_PLACE + "." + getBlockPermission(blockState);
@@ -353,6 +375,11 @@ public class ModuleProtection
     public static String getBlockBreakPermission(Block block, int meta)
     {
         return PERM_BREAK + "." + getBlockPermission(block, meta);
+    }
+
+    public static String getBlockTramplePermission(Block block, int meta)
+    {
+        return PERM_TRAMPLE + "." + getBlockPermission(block, meta);
     }
 
     public static String getBlockPlacePermission(Block block, int meta)
@@ -390,7 +417,7 @@ public class ModuleProtection
             else
                 msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.", stack.getItem().getClass().getName());
             if (!ForgeEssentials.isSafeMode())
-                throw new RuntimeException(msg);
+                throw new RuntimeException(msg, e);
             LoggingHandler.felog.error(msg);
             return "fe.error";
         }

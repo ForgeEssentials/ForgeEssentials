@@ -113,6 +113,9 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
             case USE_RIGHT:
                 msg += String.format("RIGHT CLICK %s", blockName);
                 break;
+            case BURN:
+                msg += String.format("BURN %s", blockName);
+                break;
             default:
                 continue;
             }

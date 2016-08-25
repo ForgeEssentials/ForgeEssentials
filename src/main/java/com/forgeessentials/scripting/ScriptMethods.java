@@ -278,7 +278,7 @@ public final class ScriptMethods
         if (sender instanceof EntityPlayerMP)
         	ident = UserIdent.get((EntityPlayerMP) sender);
         else
-        	ident = UserIdent.getServer("", "" + sender.getName().toLowerCase());
+        	ident = UserIdent.getServer(null, "$" + sender.getName().toLowerCase());
         String permission = args[0];
         String value = args.length > 1 ? args[1] : Zone.PERMISSION_TRUE;
         boolean result;
@@ -505,7 +505,7 @@ public final class ScriptMethods
             return "`random <success-chance-in-percent>`  \nThis method will randomly success or fail.  \nIf it fails, the rest of the script will not be executed any more.";
         }
     };
-	
+
 	public static final ScriptMethod expCheck = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
@@ -514,7 +514,7 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				int experienceLevel = Integer.parseInt(args[0]);
 				String operator = args.length >= 2 ? args[1] : "EQ";
 				if (operator.toUpperCase().equals("EQ") || operator.equals("=="))
@@ -580,18 +580,18 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
-				int experienceLevel = Integer.parseInt(args[0]);				
+
+				int experienceLevel = Integer.parseInt(args[0]);
 				int oldExperienceLevel = ((EntityPlayerMP) sender).experienceLevel;
 				int expDiff = experienceLevel - oldExperienceLevel;
-				
+
 				expAddInternal(((EntityPlayerMP) sender), expDiff);
 				/*if (oldExperienceLevel > experienceLevel)
 				{
 					for (int i = oldExperienceLevel; i > experienceLevel; i--)
 					{
 						((EntityPlayerMP) sender).experienceLevel --;
-						((EntityPlayerMP) sender).experienceTotal -= ((EntityPlayerMP) sender).xpBarCap();						
+						((EntityPlayerMP) sender).experienceTotal -= ((EntityPlayerMP) sender).xpBarCap();
 					}
 				}
 				else if (oldExperienceLevel < experienceLevel)
@@ -602,7 +602,7 @@ public final class ScriptMethods
 						((EntityPlayerMP) sender).experienceLevel ++;
 					}
 				}*/
-				
+
 				return true;
 			}
 			else
@@ -615,7 +615,7 @@ public final class ScriptMethods
             return "`expSet <expLevel>`  \nThis method will set the command sender's expLevel to the specified value.";
         }
     };
-	
+
 	public static final ScriptMethod expAdd = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
@@ -624,11 +624,11 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				int expDiff = Integer.parseInt(args[0]);
-				
-				expAddInternal(((EntityPlayerMP) sender), expDiff);			
-				
+
+				expAddInternal(((EntityPlayerMP) sender), expDiff);
+
 				return true;
 			}
 			else
@@ -641,7 +641,7 @@ public final class ScriptMethods
             return "`expAdd <expLevel>`  \nThis method will add the specified signed value to the command sender's expLevel.";
         }
     };
-	
+
 	public static final ScriptMethod hungerCheck = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
@@ -650,7 +650,7 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				int hunger = Integer.parseInt(args[0]);
 				String operator = args.length >= 2 ? args[1] : "EQ";
 				if (operator.toUpperCase().equals("EQ") || operator.equals("=="))
@@ -702,15 +702,15 @@ public final class ScriptMethods
 	public static final ScriptMethod hungerSet = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
-        {        	
+        {
             if (args.length >= 1)
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				//int hungerneeded = Integer.parseInt(args[0]) - ((EntityPlayerMP) sender).getFoodStats().getFoodLevel();
 				//((EntityPlayerMP) sender).getFoodStats().addStats(hungerneeded, 0);
-				
+
 				try {
 					if (foodLevel == null)
 		        	{
@@ -720,7 +720,7 @@ public final class ScriptMethods
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 				return true;
 			}
 			else
@@ -733,7 +733,7 @@ public final class ScriptMethods
             return "`hungerSet <hunger>`  \nThis method will set the command sender's hunger to the specified value.";
         }
     };
-	
+
 	public static final ScriptMethod hungerAdd = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
@@ -742,11 +742,11 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				//int hungerdiff = Integer.parseInt(args[0]);
-				
+
 				//((EntityPlayerMP) sender).getFoodStats().addStats(hungerdiff, 0);
-				
+
 				try {
 					if (foodLevel == null)
 		        	{
@@ -768,7 +768,7 @@ public final class ScriptMethods
             return "`hungerAdd <hunger>`  \nThis method will add the specified signed value to the command sender's hunger.";
         }
     };
-	
+
 	public static final ScriptMethod saturationCheck = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
@@ -777,7 +777,7 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				float saturation = Float.parseFloat(args[0]);
 				String operator = args.length >= 2 ? args[1] : "EQ";
 				if (operator.toUpperCase().equals("EQ") || operator.equals("=="))
@@ -813,7 +813,7 @@ public final class ScriptMethods
             return "`saturationCheck <saturation> [operator -- LT, LTE, GT, GTE, or EQ -- case insensitive]`  \nThis method will check the saturation of a player and compare it to a given value, where LT refers to the player saturation being less than the inputed value.\nIf no operator is specified, equals (EQ) will be used as default.\nYou can also use ==,<,<=,>,>= in place of EQ,LT,LTE,GT,GTE.";
         }
     };
-	
+
 	public static final ScriptMethod saturationSet = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
@@ -822,10 +822,10 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				//float saturationneeded = Float.parseFloat(args[0]) - ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel();
 				//((EntityPlayerMP) sender).getFoodStats().addStats(0, saturationneeded);
-				
+
 				try {
 					if (foodSaturationLevel == null)
 		        	{
@@ -835,7 +835,7 @@ public final class ScriptMethods
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 				return true;
 			}
 			else
@@ -848,7 +848,7 @@ public final class ScriptMethods
             return "`saturationSet <saturation>`  \nThis method will set the command sender's saturation to the specified value.";
         }
     };
-	
+
 	public static final ScriptMethod saturationAdd = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
@@ -857,9 +857,9 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				//float saturationdiff = Float.parseFloat(args[0]);
-				
+
 				//((EntityPlayerMP) sender).getFoodStats().addStats(0, saturationdiff);
 
 				try {
@@ -871,7 +871,7 @@ public final class ScriptMethods
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 				return true;
 			}
 			else
@@ -884,7 +884,7 @@ public final class ScriptMethods
             return "`saturationAdd <saturation>`  \nThis method will add the specified signed value to the command sender's saturation.";
         }
     };
-	
+
 	public static final ScriptMethod healthCheck = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
@@ -893,7 +893,7 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				float health = Float.parseFloat(args[0]);
 				String operator = args.length >= 2 ? args[1] : "EQ";
 				if (operator.toUpperCase().equals("EQ") || operator.equals("=="))
@@ -929,7 +929,7 @@ public final class ScriptMethods
             return "`healthCheck <health> [operator -- LT, LTE, GT, GTE, or EQ -- case insensitive]`  \nThis method will check the health of a player and compare it to a given value, where LT refers to the player health being less than the inputed value.\nIf no operator is specified, equals (EQ) will be used as default.\nYou can also use ==,<,<=,>,>= in place of EQ,LT,LTE,GT,GTE.";
         }
     };
-	
+
 	public static final ScriptMethod healthSet = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
@@ -938,10 +938,10 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				float health = Float.parseFloat(args[0]);
 				((EntityPlayerMP) sender).setHealth(health);
-				
+
 				return true;
 			}
 			else
@@ -954,7 +954,7 @@ public final class ScriptMethods
             return "`healthSet <health>`  \nThis method will set the command sender's health to the specified value.";
         }
     };
-	
+
 	public static final ScriptMethod healthAdd = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
@@ -963,7 +963,7 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				float health = Float.parseFloat(args[0]) + ((EntityPlayerMP) sender).getHealth();
 				((EntityPlayerMP) sender).setHealth(health);
 				return true;
@@ -978,7 +978,7 @@ public final class ScriptMethods
             return "`healthAdd <health>`  \nThis method will add the specified signed value to the command sender's health.";
         }
     };
-	
+
 	public static final ScriptMethod gmCheck = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
@@ -987,7 +987,7 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				int gm = Integer.parseInt(args[0]);
 				return ((EntityPlayerMP) sender).theItemInWorldManager.getGameType().getID() == gm;
 			}
@@ -1001,7 +1001,7 @@ public final class ScriptMethods
             return "`gmCheck <gamemode>`  \nThis method will check if the gamemode of the player is equal to the given value.";
         }
     };
-	
+
 	public static final ScriptMethod gmSet = new ScriptMethod() {
         @Override
         public boolean process(ICommandSender sender, String[] args)
@@ -1010,7 +1010,7 @@ public final class ScriptMethods
 			{
 				if (!(sender instanceof EntityPlayerMP))
 					throw new MissingPlayerException();
-				
+
 				int gm = Integer.parseInt(args[0]);
 				((EntityPlayerMP) sender).setGameType(WorldSettings.GameType.getByID(gm));
 				return true;

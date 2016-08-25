@@ -16,10 +16,12 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.commons.selections.Selection;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLogger;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.Lists;
 
 public class RollbackInfo
@@ -33,8 +35,6 @@ public class RollbackInfo
 
     List<Action01Block> changes;
 
-    private int timeStep = -60;
-
     public PlaybackTask task;
 
     public RollbackInfo(EntityPlayerMP player, Selection area)
@@ -45,28 +45,20 @@ public class RollbackInfo
     }
 
     @SuppressWarnings("deprecation")
-    public void stepBackward()
+    public void step(int seconds)
     {
-        timeStep *= timeStep < 0 ? 1.25 : -0.25;
-        timeStep -= 1;
-        getTime().setSeconds(getTime().getSeconds() + timeStep);
-    }
-
-    @SuppressWarnings("deprecation")
-    public void stepForward()
-    {
-        timeStep *= timeStep > 0 ? 1.25 : -0.25;
-        timeStep += 1;
-        getTime().setSeconds(getTime().getSeconds() + timeStep);
+        getTime().setSeconds(getTime().getSeconds() + seconds);
     }
 
     public void previewChanges()
     {
+        ChatOutputHandler.chatNotification(player, Translator.format("Showing changes before %s", time.toString()));
+
         List<Action01Block> lastChanges = changes;
         if (lastChanges == null)
             lastChanges = new ArrayList<>();
 
-        changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(area, getTime(), null, 0);
+        changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(area, time, null, 0);
         if (lastChanges.size() < changes.size())
         {
             for (int i = lastChanges.size(); i < changes.size(); i++)
@@ -78,7 +70,7 @@ public class RollbackInfo
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REMOVED " +
                     // change.block.name);
                 }
-                else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
+                else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
                 {
                     Block block = GameData.getBlockRegistry().getObject(new ResourceLocation(change.block.name));
                     sendBlockChange(player, change, block.getStateFromMeta(change.metadata));
@@ -99,7 +91,7 @@ public class RollbackInfo
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REPLACED " +
                     // change.block.name);
                 }
-                else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
+                else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
                 {
                     sendBlockChange(player, change, Blocks.air.getDefaultState());
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REBROKE " +
@@ -121,7 +113,7 @@ public class RollbackInfo
                 world.setBlockToAir(change.getBlockPos());
                 System.out.println(change.time + " REMOVED " + change.block.name);
             }
-            else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE)
+            else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
             {
                 WorldServer world = DimensionManager.getWorld(change.world.id);
                 Block block = GameData.getBlockRegistry().getObject(new ResourceLocation(change.block.name));
@@ -180,7 +172,7 @@ public class RollbackInfo
         @SuppressWarnings("deprecation")
         public void run()
         {
-            rb.getTime().setSeconds(rb.getTime().getSeconds() - speed);
+            rb.getTime().setSeconds(rb.getTime().getSeconds() + speed);
             rb.previewChanges();
         }
 

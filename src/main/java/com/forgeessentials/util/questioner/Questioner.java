@@ -3,6 +3,7 @@ package com.forgeessentials.util.questioner;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Iterator;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -104,16 +105,17 @@ public class Questioner extends ServerEventHandler
 
     public static synchronized void tick()
     {
-        for (Entry<ICommandSender, QuestionData> question : questions.entrySet())
-            if (question.getValue().isTimeout())
-                try
-                {
-                    cancel(question.getKey());
-                }
-                catch (CommandException e)
-                {
-                    e.printStackTrace();
-                }
+        Iterator<Entry<ICommandSender, QuestionData>> it = questions.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<ICommandSender, QuestionData> question = it.next();
+            if (question.getValue().isTimeout()) {
+				it.remove();
+				try{
+                    question.getValue().doAnswer(null);
+                } catch (CommandException e){}
+
+            }
+        }
     }
 
     public static void cancel(ICommandSender target) throws CommandException

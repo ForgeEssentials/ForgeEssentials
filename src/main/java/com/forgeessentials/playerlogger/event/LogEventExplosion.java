@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import net.minecraft.util.BlockPos;
+import net.minecraft.block.material.Material;
 import net.minecraftforge.event.world.ExplosionEvent;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
@@ -31,17 +32,20 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
         WorldData worldData = getWorld(event.world.provider.getDimensionId());
         for (CachedBlockData blockData : blocks)
         {
-            Action01Block action = new Action01Block();
-            action.time = date;
-            action.world = worldData;
-            action.block = getBlock(blockData.block);
-            action.metadata = blockData.metadata;
-            action.entity = getTileEntityBlob(blockData.tileEntity);
-            action.type = ActionBlockType.DETONATE;
-            action.x = blockData.pos.getX();
-            action.y = blockData.pos.getY();
-            action.z = blockData.pos.getZ();
-            em.persist(action);
+            if (!blockData.block.getMaterial().equals(Material.air))
+            {
+                Action01Block action = new Action01Block();
+                action.time = date;
+                action.world = worldData;
+                action.block = getBlock(blockData.block);
+                action.metadata = blockData.metadata;
+                action.entity = blockData.tileEntityBlob;
+                action.type = ActionBlockType.DETONATE;
+                action.x = blockData.pos.getX();
+                action.y = blockData.pos.getY();
+                action.z = blockData.pos.getZ();
+                em.persist(action);
+            }
         }
     }
 

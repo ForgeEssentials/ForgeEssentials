@@ -17,7 +17,7 @@ public class Action03PlayerEvent extends Action
 
     public static enum PlayerEventType
     {
-        LOGIN, LOGOUT, RESPAWN, CHANGEDIM
+        LOGIN, LOGOUT, RESPAWN, CHANGEDIM, MOVE;
     }
 
 }

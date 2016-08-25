@@ -53,6 +53,7 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
+import net.minecraftforge.fe.event.entity.FallOnBlockEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.fe.event.world.PressurePlateEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -158,7 +159,8 @@ public class ProtectionEventHandler extends ServerEventHandler
             // living -> player (fall-damage, mob, dispenser, lava)
             EntityPlayer target = (EntityPlayer) event.entityLiving;
             {
-                String permission = ModuleProtection.PERM_DAMAGE_BY + "." + event.source.damageType;
+                String permission = event.source.isExplosion() ? ModuleProtection.PERM_DAMAGE_BY + ".explosion"
+                        : ModuleProtection.PERM_DAMAGE_BY + "." + event.source.damageType;
                 ModuleProtection.debugPermission(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
                 {
@@ -236,7 +238,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     /* ------------------------------------------------------------ */
     /* Block permissions */
 
-    @SubscribeEvent(priority = EventPriority.NORMAL)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void breakEvent(BreakEvent event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -309,7 +311,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void fireEvent(FireEvent event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -323,9 +325,30 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void fallOnBlockEvent(FallOnBlockEvent event)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+        if (event.fallHeight < 0.5) // Permission checks only for at least 1-block high fall events
+            return;
+
+        EntityPlayerMP player = (event.entity instanceof EntityPlayerMP) ? (EntityPlayerMP) event.entity : null;
+        UserIdent ident = player == null ? null : UserIdent.get(player);
+        WorldPoint point = new WorldPoint(event.world, event.pos);
+
+        String permission = ModuleProtection.getBlockTramplePermission(event.world.getBlockState(event.pos));
+        ModuleProtection.debugPermission(player, permission);
+        if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
+        {
+            event.setCanceled(true);
+            return;
+        }
+    }
+
     /* ------------------------------------------------------------ */
 
-    @SubscribeEvent(priority = EventPriority.NORMAL)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void explosionStartEvent(ExplosionEvent.Start event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -371,7 +394,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     }
 
     @SuppressWarnings("unchecked")
-    @SubscribeEvent(priority = EventPriority.NORMAL)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void explosionDetonateEvent(ExplosionEvent.Detonate event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -438,7 +461,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
             {
                 int itemId = GameData.getItemRegistry().getId(stack.getItem());
-                Set<Integer> ids = new HashSet<Integer>();
+                Set<Integer> ids = new HashSet<>();
                 ids.add(itemId);
                 NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, ids, null), ident.getPlayerMP());
             }
@@ -525,7 +548,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     /* ------------------------------------------------------------ */
 
-    @SubscribeEvent(priority = EventPriority.NORMAL)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void checkSpawnEvent(CheckSpawn event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -547,7 +570,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.NORMAL)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void specialSpawnEvent(SpecialSpawn event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -732,7 +755,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!PlayerInfo.get(ident).getHasFEClient())
             return;
 
-        Set<Integer> placeIds = new HashSet<Integer>();
+        Set<Integer> placeIds = new HashSet<>();
 
         ModulePermissions.permissionHelper.disableDebugMode(true);
 

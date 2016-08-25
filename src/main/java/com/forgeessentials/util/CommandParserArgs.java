@@ -386,54 +386,67 @@ public class CommandParserArgs
         }
     }
 
-    public static final Pattern timeFormatPattern = Pattern.compile("(\\d+)(\\w+)?");
+    public static final Pattern timeFormatPattern = Pattern.compile("(\\d+)(\\D+)?");
 
     public long parseTimeReadable() throws CommandException
     {
         checkTabCompletion();
         String value = remove();
         Matcher m = timeFormatPattern.matcher(value);
-        if (!m.matches())
+        if (!m.find())
         {
             throw new TranslatedCommandException("Invalid time format: %s", value);
         }
 
-        long result = Long.parseLong(m.group(1));
+        long result = 0;
 
-        switch (m.group(2))
+        do
         {
-        case "s":
-        case "second":
-        case "seconds":
-            result *= 1000;
-            break;
-        case "m":
-        case "minute":
-        case "minutes":
-            result *= 1000 * 60;
-            break;
-        case "h":
-        case "hour":
-        case "hours":
-            result *= 1000 * 60 * 60;
-            break;
-        case "d":
-        case "day":
-        case "days":
-            result *= 1000 * 60 * 60 * 24;
-            break;
-        case "w":
-        case "week":
-        case "weeks":
-            result *= 1000 * 60 * 60 * 24 * 7;
-            break;
-        case "month":
-        case "months":
-            result *= 1000 * 60 * 60 * 24 * 30;
-            break;
-        default:
-            throw new TranslatedCommandException("Invalid time format: %s", value);
+            long resultPart = Long.parseLong(m.group(1));
+
+            String unit = m.group(2);
+            if (unit != null)
+            {
+                switch (unit)
+                {
+                case "s":
+                case "second":
+                case "seconds":
+                    resultPart *= 1000;
+                    break;
+                case "m":
+                case "minute":
+                case "minutes":
+                    resultPart *= 1000 * 60;
+                    break;
+                case "h":
+                case "hour":
+                case "hours":
+                    resultPart *= 1000 * 60 * 60;
+                    break;
+                case "d":
+                case "day":
+                case "days":
+                    resultPart *= 1000 * 60 * 60 * 24;
+                    break;
+                case "w":
+                case "week":
+                case "weeks":
+                    resultPart *= 1000 * 60 * 60 * 24 * 7;
+                    break;
+                case "month":
+                case "months":
+                    resultPart *= 1000 * 60 * 60 * 24 * 30;
+                    break;
+                default:
+                    throw new TranslatedCommandException("Invalid time format: %s", value);
+                }
+            }
+
+            result += resultPart;
         }
+        while (m.find());
+
         return result;
     }
 

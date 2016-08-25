@@ -218,6 +218,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         return perm.startsWith(ModuleProtection.PERM_PLACE) || //
                 perm.startsWith(ModuleProtection.PERM_BREAK) || //
+                perm.startsWith(ModuleProtection.PERM_TRAMPLE) || //
                 perm.startsWith(ModuleProtection.PERM_EXPLODE) || //
                 perm.startsWith(ModuleProtection.PERM_INTERACT);
     }
@@ -349,7 +350,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public Set<String> enumAllPermissions()
     {
-        Set<String> perms = new TreeSet<String>();
+        Set<String> perms = new TreeSet<>();
         for (Zone zone : getZones())
         {
             for (Map<String, String> groupPerms : zone.getGroupPermissions().values())
@@ -374,12 +375,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public Map<Zone, Map<String, String>> enumUserPermissions(UserIdent ident)
     {
-        Map<Zone, Map<String, String>> result = new HashMap<Zone, Map<String, String>>();
+        Map<Zone, Map<String, String>> result = new HashMap<>();
         for (Zone zone : getZones())
         {
             if (zone.getPlayerPermissions(ident) != null)
             {
-                Map<String, String> zonePerms = new TreeMap<String, String>();
+                Map<String, String> zonePerms = new TreeMap<>();
                 zonePerms.putAll(zone.getPlayerPermissions(ident));
                 result.put(zone, zonePerms);
             }
@@ -389,14 +390,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public Map<Zone, Map<String, String>> enumGroupPermissions(String group, boolean enumRootPermissions)
     {
-        Map<Zone, Map<String, String>> result = new HashMap<Zone, Map<String, String>>();
+        Map<Zone, Map<String, String>> result = new HashMap<>();
         for (Zone zone : getZones())
         {
             if (!enumRootPermissions && zone instanceof RootZone)
                 continue;
             if (zone.getGroupPermissions(group) != null)
             {
-                Map<String, String> zonePerms = new TreeMap<String, String>();
+                Map<String, String> zonePerms = new TreeMap<>();
                 zonePerms.putAll(zone.getGroupPermissions(group));
                 result.put(zone, zonePerms);
             }
@@ -620,7 +621,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             worldZone = getServerZone().getWorldZone(area.getDimension());
 
         // Get zones in correct order
-        List<Zone> zones = new ArrayList<Zone>();
+        List<Zone> zones = new ArrayList<>();
         if (worldZone != null)
         {
             for (Zone zone : worldZone.getAreaZones())
@@ -813,7 +814,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public Collection<Zone> getGlobalZones()
     {
-        List<Zone> zones = new ArrayList<Zone>();
+        List<Zone> zones = new ArrayList<>();
         zones.add(rootZone.getServerZone());
         zones.add(rootZone);
         return zones;
@@ -821,7 +822,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public Collection<Zone> getGlobalZones(Zone firstZone)
     {
-        List<Zone> zones = new ArrayList<Zone>();
+        List<Zone> zones = new ArrayList<>();
         if (firstZone != null)
             zones.add(firstZone);
         zones.add(rootZone.getServerZone());

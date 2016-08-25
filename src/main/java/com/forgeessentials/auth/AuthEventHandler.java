@@ -22,6 +22,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.permission.PermissionManager;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet6AuthLogin;
 import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
@@ -248,12 +249,19 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void onAuthLogin(PlayerAuthLoginEvent.Success e)
     {
-        if (e.source == Source.COMMAND)
+        if (e.source == Source.COMMAND && ModuleAuth.allowAutoLogin)
         {
             UUID token = UUID.randomUUID();
             NetworkUtils.netHandler.sendTo(new Packet6AuthLogin(2, token.toString()), e.getPlayer());
             PasswordManager.addSession(e.getPlayer().getPersistentID(), token);
         }
+        APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_SUCCESS, e.getPlayer());
+    }
+
+    @SubscribeEvent
+    public void onAuthLoginFail(PlayerAuthLoginEvent.Failure e)
+    {
+        APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_FAILURE, e.getPlayer());
     }
 
 }

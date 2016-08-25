@@ -18,6 +18,8 @@ public class AuthNetHandler implements IMessageHandler<Packet6AuthLogin, IMessag
     public IMessage onMessage(Packet6AuthLogin message, MessageContext ctx)
     {
 
+        if (!ModuleAuth.allowAutoLogin)
+            return null;
         switch(message.mode)
         {
         case 1:

@@ -215,6 +215,9 @@ jar.doLast {
 	delete (serverLibArchive.archivePath)
 }
 
+def serverRefMap = "${tasks.compileJava.temporaryDir}" + File.separator + "mixins.forgeessentials.refmap.json"
+def clientRefMap = "${tasks.compileClientJava.temporaryDir}" + File.separator + "mixins.forgeessentials.client.refmap.json"
+
 // Configure server jar (default)
 jar {
 	dependsOn "serverLibArchive"
@@ -227,6 +230,7 @@ jar {
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 	}
+    from serverRefMap
 
 	manifest {
 		from serverManifest
@@ -243,6 +247,7 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 	
 	from sourceSets.client.output
 	from sourceSets.utils.output
+    from clientRefMap
 	configurations.shadeClient.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 	}

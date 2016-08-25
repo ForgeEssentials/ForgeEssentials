@@ -107,6 +107,31 @@ public class ScriptParser
 
     }
 
+    private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\$(\\w)\\.?");
+
+    public static String processVariables(String args, Map<String, String> variableMap)
+    {
+        if (variableMap != null)
+        {
+            Matcher m = VARIABLE_PATTERN.matcher(args);
+            while (m.find())
+            {
+                String var = m.group(1);
+
+                String value = null;
+                if (variableMap.containsKey(var))
+                    value = variableMap.get(var);
+                if (value == null)
+                    value = "null";
+                args = m.replaceFirst(Matcher.quoteReplacement(value));
+                m.reset(args);
+                // args[i] = args[i].replaceFirst("\\Q" + Matcher.quoteReplacement(m.group()) + "\\E",Matcher.quoteReplacement(value));
+            }
+        }
+
+        return args;
+    }
+
     private static final Pattern CONDITION_PATTERN = Pattern.compile("([^!=<>]*)(==|!=|>=|<=|>|<)([^!=<>]*)");
 
     private static final Pattern TRAILING_WHITESPACE_PATTERN = Pattern.compile("\\s*((?:\\S*(?:\\s*\\S*)*?))\\s*$");
@@ -155,31 +180,6 @@ public class ScriptParser
         }
         return null;
 
-    }
-
-    private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\$(\\w)\\.?");
-
-    public static String processVariables(String args, Map<String, String> variableMap)
-    {
-        if (variableMap != null)
-        {
-            Matcher m = VARIABLE_PATTERN.matcher(args);
-            while (m.find())
-            {
-                String var = m.group(1);
-
-                String value = null;
-                if (variableMap.containsKey(var))
-                    value = variableMap.get(var);
-                if (value == null)
-                    value = "null";
-                args = m.replaceFirst(Matcher.quoteReplacement(value));
-                m.reset(args);
-                // args[i] = args[i].replaceFirst("\\Q" + Matcher.quoteReplacement(m.group()) + "\\E",Matcher.quoteReplacement(value));
-            }
-        }
-
-        return args;
     }
 
     public static void run(List<String> script) throws CommandException
@@ -252,7 +252,7 @@ public class ScriptParser
                 throw new SyntaxException("Expression: " + m.group(1).replaceAll("\\s*", "") + ", contains invalid tokens!");
             // TODO: Order of Operations Parsing
         }
-        return args.split(" ");
+        return args.equals("") ? new String[0] :args.split(" ");
     }
 
     public static boolean run(String action, ICommandSender sender, List<String> argumentValues) throws CommandException
