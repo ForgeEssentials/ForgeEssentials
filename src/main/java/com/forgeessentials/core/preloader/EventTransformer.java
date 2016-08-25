@@ -6,7 +6,6 @@ import net.minecraft.launchwrapper.Launch;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
-import com.forgeessentials.core.preloader.asminjector.ASMClassWriter;
 import com.forgeessentials.core.preloader.asminjector.ASMUtil;
 import com.forgeessentials.core.preloader.asminjector.ClassInjector;
 
@@ -17,15 +16,9 @@ public class EventTransformer implements IClassTransformer
 
     private ClassInjector attackEntityFromInjector;
 
-    private ClassInjector blockInjector;
-
-    // private ClassInjector testInjector;
-
     public EventTransformer()
     {
-        // testInjector = ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinTest", isObfuscated);
         attackEntityFromInjector = ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinEntity", isObfuscated);
-        blockInjector = ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinBlock", isObfuscated);
     }
 
     @Override
@@ -39,11 +32,12 @@ public class EventTransformer implements IClassTransformer
         // Apply transformers
         // transformed |= testInjector.inject(classNode);
         transformed |= attackEntityFromInjector.inject(classNode);
-        transformed |= blockInjector.inject(classNode);
 
         if (!transformed)
             return bytes;
-        ClassWriter writer = new ASMClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+        // ClassWriter writer = new ASMClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         classNode.accept(writer);
         return writer.toByteArray();
     }
