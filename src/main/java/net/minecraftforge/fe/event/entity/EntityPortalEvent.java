@@ -19,7 +19,13 @@ public class EntityPortalEvent extends EntityEvent
 
     public final int targetDimension;
 
-    public EntityPortalEvent(Entity entity, World world, int x, int y, int z, int targetDimension)
+    public final int targetX;
+
+    public final int targetY;
+
+    public final int targetZ;
+
+    public EntityPortalEvent(Entity entity, World world, int x, int y, int z, int targetDimension, int targetX, int targetY, int targetZ)
     {
         super(entity);
         this.world = world;
@@ -27,6 +33,9 @@ public class EntityPortalEvent extends EntityEvent
         this.y = y;
         this.z = z;
         this.targetDimension = targetDimension;
+        this.targetX = targetX;
+        this.targetY = targetY;
+        this.targetZ = targetZ;
         System.out.println(String.format("EntityPortalEvent %d %d %d %d", x, y, z, targetDimension));
     }
 }

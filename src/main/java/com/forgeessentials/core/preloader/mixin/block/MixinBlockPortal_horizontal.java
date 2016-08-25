@@ -37,13 +37,13 @@ public abstract class MixinBlockPortal_horizontal extends BlockPortal
         if (entity != null && PortalManager.getInstance() != null)
             portal = PortalManager.getInstance().getPortalAt(new WorldPoint(entity.dimension, p_149670_2_, p_149670_3_, p_149670_4_));
         if (portal == null)
-        {
-            if (entity.ridingEntity == null && entity.riddenByEntity == null && !MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entity, world, p_149670_2_, p_149670_3_, p_149670_4_, entity.dimension == -1 ? 0 : -1)))
+        { // TODO: get target coordinates somehow
+            if (entity.ridingEntity == null && entity.riddenByEntity == null && !MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entity, world, p_149670_2_, p_149670_3_, p_149670_4_, entity.dimension == -1 ? 0 : -1, 0, 0, 0)))
                 entity.setInPortal();
         }
         else if (!world.isRemote)
         {
-            if (MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entity, world, p_149670_2_, p_149670_3_, p_149670_4_, portal.getTarget().getDimension())))
+            if (MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entity, world, p_149670_2_, p_149670_3_, p_149670_4_, portal.getTarget().getDimension(), portal.getTarget().getX(), portal.getTarget().getY(), portal.getTarget().getZ())))
                 return;
             if (entity instanceof EntityPlayerMP)
                 TeleportHelper.checkedTeleport((EntityPlayerMP) entity, portal.getTarget().toWarpPoint(entity.rotationPitch, entity.rotationYaw));

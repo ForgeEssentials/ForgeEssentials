@@ -16,8 +16,8 @@ public class MixinBlockEndPortal
 
     @Overwrite
     public void onEntityCollidedWithBlock(World p_149670_1_, int p_149670_2_, int p_149670_3_, int p_149670_4_, Entity p_149670_5_)
-    {
-        if (p_149670_5_.ridingEntity == null && p_149670_5_.riddenByEntity == null && !p_149670_1_.isRemote && !MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(p_149670_5_, p_149670_1_, p_149670_2_, p_149670_3_, p_149670_4_, 1)))
+    { // TODO: get target coordinates somehow
+        if (p_149670_5_.ridingEntity == null && p_149670_5_.riddenByEntity == null && !p_149670_1_.isRemote && !MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(p_149670_5_, p_149670_1_, p_149670_2_, p_149670_3_, p_149670_4_, 1, 0, 0, 0)))
         {
             p_149670_5_.travelToDimension(1);
         }

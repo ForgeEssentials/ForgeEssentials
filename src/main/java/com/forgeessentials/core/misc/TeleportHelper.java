@@ -117,6 +117,8 @@ public class TeleportHelper extends ServerEventHandler
     public static final String TELEPORT_CROSSDIM_PORTALTO = "fe.teleport.crossdim.portalto";
     public static final String TELEPORT_FROM = "fe.teleport.from";
     public static final String TELEPORT_TO = "fe.teleport.to";
+    public static final String TELEPORT_PORTALFROM = "fe.teleport.portalfrom";
+    public static final String TELEPORT_PORTALTO = "fe.teleport.portalto";
 
     private static Map<UUID, TeleportInfo> tpInfos = new HashMap<>();
 
@@ -261,11 +263,17 @@ public class TeleportHelper extends ServerEventHandler
         else if (e.entity instanceof EntityLiving)
             ident = APIRegistry.IDENT_NPC;
         WorldPoint pointFrom = new WorldPoint(e.world, e.x, e.y, e.z);
-        WorldPoint pointTo = new WorldPoint(e.targetDimension, 0, 0, 0);
-        if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_CROSSDIM_PORTALFROM))
+        WorldPoint pointTo = new WorldPoint(e.targetDimension, e.targetX, e.targetY, e.targetZ);
+        if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_PORTALFROM))
             e.setCanceled(true);
-        if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_CROSSDIM_PORTALTO))
+        if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_PORTALTO))
             e.setCanceled(true);
+        if (e.world.provider.dimensionId != e.targetDimension) {
+            if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_CROSSDIM_PORTALFROM))
+                e.setCanceled(true);
+            if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_CROSSDIM_PORTALTO))
+                e.setCanceled(true);
+        }
     }
 
     public static void transferPlayerToDimension(EntityPlayerMP player, int dimension, Teleporter teleporter)

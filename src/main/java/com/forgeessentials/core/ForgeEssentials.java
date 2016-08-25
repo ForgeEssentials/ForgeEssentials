@@ -368,9 +368,11 @@ public class ForgeEssentials extends ConfigLoaderBase
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_FROM, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally from a dimension");
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_TO, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally to a dimension");
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_PORTALFROM, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally from a dimension via a portal");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_PORTALTO, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally to a dimension via a portal (target coordinates are origin)");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_PORTALTO, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally to a dimension via a portal (target coordinates are origin for vanilla portals)");
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, PermissionLevel.TRUE, "Allow being teleported from a certain location / dimension");
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_TO, PermissionLevel.TRUE, "Allow being teleported to a certain location / dimension");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALFROM, PermissionLevel.TRUE, "Allow being teleported from a certain location / dimension via a portal");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALTO, PermissionLevel.TRUE, "Allow being teleported to a certain location / dimension via a portal");
 
         CommandFeSettings.addAlias("Teleport", "warmup", TeleportHelper.TELEPORT_WARMUP);
         CommandFeSettings.addAlias("Teleport", "cooldown", TeleportHelper.TELEPORT_COOLDOWN);
