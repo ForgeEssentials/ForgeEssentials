@@ -70,6 +70,8 @@ public final class ASMUtil
 
     public static Map<String, ClassNode> classCache = new HashMap<>();
 
+    private static IClassNameTransformer classNameTransformer;
+
     public static ClassNode loadClassNode(byte[] b)
     {
         ClassReader cr = new ClassReader(b);
@@ -110,7 +112,9 @@ public final class ASMUtil
 
     public static IClassNameTransformer getClassNameTransformer()
     {
-        return FluentIterable.from(Launch.classLoader.getTransformers()).filter(IClassNameTransformer.class).first().orNull();
+        if (classNameTransformer == null)
+            classNameTransformer = FluentIterable.from(Launch.classLoader.getTransformers()).filter(IClassNameTransformer.class).first().orNull();
+        return classNameTransformer;
     }
 
     public static String untransformName(String transformedName)
@@ -121,8 +125,16 @@ public final class ASMUtil
 
     public static InputStream getClassResourceStream(String name)
     {
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("/" + resourceName(name) + ".class");
+        String fn = getClassFilename(name);
+        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(fn);
+        if (is == null)
+            is = ASMUtil.class.getResourceAsStream(fn);
         return is;
+    }
+
+    private static String getClassFilename(String name)
+    {
+        return "/" + resourceName(name) + ".class";
     }
 
     public static String javaName(String resourceName)
