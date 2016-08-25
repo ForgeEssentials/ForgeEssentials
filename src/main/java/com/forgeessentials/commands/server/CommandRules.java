@@ -28,15 +28,16 @@ import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-public class CommandRules extends FEcmdModuleCommands implements ConfigurableCommand
+public class CommandRules extends ForgeEssentialsCommandBase implements ConfigurableCommand
 {
 
     public static final String[] autocomargs = { "add", "remove", "move", "change", "book" };
@@ -413,6 +414,12 @@ public class CommandRules extends FEcmdModuleCommands implements ConfigurableCom
     public void loadData()
     {
         /* do nothing */
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

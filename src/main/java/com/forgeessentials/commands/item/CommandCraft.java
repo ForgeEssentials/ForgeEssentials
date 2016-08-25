@@ -5,10 +5,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.permission.PermissionLevel;
 
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.ContainerCheatyWorkbench;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
-public class CommandCraft extends FEcmdModuleCommands
+public class CommandCraft extends ForgeEssentialsCommandBase
 {
     @Override
     public String getCommandName()
@@ -48,5 +49,11 @@ public class CommandCraft extends FEcmdModuleCommands
     public String getCommandUsage(ICommandSender sender)
     {
         return "/craft Open a crafting window.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 }

@@ -9,14 +9,15 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
 import cpw.mods.fml.common.registry.GameData;
 
-public class CommandFindblock extends FEcmdModuleCommands implements ConfigurableCommand
+public class CommandFindblock extends ForgeEssentialsCommandBase implements ConfigurableCommand
 {
 
     public static final int defaultCount = 1;
@@ -112,8 +113,13 @@ public class CommandFindblock extends FEcmdModuleCommands implements Configurabl
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "/fb <block> [meta] [max distance] [amount of blocks] [speed] Finds a block.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

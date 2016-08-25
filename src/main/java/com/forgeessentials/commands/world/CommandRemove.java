@@ -10,13 +10,14 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandRemove extends FEcmdModuleCommands
+public class CommandRemove extends ForgeEssentialsCommandBase
 {
     @Override
     public String getCommandName()
@@ -126,6 +127,12 @@ public class CommandRemove extends FEcmdModuleCommands
         {
             return "/remove <radius> <x, y, z> Removes all items within a specified radius from the given coordinates.";
         }
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

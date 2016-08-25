@@ -10,13 +10,14 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class CommandBubble extends FEcmdModuleCommands
+public class CommandBubble extends ForgeEssentialsCommandBase
 {
 
     public static String BUBBLE_GROUP = "command_bubble";
@@ -103,6 +104,12 @@ public class CommandBubble extends FEcmdModuleCommands
     public String getCommandUsage(ICommandSender sender)
     {
         return "/bubble [on|off]";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

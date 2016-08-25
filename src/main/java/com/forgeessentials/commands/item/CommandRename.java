@@ -5,10 +5,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandRename extends FEcmdModuleCommands
+public class CommandRename extends ForgeEssentialsCommandBase
 {
     @Override
     public String getCommandName()
@@ -50,5 +51,11 @@ public class CommandRename extends FEcmdModuleCommands
     public String getCommandUsage(ICommandSender sender)
     {
         return "/rename <new name> Renames the item you are currently holding.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 }

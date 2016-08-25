@@ -454,7 +454,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     /**
      * Gets a nice string with only needed elements. Max time is weeks
      *
-     * @param time
+     * @param time in seconds
      * @return Time in string format
      */
     public static String formatTimeDurationReadable(long time, boolean showSeconds)
@@ -498,6 +498,17 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
         sb.setLength(sb.length() - 1);
         return sb.toString();
+    }
+
+    /**
+     * Gets a nice string with only needed elements. Max time is weeks
+     *
+     * @param time in milliseconds
+     * @return Time in string format
+     */
+    public static String formatTimeDurationReadableMilli(long time, boolean showSeconds)
+    {
+        return formatTimeDurationReadable(time / 1000, showSeconds);
     }
 
     /* ------------------------------------------------------------ */

@@ -5,11 +5,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 
-public class CommandDuplicate extends FEcmdModuleCommands
+public class CommandDuplicate extends ForgeEssentialsCommandBase
 {
 
     @Override
@@ -54,4 +55,9 @@ public class CommandDuplicate extends FEcmdModuleCommands
         PlayerUtil.give(player, newStack);
     }
 
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
+    }
 }

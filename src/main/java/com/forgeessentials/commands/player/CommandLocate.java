@@ -7,15 +7,16 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandLocate extends FEcmdModuleCommands
+public class CommandLocate extends ForgeEssentialsCommandBase
 {
     @Override
     public String getCommandName()
@@ -74,5 +75,11 @@ public class CommandLocate extends FEcmdModuleCommands
     public String getCommandUsage(ICommandSender sender)
     {
         return "/locate <player> Locates a player.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 }

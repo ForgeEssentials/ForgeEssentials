@@ -20,9 +20,10 @@ import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
-public class CommandGetCommandBook extends FEcmdModuleCommands
+public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 {
 
     public static String joinAliases(Object[] par0ArrayOfObj)
@@ -127,6 +128,12 @@ public class CommandGetCommandBook extends FEcmdModuleCommands
     public String getCommandUsage(ICommandSender sender)
     {
         return "/getcommandbook Get a command book listing all commands.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

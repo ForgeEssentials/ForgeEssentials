@@ -7,14 +7,15 @@ import net.minecraft.inventory.InventoryEnderChest;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 /**
  * Opens your enderchest.
  *
  * @author Dries007
  */
-public class CommandEnderchest extends FEcmdModuleCommands
+public class CommandEnderchest extends ForgeEssentialsCommandBase
 {
     @Override
     public String getCommandName()
@@ -61,6 +62,12 @@ public class CommandEnderchest extends FEcmdModuleCommands
     public String getCommandUsage(ICommandSender sender)
     {
         return "/enderchest Opens your enderchest.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

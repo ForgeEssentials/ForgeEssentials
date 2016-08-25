@@ -5,11 +5,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandPing extends FEcmdModuleCommands implements ConfigurableCommand
+public class CommandPing extends ForgeEssentialsCommandBase implements ConfigurableCommand
 {
     public String response = "Pong! %time";
 
@@ -59,6 +60,12 @@ public class CommandPing extends FEcmdModuleCommands implements ConfigurableComm
     public void loadData()
     {
         /* do nothing */
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
     
 }

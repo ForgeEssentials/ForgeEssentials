@@ -14,12 +14,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permission.PermissionLevel;
 
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.CommandButcherTickTask.ButcherMobType;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandButcher extends FEcmdModuleCommands
+public class CommandButcher extends ForgeEssentialsCommandBase
 {
 
     public static List<String> typeList = ButcherMobType.getNames();
@@ -169,6 +170,12 @@ public class CommandButcher extends FEcmdModuleCommands
     public String getCommandUsage(ICommandSender sender)
     {
         return "/butcher [radius|-1|world] [type] [x, y, z] Kills the type of mobs within the specified radius around the specified point in the specified world.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

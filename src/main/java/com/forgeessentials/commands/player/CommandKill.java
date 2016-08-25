@@ -10,14 +10,15 @@ import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CommandKill extends FEcmdModuleCommands
+public class CommandKill extends ForgeEssentialsCommandBase
 {
 
     @Override
@@ -106,6 +107,12 @@ public class CommandKill extends FEcmdModuleCommands
     public String getCommandUsage(ICommandSender sender)
     {
         return "/kill <player> Commit suicide or kill other players (with special permission).";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

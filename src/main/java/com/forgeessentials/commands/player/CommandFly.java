@@ -4,11 +4,12 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandFly extends FEcmdModuleCommands
+public class CommandFly extends ForgeEssentialsCommandBase
 {
     @Override
     public boolean canConsoleUseCommand()
@@ -54,6 +55,12 @@ public class CommandFly extends FEcmdModuleCommands
             WorldUtil.placeInWorld(player);
         player.sendPlayerAbilities();
         ChatOutputHandler.chatNotification(player, "Flying " + (player.capabilities.allowFlying ? "enabled" : "disabled"));
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }
