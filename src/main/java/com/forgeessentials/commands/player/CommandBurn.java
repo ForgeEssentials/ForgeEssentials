@@ -13,11 +13,12 @@ import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandBurn extends FEcmdModuleCommands
+public class CommandBurn extends ForgeEssentialsCommandBase
 {
     @Override
     public String getCommandName()
@@ -132,5 +133,11 @@ public class CommandBurn extends FEcmdModuleCommands
         {
             return "/burn <player> Set a player on fire.";
         }
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 }

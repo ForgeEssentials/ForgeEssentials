@@ -21,11 +21,12 @@ import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandDrop extends FEcmdModuleCommands
+public class CommandDrop extends ForgeEssentialsCommandBase
 {
 
     @Override
@@ -269,5 +270,11 @@ public class CommandDrop extends FEcmdModuleCommands
     public boolean canConsoleUseCommand()
     {
         return true;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 }

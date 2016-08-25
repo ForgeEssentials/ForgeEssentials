@@ -7,10 +7,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandSpeed extends FEcmdModuleCommands
+public class CommandSpeed extends ForgeEssentialsCommandBase
 {
     @Override
     public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
@@ -77,5 +78,11 @@ public class CommandSpeed extends FEcmdModuleCommands
     public String getCommandUsage(ICommandSender p_71518_1_)
     {
         return "/speed <speed> Set or change the player's speed.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 }

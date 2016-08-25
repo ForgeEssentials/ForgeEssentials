@@ -6,15 +6,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet5Noclip;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandNoClip extends FEcmdModuleCommands
+public class CommandNoClip extends ForgeEssentialsCommandBase
 {
 
     @Override
@@ -87,6 +88,12 @@ public class CommandNoClip extends FEcmdModuleCommands
                 }
             }
         }
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

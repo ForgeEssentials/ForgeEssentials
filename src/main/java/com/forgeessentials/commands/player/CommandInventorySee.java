@@ -10,8 +10,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.PlayerInvChest;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
 /**
@@ -19,7 +20,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
  *
  * @author Dries007
  */
-public class CommandInventorySee extends FEcmdModuleCommands
+public class CommandInventorySee extends ForgeEssentialsCommandBase
 {
 
     public CommandInventorySee()
@@ -86,6 +87,12 @@ public class CommandInventorySee extends FEcmdModuleCommands
     public String getCommandUsage(ICommandSender sender)
     {
         return "/invsee See a player's inventory.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

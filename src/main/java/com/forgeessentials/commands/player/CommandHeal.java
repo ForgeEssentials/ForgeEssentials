@@ -13,11 +13,12 @@ import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandHeal extends FEcmdModuleCommands
+public class CommandHeal extends ForgeEssentialsCommandBase
 {
 
     @Override
@@ -119,6 +120,12 @@ public class CommandHeal extends FEcmdModuleCommands
         {
             return "/heal <player> Heal a player.";
         }
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

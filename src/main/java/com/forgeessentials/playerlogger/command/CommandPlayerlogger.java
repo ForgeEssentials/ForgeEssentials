@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.persistence.TypedQuery;
 
+import com.forgeessentials.playerlogger.PlayerLoggerEvent;
+import com.forgeessentials.playerlogger.PlayerLoggerEventHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -56,18 +58,164 @@ public class CommandPlayerlogger extends ParserCommandBase
         return PermissionLevel.OP;
     }
 
+
+    private String outputFilterReadable(int filter)
+    {
+        String out = "Set to filter:";
+        if (filter != 0b11111)
+        {
+            if ((0b10000 & filter) != 0)
+            {
+                out += " playerEvents, ";
+            }
+            if ((0b01000 & filter) != 0)
+            {
+                out += " commandEvents, ";
+            }
+            if ((0b00100 & filter) != 0)
+            {
+                out += " blockEvents, ";
+            }
+            if ((0b00010 & filter) != 0)
+            {
+                out += " explosionEvents, ";
+            }
+            if ((0b00001 & filter) != 0)
+            {
+                out += " burnEvents, ";
+            }
+
+        }
+        else
+        {
+            out += " All events, ";
+        }
+        return out;
+    }
     @Override
     public void parse(final CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
             arguments.confirm("/pl stats: Show playerlogger stats");
+            arguments.confirm("/pl picker: Picker Control");
+            arguments.confirm("/pl search: Area Search Function");
+            arguments.confirm("/pl purge: Purge old playerData");
             return;
         }
         arguments.tabComplete("stats");
         String subCmd = arguments.remove().toLowerCase();
         switch (subCmd)
         {
+        case "picker":
+            if (arguments.isEmpty())
+            {
+                arguments.confirm("/pl picker range [int] : Set picker range");
+                arguments.confirm("/pl picker filter [player | command | block | explosion | burn | all] [searchCriteria] : Filter displayed blocks based on a criteria");
+                break;
+            }
+                String subCmd2 = arguments.remove().toLowerCase();
+                switch (subCmd2)
+                {
+                case "range":
+                    //Set the lookup range of the picker tool (Clock)
+                    int oldRange = PlayerLoggerEventHandler.pickerRange;
+                    PlayerLoggerEventHandler.pickerRange = arguments.parseInt();
+                    ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors("Range changed from " + oldRange + " to " + PlayerLoggerEventHandler.pickerRange));
+                    break;
+                case "filter":
+                    //filter event type shown (player, command, block, explosion)
+                    PlayerLoggerEventHandler.eventType = arguments.isEmpty() ? 0b11111 : 0;
+                    PlayerLoggerEventHandler.searchCriteria = "";
+                    while (!arguments.isEmpty())
+                    {
+                        String subCmd3 = arguments.remove().toLowerCase();
+                        switch (subCmd3)
+                        {
+                        case "player":
+                            PlayerLoggerEventHandler.eventType |= 0b10000;
+                            break;
+                        case "command":
+                            PlayerLoggerEventHandler.eventType |= 0b01000;
+                            break;
+                        case "block":
+                            PlayerLoggerEventHandler.eventType |= 0b00100;
+                            break;
+                        case "explosion":
+                            PlayerLoggerEventHandler.eventType |= 0b00010;
+                            break;
+                        case "burn":
+                            PlayerLoggerEventHandler.eventType |= 0b00001;
+                            break;
+                        case "all":
+                            PlayerLoggerEventHandler.eventType = 0b11111;
+                            break;
+                        default:
+                            if (arguments.isEmpty())
+                            {
+                                PlayerLoggerEventHandler.searchCriteria = subCmd3;
+                                if (PlayerLoggerEventHandler.eventType == 0)
+                                    PlayerLoggerEventHandler.eventType = 0b11111;
+                            }
+                            else
+                                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
+                        }
+                    }
+                    ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors(outputFilterReadable(PlayerLoggerEventHandler.eventType) + (
+                            PlayerLoggerEventHandler.searchCriteria.equals("") ?
+                                    "" :
+                                    "with SearchCriteria " + PlayerLoggerEventHandler.searchCriteria)));
+                    break;
+                default:
+                    throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd2);
+                }
+
+
+            break;
+        case "search":
+            if (arguments.isEmpty())
+            {
+                arguments.confirm("/pl search [time] [player | command | block | explosion | burn | all] [searchCriteria]");
+                break;
+            }
+            long duration = arguments.parseTimeReadable();
+            //filter event type shown (player, command, block, explosion)
+            int eventType = 0;
+            String searchCriteria;
+            while (!arguments.isEmpty())
+            {
+                String subCmd3 = arguments.remove().toLowerCase();
+                switch (subCmd3)
+                {
+                case "player":
+                    eventType |= 0b10000;
+                    break;
+                case "command":
+                    eventType |= 0b01000;
+                    break;
+                case "block":
+                    eventType |= 0b00100;
+                    break;
+                case "explosion":
+                    eventType |= 0b00010;
+                    break;
+                case "burn":
+                    eventType |= 0b00001;
+                    break;
+                case "all":
+                    eventType = 0b11111;
+                    break;
+                default:
+                    if (arguments.isEmpty())
+                        searchCriteria = subCmd3;
+                    else
+                        throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
+                }
+            }
+
+            throw new TranslatedCommandException("Command %s is not implemented yet", getCommandName());
+
+            //break;
         case "stats":
             if (arguments.isTabCompletion)
                 return;

@@ -6,10 +6,11 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandModlist extends FEcmdModuleCommands
+public class CommandModlist extends ForgeEssentialsCommandBase
 {
 
     @Override
@@ -58,4 +59,9 @@ public class CommandModlist extends FEcmdModuleCommands
         return "/modlist Get a list of all mods running on this server.";
     }
 
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
+    }
 }

@@ -6,8 +6,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.VirtualChest;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 
 /**
@@ -15,7 +16,7 @@ import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
  *
  * @author Dries007
  */
-public class CommandVirtualchest extends FEcmdModuleCommands implements ConfigurableCommand
+public class CommandVirtualchest extends ForgeEssentialsCommandBase implements ConfigurableCommand
 {
     public static int size = 54;
     public static String name = "Vault 13";
@@ -75,6 +76,12 @@ public class CommandVirtualchest extends FEcmdModuleCommands implements Configur
     public void loadData()
     {
         /* do nothing */
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

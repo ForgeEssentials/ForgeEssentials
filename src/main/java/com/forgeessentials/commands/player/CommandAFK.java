@@ -7,14 +7,15 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.CommandFeSettings;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandAFK extends FEcmdModuleCommands
+public class CommandAFK extends ForgeEssentialsCommandBase
 {
 
     public static final String PERM = "fe.commands.afk";
@@ -111,4 +112,9 @@ public class CommandAFK extends FEcmdModuleCommands
         }
     }
 
+    @Override
+    public String getPermissionNode()
+    {
+        return PERM;
+    }
 }

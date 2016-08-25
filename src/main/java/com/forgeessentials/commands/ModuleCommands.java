@@ -34,6 +34,7 @@ import com.forgeessentials.commands.player.CommandSmite;
 import com.forgeessentials.commands.player.CommandSpeed;
 import com.forgeessentials.commands.player.CommandTempBan;
 import com.forgeessentials.commands.player.CommandVanish;
+import com.forgeessentials.commands.server.CommandDelayedAction;
 import com.forgeessentials.commands.server.CommandGetCommandBook;
 import com.forgeessentials.commands.server.CommandHelp;
 import com.forgeessentials.commands.server.CommandModlist;
@@ -121,6 +122,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandReach());
         FECommandManager.registerCommand(new CommandVanish());
         FECommandManager.registerCommand(new CommandDuplicate());
+        FECommandManager.registerCommand(new CommandDelayedAction());
 
         APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
     }

@@ -13,12 +13,13 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandSmite extends FEcmdModuleCommands
+public class CommandSmite extends ForgeEssentialsCommandBase
 {
 
     @Override
@@ -131,6 +132,12 @@ public class CommandSmite extends FEcmdModuleCommands
         {
             return "/smite <player> Smite someone.";
         }
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

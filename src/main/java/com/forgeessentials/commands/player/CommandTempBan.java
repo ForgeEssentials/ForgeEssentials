@@ -11,14 +11,15 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandTempBan extends FEcmdModuleCommands
+public class CommandTempBan extends ForgeEssentialsCommandBase
 {
 
     public static final String PERM_BAN_REASON = "tempban.reason";
@@ -98,6 +99,12 @@ public class CommandTempBan extends FEcmdModuleCommands
             ChatOutputHandler.sendMessage(MinecraftServer.getServer(),
                     Translator.format("Player %s, has been temporarily banned for %s", player.getUsername(), durationString));
         }
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

@@ -17,11 +17,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandPush extends FEcmdModuleCommands
+public class CommandPush extends ForgeEssentialsCommandBase
 {
 
     @Override
@@ -175,6 +176,12 @@ public class CommandPush extends FEcmdModuleCommands
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

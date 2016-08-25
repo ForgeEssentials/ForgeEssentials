@@ -17,13 +17,14 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandDoAs extends FEcmdModuleCommands
+public class CommandDoAs extends ForgeEssentialsCommandBase
 {
     @Override
     public String getCommandName()
@@ -106,6 +107,12 @@ public class CommandDoAs extends FEcmdModuleCommands
     public void registerExtraPermissions()
     {
         PermissionManager.registerPermission("fe.commands.doas.console", PermissionLevel.OP);
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

@@ -14,10 +14,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandCraft extends FEcmdModuleCommands
+public class CommandCraft extends ForgeEssentialsCommandBase
 {
 
     protected WeakReference<EntityPlayer> lastPlayer = new WeakReference<>(null);
@@ -72,6 +73,12 @@ public class CommandCraft extends FEcmdModuleCommands
     public String getCommandUsage(ICommandSender sender)
     {
         return "/craft Open a crafting window.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

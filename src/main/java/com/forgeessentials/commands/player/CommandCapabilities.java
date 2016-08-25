@@ -16,7 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -27,7 +28,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
  * @author Dries007
  */
 
-public class CommandCapabilities extends FEcmdModuleCommands
+public class CommandCapabilities extends ForgeEssentialsCommandBase
 {
     public static ArrayList<String> names;
 
@@ -196,6 +197,12 @@ public class CommandCapabilities extends FEcmdModuleCommands
     public String getCommandUsage(ICommandSender sender)
     {
         return "/capabilities [player] [capability] [value|default] Allows you to modify player capabilities.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

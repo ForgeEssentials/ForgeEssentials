@@ -10,14 +10,15 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.commands.util.FEcmdModuleCommands;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandSeen extends FEcmdModuleCommands
+public class CommandSeen extends ForgeEssentialsCommandBase
 {
 
     @Override
@@ -87,6 +88,12 @@ public class CommandSeen extends FEcmdModuleCommands
         arguments.confirm(Translator.format("Player %s was last seen %s ago", player.getUsernameOrUuid(),
                 ChatOutputHandler.formatTimeDurationReadable(t, false)));
         PlayerInfo.discard(pi.ident.getUuid());
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }
