@@ -256,7 +256,6 @@ public class TeleportHelper extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void entityPortalEvent(EntityPortalEvent e)
     {
-        System.out.println("WOOOOOOOOOOOOOOOOOO");
         UserIdent ident = null;
         if (e.entity instanceof EntityPlayer)
             ident = UserIdent.get((EntityPlayer) e.entity);

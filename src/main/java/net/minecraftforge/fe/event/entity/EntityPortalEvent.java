@@ -36,6 +36,5 @@ public class EntityPortalEvent extends EntityEvent
         this.targetX = targetX;
         this.targetY = targetY;
         this.targetZ = targetZ;
-        System.out.println(String.format("EntityPortalEvent %d %d %d %d", x, y, z, targetDimension));
     }
 }
