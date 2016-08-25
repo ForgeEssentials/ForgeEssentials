@@ -89,52 +89,57 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
             else
                 ChatOutputHandler.chatNotification(event.entityPlayer, "Showing recent block changes (clicked block):");
         }
-        List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getPoints(point), null, info.checkStartTime, 4);
 
-        if (changes.size() == 0 && !newCheck)
+        if ((0b001 & eventType) != 0)
         {
-            ChatOutputHandler.chatError(event.entityPlayer, "No more changes");
-            return;
-        }
+            List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getPoints(point), null, info.checkStartTime, 4);
 
-        for (Action01Block change : changes)
-        {
-            info.checkStartTime = change.time;
-
-            String msg = String.format("%1$tm/%1$te %1$tH:%1$tM:%1$tS", change.time);
-            if (change.player != null)
+            if (changes.size() == 0 && !newCheck)
             {
-                UserIdent player = UserIdent.get(change.player.uuid);
-                msg += " " + player.getUsernameOrUuid();
+                ChatOutputHandler.chatError(event.entityPlayer, "No more changes");
+                return;
             }
-            msg += ": ";
 
-            String blockName = change.block != null ? change.block.name : "";
-            if (blockName.contains(":"))
-                blockName = blockName.split(":", 2)[1];
-
-            switch (change.type)
+            for (Action01Block change : changes)
             {
-            case PLACE:
-                msg += String.format("PLACED %s", blockName);
-                break;
-            case BREAK:
-                msg += String.format("BROKE %s", blockName);
-                break;
-            case DETONATE:
-                msg += String.format("EXPLODED %s", blockName);
-                break;
-            case USE_LEFT:
-                msg += String.format("LEFT CLICK %s", blockName);
-                break;
-            case USE_RIGHT:
-                msg += String.format("RIGHT CLICK %s", blockName);
-                break;
-            default:
-                continue;
+                info.checkStartTime = change.time;
+
+                String msg = String.format("%1$tm/%1$te %1$tH:%1$tM:%1$tS", change.time);
+                if (change.player != null)
+                {
+                    UserIdent player = UserIdent.get(change.player.uuid);
+                    msg += " " + player.getUsernameOrUuid();
+                }
+                msg += ": ";
+
+                String blockName = change.block != null ? change.block.name : "";
+                if (blockName.contains(":"))
+                    blockName = blockName.split(":", 2)[1];
+
+                switch (change.type)
+                {
+                case PLACE:
+                    msg += String.format("PLACED %s", blockName);
+                    break;
+                case BREAK:
+                    msg += String.format("BROKE %s", blockName);
+                    break;
+                case DETONATE:
+                    msg += String.format("EXPLODED %s", blockName);
+                    break;
+                case USE_LEFT:
+                    msg += String.format("LEFT CLICK %s", blockName);
+                    break;
+                case USE_RIGHT:
+                    msg += String.format("RIGHT CLICK %s", blockName);
+                    break;
+                default:
+                    continue;
+                }
+                ChatOutputHandler.chatConfirmation(event.entityPlayer, msg);
             }
-            ChatOutputHandler.chatConfirmation(event.entityPlayer, msg);
         }
+        //Add other Action events (Command, Player, Explosion, etc)
     }
 
 }
