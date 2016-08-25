@@ -31,7 +31,7 @@ public class PortalManager extends ServerEventHandler
 
     protected Map<String, Portal> portals = new HashMap<>();
 
-    private static boolean mixinLoaded = false;
+    // private static boolean mixinLoaded = false;
 
     public static Block portalBlock = Blocks.portal;
 
@@ -40,13 +40,9 @@ public class PortalManager extends ServerEventHandler
         super();
         instance = this;
         /*
-        mixinLoaded = FEMixinConfig.getInjectedPatches().contains("block.MixinBlockPortal");
-        if (!mixinLoaded)
-        {
-            LoggingHandler.felog.error("Unable to apply portal block mixin. Will revert to glass panes for portals.");
-            portalBlock = Blocks.glass_pane;
-        }
-        */
+         * mixinLoaded = FEMixinConfig.getInjectedPatches().contains("block.MixinBlockPortal"); if (!mixinLoaded) {
+         * LoggingHandler.felog.error("Unable to apply portal block mixin. Will revert to glass panes for portals."); portalBlock = Blocks.glass_pane; }
+         */
     }
 
     public static PortalManager getInstance()
@@ -84,8 +80,11 @@ public class PortalManager extends ServerEventHandler
         {
             if (portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
             {
-                if (!MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(e.entity, after.getWorld(), after.getBlockPos(), portal.target.getDimension(), portal.target.getBlockPos()))) {
-                    TeleportHelper.doTeleport((EntityPlayerMP) e.entityPlayer, portal.target.toWarpPoint(e.entityPlayer.rotationPitch, e.entityPlayer.rotationYaw));
+                if (!MinecraftForge.EVENT_BUS.post(
+                        new EntityPortalEvent(e.entity, after.getWorld(), after.getBlockPos(), portal.target.getDimension(), portal.target.getBlockPos())))
+                {
+                    TeleportHelper.doTeleport((EntityPlayerMP) e.entityPlayer,
+                            portal.target.toWarpPoint(e.entityPlayer.rotationPitch, e.entityPlayer.rotationYaw));
                 }
             }
         }

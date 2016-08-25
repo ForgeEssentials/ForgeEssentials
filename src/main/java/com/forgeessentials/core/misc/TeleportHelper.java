@@ -21,11 +21,11 @@ import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -54,7 +54,7 @@ public class TeleportHelper extends ServerEventHandler
             int i = MathHelper.floor_double(entity.posX);
             int j = MathHelper.floor_double(entity.posY) - 1;
             int k = MathHelper.floor_double(entity.posZ);
-            entity.setLocationAndAngles((double)i, (double)j, (double)k, entity.rotationYaw, 0.0F);
+            entity.setLocationAndAngles(i, j, k, entity.rotationYaw, 0.0F);
         }
 
         @Override
@@ -143,7 +143,8 @@ public class TeleportHelper extends ServerEventHandler
             throw new TranslatedCommandException("You are not allowed to teleport from here.");
         if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_TO))
             throw new TranslatedCommandException("You are not allowed to teleport to that location.");
-        if (player.dimension != point.getDimension()) {
+        if (player.dimension != point.getDimension())
+        {
             if (!APIRegistry.perms.checkPermission(player, TELEPORT_CROSSDIM_FROM))
                 throw new TranslatedCommandException("You are not allowed to teleport from this dimension.");
             if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_CROSSDIM_TO))
@@ -270,7 +271,8 @@ public class TeleportHelper extends ServerEventHandler
             e.setCanceled(true);
         if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_PORTALTO))
             e.setCanceled(true);
-        if (e.world.provider.getDimensionId() != e.targetDimension) {
+        if (e.world.provider.getDimensionId() != e.targetDimension)
+        {
             if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_CROSSDIM_PORTALFROM))
                 e.setCanceled(true);
             if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_CROSSDIM_PORTALTO))

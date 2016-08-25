@@ -26,10 +26,10 @@ public class QueryCommandLog extends GenericRemoteHandler<QueryLogRequest>
         QueryLogRequest data = request.data == null ? new QueryLogRequest() : request.data;
         List<Action02Command> result;
         if (data.hasArea())
-            result = ModulePlayerLogger.getLogger().getLoggedCommands(data.getArea(), data.startTime, data.endTime, data.getLimit());
+            result = ModulePlayerLogger.getLogger().getLoggedCommands(data.getArea(), data.startTime, data.endTime, 0, data.getLimit());
         else
-            result = ModulePlayerLogger.getLogger().getLoggedCommands(data.getPoint(), data.startTime, data.endTime, data.getLimit());
-        return new RemoteResponse<QueryLogResponse<Action02Command>>(request, new QueryLogResponse<Action02Command>(request.data, result));
+            result = ModulePlayerLogger.getLogger().getLoggedCommands(data.getPoint(), data.startTime, data.endTime, 0, data.getLimit());
+        return new RemoteResponse<>(request, new QueryLogResponse<>(request.data, result));
     }
 
 }

@@ -11,8 +11,6 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 /**
  * Opens your enderchest.
- *
- * @author Dries007
  */
 public class CommandEnderchest extends ForgeEssentialsCommandBase
 {
@@ -56,15 +54,15 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getPermissionNode()
     {
-        return "/enderchest Opens your enderchest.";
+        return ModuleCommands.PERM + ".enderchest";
     }
 
     @Override
-    public String getPermissionNode()
+    public String getCommandUsage(ICommandSender sender)
     {
-        return ModuleCommands.PERM + "." + getCommandName();
+        return "/enderchest Opens your enderchest.";
     }
 
 }

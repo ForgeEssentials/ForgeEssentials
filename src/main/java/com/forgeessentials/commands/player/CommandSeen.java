@@ -24,7 +24,13 @@ public class CommandSeen extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "seen";
+        return "feseen";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "seen" };
     }
 
     @Override
@@ -34,15 +40,21 @@ public class CommandSeen extends ForgeEssentialsCommandBase
     }
 
     @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.TRUE;
     }
 
     @Override
-    public boolean canConsoleUseCommand()
+    public String getPermissionNode()
     {
-        return true;
+        return ModuleCommands.PERM + ".seen";
     }
 
     @Override
@@ -88,12 +100,6 @@ public class CommandSeen extends ForgeEssentialsCommandBase
         arguments.confirm(Translator.format("Player %s was last seen %s ago", player.getUsernameOrUuid(),
                 ChatOutputHandler.formatTimeDurationReadable(t, false)));
         PlayerInfo.discard(pi.ident.getUuid());
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

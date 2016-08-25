@@ -21,7 +21,7 @@ public enum WorldBorderEffects
     SMITE(EffectSmite.class),
     BLOCK(EffectBlock.class);
 
-    public Class clazz;
+    public Class<?> clazz;
 
     WorldBorderEffects(Class<?> clazz)
     {

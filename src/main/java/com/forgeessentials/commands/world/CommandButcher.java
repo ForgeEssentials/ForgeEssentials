@@ -39,6 +39,30 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     }
 
     @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/butcher [radius|-1|world] [type] [x, y, z] Kills the type of mobs within the specified radius around the specified point in the specified world.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".butcher";
+    }
+
+    @Override
     public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
@@ -62,7 +86,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
         World world = sender.worldObj;
         String mobType = ButcherMobType.HOSTILE.toString();
 
-        Queue<String> argsStack = new LinkedList<String>(Arrays.asList(args));
+        Queue<String> argsStack = new LinkedList<>(Arrays.asList(args));
         if (!argsStack.isEmpty())
         {
             String radiusValue = argsStack.remove();
@@ -105,7 +129,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
         World world = DimensionManager.getWorld(0);
         String mobType = ButcherMobType.HOSTILE.toString();
 
-        Queue<String> argsStack = new LinkedList<String>(Arrays.asList(args));
+        Queue<String> argsStack = new LinkedList<>(Arrays.asList(args));
 
         if (!argsStack.isEmpty())
         {
@@ -150,30 +174,6 @@ public class CommandButcher extends ForgeEssentialsCommandBase
         }
         AxisAlignedBB pool = new AxisAlignedBB(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
         CommandButcherTickTask.schedule(sender, world, mobType, pool, radius);
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/butcher [radius|-1|world] [type] [x, y, z] Kills the type of mobs within the specified radius around the specified point in the specified world.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

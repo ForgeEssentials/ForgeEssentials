@@ -10,8 +10,8 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraft.world.WorldSettings.GameType;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.permission.PermissionLevel;
@@ -37,21 +37,33 @@ public class CommandServerSettings extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/serversettings [option] [value]: View or change server settings (server.properties)";
-    }
-
-    @Override
     public String[] getDefaultAliases()
     {
         return new String[] { "ss" };
     }
 
     @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/serversettings [option] [value]: View or change server settings (server.properties)";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
     public String getPermissionNode()
     {
-        return ModuleCommands.PERM + "." + getCommandName();
+        return ModuleCommands.PERM + ".serversettings";
     }
 
     @SideOnly(Side.SERVER)
@@ -166,18 +178,6 @@ public class CommandServerSettings extends ParserCommandBase
         default:
             arguments.error(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
     }
 
 }

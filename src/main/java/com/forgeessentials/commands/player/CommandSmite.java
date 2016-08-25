@@ -25,7 +25,44 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "smite";
+        return "fesmite";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "smite" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        if (sender instanceof EntityPlayer)
+        {
+            return "/smite [me|player] Smite yourself, another player, or the spot you are looking at.";
+        }
+        else
+        {
+            return "/smite <player> Smite someone.";
+        }
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".smite";
     }
 
     @Override
@@ -97,12 +134,6 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
@@ -113,31 +144,6 @@ public class CommandSmite extends ForgeEssentialsCommandBase
         {
             return null;
         }
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/smite [me|player] Smite yourself, another player, or the spot you are looking at.";
-        }
-        else
-        {
-            return "/smite <player> Smite someone.";
-        }
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

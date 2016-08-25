@@ -13,6 +13,43 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandSpeed extends ForgeEssentialsCommandBase
 {
+
+    @Override
+    public String getCommandName()
+    {
+        return "fespeed";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "speed" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender p_71518_1_)
+    {
+        return "/speed <speed> Set or change the player's speed.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".speed";
+    }
+
     @Override
     public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
     {
@@ -56,33 +93,4 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
         }
     }
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandName()
-    {
-        return "speed";
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
-    {
-        return "/speed <speed> Set or change the player's speed.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
-    }
 }

@@ -127,11 +127,11 @@ dependencies {
         exclude module: 'commons-codec'
     }
 	
-	// Database libraries
-	serverLib "com.h2database:h2:1.3.175"
-	serverLib "mysql:mysql-connector-java:5.1.22"
-	serverLib "org.hibernate:hibernate-entitymanager:4.3.7.Final"
-	buildDep "org.hibernate:hibernate-jpamodelgen:4.3.7.Final"
+	// Database libraries	
+	serverLib group: 'com.h2database', 	name: 'h2', 					version: '1.3.175'
+	serverLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
+	serverLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
+	buildDep  group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit

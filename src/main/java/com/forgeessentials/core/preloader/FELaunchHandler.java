@@ -34,7 +34,7 @@ public class FELaunchHandler implements ITweaker
 
     public static final String FE_DIRECTORY = "ForgeEssentials";
 
-    public static final String FE_LIB_VERSION = "2";
+    public static final String FE_LIB_VERSION = "3";
 
     public static final FilenameFilter JAR_FILTER = new FilenameFilter() {
         @Override
@@ -71,7 +71,7 @@ public class FELaunchHandler implements ITweaker
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "deprecation" })
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile)
     {
         // initialize mixin, if someone hasn't already done it for us
@@ -80,7 +80,7 @@ public class FELaunchHandler implements ITweaker
         {
             tweaks.add("org.spongepowered.asm.launch.MixinTweaker");
         }
-        
+
         MixinBootstrap.init();
         MixinEnvironment.setCompatibilityLevel(CompatibilityLevel.JAVA_8);
         // Fix CoFH compatibility. Fixes #1903

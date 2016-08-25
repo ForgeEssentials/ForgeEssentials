@@ -19,16 +19,41 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandLocate extends ForgeEssentialsCommandBase
 {
+
     @Override
     public String getCommandName()
     {
-        return "locate";
+        return "felocate";
     }
 
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[] { "gps", "loc", "playerinfo" };
+        return new String[] { "locate", "gps", "loc", "playerinfo" };
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/locate <player> Locates a player.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".locate";
     }
 
     @Override
@@ -48,12 +73,6 @@ public class CommandLocate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
@@ -63,21 +82,4 @@ public class CommandLocate extends ForgeEssentialsCommandBase
         return null;
     }
 
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/locate <player> Locates a player.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
-    }
 }

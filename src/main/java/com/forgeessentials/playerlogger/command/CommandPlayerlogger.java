@@ -5,8 +5,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.persistence.TypedQuery;
 
-import com.forgeessentials.playerlogger.PlayerLoggerEvent;
-import com.forgeessentials.playerlogger.PlayerLoggerEventHandler;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -19,6 +17,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLogger;
+import com.forgeessentials.playerlogger.PlayerLoggerEventHandler;
 import com.forgeessentials.playerlogger.entity.Action;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -58,7 +57,6 @@ public class CommandPlayerlogger extends ParserCommandBase
         return PermissionLevel.OP;
     }
 
-
     private String outputFilterReadable(int filter)
     {
         String out = "Set to filter:";
@@ -92,6 +90,7 @@ public class CommandPlayerlogger extends ParserCommandBase
         }
         return out;
     }
+
     @Override
     public void parse(final CommandParserArgs arguments) throws CommandException
     {
@@ -111,65 +110,64 @@ public class CommandPlayerlogger extends ParserCommandBase
             if (arguments.isEmpty())
             {
                 arguments.confirm("/pl picker range [int] : Set picker range");
-                arguments.confirm("/pl picker filter [player | command | block | explosion | burn | all] [searchCriteria] : Filter displayed blocks based on a criteria");
+                arguments.confirm(
+                        "/pl picker filter [player | command | block | explosion | burn | all] [searchCriteria] : Filter displayed blocks based on a criteria");
                 break;
             }
-                String subCmd2 = arguments.remove().toLowerCase();
-                switch (subCmd2)
+            String subCmd2 = arguments.remove().toLowerCase();
+            switch (subCmd2)
+            {
+            case "range":
+                // Set the lookup range of the picker tool (Clock)
+                int oldRange = PlayerLoggerEventHandler.pickerRange;
+                PlayerLoggerEventHandler.pickerRange = arguments.parseInt();
+                ChatOutputHandler.sendMessage(arguments.sender,
+                        ChatOutputHandler.formatColors("Range changed from " + oldRange + " to " + PlayerLoggerEventHandler.pickerRange));
+                break;
+            case "filter":
+                // filter event type shown (player, command, block, explosion)
+                PlayerLoggerEventHandler.eventType = arguments.isEmpty() ? 0b11111 : 0;
+                PlayerLoggerEventHandler.searchCriteria = "";
+                while (!arguments.isEmpty())
                 {
-                case "range":
-                    //Set the lookup range of the picker tool (Clock)
-                    int oldRange = PlayerLoggerEventHandler.pickerRange;
-                    PlayerLoggerEventHandler.pickerRange = arguments.parseInt();
-                    ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors("Range changed from " + oldRange + " to " + PlayerLoggerEventHandler.pickerRange));
-                    break;
-                case "filter":
-                    //filter event type shown (player, command, block, explosion)
-                    PlayerLoggerEventHandler.eventType = arguments.isEmpty() ? 0b11111 : 0;
-                    PlayerLoggerEventHandler.searchCriteria = "";
-                    while (!arguments.isEmpty())
+                    String subCmd3 = arguments.remove().toLowerCase();
+                    switch (subCmd3)
                     {
-                        String subCmd3 = arguments.remove().toLowerCase();
-                        switch (subCmd3)
+                    case "player":
+                        PlayerLoggerEventHandler.eventType |= 0b10000;
+                        break;
+                    case "command":
+                        PlayerLoggerEventHandler.eventType |= 0b01000;
+                        break;
+                    case "block":
+                        PlayerLoggerEventHandler.eventType |= 0b00100;
+                        break;
+                    case "explosion":
+                        PlayerLoggerEventHandler.eventType |= 0b00010;
+                        break;
+                    case "burn":
+                        PlayerLoggerEventHandler.eventType |= 0b00001;
+                        break;
+                    case "all":
+                        PlayerLoggerEventHandler.eventType = 0b11111;
+                        break;
+                    default:
+                        if (arguments.isEmpty())
                         {
-                        case "player":
-                            PlayerLoggerEventHandler.eventType |= 0b10000;
-                            break;
-                        case "command":
-                            PlayerLoggerEventHandler.eventType |= 0b01000;
-                            break;
-                        case "block":
-                            PlayerLoggerEventHandler.eventType |= 0b00100;
-                            break;
-                        case "explosion":
-                            PlayerLoggerEventHandler.eventType |= 0b00010;
-                            break;
-                        case "burn":
-                            PlayerLoggerEventHandler.eventType |= 0b00001;
-                            break;
-                        case "all":
-                            PlayerLoggerEventHandler.eventType = 0b11111;
-                            break;
-                        default:
-                            if (arguments.isEmpty())
-                            {
-                                PlayerLoggerEventHandler.searchCriteria = subCmd3;
-                                if (PlayerLoggerEventHandler.eventType == 0)
-                                    PlayerLoggerEventHandler.eventType = 0b11111;
-                            }
-                            else
-                                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
+                            PlayerLoggerEventHandler.searchCriteria = subCmd3;
+                            if (PlayerLoggerEventHandler.eventType == 0)
+                                PlayerLoggerEventHandler.eventType = 0b11111;
                         }
+                        else
+                            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
                     }
-                    ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors(outputFilterReadable(PlayerLoggerEventHandler.eventType) + (
-                            PlayerLoggerEventHandler.searchCriteria.equals("") ?
-                                    "" :
-                                    "with SearchCriteria " + PlayerLoggerEventHandler.searchCriteria)));
-                    break;
-                default:
-                    throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd2);
                 }
-
+                ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors(outputFilterReadable(PlayerLoggerEventHandler.eventType)
+                        + (PlayerLoggerEventHandler.searchCriteria.equals("") ? "" : "with SearchCriteria " + PlayerLoggerEventHandler.searchCriteria)));
+                break;
+            default:
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd2);
+            }
 
             break;
         case "search":
@@ -179,7 +177,7 @@ public class CommandPlayerlogger extends ParserCommandBase
                 break;
             }
             long duration = arguments.parseTimeReadable();
-            //filter event type shown (player, command, block, explosion)
+            // filter event type shown (player, command, block, explosion)
             int eventType = 0;
             String searchCriteria;
             while (!arguments.isEmpty())
@@ -215,7 +213,7 @@ public class CommandPlayerlogger extends ParserCommandBase
 
             throw new TranslatedCommandException("Command %s is not implemented yet", getCommandName());
 
-            //break;
+            // break;
         case "stats":
             if (arguments.isTabCompletion)
                 return;

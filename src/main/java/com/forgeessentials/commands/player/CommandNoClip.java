@@ -21,7 +21,13 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "noclip";
+        return "fenoclip";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "noclip" };
     }
 
     @Override
@@ -40,6 +46,12 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".noclip";
     }
 
     @Override
@@ -88,12 +100,6 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
                 }
             }
         }
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

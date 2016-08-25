@@ -36,13 +36,13 @@ public class CommandBind extends ParserCommandBase
     @Override
     public String getCommandName()
     {
-        return "bind";
+        return "febind";
     }
 
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[] { "febind" };
+        return new String[] { "bind" };
     }
 
     @Override
@@ -58,19 +58,18 @@ public class CommandBind extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + ".bind";
-    }
-
-    @Override
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.OP;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".bind";
+    }
+
+    @Override
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())

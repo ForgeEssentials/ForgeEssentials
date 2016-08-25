@@ -7,7 +7,6 @@ import java.util.UUID;
 import net.minecraft.command.CommandHelp;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 

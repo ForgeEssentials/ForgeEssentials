@@ -64,6 +64,12 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
     public String getPermissionNode()
     {
         return "fe.commands.help";
@@ -76,13 +82,6 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
@@ -109,9 +108,9 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
                     return;
                 }
 
-                ICommand command = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(name);
+                ICommand command = MinecraftServer.getServer().getCommandManager().getCommands().get(name);
 
-                SortedSet<ICommand> results = new TreeSet<ICommand>(new Comparator<ICommand>() {
+                SortedSet<ICommand> results = new TreeSet<>(new Comparator<ICommand>() {
                     @Override
                     public int compare(ICommand a, ICommand b)
                     {

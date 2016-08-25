@@ -28,13 +28,37 @@ public class CommandPush extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "push";
+        return "fepush";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "push" };
     }
 
     @Override
     public String getCommandUsage(ICommandSender par1ICommandSender)
     {
-        return "/push <X> <Y> <Z>";
+        return "/push <X> <Y> <Z>: Push a button or pressureplate somewhere";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".push";
     }
 
     @Override
@@ -164,24 +188,6 @@ public class CommandPush extends ForgeEssentialsCommandBase
         }
 
         return d1;
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.TRUE;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

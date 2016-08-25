@@ -27,7 +27,13 @@ public class CommandTempBan extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "tempban";
+        return "fetempban";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "tempban" };
     }
 
     @Override
@@ -37,15 +43,21 @@ public class CommandTempBan extends ForgeEssentialsCommandBase
     }
 
     @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.OP;
     }
 
     @Override
-    public boolean canConsoleUseCommand()
+    public String getPermissionNode()
     {
-        return true;
+        return ModuleCommands.PERM + ".tempban";
     }
 
     @Override
@@ -99,12 +111,6 @@ public class CommandTempBan extends ForgeEssentialsCommandBase
             ChatOutputHandler.sendMessage(MinecraftServer.getServer(),
                     Translator.format("Player %s, has been temporarily banned for %s", player.getUsername(), durationString));
         }
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

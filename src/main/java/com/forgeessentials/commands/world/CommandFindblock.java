@@ -36,12 +36,6 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     public void loadData()
     {
     }
-    
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "fb" };
-    }
 
     @Override
     public String getCommandName()
@@ -49,9 +43,36 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
         return "findblock";
     }
 
-    /*
-     * syntax: /fb <block> [max distance, def = 20 * 16] [amount of blocks, def = 1] [speed, def = 10]
-     */
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "fb" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/fb <block> [meta] [max distance] [amount of blocks] [speed] Finds a block.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".findblock";
+    }
+
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
@@ -69,17 +90,11 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
-            List<String> names = new ArrayList<String>();
+            List<String> names = new ArrayList<>();
             for (Item i : GameData.getItemRegistry().typeSafeIterable())
             {
                 names.add(i.getUnlocalizedName());
@@ -99,24 +114,6 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
             return getListOfStringsMatchingLastWord(args, defaultSpeed + "");
         }
         return null;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/fb <block> [meta] [max distance] [amount of blocks] [speed] Finds a block.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

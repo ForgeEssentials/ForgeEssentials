@@ -41,7 +41,13 @@ public class CommandWarp extends ParserCommandBase
     @Override
     public String getCommandName()
     {
-        return "warp";
+        return "fewarp";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "warp" };
     }
 
     @Override
@@ -51,9 +57,9 @@ public class CommandWarp extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public boolean canConsoleUseCommand()
     {
-        return PERM;
+        return false;
     }
 
     @Override
@@ -63,18 +69,18 @@ public class CommandWarp extends ParserCommandBase
     }
 
     @Override
+    public String getPermissionNode()
+    {
+        return PERM;
+    }
+
+    @Override
     public void registerExtraPermissions()
     {
         APIRegistry.perms.registerPermission(PERM_SET, PermissionLevel.OP, "Allow setting warps");
         APIRegistry.perms.registerPermission(PERM_DELETE, PermissionLevel.OP, "Allow deleting warps");
         APIRegistry.perms.registerPermissionProperty(PERM_LIMIT, "10", "Maximal warp count");
         APIRegistry.perms.registerPermissionPropertyOp(PERM_LIMIT, "false");
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
     }
 
     public static Map<String, Warp> getWarps()
@@ -150,4 +156,5 @@ public class CommandWarp extends ParserCommandBase
             }
         }
     }
+
 }

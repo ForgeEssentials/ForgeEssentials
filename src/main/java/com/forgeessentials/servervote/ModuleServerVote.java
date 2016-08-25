@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;

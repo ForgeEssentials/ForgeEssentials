@@ -96,7 +96,13 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     @Override
     public String getCommandName()
     {
-        return "weather";
+        return "feweather";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "weather" };
     }
 
     @Override
@@ -106,9 +112,9 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     }
 
     @Override
-    public String getPermissionNode()
+    public boolean canConsoleUseCommand()
     {
-        return ModuleCommands.PERM + ".weather";
+        return true;
     }
 
     @Override
@@ -118,9 +124,9 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     }
 
     @Override
-    public boolean canConsoleUseCommand()
+    public String getPermissionNode()
     {
-        return true;
+        return ModuleCommands.PERM + ".weather";
     }
 
     public static WeatherState getWeatherState(int dim, WeatherType type)

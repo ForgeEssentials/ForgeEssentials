@@ -17,8 +17,6 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 
 /**
  * Opens other player inventory.
- *
- * @author Dries007
  */
 public class CommandInventorySee extends ForgeEssentialsCommandBase
 {
@@ -30,7 +28,37 @@ public class CommandInventorySee extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "invsee";
+        return "feinvsee";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "invsee" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/invsee See a player's inventory.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".invsee";
     }
 
     @Override
@@ -59,12 +87,6 @@ public class CommandInventorySee extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
@@ -75,24 +97,6 @@ public class CommandInventorySee extends ForgeEssentialsCommandBase
         {
             return null;
         }
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/invsee See a player's inventory.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

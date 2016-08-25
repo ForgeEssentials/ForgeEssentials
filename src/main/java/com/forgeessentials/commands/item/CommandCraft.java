@@ -27,34 +27,23 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     {
         MinecraftForge.EVENT_BUS.register(this);
     }
-
-    @SubscribeEvent
-    public void playerOpenContainerEvent(PlayerOpenContainerEvent event)
-    {
-        if (event.canInteractWith == false && lastPlayer.get() == event.entityPlayer)
-        {
-            event.setResult(Result.ALLOW);
-        }
-    }
-
+    
     @Override
     public String getCommandName()
     {
-        return "craft";
+        return "fecraft";
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public String[] getDefaultAliases()
     {
-        EntityPlayerMP player = sender;
-        player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.worldObj, player.getPosition()));
-        lastPlayer = new WeakReference<EntityPlayer>(player);
+        return new String[] { "craft" };
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public String getCommandUsage(ICommandSender sender)
     {
-        throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+        return "/craft Open a crafting window.";
     }
 
     @Override
@@ -70,15 +59,32 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getPermissionNode()
     {
-        return "/craft Open a crafting window.";
+        return ModuleCommands.PERM + ".craft";
+    }
+
+    @SubscribeEvent
+    public void playerOpenContainerEvent(PlayerOpenContainerEvent event)
+    {
+        if (event.canInteractWith == false && lastPlayer.get() == event.entityPlayer)
+        {
+            event.setResult(Result.ALLOW);
+        }
     }
 
     @Override
-    public String getPermissionNode()
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
     {
-        return ModuleCommands.PERM + "." + getCommandName();
+        EntityPlayerMP player = sender;
+        player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.worldObj, player.getPosition()));
+        lastPlayer = new WeakReference<>(player);
+    }
+
+    @Override
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    {
+        throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
 
 }

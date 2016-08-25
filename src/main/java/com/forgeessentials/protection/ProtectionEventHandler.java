@@ -199,6 +199,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         UserIdent ident = UserIdent.get(event.entityPlayer);
         WorldPoint point = new WorldPoint(event.target);
+
         String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + EntityList.getEntityString(event.target);
         ModuleProtection.debugPermission(event.entityPlayer, permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
@@ -246,9 +247,10 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         UserIdent ident = UserIdent.get(event.getPlayer());
         IBlockState blockState = event.world.getBlockState(event.pos);
+        WorldPoint point = new WorldPoint(event);
+
         String permission = ModuleProtection.getBlockBreakPermission(blockState);
         ModuleProtection.debugPermission(event.getPlayer(), permission);
-        WorldPoint point = new WorldPoint(event);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
@@ -258,7 +260,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (PlayerInfo.get(ident).getHasFEClient())
             {
                 int blockId = GameData.getBlockRegistry().getId(blockState.getBlock());
-                Set<Integer> ids = new HashSet<Integer>();
+                Set<Integer> ids = new HashSet<>();
                 ids.add(blockId);
                 NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, null, ids), ident.getPlayerMP());
             }
@@ -274,9 +276,10 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         UserIdent ident = UserIdent.get(event.player);
         IBlockState blockState = event.world.getBlockState(event.pos);
+        WorldPoint point = new WorldPoint(event.player.dimension, event.pos);
+
         String permission = ModuleProtection.getBlockPlacePermission(blockState);
         ModuleProtection.debugPermission(event.player, permission);
-        WorldPoint point = new WorldPoint(event.player.dimension, event.pos);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
@@ -393,7 +396,6 @@ public class ProtectionEventHandler extends ServerEventHandler
         // }
     }
 
-    @SuppressWarnings("unchecked")
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void explosionDetonateEvent(ExplosionEvent.Detonate event)
     {
@@ -907,16 +909,17 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public static void updateBrokenTileEntity(final EntityPlayerMP player, final TileEntity te)
     {
-        if (player == null)
+        if (player == null || player.playerNetServerHandler == null)
             return;
-        final Packet packet = te.getDescriptionPacket();
+        final Packet<?> packet = te.getDescriptionPacket();
         if (packet == null)
             return;
         TaskRegistry.runLater(new Runnable() {
             @Override
             public void run()
             {
-                player.playerNetServerHandler.sendPacket(packet);
+                if (player.playerNetServerHandler != null)
+                    player.playerNetServerHandler.sendPacket(packet);
             }
         });
     }

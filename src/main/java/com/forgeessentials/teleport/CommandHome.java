@@ -25,7 +25,44 @@ public class CommandHome extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "home";
+        return "fehome";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "home" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        if (sender instanceof EntityPlayer)
+        {
+            return "/home [here|x, y, z] Set your home location.";
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return TeleportModule.PERM_HOME;
     }
 
     @Override
@@ -66,12 +103,6 @@ public class CommandHome extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_HOME;
-    }
-
-    @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
@@ -79,31 +110,6 @@ public class CommandHome extends ForgeEssentialsCommandBase
             return getListOfStringsMatchingLastWord(args, "here");
         }
         return null;
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.TRUE;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/home [here|x, y, z] Set your home location.";
-        }
-        else
-        {
-            return null;
-        }
     }
 
 }

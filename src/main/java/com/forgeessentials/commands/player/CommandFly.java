@@ -12,6 +12,24 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandFly extends ForgeEssentialsCommandBase
 {
     @Override
+    public String getCommandName()
+    {
+        return "fefly";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "fly" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender p_71518_1_)
+    {
+        return "/fly [true|false] Toggle flight mode.";
+    }
+
+    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -24,15 +42,9 @@ public class CommandFly extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getPermissionNode()
     {
-        return "fly";
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
-    {
-        return "/fly [true|false] Toggle flight mode.";
+        return ModuleCommands.PERM + ".fly";
     }
 
     @Override
@@ -55,12 +67,6 @@ public class CommandFly extends ForgeEssentialsCommandBase
             WorldUtil.placeInWorld(player);
         player.sendPlayerAbilities();
         ChatOutputHandler.chatNotification(player, "Flying " + (player.capabilities.allowFlying ? "enabled" : "disabled"));
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }
