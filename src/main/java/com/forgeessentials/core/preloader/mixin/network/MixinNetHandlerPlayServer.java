@@ -4,9 +4,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.C12PacketUpdateSign;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.world.SignEditEvent;
@@ -17,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(NetHandlerPlayServer.class)
 public class MixinNetHandlerPlayServer
@@ -25,35 +30,35 @@ public class MixinNetHandlerPlayServer
     @Shadow
     public EntityPlayerMP playerEntity;
 
-    private IChatComponent[] signLines;
-
     /**
      * Post {@link SignEditEvent} to the event bus.
      *
      * @param packet the update sign packet
      */
-    @Redirect(
+    @Inject(
             method = "processUpdateSign",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/network/play/client/C12PacketUpdateSign;getLines()[Lnet/minecraft/util/IChatComponent;"
             ),
-            require = 1
+            require = 1,
+            locals = LocalCapture.CAPTURE_FAILHARD,
+            cancellable = true
     )
-    private IChatComponent[] getLines(C12PacketUpdateSign packet)
+    private void getLines(C12PacketUpdateSign packet, CallbackInfo ci, WorldServer worldserver, BlockPos blockpos, TileEntity entity, TileEntitySign tileentitysign)
     {
         SignEditEvent event = new SignEditEvent(packet.getPosition(), packet.getLines(), this.playerEntity);
-        if (MinecraftForge.EVENT_BUS.post(event))
+        if (!MinecraftForge.EVENT_BUS.post(event))
         {
-            // We will replace this with an empty array
-            signLines = new IChatComponent[]{};
-            return signLines;
+            for (int i = 0; i < event.text.length; ++i)
+            {
+                tileentitysign.signText[i] = event.text[i];
+            }
         }
-        else
-        {
-            signLines = event.text;
-            return event.text;
-        }
+
+        tileentitysign.markDirty();
+        worldserver.markBlockForUpdate(blockpos);
+        ci.cancel();
     }
 
     /**
