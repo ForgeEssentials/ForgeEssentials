@@ -343,7 +343,7 @@ public class MethodInjector implements Comparable<MethodInjector>
                     if (originalField != null)
                         break classLoop;
                 }
-                originalClass = ASMUtil.loadClassNode(ASMUtil.javaName(originalClass.superName));
+                originalClass = ASMUtil.getClassNode(ASMUtil.javaName(originalClass.superName));
             }
             if (originalField == null)
                 throw new InjectionException(String.format("Could not find shadowed field %s in target class hierachy", field.name));
@@ -391,7 +391,7 @@ public class MethodInjector implements Comparable<MethodInjector>
                     if (originalMethod != null)
                         break classLoop;
                 }
-                originalClass = ASMUtil.loadClassNode(ASMUtil.javaName(originalClass.superName));
+                originalClass = ASMUtil.getClassNode(ASMUtil.javaName(originalClass.superName));
             }
             if (originalMethod == null)
                 throw new InjectionException(String.format("Could not find shadowed method %s in target class hierachy", method.name));

@@ -27,8 +27,8 @@ public class ASMClassWriter extends ClassWriter
             return type1;
         try
         {
-            ClassNode clazz1 = ASMUtil.loadClassNode(type1);
-            ClassNode clazz2 = ASMUtil.loadClassNode(type2);
+            ClassNode clazz1 = ASMUtil.getClassNode(type1);
+            ClassNode clazz2 = ASMUtil.getClassNode(type2);
 
             if (ASMUtil.isInterface(clazz1.access) && ASMUtil.isInterface(clazz2.access))
             {

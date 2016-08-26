@@ -2,6 +2,7 @@ package com.forgeessentials.core.preloader.asminjector;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,20 @@ public final class ASMUtil
 
     private static IClassNameTransformer classNameTransformer;
 
+    public static ClassNode getClassNode(String className) throws ClassNotFoundException
+    {
+        ClassNode classNode = classCache.get(className);
+        if (classNode == null)
+        {
+            classNode = loadClassNode(className, classNode);
+            // Transform class names from obfuscated to non-obfusctated ones
+            classNode.name = className;
+            classNode.superName = classNode.superName == null ? null : resourceName(transformName(classNode.superName));
+            classCache.put(className, classNode);
+        }
+        return classNode;
+    }
+
     public static ClassNode loadClassNode(byte[] b)
     {
         ClassReader cr = new ClassReader(b);
@@ -88,34 +103,34 @@ public final class ASMUtil
         return classNode;
     }
 
-    public static ClassNode loadClassNode(String className) throws ClassNotFoundException
+    private static ClassNode loadClassNode(String className, ClassNode classNode) throws ClassNotFoundException
     {
-        ClassNode classNode = classCache.get(className);
-        if (classNode == null)
+        try
         {
-            try (InputStream is = getClassResourceStream(untransformName(className)))
-            {
-                if (is == null)
-                    throw new ClassNotFoundException(className);
-                classNode = loadClassNode(is);
+            String untransformedName = untransformName(className);
 
-                // Transform class names from obfuscated to non-obfusctated ones
-                classNode.name = className;
-                classNode.superName = classNode.superName == null ? null : resourceName(transformName(classNode.superName));
-            }
-            catch (IOException e)
+            byte[] classBytes = Launch.classLoader.getClassBytes(untransformedName);
+            if (classBytes != null)
             {
-                throw new ClassNotFoundException(className);
+                return loadClassNode(classBytes);
             }
-            if (classNode != null)
-                classCache.put(className, classNode);
+
+            URLClassLoader appClassLoader = (URLClassLoader) Launch.class.getClassLoader();
+            String resourcePath = untransformedName.replace('.', '/').concat(".class");
+            try (InputStream is = appClassLoader.getResourceAsStream(resourcePath))
+            {
+                return loadClassNode(is);
+            }
         }
-        return classNode;
+        catch (IOException e)
+        {
+            throw new ClassNotFoundException(className);
+        }
     }
 
     public static ClassNode loadSuperClassNode(ClassNode c) throws ClassNotFoundException
     {
-        return c.superName == null ? null : loadClassNode(c.superName);
+        return c.superName == null ? null : getClassNode(c.superName);
     }
 
     public static IClassNameTransformer getClassNameTransformer()
@@ -145,7 +160,10 @@ public final class ASMUtil
     public static InputStream getClassResourceStream(String name)
     {
         String fn = getClassFilename(name);
-        return ASMUtil.class.getResourceAsStream(fn);
+        InputStream is = ASMUtil.class.getResourceAsStream(fn);
+        if (is == null)
+            is = ClassLoader.getSystemClassLoader().getResourceAsStream(fn);
+        return is;
 
         // InputStream is;
         // is = ASMUtil.class.getResourceAsStream(fn);
@@ -362,7 +380,7 @@ public final class ASMUtil
 
         public static ClassInfo forName(String className) throws ClassNotFoundException
         {
-            ClassNode cn = loadClassNode(className);
+            ClassNode cn = getClassNode(className);
             if (cn == null)
                 return null;
             return new ClassInfo(cn);
@@ -372,7 +390,7 @@ public final class ASMUtil
         {
             try
             {
-                ClassNode cn = loadClassNode(type.getClassName());
+                ClassNode cn = getClassNode(type.getClassName());
                 if (cn == null)
                     return null;
                 return new ClassInfo(cn);
@@ -394,7 +412,7 @@ public final class ASMUtil
                 return null;
             try
             {
-                ClassNode cn = loadClassNode(classNode.superName);
+                ClassNode cn = getClassNode(classNode.superName);
                 if (cn == null)
                     return null;
                 return new ClassInfo(cn);
