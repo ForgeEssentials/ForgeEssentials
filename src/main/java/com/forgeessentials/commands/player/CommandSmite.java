@@ -36,7 +36,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
         {
             if (args[0].toLowerCase().equals("me"))
             {
-                sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
+                sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ, false));
                 ChatOutputHandler.chatConfirmation(sender, "Was that really a good idea?");
             }
             else
@@ -44,7 +44,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
-                    player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
+                    player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ, false));
                     ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
                 }
                 else
@@ -60,7 +60,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             int x = Integer.valueOf(args[0]);
             int y = Integer.valueOf(args[1]);
             int z = Integer.valueOf(args[2]);
-            sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, x, y, z));
+            sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, x, y, z, false));
             ChatOutputHandler.chatConfirmation(sender, "I hope that didn't start a fire.");
         }
         else
@@ -73,21 +73,21 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             else
             {
                 BlockPos pos = mop.getBlockPos();
-                sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, pos.getX(), pos.getY(), pos.getZ()));
+                sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, pos.getX(), pos.getY(), pos.getZ(), false));
                 ChatOutputHandler.chatConfirmation(sender, "I hope that didn't start a fire.");
             }
         }
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
+                player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ, false));
                 ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
             }
             else
@@ -104,7 +104,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

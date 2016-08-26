@@ -12,8 +12,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -83,7 +84,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
             }
             else
             {
-                state.getBlock().onBlockActivated(world, pos, state, (EntityPlayer) null, EnumFacing.DOWN, 0.0F, 0.0F, 0.0F);
+                state.getBlock().onBlockActivated(world, pos, state, (EntityPlayer) null, EnumHand.MAIN_HAND, null, EnumFacing.DOWN, 0.0F, 0.0F, 0.0F);
                 ChatOutputHandler.chatConfirmation(sender, "Button/Lever Pushed");
             }
         }
@@ -118,7 +119,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
             }
             else
             {
-                state.getBlock().onBlockActivated(world, pos, state, (EntityPlayer) null, EnumFacing.DOWN, 0.0F, 0.0F, 0.0F);
+                state.getBlock().onBlockActivated(world, pos, state, (EntityPlayer) null, EnumHand.MAIN_HAND, null, EnumFacing.DOWN, 0.0F, 0.0F, 0.0F);
                 ChatOutputHandler.chatConfirmation(sender, "Button/Lever Pushed");
             }
         }

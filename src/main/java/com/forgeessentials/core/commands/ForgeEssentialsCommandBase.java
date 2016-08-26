@@ -17,7 +17,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.permission.PermissionManager;
@@ -32,7 +31,7 @@ import com.forgeessentials.util.output.LoggingHandler;
 public abstract class ForgeEssentialsCommandBase extends CommandBase implements PermissionObject
 {
 
-    public List<String> aliases = new ArrayList<String>();
+    public List<String> aliases = new ArrayList<>();
 
     // ------------------------------------------------------------
     // Command alias

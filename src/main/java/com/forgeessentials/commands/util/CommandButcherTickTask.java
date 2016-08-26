@@ -119,9 +119,9 @@ public class CommandButcherTickTask implements TickTask
         {
             for (int chunkX = minChunkX; chunkX <= maxChunkX; ++chunkX)
                 for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; ++chunkZ)
-                    if (world.getChunkProvider().chunkExists(chunkX, chunkZ))
+                    if (world.getChunkProvider().getLoadedChunk(chunkX, chunkZ) != null)
                     {
-                        List<EntityLiving> list = new LinkedList<EntityLiving>();
+                        List<EntityLiving> list = new LinkedList<>();
                         world.getChunkFromChunkCoords(chunkX, chunkZ).getEntitiesOfTypeWithinAAAB(EntityLiving.class, aabb, list, null);
                         for (EntityLiving entity : list)
                         {

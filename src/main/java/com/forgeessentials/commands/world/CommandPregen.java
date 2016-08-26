@@ -195,7 +195,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             arguments.error("No pregen running");
             return;
         }
-        ChunkProviderServer providerServer = (ChunkProviderServer) world.getChunkProvider();
+        ChunkProviderServer providerServer = world.getChunkProvider();
         providerServer.unloadAllChunks();
         arguments.confirm("Queued all chunks for unloading");
     }
@@ -210,7 +210,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         }
         totalTicks++;
 
-        ChunkProviderServer providerServer = (ChunkProviderServer) world.getChunkProvider();
+        ChunkProviderServer providerServer = world.getChunkProvider();
 
         double tps = ServerUtil.getTPS();
         if (totalTicks % 80 == 0)
@@ -247,7 +247,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                     try
                     {
                         Chunk chunk = providerServer.chunkLoader.loadChunk(world, x, z);
-                        chunk.populateChunk(providerServer, providerServer, x, z);
+                        chunk.populateChunk(providerServer, providerServer.chunkGenerator);
                         saveChunk(providerServer, chunk);
                     }
                     catch (Exception exception)

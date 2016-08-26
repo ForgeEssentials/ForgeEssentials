@@ -7,11 +7,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
@@ -71,7 +73,6 @@ public class CommandBind extends ParserCommandBase
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
@@ -162,12 +163,18 @@ public class CommandBind extends ParserCommandBase
     {
         if (!(event.getEntityPlayer() instanceof EntityPlayerMP))
             return;
-        ItemStack stack = event.getEntityPlayer().getCurrentEquippedItem();
+        ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
         if (stack == null || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TAG_NAME))
             return;
         NBTTagCompound nbt = stack.getTagCompound().getCompoundTag(TAG_NAME);
 
-        String command = event.action == Action.LEFT_CLICK_BLOCK ? nbt.getString("left") : nbt.getString("right");
+        String command;
+        if (event instanceof LeftClickBlock || event instanceof LeftClickEmpty)
+            command = nbt.getString("left");
+        else if (event instanceof RightClickBlock || event instanceof RightClickEmpty)
+            command = nbt.getString("right");
+        else
+            return;
         if (command == null || command.isEmpty())
             return;
 

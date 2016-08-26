@@ -10,7 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
@@ -80,8 +80,8 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     {
         if (args.length == 1)
         {
-            List<String> names = new ArrayList<String>();
-            for (Item i : GameData.getItemRegistry().typeSafeIterable())
+            List<String> names = new ArrayList<>();
+            for (Item i : GameRegistry.findRegistry(Item.class))
             {
                 names.add(i.getUnlocalizedName());
             }
