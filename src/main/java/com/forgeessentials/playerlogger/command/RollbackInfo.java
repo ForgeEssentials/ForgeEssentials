@@ -9,7 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.network.play.server.S23PacketBlockChange;
+import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
@@ -66,7 +66,7 @@ public class RollbackInfo
                 Action01Block change = changes.get(i);
                 if (change.type == ActionBlockType.PLACE)
                 {
-                    sendBlockChange(player, change, Blocks.air.getDefaultState());
+                    sendBlockChange(player, change, Blocks.AIR.getDefaultState());
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REMOVED " +
                     // change.block.name);
                 }
@@ -93,7 +93,7 @@ public class RollbackInfo
                 }
                 else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
                 {
-                    sendBlockChange(player, change, Blocks.air.getDefaultState());
+                    sendBlockChange(player, change, Blocks.AIR.getDefaultState());
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REBROKE " +
                     // change.block.name + ":" + change.metadata);
                 }
@@ -129,7 +129,7 @@ public class RollbackInfo
         if (task != null)
             task.cancel();
         for (Action01Block change : Lists.reverse(changes))
-            player.playerNetServerHandler.sendPacket(new S23PacketBlockChange(DimensionManager.getWorld(change.world.id), change.getBlockPos()));
+            player.connection.sendPacket(new SPacketBlockChange(DimensionManager.getWorld(change.world.id), change.getBlockPos()));
     }
 
     public Date getTime()
@@ -152,9 +152,9 @@ public class RollbackInfo
      */
     public static void sendBlockChange(EntityPlayerMP player, Action01Block change, IBlockState newState)
     {
-        S23PacketBlockChange packet = new S23PacketBlockChange(DimensionManager.getWorld(change.world.id), change.getBlockPos());
+        SPacketBlockChange packet = new SPacketBlockChange(DimensionManager.getWorld(change.world.id), change.getBlockPos());
         packet.blockState = newState;
-        player.playerNetServerHandler.sendPacket(packet);
+        player.connection.sendPacket(packet);
     }
 
     public static class PlaybackTask extends TimerTask

@@ -2,10 +2,10 @@ package com.forgeessentials.util.questioner;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -43,21 +43,21 @@ public class QuestionData
 
     public void sendYesNoMessage()
     {
-        IChatComponent yesMessage = new ChatComponentText("/yes");
-        yesMessage.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/yes"));
-        yesMessage.getChatStyle().setColor(EnumChatFormatting.RED);
-        yesMessage.getChatStyle().setUnderlined(true);
+        ITextComponent yesMessage = new TextComponentString("/yes");
+        yesMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/yes"));
+        yesMessage.getStyle().setColor(TextFormatting.RED);
+        yesMessage.getStyle().setUnderlined(true);
 
-        IChatComponent noMessage = new ChatComponentText("/no");
-        noMessage.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/no"));
-        noMessage.getChatStyle().setColor(EnumChatFormatting.RED);
-        noMessage.getChatStyle().setUnderlined(true);
+        ITextComponent noMessage = new TextComponentString("/no");
+        noMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/no"));
+        noMessage.getStyle().setColor(TextFormatting.RED);
+        noMessage.getStyle().setUnderlined(true);
 
-        IChatComponent yesNoMessage = new ChatComponentText("Type ");
+        ITextComponent yesNoMessage = new TextComponentString("Type ");
         yesNoMessage.appendSibling(yesMessage);
-        yesNoMessage.appendSibling(new ChatComponentText(" or "));
+        yesNoMessage.appendSibling(new TextComponentString(" or "));
         yesNoMessage.appendSibling(noMessage);
-        yesNoMessage.appendSibling(new ChatComponentText(" " + Translator.format("(timeout: %d)", timeout)));
+        yesNoMessage.appendSibling(new TextComponentString(" " + Translator.format("(timeout: %d)", timeout)));
 
         ChatOutputHandler.sendMessage(target, yesNoMessage);
     }

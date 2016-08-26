@@ -2,14 +2,13 @@ package com.forgeessentials.playerlogger.event;
 
 import javax.persistence.EntityManager;
 
-import net.minecraft.command.server.CommandBlockLogic;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.CommandEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action02Command;
@@ -27,23 +26,23 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
     {
         Action02Command action = new Action02Command();
         action.time = date;
-        action.command = event.command.getCommandName();
-        if (event.parameters.length > 0)
-            action.arguments = StringUtils.join(event.parameters, ' ');
-        if (event.sender instanceof EntityPlayer)
+        action.command = event.getCommand().getCommandName();
+        if (event.getParameters().length > 0)
+            action.arguments = StringUtils.join(event.getParameters(), ' ');
+        if (event.getSender() instanceof EntityPlayer)
         {
-            EntityPlayer player = ((EntityPlayer) event.sender);
+            EntityPlayer player = ((EntityPlayer) event.getSender());
             action.player = getPlayer(player);
-            action.world = getWorld(player.worldObj.provider.getDimensionId());
+            action.world = getWorld(player.worldObj.provider.getDimension());
             action.x = (int) player.posX;
             action.y = (int) player.posY;
             action.z = (int) player.posZ;
         }
-        else if (event.sender instanceof CommandBlockLogic)
+        else if (event.getSender() instanceof CommandBlockBaseLogic)
         {
-            CommandBlockLogic block = ((CommandBlockLogic) event.sender);
+            CommandBlockBaseLogic block = ((CommandBlockBaseLogic) event.getSender());
             action.player = getPlayer(UserIdent.getVirtualPlayer("commandblock"));
-            action.world = getWorld(block.getEntityWorld().provider.getDimensionId());
+            action.world = getWorld(block.getEntityWorld().provider.getDimension());
             BlockPos pos = block.getPosition();
             action.x = pos.getX();
             action.y = pos.getY();

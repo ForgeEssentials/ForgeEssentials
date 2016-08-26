@@ -13,10 +13,12 @@ import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
-import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.permission.PermissionManager;
 import net.minecraftforge.permission.PermissionObject;
@@ -69,42 +71,42 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
     // Command processing
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (sender instanceof EntityPlayerMP)
         {
-            processCommandPlayer((EntityPlayerMP) sender, args);
+            processCommandPlayer(server, (EntityPlayerMP) sender, args);
         }
-        else if (sender instanceof CommandBlockLogic)
+        else if (sender instanceof CommandBlockBaseLogic)
         {
-            processCommandBlock((CommandBlockLogic) sender, args);
+            processCommandBlock(server, (CommandBlockBaseLogic) sender, args);
         }
         else
         {
-            processCommandConsole(sender, args);
+            processCommandConsole(server, sender, args);
         }
     }
 
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         throw new TranslatedCommandException("This command cannot be used as player");
     }
 
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
 
-    public void processCommandBlock(CommandBlockLogic block, String[] args) throws CommandException
+    public void processCommandBlock(MinecraftServer server, CommandBlockBaseLogic block, String[] args) throws CommandException
     {
-        processCommandConsole(block, args);
+        processCommandConsole(server, block, args);
     }
 
     // ------------------------------------------------------------
     // Command usage
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
         if (!canConsoleUseCommand() && !(sender instanceof EntityPlayer))
             return false;
@@ -121,7 +123,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
      */
     public void register()
     {
-        Map<?, ?> commandMap = ((CommandHandler) MinecraftServer.getServer().getCommandManager()).getCommands();
+        Map<?, ?> commandMap = ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).getCommands();
         if (commandMap.containsKey(getCommandName()))
             LoggingHandler.felog.error(String.format("Command %s registered twice", getCommandName()));
 
@@ -132,14 +134,14 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
                     LoggingHandler.felog.error(String.format("Command alias %s of command %s registered twice", alias, getCommandName()));
         }
 
-        ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(this);
+        ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).registerCommand(this);
         registerExtraPermissions();
     }
 
     @SuppressWarnings("unchecked")
     public void deregister()
     {
-        CommandHandler cmdHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+        CommandHandler cmdHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
         Map<String, ICommand> commandMap = cmdHandler.getCommands();
         Set<ICommand> commandSet = (Set<ICommand>) ReflectionHelper.getPrivateValue(CommandHandler.class, cmdHandler, "field_71561_b", "commandSet");
 

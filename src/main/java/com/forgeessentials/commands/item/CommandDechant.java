@@ -10,7 +10,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -57,21 +57,24 @@ public class CommandDechant extends ParserCommandBase
     @Override
     public void parse(CommandParserArgs arguments) throws CommandException
     {
-        ItemStack stack = arguments.senderPlayer.getCurrentEquippedItem();
+        ItemStack stack = arguments.senderPlayer.getHeldItemMainhand();
         if (stack == null)
             throw new TranslatedCommandException("You are not holding a valid item");
         @SuppressWarnings("unchecked")
-        Map<Integer, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
+        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
 
         List<String> validEnchantmentNames = new ArrayList<>();
         Map<String, Enchantment> validEnchantments = new HashMap<>();
-        for (Enchantment enchantment : Enchantment.enchantmentsList)
-            if (enchantment != null && enchantments.containsKey(enchantment.effectId))
+        while (Enchantment.REGISTRY.iterator().hasNext())
+        {
+            Enchantment enchantment = Enchantment.REGISTRY.iterator().next();
+            if (enchantment != null && enchantments.containsKey(Enchantment.REGISTRY.getIDForObject(enchantment)))
             {
-                String name = StatCollector.translateToLocal(enchantment.getName()).replaceAll(" ", "");
+                String name = I18n.translateToLocal(enchantment.getName()).replaceAll(" ", "");
                 validEnchantmentNames.add(name);
                 validEnchantments.put(name.toLowerCase(), enchantment);
             }
+        }
 
         if (arguments.isEmpty())
         {
@@ -88,7 +91,7 @@ public class CommandDechant extends ParserCommandBase
             Enchantment enchantment = validEnchantments.get(name.toLowerCase());
             if (enchantment == null)
                 throw new TranslatedCommandException("Invalid enchantment name %s!", name);
-            enchantments.remove(enchantment.effectId);
+            enchantments.remove(Enchantment.REGISTRY.getIDForObject(enchantment));
         }
         EnchantmentHelper.setEnchantments(enchantments, stack);
     }

@@ -7,7 +7,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
@@ -27,11 +28,11 @@ public class CommandRepair extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
-            ItemStack item = sender.getHeldItem();
+            ItemStack item = sender.getHeldItemMainhand();
             if (item == null)
                 throw new TranslatedCommandException("You are not holding a reparable item.");
             item.setItemDamage(0);
@@ -42,7 +43,7 @@ public class CommandRepair extends ForgeEssentialsCommandBase
             if (player == null)
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 
-            ItemStack item = player.getHeldItem();
+            ItemStack item = player.getHeldItemMainhand();
             if (item != null)
                 item.setItemDamage(0);
         }
@@ -53,7 +54,7 @@ public class CommandRepair extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -62,7 +63,7 @@ public class CommandRepair extends ForgeEssentialsCommandBase
             if (player != null)
             {
 
-                ItemStack item = player.getHeldItem();
+                ItemStack item = player.getHeldItemMainhand();
 
                 if (item != null)
                 {
@@ -90,7 +91,7 @@ public class CommandRepair extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

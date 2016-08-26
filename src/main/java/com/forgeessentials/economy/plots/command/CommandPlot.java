@@ -630,24 +630,24 @@ public class CommandPlot extends ParserCommandBase
             arguments.confirm(msgBase + "to interact with objects");
             break;
         case "chest":
-            plot.setPermission(ModuleProtection.getBlockBreakPermission(Blocks.chest, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockBreakPermission(Blocks.chest, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.chest, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockBreakPermission(Blocks.trapped_chest, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.trapped_chest, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockBreakPermission(Blocks.CHEST, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockBreakPermission(Blocks.CHEST, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.CHEST, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockBreakPermission(Blocks.TRAPPED_CHEST, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.TRAPPED_CHEST, 0) + Zone.ALL_PERMS, userPerms, allow);
             arguments.confirm(msgBase + "to interact with chests");
             break;
         case "button":
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.wooden_button, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.stone_button, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.WOODEN_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.STONE_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
             arguments.confirm(msgBase + "to interact with buttons");
             break;
         case "lever":
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.lever, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.LEVER, 0) + Zone.ALL_PERMS, userPerms, allow);
             arguments.confirm(msgBase + "to interact with levers");
             break;
         case "door":
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.oak_door, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.OAK_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
             arguments.confirm(Translator.translate(msgBase + "to interact with doors"));
             break;
         case "animal":

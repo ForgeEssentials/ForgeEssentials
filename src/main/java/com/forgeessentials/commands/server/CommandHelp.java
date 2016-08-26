@@ -11,14 +11,15 @@ import java.util.TreeSet;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.ClickEvent.Action;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.compat.HelpFixer;
@@ -89,7 +90,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
         {
             if (arguments.isTabCompletion)
                 return;
-            showHelpPage(arguments.sender);
+            showHelpPage(arguments.server, arguments.sender);
         }
         else
         {
@@ -99,17 +100,17 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
                 int page = Integer.parseInt(name);
                 if (arguments.isTabCompletion)
                     return;
-                showHelpPage(arguments.sender, page);
+                showHelpPage(arguments.server, arguments.sender, page);
             }
             catch (NumberFormatException e)
             {
                 if (arguments.isTabCompletion)
                 {
-                    arguments.tabCompletion = MinecraftServer.getServer().getCommandManager().getTabCompletionOptions(arguments.sender, name, BlockPos.ORIGIN);
+                    arguments.tabCompletion = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getTabCompletionOptions(arguments.sender, name, BlockPos.ORIGIN);
                     return;
                 }
 
-                ICommand command = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(name);
+                ICommand command = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(name);
 
                 SortedSet<ICommand> results = new TreeSet<ICommand>(new Comparator<ICommand>() {
                     @Override
@@ -118,7 +119,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
                         return a.getCommandName().compareTo(b.getCommandName());
                     }
                 });
-                Set<Map.Entry<String, ICommand>> commands = MinecraftServer.getServer().getCommandManager().getCommands().entrySet();
+                Set<Map.Entry<String, ICommand>> commands = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().entrySet();
                 for (Entry<String, ICommand> cmd : commands)
                 {
                     String usage = cmd.getValue().getCommandUsage(arguments.sender);
@@ -126,7 +127,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
                         results.add(cmd.getValue());
                 }
 
-                EnumChatFormatting color = ChatOutputHandler.chatConfirmationColor;
+                TextFormatting color = ChatOutputHandler.chatConfirmationColor;
                 if (results.size() > 1 || command == null)
                     arguments.confirm("Searching commands by \"%s\"", name);
 
@@ -134,7 +135,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
                 {
                     sendCommandUsageMessage(arguments.sender, command, color);
                     results.remove(command);
-                    color = EnumChatFormatting.GRAY;
+                    color = TextFormatting.GRAY;
                 }
 
                 int count = command == null ? 0 : 1;
@@ -151,30 +152,30 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
         }
     }
 
-    public void sendCommandUsageMessage(ICommandSender sender, ICommand command, EnumChatFormatting color)
+    public void sendCommandUsageMessage(ICommandSender sender, ICommand command, TextFormatting color)
     {
-        IChatComponent chatMsg = new ChatComponentTranslation(command.getCommandUsage(sender));
-        chatMsg.getChatStyle().setColor(color);
-        chatMsg.getChatStyle().setChatClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getCommandName() + " "));
+        ITextComponent chatMsg = new TextComponentTranslation(command.getCommandUsage(sender));
+        chatMsg.getStyle().setColor(color);
+        chatMsg.getStyle().setClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getCommandName() + " "));
         ChatOutputHandler.sendMessage(sender, chatMsg);
     }
 
-    public void showHelpPage(ICommandSender sender) throws CommandException
+    public void showHelpPage(MinecraftServer server, ICommandSender sender) throws CommandException
     {
         if (messages.length == 0)
-            showHelpPage(sender, 1);
+            showHelpPage(server, sender, 1);
         for (int i = 0; i < messages.length; i++)
             ChatOutputHandler.chatConfirmation(sender, ScriptArguments.processSafe(messages[i], sender));
     }
 
-    public void showHelpPage(ICommandSender sender, int page) throws CommandException
+    public void showHelpPage(MinecraftServer server, ICommandSender sender, int page) throws CommandException
     {
-        fixer.processCommand(sender, new String[] { Integer.toString(page) });
+        fixer.execute(server, sender, new String[] { Integer.toString(page) });
     }
 
-    protected List<ICommand> getSortedPossibleCommands(ICommandSender sender)
+    protected List<ICommand> getSortedPossibleCommands(ICommandSender sender, MinecraftServer server)
     {
-        return fixer.getSortedPossibleCommands(sender);
+        return fixer.getSortedPossibleCommands(sender, server);
     }
 
     @Override

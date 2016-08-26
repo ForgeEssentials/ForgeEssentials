@@ -1,6 +1,7 @@
 package com.forgeessentials.core.commands;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.core.ForgeEssentials;
@@ -48,7 +49,7 @@ public class CommandFeReload extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args)
     {
         reload(sender);
     }

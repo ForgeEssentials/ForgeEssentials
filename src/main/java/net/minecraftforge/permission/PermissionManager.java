@@ -8,10 +8,11 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -40,12 +41,12 @@ public final class PermissionManager
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void commandEvent(CommandEvent event)
     {
-        if (!checkPermission(event.sender, event.command))
+        if (!checkPermission(event.getSender(), event.getCommand()))
         {
             event.setCanceled(true);
-            ChatComponentTranslation msg = new ChatComponentTranslation("commands.generic.permission", new Object[0]);
-            msg.getChatStyle().setColor(EnumChatFormatting.RED);
-            event.sender.addChatMessage(msg);
+            TextComponentTranslation msg = new TextComponentTranslation("commands.generic.permission", new Object[0]);
+            msg.getStyle().setColor(TextFormatting.RED);
+            event.getSender().addChatMessage(msg);
         }
     }
 
@@ -142,12 +143,12 @@ public final class PermissionManager
      * <b>FOR INTERNAL USE ONLY</b> <br>
      * TODO This method should be removed in the PR
      * 
-     * @param command
+     * @param command a command
      */
     public static void registerCommandPermissions()
     {
         @SuppressWarnings("unchecked")
-        Map<String, ICommand> commands = MinecraftServer.getServer().getCommandManager().getCommands();
+        Map<String, ICommand> commands = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands();
         for (ICommand command : commands.values())
             if (!commandPermissions.containsKey(command))
                 registerCommandPermission(command);

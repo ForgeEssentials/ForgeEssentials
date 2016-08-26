@@ -6,6 +6,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -41,7 +42,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
         String commandName = cmdLine[0];
         final String[] args = Arrays.copyOfRange(cmdLine, 1, cmdLine.length);
 
-        final ICommand command = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(commandName);
+        final ICommand command = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(commandName);
         if (command == null)
             error(String.format("Command \"/%s\" not found", commandName));
 
@@ -58,7 +59,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
                         sender = session.getUserIdent().getPlayer();
                     else
                         sender = RemoteCommandSender.get(session);
-                    command.processCommand(sender, args);
+                    command.execute(FMLCommonHandler.instance().getMinecraftServerInstance(), sender, args);
                     session.trySendMessage(RemoteResponse.success(request));
                 }
                 catch (CommandException e)

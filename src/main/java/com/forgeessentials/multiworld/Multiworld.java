@@ -7,10 +7,11 @@ import java.util.Random;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
@@ -80,7 +81,7 @@ public class Multiworld
 
     public void removeAllPlayersFromWorld()
     {
-        WorldServer overworld = MinecraftServer.getServer().worldServerForDimension(0);
+        WorldServer overworld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
         for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
             if (player.dimension == dimensionId)
@@ -228,12 +229,12 @@ public class Multiworld
      */
     public static void teleport(EntityPlayerMP player, WorldServer world, double x, double y, double z, boolean instant) throws CommandException
     {
-        boolean worldChange = player.worldObj.provider.getDimensionId() != world.provider.getDimensionId();
+        boolean worldChange = player.worldObj.provider.getDimension() != world.provider.getDimension();
         if (worldChange)
             displayDepartMessage(player);
 
         y = WorldUtil.placeInWorld(world, (int) x, (int) y, (int) z);
-        WarpPoint target = new WarpPoint(world.provider.getDimensionId(), x, y, z, player.rotationPitch, player.rotationYaw);
+        WarpPoint target = new WarpPoint(world.provider.getDimension(), x, y, z, player.rotationPitch, player.rotationYaw);
         if (instant)
             TeleportHelper.checkedTeleport(player, target);
         else

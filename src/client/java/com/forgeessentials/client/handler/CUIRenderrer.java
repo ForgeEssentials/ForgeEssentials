@@ -1,7 +1,7 @@
 package com.forgeessentials.client.handler;
 
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
@@ -126,7 +126,7 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
      */
     private static void renderBox()
     {
-        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        VertexBuffer wr = Tessellator.getInstance().getBuffer();
 
         wr.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
 

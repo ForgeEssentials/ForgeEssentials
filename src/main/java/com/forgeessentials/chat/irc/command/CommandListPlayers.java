@@ -40,7 +40,7 @@ public class CommandListPlayers extends IrcCommandParser
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         arguments.confirm("List of players:");
-        for (String username : MinecraftServer.getServer().getConfigurationManager().getAllUsernames())
+        for (String username : arguments.server.getPlayerList().getAllUsernames())
             arguments.confirm(" - " + username);
     }
 

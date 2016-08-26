@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.UserListOpsEntry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.mojang.authlib.GameProfile;
 
@@ -22,7 +23,7 @@ public class DefaultPermissionProvider implements IPermissionProvider
     public boolean checkPermission(PermissionContext context, String permission)
     {
         // Special permission checks from EntityPlayerMP
-        if (PERM_SEED.equals(permission) && !MinecraftServer.getServer().isDedicatedServer())
+        if (PERM_SEED.equals(permission) && !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             return true;
         if (PERM_TELL.equals(permission) || PERM_HELP.equals(permission) || PERM_ME.equals(permission))
             return true;
@@ -42,10 +43,10 @@ public class DefaultPermissionProvider implements IPermissionProvider
 
     protected int getOpLevel(GameProfile profile)
     {
-        if (!MinecraftServer.getServer().getConfigurationManager().canSendCommands(profile))
+        if (!FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().canSendCommands(profile))
             return 0;
-        UserListOpsEntry entry = MinecraftServer.getServer().getConfigurationManager().getOppedPlayers().getEntry(profile);
-        return entry != null ? entry.getPermissionLevel() : MinecraftServer.getServer().getOpPermissionLevel();
+        UserListOpsEntry entry = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getOppedPlayers().getEntry(profile);
+        return entry != null ? entry.getPermissionLevel() : FMLCommonHandler.instance().getMinecraftServerInstance().getOpPermissionLevel();
     }
 
 }

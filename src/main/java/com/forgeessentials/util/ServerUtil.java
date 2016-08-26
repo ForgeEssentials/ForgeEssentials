@@ -239,9 +239,9 @@ public abstract class ServerUtil
     public static File getWorldPath()
     {
         if (Environment.isClient())
-            return new File(MinecraftServer.getServer().getFile("saves"), MinecraftServer.getServer().getFolderName());
+            return new File(FMLCommonHandler.instance().getMinecraftServerInstance().getFile("saves"), FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
         else
-            return MinecraftServer.getServer().getFile(MinecraftServer.getServer().getFolderName());
+            return FMLCommonHandler.instance().getMinecraftServerInstance().getFile(FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
     }
 
     /* ------------------------------------------------------------ */
@@ -254,8 +254,8 @@ public abstract class ServerUtil
     @SuppressWarnings("unchecked")
     public static List<EntityPlayerMP> getPlayerList()
     {
-        MinecraftServer mc = MinecraftServer.getServer();
-        return mc == null || mc.getConfigurationManager() == null ? new ArrayList<>() : mc.getConfigurationManager().playerEntityList;
+        MinecraftServer mc = FMLCommonHandler.instance().getMinecraftServerInstance();
+        return mc == null || mc.getPlayerList() == null ? new ArrayList<>() : mc.getPlayerList().getPlayerList();
     }
 
     /**
@@ -298,17 +298,17 @@ public abstract class ServerUtil
 
     public static WorldServer getOverworld()
     {
-        return MinecraftServer.getServer().worldServers[0];
+        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
     }
 
     public static long getOverworldTime()
     {
-        return MinecraftServer.getServer().worldServers[0].getWorldInfo().getWorldTime();
+        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].getWorldInfo().getWorldTime();
     }
 
     public static boolean isServerRunning()
     {
-        return MinecraftServer.getServer() != null && MinecraftServer.getServer().isServerRunning();
+        return FMLCommonHandler.instance().getMinecraftServerInstance() != null && FMLCommonHandler.instance().getMinecraftServerInstance().isServerRunning();
     }
     
     public static boolean isOnlineMode()
@@ -376,7 +376,7 @@ public abstract class ServerUtil
     {
         try
         {
-            CommandHandler commandHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+            CommandHandler commandHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
             Map<String, ICommand> commandMap = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, "commandMap", "a", "field_71562_a");
             Set<ICommand> commandSet = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, CommandSetChecker.FIELDNAME);
             for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();)
@@ -403,7 +403,7 @@ public abstract class ServerUtil
     {
         try
         {
-            CommandHandler commandHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+            CommandHandler commandHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
             Map<String, ICommand> commandMap = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, "commandMap", "a", "field_71562_a");
             Set<ICommand> commandSet = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, CommandSetChecker.FIELDNAME);
             for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();)
@@ -428,7 +428,7 @@ public abstract class ServerUtil
 
     public static void replaceCommand(String command, ICommand newCommand)
     {
-        ICommand oldCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(command);
+        ICommand oldCommand = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(command);
         if (oldCommand != null)
             replaceCommand(oldCommand, newCommand);
         else

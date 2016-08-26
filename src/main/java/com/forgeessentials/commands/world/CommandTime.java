@@ -127,7 +127,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
             boolean freeze = getTimeData(0).frozenTime == null;
             for (World w : DimensionManager.getWorlds())
             {
-                TimeData td = getTimeData(w.provider.getDimensionId());
+                TimeData td = getTimeData(w.provider.getDimension());
                 td.frozenTime = freeze ? w.getWorldInfo().getWorldTime() : null;
             }
             if (freeze)
@@ -137,7 +137,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
         }
         else
         {
-            TimeData td = getTimeData(world.provider.getDimensionId());
+            TimeData td = getTimeData(world.provider.getDimension());
             td.frozenTime = (td.frozenTime == null) ? world.getWorldInfo().getWorldTime() : null;
             if (td.frozenTime != null)
                 arguments.confirm("Froze time");
@@ -193,7 +193,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
                     w.getWorldInfo().setWorldTime(w.getWorldInfo().getWorldTime() + time);
                 else
                     w.getWorldInfo().setWorldTime(time);
-                TimeData td = getTimeData(w.provider.getDimensionId());
+                TimeData td = getTimeData(w.provider.getDimension());
                 if (td.frozenTime != null)
                     td.frozenTime = w.getWorldInfo().getWorldTime();
             }
@@ -205,7 +205,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
                 world.getWorldInfo().setWorldTime(world.getWorldInfo().getWorldTime() + time);
             else
                 world.getWorldInfo().setWorldTime(time);
-            TimeData td = getTimeData(world.provider.getDimensionId());
+            TimeData td = getTimeData(world.provider.getDimension());
             if (td.frozenTime != null)
                 td.frozenTime = world.getWorldInfo().getWorldTime();
             arguments.confirm("Set time to %s", time);
@@ -227,7 +227,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
 
     public static void updateWorld(World world)
     {
-        TimeData td = getTimeData(world.provider.getDimensionId());
+        TimeData td = getTimeData(world.provider.getDimension());
         if (td.frozenTime != null)
             world.getWorldInfo().setWorldTime(td.frozenTime);
     }

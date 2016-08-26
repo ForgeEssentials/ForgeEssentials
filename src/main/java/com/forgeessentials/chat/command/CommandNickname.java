@@ -3,6 +3,7 @@ package com.forgeessentials.chat.command;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -64,7 +65,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -84,7 +85,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
             if (!PermissionManager.checkPermission(sender, PERM_OTHERS))
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
-            EntityPlayerMP player = getPlayer(sender, args[0]);
+            EntityPlayerMP player = getPlayer(server, sender, args[0]);
             if (args[1].equalsIgnoreCase("del"))
             {
                 ModuleChat.setPlayerNickname(player, null);
@@ -103,11 +104,11 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 2)
         {
-            EntityPlayerMP player = getPlayer(sender, args[0]);
+            EntityPlayerMP player = getPlayer(server, sender, args[0]);
             if (args[1].equalsIgnoreCase("del"))
             {
                 ModuleChat.setPlayerNickname(player, null);

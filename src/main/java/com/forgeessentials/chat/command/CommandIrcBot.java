@@ -6,9 +6,11 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandIrcBot extends ForgeEssentialsCommandBase
+public class CommandIrcBot extends ParserCommandBase
 {
 
     @Override
@@ -42,22 +44,20 @@ public class CommandIrcBot extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
-        if (args.length == 1)
+        switch(arguments.remove())
         {
-            if (args[0].equalsIgnoreCase("reconnect") || args[0].equalsIgnoreCase("connect"))
-            {
-                IrcHandler.getInstance().connect();
-            }
-            else if (args[0].equalsIgnoreCase("disconnect"))
-            {
-                IrcHandler.getInstance().disconnect();
-            }
-        }
-        else
-        {
-            ChatOutputHandler.sendMessage(sender, "IRC bot is " + (IrcHandler.getInstance().isConnected() ? "online" : "offline"));
+        case "connect":
+        case "reconnect":
+            IrcHandler.getInstance().connect();
+            break;
+        case "disconnect":
+            IrcHandler.getInstance().disconnect();
+            break;
+        default:
+            arguments.notify("IRC bot is " + (IrcHandler.getInstance().isConnected() ? "online" : "offline"));
+            break;
         }
     }
 

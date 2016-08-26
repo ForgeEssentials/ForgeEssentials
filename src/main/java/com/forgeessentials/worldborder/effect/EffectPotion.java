@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
 import com.forgeessentials.data.v2.Loadable;
@@ -57,7 +58,7 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
     public void activate(WorldBorder border, EntityPlayerMP player)
     {
         if (interval <= 0)
-            player.addPotionEffect(new PotionEffect(id, duration, modifier));
+            player.addPotionEffect(new PotionEffect(Potion.getPotionById(id), duration, modifier));
     }
 
     @Override
@@ -68,7 +69,7 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.addPotionEffect(new PotionEffect(id, duration, modifier));
+            player.addPotionEffect(new PotionEffect(Potion.getPotionById(id), duration, modifier));
             pi.startTimeout(this.getClass().getName(), interval * 1000);
         }
     }

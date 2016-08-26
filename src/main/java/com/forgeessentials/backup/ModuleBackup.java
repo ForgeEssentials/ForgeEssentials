@@ -24,7 +24,7 @@ import java.util.zip.ZipOutputStream;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldServer;
@@ -139,7 +139,7 @@ public class ModuleBackup extends ConfigLoaderBase
     {
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer() || !backupOnLoad)
             return;
-        final WorldServer world = (WorldServer) event.world;
+        final WorldServer world = (WorldServer) event.getWorld();
         if (shouldBackup(world))
         {
             Thread thread = new Thread(new Runnable() {
@@ -158,7 +158,7 @@ public class ModuleBackup extends ConfigLoaderBase
     {
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer() || !backupOnUnload)
             return;
-        final WorldServer world = (WorldServer) event.world;
+        final WorldServer world = (WorldServer) event.getWorld();
         if (shouldBackup(world))
         {
             Thread thread = new Thread(new Runnable() {
@@ -215,7 +215,7 @@ public class ModuleBackup extends ConfigLoaderBase
             }
         }
 
-        if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isServerRunning())
+        if (FMLCommonHandler.instance().getMinecraftServerInstance() != null && FMLCommonHandler.instance().getMinecraftServerInstance().isServerRunning())
             registerBackupTask();
     }
 
@@ -236,7 +236,7 @@ public class ModuleBackup extends ConfigLoaderBase
                     for (WorldServer world : DimensionManager.getWorlds())
                         if (shouldBackup(world))
                         {
-                            backupDims.add(world.provider.getDimensionId());
+                            backupDims.add(world.provider.getDimension());
                             backupWorlds.add(world);
                         }
                     ModuleBackup.notify(Translator.format("Starting backup of dimensions %s", StringUtils.join(backupDims, ", ")));
@@ -287,7 +287,7 @@ public class ModuleBackup extends ConfigLoaderBase
 
     protected static boolean shouldBackup(WorldServer world)
     {
-        Boolean shouldBackup = backupOverrides.get(world.provider.getDimensionId());
+        Boolean shouldBackup = backupOverrides.get(world.provider.getDimension());
         if (shouldBackup == null)
             return backupDefault;
         else
@@ -297,12 +297,12 @@ public class ModuleBackup extends ConfigLoaderBase
     private static synchronized void backup(WorldServer world, boolean notify)
     {
         if (notify)
-            notify(String.format("Starting backup of dim %d...", world.provider.getDimensionId()));
+            notify(String.format("Starting backup of dim %d...", world.provider.getDimension()));
 
         // Save world
         if (!saveWorld(world))
         {
-            notify(String.format("Backup of dim %s failed: Could not save world", world.provider.getDimensionId()));
+            notify(String.format("Backup of dim %s failed: Could not save world", world.provider.getDimension()));
             return;
         }
 
@@ -313,7 +313,7 @@ public class ModuleBackup extends ConfigLoaderBase
         if (!backupDir.exists())
             if (!backupDir.mkdirs())
             {
-                notify(String.format("Backup of dim %s failed: Could not create backup directory", world.provider.getDimensionId()));
+                notify(String.format("Backup of dim %s failed: Could not create backup directory", world.provider.getDimension()));
                 return;
             }
 
@@ -321,7 +321,7 @@ public class ModuleBackup extends ConfigLoaderBase
         try (FileOutputStream fileStream = new FileOutputStream(backupFile); //
                 ZipOutputStream zipStream = new ZipOutputStream(fileStream);)
         {
-            LoggingHandler.felog.info(String.format("Listing files for backup of world %d", world.provider.getDimensionId()));
+            LoggingHandler.felog.info(String.format("Listing files for backup of world %d", world.provider.getDimension()));
             for (File file : enumWorldFiles(world, world.getChunkSaveLocation(), null))
             {
                 String relativePath = baseUri.relativize(file.toURI()).getPath();
@@ -340,10 +340,10 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         catch (Exception ex)
         {
-            LoggingHandler.felog.error(String.format("Severe error during backup of dim %d", world.provider.getDimensionId()));
+            LoggingHandler.felog.error(String.format("Severe error during backup of dim %d", world.provider.getDimension()));
             ex.printStackTrace();
             if (notify)
-                notify(String.format("Error during backup of dim %d", world.provider.getDimensionId()));
+                notify(String.format("Error during backup of dim %d", world.provider.getDimension()));
         }
 
         if (notify)
@@ -365,7 +365,7 @@ public class ModuleBackup extends ConfigLoaderBase
 
             // Exclude directories of other worlds
             for (WorldServer otherWorld : DimensionManager.getWorlds())
-                if (otherWorld.provider.getDimensionId() != world.provider.getDimensionId() && otherWorld.getChunkSaveLocation().equals(file))
+                if (otherWorld.provider.getDimension() != world.provider.getDimension() && otherWorld.getChunkSaveLocation().equals(file))
                     continue mainLoop;
             for (Pattern pattern : exludePatterns)
                 if (pattern.matcher(file.getName()).matches())
@@ -379,7 +379,7 @@ public class ModuleBackup extends ConfigLoaderBase
     {
         return new File(baseFolder, String.format("%s/DIM_%d/%s.zip", //
                 world.getWorldInfo().getWorldName(), //
-                world.provider.getDimensionId(), //
+                world.provider.getDimension(), //
                 FILE_FORMAT.format(new Date())));
     }
 
@@ -394,7 +394,7 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         catch (MinecraftException e)
         {
-            LoggingHandler.felog.error(String.format("Could not save world %d", world.provider.getDimensionId()));
+            LoggingHandler.felog.error(String.format("Could not save world %d", world.provider.getDimension()));
             return false;
         }
         catch (Exception e)
@@ -517,12 +517,12 @@ public class ModuleBackup extends ConfigLoaderBase
 
     private static void notify(String message)
     {
-        IChatComponent messageComponent = ChatOutputHandler.notification(message);
-        if (!MinecraftServer.getServer().isServerStopped())
+        ITextComponent messageComponent = ChatOutputHandler.notification(message);
+        if (!FMLCommonHandler.instance().getMinecraftServerInstance().isServerStopped())
             for (EntityPlayerMP player : ServerUtil.getPlayerList())
                 if (UserIdent.get(player).checkPermission(PERM_NOTIFY))
                     ChatOutputHandler.sendMessage(player, messageComponent);
-        ChatOutputHandler.sendMessage(MinecraftServer.getServer(), messageComponent);
+        ChatOutputHandler.sendMessage(FMLCommonHandler.instance().getMinecraftServerInstance(), messageComponent);
     }
 
 }

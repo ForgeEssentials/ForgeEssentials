@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -46,7 +46,7 @@ public abstract class PlayerUtil
      */
     public static void give(EntityPlayer player, ItemStack item)
     {
-        EntityItem entityitem = player.dropPlayerItemWithRandomChoice(item, false);
+        EntityItem entityitem = player.dropItem(item, false);
         entityitem.setNoPickupDelay();
         entityitem.setOwner(player.getName());
     }
@@ -81,12 +81,12 @@ public abstract class PlayerUtil
                     int amplifier = 0;
                     if (effectValues.length == 3)
                         amplifier = Integer.parseInt(effectValues[2]);
-                    if (potionID < 1 || potionID >= Potion.potionTypes.length)
+                    if (Potion.REGISTRY.getObjectById(potionID) == null)
                     {
                         LoggingHandler.felog.warn("Invalid potion ID %d", potionID);
                         continue;
                     }
-                    player.addPotionEffect(new net.minecraft.potion.PotionEffect(potionID, effectDuration * 20, amplifier));
+                    player.addPotionEffect(new net.minecraft.potion.PotionEffect(Potion.getPotionById(potionID), effectDuration * 20, amplifier));
                 }
                 catch (NumberFormatException e)
                 {
@@ -118,10 +118,10 @@ public abstract class PlayerUtil
      * @param player
      * @return The position as a MovingObjectPosition Null if not existent.
      */
-    public static MovingObjectPosition getPlayerLookingSpot(EntityPlayer player)
+    public static RayTraceResult getPlayerLookingSpot(EntityPlayer player)
     {
         if (player instanceof EntityPlayerMP)
-            return getPlayerLookingSpot(player, ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance());
+            return getPlayerLookingSpot(player, ((EntityPlayerMP) player).interactionManager.getBlockReachDistance());
         else
             return getPlayerLookingSpot(player, 5);
     }
@@ -134,12 +134,12 @@ public abstract class PlayerUtil
      *            Keep max distance to 5.
      * @return The position as a MovingObjectPosition Null if not existent.
      */
-    public static MovingObjectPosition getPlayerLookingSpot(EntityPlayer player, double maxDistance)
+    public static RayTraceResult getPlayerLookingSpot(EntityPlayer player, double maxDistance)
     {
-        Vec3 lookAt = player.getLook(1);
-        Vec3 playerPos = new Vec3(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
-        Vec3 pos1 = playerPos.addVector(0, player.getEyeHeight(), 0);
-        Vec3 pos2 = pos1.addVector(lookAt.xCoord * maxDistance, lookAt.yCoord * maxDistance, lookAt.zCoord * maxDistance);
+        Vec3d lookAt = player.getLook(1);
+        Vec3d playerPos = new Vec3d(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
+        Vec3d pos1 = playerPos.addVector(0, player.getEyeHeight(), 0);
+        Vec3d pos2 = pos1.addVector(lookAt.xCoord * maxDistance, lookAt.yCoord * maxDistance, lookAt.zCoord * maxDistance);
         return player.worldObj.rayTraceBlocks(pos1, pos2);
     }
 

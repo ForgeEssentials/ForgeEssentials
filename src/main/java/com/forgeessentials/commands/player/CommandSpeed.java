@@ -5,6 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
@@ -14,7 +15,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandSpeed extends ForgeEssentialsCommandBase
 {
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
     {
         ChatOutputHandler.chatWarning(player, "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
         if (args.length >= 1)

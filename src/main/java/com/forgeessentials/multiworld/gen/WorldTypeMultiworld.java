@@ -4,9 +4,10 @@ import java.util.Random;
 
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.biome.WorldChunkManager;
-import net.minecraft.world.biome.WorldChunkManagerHell;
+import net.minecraft.world.biome.BiomeProvider;
+import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderDebug;
 import net.minecraft.world.gen.ChunkProviderFlat;
@@ -34,7 +35,7 @@ public class WorldTypeMultiworld extends WorldType
     }
 
     @Override
-    public WorldChunkManager getChunkManager(World world)
+    public BiomeProvider getChunkManager(World world)
     {
         // Set current world
         if (world instanceof WorldServerMultiworld)
@@ -46,11 +47,11 @@ public class WorldTypeMultiworld extends WorldType
         if (this == FLAT)
         {
             FlatGeneratorInfo flatgeneratorinfo = FlatGeneratorInfo.createFlatGeneratorFromString(world.getWorldInfo().getGeneratorOptions());
-            return new WorldChunkManagerHell(BiomeGenBase.getBiome(flatgeneratorinfo.getBiome()), 0.5F);
+            return new BiomeProviderSingle(Biome.getBiome(flatgeneratorinfo.getBiome()), 0.5F);
         }
         else
         {
-            return new WorldChunkManager(world);
+            return new BiomeProvider(world);
         }
     }
 

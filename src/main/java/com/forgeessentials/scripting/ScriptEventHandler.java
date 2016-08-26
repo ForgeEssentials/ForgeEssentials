@@ -1,6 +1,7 @@
 package com.forgeessentials.scripting;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayer.SleepResult;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -84,9 +85,9 @@ public class ScriptEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerDeath(LivingDeathEvent event)
     {
-        if (event.entityLiving instanceof EntityPlayerMP)
+        if (event.getEntityLiving() instanceof EntityPlayerMP)
         {
-            APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERDEATH, (EntityPlayerMP) event.entityLiving);
+            APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERDEATH, (EntityPlayerMP) event.getEntityLiving());
         }
     }
 
@@ -105,30 +106,43 @@ public class ScriptEventHandler extends ServerEventHandler
         APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERRESPAWN,e.player);
     }
     @SubscribeEvent (priority = EventPriority.LOWEST)
-    public void playerInteract(PlayerInteractEvent e)
+    public void playerInteract(PlayerInteractEvent.LeftClickBlock e)
     {
-        if (!(e.entityPlayer instanceof FakePlayer))
+        if (!(e.getEntityPlayer() instanceof FakePlayer))
         {
-            if (e.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
-                APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERINTERACT_LEFT, e.entityPlayer);
-            else if (e.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
-                APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERINTERACT_RIGHT, e.entityPlayer);
-            else if (e.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_AIR))
-                APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERINTERACT_USE, e.entityPlayer);
+            APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERINTERACT_LEFT, e.getEntityPlayer());
+        }
+    }
+
+    @SubscribeEvent (priority = EventPriority.LOWEST)
+    public void playerInteract(PlayerInteractEvent.RightClickBlock e)
+    {
+        if (!(e.getEntityPlayer() instanceof FakePlayer))
+        {
+            APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERINTERACT_RIGHT, e.getEntityPlayer());
+        }
+    }
+
+    @SubscribeEvent (priority = EventPriority.LOWEST)
+    public void playerInteract(PlayerInteractEvent.RightClickEmpty e)
+    {
+        if (!(e.getEntityPlayer() instanceof FakePlayer))
+        {
+            APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERINTERACT_USE, e.getEntityPlayer());
         }
     }
 
     @SubscribeEvent (priority = EventPriority.LOWEST)
     public void playerSleep(PlayerSleepInBedEvent e)
     {
-        if (e.result == null || e.result.equals(EntityPlayer.EnumStatus.OK))
-            APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERSLEEP, e.entityPlayer);
+        if (e.getResultStatus() == null || e.getResultStatus().equals(SleepResult.OK))
+            APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERSLEEP, e.getEntityPlayer());
     }
 
     @SubscribeEvent
     public void playerWake(PlayerWakeUpEvent e)
     {
-        APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERWAKE,e.entityPlayer);
+        APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERWAKE, e.getEntityPlayer());
     }
 
 }

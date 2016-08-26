@@ -7,8 +7,9 @@ import java.util.WeakHashMap;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteResponse;
@@ -75,11 +76,11 @@ public class RemoteCommandSender extends DoAsCommandSender
     }
 
     @Override
-    public void addChatMessage(IChatComponent chatComponent)
+    public void addChatMessage(ITextComponent chatComponent)
     {
         // TODO: Instead of directly sending the messages to the client, cache them and send them all after the running
         // command finished (only if enabled)
-        ICommandSender receiver = MinecraftServer.getServer();
+        ICommandSender receiver = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
             receiver = session.getUserIdent().getPlayer();
         ChatOutputHandler.sendMessage(receiver, chatComponent);

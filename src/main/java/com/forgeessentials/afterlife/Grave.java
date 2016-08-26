@@ -14,8 +14,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraft.util.BlockPos;
+import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.permission.PermissionManager;
@@ -50,7 +50,7 @@ public class Grave implements Loadable
 
     protected boolean isProtected = true;
 
-    protected Block block = Blocks.skull;
+    protected Block block = Blocks.SKULL;
 
     @Expose(serialize = false)
     private boolean opened;
@@ -59,7 +59,7 @@ public class Grave implements Loadable
     private long lastTick;
 
     @Expose(serialize = false)
-    private IBlockState blockState = Blocks.skull.getDefaultState();
+    private IBlockState blockState = block.getDefaultState();
 
     public static Grave createGrave(EntityPlayer player, List<EntityItem> drops)
     {
@@ -109,11 +109,11 @@ public class Grave implements Loadable
         point.setY(WorldUtil.placeInWorld(player.worldObj, point.getX(), point.getY(), point.getZ(), hasFencePost ? 2 : 1));
         if (hasFencePost)
         {
-            player.worldObj.setBlockState(point.getBlockPos(), Blocks.oak_fence.getDefaultState());
+            player.worldObj.setBlockState(point.getBlockPos(), Blocks.OAK_FENCE.getDefaultState());
             point.setY(point.getY() + 1);
         }
         point.getWorld().setBlockState(point.getBlockPos(), blockState);
-        if (blockState == Blocks.skull)
+        if (blockState == block)
         {
             TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
             point.getWorld().setTileEntity(point.getBlockPos(), skull);
@@ -124,7 +124,7 @@ public class Grave implements Loadable
     public void afterLoad()
     {
         if (block == null)
-            block = Blocks.skull;
+            block = Blocks.SKULL;
     }
 
     public void updateBlocks()
@@ -145,13 +145,13 @@ public class Grave implements Loadable
         }
 
         IBlockState graveBlock = point.getWorld().getBlockState(point.getBlockPos());
-        if (graveBlock != blockState && graveBlock != Blocks.chest)
+        if (graveBlock != blockState && graveBlock != Blocks.CHEST)
         {
             // Grave is destroyed - repair if protection is still active
             if (isProtected)
             {
                 point.getWorld().setBlockState(point.getBlockPos(), blockState);
-                if (blockState == Blocks.skull)
+                if (blockState == block)
                 {
                     TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
                     point.getWorld().setTileEntity(point.getBlockPos(), skull);
@@ -165,8 +165,8 @@ public class Grave implements Loadable
         if (hasFencePost)
         {
             BlockPos fencePos = new BlockPos(point.getX(), point.getY() - 1, point.getZ());
-            if (point.getWorld().getBlockState(fencePos) != Blocks.oak_fence.getDefaultState())
-                point.getWorld().setBlockState(fencePos, Blocks.oak_fence.getDefaultState());
+            if (point.getWorld().getBlockState(fencePos) != Blocks.OAK_FENCE.getDefaultState())
+                point.getWorld().setBlockState(fencePos, Blocks.OAK_FENCE.getDefaultState());
         }
     }
 
@@ -217,11 +217,11 @@ public class Grave implements Loadable
         if (player.openContainer != player.inventoryContainer)
             player.closeScreen();
         player.getNextWindowId();
-        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, "minecraft:chest", invGrave.getDisplayName(), invGrave
+        player.connection.sendPacket(new SPacketOpenWindow(player.currentWindowId, "minecraft:chest", invGrave.getDisplayName(), invGrave
                 .getSizeInventory()));
         player.openContainer = new ContainerChest(player.inventory, invGrave, player);
         player.openContainer.windowId = player.currentWindowId;
-        player.openContainer.onCraftGuiOpened(player);
+        player.openContainer.addListener(player);
     }
 
     protected void dropItems()
@@ -245,7 +245,7 @@ public class Grave implements Loadable
         if (hasFencePost)
         {
             BlockPos fencePos = new BlockPos(point.getX(), point.getY() - 1, point.getZ());
-            if (point.getWorld().getBlockState(fencePos) == Blocks.oak_fence.getDefaultState())
+            if (point.getWorld().getBlockState(fencePos) == Blocks.OAK_FENCE.getDefaultState())
                 point.getWorld().setBlockToAir(fencePos);
         }
 

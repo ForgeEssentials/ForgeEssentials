@@ -9,9 +9,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -39,20 +39,9 @@ public class CommandTicket extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        doStuff(sender, args);
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
-    {
-        doStuff(sender, args);
-    }
-
-    public void doStuff(ICommandSender sender, String[] args) throws CommandException
-    {
-        String c = EnumChatFormatting.DARK_AQUA.toString();
+        String c = TextFormatting.DARK_AQUA.toString();
         if (args.length == 0)
         {
             String usage = "list|new|view";
@@ -125,12 +114,12 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             ChatOutputHandler.chatNotification(sender, c + Translator.format("Your ticket with ID %d has been posted.", t.id));
 
             // notify any ticket-admins that are online
-            IChatComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", sender.getName()));
-            if (!MinecraftServer.getServer().isServerStopped())
+            ITextComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", sender.getName()));
+            if (!server.isServerStopped())
                 for (EntityPlayerMP player : ServerUtil.getPlayerList())
                     if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
                         ChatOutputHandler.sendMessage(player, messageComponent);
-            ChatOutputHandler.sendMessage(MinecraftServer.getServer(), messageComponent);
+            ChatOutputHandler.sendMessage(server, messageComponent);
             return;
         }
 
@@ -172,7 +161,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

@@ -14,14 +14,15 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.event.ClickEvent.Action;
+import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -301,7 +302,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
                 bot.sendIRC().message(channel, message);
     }
 
-    public void sendPlayerMessage(ICommandSender sender, IChatComponent message)
+    public void sendPlayerMessage(ICommandSender sender, ITextComponent message)
     {
         if (isConnected())
             sendMessage(String.format(mcHeader, sender.getName(), ChatOutputHandler.stripFormatting(message.getUnformattedText())));
@@ -313,17 +314,17 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         ModuleChat.instance.logChatMessage("IRC-" + user.getNick(), filteredMessage);
 
         String headerText = String.format(ircHeader, user.getNick());
-        IChatComponent header = ModuleChat.clickChatComponent(headerText, Action.SUGGEST_COMMAND, "/ircpm " + user.getNick() + " ");
-        IChatComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
-        ChatOutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
+        ITextComponent header = ModuleChat.clickChatComponent(headerText, Action.SUGGEST_COMMAND, "/ircpm " + user.getNick() + " ");
+        ITextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
+        ChatOutputHandler.broadcast(new TextComponentTranslation("%s%s", header, messageComponent));
     }
 
     private void mcSendMessage(String message)
     {
         String filteredMessage = ModuleChat.censor.filterIRC(message);
-        IChatComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
-        IChatComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
-        ChatOutputHandler.broadcast(new ChatComponentTranslation("%s%s", header, messageComponent));
+        ITextComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
+        ITextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
+        ChatOutputHandler.broadcast(new TextComponentTranslation("%s%s", header, messageComponent));
     }
 
     public ICommandSender getIrcUser(String username)
@@ -378,8 +379,9 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         String[] args = cmdLine.split(" ");
         String commandName = args[0].substring(1);
         args = Arrays.copyOfRange(args, 1, args.length);
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
-        ICommand command = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(commandName);
+        ICommand command = (ICommand) server.getCommandManager().getCommands().get(commandName);
         if (command == null)
         {
             sendMessage(user, String.format("Error: Command %s not found!", commandName));
@@ -390,7 +392,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         ircUserCache.put(sender.getUser(), sender);
         try
         {
-            command.processCommand(sender, args);
+            command.execute(server, sender, args);
         }
         catch (CommandException e)
         {
@@ -424,22 +426,22 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerDeathEvent(LivingDeathEvent event)
     {
-        if (!(event.entityLiving instanceof EntityPlayer))
+        if (!(event.getEntityLiving() instanceof EntityPlayer))
             return;
         if (showGameEvents)
-            sendMessage(Translator.format("%s died", event.entityLiving.getName()));
+            sendMessage(Translator.format("%s died", event.getEntityLiving().getName()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void handleSay(CommandEvent event)
     {
-        if (event.command.getCommandName().equals("say"))
+        if (event.getCommand().getCommandName().equals("say"))
         {
-            sendMessage(Translator.format(mcSayHeader, event.sender.getName(), StringUtils.join(event.parameters, " ")));
+            sendMessage(Translator.format(mcSayHeader, event.getSender().getName(), StringUtils.join(event.getParameters(), " ")));
         }
-        else if (event.command.getCommandName().equals("me"))
+        else if (event.getCommand().getCommandName().equals("me"))
         {
-            sendMessage(Translator.format("* %s %s", event.sender.getName(), StringUtils.join(event.parameters, " ")));
+            sendMessage(Translator.format("* %s %s", event.getSender().getName(), StringUtils.join(event.getParameters(), " ")));
         }
     }
 

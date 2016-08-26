@@ -150,7 +150,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
         }
 
         World world = arguments.senderPlayer.worldObj;
-        int dim = world.provider.getDimensionId();
+        int dim = world.provider.getDimension();
 
         arguments.tabComplete("rain", "thunder");
         WeatherType type = WeatherType.fromString(arguments.remove());
@@ -218,7 +218,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
 
     public static void updateWorld(World world)
     {
-        int dim = world.provider.getDimensionId();
+        int dim = world.provider.getDimension();
         Map<WeatherType, WeatherState> worldData = weatherStates.get(dim);
         if (worldData == null)
             return;

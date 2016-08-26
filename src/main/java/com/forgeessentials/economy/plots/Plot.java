@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -383,7 +384,7 @@ public class Plot
             }
 
         if (isColumnMode(area.getDimension()))
-            area = new WorldArea(area.getDimension(), area.getHighPoint().setY(MinecraftServer.getServer().getBuildLimit()), area.getLowPoint().setY(0));
+            area = new WorldArea(area.getDimension(), area.getHighPoint().setY(FMLCommonHandler.instance().getMinecraftServerInstance().getBuildLimit()), area.getLowPoint().setY(0));
 
         AreaZone zone = new AreaZone(worldZone, "_PLOT_" + (APIRegistry.perms.getServerZone().getMaxZoneID() + 1), area);
         Plot plot = new Plot(zone, owner);

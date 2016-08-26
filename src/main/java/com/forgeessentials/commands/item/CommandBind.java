@@ -8,10 +8,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -26,7 +27,7 @@ public class CommandBind extends ParserCommandBase
 
     private static final String TAG_NAME = "FEbinding";
 
-    public static final String LORE_TEXT_TAG = EnumChatFormatting.RESET.toString() + EnumChatFormatting.AQUA;
+    public static final String LORE_TEXT_TAG = TextFormatting.RESET.toString() + TextFormatting.AQUA;
 
     public CommandBind()
     {
@@ -119,8 +120,8 @@ public class CommandBind extends ParserCommandBase
 
         if (arguments.isTabCompletion)
         {
-            arguments.tabCompletion = MinecraftServer.getServer().getTabCompletions(arguments.sender,
-                    arguments.toString().startsWith("/") ? arguments.toString() : "/" + arguments.toString(), arguments.sender.getPosition());
+            arguments.tabCompletion = arguments.server.getTabCompletions(arguments.sender,
+                    arguments.toString().startsWith("/") ? arguments.toString() : "/" + arguments.toString(), arguments.sender.getPosition(), false);
             if ("none".startsWith(arguments.peek()))
                 arguments.tabCompletion.add(0, "none");
             return;
@@ -159,9 +160,9 @@ public class CommandBind extends ParserCommandBase
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!(event.entityPlayer instanceof EntityPlayerMP))
+        if (!(event.getEntityPlayer() instanceof EntityPlayerMP))
             return;
-        ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
+        ItemStack stack = event.getEntityPlayer().getCurrentEquippedItem();
         if (stack == null || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TAG_NAME))
             return;
         NBTTagCompound nbt = stack.getTagCompound().getCompoundTag(TAG_NAME);
@@ -170,7 +171,7 @@ public class CommandBind extends ParserCommandBase
         if (command == null || command.isEmpty())
             return;
 
-        MinecraftServer.getServer().getCommandManager().executeCommand(event.entityPlayer, command);
+        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), command);
         event.setCanceled(true);
     }
 

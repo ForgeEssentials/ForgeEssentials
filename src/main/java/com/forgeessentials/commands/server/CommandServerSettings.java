@@ -7,11 +7,11 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraft.world.WorldSettings.GameType;
+import net.minecraft.world.GameType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.permission.PermissionLevel;
@@ -124,7 +124,7 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 String motd = ScriptArguments.process(arguments.toString(), null);
-                server.getServerStatusResponse().setServerDescription(new ChatComponentText(ChatOutputHandler.formatColors(motd)));
+                server.getServerStatusResponse().setServerDescription(new TextComponentString(ChatOutputHandler.formatColors(motd)));
                 server.setMOTD(motd);
                 setProperty("motd", motd);
                 arguments.confirm("Set MotD to %s", motd);
@@ -145,7 +145,7 @@ public class CommandServerSettings extends ParserCommandBase
                 arguments.confirm("Default gamemode set to %s", server.getGameType().getName());
             else
             {
-                GameType gamemode = WorldSettings.GameType.getByID(arguments.parseInt());
+                GameType gamemode = GameType.getByID(arguments.parseInt());
                 server.setGameType(gamemode);
                 setProperty("gamemode", gamemode.ordinal());
                 arguments.confirm("Set default gamemode to %s", gamemode.getName());

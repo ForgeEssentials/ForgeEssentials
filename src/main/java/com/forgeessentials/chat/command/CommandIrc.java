@@ -4,7 +4,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.chat.irc.IrcHandler;
@@ -45,7 +46,7 @@ public class CommandIrc extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (!IrcHandler.getInstance().isConnected())
             throw new TranslatedCommandException("Not connected to IRC!");
@@ -55,7 +56,7 @@ public class CommandIrc extends ForgeEssentialsCommandBase
         }
         else
         {
-            IChatComponent message = getChatComponentFromNthArg(sender, args, 0, !(sender instanceof EntityPlayer));
+            ITextComponent message = getChatComponentFromNthArg(sender, args, 0, !(sender instanceof EntityPlayer));
             IrcHandler.getInstance().sendPlayerMessage(sender, message);
         }
     }

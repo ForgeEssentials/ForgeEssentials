@@ -1,15 +1,14 @@
 package com.forgeessentials.core.preloader.mixin.network;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.play.client.C12PacketUpdateSign;
+import net.minecraft.network.play.client.CPacketUpdateSign;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,19 +44,21 @@ public class MixinNetHandlerPlayServer
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true
     )
-    private void getLines(C12PacketUpdateSign packet, CallbackInfo ci, WorldServer worldserver, BlockPos blockpos, TileEntity entity, TileEntitySign tileentitysign)
+    private void getLines(CPacketUpdateSign packet, CallbackInfo ci, WorldServer worldserver, BlockPos blockpos, IBlockState iblockstate, TileEntity entity, TileEntitySign tileentitysign)
     {
         SignEditEvent event = new SignEditEvent(packet.getPosition(), packet.getLines(), this.playerEntity);
         if (!MinecraftForge.EVENT_BUS.post(event))
         {
             for (int i = 0; i < event.text.length; ++i)
             {
-                tileentitysign.signText[i] = event.text[i];
+                if (event.formatted[i] == null)
+                tileentitysign.signText[i] = new TextComponentString(event.text[i]);
+                else tileentitysign.signText[i] = event.formatted[i];
             }
         }
 
         tileentitysign.markDirty();
-        worldserver.markBlockForUpdate(blockpos);
+        worldserver.notifyBlockUpdate(blockpos, iblockstate, iblockstate, 3);
         ci.cancel();
     }
 

@@ -21,7 +21,7 @@ public class EffectKnockback extends WorldBorderEffect
     @Override
     public void playerMove(WorldBorder border, PlayerMoveEvent event)
     {
-        EntityPlayerMP player = (EntityPlayerMP) event.entityPlayer;
+        EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
         if (event.before.getDimension() != event.after.getDimension())
         {
             // Cancel event if player was teleported
@@ -39,9 +39,9 @@ public class EffectKnockback extends WorldBorderEffect
         if (!WorldUtil.isFree(p.getWorld(), p.getBlockX(), p.getBlockY(), p.getBlockZ(), 2))
             p.setY(WorldUtil.placeInWorld(p.getWorld(), p.getBlockX(), p.getBlockY(), p.getBlockZ()));
 
-        if (player.ridingEntity != null)
-            player.ridingEntity.setLocationAndAngles(p.getX(), p.getY(), p.getZ(), player.ridingEntity.rotationYaw, player.ridingEntity.rotationPitch);
-        player.playerNetServerHandler.setPlayerLocation(p.getX(), p.getY(), p.getZ(), player.rotationYaw, player.rotationPitch);
+        if (player.getRidingEntity() != null)
+            player.getRidingEntity().setLocationAndAngles(p.getX(), p.getY(), p.getZ(), player.getRidingEntity().rotationYaw, player.getRidingEntity().rotationPitch);
+        player.connection.setPlayerLocation(p.getX(), p.getY(), p.getZ(), player.rotationYaw, player.rotationPitch);
     }
 
     public String toString()

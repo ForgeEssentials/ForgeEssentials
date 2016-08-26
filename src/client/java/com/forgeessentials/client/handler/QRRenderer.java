@@ -8,8 +8,8 @@ import javax.imageio.ImageIO;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -64,8 +64,8 @@ public class QRRenderer implements IMessageHandler<Packet7Remote, IMessage>
         }
         catch (IOException e)
         {
-            ChatComponentText cmsg = new ChatComponentText("Could not load QR Code. " + e.getMessage());
-            cmsg.getChatStyle().setColor(EnumChatFormatting.RED);
+            TextComponentString cmsg = new TextComponentString("Could not load QR Code. " + e.getMessage());
+            cmsg.getStyle().setColor(TextFormatting.RED);
             FMLClientHandler.instance().getClientPlayerEntity().addChatMessage(cmsg);
             e.printStackTrace();
         }

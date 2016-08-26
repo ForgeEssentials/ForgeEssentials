@@ -20,8 +20,7 @@ import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.world.World;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionContext;
@@ -51,10 +50,11 @@ public class CommandParserArgs
     public final UserIdent ident;
     public final boolean isTabCompletion;
     public final PermissionContext permissionContext;
+    public final MinecraftServer server;
 
     public List<String> tabCompletion;
 
-    public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, boolean isTabCompletion)
+    public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, boolean isTabCompletion, MinecraftServer server)
     {
         this.command = command;
         this.args = new LinkedList<String>(Arrays.asList(args));
@@ -66,14 +66,15 @@ public class CommandParserArgs
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
         this.permissionContext = new PermissionContext(sender, command);
+        this.server = server;
     }
 
-    public CommandParserArgs(ICommand command, String[] args, ICommandSender sender)
+    public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, MinecraftServer server)
     {
-        this(command, args, sender, false);
+        this(command, args, sender, false, server);
     }
 
-    public void sendMessage(IChatComponent message)
+    public void sendMessage(ITextComponent message)
     {
         if (!isTabCompletion)
             ChatOutputHandler.sendMessage(sender, message);
@@ -485,7 +486,7 @@ public class CommandParserArgs
 
     public WorldPoint getSenderPoint()
     {
-        ICommandSender s = sender != null ? sender : MinecraftServer.getServer();
+        ICommandSender s = sender != null ? sender : server;
         return new WorldPoint(s.getEntityWorld(), s.getPosition());
     }
 

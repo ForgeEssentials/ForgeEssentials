@@ -23,7 +23,7 @@ buildscript {
 
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT"
+		classpath "net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
         classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
@@ -63,7 +63,7 @@ def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
-ext.baseVersion = "1.8.5"
+ext.baseVersion = "10.1"
 version = baseVersion + "." + buildNumber
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
@@ -72,10 +72,10 @@ targetCompatibility = 1.8
 
 // Set up forge options
 minecraft {
-	version = "1.8.9-11.15.1.1722"
+	version = "1.10.2-12.18.1.2073"
 	runDir = "rundir"
 	
-	mappings = "snapshot_20160115"
+	mappings = "snapshot_20160518"
 
 	replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
 	replace "_VERSION_", project.version
@@ -136,9 +136,9 @@ dependencies {
 	
 	// WorldEdit
     //buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-1.8.9", version: "6.1.1-SNAPSHOT", changing: true
-    buildDep "com.sk89q.worldedit:worldedit-core:6.1.1-SNAPSHOT"
-    buildDep "com.sk89q.worldedit:worldedit-forge-mc1.8.9:6.1.1:dev"
-	includeMod files('lib/worldedit-forge-mc1.8.9-6.1.1-SNAPSHOT-dist.jar')
+    buildDep "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
+    buildDep "com.sk89q.worldedit:worldedit-forge-mc1.9.4:6.1.4-SNAPSHOT:dev"
+	//includeMod files('lib/worldedit-forge-mc1.8.9-6.1.1-SNAPSHOT-dist.jar')
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
 	buildDep 'org.spongepowered:spongeapi:3.0.0'

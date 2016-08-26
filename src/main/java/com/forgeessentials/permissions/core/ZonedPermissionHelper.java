@@ -19,13 +19,13 @@ import java.util.TreeSet;
 import java.util.WeakHashMap;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.server.CommandBlockLogic;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.permission.PermissionContext;
@@ -417,36 +417,36 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 return;
         }
 
-        IChatComponent msg1 = new ChatComponentText(String.format("%s = %s", permissionNode, value));
-        msg1.getChatStyle().setColor(Zone.PERMISSION_FALSE.equals(value) ? EnumChatFormatting.RED : EnumChatFormatting.DARK_GREEN);
+        ITextComponent msg1 = new TextComponentString(String.format("%s = %s", permissionNode, value));
+        msg1.getStyle().setColor(Zone.PERMISSION_FALSE.equals(value) ? TextFormatting.RED : TextFormatting.DARK_GREEN);
 
-        IChatComponent msg2;
+        ITextComponent msg2;
         if (zone == null)
         {
-            msg2 = new ChatComponentText("  permission not set");
-            msg2.getChatStyle().setColor(EnumChatFormatting.YELLOW);
+            msg2 = new TextComponentString("  permission not set");
+            msg2.getStyle().setColor(TextFormatting.YELLOW);
         }
         else
         {
-            IChatComponent msgZone = new ChatComponentText(zone.getName());
-            msgZone.getChatStyle().setColor(EnumChatFormatting.LIGHT_PURPLE);
+            ITextComponent msgZone = new TextComponentString(zone.getName());
+            msgZone.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
 
-            IChatComponent msgUser = new ChatComponentText(ident == null ? APIRegistry.IDENT_SERVER.getUsername() : ident.getUsernameOrUuid());
-            msgUser.getChatStyle().setColor(EnumChatFormatting.GOLD);
+            ITextComponent msgUser = new TextComponentString(ident == null ? APIRegistry.IDENT_SERVER.getUsername() : ident.getUsernameOrUuid());
+            msgUser.getStyle().setColor(TextFormatting.GOLD);
 
             if (isGroupPermission)
             {
                 // String groupName = getServerZone().getGroupPermission(group, FEPermissions.GROUP_NAME);
                 // if (groupName == null)
                 // groupName = group;
-                IChatComponent msgGroup = new ChatComponentText(group);
-                msgGroup.getChatStyle().setColor(EnumChatFormatting.LIGHT_PURPLE);
+                ITextComponent msgGroup = new TextComponentString(group);
+                msgGroup.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
 
-                msg2 = new ChatComponentTranslation("  zone %s group %s for user %s", msgZone, msgGroup, msgUser);
+                msg2 = new TextComponentTranslation("  zone %s group %s for user %s", msgZone, msgGroup, msgUser);
             }
             else
             {
-                msg2 = new ChatComponentTranslation("  zone %s user %s", msgZone, msgUser);
+                msg2 = new TextComponentTranslation("  zone %s user %s", msgZone, msgUser);
             }
         }
         for (ICommandSender sender : permissionDebugUsers)
@@ -553,7 +553,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent
     public void worldLoad(WorldEvent.Load e)
     {
-        getServerZone().getWorldZone(e.world.provider.getDimensionId());
+        getServerZone().getWorldZone(e.getWorld().provider.getDimension());
     }
 
     @SubscribeEvent
@@ -563,7 +563,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         Zone after = APIRegistry.perms.getServerZone().getZonesAt(e.after.toWorldPoint()).get(0);
         if (!before.equals(after))
         {
-            PlayerChangedZone event = new PlayerChangedZone(e.entityPlayer, before, after, e.before, e.after);
+            PlayerChangedZone event = new PlayerChangedZone(e.getEntityPlayer(), before, after, e.before, e.after);
             e.setCanceled(MinecraftForge.EVENT_BUS.post(event));
         }
     }
@@ -571,16 +571,16 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerChangedZoneEvent(PlayerChangedZone event)
     {
-        UserIdent ident = UserIdent.get(event.entityPlayer);
+        UserIdent ident = UserIdent.get(event.getEntityPlayer());
         String exitMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.beforeZone, FEPermissions.ZONE_EXIT_MESSAGE);
         if (exitMsg != null)
         {
-            ChatOutputHandler.sendMessage(event.entityPlayer, ChatOutputHandler.formatColors(exitMsg));
+            ChatOutputHandler.sendMessage(event.getEntityPlayer(), ChatOutputHandler.formatColors(exitMsg));
         }
         String entryMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, FEPermissions.ZONE_ENTRY_MESSAGE);
         if (entryMsg != null)
         {
-            ChatOutputHandler.sendMessage(event.entityPlayer, ChatOutputHandler.formatColors(entryMsg));
+            ChatOutputHandler.sendMessage(event.getEntityPlayer(), ChatOutputHandler.formatColors(entryMsg));
         }
     }
 
@@ -748,7 +748,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
         if (context.getSender() instanceof DoAsCommandSender)
             ident = ((DoAsCommandSender) context.getSender()).getUserIdent();
-        else if (context.getSender() instanceof CommandBlockLogic)
+        else if (context.getSender() instanceof CommandBlockBaseLogic)
             ident = APIRegistry.IDENT_CMDBLOCK;
         else if (context.isRCon())
             ident = APIRegistry.IDENT_RCON;

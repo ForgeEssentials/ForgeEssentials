@@ -6,8 +6,10 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.StatCollector;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.GameType;
 import net.minecraft.world.WorldSettings;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
@@ -34,9 +36,9 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
-        WorldSettings.GameType gm;
+        GameType gm;
         switch (args.length)
         {
         case 0:
@@ -68,9 +70,9 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        WorldSettings.GameType gm;
+        GameType gm;
         switch (args.length)
         {
         case 0:
@@ -105,7 +107,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
     public void setGameMode(EntityPlayer sender)
     {
-        setGameMode(sender, sender, sender.capabilities.isCreativeMode ? WorldSettings.GameType.SURVIVAL : WorldSettings.GameType.CREATIVE);
+        setGameMode(sender, sender, sender.capabilities.isCreativeMode ? GameType.SURVIVAL : GameType.CREATIVE);
     }
 
     public void setGameMode(ICommandSender sender, String target)
@@ -116,10 +118,10 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
             ChatOutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
             return;
         }
-        setGameMode(sender, target, player.capabilities.isCreativeMode ? WorldSettings.GameType.SURVIVAL : WorldSettings.GameType.CREATIVE);
+        setGameMode(sender, target, player.capabilities.isCreativeMode ? GameType.SURVIVAL : GameType.CREATIVE);
     }
 
-    public void setGameMode(ICommandSender sender, String target, WorldSettings.GameType mode)
+    public void setGameMode(ICommandSender sender, String target, GameType mode)
     {
         EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
         if (player == null)
@@ -130,27 +132,27 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
         setGameMode(sender, player, mode);
     }
 
-    public void setGameMode(ICommandSender sender, EntityPlayer target, WorldSettings.GameType mode)
+    public void setGameMode(ICommandSender sender, EntityPlayer target, GameType mode)
     {
         target.setGameType(mode);
         target.fallDistance = 0.0F;
-        String modeName = StatCollector.translateToLocal("gameMode." + mode.getName());
+        String modeName = I18n.translateToLocal("gameMode." + mode.getName());
         ChatOutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getName(), modeName));
     }
 
-    private WorldSettings.GameType getGameTypeFromString(String string)
+    private GameType getGameTypeFromString(String string)
     {
-        if (string.equalsIgnoreCase(WorldSettings.GameType.SURVIVAL.getName()) || string.equalsIgnoreCase("s") || string.equals("0"))
+        if (string.equalsIgnoreCase(GameType.SURVIVAL.getName()) || string.equalsIgnoreCase("s") || string.equals("0"))
         {
-            return WorldSettings.GameType.SURVIVAL;
+            return GameType.SURVIVAL;
         }
-        else if (string.equalsIgnoreCase(WorldSettings.GameType.CREATIVE.getName()) || string.equalsIgnoreCase("c") || string.equals("1"))
+        else if (string.equalsIgnoreCase(GameType.CREATIVE.getName()) || string.equalsIgnoreCase("c") || string.equals("1"))
         {
-            return WorldSettings.GameType.CREATIVE;
+            return GameType.CREATIVE;
         }
-        else if (string.equalsIgnoreCase(WorldSettings.GameType.ADVENTURE.getName()) || string.equalsIgnoreCase("a") || string.equals("2"))
+        else if (string.equalsIgnoreCase(GameType.ADVENTURE.getName()) || string.equalsIgnoreCase("a") || string.equals("2"))
         {
-            return WorldSettings.GameType.ADVENTURE;
+            return GameType.ADVENTURE;
         }
         else
         {
@@ -165,7 +167,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

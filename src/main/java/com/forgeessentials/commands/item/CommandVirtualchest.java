@@ -3,6 +3,7 @@ package com.forgeessentials.commands.item;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -34,7 +35,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         EntityPlayerMP player = sender;
         if (player.openContainer != player.inventoryContainer)

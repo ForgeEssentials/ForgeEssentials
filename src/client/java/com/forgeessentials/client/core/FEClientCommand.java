@@ -2,8 +2,9 @@ package com.forgeessentials.client.core;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import com.forgeessentials.commons.BuildInfo;
 
@@ -26,28 +27,28 @@ public class FEClientCommand extends CommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args)
     {
         if (args.length == 0)
         {
-            sender.addChatMessage(new ChatComponentText("/feclient info: Get FE client info"));
-            sender.addChatMessage(new ChatComponentText("/feclient reinit: Redo server handshake"));
+            sender.addChatMessage(new TextComponentString("/feclient info: Get FE client info"));
+            sender.addChatMessage(new TextComponentString("/feclient reinit: Redo server handshake"));
         }
         else if (args[0].equalsIgnoreCase("reinit"))
         {
             ClientProxy.resendHandshake();
-            sender.addChatMessage(new ChatComponentText("Resent handshake packet to server."));
+            sender.addChatMessage(new TextComponentString("Resent handshake packet to server."));
         }
         else if (args[0].equalsIgnoreCase("info"))
         {
-            sender.addChatMessage(new ChatComponentText(String.format("Running ForgeEssentials client %s (%s)", //
+            sender.addChatMessage(new TextComponentString(String.format("Running ForgeEssentials client %s (%s)", //
                     BuildInfo.getFullVersion(), BuildInfo.getBuildHash())));
-            sender.addChatMessage(new ChatComponentText(
+            sender.addChatMessage(new TextComponentString(
                     "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers."));
         }
         else
         {
-            sender.addChatMessage(new ChatComponentTranslation("Unknown argument %s", args[0]));
+            sender.addChatMessage(new TextComponentTranslation("Unknown argument %s", args[0]));
         }
     }
 

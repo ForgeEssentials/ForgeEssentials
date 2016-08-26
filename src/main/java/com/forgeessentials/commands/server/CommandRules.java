@@ -23,8 +23,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
@@ -138,7 +139,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -157,7 +158,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
 
             for (int i = 0; i < rules.size(); i++)
             {
-                map.put(EnumChatFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n", EnumChatFormatting.RESET + ChatOutputHandler.formatColors(rules.get(i)));
+                map.put(TextFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n", TextFormatting.RESET + ChatOutputHandler.formatColors(rules.get(i)));
             }
 
             SortedSet<String> keys = new TreeSet<String>(map.keySet());
@@ -170,7 +171,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             tag.setString("title", "Rule Book");
             tag.setTag("pages", pages);
 
-            ItemStack is = new ItemStack(Items.written_book);
+            ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
             is.setTagCompound(tag);
             sender.inventory.addItemStackToInventory(is);
             return;
@@ -256,7 +257,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -353,7 +354,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

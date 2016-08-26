@@ -5,13 +5,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S02PacketChat;
+import net.minecraft.network.play.server.SPacketChat;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -152,7 +151,7 @@ public class ModuleServerVote
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void defVoteResponces(VoteEvent vote)
     {
-        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerByUsername(vote.player);
+        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(vote.player);
         if (player != null)
         {
             doPlayer(player, vote);
@@ -177,7 +176,7 @@ public class ModuleServerVote
         log.println(String.format("Player %s voted on service %s on %s", vote.player, vote.serviceName, vote.timeStamp));
         if (!ConfigServerVote.msgAll.equals(""))
         {
-            MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(new S02PacketChat(new ChatComponentText(
+            FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendPacketToAllPlayers(new SPacketChat(new TextComponentString(
                     ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
         }
 

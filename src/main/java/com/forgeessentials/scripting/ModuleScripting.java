@@ -17,6 +17,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.permission.PermissionLevel;
@@ -222,7 +223,7 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
     public void runEventScripts(String eventType, ICommandSender sender)
     {
         if (sender == null)
-            sender = MinecraftServer.getServer();
+            sender = FMLCommonHandler.instance().getMinecraftServerInstance();
         for (Entry<String, List<String>> script : scripts.get(eventType).entrySet())
         {
             if (script.getValue().isEmpty())
@@ -259,13 +260,13 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
                 try
                 {
                     cronTimes.put(script.getKey(), System.currentTimeMillis());
-                    ScriptParser.run(lines, MinecraftServer.getServer());
+                    ScriptParser.run(lines, FMLCommonHandler.instance().getMinecraftServerInstance());
                     break;
                 }
                 catch (CommandException | ScriptErrorException e)
                 {
                     if (e.getMessage() != null && !e.getMessage().isEmpty())
-                        ChatOutputHandler.chatError(MinecraftServer.getServer(), e.getMessage());
+                        ChatOutputHandler.chatError(FMLCommonHandler.instance().getMinecraftServerInstance(), e.getMessage());
                 }
                 catch (ScriptException e)
                 {

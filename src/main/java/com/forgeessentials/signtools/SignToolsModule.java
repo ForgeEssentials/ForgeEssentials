@@ -4,14 +4,13 @@ import net.minecraft.init.Items;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fe.event.world.SignEditEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
@@ -60,11 +59,11 @@ public class SignToolsModule extends ConfigLoaderBase
         {
             for (int i = 0; i < e.text.length; i++)
             {
-                if (e.text[i].getUnformattedText().contains("&"))
+                if (e.text[i].contains("&"))
                 {
-                    ChatComponentText text = new ChatComponentText(ChatOutputHandler.formatColors(e.text[i].getUnformattedText()));
-                    ChatOutputHandler.applyFormatting(text.getChatStyle(), ChatOutputHandler.enumChatFormattings("0123456789AaBbCcDdEeFfKkLlMmNnOoRr"));
-                    e.text[i] = text;
+                    TextComponentString text = new TextComponentString(ChatOutputHandler.formatColors(e.text[i].getUnformattedText()));
+                    ChatOutputHandler.applyFormatting(text.getStyle(), ChatOutputHandler.enumChatFormattings("0123456789AaBbCcDdEeFfKkLlMmNnOoRr"));
+                    e.formatted[i] = text;
                 }
             }
         }
@@ -76,31 +75,31 @@ public class SignToolsModule extends ConfigLoaderBase
      */
 
     @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent event)
+    public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event)
     {
-        if (!allowSignCommands || !event.action.equals(Action.RIGHT_CLICK_BLOCK))
+        if (!allowSignCommands)
         {
             return;
         }
 
-        TileEntity te = event.entityPlayer.worldObj.getTileEntity(event.pos);
+        TileEntity te = event.getEntityPlayer().worldObj.getTileEntity(event.getPos());
         if (te != null && te instanceof TileEntitySign)
         {
-            if (allowSignEdit && event.entityPlayer.isSneaking())
+            if (allowSignEdit && event.getEntityPlayer().isSneaking())
             {
-                if(event.entityPlayer.getCurrentEquippedItem()!= null)
+                if(event.getEntityPlayer().getHeldItemMainhand()!= null)
                 {
-                    if (event.entityPlayer.getCurrentEquippedItem().getItem().equals(Items.sign) &&
-                            PermissionManager.checkPermission(event.entityPlayer, "fe.protection.use.minecraft.sign"))
+                    if (event.getEntityPlayer().getHeldItemMainhand().getItem().equals(Items.SIGN) &&
+                            PermissionManager.checkPermission(event.getEntityPlayer(), "fe.protection.use.minecraft.sign"))
                     {
-                        event.entityPlayer.openEditSign((TileEntitySign) te);
+                        event.getEntityPlayer().openEditSign((TileEntitySign) te);
                         event.setCanceled(true);
                     }
                 }
 
             }
 
-            IChatComponent[] signText = ((TileEntitySign) te).signText;
+            ITextComponent[] signText = ((TileEntitySign) te).signText;
             if (!signText[0].getUnformattedText().equals("[command]"))
             {
                 return;
@@ -109,9 +108,9 @@ public class SignToolsModule extends ConfigLoaderBase
                 else
                 {
                     String send = signText[1].getUnformattedText() + " " + signText[2].getUnformattedText() + " " + signText[3].getUnformattedText();
-                    if (send != null && MinecraftServer.getServer().getCommandManager() != null)
+                    if (send != null && FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager() != null)
                     {
-                        MinecraftServer.getServer().getCommandManager().executeCommand(event.entityPlayer, send);
+                        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), send);
                         event.setCanceled(true);
                     }
                 }

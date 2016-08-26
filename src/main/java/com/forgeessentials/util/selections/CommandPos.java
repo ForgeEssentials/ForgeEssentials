@@ -5,7 +5,8 @@ package com.forgeessentials.util.selections;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -33,7 +34,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
     {
         int x, y, z;
 
@@ -95,7 +96,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
             return;
         }
 
-        MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(player);
+        RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(player);
 
         if (mop == null)
             throw new TranslatedCommandException("You must first look at the ground!");

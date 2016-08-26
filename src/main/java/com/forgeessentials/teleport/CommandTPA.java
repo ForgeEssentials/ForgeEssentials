@@ -77,7 +77,7 @@ public class CommandTPA extends ParserCommandBase
             try
             {
                 arguments.confirm(Translator.format("Waiting for response by %s", player.getUsernameOrUuid()));
-                Questioner.addChecked(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getDisplayName().getUnformattedTextForChat()),
+                Questioner.addChecked(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getDisplayName().getUnformattedText()),
                         new QuestionerCallback()
                         {
                             @Override

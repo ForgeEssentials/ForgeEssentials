@@ -69,7 +69,7 @@ public class NamedWorldPoint extends WorldPoint
                 WorldServer world = APIRegistry.namedWorldHandler.getWorld(worldName);
                 if (world != null)
                 {
-                    this.dim = world.provider.getDimensionId();
+                    this.dim = world.provider.getDimension();
                     isLinked = true;
                     isValid = true;
                 }

@@ -7,8 +7,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.chat.ModuleChat;
@@ -50,7 +51,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (!IrcHandler.getInstance().isConnected())
             throw new TranslatedCommandException("Not connected to IRC!");
@@ -71,7 +72,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBase
             }
             else
             {
-                IChatComponent message = getChatComponentFromNthArg(sender, args, 1, !(sender instanceof EntityPlayer));
+                ITextComponent message = getChatComponentFromNthArg(sender, args, 1, !(sender instanceof EntityPlayer));
                 ModuleChat.tell(sender, message, target);
             }
         }
@@ -81,7 +82,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBase
      * Adds the strings available in this command to the given list of tab completion options.
      */
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length != 1)
             return null;

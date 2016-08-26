@@ -1,8 +1,8 @@
 package com.forgeessentials.commons.selections;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
@@ -41,7 +41,7 @@ public class WarpPoint
     public WarpPoint(WorldServer world, double x, double y, double z, float playerPitch, float playerYaw)
     {
         this.world = world;
-        this.dim = world.provider.getDimensionId();
+        this.dim = world.provider.getDimension();
         this.xd = x;
         this.yd = y;
         this.zd = z;
@@ -139,7 +139,7 @@ public class WarpPoint
 
     public WorldServer getWorld()
     {
-        if (world == null || world.provider.getDimensionId() != dim)
+        if (world == null || world.provider.getDimension() != dim)
             world = DimensionManager.getWorld(dim);
         return world;
     }
@@ -201,9 +201,9 @@ public class WarpPoint
             yd = 0;
     }
 
-    public Vec3 toVec3()
+    public Vec3d toVec3()
     {
-        return new Vec3(xd, yd, zd);
+        return new Vec3d(xd, yd, zd);
     }
 
     public WorldPoint toWorldPoint()

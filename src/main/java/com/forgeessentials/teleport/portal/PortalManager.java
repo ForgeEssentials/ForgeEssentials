@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,7 +33,7 @@ public class PortalManager extends ServerEventHandler
 
     private static boolean mixinLoaded = false;
 
-    public static Block portalBlock = Blocks.portal;
+    public static Block portalBlock = Blocks.PORTAL;
 
     public PortalManager()
     {
@@ -84,8 +84,8 @@ public class PortalManager extends ServerEventHandler
         {
             if (portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
             {
-                if (!MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(e.entity, after.getWorld(), after.getBlockPos(), portal.target.getDimension(), portal.target.getBlockPos()))) {
-                    TeleportHelper.doTeleport((EntityPlayerMP) e.entityPlayer, portal.target.toWarpPoint(e.entityPlayer.rotationPitch, e.entityPlayer.rotationYaw));
+                if (!MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(e.getEntity(), after.getWorld(), after.getBlockPos(), portal.target.getDimension(), portal.target.getBlockPos()))) {
+                    TeleportHelper.doTeleport((EntityPlayerMP) e.getEntityPlayer(), portal.target.toWarpPoint(e.getEntityPlayer().rotationPitch, e.getEntityPlayer().rotationYaw));
                 }
             }
         }
@@ -96,7 +96,7 @@ public class PortalManager extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.pos);
+        WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.getPos());
         Portal portal = getPortalAt(point);
         if (portal != null && portal.hasFrame())
             event.setCanceled(true);
@@ -190,8 +190,8 @@ public class PortalManager extends ServerEventHandler
                     {
                         BlockPos pos = new BlockPos(ix, iy, iz);
                         Block block = world.getBlockState(pos).getBlock();
-                        if (block == portalBlock || block == Blocks.portal)
-                            world.setBlockState(pos, Blocks.air.getDefaultState());
+                        if (block == portalBlock || block == Blocks.PORTAL)
+                            world.setBlockState(pos, Blocks.AIR.getDefaultState());
                     }
         }
     }

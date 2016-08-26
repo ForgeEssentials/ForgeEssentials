@@ -35,7 +35,7 @@ public class TileEntitySkullGrave extends TileEntitySkull
             if (owner.hasPlayer())
             {
                 // createPlayerSkull(owner.getPlayer(), worldObj, point.getX(), point.getY(), point.getZ());
-                worldObj.setBlockState(pos, Blocks.chest.getDefaultState());
+                worldObj.setBlockState(pos, Blocks.CHEST.getDefaultState());
             }
         }
         else

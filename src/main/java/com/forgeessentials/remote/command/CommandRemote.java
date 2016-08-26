@@ -2,11 +2,11 @@ package com.forgeessentials.remote.command;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -182,19 +182,19 @@ public class CommandRemote extends ParserCommandBase
             passkey = passkey.replaceAll(".", "*");
         String connectString = ModuleRemote.getInstance().getConnectString(ident);
         String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-        ChatComponentTranslation msg = new ChatComponentTranslation("Remote passkey = " + passkey + " ");
+        TextComponentTranslation msg = new TextComponentTranslation("Remote passkey = " + passkey + " ");
 
-        IChatComponent qrLink = new ChatComponentText("[QR code]");
+        ITextComponent qrLink = new TextComponentString("[QR code]");
         if (ident.hasUuid() && PlayerInfo.get(ident.getUuid()).getHasFEClient())
-            qrLink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr"));
+            qrLink.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr"));
         else
-            qrLink.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
-        qrLink.getChatStyle().setColor(EnumChatFormatting.RED);
-        qrLink.getChatStyle().setUnderlined(true);
+            qrLink.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        qrLink.getStyle().setColor(TextFormatting.RED);
+        qrLink.getStyle().setUnderlined(true);
         msg.appendSibling(qrLink);
 
         ChatOutputHandler.sendMessage(args.sender, msg);
-        ChatOutputHandler.sendMessage(args.sender, new ChatComponentText("Port = " + ModuleRemote.getInstance().getPort()));
+        ChatOutputHandler.sendMessage(args.sender, new TextComponentString("Port = " + ModuleRemote.getInstance().getPort()));
     }
 
     @Override

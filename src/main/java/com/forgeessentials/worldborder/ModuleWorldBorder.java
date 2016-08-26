@@ -75,8 +75,8 @@ public class ModuleWorldBorder extends ServerEventHandler
     {
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
             return;
-        borders.put((WorldServer) event.world, WorldBorder.load(event.world));
-        getBorder(event.world);
+        borders.put((WorldServer) event.getWorld(), WorldBorder.load(event.getWorld()));
+        getBorder(event.getWorld());
     }
 
     @SubscribeEvent
@@ -84,7 +84,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     {
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
             return;
-        borders.remove(event.world);
+        borders.remove(event.getWorld());
     }
 
     @SubscribeEvent
@@ -116,7 +116,7 @@ public class ModuleWorldBorder extends ServerEventHandler
                 break;
             }
             default:
-                LoggingHandler.felog.error("Unsupported world border shape. Disabling worldborder on world " + event.after.getWorld().provider.getDimensionId());
+                LoggingHandler.felog.error("Unsupported world border shape. Disabling worldborder on world " + event.after.getWorld().provider.getDimension());
                 borders.remove(event.after.getWorld());
                 return;
             }
@@ -187,7 +187,7 @@ public class ModuleWorldBorder extends ServerEventHandler
         WorldBorder border = borders.get(world);
         if (border == null)
         {
-            border = new WorldBorder(new Point(0, 0, 0), DEFAULT_SIZE, DEFAULT_SIZE, world.provider.getDimensionId());
+            border = new WorldBorder(new Point(0, 0, 0), DEFAULT_SIZE, DEFAULT_SIZE, world.provider.getDimension());
             borders.put((WorldServer) world, border);
         }
         return border;

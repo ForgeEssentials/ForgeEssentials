@@ -155,7 +155,7 @@ public class WorldBorder implements Loadable
     public static WorldBorder load(World world)
     {
         // TODO: Better way to identify dimensions
-        String key = Integer.toString(world.provider.getDimensionId());
+        String key = Integer.toString(world.provider.getDimension());
         return DataManager.getInstance().load(WorldBorder.class, key);
     }
 

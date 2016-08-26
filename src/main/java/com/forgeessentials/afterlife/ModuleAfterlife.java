@@ -7,8 +7,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -116,7 +116,7 @@ public class ModuleAfterlife extends ServerEventHandler
     @SubscribeEvent
     public void playerDeathDropEvent(PlayerDropsEvent event)
     {
-        Grave grave = Grave.createGrave(event.entityPlayer, event.drops);
+        Grave grave = Grave.createGrave(event.getEntityPlayer(), event.getDrops());
         if (grave != null)
             event.setCanceled(true);
     }
@@ -126,7 +126,7 @@ public class ModuleAfterlife extends ServerEventHandler
     {
         if (event.phase == Phase.END)
             return;
-        if (MinecraftServer.getServer().getEntityWorld().getWorldInfo().getWorldTotalTime() % 20 == 0)
+        if (FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld().getWorldInfo().getWorldTotalTime() % 20 == 0)
         {
             for (Grave grave : new ArrayList<Grave>(Grave.graves.values()))
                 grave.updateBlocks();
@@ -134,29 +134,27 @@ public class ModuleAfterlife extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void playerInteractEvent(PlayerInteractEvent event)
+    public void playerInteractEvent(PlayerInteractEvent.RightClickBlock event)
     {
-        if (event.entity.worldObj.isRemote)
-            return;
-        if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.LEFT_CLICK_BLOCK)
+        if (event.getEntity().worldObj.isRemote)
             return;
 
-        WorldPoint point = new WorldPoint(event.entity.worldObj, event.pos);
+        WorldPoint point = new WorldPoint(event.getEntity().worldObj, event.getPos());
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
 
-        grave.interact((EntityPlayerMP) event.entityPlayer);
+        grave.interact((EntityPlayerMP) event.getEntityPlayer());
         event.setCanceled(true);
     }
 
     @SubscribeEvent
     public void blockBreakEvent(BreakEvent event)
     {
-        if (event.world.isRemote)
+        if (event.getWorld().isRemote)
             return;
 
-        WorldPoint point = new WorldPoint(event.world, event.pos);
+        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
         Grave grave = Grave.graves.get(point);
         if (grave == null)
         {

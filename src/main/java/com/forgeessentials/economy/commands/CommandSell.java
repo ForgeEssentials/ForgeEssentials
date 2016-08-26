@@ -65,7 +65,7 @@ public class CommandSell extends ParserCommandBase
         if (arguments.isEmpty() || arguments.peek().equalsIgnoreCase("yes") || arguments.peek().equalsIgnoreCase("y"))
         {
             holdingItem = true;
-            itemStack = arguments.senderPlayer.getCurrentEquippedItem();
+            itemStack = arguments.senderPlayer.getHeldItemMainhand();
             if (itemStack == null)
                 throw new TranslatedCommandException("You need to hold an item first!");
             amount = itemStack.stackSize;
@@ -132,7 +132,7 @@ public class CommandSell extends ParserCommandBase
                 int removedAmount = 0;
                 if (holdingItem)
                 {
-                    ItemStack currentItemStack = arguments.senderPlayer.getCurrentEquippedItem();
+                    ItemStack currentItemStack = arguments.senderPlayer.getHeldItemMainhand();
                     if (currentItemStack.isItemEqual(itemStack))
                     {
                         removedAmount = Math.min(currentItemStack.stackSize, amount);

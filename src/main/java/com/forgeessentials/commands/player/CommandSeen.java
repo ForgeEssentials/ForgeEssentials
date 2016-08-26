@@ -5,20 +5,22 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandSeen extends ForgeEssentialsCommandBase
+public class CommandSeen extends ParserCommandBase
 {
 
     @Override
@@ -46,27 +48,6 @@ public class CommandSeen extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
-    {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender);
-        parse(arguments);
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
-    {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
-        try
-        {
-            parse(arguments);
-        }
-        catch (CommandException e)
-        {
-            return arguments.tabCompletion;
-        }
-        return arguments.tabCompletion;
-    }
-
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())

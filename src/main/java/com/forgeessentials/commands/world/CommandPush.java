@@ -9,9 +9,10 @@ import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.permission.PermissionLevel;
@@ -38,7 +39,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length != 3)
         {
@@ -75,7 +76,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
             BlockPos pos = new BlockPos(x, y, z);
             IBlockState state = world.getBlockState(pos);
             
-            if ((state == Blocks.air.getDefaultState() || !(state.getBlock() instanceof BlockButton))
+            if ((state == Blocks.AIR.getDefaultState() || !(state.getBlock() instanceof BlockButton))
                     && !(state.getBlock() instanceof BlockLever))
             {
                 throw new TranslatedCommandException("Button/Lever Not Found");
@@ -89,7 +90,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         EntityPlayerMP playermp = UserIdent.getPlayerByMatchOrUsername(sender, sender.getName());
         if (args.length != 3)
@@ -110,7 +111,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
             BlockPos pos = new BlockPos(x, y, z);
             IBlockState state = world.getBlockState(pos);
             
-            if ((state == Blocks.air.getDefaultState() || !(state.getBlock() instanceof BlockButton))
+            if ((state == Blocks.AIR.getDefaultState() || !(state.getBlock() instanceof BlockButton))
                     && !(state.getBlock() instanceof BlockLever))
             {
                 throw new TranslatedCommandException("Button/Lever Not Found");

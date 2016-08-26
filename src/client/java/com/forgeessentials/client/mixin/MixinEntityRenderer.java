@@ -8,9 +8,9 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -40,7 +40,7 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
                 double maxReach = this.mc.playerController.getBlockReachDistance();
                 this.mc.objectMouseOver = entity.rayTrace(maxReach, partialTime);
                 double blockDistance = maxReach;
-                Vec3 vec3 = entity.getPositionEyes(partialTime);
+                Vec3d vec3 = entity.getPositionEyes(partialTime);
 
                 if (this.mc.playerController.extendedReach())
                 {
@@ -62,10 +62,10 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
                     blockDistance = this.mc.objectMouseOver.hitVec.distanceTo(vec3);
                 }
 
-                Vec3 vec31 = entity.getLook(partialTime);
-                Vec3 vec32 = vec3.addVector(vec31.xCoord * maxReach, vec31.yCoord * maxReach, vec31.zCoord * maxReach);
+                Vec3d vec31 = entity.getLook(partialTime);
+                Vec3d vec32 = vec3.addVector(vec31.xCoord * maxReach, vec31.yCoord * maxReach, vec31.zCoord * maxReach);
                 this.pointedEntity = null;
-                Vec3 vec33 = null;
+                Vec3d vec33 = null;
                 float f1 = 1.0F;
                 List<?> list = this.mc.theWorld.getEntitiesWithinAABBExcludingEntity(entity,
                         entity.getEntityBoundingBox().addCoord(vec31.xCoord * maxReach, vec31.yCoord * maxReach, vec31.zCoord * maxReach).expand(f1, f1, f1));
@@ -79,7 +79,7 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
                     {
                         float f2 = entity1.getCollisionBorderSize();
                         AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand(f2, f2, f2);
-                        MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
+                        RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
 
                         if (axisalignedbb.isVecInside(vec3))
                         {
@@ -96,7 +96,7 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
 
                             if (d3 < d2 || d2 == 0.0D)
                             {
-                                if (entity1 == entity.ridingEntity && !entity.canRiderInteract())
+                                if (entity1 == entity.getRidingEntity() && !entity.canRiderInteract())
                                 {
                                     if (d2 == 0.0D)
                                     {
@@ -117,7 +117,7 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
 
                 if (this.pointedEntity != null && (d2 < blockDistance || this.mc.objectMouseOver == null))
                 {
-                    this.mc.objectMouseOver = new MovingObjectPosition(this.pointedEntity, vec33);
+                    this.mc.objectMouseOver = new RayTraceResult(this.pointedEntity, vec33);
 
                     if (this.pointedEntity instanceof EntityLivingBase || this.pointedEntity instanceof EntityItemFrame)
                     {

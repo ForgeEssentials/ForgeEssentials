@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -50,10 +50,10 @@ public final class ItemUtil
 
     public static boolean isSign(Block block)
     {
-        return block == Blocks.wall_sign;
+        return block == Blocks.WALL_SIGN;
     }
 
-    public static IChatComponent[] getSignText(WorldPoint point)
+    public static ITextComponent[] getSignText(WorldPoint point)
     {
         TileEntity te = point.getTileEntity();
         if (te instanceof TileEntitySign)

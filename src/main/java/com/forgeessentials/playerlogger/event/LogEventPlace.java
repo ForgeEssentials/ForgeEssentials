@@ -23,14 +23,14 @@ public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.PlaceEvent>
     {
         Action01Block action = new Action01Block();
         action.time = new Date();
-        action.player = getPlayer(event.player);
-        action.world = getWorld(event.world.provider.getDimensionId());
-        action.block = getBlock(event.state.getBlock());
-        action.metadata = event.state.getBlock().getMetaFromState(event.state);
+        action.player = getPlayer(event.getPlayer());
+        action.world = getWorld(event.getWorld().provider.getDimension());
+        action.block = getBlock(event.getState().getBlock());
+        action.metadata = event.getState().getBlock().getMetaFromState(event.getState());
         action.type = ActionBlockType.PLACE;
-        action.x = event.pos.getX();
-        action.y = event.pos.getY();
-        action.z = event.pos.getZ();
+        action.x = event.getPos().getX();
+        action.y = event.getPos().getY();
+        action.z = event.getPos().getZ();
         em.persist(action);
     }
 

@@ -7,7 +7,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -28,7 +29,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 
     @SuppressWarnings("unchecked")
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         int radius = 10;
         double centerX;
@@ -69,7 +70,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 
     @SuppressWarnings("unchecked")
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         int radius = 0;
         WorldPoint center = new WorldPoint(0, 0, 0, 0);

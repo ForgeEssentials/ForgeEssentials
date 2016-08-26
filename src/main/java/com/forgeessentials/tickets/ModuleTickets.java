@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -105,7 +105,7 @@ public class ModuleTickets
         {
             if (!ModuleTickets.ticketList.isEmpty())
             {
-                ChatOutputHandler.sendMessage(e.player, EnumChatFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
+                ChatOutputHandler.sendMessage(e.player, TextFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
             }
         }
     }

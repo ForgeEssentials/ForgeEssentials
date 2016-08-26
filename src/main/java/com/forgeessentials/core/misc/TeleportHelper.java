@@ -11,12 +11,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S07PacketRespawn;
-import net.minecraft.network.play.server.S1DPacketEntityEffect;
+import net.minecraft.network.play.server.SPacketEntityEffect;
+import net.minecraft.network.play.server.SPacketRespawn;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
@@ -225,7 +225,7 @@ public class TeleportHelper extends ServerEventHandler
             SimpleTeleporter teleporter = new SimpleTeleporter(point.getWorld());
             transferPlayerToDimension(player, point.getDimension(), teleporter);
         }
-        player.playerNetServerHandler.setPlayerLocation(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
+        player.connection.setPlayerLocation(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
 
     public static void doTeleportEntity(Entity entity, WarpPoint point)
@@ -236,7 +236,7 @@ public class TeleportHelper extends ServerEventHandler
             return;
         }
         if (entity.dimension != point.getDimension())
-            entity.travelToDimension(point.getDimension());
+            entity.changeDimension(point.getDimension());
         entity.setLocationAndAngles(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
 
@@ -260,9 +260,9 @@ public class TeleportHelper extends ServerEventHandler
     public void entityPortalEvent(EntityPortalEvent e)
     {
         UserIdent ident = null;
-        if (e.entity instanceof EntityPlayer)
-            ident = UserIdent.get((EntityPlayer) e.entity);
-        else if (e.entity instanceof EntityLiving)
+        if (e.getEntity() instanceof EntityPlayer)
+            ident = UserIdent.get((EntityPlayer) e.getEntity());
+        else if (e.getEntity() instanceof EntityLiving)
             ident = APIRegistry.IDENT_NPC;
         WorldPoint pointFrom = new WorldPoint(e.world, e.pos);
         WorldPoint pointTo = new WorldPoint(e.targetDimension, e.target);
@@ -270,7 +270,7 @@ public class TeleportHelper extends ServerEventHandler
             e.setCanceled(true);
         if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_PORTALTO))
             e.setCanceled(true);
-        if (e.world.provider.getDimensionId() != e.targetDimension) {
+        if (e.world.provider.getDimension() != e.targetDimension) {
             if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_CROSSDIM_PORTALFROM))
                 e.setCanceled(true);
             if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_CROSSDIM_PORTALTO))
@@ -281,29 +281,29 @@ public class TeleportHelper extends ServerEventHandler
     public static void transferPlayerToDimension(EntityPlayerMP player, int dimension, Teleporter teleporter)
     {
         int oldDim = player.dimension;
-        MinecraftServer mcServer = MinecraftServer.getServer();
+        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
 
         WorldServer oldWorld = mcServer.worldServerForDimension(player.dimension);
         player.dimension = dimension;
         WorldServer newWorld = mcServer.worldServerForDimension(player.dimension);
-        player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, newWorld.getDifficulty(),
-                newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType())); // Forge: Use new dimensions information
+        player.connection.sendPacket(new SPacketRespawn(player.dimension, newWorld.getDifficulty(),
+                newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType())); // Forge: Use new dimensions information
         oldWorld.removePlayerEntityDangerously(player);
         player.isDead = false;
 
         transferEntityToWorld(player, oldDim, oldWorld, newWorld, teleporter);
 
-        mcServer.getConfigurationManager().preparePlayer(player, oldWorld);
-        player.playerNetServerHandler.setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw,
+        mcServer.getPlayerList().preparePlayer(player, oldWorld);
+        player.connection.setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw,
                 player.rotationPitch);
-        player.theItemInWorldManager.setWorld(newWorld);
-        mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
-        mcServer.getConfigurationManager().syncPlayerInventory(player);
+        player.interactionManager.setWorld(newWorld);
+        mcServer.getPlayerList().updateTimeAndWeatherForPlayer(player, newWorld);
+        mcServer.getPlayerList().syncPlayerInventory(player);
         Iterator<?> iterator = player.getActivePotionEffects().iterator();
         while (iterator.hasNext())
         {
             PotionEffect potioneffect = (PotionEffect) iterator.next();
-            player.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(player.getEntityId(), potioneffect));
+            player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), potioneffect));
         }
         FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDim, dimension);
     }

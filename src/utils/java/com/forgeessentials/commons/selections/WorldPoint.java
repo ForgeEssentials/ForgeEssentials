@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.BlockEvent;
@@ -42,7 +42,7 @@ public class WorldPoint extends Point
     public WorldPoint(World world, int x, int y, int z)
     {
         super(x, y, z);
-        this.dim = world.provider.getDimensionId();
+        this.dim = world.provider.getDimension();
         this.world = world;
     }
 
@@ -58,7 +58,7 @@ public class WorldPoint extends Point
         this.world = entity.worldObj;
     }
 
-    public WorldPoint(int dim, Vec3 vector)
+    public WorldPoint(int dim, Vec3d vector)
     {
         super(vector);
         this.dim = dim;
@@ -81,7 +81,7 @@ public class WorldPoint extends Point
 
     public WorldPoint(BlockEvent event)
     {
-        this(event.world, event.pos);
+        this(event.getWorld(), event.getPos());
     }
 
     public static WorldPoint create(ICommandSender sender)
@@ -124,7 +124,7 @@ public class WorldPoint extends Point
 
     public World getWorld()
     {
-        if (world != null && world.provider.getDimensionId() != dim)
+        if (world != null && world.provider.getDimension() != dim)
             return world;
         world = DimensionManager.getWorld(dim);
         return world;

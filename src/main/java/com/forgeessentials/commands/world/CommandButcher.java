@@ -7,10 +7,11 @@ import java.util.Queue;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.server.CommandBlockLogic;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permission.PermissionLevel;
@@ -39,7 +40,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender par1ICommandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
@@ -53,7 +54,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         int radius = -1;
         double x = sender.posX;
@@ -96,7 +97,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         int radius = -1;
         double x = 0;
@@ -129,9 +130,9 @@ public class CommandButcher extends ForgeEssentialsCommandBase
         }
         else
         {
-            if (sender instanceof CommandBlockLogic)
+            if (sender instanceof CommandBlockBaseLogic)
             {
-                CommandBlockLogic cb = (CommandBlockLogic) sender;
+                CommandBlockBaseLogic cb = (CommandBlockBaseLogic) sender;
                 world = cb.getEntityWorld();
                 BlockPos coords = cb.getPosition();
                 x = coords.getX();

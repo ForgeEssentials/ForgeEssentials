@@ -69,7 +69,7 @@ public class CommandTrade extends ParserCommandBase
         // throw new TranslatedCommandException("Missing argument");
         // final int amount = arguments.parseInt();
 
-        final ItemStack itemStack = arguments.senderPlayer.getCurrentEquippedItem();
+        final ItemStack itemStack = arguments.senderPlayer.getHeldItemMainhand();
         if (itemStack == null)
             throw new TranslatedCommandException("You need to hold an item first!");
 
@@ -122,7 +122,7 @@ public class CommandTrade extends ParserCommandBase
                             return;
                         }
 
-                        ItemStack currentItemStack = arguments.senderPlayer.getCurrentEquippedItem();
+                        ItemStack currentItemStack = arguments.senderPlayer.getHeldItemMainhand();
                         if (!ItemStack.areItemStacksEqual(currentItemStack, itemStack) || !ItemStack.areItemStackTagsEqual(currentItemStack, itemStack))
                         {
                             ChatOutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Error in transaction"));

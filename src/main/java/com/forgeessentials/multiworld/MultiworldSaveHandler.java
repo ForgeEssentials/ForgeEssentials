@@ -171,10 +171,4 @@ public class MultiworldSaveHandler implements ISaveHandler
         return parent.getMapFileFromName(name);
     }
 
-    @Override
-    public String getWorldDirectoryName()
-    {
-        return parent.getWorldDirectoryName();
-    }
-
 }

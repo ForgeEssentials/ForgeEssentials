@@ -14,6 +14,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -365,7 +366,7 @@ public class ScriptParser
         {
             ICommandSender cmdSender = sender;
             if (cmd.equals("p") || cmd.equals("feperm"))
-                cmdSender = MinecraftServer.getServer();
+                cmdSender = FMLCommonHandler.instance().getMinecraftServerInstance();
 
             boolean ignoreErrors = false;
             modifierLoop: while (true)
@@ -402,10 +403,10 @@ public class ScriptParser
                 }
                 c = cmd.charAt(0);
             }
-            ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmd);
+            ICommand mcCommand = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(cmd);
             try
             {
-                mcCommand.processCommand(cmdSender, args);
+                mcCommand.execute(FMLCommonHandler.instance().getMinecraftServerInstance(), cmdSender, args);
             }
             catch (CommandException e)
             {

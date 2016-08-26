@@ -130,7 +130,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
         APIRegistry.perms.registerPermissionDescription(PERM_BOUNTY, "Bounty for killing entities (ex.: fe.economy.bounty.Skeleton = 5)");
         APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, PermissionLevel.TRUE, "Whether to show a message if a bounty is given");
-        for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.stringToClassMapping).entrySet())
+        for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.NAME_TO_CLASS).entrySet())
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
                 APIRegistry.perms.registerPermissionProperty(PERM_BOUNTY + "." + e.getKey(), "0");
 
@@ -226,23 +226,23 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     public void onXPPickup(PlayerPickupXpEvent e)
     {
-        if (e.entityPlayer instanceof EntityPlayerMP)
+        if (e.getEntityPlayer() instanceof EntityPlayerMP)
         {
-            UserIdent ident = UserIdent.get(e.entityPlayer);
+            UserIdent ident = UserIdent.get(e.getEntityPlayer());
             double xpMultiplier = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
             if (xpMultiplier <= 0)
                 return;
             PlayerWallet wallet = getWallet(ident);
-            wallet.add(xpMultiplier * e.orb.xpValue);
+            wallet.add(xpMultiplier * e.getOrb().xpValue);
         }
     }
 
     @SubscribeEvent
     public void onDeath(LivingDeathEvent e)
     {
-        if (e.entity instanceof EntityPlayerMP)
+        if (e.getEntity() instanceof EntityPlayerMP)
         {
-            UserIdent ident = UserIdent.get((EntityPlayerMP) e.entity);
+            UserIdent ident = UserIdent.get((EntityPlayerMP) e.getEntity());
             Long deathtoll = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
             if (deathtoll == null || deathtoll <= 0)
                 return;
@@ -258,13 +258,13 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             if (loss <= 0)
                 return;
             wallet.set(newAmount);
-            ChatOutputHandler.chatNotification((ICommandSender) e.entity, Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
+            ChatOutputHandler.chatNotification((ICommandSender) e.getEntity(), Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
         }
 
-        if (e.source.getEntity() instanceof EntityPlayerMP)
+        if (e.getSource().getEntity() instanceof EntityPlayerMP)
         {
-            UserIdent killer = UserIdent.get((EntityPlayerMP) e.source.getEntity());
-            String permission = PERM_BOUNTY + "." + ProtectionEventHandler.getEntityName(e.entityLiving);
+            UserIdent killer = UserIdent.get((EntityPlayerMP) e.getSource().getEntity());
+            String permission = PERM_BOUNTY + "." + ProtectionEventHandler.getEntityName(e.getEntityLiving());
             double bounty = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(killer, permission), 0);
             if (bounty > 0)
             {
@@ -280,14 +280,14 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void commandEvent(CommandEvent event)
     {
-        if (!(event.sender instanceof EntityPlayerMP))
+        if (!(event.getSender() instanceof EntityPlayerMP))
             return;
-        UserIdent ident = UserIdent.get((EntityPlayerMP) event.sender);
+        UserIdent ident = UserIdent.get((EntityPlayerMP) event.getSender());
 
-        for (int i = event.parameters.length; i >= 0; i--)
+        for (int i = event.getParameters().length; i >= 0; i--)
         {
-            String permission = PERM_COMMANDPRICE + '.' + event.command.getCommandName() + //
-                    (i == 0 ? "" : ('.' + StringUtils.join(Arrays.copyOf(event.parameters, i), '.')));
+            String permission = PERM_COMMANDPRICE + '.' + event.getCommand().getCommandName() + //
+                    (i == 0 ? "" : ('.' + StringUtils.join(Arrays.copyOf(event.getParameters(), i), '.')));
             Long price = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, permission));
             if (price == null)
                 continue;

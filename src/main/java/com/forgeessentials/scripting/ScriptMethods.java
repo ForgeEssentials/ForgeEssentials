@@ -37,6 +37,7 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.world.WorldSettings;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public final class ScriptMethods
 {
@@ -258,7 +259,8 @@ public final class ScriptMethods
         @Override
         public boolean process(ICommandSender sender, String[] args) throws CommandException
         {
-            CommandParserArgs arguments = new CommandParserArgs(null, args, MinecraftServer.getServer());
+            MinecraftServer server =  FMLCommonHandler.instance().getMinecraftServerInstance();
+            CommandParserArgs arguments = new CommandParserArgs(null, args, server, server);
             PermissionCommandParser.parseMain(arguments);
             return true;
         }
@@ -477,7 +479,7 @@ public final class ScriptMethods
                         @Override
                         public void run()
                         {
-                            MinecraftServer.getServer().getCommandManager().executeCommand(sender, commandline);
+                            FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(sender, commandline);
                         }
                     });
                 }
@@ -989,7 +991,7 @@ public final class ScriptMethods
 					throw new MissingPlayerException();
 
 				int gm = Integer.parseInt(args[0]);
-				return ((EntityPlayerMP) sender).theItemInWorldManager.getGameType().getID() == gm;
+				return ((EntityPlayerMP) sender).interactionManager.getGameType().getID() == gm;
 			}
 			else
 				return false;
@@ -1012,7 +1014,7 @@ public final class ScriptMethods
 					throw new MissingPlayerException();
 
 				int gm = Integer.parseInt(args[0]);
-				((EntityPlayerMP) sender).setGameType(WorldSettings.GameType.getByID(gm));
+				((EntityPlayerMP) sender).setGameType(WorldSettings.getGameTypeById(gm));
 				return true;
 			}
 			else

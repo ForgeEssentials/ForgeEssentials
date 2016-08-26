@@ -66,7 +66,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
      * Expected structure: "/sellcommand <player> <item> <amount> <meta> <command...>"
      */
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 5)
             throw new InvalidSyntaxException(getCommandUsage(sender));
@@ -102,7 +102,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
                 amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(UserIdent.get(player)).toString()));
 
         args = Arrays.copyOfRange(args, 4, args.length);
-        MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player), StringUtils.join(args, " "));
+        server.getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player), StringUtils.join(args, " "));
 
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
         {

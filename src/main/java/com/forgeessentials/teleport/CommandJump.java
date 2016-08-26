@@ -5,10 +5,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
@@ -61,43 +62,43 @@ public class CommandJump extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
     {
         jump(player);
     }
 
-    public static void jump(EntityPlayerMP player) throws CommandException
+    public void jump(EntityPlayerMP player) throws CommandException
     {
-        MovingObjectPosition mo = PlayerUtil.getPlayerLookingSpot(player, 500);
+        RayTraceResult mo = PlayerUtil.getPlayerLookingSpot(player, 500);
         if (mo == null)
             throw new TranslatedCommandException("The spot you are looking at is too far away to teleport.");
         BlockPos pos = mo.getBlockPos();
-        TeleportHelper.teleport(player, new WarpPoint(player.getEntityWorld().provider.getDimensionId(), pos.getX(), pos.getY() + 1, pos.getZ(),
+        TeleportHelper.teleport(player, new WarpPoint(player.getEntityWorld().provider.getDimension(), pos.getX(), pos.getY() + 1, pos.getZ(),
                 player.rotationPitch, player.rotationYaw));
     }
 
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!(event.entityPlayer instanceof EntityPlayerMP))
+        if (!(event.getEntityPlayer() instanceof EntityPlayerMP))
             return;
         if (event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK)
             return;
-        ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
-        if (stack == null || stack.getItem() != Items.compass)
+        ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
+        if (stack == null || stack.getItem() != Items.COMPASS)
             return;
-        if (!PermissionManager.checkPermission(event.entityPlayer, TeleportModule.PERM_JUMP_TOOL))
+        if (!PermissionManager.checkPermission(event.getEntityPlayer(), TeleportModule.PERM_JUMP_TOOL))
             return;
 
         try
         {
-            jump((EntityPlayerMP) event.entityPlayer);
+            jump((EntityPlayerMP) event.getEntityPlayer());
         }
         catch (CommandException ce)
         {
-            ChatComponentTranslation msg = new ChatComponentTranslation(ce.getMessage(), ce.getErrorObjects());
-            msg.getChatStyle().setColor(EnumChatFormatting.RED);
-            event.entityPlayer.addChatMessage(msg);
+            TextComponentTranslation msg = new TextComponentTranslation(ce.getMessage(), ce.getErrorObjects());
+            msg.getStyle().setColor(TextFormatting.RED);
+            event.getEntityPlayer().addChatMessage(msg);
         }
     }
 

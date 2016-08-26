@@ -23,8 +23,8 @@ public class LogEventPostInteract extends PlayerLoggerEvent<PlayerPostInteractEv
     {
         Action01Block action = new Action01Block();
         action.time = new Date();
-        action.player = getPlayer(event.entityPlayer);
-        action.world = getWorld(event.world.provider.getDimensionId());
+        action.player = getPlayer(event.getEntityPlayer());
+        action.world = getWorld(event.world.provider.getDimension());
         // action.block = getBlock(block);
         // action.metadata = metadata;
         action.type = ActionBlockType.USE_RIGHT;

@@ -117,7 +117,7 @@ public class ClientProxy extends CommonProxy
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
     {
-        if (event.modID.equals(ForgeEssentialsClient.MODID))
+        if (event.getModID().equals(ForgeEssentialsClient.MODID))
             loadConfig();
     }
 

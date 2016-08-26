@@ -35,14 +35,14 @@ public class CUIComms
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void checkWECommands(CommandEvent e)
     {
-        if (e.sender instanceof EntityPlayerMP)
+        if (e.getSender() instanceof EntityPlayerMP)
         {
-            String cmd = e.command.getCommandName();
+            String cmd = e.getCommand().getCommandName();
             for (String weCmd : worldEditSelectionCommands)
             {
-                if (cmd.equals(weCmd) && !(e.sender instanceof FakePlayer))
+                if (cmd.equals(weCmd) && !(e.getSender() instanceof FakePlayer))
                 {
-                    updatedSelectionPlayers.add((EntityPlayerMP) e.sender);
+                    updatedSelectionPlayers.add((EntityPlayerMP) e.getSender());
                     return;
                 }
             }
@@ -60,8 +60,8 @@ public class CUIComms
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (event.entityPlayer instanceof EntityPlayerMP)
-            updatedSelectionPlayers.add((EntityPlayerMP) event.entityPlayer);
+        if (event.getEntityPlayer() instanceof EntityPlayerMP)
+            updatedSelectionPlayers.add((EntityPlayerMP) event.getEntityPlayer());
     }
 
 }

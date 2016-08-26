@@ -9,7 +9,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S19PacketEntityStatus;
+import net.minecraft.network.play.server.SPacketEntityStatus;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -112,10 +112,10 @@ public class CommandVanish extends ParserCommandBase
         if (vanish)
         {
             vanishedPlayers.add(ident);
-            S19PacketEntityStatus packet = new S19PacketEntityStatus(player, (byte) 3);
+            SPacketEntityStatus packet = new SPacketEntityStatus(player, (byte) 3);
             for (EntityPlayer otherPlayer : players)
                 if (otherPlayer != player)
-                    ((EntityPlayerMP)otherPlayer).playerNetServerHandler.sendPacket(packet);
+                    ((EntityPlayerMP)otherPlayer).connection.sendPacket(packet);
         }
         else
         {

@@ -10,8 +10,8 @@ import java.util.Scanner;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
@@ -45,11 +45,10 @@ public final class MapperUtil
                 int iy = chunk.getHeight(new BlockPos(ix, 0, iz));
                 for (; iy >= 0; iy--)
                 {
-                    Block block = chunk.getBlock(ix, iy, iz);
-                    int meta = chunk.getBlockMetadata(new BlockPos(ix, iy, iz));
-                    if (block == Blocks.air)
+                    Block block = chunk.getBlockState(ix, iy, iz).getBlock();
+                    if (block == Blocks.AIR)
                         continue;
-                    image.setRGB(offsetX + ix, offsetY + iz, getBlockColor(block, meta).getRGB());
+                    image.setRGB(offsetX + ix, offsetY + iz, getBlockColor(block, block.getMetaFromState(chunk.getBlockState(ix, iy, iz))).getRGB());
                     break;
                 }
                 if (iy < 0)
@@ -90,12 +89,12 @@ public final class MapperUtil
 
     public static Chunk loadChunk(WorldServer world, int cx, int cz)
     {
-        Chunk chunk = (Chunk) world.theChunkProviderServer.id2ChunkMap.getValueByKey(ChunkCoordIntPair.chunkXZ2Int(cx, cz));
+        Chunk chunk = (Chunk) world.getChunkProvider().id2ChunkMap.get(ChunkPos.chunkXZ2Int(cx, cz));
         if (chunk != null)
             return chunk;
         try
         {
-            AnvilChunkLoader loader = (AnvilChunkLoader) world.theChunkProviderServer.chunkLoader;
+            AnvilChunkLoader loader = (AnvilChunkLoader) world.getChunkProvider().chunkLoader;
             Object[] data = loader.loadChunk__Async(world, cx, cz);
             return (Chunk) data[0];
         }

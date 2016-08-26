@@ -6,7 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 /**
@@ -23,13 +23,13 @@ public class PermissionContext
 
     private int dimension;
 
-    private Vec3 sourceLocationStart;
+    private Vec3d sourceLocationStart;
 
-    private Vec3 sourceLocationEnd;
+    private Vec3d sourceLocationEnd;
 
-    private Vec3 targetLocationStart;
+    private Vec3d targetLocationStart;
 
-    private Vec3 targetLocationEnd;
+    private Vec3d targetLocationEnd;
 
     private Entity sourceEntity;
 
@@ -47,7 +47,7 @@ public class PermissionContext
             EntityPlayer player = (EntityPlayer) sender;
             this.player = player;
             this.dimension = player.dimension;
-            this.sourceLocationStart = new Vec3(player.posX, player.posY, player.posZ);
+            this.sourceLocationStart = new Vec3d(player.posX, player.posY, player.posZ);
         }
     }
 
@@ -77,22 +77,22 @@ public class PermissionContext
         return dimension;
     }
 
-    public Vec3 getSourceLocationStart()
+    public Vec3d getSourceLocationStart()
     {
         return sourceLocationStart;
     }
 
-    public Vec3 getSourceLocationEnd()
+    public Vec3d getSourceLocationEnd()
     {
         return sourceLocationEnd;
     }
 
-    public Vec3 getTargetLocationStart()
+    public Vec3d getTargetLocationStart()
     {
         return targetLocationStart;
     }
 
-    public Vec3 getTargetLocationEnd()
+    public Vec3d getTargetLocationEnd()
     {
         return targetLocationEnd;
     }
@@ -133,25 +133,25 @@ public class PermissionContext
         return this;
     }
 
-    public PermissionContext setSourceStart(Vec3 location)
+    public PermissionContext setSourceStart(Vec3d location)
     {
         this.sourceLocationStart = location;
         return this;
     }
 
-    public PermissionContext setSourceEnd(Vec3 location)
+    public PermissionContext setSourceEnd(Vec3d location)
     {
         this.sourceLocationEnd = location;
         return this;
     }
 
-    public PermissionContext setTargetStart(Vec3 location)
+    public PermissionContext setTargetStart(Vec3d location)
     {
         this.targetLocationStart = location;
         return this;
     }
 
-    public PermissionContext setTargetEnd(Vec3 location)
+    public PermissionContext setTargetEnd(Vec3d location)
     {
         this.targetLocationEnd = location;
         return this;

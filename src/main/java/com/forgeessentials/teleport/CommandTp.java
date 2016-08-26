@@ -7,7 +7,9 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.command.server.CommandTeleport;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.MathHelper;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionObject;
 
@@ -18,7 +20,7 @@ public class CommandTp extends CommandTeleport implements PermissionObject
 {
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 1)
         {
@@ -35,7 +37,7 @@ public class CommandTp extends CommandTeleport implements PermissionObject
             }
             else
             {
-                entity = getEntity(sender, args[0]);
+                entity = getEntity(server, sender, args[0]);
                 b0 = 1;
             }
 
@@ -57,57 +59,57 @@ public class CommandTp extends CommandTeleport implements PermissionObject
 
                     if (entity instanceof EntityPlayerMP)
                     {
-                        pitch = (float) argPitch.func_179629_b();
-                        if (!argPitch.func_179630_c())
-                            pitch = MathHelper.wrapAngleTo180_float(pitch);
-                        float yaw = (float) argYaw.func_179629_b();
-                        if (!argYaw.func_179630_c())
-                            yaw = MathHelper.wrapAngleTo180_float(yaw);
+                        pitch = (float) argPitch.getAmount();
+                        if (!argPitch.isRelative())
+                            pitch = MathHelper.wrapDegrees(pitch);
+                        float yaw = (float) argYaw.getAmount();
+                        if (!argYaw.isRelative())
+                            yaw = MathHelper.wrapDegrees(yaw);
                         if (yaw > 90.0F || yaw < -90.0F)
                         {
-                            yaw = MathHelper.wrapAngleTo180_float(180.0F - yaw);
-                            pitch = MathHelper.wrapAngleTo180_float(pitch + 180.0F);
+                            yaw = MathHelper.wrapDegrees(180.0F - yaw);
+                            pitch = MathHelper.wrapDegrees(pitch + 180.0F);
                         }
 
-                        WarpPoint pos = new WarpPoint(entity.worldObj.provider.getDimensionId(), argX.func_179629_b(), argY.func_179629_b(),
-                                argZ.func_179629_b(), pitch, yaw);
-                        if (argX.func_179630_c())
+                        WarpPoint pos = new WarpPoint(entity.worldObj.provider.getDimension(), argX.getAmount(), argY.getAmount(),
+                                argZ.getAmount(), pitch, yaw);
+                        if (argX.isRelative())
                             pos.setX(pos.getX() + entity.posX);
-                        if (argY.func_179630_c())
+                        if (argY.isRelative())
                             pos.setX(pos.getY() + entity.posY);
-                        if (argZ.func_179630_c())
+                        if (argZ.isRelative())
                             pos.setX(pos.getZ() + entity.posZ);
-                        if (argPitch.func_179630_c())
+                        if (argPitch.isRelative())
                             pos.setPitch(pos.getPitch() + entity.rotationPitch);
-                        if (argYaw.func_179630_c())
+                        if (argYaw.isRelative())
                             pos.setYaw(pos.getYaw() + entity.rotationYaw);
                         TeleportHelper.teleport((EntityPlayerMP) entity, pos);
                     }
                     else
                     {
-                        float f2 = (float) MathHelper.wrapAngleTo180_double(argPitch.func_179628_a());
-                        pitch = (float) MathHelper.wrapAngleTo180_double(argYaw.func_179628_a());
+                        float f2 = (float) MathHelper.wrapDegrees(argPitch.getResult());
+                        pitch = (float) MathHelper.wrapDegrees(argYaw.getResult());
 
                         if (pitch > 90.0F || pitch < -90.0F)
                         {
-                            pitch = MathHelper.wrapAngleTo180_float(180.0F - pitch);
-                            f2 = MathHelper.wrapAngleTo180_float(f2 + 180.0F);
+                            pitch = MathHelper.wrapDegrees(180.0F - pitch);
+                            f2 = MathHelper.wrapDegrees(f2 + 180.0F);
                         }
 
-                        entity.setLocationAndAngles(argX.func_179628_a(), argY.func_179628_a(), argZ.func_179628_a(), f2, pitch);
+                        entity.setLocationAndAngles(argX.getResult(), argY.getResult(), argZ.getResult(), f2, pitch);
                         entity.setRotationYawHead(f2);
                     }
 
-                    notifyOperators(sender, this, "commands.tp.success.coordinates", new Object[] { entity.getName(), Double.valueOf(argX.func_179628_a()),
-                            Double.valueOf(argY.func_179628_a()), Double.valueOf(argZ.func_179628_a()) });
+                    notifyCommandListener(sender, this, "commands.tp.success.coordinates", new Object[] { entity.getName(), Double.valueOf(argX.getResult()),
+                            Double.valueOf(argY.getResult()), Double.valueOf(argZ.getResult()) });
                 }
             }
             else
             {
-                Entity targetEntity = getEntity(sender, args[args.length - 1]);
+                Entity targetEntity = getEntity(FMLCommonHandler.instance().getMinecraftServerInstance(), sender, args[args.length - 1]);
                 if (targetEntity instanceof EntityPlayerMP)
                 {
-                    WarpPoint pos = new WarpPoint(targetEntity.worldObj.provider.getDimensionId(), targetEntity.posX, targetEntity.posY, targetEntity.posZ,
+                    WarpPoint pos = new WarpPoint(targetEntity.worldObj.provider.getDimension(), targetEntity.posX, targetEntity.posY, targetEntity.posZ,
                             targetEntity.rotationPitch, targetEntity.rotationYaw);
                     TeleportHelper.teleport((EntityPlayerMP) entity, pos);
                 }
@@ -121,7 +123,7 @@ public class CommandTp extends CommandTeleport implements PermissionObject
 
                     if (entity instanceof EntityPlayerMP)
                     {
-                        ((EntityPlayerMP) entity).playerNetServerHandler.setPlayerLocation(targetEntity.posX, targetEntity.posY, targetEntity.posZ,
+                        ((EntityPlayerMP) entity).connection.setPlayerLocation(targetEntity.posX, targetEntity.posY, targetEntity.posZ,
                                 targetEntity.rotationPitch, targetEntity.rotationYaw);
                     }
                     else
@@ -130,7 +132,7 @@ public class CommandTp extends CommandTeleport implements PermissionObject
                                 targetEntity.rotationYaw);
                     }
 
-                    notifyOperators(sender, this, "commands.tp.success", new Object[] { targetEntity.getName(), targetEntity.getName() });
+                    notifyCommandListener(sender, this, "commands.tp.success", new Object[] { targetEntity.getName(), targetEntity.getName() });
                 }
             }
         }

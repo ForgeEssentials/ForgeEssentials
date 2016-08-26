@@ -35,7 +35,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.event.ClickEvent;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.ContainerWorkbench;
@@ -44,7 +44,7 @@ import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameData;
@@ -218,7 +218,7 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, PermissionLevel.TRUE,
                 "(global) Allow forced spawning of mobs (mob-spawners)");
 
-        for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.stringToClassMapping).entrySet())
+        for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.NAME_TO_CLASS).entrySet())
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
             {
                 APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey(), PermissionLevel.TRUE);
@@ -325,10 +325,10 @@ public class ModuleProtection
         if (cmdBase == null)
             return;
 
-        ChatComponentTranslation msg = new ChatComponentTranslation(permission);
-        msg.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
-        msg.getChatStyle().setColor(ChatOutputHandler.chatNotificationColor);
-        msg.getChatStyle().setUnderlined(true);
+        TextComponentTranslation msg = new TextComponentTranslation(permission);
+        msg.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
+        msg.getStyle().setColor(ChatOutputHandler.chatNotificationColor);
+        msg.getStyle().setUnderlined(true);
         ChatOutputHandler.sendMessage(player, msg);
     }
 

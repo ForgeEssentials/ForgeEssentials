@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action04PlayerPosition;
@@ -24,7 +25,7 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
     public void process(EntityManager em)
     {
         @SuppressWarnings("unchecked")
-        List<EntityPlayerMP> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+        List<EntityPlayerMP> players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList();
         date = new Date();
         
         for (Iterator<EntityPlayerMP> it = players.iterator(); it.hasNext();)
@@ -36,7 +37,7 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
             Action04PlayerPosition action = new Action04PlayerPosition();
             action.time = date;
             action.player = getPlayer(player);
-            action.world = getWorld(player.worldObj.provider.getDimensionId());
+            action.world = getWorld(player.worldObj.provider.getDimension());
             action.x = (int) player.posX;
             action.y = (int) player.posY;
             action.z = (int) player.posZ;

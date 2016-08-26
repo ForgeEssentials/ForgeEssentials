@@ -47,17 +47,17 @@ public class PlotManager extends ServerEventHandler
         {
             String message = Translator.format("You entered \"%s\"", plot.getNameNotNull());
 
-            UserIdent ident = UserIdent.get(event.entityPlayer);
+            UserIdent ident = UserIdent.get(event.getEntityPlayer());
             Set<String> groups = plot.getZone().getStoredPlayerGroups(ident);
             if (groups.contains(Plot.GROUP_PLOT_OWNER))
             {
                 message += " " + Translator.translate("as owner");
-                ChatOutputHandler.chatConfirmation(event.entityPlayer, message);
+                ChatOutputHandler.chatConfirmation(event.getEntityPlayer(), message);
             }
             else if (groups.contains(Plot.GROUP_PLOT_USER))
             {
                 message += " " + Translator.translate("with user access");
-                ChatOutputHandler.chatConfirmation(event.entityPlayer, message);
+                ChatOutputHandler.chatConfirmation(event.getEntityPlayer(), message);
             }
             else if (!plot.hasOwner())
             {
@@ -65,21 +65,21 @@ public class PlotManager extends ServerEventHandler
                     message = Translator.translate("You have entered neutral plot which is open for sale");
                 else
                     message = Translator.translate("You have entered a plot owned by the server");
-                ChatOutputHandler.chatConfirmation(event.entityPlayer, message);
+                ChatOutputHandler.chatConfirmation(event.getEntityPlayer(), message);
             }
             else
             {
                 message += " " + Translator.format("owned by %s", plot.getOwnerName());
-                ChatOutputHandler.chatConfirmation(event.entityPlayer, message);
+                ChatOutputHandler.chatConfirmation(event.getEntityPlayer(), message);
             }
 
             // TODO: fee check
 
             long price = plot.getPrice();
             if (price == 0)
-                ChatOutputHandler.chatNotification(event.entityPlayer, Translator.translate("You can buy this plot for free"));
+                ChatOutputHandler.chatNotification(event.getEntityPlayer(), Translator.translate("You can buy this plot for free"));
             else if (price > 0)
-                ChatOutputHandler.chatNotification(event.entityPlayer, Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
+                ChatOutputHandler.chatNotification(event.getEntityPlayer(), Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
         }
     }
 }

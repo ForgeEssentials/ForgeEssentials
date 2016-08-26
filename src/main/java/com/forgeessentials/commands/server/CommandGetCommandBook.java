@@ -15,7 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
@@ -59,10 +59,10 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
 
-        if (sender.inventory.hasItemStack(new ItemStack(Items.written_book)))
+        if (sender.inventory.hasItemStack(new ItemStack(Items.WRITTEN_BOOK)))
         {
             for (int i = 0; i < sender.inventory.mainInventory.length; i++)
             {
@@ -76,7 +76,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
         }
 
         Set<String> pages = new TreeSet<String>();
-        for (Object cmdObj : MinecraftServer.getServer().getCommandManager().getCommands().values())
+        for (Object cmdObj : server.getCommandManager().getCommands().values())
         {
             ICommand cmd = (ICommand) cmdObj;
             if (!PermissionManager.checkPermission(sender, cmd))
@@ -94,8 +94,8 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
             }
 
             String perm = PermissionManager.getCommandPermission(cmd);
-            String text = EnumChatFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
-                    (perm != null ? EnumChatFormatting.DARK_RED + perm + "\n\n" : '\n') + EnumChatFormatting.BLACK + cmd.getCommandUsage(sender);
+            String text = TextFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
+                    (perm != null ? TextFormatting.DARK_RED + perm + "\n\n" : '\n') + TextFormatting.BLACK + cmd.getCommandUsage(sender);
             pages.add(text);
         }
 
@@ -108,7 +108,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
         tag.setString("title", "CommandBook");
         tag.setTag("pages", pagesNbt);
 
-        ItemStack is = new ItemStack(Items.written_book);
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
         is.setTagCompound(tag);
         sender.inventory.addItemStackToInventory(is);
     }

@@ -62,7 +62,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
      * Expected structure: "/paidcommand <player> <amount> <command...>"
      */
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 3)
             throw new InvalidSyntaxException(getCommandUsage(sender));
@@ -80,7 +80,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
         }
 
         args = Arrays.copyOfRange(args, 2, args.length);
-        MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, ident.getPlayerMP()), StringUtils.join(args, " "));
+        server.getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, ident.getPlayerMP()), StringUtils.join(args, " "));
 
         ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("That cost you %s", APIRegistry.economy.toString(amount)));
         ModuleEconomy.confirmNewWalletAmount(ident, wallet);

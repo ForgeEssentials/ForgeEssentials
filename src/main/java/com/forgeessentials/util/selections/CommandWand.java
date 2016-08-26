@@ -6,7 +6,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -26,7 +27,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
@@ -39,11 +40,11 @@ public class CommandWand extends ForgeEssentialsCommandBase
         Item wandItem;
         String wandId, wandName;
         int wandDmg = 0;
-        if (sender.getCurrentEquippedItem() != null)
+        if (sender.getHeldItemMainhand() != null)
         {
-            wandName = sender.getCurrentEquippedItem().getDisplayName();
-            wandItem = sender.getCurrentEquippedItem().getItem();
-            wandDmg = sender.getCurrentEquippedItem().getItemDamage();
+            wandName = sender.getHeldItemMainhand().getDisplayName();
+            wandItem = sender.getHeldItemMainhand().getItem();
+            wandDmg = sender.getHeldItemMainhand().getItemDamage();
             wandId = wandItem.getUnlocalizedName();
             if (wandDmg == -1)
             {
@@ -64,7 +65,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
         // Check for unbind
         if (!rebind && ((info.isWandEnabled() && info.getWandID().equals(wandId)) | (args.length > 0 && args[0].equalsIgnoreCase("unbind"))))
         {
-            ChatOutputHandler.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
+            ChatOutputHandler.sendMessage(sender, TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
             info.setWandEnabled(false);
             return;
         }

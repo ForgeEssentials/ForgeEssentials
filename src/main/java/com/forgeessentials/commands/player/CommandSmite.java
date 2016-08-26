@@ -7,8 +7,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -29,7 +30,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -64,7 +65,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
         }
         else
         {
-            MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(sender, 500);
+            RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(sender, 500);
             if (mop == null)
             {
                 ChatOutputHandler.chatError(sender, "You must first look at the ground!");

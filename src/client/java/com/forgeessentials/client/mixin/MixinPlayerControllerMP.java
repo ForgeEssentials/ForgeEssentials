@@ -1,7 +1,7 @@
 package com.forgeessentials.client.mixin;
 
 import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.world.WorldSettings;
+import net.minecraft.world.GameType;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -14,7 +14,7 @@ public abstract class MixinPlayerControllerMP
 {
     
     @Shadow
-    private WorldSettings.GameType currentGameType;
+    private GameType currentGameType;
 
     @Overwrite
     public float getBlockReachDistance()

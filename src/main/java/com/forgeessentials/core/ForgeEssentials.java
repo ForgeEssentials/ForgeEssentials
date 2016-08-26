@@ -393,7 +393,7 @@ public class ForgeEssentials extends ConfigLoaderBase
                 if (matcher.find())
                 {
                     String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.player.getName());
-                    ((EntityPlayerMP) event.player).playerNetServerHandler.kickPlayerFromServer(msg);
+                    ((EntityPlayerMP) event.player).connection.kickPlayerFromServer(msg);
                 }
             }
 
@@ -431,8 +431,8 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         if (logCommandsToConsole)
         {
-            LoggingHandler.felog.info(String.format("Player \"%s\" used command \"/%s %s\"", event.sender.getName(),
-                    event.command.getCommandName(), StringUtils.join(event.parameters, " ")));
+            LoggingHandler.felog.info(String.format("Player \"%s\" used command \"/%s %s\"", event.getCommand().getCommandName(),
+                    event.getCommand().getCommandName(), StringUtils.join(event.getParameters(), " ")));
         }
     }
 

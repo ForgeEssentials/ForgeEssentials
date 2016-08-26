@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockPortal;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -70,14 +70,14 @@ public class BlockPortalSize
             BlockPos blockpos1 = p_180120_1_.offset(p_180120_2_, i);
 
             if (!this.func_150857_a(this.field_150867_a.getBlockState(blockpos1).getBlock())
-                    || this.field_150867_a.getBlockState(blockpos1.down()).getBlock() != Blocks.obsidian)
+                    || this.field_150867_a.getBlockState(blockpos1.down()).getBlock() != Blocks.OBSIDIAN)
             {
                 break;
             }
         }
 
         Block block = this.field_150867_a.getBlockState(p_180120_1_.offset(p_180120_2_, i)).getBlock();
-        return block == Blocks.obsidian ? i : 0;
+        return block == Blocks.OBSIDIAN ? i : 0;
     }
 
     protected int func_150858_a()
@@ -97,7 +97,7 @@ public class BlockPortalSize
                     break label56;
                 }
 
-                if (block == Blocks.portal)
+                if (block == Blocks.PORTAL)
                 {
                 }
 
@@ -105,7 +105,7 @@ public class BlockPortalSize
                 {
                     block = this.field_150867_a.getBlockState(blockpos.offset(this.field_150863_d)).getBlock();
 
-                    if (block != Blocks.obsidian)
+                    if (block != Blocks.OBSIDIAN)
                     {
                         break label56;
                     }
@@ -114,7 +114,7 @@ public class BlockPortalSize
                 {
                     block = this.field_150867_a.getBlockState(blockpos.offset(this.field_150866_c)).getBlock();
 
-                    if (block != Blocks.obsidian)
+                    if (block != Blocks.OBSIDIAN)
                     {
                         break label56;
                     }
@@ -124,7 +124,7 @@ public class BlockPortalSize
 
         for (i = 0; i < this.field_150868_h; ++i)
         {
-            if (this.field_150867_a.getBlockState(this.field_150861_f.offset(this.field_150866_c, i).up(this.field_150862_g)).getBlock() != Blocks.obsidian)
+            if (this.field_150867_a.getBlockState(this.field_150861_f.offset(this.field_150866_c, i).up(this.field_150862_g)).getBlock() != Blocks.OBSIDIAN)
             {
                 this.field_150862_g = 0;
                 break;
@@ -146,7 +146,7 @@ public class BlockPortalSize
 
     protected boolean func_150857_a(Block p_150857_1_)
     {
-        return p_150857_1_.getMaterial() == Material.air || p_150857_1_ == Blocks.fire || p_150857_1_ == Blocks.portal;
+        return p_150857_1_.getMaterial() == Material.AIR || p_150857_1_ == Blocks.FIRE || p_150857_1_ == Blocks.PORTAL;
     }
 
     public boolean func_150860_b()
@@ -163,7 +163,7 @@ public class BlockPortalSize
             for (int j = 0; j < this.field_150862_g; ++j)
             {
                 this.field_150867_a.setBlockState(blockpos.up(j),
-                        Blocks.portal.getDefaultState().withProperty(BlockPortal.AXIS, this.field_150865_b), 2);
+                        Blocks.PORTAL.getDefaultState().withProperty(BlockPortal.AXIS, this.field_150865_b), 2);
             }
         }
     }

@@ -30,7 +30,7 @@ public class EffectKick extends WorldBorderEffect
     @Override
     public void activate(WorldBorder border, EntityPlayerMP player)
     {
-        if (!MinecraftServer.getServer().isDedicatedServer())
+        if (!player.getServer().isDedicatedServer())
         {
             LoggingHandler.felog.warn("[WorldBorder] Kick effect is not supported on integrated servers!");
             return;
@@ -46,7 +46,7 @@ public class EffectKick extends WorldBorderEffect
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.playerNetServerHandler.kickPlayerFromServer("You left the world border");
+            player.connection.kickPlayerFromServer("You left the world border");
             // For safety restart the timeout
             pi.startTimeout(this.getClass().getName(), TIMEOUT);
         }

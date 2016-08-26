@@ -2,10 +2,11 @@ package com.forgeessentials.remote.handler.chat;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -40,19 +41,19 @@ public class SendChatHandler extends GenericRemoteHandler<String>
         if (ident != null)
         {
             EntityPlayerMP player = ident.getFakePlayer();
-            ChatComponentTranslation message = new ChatComponentTranslation("chat.type.text", new Object[] { player.getDisplayName(),
+            TextComponentTranslation message = new TextComponentTranslation("chat.type.text", new Object[] { player.getDisplayName(),
                     ForgeHooks.newChatWithLinks(request.data) });
             ServerChatEvent event = new ServerChatEvent(player, request.data, message);
             if (MinecraftForge.EVENT_BUS.post(event))
                 return null;
             if (event.getComponent() != null)
-                MinecraftServer.getServer().getConfigurationManager().sendChatMsgImpl(event.getComponent(), false);
+                FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendChatMsgImpl(event.getComponent(), false);
         }
         else
         {
-            ChatComponentTranslation message = new ChatComponentTranslation("chat.type.text", new Object[] { "anonymous",
+            TextComponentTranslation message = new TextComponentTranslation("chat.type.text", new Object[] { "anonymous",
                     ForgeHooks.newChatWithLinks(request.data) });
-            MinecraftServer.getServer().getConfigurationManager().sendChatMsgImpl(message, false);
+            FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendChatMsgImpl(message, false);
             QueryChatHandler.onMessage(message);
             PushChatHandler.onMessage(message, "anonymous");
         }

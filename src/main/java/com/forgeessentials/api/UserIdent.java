@@ -10,15 +10,17 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.UserIdentUtils;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
+
+import net.minecraft.command.EntitySelector;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerSelector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class UserIdent
@@ -441,7 +443,7 @@ public class UserIdent
         EntityPlayerMP player = getPlayerMP();
         if (player != null)
             return player;
-        return FakePlayerFactory.get(MinecraftServer.getServer().worldServers[0], getGameProfile());
+        return FakePlayerFactory.get(FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0], getGameProfile());
     }
 
     public EntityPlayerMP getFakePlayer(WorldServer world)
@@ -598,16 +600,16 @@ public class UserIdent
 
     public static EntityPlayerMP getPlayerByUsername(String username)
     {
-        MinecraftServer mc = MinecraftServer.getServer();
+        MinecraftServer mc = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (mc == null)
             return null;
-        ServerConfigurationManager configurationManager = mc.getConfigurationManager();
+        PlayerList configurationManager = mc.getPlayerList();
         return configurationManager == null ? null : configurationManager.getPlayerByUsername(username);
     }
 
     public static EntityPlayerMP getPlayerByMatchOrUsername(ICommandSender sender, String match)
     {
-        EntityPlayerMP player = PlayerSelector.matchOnePlayer(sender, match);
+        EntityPlayerMP player = EntitySelector.matchOnePlayer(sender, match);
         if (player != null)
             return player;
         return getPlayerByUsername(match);
@@ -623,7 +625,7 @@ public class UserIdent
 
     public static GameProfile getGameProfileByUuid(UUID uuid)
     {
-        GameProfile profile = MinecraftServer.getServer().getPlayerProfileCache().getProfileByUUID(uuid);
+        GameProfile profile = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerProfileCache().getProfileByUUID(uuid);
         return profile;
     }
 

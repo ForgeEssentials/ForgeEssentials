@@ -2,6 +2,7 @@ package com.forgeessentials.commands.player;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
@@ -36,7 +37,7 @@ public class CommandFly extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args)
     {
         if (args.length == 0)
         {

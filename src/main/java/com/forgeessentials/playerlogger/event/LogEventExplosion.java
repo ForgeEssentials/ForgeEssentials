@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.material.Material;
 import net.minecraftforge.event.world.ExplosionEvent;
 
@@ -23,16 +23,16 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
     {
         super(event);
         for (BlockPos blockPos : event.getAffectedBlocks())
-            blocks.add(new CachedBlockData(event.world, blockPos));
+            blocks.add(new CachedBlockData(event.getWorld(), blockPos));
     }
 
     @Override
     public void process(EntityManager em)
     {
-        WorldData worldData = getWorld(event.world.provider.getDimensionId());
+        WorldData worldData = getWorld(event.getWorld().provider.getDimension());
         for (CachedBlockData blockData : blocks)
         {
-            if (!blockData.block.getMaterial().equals(Material.air))
+            if (!blockData.block.getMaterial())
             {
                 Action01Block action = new Action01Block();
                 action.time = date;

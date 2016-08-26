@@ -33,8 +33,8 @@ import net.minecraft.item.ItemRedstone;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.WorldSettings.GameType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameType;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -621,9 +621,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             // Get only last state of all changes
             Map<BlockPos, BlockSnapshot> changes = new HashMap<>();
             for (BlockSnapshot snapshot : ((BlockEvent.MultiPlaceEvent) event).getReplacedBlockSnapshots())
-                changes.put(snapshot.pos, snapshot);
+                changes.put(snapshot.getPos(), snapshot);
             for (BlockSnapshot snapshot : changes.values())
-                eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, event.player)));
+                eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, event.getPlayer())));
             startThread();
         }
         else
@@ -645,12 +645,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerInteractEvent(PlayerInteractEvent event)
+    public void playerInteractEvent(PlayerInteractEvent.LeftClickBlock event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.useBlock == Result.DENY && event.useItem == Result.DENY))
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
             return;
-        GameType gameType = ((EntityPlayerMP) event.entityPlayer).theItemInWorldManager.getGameType();
-        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && gameType != GameType.CREATIVE)
+        GameType gameType = ((EntityPlayerMP) event.getEntityPlayer()).interactionManager.getGameType();
+        if (gameType != GameType.CREATIVE)
         {
             logEvent(new LogEventInteract(event));
         }

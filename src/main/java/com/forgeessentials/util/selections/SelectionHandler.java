@@ -2,7 +2,7 @@ package com.forgeessentials.util.selections;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -41,6 +41,42 @@ public class SelectionHandler extends ServerEventHandler
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void playerInteractEvent(PlayerInteractEvent.LeftClickBlock event)
+    {
+        // Only handle server events
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            return;
+
+        // get info now rather than later
+        EntityPlayer player = event.getEntityPlayer();
+        PlayerInfo info = PlayerInfo.get(player);
+
+        if (!info.isWandEnabled())
+            return;
+
+        // Check if wand should activate
+        if (player.getHeldItemMainhand() == null)
+        {
+            if (info.getWandID() != "hands")
+                return;
+        }
+        else
+        {
+            if (!(player.getHeldItemMainhand().getItem().getUnlocalizedName().equals(info.getWandID())))
+                return;
+            if (player.getHeldItemMainhand().getItemDamage() != info.getWandDmg())
+                return;
+        }
+
+        WorldPoint point = new WorldPoint(player.dimension, event.getPos());
+
+        SelectionHandler.setStart((EntityPlayerMP) event.getEntityPlayer(), point);
+        String message = Translator.format("Pos1 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
+        ChatOutputHandler.sendMessage(player, message, TextFormatting.DARK_PURPLE);
+        event.setCanceled(true);
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
         // Only handle server events
@@ -48,44 +84,33 @@ public class SelectionHandler extends ServerEventHandler
             return;
 
         // get info now rather than later
-        EntityPlayer player = event.entityPlayer;
+        EntityPlayer player = event.getEntityPlayer();
         PlayerInfo info = PlayerInfo.get(player);
 
         if (!info.isWandEnabled())
             return;
 
         // Check if wand should activate
-        if (player.getCurrentEquippedItem() == null)
+        if (player.getHeldItemMainhand() == null)
         {
             if (info.getWandID() != "hands")
                 return;
         }
         else
         {
-            if (!(player.getCurrentEquippedItem().getItem().getUnlocalizedName().equals(info.getWandID())))
+            if (!(player.getHeldItemMainhand().getItem().getUnlocalizedName().equals(info.getWandID())))
                 return;
-            if (player.getCurrentEquippedItem().getItemDamage() != info.getWandDmg())
+            if (player.getHeldItemMainhand().getItemDamage() != info.getWandDmg())
                 return;
         }
 
-        WorldPoint point = new WorldPoint(player.dimension, event.pos);
+        WorldPoint point = new WorldPoint(player.dimension, event.getPos());
 
-        // left Click
-        if (event.action.equals(PlayerInteractEvent.Action.LEFT_CLICK_BLOCK))
-        {
-            SelectionHandler.setStart((EntityPlayerMP) event.entityPlayer, point);
-            String message = Translator.format("Pos1 set to %d, %d, %d", event.pos.getX(), event.pos.getY(), event.pos.getZ());
-            ChatOutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
-            event.setCanceled(true);
-        }
-        // right Click
-        else if (event.action.equals(PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK))
-        {
-            SelectionHandler.setEnd((EntityPlayerMP) event.entityPlayer, point);
-            String message = Translator.format("Pos2 set to %d, %d, %d", event.pos.getX(), event.pos.getY(), event.pos.getZ());
-            ChatOutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
-            event.setCanceled(true);
-        }
+        SelectionHandler.setEnd((EntityPlayerMP) event.getEntityPlayer(), point);
+        String message = Translator.format("Pos2 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
+        ChatOutputHandler.sendMessage(player, message, TextFormatting.DARK_PURPLE);
+        event.setCanceled(true);
+
     }
 
     public static void sendUpdate(EntityPlayerMP player)

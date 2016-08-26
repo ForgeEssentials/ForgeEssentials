@@ -170,7 +170,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     {
         Kit kit = kits.get(kitForNewPlayers);
         if (kit != null)
-            kit.giveKit(event.entityPlayer);
+            kit.giveKit(event.getEntityPlayer());
     }
 
     @Override

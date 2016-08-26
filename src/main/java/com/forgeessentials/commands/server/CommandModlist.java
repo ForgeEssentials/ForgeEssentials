@@ -2,6 +2,7 @@ package com.forgeessentials.commands.server;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.permission.PermissionLevel;
@@ -20,7 +21,7 @@ public class CommandModlist extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         int size = Loader.instance().getModList().size();
         int perPage = 7;

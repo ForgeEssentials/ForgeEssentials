@@ -6,7 +6,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,7 +37,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length >= 1 && PermissionManager.checkPermission(sender, TeleportModule.PERM_BED_OTHERS))
         {
@@ -60,11 +61,11 @@ public class CommandBed extends ForgeEssentialsCommandBase
         if (!world.provider.canRespawnHere())
             world = DimensionManager.getWorld(0);
 
-        BlockPos spawn = player.getBedLocation(world.provider.getDimensionId());
-        if (spawn == null && world.provider.getDimensionId() != 0)
+        BlockPos spawn = player.getBedLocation(world.provider.getDimension());
+        if (spawn == null && world.provider.getDimension() != 0)
         {
             world = DimensionManager.getWorld(0);
-            spawn = player.getBedLocation(world.provider.getDimensionId());
+            spawn = player.getBedLocation(world.provider.getDimension());
         }
         if (spawn == null)
             throw new TranslatedCommandException("No bed found.");
@@ -74,12 +75,12 @@ public class CommandBed extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException("Your bed has been obstructed.");
 
         PlayerInfo.get(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-        WarpPoint spawnPoint = new WarpPoint(world.provider.getDimensionId(), spawn, player.rotationPitch, player.rotationYaw);
+        WarpPoint spawnPoint = new WarpPoint(world.provider.getDimension(), spawn, player.rotationPitch, player.rotationYaw);
         TeleportHelper.teleport(player, spawnPoint);
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
@@ -106,7 +107,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

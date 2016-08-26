@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -57,12 +57,12 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void chatEvent(ServerChatEvent event)
     {
-        IChatComponent message = event.getComponent();
-        String username = event.username;
+        ITextComponent message = event.getComponent();
+        String username = event.getUsername();
         pushMessage(message, username);
     }
 
-    protected void pushMessage(IChatComponent message, String username)
+    protected void pushMessage(ITextComponent message, String username)
     {
         RemoteResponse<?>[] messages = new RemoteResponse<?>[ChatFormat.values().length];
         if (!pushSessions.isEmpty())
@@ -86,7 +86,7 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
         }
     }
 
-    public static void onMessage(IChatComponent message, String username)
+    public static void onMessage(ITextComponent message, String username)
     {
         instance.pushMessage(message, username);
     }

@@ -6,11 +6,11 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -54,14 +54,14 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             permissions.breakIds.addAll(message.breakIds);
 
             EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-            ItemStack stack = player.getCurrentEquippedItem();
+            ItemStack stack = player.getHeldItemMainhand();
             if (stack != null)
             {
                 int itemId = GameData.getItemRegistry().getId(stack.getItem());
                 for (int id : message.placeIds)
                     if (itemId == id)
                     {
-                        player.stopUsingItem();
+                        player.stopActiveHand();
                         break;
                     }
             }
@@ -72,7 +72,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
     @SubscribeEvent
     public void renderGameOverlayEvent(RenderGameOverlayEvent event)
     {
-        if (!event.isCancelable() && event.type == ElementType.HOTBAR)
+        if (!event.isCancelable() && event.getType() == ElementType.HOTBAR)
         {
             Minecraft.getMinecraft().renderEngine.bindTexture(deniedPlaceTexture);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -96,14 +96,14 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
                 drawTexturedRect(x + 8, y + 1, 8, 8);
             }
         }
-        else if (event.isCancelable() && event.type == ElementType.CROSSHAIRS)
+        else if (event.isCancelable() && event.getType() == ElementType.CROSSHAIRS)
         {
             ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
 
-            MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
-            if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK)
+            RayTraceResult mop = Minecraft.getMinecraft().objectMouseOver;
+            if (mop != null && mop.typeOfHit == Type.BLOCK)
             {
                 IBlockState block = Minecraft.getMinecraft().theWorld.getBlockState(mop.getBlockPos());
                 int blockId = GameData.getBlockRegistry().getId(block.getBlock());
@@ -119,7 +119,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
 
     public void drawTexturedRect(double xPos, double yPos, double width, double height)
     {
-        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        VertexBuffer wr = Tessellator.getInstance().getBuffer();
         wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         wr.pos(xPos, yPos + height, zLevel).tex(0, 1).endVertex();
         wr.pos(xPos + width, yPos + height, zLevel).tex(1, 1).endVertex();

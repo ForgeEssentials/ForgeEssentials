@@ -36,6 +36,7 @@ import javax.crypto.Cipher;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLLog;
 
 import com.forgeessentials.core.ForgeEssentials;
@@ -187,7 +188,7 @@ public class VoteReceiver extends Thread
                 // Create the vote.
                 VoteEvent vote = new VoteEvent(username, serviceName, address, timeStamp);
 
-                EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(vote.player);
+                EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(vote.player);
                 if (player == null)
                 {
                     if (!ConfigServerVote.allowOfflineVotes)

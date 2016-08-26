@@ -3,6 +3,7 @@ package com.forgeessentials.commands.server;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -22,15 +23,9 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
-    {
-        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
     }
 
     @Override

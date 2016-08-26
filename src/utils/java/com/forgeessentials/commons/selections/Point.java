@@ -4,8 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class Point
 {
@@ -41,7 +41,7 @@ public class Point
         z = (int) Math.floor(entity.posZ);
     }
 
-    public Point(Vec3 vector)
+    public Point(Vec3d vector)
     {
         this((int) vector.xCoord, (int) vector.yCoord, (int) vector.zCoord);
     }
@@ -161,9 +161,9 @@ public class Point
         blockPos = null;
     }
 
-    public Vec3 toVec3()
+    public Vec3d toVec3()
     {
-        return new Vec3(x, y, z);
+        return new Vec3d(x, y, z);
     }
 
     // ------------------------------------------------------------

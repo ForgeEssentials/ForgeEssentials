@@ -12,9 +12,9 @@ import java.util.regex.Pattern;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -77,7 +77,7 @@ public class ShopData
         item = null;
 
         // if (!ItemUtil.isSign(signPosition.getBlock())) return;
-        IChatComponent[] text = ItemUtil.getSignText(pos);
+        ITextComponent[] text = ItemUtil.getSignText(pos);
         if (text == null || text.length < 2 || !ShopManager.shopTags.contains(text[0].getUnformattedText()))
         {
             error = Translator.translate("Sign header missing");
@@ -199,13 +199,13 @@ public class ShopData
         if (entities.size() == 1)
             return entities.get(0);
 
-        final Vec3 offset = new Vec3(p.getX(), p.getY() + 0.5, p.getZ());
+        final Vec3d offset = new Vec3d(p.getX(), p.getY() + 0.5, p.getZ());
         Collections.sort(entities, new Comparator<EntityItemFrame>() {
             @Override
             public int compare(EntityItemFrame o1, EntityItemFrame o2)
             {
-                Vec3 v1 = new Vec3(o1.posX, o1.posY, o1.posZ);
-                Vec3 v2 = new Vec3(o2.posX, o2.posY, o2.posZ);
+                Vec3d v1 = new Vec3d(o1.posX, o1.posY, o1.posZ);
+                Vec3d v2 = new Vec3d(o2.posX, o2.posY, o2.posZ);
                 return (int) Math.signum(offset.distanceTo(v1) - offset.distanceTo(v2));
             }
         });
@@ -232,7 +232,7 @@ public class ShopData
         double y = p.getY() + 0.5;
         double z = p.getZ();
         double D = 1.4;
-        AxisAlignedBB aabb = AxisAlignedBB.fromBounds(x - D, y - D, z - D, x + D, y + D, z + D);
+        AxisAlignedBB aabb = new AxisAlignedBB(x - D, y - D, z - D, x + D, y + D, z + D);
         return aabb;
     }
 

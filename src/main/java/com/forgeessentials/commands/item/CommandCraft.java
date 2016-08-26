@@ -7,8 +7,9 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
@@ -29,9 +30,9 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     }
 
     @SubscribeEvent
-    public void playerOpenContainerEvent(PlayerOpenContainerEvent event)
+    public void playerOpenContainerEvent(PlayerContainerEvent.Open event)
     {
-        if (event.canInteractWith == false && lastPlayer.get() == event.entityPlayer)
+        if (event.getContainer().canInteractWith(event.getEntityPlayer()) == false && lastPlayer.get() == event.getEntityPlayer())
         {
             event.setResult(Result.ALLOW);
         }
@@ -44,17 +45,11 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         EntityPlayerMP player = sender;
         player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.worldObj, player.getPosition()));
         lastPlayer = new WeakReference<EntityPlayer>(player);
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
-    {
-        throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
 
     @Override

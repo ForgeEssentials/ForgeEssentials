@@ -93,7 +93,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
         WorldServer world = multiworld != null ? multiworld.getWorldServer() : APIRegistry.namedWorldHandler.getWorld(worldName);
         if (world == null)
             throw new TranslatedCommandException("Could not find world " + worldName);
-        int dimId = world.provider.getDimensionId();
+        int dimId = world.provider.getDimension();
 
         // if (dimId < 0 || dimId == 1)
         // throw new TranslatedCommandException("You are not allowed to teleport to that dimension");
