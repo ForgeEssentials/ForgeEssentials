@@ -1,6 +1,5 @@
 package com.forgeessentials.core.preloader.asminjector;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -344,7 +343,7 @@ public class MethodInjector implements Comparable<MethodInjector>
                     if (originalField != null)
                         break classLoop;
                 }
-                originalClass = ASMUtil.loadClassNode(ASMUtil.javaName(originalClass.superName));
+                originalClass = ASMUtil.getClassNode(ASMUtil.javaName(originalClass.superName));
             }
             if (originalField == null)
                 throw new InjectionException(String.format("Could not find shadowed field %s in target class hierachy", field.name));
@@ -362,7 +361,7 @@ public class MethodInjector implements Comparable<MethodInjector>
             fieldNode.owner = originalClass.name;
             fieldNode.name = originalField.name;
         }
-        catch (IOException e)
+        catch (ClassNotFoundException e)
         {
             throw new InjectionException(String.format("Unable to find shadowed field %s", field.name), e);
         }
@@ -392,7 +391,7 @@ public class MethodInjector implements Comparable<MethodInjector>
                     if (originalMethod != null)
                         break classLoop;
                 }
-                originalClass = ASMUtil.loadClassNode(ASMUtil.javaName(originalClass.superName));
+                originalClass = ASMUtil.getClassNode(ASMUtil.javaName(originalClass.superName));
             }
             if (originalMethod == null)
                 throw new InjectionException(String.format("Could not find shadowed method %s in target class hierachy", method.name));
@@ -410,7 +409,7 @@ public class MethodInjector implements Comparable<MethodInjector>
             methodNode.owner = originalClass.name;
             methodNode.name = originalMethod.name;
         }
-        catch (IOException e)
+        catch (ClassNotFoundException e)
         {
             throw new InjectionException(String.format("Unable to find shadowed method %s", method.name), e);
         }

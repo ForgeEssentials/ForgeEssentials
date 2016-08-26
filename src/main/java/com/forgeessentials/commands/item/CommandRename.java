@@ -67,5 +67,4 @@ public class CommandRename extends ForgeEssentialsCommandBase
         is.setStackDisplayName(sb.toString().trim());
     }
 
-
 }
