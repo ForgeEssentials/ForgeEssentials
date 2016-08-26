@@ -72,9 +72,6 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
         return ModuleCommands.PERM + ".findblock";
     }
 
-    /*
-     * syntax: /fb <block> [max distance, def = 20 * 16] [amount of blocks, def = 1] [speed, def = 10]
-     */
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {

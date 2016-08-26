@@ -11,6 +11,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 
 public class CommandRename extends ForgeEssentialsCommandBase
 {
+    
     @Override
     public String getCommandName()
     {
@@ -21,6 +22,12 @@ public class CommandRename extends ForgeEssentialsCommandBase
     public String[] getDefaultAliases()
     {
         return new String[] { "rename" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/rename <new name> Renames the item you are currently holding.";
     }
 
     @Override
@@ -57,12 +64,6 @@ public class CommandRename extends ForgeEssentialsCommandBase
             sb.append(arg + " ");
         }
         is.setStackDisplayName(sb.toString().trim());
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/rename <new name> Renames the item you are currently holding.";
     }
 
 }

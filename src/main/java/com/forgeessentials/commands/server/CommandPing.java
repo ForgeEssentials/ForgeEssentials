@@ -28,6 +28,12 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     }
 
     @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/ping Ping the server.";
+    }
+
+    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -55,12 +61,6 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
         ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/ping Ping the server.";
     }
 
     @Override

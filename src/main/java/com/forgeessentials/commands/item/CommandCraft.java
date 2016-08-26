@@ -11,6 +11,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandCraft extends ForgeEssentialsCommandBase
 {
+    
     @Override
     public String getCommandName()
     {
@@ -62,4 +63,5 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
     }
+
 }
