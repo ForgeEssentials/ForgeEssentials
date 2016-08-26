@@ -21,17 +21,17 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayer.SleepResult;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.GameType;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -43,6 +43,10 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -59,7 +63,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -253,8 +258,8 @@ public class ProtectionEventHandler extends ServerEventHandler
                 updateBrokenTileEntity((EntityPlayerMP) event.getPlayer(), te);
             if (PlayerInfo.get(ident).getHasFEClient())
             {
-                int blockId = GameData.getBlockRegistry().getId(blockState.getBlock());
-                Set<Integer> ids = new HashSet<Integer>();
+                int blockId = ((FMLControlledNamespacedRegistry<Block>) GameRegistry.findRegistry(Block.class)).getId(blockState.getBlock());
+                Set<Integer> ids = new HashSet<>();
                 ids.add(blockId);
                 NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, null, ids), ident.getPlayerMP());
             }
@@ -389,7 +394,6 @@ public class ProtectionEventHandler extends ServerEventHandler
         // }
     }
 
-    @SuppressWarnings("unchecked")
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void explosionDetonateEvent(ExplosionEvent.Detonate event)
     {
@@ -420,10 +424,12 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
+        // TODO (upgrade): Check, verify and optimize this
+
         UserIdent ident = UserIdent.get(event.getEntityPlayer());
 
         WorldPoint point;
-        if (event.action == RIGHT_CLICK_AIR)
+        if (event instanceof RightClickEmpty || event instanceof RightClickItem)
         {
             RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(event.getEntityPlayer());
             if (mop == null && event.getPos().getX() == 0 && event.getPos().getY() == 0 && event.getPos().getZ() == 0)
@@ -437,13 +443,16 @@ public class ProtectionEventHandler extends ServerEventHandler
             point = new WorldPoint(event.getEntityPlayer().dimension, event.getPos());
 
         // Check for block interaction
-        if (event.action == Action.RIGHT_CLICK_BLOCK || event.action == Action.LEFT_CLICK_BLOCK)
+        if (event instanceof LeftClickBlock || event instanceof RightClickBlock)
         {
             IBlockState blockState = event.getWorld().getBlockState(event.getPos());
             String permission = ModuleProtection.getBlockInteractPermission(blockState);
             ModuleProtection.debugPermission(event.getEntityPlayer(), permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
-            event.useBlock = allow ? ALLOW : DENY;
+            if (event instanceof LeftClickBlock)
+                ((LeftClickBlock) event).setUseBlock(allow ? ALLOW : DENY);
+            else
+                ((RightClickBlock) event).setUseBlock(allow ? ALLOW : DENY);
         }
 
         // Check item (and block) usage
@@ -453,10 +462,11 @@ public class ProtectionEventHandler extends ServerEventHandler
             String permission = ModuleProtection.getItemUsePermission(stack);
             ModuleProtection.debugPermission(event.getEntityPlayer(), permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
-            event.useItem = allow ? ALLOW : DENY;
+            // event.useItem = allow ? ALLOW : DENY;
+            System.out.println("THIS IS NOT IMPLEMENTED YET!!!!!!!!!!!!!!");
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
             {
-                int itemId = GameData.getItemRegistry().getId(stack.getItem());
+                int itemId = ((FMLControlledNamespacedRegistry<Item>) GameRegistry.findRegistry(Item.class)).getId(stack.getItem());
                 Set<Integer> ids = new HashSet<>();
                 ids.add(itemId);
                 NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, ids, null), ident.getPlayerMP());
@@ -467,8 +477,9 @@ public class ProtectionEventHandler extends ServerEventHandler
                 && stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
         {
             // If entity is in creative area, but player not, deny interaction
-            event.useBlock = DENY;
-            if (event.action != LEFT_CLICK_BLOCK)
+            System.out.println("THIS IS NOT IMPLEMENTED YET!!!!!!!!!!!!!!");
+            // event.useBlock = DENY;
+            if (!(event instanceof LeftClickBlock))
                 ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.translate("Cannot interact with creative area if not in creative mode."));
         }
     }
@@ -764,7 +775,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             Block block = ((ItemBlock) stack.getItem()).block;
             String permission = ModuleProtection.getBlockPlacePermission(block, 0);
             if (!APIRegistry.perms.checkUserPermission(ident, permission))
-                placeIds.add(GameData.getBlockRegistry().getId(block));
+                placeIds.add(((FMLControlledNamespacedRegistry<Block>) GameRegistry.findRegistry(Block.class)).getId(block));
         }
 
         ModulePermissions.permissionHelper.disableDebugMode(false);
@@ -905,7 +916,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (player == null)
             return;
-        final Packet packet = te.getUpdatePacket();
+        final Packet<?> packet = te.getUpdatePacket();
         if (packet == null)
             return;
         TaskRegistry.runLater(new Runnable() {

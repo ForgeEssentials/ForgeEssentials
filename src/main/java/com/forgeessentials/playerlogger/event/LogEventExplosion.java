@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.material.Material;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.world.ExplosionEvent;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
@@ -32,7 +32,7 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
         WorldData worldData = getWorld(event.getWorld().provider.getDimension());
         for (CachedBlockData blockData : blocks)
         {
-            if (!blockData.block.getMaterial())
+            if (blockData.block.getMaterial(blockData.block.getDefaultState()) != Material.AIR)
             {
                 Action01Block action = new Action01Block();
                 action.time = date;

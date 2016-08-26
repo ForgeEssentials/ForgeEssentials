@@ -4,9 +4,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockPortal;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+// TODO (upgrade) : This should probably be completely replaced!
 
 public class BlockPortalSize
 {
@@ -146,7 +148,7 @@ public class BlockPortalSize
 
     protected boolean func_150857_a(Block p_150857_1_)
     {
-        return p_150857_1_.getMaterial() == Material.AIR || p_150857_1_ == Blocks.FIRE || p_150857_1_ == Blocks.PORTAL;
+        return p_150857_1_.getMaterial(p_150857_1_.getDefaultState()) == Material.AIR || p_150857_1_ == Blocks.FIRE || p_150857_1_ == Blocks.PORTAL;
     }
 
     public boolean func_150860_b()

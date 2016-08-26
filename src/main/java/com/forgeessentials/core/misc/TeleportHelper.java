@@ -15,17 +15,18 @@ import net.minecraft.network.play.server.SPacketEntityEffect;
 import net.minecraft.network.play.server.SPacketRespawn;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -54,7 +55,7 @@ public class TeleportHelper extends ServerEventHandler
             int i = MathHelper.floor_double(entity.posX);
             int j = MathHelper.floor_double(entity.posY) - 1;
             int k = MathHelper.floor_double(entity.posZ);
-            entity.setLocationAndAngles((double)i, (double)j, (double)k, entity.rotationYaw, 0.0F);
+            entity.setLocationAndAngles(i, j, k, entity.rotationYaw, 0.0F);
         }
 
         @Override
@@ -143,7 +144,8 @@ public class TeleportHelper extends ServerEventHandler
             throw new TranslatedCommandException("You are not allowed to teleport from here.");
         if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_TO))
             throw new TranslatedCommandException("You are not allowed to teleport to that location.");
-        if (player.dimension != point.getDimension()) {
+        if (player.dimension != point.getDimension())
+        {
             if (!APIRegistry.perms.checkPermission(player, TELEPORT_CROSSDIM_FROM))
                 throw new TranslatedCommandException("You are not allowed to teleport from this dimension.");
             if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_CROSSDIM_TO))
@@ -185,12 +187,17 @@ public class TeleportHelper extends ServerEventHandler
 
     public static boolean canTeleportTo(WarpPoint point)
     {
+        // TODO (upgrade): Check this!
         if (point.getY() < 0)
             return false;
-        Block block1 = point.getWorld().getBlockState(point.getBlockPos()).getBlock();
-        Block block2 = point.getWorld().getBlockState(new BlockPos(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ())).getBlock();
-        boolean block1Free = !block1.getMaterial().isSolid() || block1.getBlockBoundsMaxX() < 1 || block1.getBlockBoundsMaxY() > 0;
-        boolean block2Free = !block2.getMaterial().isSolid() || block2.getBlockBoundsMaxX() < 1 || block2.getBlockBoundsMaxY() > 0;
+        BlockPos blockPos1 = point.getBlockPos();
+        BlockPos blockPos2 = new BlockPos(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
+        Block block1 = point.getWorld().getBlockState(blockPos1).getBlock();
+        Block block2 = point.getWorld().getBlockState(blockPos2).getBlock();
+        AxisAlignedBB blockBounds1 = block1.getCollisionBoundingBox(block1.getDefaultState(), point.getWorld(), blockPos1);
+        AxisAlignedBB blockBounds2 = block2.getCollisionBoundingBox(block2.getDefaultState(), point.getWorld(), blockPos2);
+        boolean block1Free = !block1.getMaterial(block1.getDefaultState()).isSolid() || blockBounds1.maxX < 1 || blockBounds1.maxY > 0;
+        boolean block2Free = !block2.getMaterial(block2.getDefaultState()).isSolid() || blockBounds2.maxX < 1 || blockBounds2.maxZ > 0;
         return block1Free && block2Free;
     }
 
@@ -218,7 +225,7 @@ public class TeleportHelper extends ServerEventHandler
             return;
         }
         // TODO: Handle teleportation of mounted entity
-        player.mountEntity(null);
+        player.dismountRidingEntity();
 
         if (player.dimension != point.getDimension())
         {
@@ -270,7 +277,8 @@ public class TeleportHelper extends ServerEventHandler
             e.setCanceled(true);
         if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_PORTALTO))
             e.setCanceled(true);
-        if (e.world.provider.getDimension() != e.targetDimension) {
+        if (e.world.provider.getDimension() != e.targetDimension)
+        {
             if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_CROSSDIM_PORTALFROM))
                 e.setCanceled(true);
             if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_CROSSDIM_PORTALTO))
@@ -280,6 +288,7 @@ public class TeleportHelper extends ServerEventHandler
 
     public static void transferPlayerToDimension(EntityPlayerMP player, int dimension, Teleporter teleporter)
     {
+        // TODO (upgrade): Check teleportation!
         int oldDim = player.dimension;
         MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
 
@@ -288,7 +297,7 @@ public class TeleportHelper extends ServerEventHandler
         WorldServer newWorld = mcServer.worldServerForDimension(player.dimension);
         player.connection.sendPacket(new SPacketRespawn(player.dimension, newWorld.getDifficulty(),
                 newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType())); // Forge: Use new dimensions information
-        oldWorld.removePlayerEntityDangerously(player);
+        oldWorld.removeEntityDangerously(player);
         player.isDead = false;
 
         transferEntityToWorld(player, oldDim, oldWorld, newWorld, teleporter);

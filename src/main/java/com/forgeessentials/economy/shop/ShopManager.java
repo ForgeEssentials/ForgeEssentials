@@ -1,7 +1,5 @@
 package com.forgeessentials.economy.shop;
 
-import static net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_AIR;
-
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.HashSet;
@@ -19,14 +17,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -66,15 +65,15 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
 
     public static final String CONFIG_FILE = "EconomyConfig";
 
-    public static final Set<String> shopTags = new HashSet<String>();
+    public static final Set<String> shopTags = new HashSet<>();
 
     public static boolean useStock;
 
-    protected static Set<ShopData> shops = new HashSet<ShopData>();
+    protected static Set<ShopData> shops = new HashSet<>();
 
-    protected static Map<WorldPoint, ShopData> shopSignMap = new WeakHashMap<WorldPoint, ShopData>();
+    protected static Map<WorldPoint, ShopData> shopSignMap = new WeakHashMap<>();
 
-    protected static Map<UUID, ShopData> shopFrameMap = new WeakHashMap<UUID, ShopData>();
+    protected static Map<UUID, ShopData> shopFrameMap = new WeakHashMap<>();
 
     /* ------------------------------------------------------------ */
     /* Data */
@@ -212,14 +211,14 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(final PlayerInteractEvent event)
     {
-        if (event.action == Action.LEFT_CLICK_BLOCK || FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (event instanceof LeftClickBlock || event instanceof LeftClickEmpty || FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
 
         ItemStack equippedStack = event.getEntityPlayer().getHeldItemMainhand();
         Item equippedItem = equippedStack != null ? equippedStack.getItem() : null;
 
         WorldPoint point;
-        if (event.action == RIGHT_CLICK_AIR)
+        if (event instanceof RightClickEmpty)
         {
             if (!(equippedItem instanceof ItemBlock))
                 return;
