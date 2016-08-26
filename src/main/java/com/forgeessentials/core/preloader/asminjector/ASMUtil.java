@@ -152,52 +152,6 @@ public final class ASMUtil
         return t == null ? untransformedName : t.remapClassName(resourceName(untransformedName));
     }
 
-    public static String getClassFilename(String name)
-    {
-        return "/" + resourceName(name) + ".class";
-    }
-
-    public static InputStream getClassResourceStream(String name)
-    {
-        String fn = getClassFilename(name);
-        InputStream is = ASMUtil.class.getResourceAsStream(fn);
-        if (is == null)
-            is = ClassLoader.getSystemClassLoader().getResourceAsStream(fn);
-        return is;
-
-        // InputStream is;
-        // is = ASMUtil.class.getResourceAsStream(fn);
-        // if (is != null)
-        // {
-        // System.out.println("Found class " + name + " using ASMUtil.class.getResourceAsStream");
-        // return is;
-        // }
-        //
-        // is = Launch.classLoader.getResourceAsStream(fn);
-        // if (is != null)
-        // {
-        // System.out.println("Found class " + name + " using Launch.classLoader.getResourceAsStream");
-        // return is;
-        // }
-        //
-        // is = ClassLoader.getSystemResourceAsStream(fn);
-        // if (is != null)
-        // {
-        // System.out.println("Found class " + name + " using ClassLoader.getSystemResourceAsStream");
-        // return is;
-        // }
-        //
-        // is = ClassLoader.getSystemClassLoader().getResourceAsStream(fn);
-        // if (is != null)
-        // {
-        // System.out.println("Found class " + name + " using ClassLoader.getSystemClassLoader().getResourceAsStream");
-        // return is;
-        // }
-        //
-        // System.out.println("Could not find class resource for " + name);
-        // return is;
-    }
-
     public static String javaName(String resourceName)
     {
         return resourceName.replace('/', '.');

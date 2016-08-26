@@ -1,6 +1,5 @@
 package com.forgeessentials.core.preloader.asminjector;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -125,10 +124,10 @@ public class ClassInjector
     {
         try
         {
-            ClassNode classNode = ASMUtil.loadClassNode(ASMUtil.getClassResourceStream(className));
+            ClassNode classNode = ASMUtil.getClassNode(className);
             return new ClassInjector(classNode, useAliases);
         }
-        catch (IOException e)
+        catch (ClassNotFoundException e)
         {
             throw Throwables.propagate(e);
         }
