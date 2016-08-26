@@ -44,9 +44,15 @@ public class RespawnHandler
                 GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident)), FEPermissions.SPAWN_LOC, true);
         if (spawnProperty != null)
         {
-            WorldPoint point = WorldPoint.fromString(spawnProperty);
+            WarpPoint point = WarpPoint.fromString(spawnProperty);
+            if (point == null)
+            {
+                WorldPoint worldPoint = WorldPoint.fromString(spawnProperty);
+                if (worldPoint != null)
+                    point = new WarpPoint(worldPoint, player.cameraYaw, player.cameraPitch);
+            }
             if (point != null)
-                return new WarpPoint(point, player.cameraYaw, player.cameraPitch);
+                return point;
         }
         return new WarpPoint(0, player.worldObj.getSpawnPoint(), player.cameraYaw, player.cameraPitch);
     }

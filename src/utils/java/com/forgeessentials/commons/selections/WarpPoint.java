@@ -1,5 +1,8 @@
 package com.forgeessentials.commons.selections;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
@@ -250,6 +253,38 @@ public class WarpPoint
         h = h * 31 + Double.valueOf(yaw).hashCode();
         h = h * 31 + dim;
         return h;
+    }
+
+    private static final Pattern fromStringPattern = Pattern.compile(
+            "\\s*\\[\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*dim\\s*=\\s*(-?\\d+)\\s*,\\s*pitch\\s*=\\s*(-?\\d+)\\s*,\\s*yaw\\s*=\\s*(-?\\d+)\\s*\\]\\s*");
+
+    public static WarpPoint fromString(String value)
+    {
+        Matcher m = fromStringPattern.matcher(value);
+        if (m.matches())
+        {
+            try
+            {
+                return new WarpPoint(
+                        Integer.parseInt(m.group(4)),
+                        Integer.parseInt(m.group(1)),
+                        Integer.parseInt(m.group(2)),
+                        Integer.parseInt(m.group(3)),
+                        Integer.parseInt(m.group(5)),
+                        Integer.parseInt(m.group(6)));
+            }
+            catch (NumberFormatException e)
+            {
+                return null;
+            }
+        }
+        else
+        {
+            WorldPoint worldPoint = WorldPoint.fromString(value);
+            if (worldPoint == null)
+                return null;
+            return new WarpPoint(worldPoint);
+        }
     }
 
 }

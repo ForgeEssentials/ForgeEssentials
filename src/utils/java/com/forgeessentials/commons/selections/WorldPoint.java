@@ -140,12 +140,12 @@ public class WorldPoint extends Point
     {
         return new WarpPoint(this, rotationPitch, rotationYaw);
     }
-    
+
     public Block getBlock()
     {
         return getWorld().getBlock(x, y, z);
     }
-    
+
     public int getBlockMeta()
     {
         return getWorld().getBlockMetadata(x, y, z);
@@ -164,8 +164,8 @@ public class WorldPoint extends Point
         return "[" + x + "," + y + "," + z + ",dim=" + dim + "]";
     }
 
-    private static final Pattern fromStringPattern = Pattern
-            .compile("\\s*\\[\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*dim\\s*=\\s*(-?\\d+)\\s*\\]\\s*");
+    private static final Pattern fromStringPattern = Pattern.compile(
+            "\\s*\\[\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*dim\\s*=\\s*(-?\\d+)\\s*\\]\\s*");
 
     public static WorldPoint fromString(String value)
     {
@@ -174,7 +174,11 @@ public class WorldPoint extends Point
         {
             try
             {
-                return new WorldPoint(Integer.parseInt(m.group(4)), Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
+                return new WorldPoint(
+                        Integer.parseInt(m.group(4)),
+                        Integer.parseInt(m.group(1)),
+                        Integer.parseInt(m.group(2)),
+                        Integer.parseInt(m.group(3)));
             }
             catch (NumberFormatException e)
             {
@@ -209,6 +213,5 @@ public class WorldPoint extends Point
         h = h * 31 + dim;
         return h;
     }
-
 
 }
