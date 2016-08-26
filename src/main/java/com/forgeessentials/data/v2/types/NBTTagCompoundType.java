@@ -95,6 +95,9 @@ public class NBTTagCompoundType implements DataType<NBTTagCompound>
                 String typeId;
                 switch (tagList.getTagType())
                 {
+                case 0:
+                    typeId = "S";
+                    break;
                 case NBT.TAG_FLOAT:
                     typeId = "f";
                     for (int i = 0; i < tagList.tagCount(); i++)

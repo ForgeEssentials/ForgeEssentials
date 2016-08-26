@@ -114,7 +114,7 @@ public class CommandSellprice extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm("/sellprice baseprice <item> [price]");
+            arguments.confirm("/sellprice set <item> <price>");
             return;
         }
 
