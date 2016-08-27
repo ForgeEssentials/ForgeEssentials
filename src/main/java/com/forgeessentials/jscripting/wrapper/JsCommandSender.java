@@ -35,17 +35,13 @@ public class JsCommandSender
         return that instanceof EntityPlayer ? new JsEntityPlayer((EntityPlayer) that) : null;
     }
 
-    public JsCommandSender doAs(UUID userId, boolean hideChatOutput)
+    public JsCommandSender doAs(Object userIdOrPlayer, boolean hideChatOutput)
     {
-        UserIdent doAsUser = userId == null ? APIRegistry.IDENT_SERVER : UserIdent.get(userId);
+        UserIdent doAsUser = userIdOrPlayer instanceof UUID ? UserIdent.get((UUID) userIdOrPlayer)
+                : userIdOrPlayer instanceof JsEntityPlayer ? UserIdent.get(((JsEntityPlayer) userIdOrPlayer).getThat()) : APIRegistry.IDENT_SERVER;
         DoAsCommandSender result = new DoAsCommandSender(doAsUser, that);
         result.setHideChatMessages(hideChatOutput);
         return new JsCommandSender(result);
-    }
-
-    public JsCommandSender doAs(JsEntityPlayer plazer, boolean hideChatOutput)
-    {
-        return doAs(plazer == null ? null : plazer.getUuid(), hideChatOutput);
     }
 
     public void chatConfirm(String message)

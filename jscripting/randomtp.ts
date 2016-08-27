@@ -22,7 +22,7 @@ function main() {
     if (args.isTabCompletion)
         return;
 
-    var hiddenChatSender = sender.doAs(sender.getName(), false);
+    var hiddenChatSender = sender.doAs(null, true);
     Server.runCommand(hiddenChatSender, 'spreadplayers', x, z, 0, r, false, sender.getName());
 }
 

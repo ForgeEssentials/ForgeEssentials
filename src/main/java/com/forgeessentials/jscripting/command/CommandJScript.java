@@ -9,6 +9,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -98,6 +99,10 @@ public class CommandJScript extends ParserCommandBase
         try (BufferedReader reader = new BufferedReader(new FileReader(file)))
         {
             engine.eval(reader, scope);
+        }
+        catch (CommandException e)
+        {
+            throw e;
         }
         catch (IOException | ScriptException e)
         {

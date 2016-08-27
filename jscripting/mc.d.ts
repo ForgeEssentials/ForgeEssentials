@@ -150,12 +150,12 @@ declare namespace MC {
     }
 
     interface BlockStatic {
-        getBlockFromName(name: string): Block;
+        getBlock(name: string): Block;
     }
 
-    // interface WorldStatic {
-    //     getWorld(dim: int): World;
-    // }
+    interface WorldStatic {
+        getWorld(dim: int): WorldServer;
+    }
 
     interface ServerStatic {
         runCommand(sender: ICommandSender, cmd: string, ...args: any[]): ICommandSender;
@@ -169,7 +169,7 @@ declare namespace MC {
 
 declare var Block: MC.BlockStatic;
 
-// declare var World: MC.WorldStatic;
+declare var World: MC.WorldStatic;
 
 declare var Server: MC.ServerStatic;
 

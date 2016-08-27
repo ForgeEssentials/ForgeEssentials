@@ -20,7 +20,9 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
-import com.forgeessentials.jscripting.wrapper.JsStaticServer;
+import com.forgeessentials.jscripting.wrapper.JsBlockStatic;
+import com.forgeessentials.jscripting.wrapper.JsServerStatic;
+import com.forgeessentials.jscripting.wrapper.JsWorldStatic;
 import com.forgeessentials.scripting.ScriptParser.ScriptErrorException;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.util.events.ConfigReloadEvent;
@@ -72,7 +74,9 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public void preLoad(FEModulePreInitEvent event)
     {
         Bindings scope = engine.getBindings(ScriptContext.GLOBAL_SCOPE);
-        scope.put("Server", new JsStaticServer());
+        scope.put("Server", new JsServerStatic());
+        scope.put("Block", new JsBlockStatic());
+        scope.put("World", new JsWorldStatic());
 
         // APIRegistry.scripts = this;
     }
@@ -91,7 +95,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     {
         // Reinitialize MC binding because MinecraftServer.getServer() changed
         Bindings scope = engine.getBindings(ScriptContext.GLOBAL_SCOPE);
-        scope.put("mc", new JsStaticServer());
+        scope.put("mc", new JsServerStatic());
         
         // TODO: Load server scripts
         // TODO: Load scripted commands

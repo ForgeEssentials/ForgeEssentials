@@ -1,5 +1,7 @@
 package com.forgeessentials.jscripting.wrapper;
 
+import com.google.common.base.Preconditions;
+
 public class JsWrapper<T>
 {
 
@@ -7,6 +9,7 @@ public class JsWrapper<T>
 
     public JsWrapper(T that)
     {
+        Preconditions.checkNotNull(that);
         this.that = that;
     }
 

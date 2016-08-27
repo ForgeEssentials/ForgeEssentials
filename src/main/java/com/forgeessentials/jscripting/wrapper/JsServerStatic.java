@@ -6,12 +6,12 @@ import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class JsStaticServer
+public class JsServerStatic
 {
 
     public JsCommandSender server = new JsCommandSender(MinecraftServer.getServer());
 
-    public void runCommand(JsCommandSender sender, String cmd, Object... args)
+    public void runCommand(JsCommandSender sender, String cmd, Object... args) throws CommandException
     {
         if (sender == null)
             sender = server;
