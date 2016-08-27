@@ -1,10 +1,11 @@
 
-declare namespace MC {
 
-    type int = number;
-    type long = number;
-    type float = number;
-    type double = number;
+declare type int = number;
+declare type long = number;
+declare type float = number;
+declare type double = number;
+
+declare namespace MC {
 
     interface UUID {
     }
@@ -30,13 +31,39 @@ declare namespace MC {
         getBlock(x: int, y: int, z: int): Block;
     }
 
-    interface WorldServer extends World { }
+    interface WorldServer extends World {
+    }
 
-    interface WorldPoint { }
-    interface WorldZone { }
+    interface Point {
+        getX(): int;
+        getY(): int;
+        getZ(): int;
+        setX(x: int): Point;
+        setY(y: int): Point;
+        setZ(z: int): Point;
+    }
+
+    interface WorldPoint {
+        getDimension(): int;
+        setDimension(dim: int): WorldPoint;
+        setX(x: int): WorldPoint;
+        setY(y: int): WorldPoint;
+        setZ(z: int): WorldPoint;
+    }
+
+    interface WorldZone {
+    }
 
     interface ICommandSender {
         getName(): string;
+
+        doAs(userId: UUID, hideChatOutput: boolean): ICommandSender;
+        doAs(player: EntityPlayer, hideChatOutput: boolean): ICommandSender;
+
+        chatConfirm(message: string): void;
+        chatNotification(message: string): void;
+        chatWarning(message: string): void;
+        chatError(message: string): void;
     }
 
     interface Entity {
@@ -75,12 +102,19 @@ declare namespace MC {
         canEntityBeSeen(other: Entity): boolean;
     }
 
-    interface EntityPlayer extends EntityLivingBase, ICommandSender {
+    interface EntityPlayer extends EntityLivingBase {
         setPosition(x: double, y: double, z: double): void;
         setPosition(x: double, y: double, z: double, yaw: float, pitch: float): void;
     }
 
     interface CommandParserArgs {
+        isTabCompletion: boolean;
+        // command: ICommand;
+        // args: Queue<String>;
+        // sender: ICommandSender;
+        // senderPlayer: EntityPlayerMP;
+        // ident: UserIdent;
+        // permissionContext: PermissionContext;
         sendMessage(message: IChatComponent): void;
         confirm(message: string, ...args: any[]): void;
         notify(message: string, ...args: any[]): void;
@@ -115,22 +149,41 @@ declare namespace MC {
         needsPlayer(): void;
     }
 
-    interface McStatic {
+    interface BlockStatic {
         getBlockFromName(name: string): Block;
+    }
 
-        confirm(player: ICommandSender, message: string): void;
+    // interface WorldStatic {
+    //     getWorld(dim: int): World;
+    // }
 
-        doAs(sender: ICommandSender, doAsPlayer: UUID, hideChatOutput: boolean): ICommandSender;
-        doAs(sender: ICommandSender, doAsPlayer: EntityPlayer, hideChatOutput: boolean): ICommandSender;
+    interface ServerStatic {
+        runCommand(sender: ICommandSender, cmd: string, ...args: any[]): ICommandSender;
 
-        cmd(sender: ICommandSender, cmd: string, ...args: string[]): ICommandSender;
+        chatConfirm(message: string): void;
+        chatNotification(message: string): void;
+        chatWarning(message: string): void;
+        chatError(message: string): void;
     }
 }
 
-declare var mc: MC.McStatic;
+declare var Block: MC.BlockStatic;
 
+// declare var World: MC.WorldStatic;
+
+declare var Server: MC.ServerStatic;
+
+/**
+ * player - can be null!
+ */
 declare var player: MC.EntityPlayer;
 
+/**
+ * sender - should never be null (maybe if script was triggered by server only?)
+ */
 declare var sender: MC.ICommandSender;
 
+/**
+ * Command arguments - can be null!
+ */
 declare var args: MC.CommandParserArgs;

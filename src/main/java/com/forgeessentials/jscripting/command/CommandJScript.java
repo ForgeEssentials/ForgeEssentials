@@ -104,6 +104,11 @@ public class CommandJScript extends ParserCommandBase
             e.printStackTrace();
             throw new TranslatedCommandException("Error in script: %s", e.getMessage());
         }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new TranslatedCommandException("Error in script: %s", e.getMessage());
+        }
     }
 
 }

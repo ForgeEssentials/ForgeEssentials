@@ -27,4 +27,9 @@ public class JsEntityPlayer extends JsEntity<EntityPlayer>
         ((EntityPlayerMP) that).playerNetServerHandler.setPlayerLocation(x, y, z, yaw, pitch);
     }
 
+    public JsCommandSender getCommandSender()
+    {
+        return new JsCommandSender(that);
+    }
+
 }

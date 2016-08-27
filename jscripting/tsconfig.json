@@ -16,10 +16,19 @@
         "suppressImplicitAnyIndexErrors": true,
         "outDir": "../run/ForgeEssentials/JScripting/commands"
     },
-    "exclude": [ ],
+    "filesGlob": [
+        "mc.d.ts",
+        "**.ts"
+    ],
+    "exclude": [],
+    "files": [
+        "mc.d.ts",
+        "randomtp.ts",
+        "test.ts"
+    ],
     "compileOnSave": true,
     "buildOnSave": false,
     "atom": {
-        "rewriteTsconfig": false
+        "rewriteTsconfig": true
     }
 }
