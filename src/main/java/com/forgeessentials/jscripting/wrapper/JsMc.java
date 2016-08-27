@@ -2,9 +2,9 @@ package com.forgeessentials.jscripting.wrapper;
 
 import java.util.UUID;
 
+import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.api.APIRegistry;
@@ -12,7 +12,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class JsMcWrapper
+public class JsMc
 {
 
     public JsCommandSender server = new JsCommandSender(MinecraftServer.getServer());
@@ -25,9 +25,9 @@ public class JsMcWrapper
         return new JsCommandSender(result);
     }
 
-    public JsCommandSender doAs(JsCommandSender sender, EntityPlayer doAsPlayer, boolean hideChatOutput)
+    public JsCommandSender doAs(JsCommandSender sender, JsEntityPlayer doAsPlayer, boolean hideChatOutput)
     {
-        return doAs(sender, doAsPlayer == null ? null : doAsPlayer.getPersistentID(), hideChatOutput);
+        return doAs(sender, doAsPlayer == null ? null : doAsPlayer.getThat().getPersistentID(), hideChatOutput);
     }
 
     public void cmd(JsCommandSender sender, String cmd, Object... args)
@@ -60,6 +60,11 @@ public class JsMcWrapper
     public void confirm(JsCommandSender player, String message)
     {
         ChatOutputHandler.chatConfirmation(player.getThat(), message);
+    }
+
+    public JsBlock<Block> getBlockFromName(String name)
+    {
+        return new JsBlock<>(Block.getBlockFromName(name));
     }
 
 }

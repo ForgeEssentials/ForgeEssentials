@@ -9,12 +9,29 @@ declare namespace MC {
     interface UUID {
     }
 
+    interface JavaList<T> {
+        size(): int;
+        get(index: int): T;
+    }
+
     interface IChatComponent { }
     interface UserIdent { }
     interface Item { }
-    interface Block { }
-    interface World { }
+
+    interface Block {
+        getName(): string;
+    }
+
+    interface World {
+        getDimension(): int;
+        getDifficulty(): int;
+        getPlayerEntities(): JavaList<EntityPlayer>;
+        blockExists(x: int, y: int, z: int): boolean;
+        getBlock(x: int, y: int, z: int): Block;
+    }
+
     interface WorldServer extends World { }
+
     interface WorldPoint { }
     interface WorldZone { }
 
@@ -98,16 +115,19 @@ declare namespace MC {
         needsPlayer(): void;
     }
 
-    export function confirm(player: ICommandSender, message: string): void;
+    interface McStatic {
+        getBlockFromName(name: string): Block;
 
-    export function doAs(sender: ICommandSender, doAsPlayer: UUID, hideChatOutput: boolean): ICommandSender;
-    export function doAs(sender: ICommandSender, doAsPlayer: EntityPlayer, hideChatOutput: boolean): ICommandSender;
+        confirm(player: ICommandSender, message: string): void;
 
-    export function cmd(sender: ICommandSender, cmd: string, ...args: string[]): ICommandSender;
+        doAs(sender: ICommandSender, doAsPlayer: UUID, hideChatOutput: boolean): ICommandSender;
+        doAs(sender: ICommandSender, doAsPlayer: EntityPlayer, hideChatOutput: boolean): ICommandSender;
 
+        cmd(sender: ICommandSender, cmd: string, ...args: string[]): ICommandSender;
+    }
 }
 
-declare var mc: typeof MC;
+declare var mc: MC.McStatic;
 
 declare var player: MC.EntityPlayer;
 
