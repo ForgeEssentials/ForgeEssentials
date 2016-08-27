@@ -13,7 +13,8 @@
         "removeComments": true,
         "noLib": false,
         "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "../run/ForgeEssentials/JScripting/commands"
     },
     "exclude": [ ],
     "compileOnSave": true,

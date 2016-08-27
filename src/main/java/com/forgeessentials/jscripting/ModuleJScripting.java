@@ -88,6 +88,10 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent event)
     {
+        // Reinitialize MC binding because MinecraftServer.getServer() changed
+        Bindings scope = engine.getBindings(ScriptContext.GLOBAL_SCOPE);
+        scope.put("mc", new JsMcWrapper());
+        
         // TODO: Load server scripts
         // TODO: Load scripted commands
     }

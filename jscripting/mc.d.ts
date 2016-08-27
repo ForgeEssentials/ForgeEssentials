@@ -1,11 +1,23 @@
 
 declare namespace MC {
 
-    interface EntityPlayer {
+    interface UUID {
+    }
+
+    interface ICommandSender {
         getCommandSenderName(): string;
     }
 
-    export function confirm(player, message: string): void;
+    interface EntityPlayer extends ICommandSender {
+        getPersistentID(): UUID;
+    }
+
+    export function confirm(player: ICommandSender, message: string): void;
+
+    export function doAs(sender: ICommandSender, doAsPlayer: UUID, hideChatOutput: boolean): ICommandSender;
+    export function doAs(sender: ICommandSender, doAsPlayer: EntityPlayer, hideChatOutput: boolean): ICommandSender;
+
+    export function cmd(sender: ICommandSender, cmd: string, ...args: string[]): ICommandSender;
 
 }
 
