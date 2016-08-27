@@ -9,6 +9,15 @@ declare namespace MC {
     interface UUID {
     }
 
+    interface IChatComponent { }
+    interface UserIdent { }
+    interface Item { }
+    interface Block { }
+    interface World { }
+    interface WorldServer extends World { }
+    interface WorldPoint { }
+    interface WorldZone { }
+
     interface ICommandSender {
         getName(): string;
     }
@@ -16,11 +25,28 @@ declare namespace MC {
     interface Entity {
         getId(): string;
         getUuid(): UUID;
+        getName(): string;
+        getEntityId(): int;
 
         getDimension(): int;
         getX(): double;
         getY(): double;
         getZ(): double;
+        getMotionX(): double;
+        getMotionY(): double;
+        getMotionZ(): double;
+        getChunkCoordX(): int;
+        getChunkCoordY(): int;
+        getChunkCoordZ(): int;
+
+        getWidth(): float;
+        getHeight(): float;
+        getStepHeight(): float;
+        isOnGround(): boolean;
+
+        getRidingEntity(): Entity;
+        getRiddenByEntity(): Entity;
+        getWorld(): World;
     }
 
     interface EntityLivingBase extends Entity {
@@ -28,7 +54,7 @@ declare namespace MC {
         setHealth(value: float);
         getMaxHealth(): float;
         getTotalArmorValue(): int;
-        
+
         canEntityBeSeen(other: Entity): boolean;
     }
 
@@ -36,14 +62,6 @@ declare namespace MC {
         setPosition(x: double, y: double, z: double): void;
         setPosition(x: double, y: double, z: double, yaw: float, pitch: float): void;
     }
-
-    interface IChatComponent { }
-    interface UserIdent { }
-    interface Item { }
-    interface Block { }
-    interface WorldServer { }
-    interface WorldPoint { }
-    interface WorldZone { }
 
     interface CommandParserArgs {
         sendMessage(message: IChatComponent): void;
