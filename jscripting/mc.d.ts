@@ -23,15 +23,25 @@ declare namespace MC {
         getName(): string;
     }
 
+    interface BlockStatic {
+        getBlock(name: string): Block;
+    }
+
     interface World {
         getDimension(): int;
         getDifficulty(): int;
         getPlayerEntities(): JavaList<EntityPlayer>;
         blockExists(x: int, y: int, z: int): boolean;
         getBlock(x: int, y: int, z: int): Block;
+        setBlock(x: int, y: int, z: int, block: Block): void;
+        setBlock(x: int, y: int, z: int, block: Block, meta: int): void;
     }
 
     interface WorldServer extends World {
+    }
+
+    interface WorldStatic {
+        getWorld(dim: int): WorldServer;
     }
 
     interface Point {
@@ -147,14 +157,6 @@ declare namespace MC {
         getSenderPoint(): WorldPoint;
         getWorldZone(): WorldZone;
         needsPlayer(): void;
-    }
-
-    interface BlockStatic {
-        getBlock(name: string): Block;
-    }
-
-    interface WorldStatic {
-        getWorld(dim: int): WorldServer;
     }
 
     interface ServerStatic {

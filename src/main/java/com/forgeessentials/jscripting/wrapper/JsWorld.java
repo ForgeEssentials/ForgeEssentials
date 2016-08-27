@@ -40,6 +40,16 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         return new JsBlock<>(that.getBlock(x, y, z));
     }
 
+    public void setBlock(int x, int y, int z, JsBlock<Block> block)
+    {
+        that.setBlock(x, y, z, block.getThat());
+    }
+
+    public void setBlock(int x, int y, int z, JsBlock<Block> block, int meta)
+    {
+        that.setBlock(x, y, z, block.getThat(), meta, 3);
+    }
+
     // public void get()
     // {
     // return that.;
