@@ -13,14 +13,28 @@ declare namespace MC {
         getName(): string;
     }
 
-    interface EntityPlayer extends ICommandSender {
+    interface Entity {
         getId(): string;
         getUuid(): UUID;
 
+        getDimension(): int;
+        getX(): double;
+        getY(): double;
+        getZ(): double;
+    }
+
+    interface EntityLivingBase extends Entity {
         getHealth(): float;
         setHealth(value: float);
-
         getMaxHealth(): float;
+        getTotalArmorValue(): int;
+        
+        canEntityBeSeen(other: Entity): boolean;
+    }
+
+    interface EntityPlayer extends EntityLivingBase, ICommandSender {
+        setPosition(x: double, y: double, z: double): void;
+        setPosition(x: double, y: double, z: double, yaw: float, pitch: float): void;
     }
 
     interface IChatComponent { }

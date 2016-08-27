@@ -1,52 +1,30 @@
 package com.forgeessentials.jscripting.wrapper;
 
-import java.util.UUID;
-
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
-public class JsPlayer
+public class JsPlayer extends JsEntity<EntityPlayer>
 {
 
-    private EntityPlayer that;
-
-    public JsPlayer(EntityPlayer player)
+    public JsPlayer(EntityPlayer entity)
     {
-        this.that = player;
+        super(entity);
     }
 
-    public EntityPlayer getThat()
+    public void setPosition(double x, double y, double z)
     {
-        return that;
+        that.posX = x;
+        that.posY = y;
+        that.posZ = z;
+        ((EntityPlayerMP) that).playerNetServerHandler.setPlayerLocation(x, y, z, that.cameraYaw, that.cameraPitch);
     }
 
-    public String getName()
+    public void setPosition(double x, double y, double z, float yaw, float pitch)
     {
-        return that.getCommandSenderName();
-    }
-
-    public String getId()
-    {
-        return that.getPersistentID().toString();
-    }
-
-    public UUID getUuid()
-    {
-        return that.getPersistentID();
-    }
-
-    public float getHealth()
-    {
-        return that.getHealth();
-    }
-
-    public float getMaxHealth()
-    {
-        return that.getMaxHealth();
-    }
-
-    public void setHealth(float value)
-    {
-        that.setHealth(value);
+        that.posX = x;
+        that.posY = y;
+        that.posZ = z;
+        ((EntityPlayerMP) that).playerNetServerHandler.setPlayerLocation(x, y, z, yaw, pitch);
     }
 
 }
