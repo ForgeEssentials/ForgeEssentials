@@ -1,10 +1,9 @@
-package com.forgeessentials.jscripting;
+package com.forgeessentials.jscripting.wrapper;
 
 import java.util.UUID;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 
@@ -16,25 +15,25 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class JsMcWrapper
 {
 
-    public ICommandSender server = MinecraftServer.getServer();
+    public JsCommandSender server = new JsCommandSender(MinecraftServer.getServer());
 
-    public ICommandSender doAs(ICommandSender sender, UUID doAsPlayer, boolean hideChatOutput)
+    public JsCommandSender doAs(JsCommandSender sender, UUID doAsPlayer, boolean hideChatOutput)
     {
         UserIdent doAsUser = doAsPlayer == null ? APIRegistry.IDENT_SERVER : UserIdent.get(doAsPlayer);
-        DoAsCommandSender result = new DoAsCommandSender(doAsUser, sender);
+        DoAsCommandSender result = new DoAsCommandSender(doAsUser, sender.getThat());
         result.setHideChatMessages(hideChatOutput);
-        return result;
+        return new JsCommandSender(result);
     }
 
-    public ICommandSender doAs(ICommandSender sender, EntityPlayer doAsPlayer, boolean hideChatOutput)
+    public JsCommandSender doAs(JsCommandSender sender, EntityPlayer doAsPlayer, boolean hideChatOutput)
     {
         return doAs(sender, doAsPlayer == null ? null : doAsPlayer.getPersistentID(), hideChatOutput);
     }
 
-    public void cmd(ICommandSender sender, String cmd, Object... args)
+    public void cmd(JsCommandSender sender, String cmd, Object... args)
     {
         if (sender == null)
-            sender = MinecraftServer.getServer();
+            sender = server;
 
         ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmd);
         if (mcCommand == null)
@@ -46,7 +45,7 @@ public class JsMcWrapper
             for (int i = 0; i < args.length; i++)
                 strArgs[i] = args[i].toString();
 
-            mcCommand.processCommand(sender, strArgs);
+            mcCommand.processCommand(sender.getThat(), strArgs);
         }
         catch (CommandException e)
         {
@@ -58,9 +57,9 @@ public class JsMcWrapper
         }
     }
 
-    public void confirm(ICommandSender player, String message)
+    public void confirm(JsCommandSender player, String message)
     {
-        ChatOutputHandler.chatConfirmation(player, message);
+        ChatOutputHandler.chatConfirmation(player.getThat(), message);
     }
 
 }

@@ -20,6 +20,7 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
+import com.forgeessentials.jscripting.wrapper.JsMcWrapper;
 import com.forgeessentials.scripting.ScriptParser.ScriptErrorException;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.util.events.ConfigReloadEvent;

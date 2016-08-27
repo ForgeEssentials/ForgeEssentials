@@ -1,11 +1,20 @@
+mc.confirm(sender, 'Hello JavaScript! Hello ' + sender.getName() + '!');
 
-mc.confirm(player, 'sin(3) = ' + Math.sin(3));
+mc.confirm(sender, 'sin(3) = ' + Math.sin(3));
 
-for (var i = 1; i < 3; i++) {
-    mc.confirm(player, 'Hello ' + player.getCommandSenderName() + '! #' + i);
+if (player) {
+    mc.confirm(sender, 'Running script as player');
+    mc.confirm(sender, 'Your health is ' + player.getHealth());
+} else {
+    mc.confirm(sender, 'Running script as server');
 }
 
-var doAsHideChat = mc.doAs(player, player, true);
-mc.cmd(doAsHideChat, 'give', player.getCommandSenderName(), 'minecraft:dirt', '1');
+mc.confirm(sender, 'Arguments: ' + args.toString());
+var i = 0;
+while (!args.isEmpty()) {
+    i++;
+    mc.confirm(sender, '  ' + i + ': ' + args.remove());
+}
 
-// mc.cmd(player, 'help');
+// var doAsHideChat = mc.doAs(sender, sender, true);
+// mc.cmd(doAsHideChat, 'give', sender.getCommandSenderName(), 'minecraft:dirt', '1');
