@@ -5,19 +5,12 @@ import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
-public class JsEntity<T extends Entity>
+public class JsEntity<T extends Entity> extends JsWrapper<T>
 {
-
-    protected T that;
-
-    public JsEntity(T entity)
+    
+    public JsEntity(T that)
     {
-        this.that = entity;
-    }
-
-    public T getThat()
-    {
-        return that;
+        super(that);
     }
 
     public String getName()

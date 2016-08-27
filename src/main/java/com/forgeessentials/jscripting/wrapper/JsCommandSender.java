@@ -23,9 +23,9 @@ public class JsCommandSender
         return that.getCommandSenderName();
     }
 
-    public JsPlayer getPlayer()
+    public JsEntityPlayer getPlayer()
     {
-        return that instanceof EntityPlayer ? new JsPlayer((EntityPlayer) that) : null;
+        return that instanceof EntityPlayer ? new JsEntityPlayer((EntityPlayer) that) : null;
     }
 
 }

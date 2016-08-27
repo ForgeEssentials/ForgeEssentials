@@ -16,7 +16,7 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.wrapper.JsCommandSender;
-import com.forgeessentials.jscripting.wrapper.JsPlayer;
+import com.forgeessentials.jscripting.wrapper.JsEntityPlayer;
 import com.forgeessentials.util.CommandParserArgs;
 import com.google.common.io.PatternFilenameFilter;
 
@@ -91,7 +91,7 @@ public class CommandJScript extends ParserCommandBase
             throw new TranslatedCommandException("Could not initialize JavaScript engine");
         SimpleBindings scope = new SimpleBindings();
         scope.put("sender", new JsCommandSender(arguments.sender));
-        scope.put("player", arguments.senderPlayer == null ? null : new JsPlayer(arguments.senderPlayer));
+        scope.put("player", arguments.senderPlayer == null ? null : new JsEntityPlayer(arguments.senderPlayer));
         scope.put("args", arguments);
 
         // Run script

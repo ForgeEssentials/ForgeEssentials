@@ -3,10 +3,10 @@ package com.forgeessentials.jscripting.wrapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class JsPlayer extends JsEntity<EntityPlayer>
+public class JsEntityPlayer extends JsEntity<EntityPlayer>
 {
 
-    public JsPlayer(EntityPlayer entity)
+    public JsEntityPlayer(EntityPlayer entity)
     {
         super(entity);
     }
