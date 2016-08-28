@@ -5,10 +5,10 @@ import net.minecraft.block.Block;
 public class JsBlockStatic
 {
 
-    public JsBlock<Block> getBlock(String name)
+    public JsBlock getBlock(String name)
     {
         Block block = Block.getBlockFromName(name);
-        return block == null ? null : new JsBlock<>(block);
+        return block == null ? null : JsBlock.get(block);
     }
 
 }

@@ -1,18 +1,18 @@
 package com.forgeessentials.jscripting;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.script.Bindings;
+import javax.script.Compilable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.api.ScriptHandler;
 import com.forgeessentials.core.ForgeEssentials;
@@ -23,15 +23,12 @@ import com.forgeessentials.jscripting.command.CommandJScript;
 import com.forgeessentials.jscripting.wrapper.JsBlockStatic;
 import com.forgeessentials.jscripting.wrapper.JsServerStatic;
 import com.forgeessentials.jscripting.wrapper.JsWorldStatic;
-import com.forgeessentials.scripting.ScriptParser.ScriptErrorException;
-import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -43,6 +40,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 {
 
     public static final long CRON_CHECK_INTERVAL = 1000;
+
+    public static final String COMMANDS_DIR = "commands/";
 
     public static final String PERM = "fe.jscript";
 
@@ -56,9 +55,14 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     private static ScriptEngine engine;
 
     /**
+     * Script cache
+     */
+    protected static Map<String, ScriptInstance> scripts = new HashMap<>();
+
+    /**
      * Map < event name, List of scripts < lines of code > >
      */
-    protected Map<String, Map<String, String>> scripts = new HashMap<>();
+    // protected Map<String, Map<String, String>> eventScripts = new HashMap<>();
 
     /* ------------------------------------------------------------ */
 
@@ -86,17 +90,13 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     {
         FECommandManager.registerCommand(new CommandJScript());
 
-        commandsDir = new File(moduleDir, "commands");
+        commandsDir = new File(moduleDir, COMMANDS_DIR);
         commandsDir.mkdirs();
     }
 
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent event)
     {
-        // Reinitialize MC binding because MinecraftServer.getServer() changed
-        Bindings scope = engine.getBindings(ScriptContext.GLOBAL_SCOPE);
-        scope.put("mc", new JsServerStatic());
-        
         // TODO: Load server scripts
         // TODO: Load scripted commands
     }
@@ -106,13 +106,22 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     {
         if (event.phase == Phase.START)
             return;
-        // TODO: Handle cron scripts
+
+        // TODO: Handle cron scripts - probably not even necessary
+    }
+
+    @Override
+    @SubscribeEvent
+    public void serverStopped(FEModuleServerStoppedEvent e)
+    {
+        scripts.clear();
     }
 
     @SubscribeEvent
     public void reload(ConfigReloadEvent event)
     {
-        // TODO: Reload server scripts
+        scripts.clear();
+
         // TODO: Reload scripted commands
     }
 
@@ -121,8 +130,38 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     public static ScriptEngine getEngine()
     {
-        // engine = SEM.getEngineByName("JavaScript");
         return engine;
+    }
+
+    public static Compilable getCompiler()
+    {
+        return (Compilable) engine;
+    }
+
+    public static ScriptInstance getScript(String uri) throws IOException, ScriptException
+    {
+        ScriptInstance result = scripts.get(uri);
+        if (result == null)
+        {
+            File f = new File(moduleDir, uri);
+            if (!f.exists())
+                return null;
+            result = new ScriptInstance(f);
+            scripts.put(uri, result);
+        }
+        else
+        {
+            try
+            {
+                result.checkIfModified();
+            }
+            catch (IOException | ScriptException e)
+            {
+                scripts.remove(uri);
+                throw e;
+            }
+        }
+        return result;
     }
 
     public static File getCommandsDir()
@@ -131,39 +170,18 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     /* ------------------------------------------------------------ */
-    /* Script handling OLD */
+    /* Script handling API */
 
     @Override
     public void addScriptType(String key)
     {
-        if (!scripts.containsKey(key))
-            scripts.put(key, new HashMap<String, String>());
+        // TODO Auto-generated method stub
     }
 
     @Override
-    public void runEventScripts(String eventType, ICommandSender sender)
+    public void runEventScripts(String key, ICommandSender sender)
     {
-        if (sender == null)
-            sender = MinecraftServer.getServer();
-        for (Entry<String, String> script : scripts.get(eventType).entrySet())
-        {
-            if (script.getValue().isEmpty())
-                continue;
-            try
-            {
-                // TODO: Run event script
-                // ScriptParser.run(script.getValue(), sender);
-            }
-            catch (CommandException | ScriptErrorException e)
-            {
-                if (e.getMessage() != null && !e.getMessage().isEmpty())
-                    ChatOutputHandler.chatError(sender, e.getMessage());
-            }
-            catch (ScriptException e)
-            {
-                LoggingHandler.felog.error(String.format("Error in script \"%s\": %s", script.getKey(), e.getMessage()));
-            }
-        }
+        // TODO Auto-generated method stub
     }
 
 }

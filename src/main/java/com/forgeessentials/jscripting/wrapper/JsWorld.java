@@ -1,6 +1,5 @@
 package com.forgeessentials.jscripting.wrapper;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -35,17 +34,17 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         return that.blockExists(x, y, z);
     }
 
-    public JsBlock<Block> getBlock(int x, int y, int z)
+    public JsBlock getBlock(int x, int y, int z)
     {
-        return new JsBlock<>(that.getBlock(x, y, z));
+        return JsBlock.get(that.getBlock(x, y, z));
     }
 
-    public void setBlock(int x, int y, int z, JsBlock<Block> block)
+    public void setBlock(int x, int y, int z, JsBlock block)
     {
         that.setBlock(x, y, z, block.getThat());
     }
 
-    public void setBlock(int x, int y, int z, JsBlock<Block> block, int meta)
+    public void setBlock(int x, int y, int z, JsBlock block, int meta)
     {
         that.setBlock(x, y, z, block.getThat(), meta, 3);
     }

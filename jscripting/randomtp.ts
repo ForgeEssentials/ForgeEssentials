@@ -1,29 +1,27 @@
 
-function main() {
-    if (args.isEmpty()) {
-        sender.chatConfirm('/jscript randomtp range [x z]: Teleport to some random location');
+export function processCommand(event: MC.CommandEvent) {
+    if (event.isEmpty()) {
+        event.sender.chatConfirm('/jscript randomtp range [x z]: Teleport to some random location');
         return;
     }
 
-    var r: int = args.parseInt();
+    var r: int = event.parseInt();
     var x: int;
     var z: int;
-    if (!args.isEmpty()) {
-        x = args.parseInt();
-        z = args.parseInt();
-    } else if (player) {
-        x = player.getX();
-        z = player.getZ();
+    if (!event.isEmpty()) {
+        x = event.parseInt();
+        z = event.parseInt();
+    } else if (event.player) {
+        x = event.player.getX();
+        z = event.player.getZ();
     } else {
-        sender.chatConfirm('Error: no player!');
+        event.sender.chatConfirm('Error: no player!');
         return;
     }
 
-    if (args.isTabCompletion)
+    if (event.isTabCompletion)
         return;
 
-    var hiddenChatSender = sender.doAs(null, true);
-    Server.runCommand(hiddenChatSender, 'spreadplayers', x, z, 0, r, false, sender.getName());
+    var hiddenChatSender = event.sender.doAs(null, true);
+    Server.runCommand(hiddenChatSender, 'spreadplayers', x, z, 0, r, false, event.sender.getName());
 }
-
-main();

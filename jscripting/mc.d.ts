@@ -117,14 +117,15 @@ declare namespace MC {
         setPosition(x: double, y: double, z: double, yaw: float, pitch: float): void;
     }
 
-    interface CommandParserArgs {
+    interface EntityPlayerMP extends EntityPlayer {
+    }
+
+    interface CommandEvent {
         isTabCompletion: boolean;
         // command: ICommand;
-        // args: Queue<String>;
-        // sender: ICommandSender;
-        // senderPlayer: EntityPlayerMP;
+        sender: ICommandSender;
+        player: EntityPlayerMP;
         // ident: UserIdent;
-        // permissionContext: PermissionContext;
         sendMessage(message: IChatComponent): void;
         confirm(message: string, ...args: any[]): void;
         notify(message: string, ...args: any[]): void;
@@ -135,7 +136,7 @@ declare namespace MC {
         peek(): string;
         isEmpty(): boolean;
         hasPlayer(): boolean;
-        parsePlayer(mustExist: boolean, mustBeOnline: boolean): UserIdent;
+        parsePlayer(mustExist?: boolean, mustBeOnline?: boolean): UserIdent;
         parseItem(): Item;
         parseBlock(): Block;
         parsePermission(): string;

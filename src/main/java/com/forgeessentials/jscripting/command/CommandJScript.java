@@ -1,13 +1,9 @@
 package com.forgeessentials.jscripting.command;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import javax.script.ScriptEngine;
 import javax.script.ScriptException;
-import javax.script.SimpleBindings;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -16,8 +12,8 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
-import com.forgeessentials.jscripting.wrapper.JsCommandSender;
-import com.forgeessentials.jscripting.wrapper.JsEntityPlayer;
+import com.forgeessentials.jscripting.ScriptInstance;
+import com.forgeessentials.jscripting.wrapper.JsCommandEvent;
 import com.forgeessentials.util.CommandParserArgs;
 import com.google.common.io.PatternFilenameFilter;
 
@@ -76,43 +72,44 @@ public class CommandJScript extends ParserCommandBase
 
         // TAB-complete and parse argument
         arguments.tabComplete(scriptFiles);
-        String fileName = arguments.remove().toLowerCase();
+        String fileName = arguments.remove().toLowerCase() + ".js";
 
         if (arguments.isTabCompletion)
             return;
 
-        // Check for file
-        File file = new File(ModuleJScripting.getCommandsDir(), fileName + ".js");
-        if (!file.exists() || !file.isFile())
-            throw new TranslatedCommandException("Script file not found");
-
-        // Initialize engine
-        ScriptEngine engine = ModuleJScripting.getEngine();
-        if (engine == null)
-            throw new TranslatedCommandException("Could not initialize JavaScript engine");
-        SimpleBindings scope = new SimpleBindings();
-        scope.put("sender", new JsCommandSender(arguments.sender));
-        scope.put("player", arguments.senderPlayer == null ? null : new JsEntityPlayer(arguments.senderPlayer));
-        scope.put("args", arguments);
-
-        // Run script
-        try (BufferedReader reader = new BufferedReader(new FileReader(file)))
+        try
         {
-            engine.eval(reader, scope);
+            ScriptInstance script = ModuleJScripting.getScript(ModuleJScripting.COMMANDS_DIR + fileName);
+            try
+            {
+                script.call("processCommand", new JsCommandEvent(arguments));
+            }
+            catch (CommandException e)
+            {
+                throw e;
+            }
+            catch (NoSuchMethodException e)
+            {
+                throw new TranslatedCommandException("Script missing processCommand function.");
+            }
+            catch (ScriptException e)
+            {
+                e.printStackTrace();
+                throw new TranslatedCommandException("Error in script: %s", e.getMessage());
+            }
         }
-        catch (CommandException e)
+        catch (FileNotFoundException e)
         {
-            throw e;
+            throw new TranslatedCommandException("Script not found");
         }
-        catch (IOException | ScriptException e)
+        catch (IOException e1)
+        {
+            throw new TranslatedCommandException("Error loading script file");
+        }
+        catch (ScriptException e)
         {
             e.printStackTrace();
-            throw new TranslatedCommandException("Error in script: %s", e.getMessage());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            throw new TranslatedCommandException("Error in script: %s", e.getMessage());
+            throw new TranslatedCommandException("Error compiling script: %s", e.getMessage());
         }
     }
 
