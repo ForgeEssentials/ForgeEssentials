@@ -36,3 +36,4 @@ modlist.txt
 /build
 /bin
 /.apt_generated/
+/jscripting/generated.d.ts
