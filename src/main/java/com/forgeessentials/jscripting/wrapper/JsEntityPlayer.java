@@ -1,7 +1,11 @@
 package com.forgeessentials.jscripting.wrapper;
 
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldPoint;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ChunkCoordinates;
 
 public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 {
@@ -48,5 +52,10 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
         if (inventory == null)
             inventory = new JsInventory<>(that.inventory);
         return inventory;
+    }
+
+    public JsPoint<?> getBedLocation(int dimension) {
+        ChunkCoordinates coord = EntityPlayer.verifyRespawnCoordinates(that.worldObj, that.getBedLocation(dimension), false);
+        return coord != null ? new JsWorldPoint<>(new WorldPoint(coord.posX, coord.posY, coord.posZ, dimension)) : null;
     }
 }

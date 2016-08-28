@@ -95,6 +95,10 @@ declare namespace MC {
         setX(x: int): Point;
         setY(y: int): Point;
         setZ(z: int): Point;
+        length(): double;
+        distance(other: Point): double;
+        add(other: Point): void;
+        subtract(other: Point): void;
     }
 
     interface WorldPoint extends Point {
@@ -160,6 +164,7 @@ declare namespace MC {
         setPosition(x: double, y: double, z: double): void;
         setPosition(x: double, y: double, z: double, yaw: float, pitch: float): void;
         getInventory(): Inventory;
+        getBedLocation(dimension: int): Point;
     }
 
     interface EntityPlayerMP extends EntityPlayer {
