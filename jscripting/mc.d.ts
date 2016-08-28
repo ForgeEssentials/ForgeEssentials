@@ -149,7 +149,7 @@ declare namespace MC {
 		getName(): string;
 	}
 	
-	interface ItemStack {
+	interface ItemStack extends JavaObject {
 		getItem(): Item;
 		getStackSize(): int;
 		setStackSize(size: int): void;

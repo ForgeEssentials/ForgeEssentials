@@ -18,7 +18,7 @@ public class DtsGenerator
     private static final Pattern fieldPattern = Pattern.compile("public (?:final )?([\\w <>,?\\[\\]]+) (\\w+)( =.+)?;");
     private static final Pattern methodPattern = Pattern.compile("public ([\\w <>,?\\[\\]]+) (\\w+)\\(([\\w <>,.?\\[\\]]*)\\)");
     // private static final Pattern constructorPattern = Pattern.compile("public (\\w+)\\(([\\w <>,?\\[\\]]*)\\)");
-    private static final Pattern classDefPattern = Pattern.compile("public class (\\w+)(?:<[\\w ]+>)?(?: extends ([\\w ,<>]+)[\\n\\}])?");
+    private static final Pattern classDefPattern = Pattern.compile("public class (\\w+)(?:<[\\w ]+>)?(?: extends ([\\w ,<>]+)[\\s\\}])?");
     private static final Pattern customClassDefPattern = Pattern.compile("classdef (.*)");
     private static final Pattern customMethodDefPattern = Pattern.compile("methoddef (.*)");
 
