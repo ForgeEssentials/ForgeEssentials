@@ -99,6 +99,9 @@ declare namespace MC {
         distance(other: Point): double;
         add(other: Point): void;
         subtract(other: Point): void;
+        distance(x: int, y: int, z: int): double;
+        add(x: int, y: int, z: int): void;
+        subtract(x: int, y: int, z: int): void;
     }
 
     interface WorldPoint extends Point {

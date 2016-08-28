@@ -63,4 +63,19 @@ public class JsPoint<T extends Point> extends JsWrapper<T>
         that.subtract(other.getThat());
     }
 
+    public double distance(int x, int y, int z)
+    {
+        return that.distance(new Point(x, y, z));
+    }
+
+    public void add(int x, int y, int z)
+    {
+        that.add(new Point(x, y, z));
+    }
+
+    public void subtract(int x, int y, int z)
+    {
+        that.subtract(new Point(x, y, z));
+    }
+
 }
