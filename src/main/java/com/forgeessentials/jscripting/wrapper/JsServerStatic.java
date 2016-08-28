@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimerTask;
 
+import javax.script.Invocable;
 import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
@@ -12,41 +13,20 @@ import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
-import com.forgeessentials.jscripting.ModuleJScripting;
+import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class JsServerStatic
 {
 
-    public static class CallScriptMethodTask implements Runnable
-    {
-
-        private final Object fn;
-
-        private Object[] args;
-
-        public CallScriptMethodTask(Object fn, Object... args)
-        {
-            this.fn = fn;
-            this.args = args;
-        }
-
-        @Override
-        public void run()
-        {
-            try
-            {
-                ModuleJScripting.getInvocable().invokeMethod(fn, "call", args);
-            }
-            catch (NoSuchMethodException | ScriptException e)
-            {
-                System.err.println("Error calling script callback");
-                e.printStackTrace();
-            }
-        }
-    }
+    private ScriptInstance script;
 
     private JsCommandSender server;
+
+    public JsServerStatic(ScriptInstance script)
+    {
+        this.script = script;
+    }
 
     public JsCommandSender getServer()
     {
@@ -116,14 +96,14 @@ public class JsServerStatic
 
     public int setTimeout(Object fn, long timeout, Object... args) throws NoSuchMethodException, ScriptException
     {
-        TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(fn, args));
+        TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(script.getInvocable(), fn, args));
         TaskRegistry.schedule(task, timeout);
         return registerTask(task);
     }
 
     public int setInterval(Object fn, long timeout, Object... args)
     {
-        TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(fn, args));
+        TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(script.getInvocable(), fn, args));
         TaskRegistry.scheduleRepeated(task, timeout);
         return registerTask(task);
     }
@@ -140,4 +120,35 @@ public class JsServerStatic
         clearTimeout(id);
     }
 
+    public static class CallScriptMethodTask implements Runnable
+    {
+
+        private final Object fn;
+
+        private Object[] args;
+
+        private Invocable engine;
+
+        public CallScriptMethodTask(Invocable engine, Object fn, Object... args)
+        {
+            this.engine = engine;
+            this.fn = fn;
+            this.args = args;
+        }
+
+        @Override
+        public void run()
+        {
+            try
+            {
+                engine.invokeMethod(fn, "call", args);
+            }
+            catch (NoSuchMethodException | ScriptException e)
+            {
+                System.err.println("Error calling script callback");
+                e.printStackTrace();
+            }
+        }
+    }
+    
 }

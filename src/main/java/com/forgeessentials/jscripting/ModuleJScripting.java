@@ -3,38 +3,36 @@ package com.forgeessentials.jscripting;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-import javax.script.Bindings;
 import javax.script.Compilable;
-import javax.script.Invocable;
-import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import net.minecraft.command.ICommandSender;
 
+import org.apache.commons.io.FileUtils;
+
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.ScriptHandler;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
-import com.forgeessentials.jscripting.wrapper.JsBlockStatic;
-import com.forgeessentials.jscripting.wrapper.JsServerStatic;
-import com.forgeessentials.jscripting.wrapper.JsWorldStatic;
+import com.forgeessentials.jscripting.wrapper.JsCommandSender;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.LoggingHandler;
+import com.sun.xml.internal.ws.util.StringUtils;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 @FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false)
 public class ModuleJScripting extends ServerEventHandler implements ScriptHandler
@@ -53,8 +51,6 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     private static File commandsDir;
 
-    private static ScriptEngine engine;
-
     public static boolean isNashorn;
 
     public static boolean isRhino;
@@ -62,12 +58,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     /**
      * Script cache
      */
-    protected static Map<String, ScriptInstance> scripts = new HashMap<>();
-
-    /**
-     * Map < event name, List of scripts < lines of code > >
-     */
-    // protected Map<String, Map<String, String>> eventScripts = new HashMap<>();
+    protected static Map<File, ScriptInstance> scripts = new HashMap<>();
 
     /* ------------------------------------------------------------ */
 
@@ -75,22 +66,16 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public boolean canLoad()
     {
         System.setProperty("nashorn.args", "-strict --no-java --no-syntax-extensions");
-        engine = SEM.getEngineByName("JavaScript");
+        ScriptEngine engine = SEM.getEngineByName("JavaScript");
+        isNashorn = engine.getFactory().getEngineName().toLowerCase().contains("nashorn");
+        isRhino = engine.getFactory().getEngineName().toLowerCase().contains("rhino");
         return engine != null;
     }
 
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent event)
     {
-        isNashorn = engine.getFactory().getEngineName().toLowerCase().contains("nashorn");
-        isRhino = engine.getFactory().getEngineName().toLowerCase().contains("rhino");
-
-        Bindings scope = engine.getBindings(ScriptContext.GLOBAL_SCOPE);
-        scope.put("Server", new JsServerStatic());
-        scope.put("Block", new JsBlockStatic());
-        scope.put("World", new JsWorldStatic());
-
-        // APIRegistry.scripts = this;
+        APIRegistry.scripts = this;
     }
 
     @SubscribeEvent
@@ -105,17 +90,18 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent event)
     {
-        // TODO: Load server scripts
-        // TODO: Load scripted commands
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public void serverTickEvent(ServerTickEvent event)
-    {
-        if (event.phase == Phase.START)
-            return;
-
-        // TODO: Handle cron scripts - probably not even necessary
+        for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js" }, true); it.hasNext();)
+        {
+            File file = it.next();
+            try
+            {
+                getScript(file);
+            }
+            catch (IOException | ScriptException e)
+            {
+                LoggingHandler.felog.error("FE Script error: " + e.getMessage());
+            }
+        }
     }
 
     @Override
@@ -138,29 +124,21 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     public static ScriptEngine getEngine()
     {
-        return engine;
+        return SEM.getEngineByName("JavaScript");
     }
 
-    public static Compilable getCompiler()
+    public static Compilable getCompilable()
     {
-        return (Compilable) engine;
+        return (Compilable) getEngine();
     }
 
-    public static Invocable getInvocable()
+    public static synchronized ScriptInstance getScript(File file) throws IOException, ScriptException
     {
-        return (Invocable) engine;
-    }
-
-    public static ScriptInstance getScript(String uri) throws IOException, ScriptException
-    {
-        ScriptInstance result = scripts.get(uri);
+        ScriptInstance result = scripts.get(file);
         if (result == null)
         {
-            File f = new File(moduleDir, uri);
-            if (!f.exists())
-                return null;
-            result = new ScriptInstance(f);
-            scripts.put(uri, result);
+            result = new ScriptInstance(file);
+            scripts.put(file, result);
         }
         else
         {
@@ -170,11 +148,19 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             }
             catch (IOException | ScriptException e)
             {
-                scripts.remove(uri);
+                scripts.remove(file);
                 throw e;
             }
         }
         return result;
+    }
+
+    public static ScriptInstance getScript(String uri) throws IOException, ScriptException
+    {
+        File f = new File(moduleDir, uri);
+        if (!f.exists())
+            return null;
+        return getScript(f);
     }
 
     public static File getCommandsDir()
@@ -183,48 +169,39 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     /* ------------------------------------------------------------ */
-
-    public static Object callJsFunction(Object fn, Object thiz, Object... args)
-    {
-        if (isNashorn)
-            return callNashornFunction(fn, thiz, args);
-        if (isRhino)
-            return callRhinoFunction(fn, thiz, args);
-        throw new IllegalStateException("Neither Nashorn nor Rhino JS engine detected");
-    }
-
-    private static Object callRhinoFunction(Object fn, Object thiz, Object... args)
-    {
-        throw new IllegalStateException("Not yet implemented");
-    }
-
-    private static Object callNashornFunction(Object fn, Object thiz, Object... args)
-    {
-        try
-        {
-            return getInvocable().invokeMethod(fn, "call", args);
-        }
-        catch (NoSuchMethodException | ScriptException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-        // return ((ScriptObjectMirror) fn).call(thiz, args);
-    }
-
-    /* ------------------------------------------------------------ */
     /* Script handling API */
 
     @Override
     public void addScriptType(String key)
     {
-        // TODO Auto-generated method stub
+        String fnName = "on" + StringUtils.capitalize(key);
+        try
+        {
+            new File(moduleDir, fnName + ".txt").createNewFile();
+        }
+        catch (IOException e)
+        {
+            /* nothing */
+        }
     }
 
     @Override
-    public void runEventScripts(String key, ICommandSender sender)
+    public synchronized void runEventScripts(String key, ICommandSender sender)
     {
-        // TODO Auto-generated method stub
+        JsCommandSender jsSender = sender == null ? null : new JsCommandSender(sender);
+        String fnName = "on" + StringUtils.capitalize(key);
+        for (ScriptInstance script : scripts.values())
+        {
+            try
+            {
+                if (!script.illegalFunction(fnName))
+                    script.call(fnName, jsSender);
+            }
+            catch (NoSuchMethodException | ScriptException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

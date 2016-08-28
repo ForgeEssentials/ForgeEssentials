@@ -34,3 +34,11 @@ export function processCommand(args: MC.CommandArgs) {
         clearTimeout(t1);
     }, 2000);
 }
+
+export function onInteract_left(sender: MC.ICommandSender) {
+    sender.chatConfirm('interact_left');
+}
+
+export function onInteract_right(sender: MC.ICommandSender) {
+    sender.chatConfirm('interact_right');
+}
