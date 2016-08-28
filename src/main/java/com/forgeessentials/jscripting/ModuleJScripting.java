@@ -14,6 +14,7 @@ import javax.script.ScriptException;
 import net.minecraft.command.ICommandSender;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.ScriptHandler;
@@ -30,7 +31,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.sun.xml.internal.ws.util.StringUtils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
