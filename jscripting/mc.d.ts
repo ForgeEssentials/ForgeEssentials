@@ -83,7 +83,7 @@ declare namespace MC {
 		chatWarning(message: string): void;
 	}
 	
-	interface Enchantment {
+	interface Enchantment extends JavaObject {
 	}
 	
 	interface Entity extends JavaObject {
@@ -129,7 +129,7 @@ declare namespace MC {
 	interface EntityPlayerList extends JavaList<EntityPlayer> {
 	}
 	
-	interface Inventory {
+	interface Inventory extends JavaObject {
 		getStackInSlot(slot: int): ItemStack;
 		setStackInSlot(slot: int, stack: ItemStack): void;
 		isStackValidForSlot(slot: int, stack: ItemStack): boolean;
@@ -139,13 +139,13 @@ declare namespace MC {
 		hasCustomName(): boolean;
 	}
 	
-	interface InventoryPlayer {
+	interface InventoryPlayer extends Inventory {
 		getCurrentItem(): ItemStack;
 		getCurrentItemIndex(): int;
 		setCurrentItemIndex(index: int): void;
 	}
 	
-	interface Item {
+	interface Item extends JavaObject {
 		getName(): string;
 	}
 	
@@ -176,7 +176,7 @@ declare namespace MC {
 		createItemStack(item: Item, stackSize: int, damage: int): ItemStack;
 	}
 	
-	interface Point {
+	interface Point extends JavaObject {
 		getX(): int;
 		getY(): int;
 		getZ(): int;
@@ -199,6 +199,7 @@ declare namespace MC {
 		chatNotification(message: string): void;
 		chatError(message: string): void;
 		chatWarning(message: string): void;
+		registerCommand(name: string, usage: string, permission: string, opOnly: boolean): void;
 		setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
 		setInterval(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
 		clearTimeout(handle: number): void;
@@ -235,7 +236,7 @@ declare namespace MC {
 		setBlock(x: int, y: int, z: int, block: Block, meta: int): void;
 	}
 	
-	interface WorldPoint {
+	interface WorldPoint extends Point {
 		getDimension(): int;
 		setDimension(dim: int): void;
 		setX(x: int): WorldPoint;

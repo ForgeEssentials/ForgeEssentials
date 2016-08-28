@@ -14,7 +14,7 @@
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "../rundir/server/ForgeEssentials/JScripting/commands"
+        "outDir": "../run/ForgeEssentials/JScripting/commands"
     },
     "filesGlob": [
         "mc.d.ts",
@@ -23,7 +23,6 @@
     "exclude": [],
     "files": [
         "mc.d.ts",
-        "generated.d.ts",
         "pumpkinhead.ts",
         "randomtp.ts",
         "test.ts"

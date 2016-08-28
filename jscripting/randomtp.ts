@@ -34,3 +34,5 @@ export function processCommand(args: MC.CommandArgs) {
     var hiddenChatSender = args.sender.doAs(null, true);
     Server.runCommand(hiddenChatSender, 'spreadplayers', x, z, 0, r, false, args.sender.getName());
 }
+
+Server.registerCommand('randomtp', '/randomtp range [x z] [player]', 'fe.teleport.randomtp', false);

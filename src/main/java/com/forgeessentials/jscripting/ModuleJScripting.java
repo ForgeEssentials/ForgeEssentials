@@ -2,8 +2,10 @@ package com.forgeessentials.jscripting;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.script.Compilable;
@@ -19,15 +21,17 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.ScriptHandler;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
+import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.JsCommandSender;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -60,6 +64,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
      */
     protected static Map<File, ScriptInstance> scripts = new HashMap<>();
 
+    protected static List<CommandJScriptCommand> commands = new ArrayList<>();
+
     /* ------------------------------------------------------------ */
 
     @Preconditions
@@ -88,7 +94,35 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent event)
+    public void serverStarted(FEModuleServerPostInitEvent event)
+    {
+        loadScripts();
+    }
+
+    @Override
+    @SubscribeEvent
+    public void serverStopped(FEModuleServerStoppedEvent e)
+    {
+        deregisterCommands();
+        scripts.clear();
+    }
+
+    @SubscribeEvent
+    public void reload(ConfigReloadEvent event)
+    {
+        deregisterCommands();
+        scripts.clear();
+        loadScripts();
+    }
+
+    private void deregisterCommands()
+    {
+        for (ParserCommandBase command : commands)
+            FECommandManager.deegisterCommand(command.getCommandName());
+        commands.clear();
+    }
+
+    private void loadScripts()
     {
         for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js" }, true); it.hasNext();)
         {
@@ -102,21 +136,6 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
                 LoggingHandler.felog.error("FE Script error: " + e.getMessage());
             }
         }
-    }
-
-    @Override
-    @SubscribeEvent
-    public void serverStopped(FEModuleServerStoppedEvent e)
-    {
-        scripts.clear();
-    }
-
-    @SubscribeEvent
-    public void reload(ConfigReloadEvent event)
-    {
-        scripts.clear();
-
-        // TODO: Reload scripted commands
     }
 
     /* ------------------------------------------------------------ */
@@ -148,7 +167,13 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             }
             catch (IOException | ScriptException e)
             {
-                scripts.remove(file);
+                result = scripts.remove(file);
+                for (Iterator<CommandJScriptCommand> it = commands.iterator(); it.hasNext();)
+                {
+                    CommandJScriptCommand command = it.next();
+                    if (command.script == result)
+                        it.remove();
+                }
                 throw e;
             }
         }
@@ -166,6 +191,13 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public static File getCommandsDir()
     {
         return commandsDir;
+    }
+
+    public static void registerScriptCommand(ScriptInstance script, String name, String usage, String permission, boolean opOnly)
+    {
+        CommandJScriptCommand command = new CommandJScriptCommand(script, name, usage, permission, opOnly);
+        commands.add(command);
+        FECommandManager.registerCommand(command);
     }
 
     /* ------------------------------------------------------------ */
@@ -195,9 +227,9 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             try
             {
                 if (!script.illegalFunction(fnName))
-                    script.call(fnName, jsSender);
+                    script.tryCall(fnName, jsSender);
             }
-            catch (NoSuchMethodException | ScriptException e)
+            catch (ScriptException e)
             {
                 e.printStackTrace();
             }

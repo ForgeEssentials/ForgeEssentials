@@ -13,6 +13,7 @@ import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
+import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -22,6 +23,8 @@ public class JsServerStatic
     private ScriptInstance script;
 
     private JsCommandSender server;
+
+    private Map<Integer, TimerTask> tasks = new HashMap<>();
 
     public JsServerStatic(ScriptInstance script)
     {
@@ -83,7 +86,10 @@ public class JsServerStatic
         ChatOutputHandler.chatWarning(MinecraftServer.getServer(), message);
     }
 
-    private Map<Integer, TimerTask> tasks = new HashMap<>();
+    public void registerCommand(String name, String usage, String permission, boolean opOnly)
+    {
+        ModuleJScripting.registerScriptCommand(script, name, usage, permission, opOnly);
+    }
 
     private int registerTask(TimerTask task)
     {

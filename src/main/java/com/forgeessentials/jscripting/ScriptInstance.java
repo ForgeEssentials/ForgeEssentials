@@ -82,6 +82,19 @@ public class ScriptInstance
         }
     }
 
+    public Object tryCall(String fn, Object... args) throws ScriptException
+    {
+        try
+        {
+            return this.invocable.invokeFunction(fn, args);
+        }
+        catch (NoSuchMethodException e)
+        {
+            illegalFunctions.add(fn);
+            return null;
+        }
+    }
+
     public boolean illegalFunction(String fnName)
     {
         return illegalFunctions.contains(fnName);
