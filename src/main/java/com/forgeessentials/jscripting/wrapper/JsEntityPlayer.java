@@ -8,7 +8,7 @@ import net.minecraft.util.ChunkCoordinates;
 
 public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 {
-    protected JsInventory<?> inventory;
+    protected JsInventoryPlayer<?> inventory;
 
     private JsCommandSender commandSender;
 
@@ -46,10 +46,10 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
         return commandSender = new JsCommandSender(that, this);
     }
 
-    public JsInventory<?> getInventory()
+    public JsInventoryPlayer<?> getInventory()
     {
         if (inventory == null)
-            inventory = new JsInventory<>(that.inventory);
+            inventory = new JsInventoryPlayer<>(that.inventory);
         return inventory;
     }
 

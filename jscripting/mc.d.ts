@@ -71,6 +71,12 @@ declare namespace MC {
         hasCustomName(): boolean;
     }
 
+    interface InventoryPlayer extends Inventory {
+        getCurrentItem(): ItemStack;
+        getCurrentItemIndex(): int;
+        setCurrentItemIndex(index: int): void;
+    }
+
     interface World {
         getDimension(): int;
         getDifficulty(): int;
@@ -166,7 +172,7 @@ declare namespace MC {
     interface EntityPlayer extends EntityLivingBase {
         setPosition(x: double, y: double, z: double): void;
         setPosition(x: double, y: double, z: double, yaw: float, pitch: float): void;
-        getInventory(): Inventory;
+        getInventory(): InventoryPlayer;
         getBedLocation(dimension: int): Point;
     }
 
