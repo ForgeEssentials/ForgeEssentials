@@ -49,7 +49,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         that.setBlock(x, y, z, block.getThat(), meta, 3);
     }
 
-    // public void get()
+    // public void get() // tsgen ignore
     // {
     // return that.;
     // }

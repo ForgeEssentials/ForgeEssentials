@@ -17,8 +17,6 @@ declare namespace MC {
 
     interface IChatComponent { }
 
-    interface Item { }
-
     interface UserIdent {
         getUuid(): UUID;
         getPlayer(): EntityPlayer;
@@ -30,6 +28,47 @@ declare namespace MC {
 
     interface BlockStatic {
         getBlock(name: string): Block;
+    }
+
+    interface Item {
+        getName(): string;
+    }
+
+    interface ItemStatic {
+        getItem(name: string): Item;
+        createItemStack(block: Block, stackSize: int): ItemStack;
+        createItemStack(block: Block, stackSize: int, damage: int): ItemStack;
+        createItemStack(item: Item, stackSize: int): ItemStack;
+        createItemStack(item: Item, stackSize: int, damage: int): ItemStack;
+    }
+
+    interface ItemStack {
+        getItem(): Item;
+        getStackSize(): int;
+        setStackSize(size: int): void;
+        getMaxStackSize(): int;
+        isStackable(): boolean;
+        isDamageable(): boolean;
+        getDamage(): int;
+        setDamage(damage: int): void;
+        isDamaged(): boolean;
+        getMaxDamage(): int;
+        getDisplayName(): string;
+        setDisplayName(name: string): void;
+        hasDisplayName(): boolean;
+        isItemEnchanted(): boolean;
+        getRepairCost(): int;
+        setRepairCost(cost: int): void;
+    }
+
+    interface Inventory {
+        getStackInSlot(slot: int): ItemStack;
+        setStackInSlot(slot: int, stack: ItemStack): void;
+        isStackValidForSlot(slot: int, stack: ItemStack): boolean;
+        getSize(): int;
+        getStackLimit(): int;
+        getName(): string;
+        hasCustomName(): boolean;
     }
 
     interface World {
@@ -58,7 +97,7 @@ declare namespace MC {
         setZ(z: int): Point;
     }
 
-    interface WorldPoint {
+    interface WorldPoint extends Point {
         getDimension(): int;
         setDimension(dim: int): WorldPoint;
         setX(x: int): WorldPoint;
@@ -120,6 +159,7 @@ declare namespace MC {
     interface EntityPlayer extends EntityLivingBase {
         setPosition(x: double, y: double, z: double): void;
         setPosition(x: double, y: double, z: double, yaw: float, pitch: float): void;
+        getInventory(): Inventory;
     }
 
     interface EntityPlayerMP extends EntityPlayer {
@@ -181,6 +221,8 @@ declare namespace MC {
 }
 
 declare var Block: MC.BlockStatic;
+
+declare var Item: MC.ItemStatic;
 
 declare var World: MC.WorldStatic;
 

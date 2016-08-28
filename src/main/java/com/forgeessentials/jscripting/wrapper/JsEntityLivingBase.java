@@ -36,9 +36,4 @@ public class JsEntityLivingBase<T extends EntityLivingBase> extends JsEntity<T>
         return that.canEntityBeSeen(other.getThat());
     }
 
-    // public void get()
-    // {
-    // return that.;
-    // }
-
 }

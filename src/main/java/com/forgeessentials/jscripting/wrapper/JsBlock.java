@@ -12,7 +12,7 @@ public class JsBlock extends JsWrapper<Block>
 
     private static Map<Block, JsBlock> blockCache = new HashMap<>();
 
-    public static JsBlock get(Block block)
+    public static JsBlock get(Block block) // tsgen ignore
     {
         JsBlock result = blockCache.get(block);
         if (result == null)

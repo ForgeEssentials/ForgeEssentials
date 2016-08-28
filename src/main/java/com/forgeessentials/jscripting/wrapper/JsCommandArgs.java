@@ -141,7 +141,7 @@ public class JsCommandArgs
         that.tabComplete(completionList);
     }
 
-    public void tabComplete(Collection<String> completionList)
+    public void tabComplete(Collection<String> completionList) // tsgen ignore
     {
         that.tabComplete(completionList);
     }

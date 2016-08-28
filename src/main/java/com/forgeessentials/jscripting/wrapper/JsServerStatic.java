@@ -94,28 +94,32 @@ public class JsServerStatic
         return id;
     }
 
-    public int setTimeout(Object fn, long timeout, Object... args) throws NoSuchMethodException, ScriptException
+    // methoddef setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
+    public int setTimeout(Object fn, long timeout, Object... args) throws NoSuchMethodException, ScriptException // tsgen ignore
     {
         TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(script.getInvocable(), fn, args));
         TaskRegistry.schedule(task, timeout);
         return registerTask(task);
     }
 
-    public int setInterval(Object fn, long timeout, Object... args)
+    // methoddef setInterval(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
+    public int setInterval(Object fn, long timeout, Object... args) // tsgen ignore
     {
         TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(script.getInvocable(), fn, args));
         TaskRegistry.scheduleRepeated(task, timeout);
         return registerTask(task);
     }
 
-    public void clearTimeout(int id)
+    // methoddef clearTimeout(handle: number): void;
+    public void clearTimeout(int id) // tsgen ignore
     {
         TimerTask task = tasks.remove(id);
         if (task != null)
             TaskRegistry.remove(task);
     }
 
-    public void clearInterval(int id)
+    // methoddef clearInterval(handle: number): void;
+    public void clearInterval(int id) // tsgen ignore
     {
         clearTimeout(id);
     }
@@ -137,7 +141,7 @@ public class JsServerStatic
         }
 
         @Override
-        public void run()
+        public void run() // tsgen ignore
         {
             try
             {
@@ -150,5 +154,5 @@ public class JsServerStatic
             }
         }
     }
-    
+
 }

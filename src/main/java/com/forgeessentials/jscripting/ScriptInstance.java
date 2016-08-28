@@ -14,6 +14,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import com.forgeessentials.jscripting.wrapper.JsBlockStatic;
+import com.forgeessentials.jscripting.wrapper.JsItemStatic;
 import com.forgeessentials.jscripting.wrapper.JsServerStatic;
 import com.forgeessentials.jscripting.wrapper.JsWorldStatic;
 
@@ -49,6 +50,7 @@ public class ScriptInstance
             // Initialization of module environment
             script.getEngine().put("Server", new JsServerStatic(this));
             script.getEngine().put("Block", new JsBlockStatic());
+            script.getEngine().put("Item", new JsItemStatic());
             script.getEngine().put("World", new JsWorldStatic());
             script.getEngine().eval("" +
                     "var exports = {};" +
@@ -56,7 +58,7 @@ public class ScriptInstance
                     "var setInterval = function(fn, t, args) { return Server.setInterval(fn, t, args); };" +
                     "var clearTimeout = function(id) { return Server.clearTimeout(id); };" +
                     "var clearInterval = function(id) { return Server.clearInterval(id); };");
-            
+
             // Start script
             script.eval();
             // script.getEngine().get("exports")

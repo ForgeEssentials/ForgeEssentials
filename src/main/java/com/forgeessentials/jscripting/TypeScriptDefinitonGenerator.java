@@ -11,13 +11,18 @@ import java.util.regex.Pattern;
 
 import com.google.common.io.Files;
 
+/**
+ * This class is not yet fully complete! It works for saving a lot of manual work, but it's not
+ * yet ready for fully generating the mc.d.ts, so just copy and paste individual definitions for now.
+ */
 public class TypeScriptDefinitonGenerator
 {
     private static final Pattern fieldPattern = Pattern.compile("public ([\\w <>,?\\[\\]]+) (\\w+)( =.+)?;");
-    private static final Pattern methodPattern = Pattern.compile("public ([\\w <>,?\\[\\]]+) (\\w+)\\(([\\w <>,?\\[\\]]*)\\)");
+    private static final Pattern methodPattern = Pattern.compile("public ([\\w <>,?\\[\\]]+) (\\w+)\\(([\\w <>,.?\\[\\]]*)\\)");
     //private static final Pattern constructorPattern = Pattern.compile("public (\\w+)\\(([\\w <>,?\\[\\]]*)\\)");
     private static final Pattern classDefPattern = Pattern.compile("public class (\\w+)(?:<[\\w ]+>)?(?: extends (\\w+))?");
     private static final Pattern customClassDefPattern = Pattern.compile("classdef (.*)");
+    private static final Pattern customMethodDefPattern = Pattern.compile("methoddef (.*)");
 
     public static void main(String[] args)
     {
@@ -64,6 +69,7 @@ public class TypeScriptDefinitonGenerator
             //Matcher mc = constructorPattern.matcher(line);
             Matcher mcd = classDefPattern.matcher(line);
             Matcher mccd = customClassDefPattern.matcher(line);
+            Matcher mcmd = customMethodDefPattern.matcher(line);
             if (mm.find())
             {
                 if (!foundClassDef) throw new RuntimeException("Found method before class definition!?");
@@ -97,6 +103,10 @@ public class TypeScriptDefinitonGenerator
                 outLines.add("    " + mccd.group(1) + " {");
                 foundClassDef = true;
             }
+            else if (mcmd.find())
+            {
+                outLines.add("        " + mcmd.group(1));
+            }
         }
         outLines.add("    }");
         return outLines;
@@ -107,7 +117,14 @@ public class TypeScriptDefinitonGenerator
         for (int i = 0; i < split.length; i++)
         {
             String[] argSplit = split[i].trim().split(" ");
-            sb.append(argSplit[1]).append(": ").append(fixType(argSplit[0]));
+            String name = argSplit[1];
+            String type = fixType(argSplit[0]);
+            if (type.endsWith("..."))
+            {
+                type = type.substring(0, type.length() - 3) + "[]";
+                name = "..." + name;
+            }
+            sb.append(name).append(": ").append(type);
             if (i < split.length - 1) sb.append(", ");
         }
     }
@@ -121,8 +138,10 @@ public class TypeScriptDefinitonGenerator
             else
                 ret = type.substring(2);
         }
-        else if (type.equals("String"))
-            ret = "string";
+        else if (type.equals("String") || type.equals("String[]") || type.equals("String..."))
+            ret = "s" + type.substring(1);
+        else if (type.equals("Object") || type.equals("Object[]") || type.equals("Object..."))
+            ret = "any" + type.substring(6);
 
         if (ret.indexOf('<') != -1) // Strip generics
             ret = ret.substring(0, ret.indexOf('<'));

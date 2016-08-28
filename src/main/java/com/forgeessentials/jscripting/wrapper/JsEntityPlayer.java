@@ -3,8 +3,9 @@ package com.forgeessentials.jscripting.wrapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+//classdef interface EntityPlayer extends EntityLivingBase, ICommandSender
 public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
-{
+    protected JsInventory<?> inventory;
 
     private JsCommandSender commandSender;
 
@@ -42,4 +43,10 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
         return commandSender = new JsCommandSender(that, this);
     }
 
+    public JsInventory<?> getInventory()
+    {
+        if (inventory == null)
+            inventory = new JsInventory<>(that.inventory);
+        return inventory;
+    }
 }
