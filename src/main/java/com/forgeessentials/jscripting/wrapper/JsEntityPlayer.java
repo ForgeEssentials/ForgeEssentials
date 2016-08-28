@@ -1,10 +1,10 @@
 package com.forgeessentials.jscripting.wrapper;
 
-import com.forgeessentials.commons.selections.WorldPoint;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
+
+import com.forgeessentials.commons.selections.WorldPoint;
 
 public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 {
@@ -57,4 +57,5 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
         ChunkCoordinates coord = EntityPlayer.verifyRespawnCoordinates(that.worldObj, that.getBedLocation(dimension), false);
         return coord != null ? new JsWorldPoint<>(new WorldPoint(coord.posX, coord.posY, coord.posZ, dimension)) : null;
     }
+
 }

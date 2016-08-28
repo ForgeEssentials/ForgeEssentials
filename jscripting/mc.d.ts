@@ -262,3 +262,20 @@ declare var Server: MC.ServerStatic;
 declare var World: MC.WorldStatic;
 declare var Block: MC.BlockStatic;
 declare var Item: MC.ItemStatic;
+
+declare function getNbt(entity: MC.Entity | MC.ItemStack): any;
+declare function setNbt(entity: MC.Entity | MC.ItemStack, data: any);
+
+/**
+ * Constants that tell getNbt and setNbt the types of entries. Use nbt[NBT_INT + 'myVar'] for access
+ */ 
+declare const NBT_BYTE: string;
+declare const NBT_SHORT: string;
+declare const NBT_INT: string;
+declare const NBT_LONG: string;
+declare const NBT_FLOAT: string;
+declare const NBT_DOUBLE: string;
+declare const NBT_BYTE_ARRAY: string;
+declare const NBT_STRING: string;
+declare const NBT_COMPOUND: string;
+declare const NBT_INT_ARRAY: string;

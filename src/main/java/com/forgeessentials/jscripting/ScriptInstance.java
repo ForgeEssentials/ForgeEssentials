@@ -54,10 +54,27 @@ public class ScriptInstance
             script.getEngine().put("World", new JsWorldStatic());
             script.getEngine().eval("" +
                     "var exports = {};" +
-                    "var setTimeout = function(fn, t, args) { return Server.setTimeout(fn, t, args); };" +
-                    "var setInterval = function(fn, t, args) { return Server.setInterval(fn, t, args); };" +
-                    "var clearTimeout = function(id) { return Server.clearTimeout(id); };" +
-                    "var clearInterval = function(id) { return Server.clearInterval(id); };");
+                    // NBT constants
+                    "var NBT_BYTE = 'b:';" +
+                    "var NBT_SHORT = 's:';" +
+                    "var NBT_INT = 'i:';" +
+                    "var NBT_LONG = 'l:';" +
+                    "var NBT_FLOAT = 'f:';" +
+                    "var NBT_DOUBLE = 'd:';" +
+                    "var NBT_BYTE_ARRAY = 'B:';" +
+                    "var NBT_STRING = 'S:';" +
+                    "var NBT_COMPOUND = 'c:';" +
+                    "var NBT_INT_ARRAY = 'I:';" +
+                    // timeouts
+                    "function setTimeout(fn, t, args) { return Server.setTimeout(fn, t, args); };" +
+                    "function setInterval(fn, t, args) { return Server.setInterval(fn, t, args); };" +
+                    "function clearTimeout(id) { return Server.clearTimeout(id); };" +
+                    "function clearInterval(id) { return Server.clearInterval(id); };" +
+                    // NBT handling
+                    "function getNbt(e) { return JSON.parse(e._getNbt()); }" +
+                    "function setNbt(e, d) { e._setNbt(JSON.stringify(d)); }" +
+                    "" +
+                    "");
 
             // Start script
             script.eval();

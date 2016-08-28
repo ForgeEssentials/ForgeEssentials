@@ -3,15 +3,19 @@ package com.forgeessentials.jscripting.wrapper;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
+import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.ServerUtil;
 
 public class JsEntity<T extends Entity> extends JsWrapper<T>
 {
 
     private JsWorld<World> world;
-    
+
     private JsEntity<Entity> ridingEntity;
-    
+
     private JsEntity<Entity> riddenByEntity;
 
     public JsEntity(T that)
@@ -128,6 +132,16 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
         if (world == null)
             world = new JsWorld<>(that.worldObj);
         return world;
+    }
+
+    public String _getNbt() // tsgen ignore
+    {
+        return DataManager.toJson(that.getEntityData());
+    }
+
+    public void _setNbt(String value) // tsgen ignore
+    {
+        ServerUtil.copyNbt(that.getEntityData(), DataManager.fromJson(value, NBTTagCompound.class));
     }
 
 }

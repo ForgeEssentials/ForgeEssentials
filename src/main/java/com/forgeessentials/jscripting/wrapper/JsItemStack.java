@@ -1,6 +1,9 @@
 package com.forgeessentials.jscripting.wrapper;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+import com.forgeessentials.data.v2.DataManager;
 
 public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 {
@@ -63,17 +66,6 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
         return that.getMaxDamage();
     }
 
-    // TODO: implement these
-    /*public NBTTagList getEnchantmentTagList() // tsgen ignore
-    {
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    public void addEnchantment(JsEnchantment<?> enchantment, int level) // tsgen ignore
-    {
-        throw new UnsupportedOperationException("not implemented yet");
-    }*/
-
     public String getDisplayName()
     {
         return that.getDisplayName();
@@ -107,7 +99,17 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
     @Override
     public boolean equals(Object obj)
     {
-        return obj instanceof JsItemStack ? that.isItemEqual(((JsItemStack)obj).getThat()) : false;
+        return obj instanceof JsItemStack ? that.isItemEqual(((JsItemStack) obj).getThat()) : false;
+    }
+
+    public String _getNbt() // tsgen ignore
+    {
+        return that.getTagCompound() == null ? null : DataManager.toJson(that.getTagCompound());
+    }
+
+    public void _setNbt(String value) // tsgen ignore
+    {
+        that.setTagCompound(value == null ? null : DataManager.fromJson(value, NBTTagCompound.class));
     }
 
 }

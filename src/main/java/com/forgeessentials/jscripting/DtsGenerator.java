@@ -122,6 +122,23 @@ public class DtsGenerator
                 writeLn("declare var Block: MC.BlockStatic;");
                 writeLn("declare var Item: MC.ItemStatic;");
                 writeLn("");
+                writeLn("declare function getNbt(entity: MC.Entity | MC.ItemStack): any;");
+                writeLn("declare function setNbt(entity: MC.Entity | MC.ItemStack, data: any);");
+                writeLn("");
+                writeLn("/**");
+                writeLn(" * Constants that tell getNbt and setNbt the types of entries. Use nbt[NBT_INT + 'myVar'] for access");
+                writeLn(" */ ");
+                writeLn("declare const NBT_BYTE: string;");
+                writeLn("declare const NBT_SHORT: string;");
+                writeLn("declare const NBT_INT: string;");
+                writeLn("declare const NBT_LONG: string;");
+                writeLn("declare const NBT_FLOAT: string;");
+                writeLn("declare const NBT_DOUBLE: string;");
+                writeLn("declare const NBT_BYTE_ARRAY: string;");
+                writeLn("declare const NBT_STRING: string;");
+                writeLn("declare const NBT_COMPOUND: string;");
+                writeLn("declare const NBT_INT_ARRAY: string;");
+                writeLn("");
             }
         }
         catch (Exception ex)
