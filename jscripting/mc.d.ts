@@ -80,6 +80,8 @@ declare namespace MC {
 		usage?: string;
 		permission?: string;
 		opOnly?: boolean;
+		processCommand: CommandCallback;
+		tabComplete?: CommandCallback;
 	}
 	
 	interface ICommandSender extends JavaObject {

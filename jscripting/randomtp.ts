@@ -35,5 +35,7 @@ Server.registerCommand({
     name: 'randomtp',
     usage: '/randomtp range [x z] [player]',
     permission: 'fe.teleport.randomtp',
-    opOnly: false
+    opOnly: false,
+    processCommand: randomTpCommand,
+    tabComplete: randomTpCommand,
 }, randomTpCommand, randomTpCommand);

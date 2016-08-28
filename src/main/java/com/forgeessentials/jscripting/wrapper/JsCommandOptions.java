@@ -11,4 +11,8 @@ public class JsCommandOptions
 
     public boolean opOnly = true; // $optional
 
+    public Object processCommand; // $type=CommandCallback$
+
+    public Object tabComplete; // $optional $type=CommandCallback$
+
 }
