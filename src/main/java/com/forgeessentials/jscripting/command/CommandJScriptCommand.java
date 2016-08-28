@@ -1,56 +1,57 @@
 package com.forgeessentials.jscripting.command;
 
+import javax.script.ScriptException;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
+import com.forgeessentials.jscripting.wrapper.JsCommandArgs;
+import com.forgeessentials.jscripting.wrapper.JsCommandOptions;
 import com.forgeessentials.util.CommandParserArgs;
+import com.google.common.base.Preconditions;
 
 public class CommandJScriptCommand extends ParserCommandBase
 {
 
     public final ScriptInstance script;
 
-    public final String name;
+    private JsCommandOptions options;
 
-    public String usage;
+    private Object processCommand;
 
-    public String permission;
+    private Object tabComplete;
 
-    private boolean opOnly;
-
-    public CommandJScriptCommand(ScriptInstance script, String name, String usage, String permission, boolean opOnly)
+    public CommandJScriptCommand(ScriptInstance script, JsCommandOptions options, Object processCommand, Object tabComplete)
     {
+        Preconditions.checkNotNull(script);
+        Preconditions.checkNotNull(processCommand);
+        Preconditions.checkNotNull(options);
+        Preconditions.checkNotNull(options.name);
+        if (options.usage == null)
+            options.usage = "/" + options.name + ": scripted command - no description";
+        if (options.permission == null)
+            options.permission = ModuleJScripting.PERM + ".command." + options.name;
         this.script = script;
-        this.name = name;
-        this.opOnly = opOnly;
-        this.usage = usage != null ? usage : "/" + name + ": scripted command - no description";
-        this.permission = permission != null ? permission : ModuleJScripting.PERM + ".command." + name;
-    }
-
-    public CommandJScriptCommand(ScriptInstance script, String name, String usage)
-    {
-        this(script, name, usage, null, true);
-    }
-
-    public CommandJScriptCommand(ScriptInstance script, String name)
-    {
-        this(script, name, null);
+        this.options = options;
+        this.processCommand = processCommand;
+        this.tabComplete = tabComplete;
     }
 
     @Override
     public String getCommandName()
     {
-        return name;
+        return options.name;
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return usage;
+        return options.usage;
     }
 
     @Override
@@ -62,19 +63,38 @@ public class CommandJScriptCommand extends ParserCommandBase
     @Override
     public PermissionLevel getPermissionLevel()
     {
-        return opOnly ? PermissionLevel.OP : PermissionLevel.TRUE;
+        return options.opOnly ? PermissionLevel.OP : PermissionLevel.TRUE;
     }
 
     @Override
     public String getPermissionNode()
     {
-        return permission;
+        return options.permission;
     }
 
     @Override
     public void parse(CommandParserArgs arguments) throws CommandException
     {
-        script.runCommand(arguments);
+        try
+        {
+            if (arguments.isTabCompletion)
+            {
+                if (tabComplete != null)
+                    script.getInvocable().invokeMethod(tabComplete, "call", processCommand, new JsCommandArgs(arguments));
+            }
+            else
+            {
+                script.getInvocable().invokeMethod(processCommand, "call", processCommand, new JsCommandArgs(arguments));
+            }
+        }
+        catch (NoSuchMethodException e)
+        {
+            throw new TranslatedCommandException("Script error: method not found");
+        }
+        catch (ScriptException e)
+        {
+            throw new TranslatedCommandException("Script error: " + e.getMessage());
+        }
     }
 
 }

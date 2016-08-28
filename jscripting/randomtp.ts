@@ -1,9 +1,5 @@
 
-export function tabComplete(args: MC.CommandArgs) {
-    processCommand(args);
-}
-
-export function processCommand(args: MC.CommandArgs) {
+export function randomTpCommand(args: MC.CommandArgs) {
     if (args.isEmpty()) {
         args.confirm('/jscript randomtp range [x z]: Teleport to some random location');
         return;
@@ -35,4 +31,9 @@ export function processCommand(args: MC.CommandArgs) {
     Server.runCommand(hiddenChatSender, 'spreadplayers', x, z, 0, r, false, args.sender.getName());
 }
 
-Server.registerCommand('randomtp2', '/randomtp range [x z] [player]', 'fe.teleport.randomtp', false);
+Server.registerCommand({
+    name: 'randomtp',
+    usage: '/randomtp range [x z] [player]',
+    permission: 'fe.teleport.randomtp',
+    opOnly: false
+}, randomTpCommand, randomTpCommand);

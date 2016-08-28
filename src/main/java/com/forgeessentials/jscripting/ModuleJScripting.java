@@ -192,9 +192,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         return commandsDir;
     }
 
-    public static void registerScriptCommand(ScriptInstance script, String name, String usage, String permission, boolean opOnly)
+    public static void registerScriptCommand(CommandJScriptCommand command)
     {
-        CommandJScriptCommand command = new CommandJScriptCommand(script, name, usage, permission, opOnly);
         commands.add(command);
         FECommandManager.registerCommand(command, true);
     }

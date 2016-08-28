@@ -24,6 +24,8 @@ declare namespace MC {
 		remove(element: T): boolean;
 	}
 	
+	type CommandCallback = (args: CommandArgs) => void;
+	
 	interface Block extends JavaObject {
 		getName(): string;
 	}
@@ -71,6 +73,13 @@ declare namespace MC {
 		getSenderPoint(): WorldPoint;
 		getWorldZone(): WorldZone;
 		needsPlayer(): void;
+	}
+	
+	interface CommandOptions {
+		name: string;
+		usage?: string;
+		permission?: string;
+		opOnly?: boolean;
 	}
 	
 	interface ICommandSender extends JavaObject {
@@ -199,7 +208,7 @@ declare namespace MC {
 		chatNotification(message: string): void;
 		chatError(message: string): void;
 		chatWarning(message: string): void;
-		registerCommand(name: string, usage: string, permission: string, opOnly: boolean): void;
+		registerCommand(options: CommandOptions, processCommand: CommandCallback, tabComplete?: CommandCallback): void;
 		setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
 		setInterval(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
 		clearTimeout(handle: number): void;

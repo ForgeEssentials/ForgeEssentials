@@ -87,7 +87,8 @@ public class FECommandManager extends ConfigLoaderBase
     public static void deegisterCommand(String name)
     {
         ForgeEssentialsCommandBase command = commands.remove(name);
-        command.deregister();
+        if (command != null)
+            command.deregister();
     }
 
     public static void registerCommands()

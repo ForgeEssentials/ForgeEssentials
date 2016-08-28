@@ -13,8 +13,10 @@ import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
+import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class JsServerStatic
@@ -86,9 +88,17 @@ public class JsServerStatic
         ChatOutputHandler.chatWarning(MinecraftServer.getServer(), message);
     }
 
-    public void registerCommand(String name, String usage, String permission, boolean opOnly)
+    // methoddef registerCommand(options: CommandOptions, processCommand: CommandCallback, tabComplete?: CommandCallback): void;
+    public void registerCommand(Object optionsObj, Object processCommand, Object tabComplete)// tsgen ignore
     {
-        ModuleJScripting.registerScriptCommand(script, name, usage, permission, opOnly);
+        // TODO: BIG HACK to get a readable object from an anonymous json object!
+        JsCommandOptions options = DataManager.getGson().fromJson(DataManager.getGson().toJson(optionsObj), JsCommandOptions.class);
+        ModuleJScripting.registerScriptCommand(new CommandJScriptCommand(script, options, processCommand, tabComplete));
+    }
+
+    public void registerCommand(Object optionsObj, Object processCommand)// tsgen ignore
+    {
+        registerCommand(optionsObj, processCommand, null);
     }
 
     private int registerTask(TimerTask task)

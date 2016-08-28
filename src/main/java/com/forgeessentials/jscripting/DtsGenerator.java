@@ -95,6 +95,8 @@ public class DtsGenerator
                 indention--;
                 writeLn("}");
                 writeLn("");
+                writeLn("type CommandCallback = (args: CommandArgs) => void;");
+                writeLn("");
 
                 for (Iterator<File> it = FileUtils.iterateFiles(dir, new String[] { "java" }, true); it.hasNext();)
                 {
@@ -159,10 +161,13 @@ public class DtsGenerator
 
         Matcher mCClassDef = customClassDefPattern.matcher(text);
         Matcher mClassDef = classDefPattern.matcher(text);
-        if (mCClassDef.find()) {
+        if (mCClassDef.find())
+        {
             writeLn(mCClassDef.group(1));
             write(" {");
-        } else if (mClassDef.find()) {
+        }
+        else if (mClassDef.find())
+        {
             // Write interface header
             writeLn("interface ");
             write(typeName);
@@ -206,8 +211,20 @@ public class DtsGenerator
                 if (skipField(name))
                     continue;
                 writeLn(name);
+                if (line.contains("$optional"))
+                    write("?");
                 write(": ");
-                write(fixType(mField.group(1)));
+                int typeIdx = line.indexOf("$type=");
+                if (typeIdx >= 0)
+                {
+                    typeIdx += "$type=".length();
+                    String type = line.substring(typeIdx, line.indexOf("$", typeIdx));
+                    write(type);
+                }
+                else
+                {
+                    write(fixType(mField.group(1)));
+                }
                 write(";");
             }
             else if (nCMethod.find())
