@@ -1,5 +1,6 @@
 package com.forgeessentials.jscripting.command;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -71,9 +72,9 @@ public class CommandJScriptCommand extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
-        CommandJScript.runCommand(arguments, name);
+        script.runCommand(arguments);
     }
 
 }

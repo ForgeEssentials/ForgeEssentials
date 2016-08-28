@@ -13,10 +13,15 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import net.minecraft.command.CommandException;
+
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.wrapper.JsBlockStatic;
+import com.forgeessentials.jscripting.wrapper.JsCommandArgs;
 import com.forgeessentials.jscripting.wrapper.JsItemStatic;
 import com.forgeessentials.jscripting.wrapper.JsServerStatic;
 import com.forgeessentials.jscripting.wrapper.JsWorldStatic;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class ScriptInstance
 {
@@ -136,6 +141,28 @@ public class ScriptInstance
     public Invocable getInvocable()
     {
         return (Invocable) script.getEngine();
+    }
+
+    public void runCommand(CommandParserArgs arguments) throws CommandException
+    {
+        try
+        {
+            call(arguments.isTabCompletion ? "tabComplete" : "processCommand", new JsCommandArgs(arguments));
+        }
+        catch (CommandException e)
+        {
+            throw e;
+        }
+        catch (NoSuchMethodException e)
+        {
+            if (!arguments.isTabCompletion)
+                throw new TranslatedCommandException("Script missing processCommand function.");
+        }
+        catch (ScriptException e)
+        {
+            e.printStackTrace();
+            throw new TranslatedCommandException("Error in script: %s", e.getMessage());
+        }
     }
 
 }

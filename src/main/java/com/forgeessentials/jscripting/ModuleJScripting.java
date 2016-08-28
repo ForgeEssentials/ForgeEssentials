@@ -88,7 +88,6 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public void load(FEModuleInitEvent event)
     {
         FECommandManager.registerCommand(new CommandJScript());
-
         commandsDir = new File(moduleDir, COMMANDS_DIR);
         commandsDir.mkdirs();
     }
@@ -197,7 +196,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     {
         CommandJScriptCommand command = new CommandJScriptCommand(script, name, usage, permission, opOnly);
         commands.add(command);
-        FECommandManager.registerCommand(command);
+        FECommandManager.registerCommand(command, true);
     }
 
     /* ------------------------------------------------------------ */

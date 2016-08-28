@@ -1,11 +1,9 @@
 package com.forgeessentials.jscripting.command;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.script.ScriptException;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
@@ -13,7 +11,6 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
-import com.forgeessentials.jscripting.wrapper.JsCommandArgs;
 import com.forgeessentials.util.CommandParserArgs;
 import com.google.common.io.PatternFilenameFilter;
 
@@ -72,37 +69,14 @@ public class CommandJScript extends ParserCommandBase
 
         // TAB-complete and parse argument
         arguments.tabComplete(scriptFiles);
+        String scriptName = arguments.remove();
 
-        runCommand(arguments, arguments.remove());
-    }
-
-    public static void runCommand(CommandParserArgs arguments, String name)
-    {
         try
         {
-            ScriptInstance script = ModuleJScripting.getScript(ModuleJScripting.COMMANDS_DIR + name + ".js");
-            try
-            {
-                script.call(arguments.isTabCompletion ? "tabComplete" : "processCommand", new JsCommandArgs(arguments));
-            }
-            catch (CommandException e)
-            {
-                throw e;
-            }
-            catch (NoSuchMethodException e)
-            {
-                if (!arguments.isTabCompletion)
-                    throw new TranslatedCommandException("Script missing processCommand function.");
-            }
-            catch (ScriptException e)
-            {
-                e.printStackTrace();
-                throw new TranslatedCommandException("Error in script: %s", e.getMessage());
-            }
-        }
-        catch (FileNotFoundException e)
-        {
-            throw new TranslatedCommandException("Script not found");
+            ScriptInstance script = ModuleJScripting.getScript(ModuleJScripting.COMMANDS_DIR + scriptName + ".js");
+            if (script == null)
+                throw new TranslatedCommandException("Script not found");
+            script.runCommand(arguments);
         }
         catch (IOException e1)
         {
