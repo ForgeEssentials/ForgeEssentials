@@ -16,8 +16,13 @@ declare namespace MC {
     }
 
     interface IChatComponent { }
-    interface UserIdent { }
+
     interface Item { }
+
+    interface UserIdent {
+        getUuid(): UUID;
+        getPlayer(): EntityPlayer;
+    }
 
     interface Block {
         getName(): string;
@@ -120,7 +125,7 @@ declare namespace MC {
     interface EntityPlayerMP extends EntityPlayer {
     }
 
-    interface CommandEvent {
+    interface CommandArgs {
         isTabCompletion: boolean;
         // command: ICommand;
         sender: ICommandSender;

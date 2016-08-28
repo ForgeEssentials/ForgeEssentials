@@ -9,7 +9,15 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class JsServerStatic
 {
 
-    public JsCommandSender server = new JsCommandSender(MinecraftServer.getServer());
+    private JsCommandSender server;
+
+    public JsCommandSender getServer()
+    {
+        MinecraftServer srv = MinecraftServer.getServer();
+        if (server == null || server.getThat() != srv)
+            server = srv == null ? null : new JsCommandSender(srv);
+        return server;
+    }
 
     public void runCommand(JsCommandSender sender, String cmd, Object... args) throws CommandException
     {

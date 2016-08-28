@@ -13,7 +13,7 @@ import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class JsCommandEvent
+public class JsCommandArgs
 {
 
     private CommandParserArgs that;
@@ -22,15 +22,16 @@ public class JsCommandEvent
 
     public final JsEntityPlayer player;
 
-    // public final UserIdent ident;
+    public final JsUserIdent ident;
 
     public final boolean isTabCompletion;
 
-    public JsCommandEvent(CommandParserArgs args)
+    public JsCommandArgs(CommandParserArgs args)
     {
         this.that = args;
         this.sender = new JsCommandSender(args.sender);
         this.player = args.senderPlayer == null ? null : new JsEntityPlayer(args.senderPlayer);
+        this.ident = args.ident == null ? null : new JsUserIdent(args.ident);
         this.isTabCompletion = args.isTabCompletion;
     }
 

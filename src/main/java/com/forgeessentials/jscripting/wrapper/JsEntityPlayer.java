@@ -6,9 +6,17 @@ import net.minecraft.entity.player.EntityPlayerMP;
 public class JsEntityPlayer extends JsEntity<EntityPlayer>
 {
 
-    public JsEntityPlayer(EntityPlayer entity)
+    private JsCommandSender commandSender;
+
+    public JsEntityPlayer(EntityPlayer player)
     {
-        super(entity);
+        super(player);
+    }
+
+    public JsEntityPlayer(EntityPlayer player, JsCommandSender commandSender)
+    {
+        super(player);
+        this.commandSender = commandSender;
     }
 
     public void setPosition(double x, double y, double z)
@@ -29,7 +37,9 @@ public class JsEntityPlayer extends JsEntity<EntityPlayer>
 
     public JsCommandSender getCommandSender()
     {
-        return new JsCommandSender(that);
+        if (commandSender != null || !(that instanceof EntityPlayer))
+            return commandSender;
+        return commandSender = new JsCommandSender(that, this);
     }
 
 }

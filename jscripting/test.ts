@@ -1,5 +1,5 @@
 
-export function processCommand(event: MC.CommandEvent) {
+export function processCommand(event: MC.CommandArgs) {
     Server.chatConfirm('Hello JavaScript! Hello ' + sender.getName() + '!');
 
     Server.chatConfirm('sin(3) = ' + Math.sin(3));

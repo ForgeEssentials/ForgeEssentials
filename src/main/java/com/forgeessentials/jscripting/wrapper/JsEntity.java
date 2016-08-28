@@ -7,7 +7,13 @@ import net.minecraft.world.World;
 
 public class JsEntity<T extends Entity> extends JsWrapper<T>
 {
+
+    private JsWorld<World> world;
     
+    private JsEntity<Entity> ridingEntity;
+    
+    private JsEntity<Entity> riddenByEntity;
+
     public JsEntity(T that)
     {
         super(that);
@@ -105,17 +111,23 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
 
     public JsEntity<Entity> getRidingEntity()
     {
-        return new JsEntity<>(that.ridingEntity);
+        if (ridingEntity == null)
+            ridingEntity = new JsEntity<>(that.ridingEntity);
+        return ridingEntity;
     }
 
     public JsEntity<Entity> getRiddenByEntity()
     {
-        return new JsEntity<>(that.riddenByEntity);
+        if (riddenByEntity == null)
+            riddenByEntity = new JsEntity<>(that.riddenByEntity);
+        return riddenByEntity;
     }
 
     public JsWorld<World> getWorld()
     {
-        return new JsWorld<>(that.worldObj);
+        if (world == null)
+            world = new JsWorld<>(that.worldObj);
+        return world;
     }
 
 }

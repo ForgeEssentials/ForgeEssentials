@@ -13,7 +13,7 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
-import com.forgeessentials.jscripting.wrapper.JsCommandEvent;
+import com.forgeessentials.jscripting.wrapper.JsCommandArgs;
 import com.forgeessentials.util.CommandParserArgs;
 import com.google.common.io.PatternFilenameFilter;
 
@@ -72,17 +72,18 @@ public class CommandJScript extends ParserCommandBase
 
         // TAB-complete and parse argument
         arguments.tabComplete(scriptFiles);
-        String fileName = arguments.remove().toLowerCase() + ".js";
 
-        if (arguments.isTabCompletion)
-            return;
+        runCommand(arguments, arguments.remove());
+    }
 
+    public static void runCommand(CommandParserArgs arguments, String name)
+    {
         try
         {
-            ScriptInstance script = ModuleJScripting.getScript(ModuleJScripting.COMMANDS_DIR + fileName);
+            ScriptInstance script = ModuleJScripting.getScript(ModuleJScripting.COMMANDS_DIR + name + ".js");
             try
             {
-                script.call("processCommand", new JsCommandEvent(arguments));
+                script.call(arguments.isTabCompletion ? "tabComplete" : "processCommand", new JsCommandArgs(arguments));
             }
             catch (CommandException e)
             {
@@ -90,7 +91,8 @@ public class CommandJScript extends ParserCommandBase
             }
             catch (NoSuchMethodException e)
             {
-                throw new TranslatedCommandException("Script missing processCommand function.");
+                if (!arguments.isTabCompletion)
+                    throw new TranslatedCommandException("Script missing processCommand function.");
             }
             catch (ScriptException e)
             {

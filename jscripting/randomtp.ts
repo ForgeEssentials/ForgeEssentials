@@ -1,27 +1,36 @@
 
-export function processCommand(event: MC.CommandEvent) {
-    if (event.isEmpty()) {
-        event.sender.chatConfirm('/jscript randomtp range [x z]: Teleport to some random location');
+export function tabComplete(args: MC.CommandArgs) {
+    processCommand(args);
+}
+
+export function processCommand(args: MC.CommandArgs) {
+    if (args.isEmpty()) {
+        args.confirm('/jscript randomtp range [x z]: Teleport to some random location');
         return;
     }
 
-    var r: int = event.parseInt();
+    var player = args.player;
+    var r: int = args.parseInt();
     var x: int;
     var z: int;
-    if (!event.isEmpty()) {
-        x = event.parseInt();
-        z = event.parseInt();
-    } else if (event.player) {
-        x = event.player.getX();
-        z = event.player.getZ();
+    if (!args.isEmpty()) {
+        x = args.parseInt();
+        z = args.parseInt();
+    } else if (args.player) {
+        x = args.player.getX();
+        z = args.player.getZ();
     } else {
-        event.sender.chatConfirm('Error: no player!');
+        args.confirm('Error: no player!');
         return;
     }
 
-    if (event.isTabCompletion)
+    if (!args.isEmpty()) {
+        player = args.parsePlayer(true, true);
+    }
+
+    if (args.isTabCompletion) // This is important so TAB completion does not actually change stuff
         return;
 
-    var hiddenChatSender = event.sender.doAs(null, true);
-    Server.runCommand(hiddenChatSender, 'spreadplayers', x, z, 0, r, false, event.sender.getName());
+    var hiddenChatSender = args.sender.doAs(null, true);
+    Server.runCommand(hiddenChatSender, 'spreadplayers', x, z, 0, r, false, args.sender.getName());
 }

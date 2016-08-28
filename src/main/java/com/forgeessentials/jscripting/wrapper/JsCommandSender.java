@@ -10,19 +10,20 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class JsCommandSender
+public class JsCommandSender extends JsWrapper<ICommandSender>
 {
 
-    private ICommandSender that;
+    private JsEntityPlayer player;
 
     public JsCommandSender(ICommandSender sender)
     {
-        this.that = sender;
+        super(sender);
     }
 
-    public ICommandSender getThat()
+    public JsCommandSender(EntityPlayer player, JsEntityPlayer jsPlayer)
     {
-        return that;
+        super(player);
+        this.player = jsPlayer;
     }
 
     public String getName()
@@ -32,7 +33,9 @@ public class JsCommandSender
 
     public JsEntityPlayer getPlayer()
     {
-        return that instanceof EntityPlayer ? new JsEntityPlayer((EntityPlayer) that) : null;
+        if (player != null || !(that instanceof EntityPlayer))
+            return player;
+        return player = new JsEntityPlayer((EntityPlayer) that, this);
     }
 
     public JsCommandSender doAs(Object userIdOrPlayer, boolean hideChatOutput)
