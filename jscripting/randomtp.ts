@@ -25,7 +25,7 @@ export function processCommand(args: MC.CommandArgs) {
     }
 
     if (!args.isEmpty()) {
-        player = args.parsePlayer(true, true);
+        player = args.parsePlayer(true, true).getPlayer();
     }
 
     if (args.isTabCompletion) // This is important so TAB completion does not actually change stuff

@@ -13,9 +13,9 @@ public abstract class MappedList<TIn, TOut> implements List<TOut>
 
     protected List<TOut> mapped;
 
-    public abstract TOut map(TIn in);
+    protected abstract TOut map(TIn in);
 
-    public abstract TIn unmap(TOut in);
+    protected abstract TIn unmap(TOut in);
 
     public MappedList(List<TIn> list)
     {

@@ -172,6 +172,11 @@ declare namespace MC {
         chatNotification(message: string): void;
         chatWarning(message: string): void;
         chatError(message: string): void;
+
+        setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
+        setInterval(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
+        clearTimeout(handle: number): void;
+        clearInterval(handle: number): void;
     }
 }
 
@@ -180,18 +185,3 @@ declare var Block: MC.BlockStatic;
 declare var World: MC.WorldStatic;
 
 declare var Server: MC.ServerStatic;
-
-/**
- * player - can be null!
- */
-declare var player: MC.EntityPlayer;
-
-/**
- * sender - should never be null (maybe if script was triggered by server only?)
- */
-declare var sender: MC.ICommandSender;
-
-/**
- * Command arguments - can be null!
- */
-declare var args: MC.CommandParserArgs;

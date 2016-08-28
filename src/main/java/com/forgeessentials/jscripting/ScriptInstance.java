@@ -39,7 +39,12 @@ public class ScriptInstance
             this.invocable = (Invocable) script.getEngine();
 
             // Initialization of module environment
-            script.getEngine().eval("var exports = {};");
+            script.getEngine().eval("" +
+                    "var exports = {};" +
+                    "var setTimeout = function(fn, t, args) { return Server.setTimeout(fn, t, args); };" +
+                    "var setInterval = function(fn, t, args) { return Server.setInterval(fn, t, args); };" +
+                    "var clearTimeout = function(id) { return Server.clearTimeout(id); };" +
+                    "var clearInterval = function(id) { return Server.clearInterval(id); };");
             script.eval();
             // script.getEngine().get("exports")
 

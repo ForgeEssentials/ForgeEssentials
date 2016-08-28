@@ -3,7 +3,7 @@ package com.forgeessentials.jscripting.wrapper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class JsEntityPlayer extends JsEntity<EntityPlayer>
+public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 {
 
     private JsCommandSender commandSender;

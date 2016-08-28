@@ -1,13 +1,50 @@
 package com.forgeessentials.jscripting.wrapper;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimerTask;
+
+import javax.script.ScriptException;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
+import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class JsServerStatic
 {
+
+    public static class CallScriptMethodTask implements Runnable
+    {
+
+        private final Object fn;
+
+        private Object[] args;
+
+        public CallScriptMethodTask(Object fn, Object... args)
+        {
+            this.fn = fn;
+            this.args = args;
+        }
+
+        @Override
+        public void run()
+        {
+            try
+            {
+                ModuleJScripting.getInvocable().invokeMethod(fn, "call", args);
+            }
+            catch (NoSuchMethodException | ScriptException e)
+            {
+                System.err.println("Error calling script callback");
+                e.printStackTrace();
+            }
+        }
+    }
 
     private JsCommandSender server;
 
@@ -64,6 +101,43 @@ public class JsServerStatic
     public void chatWarning(String message)
     {
         ChatOutputHandler.chatWarning(MinecraftServer.getServer(), message);
+    }
+
+    private Map<Integer, TimerTask> tasks = new HashMap<>();
+
+    private int registerTask(TimerTask task)
+    {
+        int id = (int) Math.round(Math.random() * Integer.MAX_VALUE);
+        while (tasks.containsKey(id))
+            id = (int) Math.round(Math.random() * Integer.MAX_VALUE);
+        tasks.put(id, task);
+        return id;
+    }
+
+    public int setTimeout(Object fn, long timeout, Object... args) throws NoSuchMethodException, ScriptException
+    {
+        TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(fn, args));
+        TaskRegistry.schedule(task, timeout);
+        return registerTask(task);
+    }
+
+    public int setInterval(Object fn, long timeout, Object... args)
+    {
+        TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(fn, args));
+        TaskRegistry.scheduleRepeated(task, timeout);
+        return registerTask(task);
+    }
+
+    public void clearTimeout(int id)
+    {
+        TimerTask task = tasks.remove(id);
+        if (task != null)
+            TaskRegistry.remove(task);
+    }
+
+    public void clearInterval(int id)
+    {
+        clearTimeout(id);
     }
 
 }

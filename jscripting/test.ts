@@ -1,23 +1,36 @@
 
-export function processCommand(event: MC.CommandArgs) {
-    Server.chatConfirm('Hello JavaScript! Hello ' + sender.getName() + '!');
+export function processCommand(args: MC.CommandArgs) {
+    args.confirm('Hello JavaScript! Hello ' + args.sender.getName() + '!');
 
-    Server.chatConfirm('sin(3) = ' + Math.sin(3));
+    args.confirm('sin(3) = ' + Math.sin(3));
 
-    if (player) {
-        Server.chatConfirm('Running script as player');
-        Server.chatConfirm('Your health is ' + player.getHealth());
+    if (args.player) {
+        args.confirm('Running script as player');
+        args.confirm('Your health is ' + args.player.getHealth());
     } else {
-        Server.chatConfirm('Running script as server');
+        args.confirm('Running script as server');
     }
 
-    Server.chatConfirm('Arguments: ' + args.toString());
+    args.confirm('Arguments: ' + args.toString());
     var i = 0;
     while (!args.isEmpty()) {
         i++;
-        Server.chatConfirm('  ' + i + ': ' + args.remove());
+        args.confirm('  ' + i + ': ' + args.remove());
     }
 
-    // var doAsHideChat = Server.doAs(sender, sender, true);
-    // Server.cmd(doAsHideChat, 'give', sender.getCommandSenderName(), 'minecraft:dirt', '1');
+    // var doAsHideChat = args.doAs(sender, sender, true);
+    // args.cmd(doAsHideChat, 'give', args.sender.getCommandSenderName(), 'minecraft:dirt', '1');
+
+    setTimeout(() => {
+        args.notify('Timeout 3 (6s)');
+    }, 6000);
+
+    var t1 = setTimeout(() => {
+        args.notify('Timeout 2 (4s)');
+    }, 4000);
+
+    setTimeout(() => {
+        args.notify('Timeout 1 (2s) -> clear timeout 2');
+        clearTimeout(t1);
+    }, 2000);
 }

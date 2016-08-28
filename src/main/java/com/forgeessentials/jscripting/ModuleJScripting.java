@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.script.Bindings;
 import javax.script.Compilable;
+import javax.script.Invocable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -54,6 +55,10 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     private static ScriptEngine engine;
 
+    public static boolean isNashorn;
+
+    public static boolean isRhino;
+
     /**
      * Script cache
      */
@@ -77,6 +82,9 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent event)
     {
+        isNashorn = engine.getFactory().getEngineName().toLowerCase().contains("nashorn");
+        isRhino = engine.getFactory().getEngineName().toLowerCase().contains("rhino");
+
         Bindings scope = engine.getBindings(ScriptContext.GLOBAL_SCOPE);
         scope.put("Server", new JsServerStatic());
         scope.put("Block", new JsBlockStatic());
@@ -138,6 +146,11 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         return (Compilable) engine;
     }
 
+    public static Invocable getInvocable()
+    {
+        return (Invocable) engine;
+    }
+
     public static ScriptInstance getScript(String uri) throws IOException, ScriptException
     {
         ScriptInstance result = scripts.get(uri);
@@ -167,6 +180,36 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public static File getCommandsDir()
     {
         return commandsDir;
+    }
+
+    /* ------------------------------------------------------------ */
+
+    public static Object callJsFunction(Object fn, Object thiz, Object... args)
+    {
+        if (isNashorn)
+            return callNashornFunction(fn, thiz, args);
+        if (isRhino)
+            return callRhinoFunction(fn, thiz, args);
+        throw new IllegalStateException("Neither Nashorn nor Rhino JS engine detected");
+    }
+
+    private static Object callRhinoFunction(Object fn, Object thiz, Object... args)
+    {
+        throw new IllegalStateException("Not yet implemented");
+    }
+
+    private static Object callNashornFunction(Object fn, Object thiz, Object... args)
+    {
+        try
+        {
+            return getInvocable().invokeMethod(fn, "call", args);
+        }
+        catch (NoSuchMethodException | ScriptException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        // return ((ScriptObjectMirror) fn).call(thiz, args);
     }
 
     /* ------------------------------------------------------------ */

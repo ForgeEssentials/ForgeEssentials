@@ -15,13 +15,13 @@ public class JsEntityPlayerList extends MappedList<EntityPlayer, JsEntityPlayer>
     }
 
     @Override
-    public JsEntityPlayer map(EntityPlayer in)
+    protected JsEntityPlayer map(EntityPlayer in)
     {
         return new JsEntityPlayer(in);
     }
 
     @Override
-    public EntityPlayer unmap(JsEntityPlayer in)
+    protected EntityPlayer unmap(JsEntityPlayer in)
     {
         return in.getThat();
     }
