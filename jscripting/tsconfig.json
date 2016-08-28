@@ -23,6 +23,7 @@
     "exclude": [],
     "files": [
         "mc.d.ts",
+        "generated.d.ts",
         "pumpkinhead.ts",
         "randomtp.ts",
         "test.ts"

@@ -24,7 +24,7 @@ declare namespace MC {
 		remove(element: T): boolean;
 	}
 	
-	interface Block extends JavaObject  {
+	interface Block extends JavaObject {
 		getName(): string;
 	}
 	
@@ -73,7 +73,7 @@ declare namespace MC {
 		needsPlayer(): void;
 	}
 	
-	interface ICommandSender {
+	interface ICommandSender extends JavaObject {
 		getName(): string;
 		getPlayer(): EntityPlayer;
 		doAs(userIdOrPlayer: any, hideChatOutput: boolean): ICommandSender;
@@ -83,10 +83,10 @@ declare namespace MC {
 		chatWarning(message: string): void;
 	}
 	
-	interface Enchantment extends JavaObject  {
+	interface Enchantment {
 	}
 	
-	interface Entity {
+	interface Entity extends JavaObject {
 		getName(): string;
 		getId(): string;
 		getUuid(): UUID;
@@ -110,7 +110,7 @@ declare namespace MC {
 		getWorld(): World;
 	}
 	
-	interface EntityLivingBase extends Entity  {
+	interface EntityLivingBase extends Entity {
 		getHealth(): float;
 		setHealth(value: float): void;
 		getMaxHealth(): float;
@@ -118,7 +118,7 @@ declare namespace MC {
 		canEntityBeSeen(other: Entity): boolean;
 	}
 	
-	interface EntityPlayer extends EntityLivingBase  {
+	interface EntityPlayer extends EntityLivingBase {
 		setPosition(x: double, y: double, z: double): void;
 		setPosition(x: double, y: double, z: double, yaw: float, pitch: float): void;
 		getCommandSender(): ICommandSender;
@@ -126,10 +126,10 @@ declare namespace MC {
 		getBedLocation(dimension: int): Point;
 	}
 	
-	interface EntityPlayerList {
+	interface EntityPlayerList extends JavaList<EntityPlayer> {
 	}
 	
-	interface Inventory extends JavaObject  {
+	interface Inventory {
 		getStackInSlot(slot: int): ItemStack;
 		setStackInSlot(slot: int, stack: ItemStack): void;
 		isStackValidForSlot(slot: int, stack: ItemStack): boolean;
@@ -139,13 +139,13 @@ declare namespace MC {
 		hasCustomName(): boolean;
 	}
 	
-	interface InventoryPlayer extends Inventory  {
+	interface InventoryPlayer {
 		getCurrentItem(): ItemStack;
 		getCurrentItemIndex(): int;
 		setCurrentItemIndex(index: int): void;
 	}
 	
-	interface Item extends JavaObject  {
+	interface Item {
 		getName(): string;
 	}
 	
@@ -176,7 +176,7 @@ declare namespace MC {
 		createItemStack(item: Item, stackSize: int, damage: int): ItemStack;
 	}
 	
-	interface Point extends JavaObject  {
+	interface Point {
 		getX(): int;
 		getY(): int;
 		getZ(): int;
@@ -205,7 +205,7 @@ declare namespace MC {
 		clearInterval(handle: number): void;
 	}
 	
-	interface UserIdent {
+	interface UserIdent extends JavaObject {
 		hasUsername(): boolean;
 		hasUuid(): boolean;
 		hasPlayer(): boolean;
@@ -225,7 +225,7 @@ declare namespace MC {
 		getPermissionProperty(permissionNode: string): string;
 	}
 	
-	interface World extends JavaObject  {
+	interface World extends JavaObject {
 		getDimension(): int;
 		getDifficulty(): int;
 		getPlayerEntities(): JavaList<EntityPlayer>;
@@ -235,7 +235,7 @@ declare namespace MC {
 		setBlock(x: int, y: int, z: int, block: Block, meta: int): void;
 	}
 	
-	interface WorldPoint extends Point  {
+	interface WorldPoint {
 		getDimension(): int;
 		setDimension(dim: int): void;
 		setX(x: int): WorldPoint;

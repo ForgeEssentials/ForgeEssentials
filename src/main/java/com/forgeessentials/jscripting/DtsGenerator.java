@@ -2,6 +2,7 @@ package com.forgeessentials.jscripting;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,7 +19,7 @@ public class DtsGenerator
     private static final Pattern methodPattern = Pattern.compile("public ([\\w <>,?\\[\\]]+) (\\w+)\\(([\\w <>,.?\\[\\]]*)\\)");
     // private static final Pattern constructorPattern = Pattern.compile("public (\\w+)\\(([\\w <>,?\\[\\]]*)\\)");
     private static final Pattern classDefPattern = Pattern.compile("public class (\\w+)(?:<[\\w ]+>)?(?: extends ([\\w ,<>]+)[\\n\\}])?");
-    private static final Pattern customClassDefPattern = Pattern.compile("classdef (\\w+) (\\w+)?");
+    private static final Pattern customClassDefPattern = Pattern.compile("classdef (.*)");
     private static final Pattern customMethodDefPattern = Pattern.compile("methoddef (.*)");
 
     private static int indention = 0;
@@ -129,7 +130,7 @@ public class DtsGenerator
         }
     }
 
-    private static void processFile(File file) throws Exception
+    private static void processFile(File file) throws IOException
     {
         String fileName = file.getName();
         String typeName = fixType(fileName.substring(0, fileName.length() - 5));
@@ -139,22 +140,27 @@ public class DtsGenerator
 
         String text = FileUtils.readFileToString(file, Charsets.UTF_8);
 
-        Matcher classDef = customClassDefPattern.matcher(text);
-        if (!classDef.find())
-            classDef = classDefPattern.matcher(text);
-        if (!classDef.find())
-            throw new Exception("Could not find class def");
-
-        // Write interface header
-        writeLn("interface ");
-        write(typeName);
-        if (classDef.group(2) != null)
-        {
-            write(" extends ");
-            write(fixType(classDef.group(2)));
-            write(" ");
+        Matcher mCClassDef = customClassDefPattern.matcher(text);
+        Matcher mClassDef = classDefPattern.matcher(text);
+        if (mCClassDef.find()) {
+            writeLn(mCClassDef.group(1));
+            write(" {");
+        } else if (mClassDef.find()) {
+            // Write interface header
+            writeLn("interface ");
+            write(typeName);
+            if (mClassDef.group(2) != null)
+            {
+                write(" extends ");
+                write(fixType(mClassDef.group(2)));
+            }
+            write(" {");
         }
-        write(" {");
+        else
+        {
+            throw new RuntimeException("Could not find class def");
+        }
+
         indention++;
 
         for (String line : text.split("\n"))
@@ -162,19 +168,19 @@ public class DtsGenerator
             if (line.contains("tsgen ignore"))
                 continue;
             Matcher mField = fieldPattern.matcher(line);
-            Matcher mFunction = methodPattern.matcher(line);
-            Matcher nCFunction = customMethodDefPattern.matcher(line);
-            if (mFunction.find())
+            Matcher mMethod = methodPattern.matcher(line);
+            Matcher nCMethod = customMethodDefPattern.matcher(line);
+            if (mMethod.find())
             {
-                String name = mFunction.group(2);
+                String name = mMethod.group(2);
                 if (skipMethod(name))
                     continue;
                 writeLn(name);
                 write("(");
-                if (mFunction.group(3) != null && !mFunction.group(3).isEmpty())
-                    parseArgs(mFunction.group(3));
+                if (mMethod.group(3) != null && !mMethod.group(3).isEmpty())
+                    parseArgs(mMethod.group(3));
                 write("): ");
-                write(fixType(mFunction.group(1)));
+                write(fixType(mMethod.group(1)));
                 write(";");
             }
             else if (mField.find())
@@ -187,9 +193,9 @@ public class DtsGenerator
                 write(fixType(mField.group(1)));
                 write(";");
             }
-            else if (nCFunction.find())
+            else if (nCMethod.find())
             {
-                writeLn(nCFunction.group(1));
+                writeLn(nCMethod.group(1));
             }
         }
 
