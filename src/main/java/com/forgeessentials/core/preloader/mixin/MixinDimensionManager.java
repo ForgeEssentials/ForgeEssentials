@@ -44,7 +44,6 @@ public abstract class MixinDimensionManager
     @Overwrite
     public static boolean shouldLoadSpawn(int dim)
     {
-        System.out.println("shouldLoadSpawn " + dim);
         Boolean shouldSpawnOverride = DimensionManagerHelper.keepLoaded.get(dim);
         if (shouldSpawnOverride != null)
             return shouldSpawnOverride;
