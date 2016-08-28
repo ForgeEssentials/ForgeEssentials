@@ -89,8 +89,7 @@ ext.serverManifest = manifest {
 	attributes (
 		"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
 		"TweakOrder": "0",
-		"FMLCorePlugin": "com.forgeessentials.core.preloader.FELoadingPlugin",
-        "MixinConfigs": "mixins.forgeessentials.json",
+		"MixinConfigs": "mixins.forgeessentials.json",
 		"FMLAT": "forgeessentials_at.cfg",
 	)
 }
@@ -131,8 +130,8 @@ dependencies {
 	includeMod files("lib/worldedit-forge-mc1.7.10-6.1.1-SNAPSHOT-dist.jar")
 
 	// Shade Mixin library
-	shade group: "org.spongepowered", name: "mixin", version: "0.5.6-SNAPSHOT", changing: true
-	shadeClient group: "org.spongepowered", name: "mixin", version: "0.5.6-SNAPSHOT", changing: true
+	shade group: "org.spongepowered", name: "mixin", version: "0.5.10-SNAPSHOT", changing: true
+	shadeClient group: "org.spongepowered", name: "mixin", version: "0.5.10-SNAPSHOT", changing: true
 }
 
 /************************************************************
@@ -201,7 +200,8 @@ jar {
 	
 	from sourceSets.main.output
 	from sourceSets.utils.output
-	from fileTree(serverLibArchive.archivePath)
+    exclude('com/forgeessentials/client/**')
+    from fileTree(serverLibArchive.archivePath)
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 	}
