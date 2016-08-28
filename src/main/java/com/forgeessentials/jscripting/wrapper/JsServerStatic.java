@@ -113,7 +113,7 @@ public class JsServerStatic
     // methoddef setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
     public int setTimeout(Object fn, long timeout, Object... args) throws NoSuchMethodException, ScriptException // tsgen ignore
     {
-        TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(script.getInvocable(), fn, args));
+        TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(script.getInvocable(), fn, fn, args));
         TaskRegistry.schedule(task, timeout);
         return registerTask(task);
     }
@@ -121,7 +121,7 @@ public class JsServerStatic
     // methoddef setInterval(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
     public int setInterval(Object fn, long timeout, Object... args) // tsgen ignore
     {
-        TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(script.getInvocable(), fn, args));
+        TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(script.getInvocable(), fn, fn, args));
         TaskRegistry.scheduleRepeated(task, timeout);
         return registerTask(task);
     }
@@ -149,10 +149,13 @@ public class JsServerStatic
 
         private Invocable engine;
 
-        public CallScriptMethodTask(Invocable engine, Object fn, Object... args)
+        private Object thiz;
+
+        public CallScriptMethodTask(Invocable engine, Object fn, Object thiz, Object... args)
         {
             this.engine = engine;
             this.fn = fn;
+            this.thiz = thiz;
             this.args = args;
         }
 
@@ -161,7 +164,7 @@ public class JsServerStatic
         {
             try
             {
-                engine.invokeMethod(fn, "call", args);
+                engine.invokeMethod(fn, "call", thiz, args);
             }
             catch (NoSuchMethodException | ScriptException e)
             {
