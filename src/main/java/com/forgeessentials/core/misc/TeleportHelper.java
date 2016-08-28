@@ -18,7 +18,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 
 import com.forgeessentials.api.APIRegistry;
@@ -125,7 +124,7 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (point.getWorld() == null)
         {
-            DimensionManager.initDimension(point.getDimension());
+            MinecraftServer.getServer().worldServerForDimension(point.getDimension());
             if (point.getWorld() == null)
             {
                 ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target dimension does not exist"));

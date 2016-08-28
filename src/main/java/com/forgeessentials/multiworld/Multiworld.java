@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
-import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
@@ -32,7 +31,7 @@ public class Multiworld
 
     protected String worldType;
 
-    protected List<String> biomes = new ArrayList<String>();
+    protected List<String> biomes = new ArrayList<>();
 
     protected long seed;
 
@@ -104,9 +103,7 @@ public class Multiworld
 
     public WorldServer getWorldServer()
     {
-        if (!worldLoaded)
-            return null;
-        return DimensionManager.getWorld(dimensionId);
+        return MinecraftServer.getServer().worldServerForDimension(dimensionId);
     }
 
     public int getDimensionId()

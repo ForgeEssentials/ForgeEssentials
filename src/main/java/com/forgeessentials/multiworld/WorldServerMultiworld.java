@@ -10,14 +10,9 @@ import net.minecraft.world.storage.ISaveHandler;
 
 import com.forgeessentials.core.misc.TeleportHelper.SimpleTeleporter;
 
-/**
- * 
- * @author Olee
- */
 public class WorldServerMultiworld extends WorldServer
 {
 
-    private Multiworld world;
     private SimpleTeleporter worldTeleporter;
 
     public WorldServerMultiworld(MinecraftServer mcServer, ISaveHandler saveHandler, String worldname, int dimensionId, WorldSettings worldSettings,
@@ -27,7 +22,6 @@ public class WorldServerMultiworld extends WorldServer
         this.mapStorage = worldServer.mapStorage;
         this.worldScoreboard = worldServer.getScoreboard();
         this.worldTeleporter = new SimpleTeleporter(this);
-        this.world = world;
     }
 
     @Override
@@ -41,11 +35,6 @@ public class WorldServerMultiworld extends WorldServer
     {
         this.perWorldStorage.saveAllData();
         this.saveHandler.saveWorldInfo(this.worldInfo);
-    }
-
-    public Multiworld getMultiworld()
-    {
-        return world;
     }
 
 }

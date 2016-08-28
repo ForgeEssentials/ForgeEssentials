@@ -61,8 +61,8 @@ ext.baseVersion = "1.4.4"
 version = baseVersion + "." + buildNumber
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 // Set up forge options
 minecraft {
@@ -80,7 +80,7 @@ ext.sharedManifest = manifest {
 		"BuildNumber": buildNumber,
 		"FMLCorePluginContainsFMLMod": "true",
 		"ForceLoadAsMod": "true",
-        "MixinCompatibilityLevel": "JAVA_7",
+        "MixinCompatibilityLevel": "JAVA_8",
 	)
 }
 

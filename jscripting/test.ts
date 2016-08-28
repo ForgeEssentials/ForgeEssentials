@@ -1,7 +1,7 @@
 
-function isInt(value: any): boolean {
-    return !isNaN(value) && parseInt(value) === value && !isNaN(parseInt(value, 10));
-}
+// function isInt(value: any): boolean {
+//     return !isNaN(value) && parseInt(value) === value && !isNaN(parseInt(value, 10));
+// }
 
 // function nbt2js(nbt: any): any {
 //     for (let field in Object.keys(nbt)) {
