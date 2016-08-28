@@ -4,7 +4,6 @@ import com.forgeessentials.commons.selections.WorldPoint;
 
 public class JsWorldPoint<T extends WorldPoint> extends JsPoint<T>
 {
-    protected WorldPoint that;
 
     public JsWorldPoint(T that)
     {

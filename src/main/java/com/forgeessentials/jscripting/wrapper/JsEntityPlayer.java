@@ -1,6 +1,5 @@
 package com.forgeessentials.jscripting.wrapper;
 
-import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldPoint;
 
 import net.minecraft.entity.player.EntityPlayer;
