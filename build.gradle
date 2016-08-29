@@ -88,7 +88,7 @@ ext.sharedManifest = manifest {
 		"BuildNumber": buildNumber,
 		"FMLCorePluginContainsFMLMod": "true",
 		"ForceLoadAsMod": "true",
-        "MixinCompatibilityLevel": "JAVA_7",
+        "MixinCompatibilityLevel": "JAVA_8",
 	)
 }
 
@@ -97,8 +97,7 @@ ext.serverManifest = manifest {
 	attributes (
 		"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
 		"TweakOrder": "0",
-		"FMLCorePlugin": "com.forgeessentials.core.preloader.FELoadingPlugin",
-        "MixinConfigs": "mixins.forgeessentials.json",
+		"MixinConfigs": "mixins.forgeessentials.json",
 		"FMLAT": "forgeessentials_at.cfg",
 	)
 }
@@ -225,7 +224,8 @@ jar {
 	
 	from sourceSets.main.output
 	from sourceSets.utils.output
-	from fileTree(serverLibArchive.archivePath)
+    exclude('com/forgeessentials/client/**')
+    from fileTree(serverLibArchive.archivePath)
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 	}

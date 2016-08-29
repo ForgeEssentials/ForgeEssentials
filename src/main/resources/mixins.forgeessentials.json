@@ -10,7 +10,8 @@
         "entity.MixinEntity",
 		"entity.player.MixinEntityPlayerMP",
         "item.crafting.MixinCraftingManager",
-		"network.MixinNetHandlerPlayServer",
-        "server.management.MixinItemInWorldManager"
+        "network.MixinNetHandlerPlayServer",
+        "MixinDimensionManager"
+        //"tileentity.MixinMobSpawnerBaseLogic"
 	]
 }

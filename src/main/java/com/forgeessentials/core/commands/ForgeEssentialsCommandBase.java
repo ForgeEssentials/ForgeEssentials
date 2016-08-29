@@ -30,7 +30,7 @@ import com.forgeessentials.util.output.LoggingHandler;
 public abstract class ForgeEssentialsCommandBase extends CommandBase implements PermissionObject
 {
 
-    public List<String> aliases = new ArrayList<String>();
+    public List<String> aliases = new ArrayList<>();
 
     // ------------------------------------------------------------
     // Command alias
@@ -121,6 +121,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
      */
     public void register()
     {
+        if (MinecraftServer.getServer() == null)
+            return;
+        
         Map<?, ?> commandMap = ((CommandHandler) MinecraftServer.getServer().getCommandManager()).getCommands();
         if (commandMap.containsKey(getCommandName()))
             LoggingHandler.felog.error(String.format("Command %s registered twice", getCommandName()));
@@ -139,6 +142,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
     @SuppressWarnings("unchecked")
     public void deregister()
     {
+        if (MinecraftServer.getServer() == null)
+            return;
         CommandHandler cmdHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
         Map<String, ICommand> commandMap = cmdHandler.getCommands();
         Set<ICommand> commandSet = (Set<ICommand>) ReflectionHelper.getPrivateValue(CommandHandler.class, cmdHandler, "field_71561_b", "commandSet");

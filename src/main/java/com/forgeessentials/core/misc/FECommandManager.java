@@ -70,12 +70,25 @@ public class FECommandManager extends ConfigLoaderBase
 
     public static void registerCommand(ForgeEssentialsCommandBase command)
     {
+        registerCommand(command, false);
+    }
+
+    public static void registerCommand(ForgeEssentialsCommandBase command, boolean registerNow)
+    {
         commands.put(command.getCommandName(), command);
         if (config != null)
         {
             loadCommandConfig(command);
-            // command.register();
         }
+        if (registerNow)
+            command.register();
+    }
+
+    public static void deegisterCommand(String name)
+    {
+        ForgeEssentialsCommandBase command = commands.remove(name);
+        if (command != null)
+            command.deregister();
     }
 
     public static void registerCommands()

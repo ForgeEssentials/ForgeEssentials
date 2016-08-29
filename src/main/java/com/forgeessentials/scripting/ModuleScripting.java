@@ -24,7 +24,6 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.FileUtils;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.ScriptHandler;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -69,14 +68,14 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent event)
     {
-        APIRegistry.scripts = this;
-        new ScriptEventHandler();
-
+        // APIRegistry.scripts = this;
     }
 
     @SubscribeEvent
     public void load(FEModuleInitEvent event)
     {
+        new ScriptEventHandler();
+        
         commandsDir = new File(moduleDir, "commands");
         commandsDir.mkdirs();
 
@@ -245,7 +244,10 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         if (System.currentTimeMillis() - lastCronCheck >= CRON_CHECK_INTERVAL)
         {
             lastCronCheck = System.currentTimeMillis();
-            for (Entry<String, List<String>> script : scripts.get(ScriptEventHandler.SCRIPTKEY_CRON).entrySet())
+            Map<String, List<String>> cronScripts = scripts.get(ScriptEventHandler.SCRIPTKEY_CRON);
+            if (cronScripts == null)
+                return;
+            for (Entry<String, List<String>> script : cronScripts.entrySet())
             {
                 List<String> lines = new ArrayList<>(script.getValue());
                 if (lines.size() < 2)

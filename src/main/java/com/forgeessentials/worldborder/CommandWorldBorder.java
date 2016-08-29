@@ -81,7 +81,7 @@ public class CommandWorldBorder extends ParserCommandBase
 
         WorldBorder border = ModuleWorldBorder.getInstance().getBorder(arguments.senderPlayer.worldObj);
 
-        arguments.tabComplete("center", "disable", "enable", "shape", "size");
+        arguments.tabComplete("center", "disable", "enable", "shape", "size", "effect");
         String subCommand = arguments.remove().toLowerCase();
         switch (subCommand)
         {
