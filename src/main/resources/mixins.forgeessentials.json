@@ -4,12 +4,13 @@
     "refmap": "mixins.forgeessentials.refmap.json",
 	"mixins": [
         "block.MixinBlockPortal",
+        "block.MixinBlockFire",
         "block.MixinBlockEndPortal",
+        "command.MixinCommandHandler",
+        "entity.MixinEntity",
 		"entity.player.MixinEntityPlayerMP",
-		"command.MixinCommandHandler",
-		"entity.MixinEntity",
+        "item.crafting.MixinCraftingManager",
 		"network.MixinNetHandlerPlayServer",
-        "server.management.MixinItemInWorldManager",
-        "item.crafting.MixinCraftingManager"
+        "server.management.MixinItemInWorldManager"
 	]
 }
