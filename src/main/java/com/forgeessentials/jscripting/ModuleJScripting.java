@@ -224,8 +224,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         {
             try
             {
-                if (!script.illegalFunction(fnName))
-                    script.tryCall(fnName, jsSender);
+                if (!script.hasGlobalCallFailed(fnName))
+                    script.tryCallGlobal(fnName, jsSender);
             }
             catch (ScriptException e)
             {

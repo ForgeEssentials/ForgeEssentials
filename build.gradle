@@ -108,6 +108,8 @@ configurations {
 	compile.extendsFrom buildDep, shade, shadeClient, serverLib
 }
 
+// def jdkHome = System.getenv("JAVA_HOME")
+
 // Configure dependencies (build-only, shaded and packed libraries)
 dependencies {
 	// IRC
@@ -132,6 +134,10 @@ dependencies {
 	// Shade Mixin library
 	shade group: "org.spongepowered", name: "mixin", version: "0.5.10-SNAPSHOT", changing: true
 	shadeClient group: "org.spongepowered", name: "mixin", version: "0.5.10-SNAPSHOT", changing: true
+	
+	// TOOLS.jar from jdk for javadoc support
+    // compile files("$jdkHome/lib/tools.jar")
+    compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
 }
 
 /************************************************************

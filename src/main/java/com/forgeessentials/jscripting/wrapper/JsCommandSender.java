@@ -10,6 +10,10 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
+/**
+ *
+ * @tsd.type ICommandSender
+ */
 public class JsCommandSender extends JsWrapper<ICommandSender>
 {
 

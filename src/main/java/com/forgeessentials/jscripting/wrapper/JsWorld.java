@@ -1,9 +1,6 @@
 package com.forgeessentials.jscripting.wrapper;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-
-import com.forgeessentials.util.MappedList;
 
 public class JsWorld<T extends World> extends JsWrapper<T>
 {
@@ -24,7 +21,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
     }
 
     @SuppressWarnings("unchecked")
-    public MappedList<EntityPlayer, JsEntityPlayer> getPlayerEntities()
+    public JsEntityPlayerList getPlayerEntities()
     {
         return new JsEntityPlayerList(that.playerEntities);
     }

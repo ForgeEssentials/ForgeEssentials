@@ -80,11 +80,11 @@ public class CommandJScriptCommand extends ParserCommandBase
             if (arguments.isTabCompletion)
             {
                 if (tabComplete != null)
-                    script.getInvocable().invokeMethod(tabComplete, "call", processCommand, new JsCommandArgs(arguments));
+                    script.call(tabComplete, "call", processCommand, new JsCommandArgs(arguments));
             }
             else
             {
-                script.getInvocable().invokeMethod(processCommand, "call", processCommand, new JsCommandArgs(arguments));
+                script.call(processCommand, "call", processCommand, new JsCommandArgs(arguments));
             }
         }
         catch (NoSuchMethodException e)

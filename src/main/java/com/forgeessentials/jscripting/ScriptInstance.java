@@ -5,16 +5,23 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TimerTask;
 
 import javax.script.CompiledScript;
 import javax.script.Invocable;
-import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.util.IChatComponent;
 
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.wrapper.JsBlockStatic;
 import com.forgeessentials.jscripting.wrapper.JsCommandArgs;
@@ -22,9 +29,13 @@ import com.forgeessentials.jscripting.wrapper.JsItemStatic;
 import com.forgeessentials.jscripting.wrapper.JsServerStatic;
 import com.forgeessentials.jscripting.wrapper.JsWorldStatic;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class ScriptInstance
 {
+
+    // private static WeakReference<ScriptInstance> lastActive;
+    private static ScriptInstance lastActive;
 
     private File file;
 
@@ -35,6 +46,10 @@ public class ScriptInstance
     private Invocable invocable;
 
     private Set<String> illegalFunctions = new HashSet<>();
+
+    private Map<Integer, TimerTask> tasks = new HashMap<>();
+
+    private WeakReference<ICommandSender> lastSender;
 
     public ScriptInstance(File file) throws IOException, ScriptException
     {
@@ -91,10 +106,20 @@ public class ScriptInstance
         }
     }
 
-    public Object call(String fn, Object... args) throws NoSuchMethodException, ScriptException
+    public void checkIfModified() throws IOException, FileNotFoundException, ScriptException
+    {
+        if (file.exists() && file.lastModified() != lastModified)
+            compileScript();
+    }
+
+    /* ************************************************************ */
+    /* Script invocation */
+
+    public Object callGlobal(String fn, Object... args) throws NoSuchMethodException, ScriptException
     {
         try
         {
+            setLastActive();
             return this.invocable.invokeFunction(fn, args);
         }
         catch (Exception e)
@@ -102,12 +127,17 @@ public class ScriptInstance
             illegalFunctions.add(fn);
             throw e;
         }
+        finally
+        {
+            clearLastActive();
+        }
     }
 
-    public Object tryCall(String fn, Object... args) throws ScriptException
+    public Object tryCallGlobal(String fn, Object... args) throws ScriptException
     {
         try
         {
+            setLastActive();
             return this.invocable.invokeFunction(fn, args);
         }
         catch (NoSuchMethodException e)
@@ -115,39 +145,166 @@ public class ScriptInstance
             illegalFunctions.add(fn);
             return null;
         }
+        finally
+        {
+            clearLastActive();
+        }
     }
 
-    public boolean illegalFunction(String fnName)
+    public boolean hasGlobalCallFailed(String fnName)
     {
-        return illegalFunctions.contains(fnName);
+        try
+        {
+            setLastActive();
+            return illegalFunctions.contains(fnName);
+        }
+        finally
+        {
+            clearLastActive();
+        }
     }
 
-    public void checkIfModified() throws IOException, FileNotFoundException, ScriptException
+    public Object call(Object fn, Object thiz, Object... args) throws NoSuchMethodException, ScriptException
     {
-        if (file.exists() && file.lastModified() != lastModified)
-            compileScript();
+        try
+        {
+            setLastActive();
+            return this.invocable.invokeMethod(fn, "call", thiz, args);
+        }
+        finally
+        {
+            clearLastActive();
+        }
     }
+
+    public Object tryCall(Object fn, Object thiz, Object... args) throws ScriptException
+    {
+        try
+        {
+            setLastActive();
+            return this.invocable.invokeMethod(fn, "call", thiz, args);
+        }
+        catch (NoSuchMethodException e)
+        {
+            return null;
+        }
+        finally
+        {
+            clearLastActive();
+        }
+    }
+
+    private void setLastActive()
+    {
+        // lastActive = new WeakReference<ScriptInstance>(this);
+        lastActive = this;
+    }
+
+    private void clearLastActive()
+    {
+        lastActive = null;
+    }
+
+    public ScriptInstance getLastActive()
+    {
+        return lastActive;
+    }
+
+    /* ************************************************************ */
+    /* Timeout & Promise handling */
+
+    private RunLaterTimerTask createCallbackTask(Object fn, Object... args)
+    {
+        return new RunLaterTimerTask(() -> {
+            try
+            {
+                call(fn, fn, args);
+            }
+            catch (NoSuchMethodException | ScriptException e)
+            {
+                chatError("Error in callback: " + e.getMessage());
+            }
+        });
+    }
+
+    private int registerTimeout(TimerTask task)
+    {
+        int id = (int) Math.round(Math.random() * Integer.MAX_VALUE);
+        while (tasks.containsKey(id))
+            id = (int) Math.round(Math.random() * Integer.MAX_VALUE);
+        tasks.put(id, task);
+        return id;
+    }
+
+    public int setTimeout(Object fn, long timeout, Object... args) // tsgen ignore
+    {
+        TimerTask task = createCallbackTask(fn, args);
+        TaskRegistry.schedule(task, timeout);
+        return registerTimeout(task);
+    }
+
+    public int setInterval(Object fn, long timeout, Object... args) // tsgen ignore
+    {
+        TimerTask task = createCallbackTask(fn, args);
+        TaskRegistry.scheduleRepeated(task, timeout);
+        return registerTimeout(task);
+    }
+
+    public void clearTimeout(int id)
+    {
+        TimerTask task = tasks.remove(id);
+        if (task != null)
+            TaskRegistry.remove(task);
+    }
+
+    public void clearInterval(int id)
+    {
+        clearTimeout(id);
+    }
+
+    /**
+     * Tries to send an error message to the last player using this script.<br>
+     * If no player can be determined, the message will be broadcasted.
+     * 
+     * @param message
+     */
+    public void chatError(String message)
+    {
+        chatError(lastSender == null ? null : lastSender.get(), message);
+    }
+
+    public void chatError(ICommandSender sender, String message)
+    {
+        IChatComponent msg = ChatOutputHandler.error(message);
+        if (sender == null)
+            ChatOutputHandler.broadcast(msg); // TODO: Replace with broadcast to admins only
+        else
+            ChatOutputHandler.sendMessage(sender, msg);
+    }
+
+    /**
+     * This should be called every time a script is invoked by a user to send errors to the correct user
+     * 
+     * @param sender
+     */
+    public void setLastSender(ICommandSender sender)
+    {
+        this.lastSender = new WeakReference<>(sender);
+    }
+
+    /* ************************************************************ */
+    /* Other & Utility */
 
     public File getFile()
     {
         return file;
     }
 
-    public ScriptEngine getEngine()
-    {
-        return script.getEngine();
-    }
-
-    public Invocable getInvocable()
-    {
-        return (Invocable) script.getEngine();
-    }
-
     public void runCommand(CommandParserArgs arguments) throws CommandException
     {
         try
         {
-            call(arguments.isTabCompletion ? "tabComplete" : "processCommand", new JsCommandArgs(arguments));
+            callGlobal(arguments.isTabCompletion ? "tabComplete" : "processCommand", new JsCommandArgs(arguments));
         }
         catch (CommandException e)
         {
