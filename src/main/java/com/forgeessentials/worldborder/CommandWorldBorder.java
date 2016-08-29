@@ -200,7 +200,7 @@ public class CommandWorldBorder extends ParserCommandBase
         }
     }
 
-    public static void parseEffect(CommandParserArgs arguments, WorldBorder border)
+    public static void  parseEffect(CommandParserArgs arguments, WorldBorder border)
     {
         if (arguments.isEmpty())
         {
@@ -221,8 +221,6 @@ public class CommandWorldBorder extends ParserCommandBase
         }
 
         arguments.tabComplete("add", "remove");
-        if (arguments.isTabCompletion)
-            return;
 
         String subCommand = arguments.remove().toLowerCase();
         switch (subCommand)
@@ -231,6 +229,8 @@ public class CommandWorldBorder extends ParserCommandBase
             addEffect(border, arguments);
             break;
         case "remove":
+            if (arguments.isTabCompletion)
+                return;
             int index = Integer.parseInt(arguments.remove().toLowerCase());
             if (border.getEffects().size() >= index && border.getEffects().remove(border.getEffects().get(index)))
                 arguments.confirm("Removed effect");
