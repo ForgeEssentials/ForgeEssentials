@@ -27,6 +27,7 @@ import javax.script.SimpleBindings;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -40,6 +41,8 @@ import com.forgeessentials.jscripting.wrapper.JsServerStatic;
 import com.forgeessentials.jscripting.wrapper.JsWorldStatic;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ScriptInstance
 {
@@ -389,6 +392,12 @@ public class ScriptInstance
     /* Event handling */
 
     public void registerEventHandler(String event, Object handler)
+    {
+        System.out.println("TODO!");
+    }
+
+    @SubscribeEvent
+    public void test(PlayerInteractEvent event)
     {
         System.out.println("TODO!");
     }

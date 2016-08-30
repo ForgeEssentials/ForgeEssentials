@@ -32,6 +32,7 @@ import com.forgeessentials.jscripting.wrapper.JsCommandSender;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -94,9 +95,15 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     @SubscribeEvent
-    public void serverStarted(FEModuleServerPostInitEvent event)
+    public void serverStarting(FEModuleServerInitEvent event)
     {
         loadScripts();
+    }
+
+    @SubscribeEvent
+    public void serverStarted(FEModuleServerPostInitEvent event)
+    {
+        // loadScripts();
     }
 
     @Override
@@ -127,6 +134,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js" }, true); it.hasNext();)
         {
             File file = it.next();
+            if (scripts.containsKey(file))
+                continue;
             try
             {
                 getScript(file);

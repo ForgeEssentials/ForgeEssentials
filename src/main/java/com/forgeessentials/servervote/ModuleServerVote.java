@@ -20,6 +20,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.servervote.Votifier.VoteReceiver;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -56,7 +57,7 @@ public class ModuleServerVote
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FEModuleServerInitEvent event)
     {
         try
         {
@@ -82,13 +83,16 @@ public class ModuleServerVote
         {
             e1.printStackTrace();
         }
+    }
 
-        try
+    @SubscribeEvent
+    public void serverStarted(FEModuleServerPostInitEvent event)
+    {
+        File file = new File(moduleDir, "offlineVoteList.txt");
+        if (file.exists())
         {
-            File file = new File(moduleDir, "offlineVoteList.txt");
-            if (file.exists())
+            try (BufferedReader br = new BufferedReader(new FileReader(file)))
             {
-                BufferedReader br = new BufferedReader(new FileReader(file));
                 String line;
                 while ((line = br.readLine()) != null)
                 {
@@ -98,12 +102,11 @@ public class ModuleServerVote
                         offlineList.put(vote.player, vote);
                     }
                 }
-                br.close();
             }
-        }
-        catch (Exception e1)
-        {
-            e1.printStackTrace();
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -151,7 +154,7 @@ public class ModuleServerVote
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void defVoteResponces(VoteEvent vote)
+    public void serverVoteEvent(VoteEvent vote)
     {
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().func_152612_a(vote.player);
         if (player != null)
