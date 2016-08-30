@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -112,6 +113,7 @@ public class TsdGenerator extends Doclet
 
                 List<PackageDoc> packages = Arrays.asList(root.specifiedPackages());
                 packages.sort((a, b) -> a.name().compareTo(b.name()));
+                Collections.swap(packages, 0, packages.size() - 1);
 
                 packageName = "";
                 fullPackageName = NAMESPACE;

@@ -10,6 +10,7 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
+import com.forgeessentials.jscripting.ScriptUpgrader;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandJScript extends ParserCommandBase
@@ -30,7 +31,7 @@ public class CommandJScript extends ParserCommandBase
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/fescript [list|reload|commands]: Manage FE scripting";
+        return "/fescript [list|reload]: Manage FE scripting";
     }
 
     @Override
@@ -60,7 +61,7 @@ public class CommandJScript extends ParserCommandBase
             return;
         }
 
-        arguments.tabComplete("list", "reload");
+        arguments.tabComplete("list", "reload", "upgrade");
         String subcmd = arguments.remove().toLowerCase();
         switch (subcmd)
         {
@@ -70,6 +71,11 @@ public class CommandJScript extends ParserCommandBase
         case "reload":
             parseReload(arguments);
             break;
+        case "upgrade":
+            if (arguments.isTabCompletion)
+                return;
+            ScriptUpgrader.upgradeOldScripts(arguments.sender);
+            break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
         }
@@ -77,13 +83,17 @@ public class CommandJScript extends ParserCommandBase
 
     private static void parseReload(CommandParserArgs arguments)
     {
+        if (arguments.isTabCompletion)
+            return;
         arguments.confirm("Reloading scripts...");
-        ModuleJScripting.instance().reloadScripts();
+        ModuleJScripting.instance().reloadScripts(arguments.sender);
         arguments.confirm("Done!");
     }
 
     private static void parseList(CommandParserArgs arguments)
     {
+        if (arguments.isTabCompletion)
+            return;
         arguments.confirm("Loaded scripts:");
         for (ScriptInstance script : ModuleJScripting.getScripts())
         {
@@ -94,7 +104,7 @@ public class CommandJScript extends ParserCommandBase
             {
                 arguments.confirm("  Registered events:");
                 for (String eventType : eventHandlers)
-                    arguments.confirm("    " + eventType);
+                    arguments.sendMessage("    " + eventType);
             }
 
             List<CommandJScriptCommand> commands = script.getCommands();

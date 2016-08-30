@@ -86,6 +86,11 @@ public class JsCommandArgs
         return that.peek();
     }
 
+    public String get(int index)
+    {
+        return that.get(index);
+    }
+
     public boolean isEmpty()
     {
         return that.isEmpty();

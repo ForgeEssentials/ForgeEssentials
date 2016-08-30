@@ -14,6 +14,7 @@ import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +34,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -53,7 +55,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     protected static ModuleJScripting instance;
 
     @FEModule.ModuleDir
-    private static File moduleDir;
+    static File moduleDir;
 
     public static boolean isNashorn;
 
@@ -96,7 +98,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent event)
     {
-        loadScripts();
+        loadScripts(MinecraftServer.getServer());
     }
 
     @SubscribeEvent
@@ -115,13 +117,13 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void reload(ConfigReloadEvent event)
     {
-        reloadScripts();
+        reloadScripts(MinecraftServer.getServer());
     }
 
-    public void reloadScripts()
+    public void reloadScripts(ICommandSender sender)
     {
         unloadScripts();
-        loadScripts();
+        loadScripts(sender);
     }
 
     public void unloadScripts()
@@ -131,7 +133,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         scripts.clear();
     }
 
-    public void loadScripts()
+    public void loadScripts(ICommandSender sender)
     {
         for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js" }, true); it.hasNext();)
         {
@@ -144,6 +146,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             }
             catch (CommandException | IOException | ScriptException e)
             {
+                ChatOutputHandler.chatError(sender, "FE Script error: " + e.getMessage());
                 LoggingHandler.felog.error("FE Script error: " + e.getMessage());
             }
         }

@@ -20,88 +20,42 @@ declare namespace MC {
 	
 	type CommandCallback = (args: CommandArgs) => void;
 	
-	interface CommandArgs {
-		sender: ICommandSender;
-		player: Entity.EntityPlayer;
-		ident: Server.UserIdent;
-		isTabCompletion: boolean;
-		toArray(): string[];
-		toString(): string;
-		sendMessage(message: IChatComponent): void;
-		confirm(message: string, ...args: any[]): void;
-		notify(message: string, ...args: any[]): void;
-		warn(message: string, ...args: any[]): void;
-		error(message: string, ...args: any[]): void;
-		size(): int;
-		remove(): string;
-		peek(): string;
-		isEmpty(): boolean;
-		hasPlayer(): boolean;
-		parsePlayer(): Server.UserIdent;
-		parsePlayer(mustExist: boolean): Server.UserIdent;
-		parsePlayer(mustExist: boolean, mustBeOnline: boolean): Server.UserIdent;
-		parseItem(): Item.Item;
-		parseBlock(): World.Block;
-		parsePermission(): string;
-		checkPermission(perm: string): void;
-		hasPermission(perm: string): boolean;
-		tabComplete(...completionList: string[]): void;
-		tabCompleteWord(completion: string): void;
-		parseWorld(): World.WorldServer;
-		parseInt(): int;
-		parseInt(min: int, max: int): int;
-		parseLong(): long;
-		parseDouble(): double;
-		parseBoolean(): boolean;
-		parseTimeReadable(): long;
-		checkTabCompletion(): void;
-		requirePlayer(): void;
-		getSenderPoint(): World.WorldPoint;
-		needsPlayer(): void;
-	}
-	
-	interface CommandOptions {
-		name: string;
-		usage?: string;
-		permission?: string;
-		opOnly?: boolean;
-		processCommand: CommandCallback;
-		tabComplete?: CommandCallback;
-	}
-	
-	interface ICommandSender extends JavaObject {
-		getName(): string;
-		getPlayer(): Entity.EntityPlayer;
-		doAs(userIdOrPlayer: any, hideChatOutput: boolean): ICommandSender;
-		chatConfirm(message: string): void;
-		chatNotification(message: string): void;
-		chatError(message: string): void;
-		chatWarning(message: string): void;
-	}
-	
-	interface Point extends JavaObject {
-		getX(): int;
-		getY(): int;
-		getZ(): int;
-		setX(x: int): Point;
-		setY(y: int): Point;
-		setZ(z: int): Point;
-		length(): double;
-		distance(other: Point): double;
-		add(other: Point): void;
-		subtract(other: Point): void;
-		distance(x: int, y: int, z: int): double;
-		add(x: int, y: int, z: int): void;
-		subtract(x: int, y: int, z: int): void;
-	}
-	
-	/**
-	 * Basic wrapped java object
-	 */
-	interface JavaObject {
-		equals(obj: JavaObject): boolean;
-		toString(): string;
-		hashCode(): int;
+	namespace World {
+		
+		interface Block extends MC.JavaObject {
+			getName(): string;
+		}
+		
+		interface BlockStatic {
+			getBlock(name: string): Block;
+		}
+		
+		interface World extends MC.JavaObject {
+			getDimension(): int;
+			getDifficulty(): int;
+			getPlayerEntities(): MC.Entity.EntityPlayerList;
+			blockExists(x: int, y: int, z: int): boolean;
+			getBlock(x: int, y: int, z: int): Block;
+			setBlock(x: int, y: int, z: int, block: Block): void;
+			setBlock(x: int, y: int, z: int, block: Block, meta: int): void;
+			asWorldServer(): WorldServer;
+		}
+		
+		interface WorldPoint extends MC.Point {
+			getDimension(): int;
+			setDimension(dim: int): void;
+			setX(x: int): WorldPoint;
+			setY(y: int): WorldPoint;
+			setZ(z: int): WorldPoint;
+		}
+		
+		interface WorldServer extends World {
+		}
+		
+		interface WorldStatic {
+			getWorld(dim: int): WorldServer;
+		}
+		
 	}
 	
 	namespace Entity {
@@ -322,42 +276,89 @@ declare namespace MC {
 		
 	}
 	
-	namespace World {
-		
-		interface Block extends MC.JavaObject {
-			getName(): string;
-		}
-		
-		interface BlockStatic {
-			getBlock(name: string): Block;
-		}
-		
-		interface World extends MC.JavaObject {
-			getDimension(): int;
-			getDifficulty(): int;
-			getPlayerEntities(): MC.Entity.EntityPlayerList;
-			blockExists(x: int, y: int, z: int): boolean;
-			getBlock(x: int, y: int, z: int): Block;
-			setBlock(x: int, y: int, z: int, block: Block): void;
-			setBlock(x: int, y: int, z: int, block: Block, meta: int): void;
-			asWorldServer(): WorldServer;
-		}
-		
-		interface WorldPoint extends MC.Point {
-			getDimension(): int;
-			setDimension(dim: int): void;
-			setX(x: int): WorldPoint;
-			setY(y: int): WorldPoint;
-			setZ(z: int): WorldPoint;
-		}
-		
-		interface WorldServer extends World {
-		}
-		
-		interface WorldStatic {
-			getWorld(dim: int): WorldServer;
-		}
-		
+	interface CommandArgs {
+		sender: ICommandSender;
+		player: Entity.EntityPlayer;
+		ident: Server.UserIdent;
+		isTabCompletion: boolean;
+		toArray(): string[];
+		toString(): string;
+		sendMessage(message: IChatComponent): void;
+		confirm(message: string, ...args: any[]): void;
+		notify(message: string, ...args: any[]): void;
+		warn(message: string, ...args: any[]): void;
+		error(message: string, ...args: any[]): void;
+		size(): int;
+		remove(): string;
+		peek(): string;
+		get(index: int): string;
+		isEmpty(): boolean;
+		hasPlayer(): boolean;
+		parsePlayer(): Server.UserIdent;
+		parsePlayer(mustExist: boolean): Server.UserIdent;
+		parsePlayer(mustExist: boolean, mustBeOnline: boolean): Server.UserIdent;
+		parseItem(): Item.Item;
+		parseBlock(): World.Block;
+		parsePermission(): string;
+		checkPermission(perm: string): void;
+		hasPermission(perm: string): boolean;
+		tabComplete(...completionList: string[]): void;
+		tabCompleteWord(completion: string): void;
+		parseWorld(): World.WorldServer;
+		parseInt(): int;
+		parseInt(min: int, max: int): int;
+		parseLong(): long;
+		parseDouble(): double;
+		parseBoolean(): boolean;
+		parseTimeReadable(): long;
+		checkTabCompletion(): void;
+		requirePlayer(): void;
+		getSenderPoint(): World.WorldPoint;
+		needsPlayer(): void;
+	}
+	
+	interface CommandOptions {
+		name: string;
+		usage?: string;
+		permission?: string;
+		opOnly?: boolean;
+		processCommand: CommandCallback;
+		tabComplete?: CommandCallback;
+	}
+	
+	interface ICommandSender extends JavaObject {
+		getName(): string;
+		getPlayer(): Entity.EntityPlayer;
+		doAs(userIdOrPlayer: any, hideChatOutput: boolean): ICommandSender;
+		chatConfirm(message: string): void;
+		chatNotification(message: string): void;
+		chatError(message: string): void;
+		chatWarning(message: string): void;
+	}
+	
+	interface Point extends JavaObject {
+		getX(): int;
+		getY(): int;
+		getZ(): int;
+		setX(x: int): Point;
+		setY(y: int): Point;
+		setZ(z: int): Point;
+		length(): double;
+		distance(other: Point): double;
+		add(other: Point): void;
+		subtract(other: Point): void;
+		distance(x: int, y: int, z: int): double;
+		add(x: int, y: int, z: int): void;
+		subtract(x: int, y: int, z: int): void;
+	}
+	
+	/**
+	 * Basic wrapped java object
+	 */
+	interface JavaObject {
+		equals(obj: JavaObject): boolean;
+		toString(): string;
+		hashCode(): int;
 	}
 	
 	interface UUID {

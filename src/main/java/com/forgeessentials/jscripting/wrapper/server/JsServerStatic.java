@@ -6,6 +6,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.JsCommandOptions;
@@ -67,6 +69,10 @@ public class JsServerStatic
         String[] strArgs = new String[args.length];
         for (int i = 0; i < args.length; i++)
             strArgs[i] = args[i].toString();
+        
+        // Join and split again to fix invalid arguments containing spaces
+        String cmdLine = StringUtils.join(strArgs, " ");
+        strArgs = cmdLine.split(" ");
 
         try
         {
