@@ -1,10 +1,12 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.item;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.item.Item;
+
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
 public class JsItem extends JsWrapper<Item>
 {

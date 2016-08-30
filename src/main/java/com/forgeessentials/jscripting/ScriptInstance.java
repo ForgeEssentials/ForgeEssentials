@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,22 +29,24 @@ import javax.script.SimpleBindings;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.jscripting.wrapper.JsBlockStatic;
+import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.JsCommandArgs;
-import com.forgeessentials.jscripting.wrapper.JsItemStatic;
-import com.forgeessentials.jscripting.wrapper.JsServerStatic;
-import com.forgeessentials.jscripting.wrapper.JsWorldStatic;
+import com.forgeessentials.jscripting.wrapper.event.JsEvent;
+import com.forgeessentials.jscripting.wrapper.event.JsPlayerInteractEvent;
+import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
+import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
+import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
+import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ScriptInstance
 {
@@ -104,6 +108,9 @@ public class ScriptInstance
 
     private static Map<Class<?>, ProptertiesInfo<?>> propertyInfos = new HashMap<>();
 
+    @SuppressWarnings("rawtypes")
+    public static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
+
     private File file;
 
     private long lastModified;
@@ -118,7 +125,16 @@ public class ScriptInstance
 
     private Map<Integer, TimerTask> tasks = new HashMap<>();
 
+    private List<CommandJScriptCommand> commands = new ArrayList<>();
+
+    private Map<Object, JsEvent<?>> eventHandlers = new HashMap<>();
+
     private WeakReference<ICommandSender> lastSender;
+
+    static
+    {
+        eventTypes.put("playerInteractEvent", JsPlayerInteractEvent.class);
+    }
 
     public ScriptInstance(File file) throws IOException, ScriptException
     {
@@ -127,6 +143,16 @@ public class ScriptInstance
 
         this.file = file;
         compileScript();
+    }
+
+    public void dispose()
+    {
+        for (ParserCommandBase command : commands)
+            FECommandManager.deegisterCommand(command.getCommandName());
+        commands.clear();
+        for (JsEvent<?> eventHandler : eventHandlers.values())
+            eventHandler._unregister();
+        eventHandlers.clear();
     }
 
     protected void compileScript() throws IOException, FileNotFoundException, ScriptException
@@ -222,15 +248,7 @@ public class ScriptInstance
 
     public boolean hasGlobalCallFailed(String fnName)
     {
-        try
-        {
-            setLastActive();
-            return illegalFunctions.contains(fnName);
-        }
-        finally
-        {
-            clearLastActive();
-        }
+        return illegalFunctions.contains(fnName);
     }
 
     public Object call(Object fn, Object thiz, Object... args) throws NoSuchMethodException, ScriptException
@@ -391,15 +409,45 @@ public class ScriptInstance
     /* ************************************************************ */
     /* Event handling */
 
-    public void registerEventHandler(String event, Object handler)
+    public void registerScriptCommand(CommandJScriptCommand command)
     {
-        System.out.println("TODO!");
+        commands.add(command);
+        FECommandManager.registerCommand(command, true);
     }
 
-    @SubscribeEvent
-    public void test(PlayerInteractEvent event)
+    @SuppressWarnings({ "rawtypes" })
+    public void registerEventHandler(String event, Object handler)
     {
-        System.out.println("TODO!");
+        Class<? extends JsEvent> eventType = eventTypes.get(event);
+        if (eventType == null)
+        {
+            chatError("Invalid event type " + event);
+            return;
+        }
+        try
+        {
+            Constructor<? extends JsEvent> constructor = eventType.getConstructor(ScriptInstance.class, Object.class);
+            JsEvent<?> eventHandler = constructor.newInstance(this, handler);
+
+            // TODO: Handle reuse of one handler for multiple events!
+            eventHandlers.put(handler, eventHandler);
+
+            eventHandler._register();
+        }
+        catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e)
+        {
+            e.printStackTrace();
+            chatError("Script error: " + e.getMessage());
+        }
+    }
+
+    public void unregisterEventHandler(Object handler)
+    {
+        JsEvent<?> eventHandler = eventHandlers.remove(handler);
+        if (eventHandler == null)
+            return;
+        eventHandler._unregister();
     }
 
     /* ************************************************************ */
@@ -442,7 +490,7 @@ public class ScriptInstance
      */
     public void chatError(String message)
     {
-        chatError(lastSender == null ? null : lastSender.get(), message);
+        chatError(lastSender == null ? null : lastSender.get(), "Script error: " + message);
     }
 
     public void chatError(ICommandSender sender, String message)

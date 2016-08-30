@@ -1,9 +1,11 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.world;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
+
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
 import cpw.mods.fml.common.registry.GameData;
 

@@ -1,6 +1,8 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.item;
 
 import net.minecraft.enchantment.Enchantment;
+
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
 public class JsEnchantment<T extends Enchantment> extends JsWrapper<T>
 {

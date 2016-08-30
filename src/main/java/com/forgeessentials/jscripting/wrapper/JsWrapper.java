@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 
 /**
  * Basic wrapped java object
+ * 
+ * @tsd.type JavaObject
  */
 public class JsWrapper<T>
 {

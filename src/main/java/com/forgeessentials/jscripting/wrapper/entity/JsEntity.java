@@ -1,4 +1,4 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.entity;
 
 import java.util.UUID;
 
@@ -7,6 +7,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
+import com.forgeessentials.jscripting.wrapper.world.JsWorld;
 import com.forgeessentials.util.ServerUtil;
 
 public class JsEntity<T extends Entity> extends JsWrapper<T>

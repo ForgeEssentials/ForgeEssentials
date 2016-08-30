@@ -2,15 +2,15 @@ package com.forgeessentials.jscripting.wrapper;
 
 import java.util.Collection;
 
-import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
-import net.minecraft.item.Item;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.world.WorldServer;
 
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.WorldZone;
-import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.jscripting.wrapper.entity.JsEntityPlayer;
+import com.forgeessentials.jscripting.wrapper.item.JsItem;
+import com.forgeessentials.jscripting.wrapper.server.JsUserIdent;
+import com.forgeessentials.jscripting.wrapper.world.JsBlock;
+import com.forgeessentials.jscripting.wrapper.world.JsWorldPoint;
+import com.forgeessentials.jscripting.wrapper.world.JsWorldServer;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class JsCommandArgs
@@ -96,29 +96,29 @@ public class JsCommandArgs
         return that.hasPlayer();
     }
 
-    public UserIdent parsePlayer()
+    public JsUserIdent parsePlayer()
     {
-        return that.parsePlayer(true, false);
+        return new JsUserIdent(that.parsePlayer(true, false));
     }
 
-    public UserIdent parsePlayer(boolean mustExist)
+    public JsUserIdent parsePlayer(boolean mustExist)
     {
-        return that.parsePlayer(mustExist, false);
+        return new JsUserIdent(that.parsePlayer(mustExist, false));
     }
 
-    public UserIdent parsePlayer(boolean mustExist, boolean mustBeOnline)
+    public JsUserIdent parsePlayer(boolean mustExist, boolean mustBeOnline)
     {
-        return that.parsePlayer(mustExist, mustBeOnline);
+        return new JsUserIdent(that.parsePlayer(mustExist, mustBeOnline));
     }
 
-    public Item parseItem()
+    public JsItem parseItem()
     {
-        return that.parseItem();
+        return JsItem.get(that.parseItem());
     }
 
-    public Block parseBlock()
+    public JsBlock parseBlock()
     {
-        return that.parseBlock();
+        return JsBlock.get(that.parseBlock());
     }
 
     public String parsePermission()
@@ -154,9 +154,9 @@ public class JsCommandArgs
         that.tabCompleteWord(completion);
     }
 
-    public WorldServer parseWorld()
+    public JsWorldServer parseWorld()
     {
-        return that.parseWorld();
+        return new JsWorldServer(that.parseWorld());
     }
 
     public int parseInt()
@@ -199,15 +199,16 @@ public class JsCommandArgs
         that.requirePlayer();
     }
 
-    public WorldPoint getSenderPoint()
+    public JsWorldPoint<?> getSenderPoint()
     {
-        return that.getSenderPoint();
+        return new JsWorldPoint<>(that.getSenderPoint());
     }
 
-    public WorldZone getWorldZone()
-    {
-        return that.getWorldZone();
-    }
+    // TODO: Add permissions to scripting
+    // public JsWorldZone getWorldZone()
+    // {
+    // return that.getWorldZone();
+    // }
 
     public void needsPlayer()
     {

@@ -1,4 +1,4 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.server;
 
 import javax.script.ScriptException;
 
@@ -6,9 +6,10 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 
-import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
+import com.forgeessentials.jscripting.wrapper.JsCommandOptions;
+import com.forgeessentials.jscripting.wrapper.JsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class JsServerStatic
@@ -60,22 +61,22 @@ public class JsServerStatic
 
     public void chatConfirm(String message)
     {
-        ChatOutputHandler.chatConfirmation(MinecraftServer.getServer(), message);
+        ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(message));
     }
 
     public void chatNotification(String message)
     {
-        ChatOutputHandler.chatNotification(MinecraftServer.getServer(), message);
+        ChatOutputHandler.broadcast(ChatOutputHandler.notification(message));
     }
 
     public void chatError(String message)
     {
-        ChatOutputHandler.chatError(MinecraftServer.getServer(), message);
+        ChatOutputHandler.broadcast(ChatOutputHandler.error(message));
     }
 
     public void chatWarning(String message)
     {
-        ChatOutputHandler.chatWarning(MinecraftServer.getServer(), message);
+        ChatOutputHandler.broadcast(ChatOutputHandler.warning(message));
     }
 
     /**
@@ -87,13 +88,13 @@ public class JsServerStatic
     public void registerCommand(Object options) throws ScriptException
     {
         JsCommandOptions opt = script.getProperties(new JsCommandOptions(), options, JsCommandOptions.class);
-        ModuleJScripting.registerScriptCommand(new CommandJScriptCommand(script, opt));
+        script.registerScriptCommand(new CommandJScriptCommand(script, opt));
     }
 
     /**
      * Registers a new event handler.
      * 
-     * @tsd.def registerEvent(event: string, handler: () => void): void;
+     * @tsd.def registerEvent(event: string, handler: (event: MC.Event.Event) => void): void;
      */
     public void registerEvent(String event, Object handler) throws ScriptException
     {

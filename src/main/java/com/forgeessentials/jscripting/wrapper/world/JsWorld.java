@@ -1,6 +1,10 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.world;
 
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
+import com.forgeessentials.jscripting.wrapper.entity.JsEntityPlayerList;
 
 public class JsWorld<T extends World> extends JsWrapper<T>
 {
@@ -46,9 +50,9 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         that.setBlock(x, y, z, block.getThat(), meta, 3);
     }
 
-    // public void get()
-    // {
-    // return that.;
-    // }
+    public JsWorldServer asWorldServer()
+    {
+        return that instanceof WorldServer ? new JsWorldServer((WorldServer) that) : null;
+    }
 
 }
