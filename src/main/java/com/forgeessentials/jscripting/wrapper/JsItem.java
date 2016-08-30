@@ -20,7 +20,7 @@ public class JsItem extends JsWrapper<Item>
         return GameData.getItemRegistry().getNameForObject(that);
     }
 
-    public static JsItem get(Item item) // tsgen ignore
+    public static JsItem get(Item item)
     {
         if (!cache.containsKey(item))
             cache.put(item, new JsItem(item));

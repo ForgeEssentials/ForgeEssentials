@@ -13,6 +13,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 
 import org.apache.commons.io.FileUtils;
@@ -130,7 +131,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             {
                 getScript(file);
             }
-            catch (IOException | ScriptException e)
+            catch (CommandException | IOException | ScriptException e)
             {
                 LoggingHandler.felog.error("FE Script error: " + e.getMessage());
             }

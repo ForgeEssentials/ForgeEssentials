@@ -208,7 +208,11 @@ declare namespace MC {
 		 * Registers a new command in the game.
 		 * The processCommand and tabComplete handler can be the same, if the processCommand handler properly checks for args.isTabCompletion.
 		 */
-		registerCommand(options: CommandOptions, processCommand: CommandCallback, tabComplete?: CommandCallback): void;
+		registerCommand(options: CommandOptions): void;
+		/**
+		 * Registers a new event handler.
+		 */
+		registerEvent(event: string, handler: () => void): void;
 		/**
 		 * Set a timeout to call 'handler' after 'timeout' milliseconds.
 		 */

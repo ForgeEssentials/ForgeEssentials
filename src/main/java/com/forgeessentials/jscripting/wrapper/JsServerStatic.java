@@ -1,10 +1,11 @@
 package com.forgeessentials.jscripting.wrapper;
 
+import javax.script.ScriptException;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 
-import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
@@ -81,21 +82,22 @@ public class JsServerStatic
      * Registers a new command in the game. <br>
      * The processCommand and tabComplete handler can be the same, if the processCommand handler properly checks for args.isTabCompletion.
      * 
-     * @tsd.def registerCommand(options: CommandOptions, processCommand: CommandCallback, tabComplete?: CommandCallback): void;
+     * @tsd.def registerCommand(options: CommandOptions): void;
      */
-    public void registerCommand(Object optionsObj, Object processCommand, Object tabComplete)// tsgen ignore
+    public void registerCommand(Object options) throws ScriptException
     {
-        // TODO: BIG HACK to get a readable object from an anonymous json object!
-        JsCommandOptions options = DataManager.getGson().fromJson(DataManager.getGson().toJson(optionsObj), JsCommandOptions.class);
-        ModuleJScripting.registerScriptCommand(new CommandJScriptCommand(script, options, processCommand, tabComplete));
+        JsCommandOptions opt = script.getProperties(new JsCommandOptions(), options, JsCommandOptions.class);
+        ModuleJScripting.registerScriptCommand(new CommandJScriptCommand(script, opt));
     }
 
     /**
-     * @tsd.ignore
+     * Registers a new event handler.
+     * 
+     * @tsd.def registerEvent(event: string, handler: () => void): void;
      */
-    public void registerCommand(Object optionsObj, Object processCommand)// tsgen ignore
+    public void registerEvent(String event, Object handler) throws ScriptException
     {
-        registerCommand(optionsObj, processCommand, null);
+        script.registerEventHandler(event, handler);
     }
 
     /**
@@ -103,7 +105,7 @@ public class JsServerStatic
      * 
      * @tsd.def setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
      */
-    public int setTimeout(Object fn, long timeout, Object... args) // tsgen ignore
+    public int setTimeout(Object fn, long timeout, Object... args)
     {
         return script.setTimeout(fn, timeout, args);
     }
@@ -113,7 +115,7 @@ public class JsServerStatic
      * 
      * @tsd.def setInterval(handler: (...args: any[]) => void, interval?: any, ...args: any[]): number;
      */
-    public int setInterval(Object fn, long timeout, Object... args) // tsgen ignore
+    public int setInterval(Object fn, long timeout, Object... args)
     {
         return script.setInterval(fn, timeout, args);
     }

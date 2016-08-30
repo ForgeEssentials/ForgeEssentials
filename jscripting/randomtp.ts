@@ -38,4 +38,4 @@ Server.registerCommand({
     opOnly: false,
     processCommand: randomTpCommand,
     tabComplete: randomTpCommand,
-}, randomTpCommand, randomTpCommand);
+});

@@ -108,7 +108,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
     /**
      * @tsd.ignore
      */
-    public String _getNbt() // tsgen ignore
+    public String _getNbt()
     {
         return that.getTagCompound() == null ? null : DataManager.toJson(that.getTagCompound());
     }
@@ -116,7 +116,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
     /**
      * @tsd.ignore
      */
-    public void _setNbt(String value) // tsgen ignore
+    public void _setNbt(String value)
     {
         that.setTagCompound(value == null ? null : DataManager.fromJson(value, NBTTagCompound.class));
     }
