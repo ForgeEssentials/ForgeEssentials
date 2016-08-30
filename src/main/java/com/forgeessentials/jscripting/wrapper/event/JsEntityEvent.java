@@ -3,16 +3,15 @@ package com.forgeessentials.jscripting.wrapper.event;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.event.entity.EntityEvent;
 
-import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.wrapper.entity.JsEntity;
 
 public abstract class JsEntityEvent<T extends EntityEvent> extends JsEvent<T>
 {
 
-    public JsEntityEvent(ScriptInstance script, Object handler)
-    {
-        super(script, handler);
-    }
+    // public JsEntityEvent(ScriptInstance script, Object handler)
+    // {
+    // super(script, handler);
+    // }
 
     // @Override
     // @SubscribeEvent

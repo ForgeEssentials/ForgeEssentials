@@ -158,6 +158,7 @@ declare namespace MC {
 		}
 		
 		interface Event {
+			getEventType(): string;
 			isCancelable(): boolean;
 			isCanceled(): boolean;
 			setCanceled(cancel: boolean): void;

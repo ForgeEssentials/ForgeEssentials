@@ -1,18 +1,16 @@
 package com.forgeessentials.jscripting.command;
 
-import java.io.IOException;
-
-import javax.script.ScriptException;
+import java.util.List;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.util.CommandParserArgs;
-import com.google.common.io.PatternFilenameFilter;
 
 public class CommandJScript extends ParserCommandBase
 {
@@ -20,19 +18,19 @@ public class CommandJScript extends ParserCommandBase
     @Override
     public String getCommandName()
     {
-        return "fejscript";
+        return "fescript";
     }
 
     @Override
     public String[] getDefaultAliases()
     {
-        return new String[] { "jscript" };
+        return new String[] { "script" };
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/jscript <name>: Run a jscript";
+        return "/fescript [list|reload|commands]: Manage FE scripting";
     }
 
     @Override
@@ -50,7 +48,7 @@ public class CommandJScript extends ParserCommandBase
     @Override
     public String getPermissionNode()
     {
-        return ModuleJScripting.PERM + ".run";
+        return ModuleJScripting.PERM + ".manage";
     }
 
     @Override
@@ -62,30 +60,50 @@ public class CommandJScript extends ParserCommandBase
             return;
         }
 
-        // Find existing JS files
-        String[] scriptFiles = ModuleJScripting.getCommandsDir().list(new PatternFilenameFilter(".*\\.js"));
-        for (int i = 0; i < scriptFiles.length; i++)
-            scriptFiles[i] = scriptFiles[i].substring(0, scriptFiles[i].length() - 3);
-
-        // TAB-complete and parse argument
-        arguments.tabComplete(scriptFiles);
-        String scriptName = arguments.remove();
-
-        try
+        arguments.tabComplete("list", "reload");
+        String subcmd = arguments.remove().toLowerCase();
+        switch (subcmd)
         {
-            ScriptInstance script = ModuleJScripting.getScript(ModuleJScripting.COMMANDS_DIR + scriptName + ".js");
-            if (script == null)
-                throw new TranslatedCommandException("Script not found");
-            script.runCommand(arguments);
+        case "list":
+            parseList(arguments);
+            break;
+        case "reload":
+            parseReload(arguments);
+            break;
+        default:
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
         }
-        catch (IOException e1)
+    }
+
+    private static void parseReload(CommandParserArgs arguments)
+    {
+        arguments.confirm("Reloading scripts...");
+        ModuleJScripting.instance().reloadScripts();
+        arguments.confirm("Done!");
+    }
+
+    private static void parseList(CommandParserArgs arguments)
+    {
+        arguments.confirm("Loaded scripts:");
+        for (ScriptInstance script : ModuleJScripting.getScripts())
         {
-            throw new TranslatedCommandException("Error loading script file");
-        }
-        catch (ScriptException e)
-        {
-            e.printStackTrace();
-            throw new TranslatedCommandException("Error compiling script: %s", e.getMessage());
+            arguments.notify(script.getName());
+
+            List<String> eventHandlers = script.getEventHandlers();
+            if (!eventHandlers.isEmpty())
+            {
+                arguments.confirm("  Registered events:");
+                for (String eventType : eventHandlers)
+                    arguments.confirm("    " + eventType);
+            }
+
+            List<CommandJScriptCommand> commands = script.getCommands();
+            if (!commands.isEmpty())
+            {
+                arguments.confirm("  Registered commands:");
+                for (CommandJScriptCommand command : commands)
+                    arguments.sendMessage("    /" + command.getCommandName());
+            }
         }
     }
 

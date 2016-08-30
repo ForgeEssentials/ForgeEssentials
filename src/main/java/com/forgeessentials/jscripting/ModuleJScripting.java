@@ -2,6 +2,7 @@ package com.forgeessentials.jscripting;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -48,10 +49,11 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     private static final ScriptEngineManager SEM = new ScriptEngineManager(null);
 
+    @FEModule.Instance
+    protected static ModuleJScripting instance;
+
     @FEModule.ModuleDir
     private static File moduleDir;
-
-    private static File commandsDir;
 
     public static boolean isNashorn;
 
@@ -63,6 +65,11 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     protected static Map<File, ScriptInstance> scripts = new HashMap<>();
 
     /* ------------------------------------------------------------ */
+
+    public static ModuleJScripting instance()
+    {
+        return instance;
+    }
 
     @Preconditions
     public boolean canLoad()
@@ -84,8 +91,6 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public void load(FEModuleInitEvent event)
     {
         FECommandManager.registerCommand(new CommandJScript());
-        commandsDir = new File(moduleDir, COMMANDS_DIR);
-        commandsDir.mkdirs();
     }
 
     @SubscribeEvent
@@ -110,18 +115,23 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void reload(ConfigReloadEvent event)
     {
+        reloadScripts();
+    }
+
+    public void reloadScripts()
+    {
         unloadScripts();
         loadScripts();
     }
 
-    private void unloadScripts()
+    public void unloadScripts()
     {
         for (ScriptInstance script : scripts.values())
             script.dispose();
         scripts.clear();
     }
 
-    private void loadScripts()
+    public void loadScripts()
     {
         for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js" }, true); it.hasNext();)
         {
@@ -185,9 +195,14 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         return getScript(f);
     }
 
-    public static File getCommandsDir()
+    public static Collection<ScriptInstance> getScripts()
     {
-        return commandsDir;
+        return scripts.values();
+    }
+
+    public static File getModuleDir()
+    {
+        return moduleDir;
     }
 
     /* ------------------------------------------------------------ */

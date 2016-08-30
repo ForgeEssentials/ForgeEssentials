@@ -2,6 +2,7 @@ package com.forgeessentials.jscripting.wrapper.event;
 
 import javax.script.ScriptException;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.api.APIRegistry;
@@ -24,18 +25,23 @@ public abstract class JsEvent<T extends Event>
     /**
      * @tsd.ignore
      */
-    private ScriptInstance _script;
+    public ScriptInstance _script;
 
     /**
      * @tsd.ignore
      */
-    private Object _handler;
+    public Object _handler;
 
-    public JsEvent(ScriptInstance script, Object handler)
-    {
-        this._script = script;
-        this._handler = handler;
-    }
+    /**
+     * @tsd.ignore
+     */
+    public String _eventType;
+
+    // public JsEvent(ScriptInstance script, Object handler)
+    // {
+    // this._script = script;
+    // this._handler = handler;
+    // }
 
     public T _getEvent()
     {
@@ -43,6 +49,16 @@ public abstract class JsEvent<T extends Event>
     }
 
     public abstract void _handle(T event);
+
+    public ICommandSender _getSender()
+    {
+        return null;
+    }
+
+    public String getEventType()
+    {
+        return _eventType;
+    }
 
     public void _register()
     {
@@ -65,6 +81,10 @@ public abstract class JsEvent<T extends Event>
         try
         {
             this._event = event;
+            ICommandSender sender = _getSender();
+            if (sender != null)
+                _script.setLastSender(sender);
+
             _script.call(_handler, _handler, this);
         }
         catch (NoSuchMethodException e)

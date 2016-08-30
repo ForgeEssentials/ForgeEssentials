@@ -6,9 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +24,6 @@ import javax.script.Invocable;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
 
@@ -36,16 +33,13 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
-import com.forgeessentials.jscripting.wrapper.JsCommandArgs;
 import com.forgeessentials.jscripting.wrapper.event.JsEvent;
 import com.forgeessentials.jscripting.wrapper.event.JsPlayerInteractEvent;
 import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
 import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class ScriptInstance
@@ -356,6 +350,14 @@ public class ScriptInstance
         return lastActive;
     }
 
+    /**
+     * This should be called every time a script is invoked by a user to send errors to the correct user
+     */
+    public void setLastSender(ICommandSender sender)
+    {
+        this.lastSender = new WeakReference<>(sender);
+    }
+
     /* ************************************************************ */
     /* Timeout & Promise handling */
 
@@ -428,16 +430,19 @@ public class ScriptInstance
         }
         try
         {
-            Constructor<? extends JsEvent> constructor = eventType.getConstructor(ScriptInstance.class, Object.class);
-            JsEvent<?> eventHandler = constructor.newInstance(this, handler);
+            // Constructor<? extends JsEvent> constructor = eventType.getConstructor(ScriptInstance.class, Object.class);
+            // JsEvent<?> eventHandler = constructor.newInstance(this, handler);
+            JsEvent<?> eventHandler = eventType.newInstance();
+            eventHandler._script = this;
+            eventHandler._handler = handler;
+            eventHandler._eventType = event;
 
             // TODO: Handle reuse of one handler for multiple events!
             eventHandlers.put(handler, eventHandler);
 
             eventHandler._register();
         }
-        catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e)
+        catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException e)
         {
             e.printStackTrace();
             chatError(SCRIPT_ERROR_TEXT + e.getMessage());
@@ -460,29 +465,21 @@ public class ScriptInstance
         return file;
     }
 
-    public void runCommand(CommandParserArgs arguments) throws CommandException
+    public String getName()
     {
-        try
-        {
-            callGlobal(arguments.isTabCompletion ? "tabComplete" : "processCommand", new JsCommandArgs(arguments));
-        }
-        catch (CommandException e)
-        {
-            throw e;
-        }
-        catch (NoSuchMethodException e)
-        {
-            if (!arguments.isTabCompletion)
-                throw new TranslatedCommandException("Script missing processCommand function.");
-        }
-        catch (ScriptException e)
-        {
-            e.printStackTrace();
-            throw new TranslatedCommandException("Error in script: %s", e.getMessage());
-        }
+        String fileName = file.getAbsolutePath().substring(ModuleJScripting.getModuleDir().getAbsolutePath().length() + 1).replace('\\', '/');
+        return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 
-    /* ************************************************************ */
+    public List<CommandJScriptCommand> getCommands()
+    {
+        return commands;
+    }
+
+    public List<String> getEventHandlers()
+    {
+        return eventHandlers.values().stream().map(x -> x.getEventType()).collect(Collectors.toList());
+    }
 
     /**
      * Tries to send an error message to the last player using this script.<br>
@@ -502,16 +499,6 @@ public class ScriptInstance
             ChatOutputHandler.broadcast(msg); // TODO: Replace with broadcast to admins only
         else
             ChatOutputHandler.sendMessage(sender, msg);
-    }
-
-    /**
-     * This should be called every time a script is invoked by a user to send errors to the correct user
-     * 
-     * @param sender
-     */
-    public void setLastSender(ICommandSender sender)
-    {
-        this.lastSender = new WeakReference<>(sender);
     }
 
 }
