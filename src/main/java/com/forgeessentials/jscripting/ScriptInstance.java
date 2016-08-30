@@ -143,9 +143,14 @@ public class ScriptInstance
 
     public void dispose()
     {
+        for (TimerTask task : tasks.values())
+            TaskRegistry.remove(task);
+        tasks.clear();
+
         for (ParserCommandBase command : commands)
             FECommandManager.deegisterCommand(command.getCommandName());
         commands.clear();
+
         for (JsEvent<?> eventHandler : eventHandlers.values())
             eventHandler._unregister();
         eventHandlers.clear();
