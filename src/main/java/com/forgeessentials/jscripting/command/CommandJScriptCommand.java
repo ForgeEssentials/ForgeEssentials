@@ -22,24 +22,18 @@ public class CommandJScriptCommand extends ParserCommandBase
 
     private JsCommandOptions options;
 
-    private Object processCommand;
-
-    private Object tabComplete;
-
-    public CommandJScriptCommand(ScriptInstance script, JsCommandOptions options, Object processCommand, Object tabComplete)
+    public CommandJScriptCommand(ScriptInstance script, JsCommandOptions options)
     {
         Preconditions.checkNotNull(script);
-        Preconditions.checkNotNull(processCommand);
         Preconditions.checkNotNull(options);
         Preconditions.checkNotNull(options.name);
+        Preconditions.checkNotNull(options.processCommand);
         if (options.usage == null)
             options.usage = "/" + options.name + ": scripted command - no description";
         if (options.permission == null)
             options.permission = ModuleJScripting.PERM + ".command." + options.name;
         this.script = script;
         this.options = options;
-        this.processCommand = processCommand;
-        this.tabComplete = tabComplete;
     }
 
     @Override
@@ -79,12 +73,12 @@ public class CommandJScriptCommand extends ParserCommandBase
         {
             if (arguments.isTabCompletion)
             {
-                if (tabComplete != null)
-                    script.getInvocable().invokeMethod(tabComplete, "call", processCommand, new JsCommandArgs(arguments));
+                if (options.tabComplete != null)
+                    script.call(options.tabComplete, options.tabComplete, new JsCommandArgs(arguments));
             }
             else
             {
-                script.getInvocable().invokeMethod(processCommand, "call", processCommand, new JsCommandArgs(arguments));
+                script.call(options.processCommand, options.processCommand, new JsCommandArgs(arguments));
             }
         }
         catch (NoSuchMethodException e)

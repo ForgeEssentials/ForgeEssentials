@@ -134,12 +134,18 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
         return world;
     }
 
-    public String _getNbt() // tsgen ignore
+    /**
+     * @tsd.ignore
+     */
+    public String _getNbt()
     {
         return DataManager.toJson(that.getEntityData());
     }
 
-    public void _setNbt(String value) // tsgen ignore
+    /**
+     * @tsd.ignore
+     */
+    public void _setNbt(String value)
     {
         ServerUtil.copyNbt(that.getEntityData(), DataManager.fromJson(value, NBTTagCompound.class));
     }

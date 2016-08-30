@@ -1,19 +1,11 @@
 package com.forgeessentials.jscripting.wrapper;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimerTask;
-
-import javax.script.Invocable;
 import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
 
-import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
-import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
@@ -25,8 +17,6 @@ public class JsServerStatic
     private ScriptInstance script;
 
     private JsCommandSender server;
-
-    private Map<Integer, TimerTask> tasks = new HashMap<>();
 
     public JsServerStatic(ScriptInstance script)
     {
@@ -88,90 +78,62 @@ public class JsServerStatic
         ChatOutputHandler.chatWarning(MinecraftServer.getServer(), message);
     }
 
-    // methoddef registerCommand(options: CommandOptions, processCommand: CommandCallback, tabComplete?: CommandCallback): void;
-    public void registerCommand(Object optionsObj, Object processCommand, Object tabComplete)// tsgen ignore
+    /**
+     * Registers a new command in the game. <br>
+     * The processCommand and tabComplete handler can be the same, if the processCommand handler properly checks for args.isTabCompletion.
+     * 
+     * @tsd.def registerCommand(options: CommandOptions): void;
+     */
+    public void registerCommand(Object options) throws ScriptException
     {
-        // TODO: BIG HACK to get a readable object from an anonymous json object!
-        JsCommandOptions options = DataManager.getGson().fromJson(DataManager.getGson().toJson(optionsObj), JsCommandOptions.class);
-        ModuleJScripting.registerScriptCommand(new CommandJScriptCommand(script, options, processCommand, tabComplete));
+        JsCommandOptions opt = script.getProperties(new JsCommandOptions(), options, JsCommandOptions.class);
+        ModuleJScripting.registerScriptCommand(new CommandJScriptCommand(script, opt));
     }
 
-    public void registerCommand(Object optionsObj, Object processCommand)// tsgen ignore
+    /**
+     * Registers a new event handler.
+     * 
+     * @tsd.def registerEvent(event: string, handler: () => void): void;
+     */
+    public void registerEvent(String event, Object handler) throws ScriptException
     {
-        registerCommand(optionsObj, processCommand, null);
+        script.registerEventHandler(event, handler);
     }
 
-    private int registerTask(TimerTask task)
+    /**
+     * Set a timeout to call 'handler' after 'timeout' milliseconds.
+     * 
+     * @tsd.def setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
+     */
+    public int setTimeout(Object fn, long timeout, Object... args)
     {
-        int id = (int) Math.round(Math.random() * Integer.MAX_VALUE);
-        while (tasks.containsKey(id))
-            id = (int) Math.round(Math.random() * Integer.MAX_VALUE);
-        tasks.put(id, task);
-        return id;
+        return script.setTimeout(fn, timeout, args);
     }
 
-    // methoddef setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
-    public int setTimeout(Object fn, long timeout, Object... args) throws NoSuchMethodException, ScriptException // tsgen ignore
+    /**
+     * Set a interval to call 'handler' fn repeatedly each 'interval' milliseconds.
+     * 
+     * @tsd.def setInterval(handler: (...args: any[]) => void, interval?: any, ...args: any[]): number;
+     */
+    public int setInterval(Object fn, long timeout, Object... args)
     {
-        TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(script.getInvocable(), fn, fn, args));
-        TaskRegistry.schedule(task, timeout);
-        return registerTask(task);
+        return script.setInterval(fn, timeout, args);
     }
 
-    // methoddef setInterval(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
-    public int setInterval(Object fn, long timeout, Object... args) // tsgen ignore
+    /**
+     * Clear a timeout.
+     */
+    public void clearTimeout(int handle)
     {
-        TimerTask task = new RunLaterTimerTask(new CallScriptMethodTask(script.getInvocable(), fn, fn, args));
-        TaskRegistry.scheduleRepeated(task, timeout);
-        return registerTask(task);
+        script.clearTimeout(handle);
     }
 
-    // methoddef clearTimeout(handle: number): void;
-    public void clearTimeout(int id) // tsgen ignore
+    /**
+     * Clear an interval.
+     */
+    public void clearInterval(int handle)
     {
-        TimerTask task = tasks.remove(id);
-        if (task != null)
-            TaskRegistry.remove(task);
-    }
-
-    // methoddef clearInterval(handle: number): void;
-    public void clearInterval(int id) // tsgen ignore
-    {
-        clearTimeout(id);
-    }
-
-    public static class CallScriptMethodTask implements Runnable
-    {
-
-        private final Object fn;
-
-        private Object[] args;
-
-        private Invocable engine;
-
-        private Object thiz;
-
-        public CallScriptMethodTask(Invocable engine, Object fn, Object thiz, Object... args)
-        {
-            this.engine = engine;
-            this.fn = fn;
-            this.thiz = thiz;
-            this.args = args;
-        }
-
-        @Override
-        public void run() // tsgen ignore
-        {
-            try
-            {
-                engine.invokeMethod(fn, "call", thiz, args);
-            }
-            catch (NoSuchMethodException | ScriptException e)
-            {
-                System.err.println("Error calling script callback");
-                e.printStackTrace();
-            }
-        }
+        script.clearTimeout(handle);
     }
 
 }

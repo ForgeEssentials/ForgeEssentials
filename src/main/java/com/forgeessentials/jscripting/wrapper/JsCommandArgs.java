@@ -141,7 +141,10 @@ public class JsCommandArgs
         that.tabComplete(completionList);
     }
 
-    public void tabComplete(Collection<String> completionList) throws CommandException // tsgen ignore
+    /**
+     * @tsd.ignore
+     */
+    public void tabComplete(Collection<String> completionList) throws CommandException
     {
         that.tabComplete(completionList);
     }

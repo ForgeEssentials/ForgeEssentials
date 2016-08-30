@@ -6,12 +6,6 @@ declare type double = number;
 
 declare namespace MC {
 	
-	interface JavaObject {
-		equals(obj: JavaObject): boolean;
-		toString(): string;
-		hashCode(): int;
-	}
-	
 	interface JavaList<T> {
 		size(): int;
 		isEmpty(): boolean;
@@ -210,11 +204,31 @@ declare namespace MC {
 		chatNotification(message: string): void;
 		chatError(message: string): void;
 		chatWarning(message: string): void;
-		registerCommand(options: CommandOptions, processCommand: CommandCallback, tabComplete?: CommandCallback): void;
+		/**
+		 * Registers a new command in the game.
+		 * The processCommand and tabComplete handler can be the same, if the processCommand handler properly checks for args.isTabCompletion.
+		 */
+		registerCommand(options: CommandOptions): void;
+		/**
+		 * Registers a new event handler.
+		 */
+		registerEvent(event: string, handler: () => void): void;
+		/**
+		 * Set a timeout to call 'handler' after 'timeout' milliseconds.
+		 */
 		setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
-		setInterval(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
-		clearTimeout(handle: number): void;
-		clearInterval(handle: number): void;
+		/**
+		 * Set a interval to call 'handler' fn repeatedly each 'interval' milliseconds.
+		 */
+		setInterval(handler: (...args: any[]) => void, interval?: any, ...args: any[]): number;
+		/**
+		 * Clear a timeout.
+		 */
+		clearTimeout(handle: int): void;
+		/**
+		 * Clear an interval.
+		 */
+		clearInterval(handle: int): void;
 	}
 	
 	interface UserIdent extends JavaObject {
@@ -240,7 +254,7 @@ declare namespace MC {
 	interface World extends JavaObject {
 		getDimension(): int;
 		getDifficulty(): int;
-		getPlayerEntities(): JavaList<EntityPlayer>;
+		getPlayerEntities(): EntityPlayerList;
 		blockExists(x: int, y: int, z: int): boolean;
 		getBlock(x: int, y: int, z: int): Block;
 		setBlock(x: int, y: int, z: int, block: Block): void;
@@ -259,6 +273,15 @@ declare namespace MC {
 		getWorld(dim: int): World;
 	}
 	
+	/**
+	 * Basic wrapped java object
+	 */
+	interface JavaObject {
+		equals(obj: JavaObject): boolean;
+		toString(): string;
+		hashCode(): int;
+	}
+	
 	interface WorldServer { }
 	
 	interface IChatComponent { }
@@ -266,6 +289,8 @@ declare namespace MC {
 	interface UUID { }
 	
 	interface WorldZone { }
+	
+	interface CommandSender { }
 	
 }
 

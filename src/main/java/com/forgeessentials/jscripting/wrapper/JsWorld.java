@@ -4,8 +4,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
-import com.forgeessentials.util.MappedList;
-
 public class JsWorld<T extends World> extends JsWrapper<T>
 {
 
@@ -25,7 +23,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
     }
 
     @SuppressWarnings("unchecked")
-    public MappedList<EntityPlayer, JsEntityPlayer> getPlayerEntities()
+    public JsEntityPlayerList getPlayerEntities()
     {
         return new JsEntityPlayerList(that.playerEntities);
     }
@@ -50,7 +48,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         that.setBlockState(new BlockPos(x, y, z), block.getThat().getStateFromMeta(meta));
     }
 
-    // public void get() // tsgen ignore
+    // public void get()
     // {
     // return that.;
     // }

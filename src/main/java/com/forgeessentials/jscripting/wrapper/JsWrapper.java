@@ -2,9 +2,15 @@ package com.forgeessentials.jscripting.wrapper;
 
 import com.google.common.base.Preconditions;
 
+/**
+ * Basic wrapped java object
+ */
 public class JsWrapper<T>
 {
 
+    /**
+     * @tsd.ignore
+     */
     protected T that;
 
     public JsWrapper(T that)
@@ -13,11 +19,17 @@ public class JsWrapper<T>
         this.that = that;
     }
 
+    /**
+     * @tsd.ignore
+     */
     public T getThat()
     {
         return that;
     }
 
+    /**
+     * @tsd.def equals(obj: JavaObject): boolean;
+     */
     @Override
     public boolean equals(Object obj)
     {
@@ -29,6 +41,12 @@ public class JsWrapper<T>
             return that.equals(that2);
         }
         return false;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return that.toString();
     }
 
     @Override

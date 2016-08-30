@@ -13,6 +13,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -130,7 +131,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             {
                 getScript(file);
             }
-            catch (IOException | ScriptException e)
+            catch (CommandException | IOException | ScriptException e)
             {
                 LoggingHandler.felog.error("FE Script error: " + e.getMessage());
             }
@@ -150,7 +151,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         return (Compilable) getEngine();
     }
 
-    public static synchronized ScriptInstance getScript(File file) throws IOException, ScriptException
+    public static synchronized ScriptInstance getScript(File file) throws IOException, ScriptException, CommandException
     {
         ScriptInstance result = scripts.get(file);
         if (result == null)
@@ -179,7 +180,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         return result;
     }
 
-    public static ScriptInstance getScript(String uri) throws IOException, ScriptException
+    public static ScriptInstance getScript(String uri) throws IOException, ScriptException, CommandException
     {
         File f = new File(moduleDir, uri);
         if (!f.exists())
@@ -224,8 +225,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         {
             try
             {
-                if (!script.illegalFunction(fnName))
-                    script.tryCall(fnName, jsSender);
+                if (!script.hasGlobalCallFailed(fnName))
+                    script.tryCallGlobal(fnName, jsSender);
             }
             catch (ScriptException e)
             {

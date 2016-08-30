@@ -96,18 +96,27 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
         that.setRepairCost(cost);
     }
 
+    /**
+     * @tsd.ignore
+     */
     @Override
     public boolean equals(Object obj)
     {
         return obj instanceof JsItemStack ? that.isItemEqual(((JsItemStack) obj).getThat()) : false;
     }
 
-    public String _getNbt() // tsgen ignore
+    /**
+     * @tsd.ignore
+     */
+    public String _getNbt()
     {
         return that.getTagCompound() == null ? null : DataManager.toJson(that.getTagCompound());
     }
 
-    public void _setNbt(String value) // tsgen ignore
+    /**
+     * @tsd.ignore
+     */
+    public void _setNbt(String value)
     {
         that.setTagCompound(value == null ? null : DataManager.fromJson(value, NBTTagCompound.class));
     }

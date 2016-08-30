@@ -5,14 +5,30 @@ public class JsCommandOptions
 
     public String name;
 
-    public String usage; // $optional
+    /**
+     * @tsd.optional
+     */
+    public String usage;
 
-    public String permission; // $optional
+    /**
+     * @tsd.optional
+     */
+    public String permission;
 
-    public boolean opOnly = true; // $optional
+    /**
+     * @tsd.optional
+     */
+    public boolean opOnly = true;
 
-    public Object processCommand; // $type=CommandCallback$
+    /**
+     * @tsd.type CommandCallback
+     */
+    public Object processCommand;
 
-    public Object tabComplete; // $optional $type=CommandCallback$
+    /**
+     * @tsd.optional
+     * @tsd.type CommandCallback
+     */
+    public Object tabComplete;
 
 }
