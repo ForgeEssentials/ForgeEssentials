@@ -51,6 +51,8 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class ScriptInstance
 {
 
+    public static final String SCRIPT_ERROR_TEXT = "Script error: ";
+
     public static class ProptertiesInfo<T>
     {
 
@@ -366,7 +368,7 @@ public class ScriptInstance
             }
             catch (NoSuchMethodException | ScriptException e)
             {
-                chatError("Error in callback: " + e.getMessage());
+                chatError("Error in script callback: " + e.getMessage());
             }
         });
     }
@@ -421,7 +423,7 @@ public class ScriptInstance
         Class<? extends JsEvent> eventType = eventTypes.get(event);
         if (eventType == null)
         {
-            chatError("Invalid event type " + event);
+            chatError(SCRIPT_ERROR_TEXT + "Invalid event type " + event);
             return;
         }
         try
@@ -438,7 +440,7 @@ public class ScriptInstance
                 | InvocationTargetException e)
         {
             e.printStackTrace();
-            chatError("Script error: " + e.getMessage());
+            chatError(SCRIPT_ERROR_TEXT + e.getMessage());
         }
     }
 
@@ -490,7 +492,7 @@ public class ScriptInstance
      */
     public void chatError(String message)
     {
-        chatError(lastSender == null ? null : lastSender.get(), "Script error: " + message);
+        chatError(lastSender == null ? null : lastSender.get(), message);
     }
 
     public void chatError(ICommandSender sender, String message)

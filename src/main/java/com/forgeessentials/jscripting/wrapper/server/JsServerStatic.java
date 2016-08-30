@@ -32,48 +32,88 @@ public class JsServerStatic
         return server;
     }
 
-    public void runCommand(JsCommandSender sender, String cmd, Object... args) throws CommandException
+    /**
+     * Runs a Minecraft command.<br>
+     * Be sure to separate each argument of the command as a single argument to this function. <br>
+     * <br>
+     * <b>Right:</b> runCommand(sender, 'give', player.getName(), 'minecraft:dirt', 1);<br>
+     * <b>Wrong:</b> runCommand(sender, 'give ' + player.getName() + ' minecraft:dirt 1');
+     */
+    public void runCommand(JsCommandSender sender, String cmd, Object... args)
+    {
+        doRunCommand(sender, false, cmd, args);
+    }
+
+    /**
+     * Runs a Minecraft command and ignores any errors it might throw
+     */
+    public void tryRunCommand(JsCommandSender sender, String cmd, Object... args)
+    {
+        doRunCommand(sender, true, cmd, args);
+    }
+
+    private void doRunCommand(JsCommandSender sender, boolean ignoreErrors, String cmd, Object... args)
     {
         if (sender == null)
             sender = server;
 
         ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmd);
         if (mcCommand == null)
+        {
+            script.chatError("Command \"" + cmd + "\" not found");
             return;
+        }
+
+        String[] strArgs = new String[args.length];
+        for (int i = 0; i < args.length; i++)
+            strArgs[i] = args[i].toString();
 
         try
         {
-            String[] strArgs = new String[args.length];
-            for (int i = 0; i < args.length; i++)
-                strArgs[i] = args[i].toString();
-
             mcCommand.processCommand(sender.getThat(), strArgs);
         }
         catch (CommandException e)
         {
-            // if (!ignoreErrors)
-            // throw e;
-            // LoggingHandler.felog.info(String.format("Silent script command /%s %s failed: %s", cmd, StringUtils.join(args, " "), e.getMessage()));
-            e.printStackTrace();
-            throw e;
+            if (!ignoreErrors)
+                script.chatError(e.getMessage());
         }
     }
 
+    /**
+     * Broadcast an uncolored message to all players
+     */
+    public void chatMessage(String message)
+    {
+        ChatOutputHandler.broadcast(message);
+    }
+
+    /**
+     * Broadcast a confirmation message to all players
+     */
     public void chatConfirm(String message)
     {
         ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(message));
     }
 
+    /**
+     * Broadcast a notification message to all players
+     */
     public void chatNotification(String message)
     {
         ChatOutputHandler.broadcast(ChatOutputHandler.notification(message));
     }
 
+    /**
+     * Broadcast an error message to all players
+     */
     public void chatError(String message)
     {
         ChatOutputHandler.broadcast(ChatOutputHandler.error(message));
     }
 
+    /**
+     * Broadcast a warning message to all players
+     */
     public void chatWarning(String message)
     {
         ChatOutputHandler.broadcast(ChatOutputHandler.warning(message));

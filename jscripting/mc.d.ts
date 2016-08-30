@@ -240,10 +240,37 @@ declare namespace MC {
 		
 		interface ServerStatic {
 			getServer(): MC.ICommandSender;
+			/**
+			 * Runs a Minecraft command.
+			 * Be sure to separate each argument of the command as a single argument to this function.
+			 * 
+			 * Right: runCommand(sender, 'give', player.getName(), 'minecraft:dirt', 1);
+			 * Wrong: runCommand(sender, 'give ' + player.getName() + ' minecraft:dirt 1');
+			 */
 			runCommand(sender: MC.ICommandSender, cmd: string, ...args: any[]): void;
+			/**
+			 * Runs a Minecraft command and ignores any errors it might throw
+			 */
+			tryRunCommand(sender: MC.ICommandSender, cmd: string, ...args: any[]): void;
+			/**
+			 * Broadcast an uncolored message to all players
+			 */
+			chatMessage(message: string): void;
+			/**
+			 * Broadcast a confirmation message to all players
+			 */
 			chatConfirm(message: string): void;
+			/**
+			 * Broadcast a notification message to all players
+			 */
 			chatNotification(message: string): void;
+			/**
+			 * Broadcast an error message to all players
+			 */
 			chatError(message: string): void;
+			/**
+			 * Broadcast a warning message to all players
+			 */
 			chatWarning(message: string): void;
 			/**
 			 * Registers a new command in the game.

@@ -71,13 +71,13 @@ public abstract class JsEvent<T extends Event>
         {
             // TODO: Unregister event because it's broken!
             e.printStackTrace();
-            _script.chatError(e.getMessage());
+            _script.chatError(ScriptInstance.SCRIPT_ERROR_TEXT + e.getMessage());
             _script.unregisterEventHandler(this);
         }
         catch (ScriptException e)
         {
             e.printStackTrace();
-            _script.chatError(e.getMessage());
+            _script.chatError(ScriptInstance.SCRIPT_ERROR_TEXT + e.getMessage());
         }
     }
 

@@ -361,7 +361,12 @@ public class TsdGenerator extends Doclet
         if (fieldDoc.commentText().length() > 0)
         {
             writeLn("/**");
-            for (String line : fieldDoc.commentText().replace("\r", "").replace("<br>", "").split("\n"))
+            String comment = fieldDoc.commentText()
+                    .replace("\r", "")
+                    .replace("<br>", "")
+                    .replace("<b>", "")
+                    .replace("</b>", "");
+            for (String line : comment.split("\n"))
                 writeLn(" * " + line.trim());
             writeLn(" */");
         }
