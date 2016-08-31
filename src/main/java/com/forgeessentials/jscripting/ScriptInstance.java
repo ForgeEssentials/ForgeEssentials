@@ -24,6 +24,7 @@ import javax.script.Invocable;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.permission.PermissionLevel;
@@ -362,14 +363,6 @@ public class ScriptInstance
     public ScriptInstance getLastActive()
     {
         return lastActive;
-    }
-
-    /**
-     * This should be called every time a script is invoked by a user to send errors to the correct user
-     */
-    public void setLastSender(ICommandSender sender)
-    {
-        this.lastSender = new WeakReference<>(sender);
     }
 
     /* ************************************************************ */

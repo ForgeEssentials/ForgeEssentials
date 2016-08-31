@@ -1,5 +1,6 @@
 package com.forgeessentials.scripting;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 
 public class ScriptParser

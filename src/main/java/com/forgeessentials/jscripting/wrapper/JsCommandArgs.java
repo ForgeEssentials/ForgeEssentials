@@ -101,37 +101,37 @@ public class JsCommandArgs
         return that.hasPlayer();
     }
 
-    public JsUserIdent parsePlayer()
+    public JsUserIdent parsePlayer() throws CommandException
     {
         return new JsUserIdent(that.parsePlayer(true, false));
     }
 
-    public JsUserIdent parsePlayer(boolean mustExist)
+    public JsUserIdent parsePlayer(boolean mustExist) throws CommandException
     {
         return new JsUserIdent(that.parsePlayer(mustExist, false));
     }
 
-    public JsUserIdent parsePlayer(boolean mustExist, boolean mustBeOnline)
+    public JsUserIdent parsePlayer(boolean mustExist, boolean mustBeOnline) throws CommandException
     {
         return new JsUserIdent(that.parsePlayer(mustExist, mustBeOnline));
     }
 
-    public JsItem parseItem()
+    public JsItem parseItem() throws CommandException
     {
         return JsItem.get(that.parseItem());
     }
 
-    public JsBlock parseBlock()
+    public JsBlock parseBlock() throws CommandException
     {
         return JsBlock.get(that.parseBlock());
     }
 
-    public String parsePermission()
+    public String parsePermission() throws CommandException
     {
         return that.parsePermission();
     }
 
-    public void checkPermission(String perm)
+    public void checkPermission(String perm) throws CommandException
     {
         that.checkPermission(perm);
     }
@@ -141,7 +141,7 @@ public class JsCommandArgs
         return that.hasPermission(perm);
     }
 
-    public void tabComplete(String... completionList)
+    public void tabComplete(String... completionList) throws CommandException
     {
         that.tabComplete(completionList);
     }
@@ -149,22 +149,22 @@ public class JsCommandArgs
     /**
      * @tsd.ignore
      */
-    public void tabComplete(Collection<String> completionList)
+    public void tabComplete(Collection<String> completionList) throws CommandException
     {
         that.tabComplete(completionList);
     }
 
-    public void tabCompleteWord(String completion)
+    public void tabCompleteWord(String completion) throws CommandException
     {
         that.tabCompleteWord(completion);
     }
 
-    public JsWorldServer parseWorld()
+    public JsWorldServer parseWorld() throws CommandException
     {
         return new JsWorldServer(that.parseWorld());
     }
 
-    public int parseInt()
+    public int parseInt() throws CommandException
     {
         return that.parseInt();
     }
@@ -174,32 +174,32 @@ public class JsCommandArgs
         return that.parseInt(min, max);
     }
 
-    public long parseLong()
+    public long parseLong() throws CommandException
     {
         return that.parseLong();
     }
 
-    public double parseDouble()
+    public double parseDouble() throws CommandException
     {
         return that.parseDouble();
     }
 
-    public boolean parseBoolean()
+    public boolean parseBoolean() throws CommandException
     {
         return that.parseBoolean();
     }
 
-    public long parseTimeReadable()
+    public long parseTimeReadable() throws CommandException
     {
         return that.parseTimeReadable();
     }
 
-    public void checkTabCompletion()
+    public void checkTabCompletion() throws CommandException
     {
         that.checkTabCompletion();
     }
 
-    public void requirePlayer()
+    public void requirePlayer() throws CommandException
     {
         that.requirePlayer();
     }
@@ -215,7 +215,7 @@ public class JsCommandArgs
     // return that.getWorldZone();
     // }
 
-    public void needsPlayer()
+    public void needsPlayer() throws CommandException
     {
         that.needsPlayer();
     }
