@@ -9,6 +9,7 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.world.JsWorld;
 import com.forgeessentials.util.ServerUtil;
+import com.google.common.base.Throwables;
 
 public class JsEntity<T extends Entity> extends JsWrapper<T>
 {
@@ -171,7 +172,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
         }
         catch (Exception e)
         {
-            throw new RuntimeException(e);
+            Throwables.propagate(e);
         }
         return new JsEntity<>(entity);
     }
