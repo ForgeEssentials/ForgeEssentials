@@ -466,6 +466,7 @@ declare namespace MC {
 		equals(obj: JavaObject): boolean;
 		toString(): string;
 		hashCode(): int;
+		isInstanceOf(type: string): boolean;
 	}
 	
 	interface Zone extends JavaObject {

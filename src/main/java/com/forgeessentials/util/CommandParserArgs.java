@@ -59,8 +59,8 @@ public class CommandParserArgs
         this.args = new LinkedList<>(Arrays.asList(args));
         this.sender = sender;
         this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
-        this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null)
-                : UserIdent.get(senderPlayer);
+        this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null) : UserIdent
+                .get(senderPlayer);
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
@@ -407,13 +407,13 @@ public class CommandParserArgs
         {
             throw new TranslatedCommandException("Invalid time format: %s", value);
         }
-        
+
         long result = 0;
-        
+
         do
         {
             long resultPart = Long.parseLong(m.group(1));
-    
+
             String unit = m.group(2);
             if (unit != null)
             {
@@ -452,11 +452,11 @@ public class CommandParserArgs
                     throw new TranslatedCommandException("Invalid time format: %s", value);
                 }
             }
-            
+
             result += resultPart;
         }
         while (m.find());
-        
+
         return result;
     }
 
@@ -511,6 +511,5 @@ public class CommandParserArgs
         if (senderPlayer == null)
             throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
-
 
 }

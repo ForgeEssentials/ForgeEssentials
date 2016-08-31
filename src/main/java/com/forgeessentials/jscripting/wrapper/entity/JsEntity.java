@@ -152,19 +152,24 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
         ServerUtil.copyNbt(that.getEntityData(), DataManager.fromJson(value, NBTTagCompound.class));
     }
 
-    public String getEntityType() {
+    public String getEntityType()
+    {
         return that.getClass().getSimpleName();
     }
 
-    public static JsEntity<?> get(Entity entity) {
+    public static JsEntity<?> get(Entity entity)
+    {
         // Fancy reflection crap to get a specific entity type if it exists
         try
         {
-            for (Class<?> entityClazz = entity.getClass(); Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass()) {
-                try {
+            for (Class<?> entityClazz = entity.getClass(); Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass())
+            {
+                try
+                {
                     Class<?> clazz = Class.forName("com.forgeessentials.jscripting.wrapper.entity.Js" + entityClazz.getSimpleName());
-                    if (JsEntity.class.isAssignableFrom(clazz)) {
-                        return (JsEntity<?>)clazz.getConstructor(entityClazz).newInstance(entity);
+                    if (JsEntity.class.isAssignableFrom(clazz))
+                    {
+                        return (JsEntity<?>) clazz.getConstructor(entityClazz).newInstance(entity);
                     }
                 }
                 catch (ClassNotFoundException e)
