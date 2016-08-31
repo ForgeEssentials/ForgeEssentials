@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.jscripting.wrapper.JsFactoryStatic;
 import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
 import com.forgeessentials.jscripting.wrapper.server.JsPermissionsStatic;
 import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
@@ -192,6 +193,7 @@ public class TsdGenerator extends Doclet
                 indention--;
                 writeLn("}");
                 writeLn("");
+                writeLn("declare var Factory: " + classNameMap.get(JsFactoryStatic.class.getName()) + ";");
                 writeLn("declare var Server: " + classNameMap.get(JsServerStatic.class.getName()) + ";");
                 writeLn("declare var World: " + classNameMap.get(JsWorldStatic.class.getName()) + ";");
                 writeLn("declare var Block: " + classNameMap.get(JsBlockStatic.class.getName()) + ";");

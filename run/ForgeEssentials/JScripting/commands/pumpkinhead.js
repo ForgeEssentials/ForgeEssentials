@@ -1,17 +1,16 @@
-
-export function tabComplete(args: MC.CommandArgs) {
+"use strict";
+function tabComplete(args) {
     processCommand(args);
 }
-
-export function processCommand(args: MC.CommandArgs) {
+exports.tabComplete = tabComplete;
+function processCommand(args) {
     var player = args.player;
     if (!args.player) {
         args.confirm('Error: no player!');
         return;
     }
-
-    if (args.isTabCompletion) // This is important so TAB completion does not actually change stuff
+    if (args.isTabCompletion)
         return;
-
     player.getInventory().setStackInSlot(39, Factory.createItemStack(Block.getBlock("minecraft:pumpkin"), 1));
 }
+exports.processCommand = processCommand;

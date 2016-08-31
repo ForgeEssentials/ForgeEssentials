@@ -186,10 +186,6 @@ declare namespace MC {
 		
 		interface ItemStatic {
 			getItem(name: string): Item;
-			createItemStack(block: MC.World.Block, stackSize: int): ItemStack;
-			createItemStack(block: MC.World.Block, stackSize: int, damage: int): ItemStack;
-			createItemStack(item: Item, stackSize: int): ItemStack;
-			createItemStack(item: Item, stackSize: int, damage: int): ItemStack;
 		}
 		
 	}
@@ -394,6 +390,15 @@ declare namespace MC {
 		chatWarning(message: string): void;
 	}
 	
+	interface FactoryStatic {
+		createItemStack(block: World.Block, stackSize: int): Item.ItemStack;
+		createItemStack(block: World.Block, stackSize: int, damage: int): Item.ItemStack;
+		createItemStack(item: Item.Item, stackSize: int): Item.ItemStack;
+		createItemStack(item: Item.Item, stackSize: int, damage: int): Item.ItemStack;
+		createPoint(x: int, y: int, z: int): Point;
+		createWorldPoint(dimension: int, x: int, y: int, z: int): World.WorldPoint;
+	}
+	
 	interface Point extends JavaObject {
 		getX(): int;
 		getY(): int;
@@ -444,6 +449,7 @@ declare namespace MC {
 	
 }
 
+declare var Factory: MC.FactoryStatic;
 declare var Server: MC.Server.ServerStatic;
 declare var World: MC.World.WorldStatic;
 declare var Block: MC.World.BlockStatic;

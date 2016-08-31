@@ -35,6 +35,7 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
+import com.forgeessentials.jscripting.wrapper.JsFactoryStatic;
 import com.forgeessentials.jscripting.wrapper.event.JsEvent;
 import com.forgeessentials.jscripting.wrapper.event.JsPlayerInteractEvent;
 import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
@@ -166,6 +167,7 @@ public class ScriptInstance
             script = ModuleJScripting.getCompilable().compile(reader);
 
             // Initialization of module environment
+            script.getEngine().put("Factory", new JsFactoryStatic());
             script.getEngine().put("Server", new JsServerStatic(this));
             script.getEngine().put("Block", new JsBlockStatic());
             script.getEngine().put("Item", new JsItemStatic());
