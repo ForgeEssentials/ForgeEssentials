@@ -1,10 +1,12 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.world;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.registry.GameData;
+
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
 public class JsBlock extends JsWrapper<Block>
 {

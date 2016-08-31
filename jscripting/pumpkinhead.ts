@@ -13,5 +13,5 @@ export function processCommand(args: MC.CommandArgs) {
     if (args.isTabCompletion) // This is important so TAB completion does not actually change stuff
         return;
 
-    player.getInventory().setStackInSlot(39, Item.createItemStack(Block.getBlock("minecraft:pumpkin"), 1));
+    player.getInventory().setStackInSlot(39, Factory.createItemStack(Block.getBlock("minecraft:pumpkin"), 1));
 }

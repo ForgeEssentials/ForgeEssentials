@@ -1,9 +1,10 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.item;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
 public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 {

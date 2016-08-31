@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.jscripting.wrapper.entity.JsEntityPlayer;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -49,6 +50,11 @@ public class JsCommandSender extends JsWrapper<ICommandSender>
         DoAsCommandSender result = new DoAsCommandSender(doAsUser, that);
         result.setHideChatMessages(hideChatOutput);
         return new JsCommandSender(result);
+    }
+
+    public void chat(String message)
+    {
+        ChatOutputHandler.sendMessage(that, message);
     }
 
     public void chatConfirm(String message)

@@ -1,4 +1,4 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.world;
 
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
@@ -6,10 +6,10 @@ import net.minecraftforge.common.DimensionManager;
 public class JsWorldStatic
 {
 
-    public JsWorld<WorldServer> getWorld(int dim)
+    public JsWorldServer getWorld(int dim)
     {
         WorldServer world = DimensionManager.getWorld(dim);
-        return world == null ? null : new JsWorld<>(world);
+        return world == null ? null : new JsWorldServer(world);
     }
 
 }

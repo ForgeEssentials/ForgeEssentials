@@ -1,18 +1,18 @@
 package com.forgeessentials.jscripting.wrapper;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameData;
 
-public class JsItemStatic
-{
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.jscripting.wrapper.item.JsItem;
+import com.forgeessentials.jscripting.wrapper.item.JsItemStack;
+import com.forgeessentials.jscripting.wrapper.world.JsBlock;
+import com.forgeessentials.jscripting.wrapper.world.JsWorldPoint;
 
-    public JsItem getItem(String name)
-    {
-        Item item = GameData.getItemRegistry().getObject(new ResourceLocation(name));
-        return item == null ? null : JsItem.get(item);
-    }
+public class JsFactoryStatic
+{
 
     public JsItemStack createItemStack(JsBlock block, int stackSize)
     {
@@ -34,4 +34,11 @@ public class JsItemStatic
         return new JsItemStack(new ItemStack(item.getThat(), stackSize, damage));
     }
 
+    public JsPoint<?> createPoint(int x, int y, int z) {
+        return new JsPoint<>(new Point(x, y, z));
+    }
+
+    public JsWorldPoint<?> createWorldPoint(int dimension, int x, int y, int z) {
+        return new JsWorldPoint<>(new WorldPoint(dimension, x, y, z));
+    }
 }

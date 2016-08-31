@@ -1,6 +1,7 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.world;
 
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.jscripting.wrapper.JsPoint;
 
 public class JsWorldPoint<T extends WorldPoint> extends JsPoint<T>
 {
