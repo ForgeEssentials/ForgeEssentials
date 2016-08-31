@@ -88,7 +88,7 @@ public class JsServerStatic
     /**
      * Broadcast an uncolored message to all players
      */
-    public void chatMessage(String message)
+    public void chat(String message)
     {
         ChatOutputHandler.broadcast(message);
     }

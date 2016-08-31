@@ -218,6 +218,16 @@ public class ScriptUpgrader
                     out.append(StringUtils.join(args, " + ' ' + "));
                     out.append(");");
                     break;
+                case "fail":
+                    out.append("sender.chatError(");
+                    out.append(StringUtils.join(args, " + ' ' + "));
+                    out.append(");\n\treturn;");
+                    break;
+                case "echoall":
+                    out.append("Server.chat(");
+                    out.append(StringUtils.join(args, " + ' ' + "));
+                    out.append(");");
+                    break;
                 case "confirmall":
                     out.append("Server.chatConfirm(");
                     out.append(StringUtils.join(args, " + ' ' + "));
@@ -237,6 +247,11 @@ public class ScriptUpgrader
                     out.append("Server.chatError(");
                     out.append(StringUtils.join(args, " + ' ' + "));
                     out.append(");");
+                    break;
+                case "failall":
+                    out.append("Server.chatError(");
+                    out.append(StringUtils.join(args, " + ' ' + "));
+                    out.append(");\n\treturn;");
                     break;
                 case "timeout":
                     String timeout = args.remove(0);
