@@ -5,13 +5,12 @@ import java.util.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.biome.BiomeProviderSingle;
-import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.gen.ChunkProviderDebug;
 import net.minecraft.world.gen.ChunkProviderFlat;
-import net.minecraft.world.gen.ChunkProviderGenerate;
+import net.minecraft.world.gen.ChunkProviderOverworld;
 import net.minecraft.world.gen.FlatGeneratorInfo;
 import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraft.world.gen.layer.GenLayerBiome;
@@ -35,7 +34,7 @@ public class WorldTypeMultiworld extends WorldType
     }
 
     @Override
-    public BiomeProvider getChunkManager(World world)
+    public BiomeProvider getBiomeProvider(World world)
     {
         // Set current world
         if (world instanceof WorldServerMultiworld)
@@ -47,23 +46,25 @@ public class WorldTypeMultiworld extends WorldType
         if (this == FLAT)
         {
             FlatGeneratorInfo flatgeneratorinfo = FlatGeneratorInfo.createFlatGeneratorFromString(world.getWorldInfo().getGeneratorOptions());
-            return new BiomeProviderSingle(Biome.getBiome(flatgeneratorinfo.getBiome()), 0.5F);
+            return new BiomeProviderSingle(Biome.getBiome(flatgeneratorinfo.getBiome()));
         }
         else
         {
-            return new BiomeProvider(world);
+            return new BiomeProvider(world.getWorldInfo());
         }
     }
 
     @Override
-    public IChunkProvider getChunkGenerator(World world, String generatorOptions)
+    public IChunkGenerator getChunkGenerator(World world, String generatorOptions)
     {
         // TODO: Use custom ChunkProviders
         if (this == FLAT)
             return new ChunkProviderFlat(world, world.getSeed(), world.getWorldInfo().isMapFeaturesEnabled(), generatorOptions);
         if (this == DEBUG_WORLD)
             return new ChunkProviderDebug(world);
-        return new ChunkProviderGenerate(world, world.getSeed(), world.getWorldInfo().isMapFeaturesEnabled(), generatorOptions);
+        if (this == CUSTOMIZED)
+            return new ChunkProviderOverworld(world, world.getSeed(), world.getWorldInfo().isMapFeaturesEnabled(), generatorOptions);
+        return new ChunkProviderOverworld(world, world.getSeed(), world.getWorldInfo().isMapFeaturesEnabled(), generatorOptions);
     }
 
     /**

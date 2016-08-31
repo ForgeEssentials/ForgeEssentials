@@ -3,6 +3,7 @@ package com.forgeessentials.core.preloader.mixin.command;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionManager;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -66,11 +67,11 @@ public class MixinCommandHandler
             method = "getPossibleCommands(Lnet/minecraft/command/ICommandSender;)Ljava/util/List;",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/command/ICommand;canCommandSenderUseCommand(Lnet/minecraft/command/ICommandSender;)Z"
+                    target = "Lnet/minecraft/command/ICommand;checkPermission(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;)Z"
             ),
             require = 1
     )
-    private boolean hasPermissionAll(ICommand command, ICommandSender sender)
+    private boolean hasPermissionAll(ICommand command, MinecraftServer server, ICommandSender sender)
     {
         return PermissionManager.checkPermission(sender, command);
     }

@@ -119,7 +119,7 @@ public class CommandTp extends CommandTeleport implements PermissionObject
                 }
                 else
                 {
-                    entity.mountEntity((Entity) null);
+                    entity.startRiding((Entity) null);
 
                     if (entity instanceof EntityPlayerMP)
                     {

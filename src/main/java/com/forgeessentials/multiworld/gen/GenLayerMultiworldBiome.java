@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.init.Biomes;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.layer.GenLayer;
@@ -12,6 +13,7 @@ import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.BiomeManager.BiomeEntry;
 
 import com.forgeessentials.multiworld.WorldServerMultiworld;
+import com.google.common.collect.ImmutableList;
 
 /**
  * 
@@ -32,12 +34,16 @@ public class GenLayerMultiworldBiome extends GenLayer
 
         for (BiomeManager.BiomeType type : BiomeManager.BiomeType.values())
         {
-            biomes[type.ordinal()] = new ArrayList<BiomeEntry>();
+            ImmutableList<BiomeEntry> biomesToAdd = net.minecraftforge.common.BiomeManager.getBiomes(type);
+            int idx = type.ordinal();
+
+            if (biomes[idx] == null) biomes[idx] = new java.util.ArrayList<BiomeManager.BiomeEntry>();
+            if (biomesToAdd != null) biomes[idx].addAll(biomesToAdd);
         }
-        biomes[BiomeManager.BiomeType.DESERT.ordinal()].add(new BiomeEntry(Biome.plains, 10));
-        biomes[BiomeManager.BiomeType.WARM.ordinal()].add(new BiomeEntry(Biome.plains, 10));
-        biomes[BiomeManager.BiomeType.COOL.ordinal()].add(new BiomeEntry(Biome.plains, 10));
-        biomes[BiomeManager.BiomeType.ICY.ordinal()].add(new BiomeEntry(Biome.plains, 10));
+        biomes[BiomeManager.BiomeType.DESERT.ordinal()].add(new BiomeEntry(Biomes.PLAINS, 10));
+        biomes[BiomeManager.BiomeType.WARM.ordinal()].add(new BiomeEntry(Biomes.PLAINS, 10));
+        biomes[BiomeManager.BiomeType.COOL.ordinal()].add(new BiomeEntry(Biomes.PLAINS, 10));
+        biomes[BiomeManager.BiomeType.ICY.ordinal()].add(new BiomeEntry(Biomes.PLAINS, 10));
     }
 
     /**
@@ -63,7 +69,7 @@ public class GenLayerMultiworldBiome extends GenLayer
                 {
                     aint1[j1 + i1 * p_75904_3_] = k1;
                 }
-                else if (k1 == Biome.mushroomIsland.biomeID)
+                else if (k1 == Biome.REGISTRY.getIDForObject(Biomes.MUSHROOM_ISLAND))
                 {
                     aint1[j1 + i1 * p_75904_3_] = k1;
                 }
@@ -73,47 +79,47 @@ public class GenLayerMultiworldBiome extends GenLayer
                     {
                         if (this.nextInt(3) == 0)
                         {
-                            aint1[j1 + i1 * p_75904_3_] = Biome.mesaPlateau.biomeID;
+                            aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.MESA_ROCK);
                         }
                         else
                         {
-                            aint1[j1 + i1 * p_75904_3_] = Biome.mesaPlateau_F.biomeID;
+                            aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.MESA_CLEAR_ROCK);
                         }
                     }
                     else
                     {
-                        aint1[j1 + i1 * p_75904_3_] = getWeightedBiomeEntry(BiomeManager.BiomeType.DESERT).biome.biomeID;
+                        aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(getWeightedBiomeEntry(BiomeManager.BiomeType.DESERT).biome);
                     }
                 }
                 else if (k1 == 2)
                 {
                     if (l1 > 0)
                     {
-                        aint1[j1 + i1 * p_75904_3_] = Biome.jungle.biomeID;
+                        aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.JUNGLE);
                     }
                     else
                     {
-                        aint1[j1 + i1 * p_75904_3_] = getWeightedBiomeEntry(BiomeManager.BiomeType.WARM).biome.biomeID;
+                        aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(getWeightedBiomeEntry(BiomeManager.BiomeType.WARM).biome);
                     }
                 }
                 else if (k1 == 3)
                 {
                     if (l1 > 0)
                     {
-                        aint1[j1 + i1 * p_75904_3_] = Biome.megaTaiga.biomeID;
+                        aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.COLD_TAIGA);
                     }
                     else
                     {
-                        aint1[j1 + i1 * p_75904_3_] = getWeightedBiomeEntry(BiomeManager.BiomeType.COOL).biome.biomeID;
+                        aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(getWeightedBiomeEntry(BiomeManager.BiomeType.COOL).biome);
                     }
                 }
                 else if (k1 == 4)
                 {
-                    aint1[j1 + i1 * p_75904_3_] = getWeightedBiomeEntry(BiomeManager.BiomeType.ICY).biome.biomeID;
+                    aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(getWeightedBiomeEntry(BiomeManager.BiomeType.ICY).biome);
                 }
                 else
                 {
-                    aint1[j1 + i1 * p_75904_3_] = Biome.mushroomIsland.biomeID;
+                    aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.MUSHROOM_ISLAND);
                 }
             }
         }

@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.ServerWorldEventHandler;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
@@ -247,7 +248,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                     .setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD, world.getName());
 
             // Register the dimension
-            DimensionManager.registerDimension(world.dimensionId, world.provider);
+            DimensionManager.registerDimension(world.dimensionId, DimensionType.OVERWORLD);
             worldsByDim.put(world.dimensionId, world);
 
             // Initialize world settings
@@ -277,7 +278,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 
             // Tell everyone about the new dim
             FMLEmbeddedChannel channel = NetworkRegistry.INSTANCE.getChannel("FORGE", Side.SERVER);
-            DimensionRegisterMessage msg = new DimensionRegisterMessage(world.dimensionId, world.providerId);
+            DimensionRegisterMessage msg = new DimensionRegisterMessage(world.dimensionId, world.getProvider());
             channel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
             channel.writeOutbound(msg);
         }

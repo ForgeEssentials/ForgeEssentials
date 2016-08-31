@@ -25,7 +25,7 @@ public abstract class WorldUtil
         for (int i = 0; i < h; i++)
         {
             Block block = world.getBlockState(new BlockPos(x, y + i, z)).getBlock();
-            if (block.getMaterial().isSolid() || block.getMaterial().isLiquid())
+            if (block.isPassable(world, new BlockPos(x, y + i, z)))
                 return false;
         }
         return true;

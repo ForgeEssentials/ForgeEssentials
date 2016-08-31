@@ -61,7 +61,7 @@ public class SignToolsModule extends ConfigLoaderBase
             {
                 if (e.text[i].contains("&"))
                 {
-                    TextComponentString text = new TextComponentString(ChatOutputHandler.formatColors(e.text[i].getUnformattedText()));
+                    TextComponentString text = new TextComponentString(ChatOutputHandler.formatColors(e.text[i]));
                     ChatOutputHandler.applyFormatting(text.getStyle(), ChatOutputHandler.enumChatFormattings("0123456789AaBbCcDdEeFfKkLlMmNnOoRr"));
                     e.formatted[i] = text;
                 }
