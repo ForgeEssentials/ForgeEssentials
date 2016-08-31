@@ -19,13 +19,19 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     @Override
     public String getCommandName()
     {
-        return "ping";
+        return "feping";
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public String[] getDefaultAliases()
     {
-        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
+        return new String[] { "ping" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/ping Ping the server.";
     }
 
     @Override
@@ -41,9 +47,21 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getPermissionNode()
     {
-        return "/ping Ping the server.";
+        return ModuleCommands.PERM + ".ping";
+    }
+
+    @Override
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    {
+        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
+    }
+
+    @Override
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    {
+        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
     }
 
     @Override
@@ -58,10 +76,4 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
         /* do nothing */
     }
 
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
-    }
-    
 }

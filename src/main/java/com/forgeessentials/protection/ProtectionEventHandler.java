@@ -200,6 +200,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         UserIdent ident = UserIdent.get(event.getEntityPlayer());
         WorldPoint point = new WorldPoint(event.getTarget());
+
         String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + EntityList.getEntityString(event.getTarget());
         ModuleProtection.debugPermission(event.getEntityPlayer(), permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
@@ -249,7 +250,6 @@ public class ProtectionEventHandler extends ServerEventHandler
         IBlockState blockState = event.getWorld().getBlockState(event.getPos());
         String permission = ModuleProtection.getBlockBreakPermission(blockState);
         ModuleProtection.debugPermission(event.getPlayer(), permission);
-        WorldPoint point = new WorldPoint(event);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
@@ -258,7 +258,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 updateBrokenTileEntity((EntityPlayerMP) event.getPlayer(), te);
             if (PlayerInfo.get(ident).getHasFEClient())
             {
-                int blockId = ((FMLControlledNamespacedRegistry<Block>) GameRegistry.findRegistry(Block.class)).getId(blockState.getBlock());
+                int blockId = (GameRegistry.findRegistry(Block.class)).getId(blockState.getBlock());
                 Set<Integer> ids = new HashSet<>();
                 ids.add(blockId);
                 NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, null, ids), ident.getPlayerMP());
@@ -914,7 +914,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public static void updateBrokenTileEntity(final EntityPlayerMP player, final TileEntity te)
     {
-        if (player == null)
+        if (player == null || player.playerNetServerHandler == null)
             return;
         final Packet<?> packet = te.getUpdatePacket();
         if (packet == null)
@@ -923,7 +923,8 @@ public class ProtectionEventHandler extends ServerEventHandler
             @Override
             public void run()
             {
-                player.connection.sendPacket(packet);
+                if (player.connection != null)
+                    player.connection.sendPacket(packet);
             }
         });
     }

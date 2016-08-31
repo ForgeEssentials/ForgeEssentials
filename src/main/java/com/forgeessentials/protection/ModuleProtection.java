@@ -176,7 +176,6 @@ public class ModuleProtection
         }
     }
 
-    @SuppressWarnings("unchecked")
     @SubscribeEvent
     public void registerPermissions(FEModuleServerInitEvent event)
     {
@@ -218,7 +217,7 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, PermissionLevel.TRUE,
                 "(global) Allow forced spawning of mobs (mob-spawners)");
 
-        for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.NAME_TO_CLASS).entrySet())
+        for (Entry<String, Class<? extends Entity>> e : ( EntityList.NAME_TO_CLASS).entrySet())
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
             {
                 APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey(), PermissionLevel.TRUE);

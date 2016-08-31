@@ -71,9 +71,9 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
     }
 
     @Override
-    public String getPermissionNode()
+    public boolean canConsoleUseCommand()
     {
-        return ModuleCommands.PERM + ".time";
+        return true;
     }
 
     @Override
@@ -83,9 +83,9 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
     }
 
     @Override
-    public boolean canConsoleUseCommand()
+    public String getPermissionNode()
     {
-        return true;
+        return ModuleCommands.PERM + ".time";
     }
 
     @Override

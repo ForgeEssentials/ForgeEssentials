@@ -14,8 +14,6 @@ import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 
 /**
  * Opens a configurable virtual chest
- *
- * @author Dries007
  */
 public class CommandVirtualchest extends ForgeEssentialsCommandBase implements ConfigurableCommand
 {
@@ -35,17 +33,9 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public String getCommandUsage(ICommandSender sender)
     {
-        EntityPlayerMP player = sender;
-        if (player.openContainer != player.inventoryContainer)
-        {
-            player.closeScreen();
-        }
-        player.getNextWindowId();
-
-        VirtualChest chest = new VirtualChest(player);
-        player.displayGUIChest(chest);
+        return "/vchest Open a virtual chest";
     }
 
     @Override
@@ -61,9 +51,23 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getPermissionNode()
     {
-        return "/vchest Open a virtual chest";
+        return ModuleCommands.PERM + ".virtualchest";
+    }
+
+    @Override
+    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    {
+        EntityPlayerMP player = sender;
+        if (player.openContainer != player.inventoryContainer)
+        {
+            player.closeScreen();
+        }
+        player.getNextWindowId();
+
+        VirtualChest chest = new VirtualChest(player);
+        player.displayGUIChest(chest);
     }
 
     @Override
@@ -77,12 +81,6 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     public void loadData()
     {
         /* do nothing */
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

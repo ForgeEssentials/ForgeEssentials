@@ -2,7 +2,6 @@ package com.forgeessentials.worldborder;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.StringUtils;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -82,7 +81,7 @@ public class CommandWorldBorder extends ParserCommandBase
 
         WorldBorder border = ModuleWorldBorder.getInstance().getBorder(arguments.senderPlayer.worldObj);
 
-        arguments.tabComplete("center", "disable", "enable", "shape", "size");
+        arguments.tabComplete("center", "disable", "enable", "shape", "size", "effect");
         String subCommand = arguments.remove().toLowerCase();
         switch (subCommand)
         {
@@ -223,8 +222,6 @@ public class CommandWorldBorder extends ParserCommandBase
         }
 
         arguments.tabComplete("add", "remove");
-        if (arguments.isTabCompletion)
-            return;
 
         String subCommand = arguments.remove().toLowerCase();
         switch (subCommand)
@@ -233,9 +230,11 @@ public class CommandWorldBorder extends ParserCommandBase
             addEffect(border, arguments);
             break;
         case "remove":
+            if (arguments.isTabCompletion)
+                return;
             int index = Integer.parseInt(arguments.remove().toLowerCase());
             if (border.getEffects().size() >= index && border.getEffects().remove(border.getEffects().get(index)))
-            arguments.confirm("Removed effect");
+                arguments.confirm("Removed effect");
             else
             {
                 arguments.error("No such effect!");
@@ -260,7 +259,7 @@ public class CommandWorldBorder extends ParserCommandBase
             return;
         }
 
-        arguments.tabComplete("command", "damage", "kick", "knockback", "message", "potion" ,"smite");
+        arguments.tabComplete("command", "damage", "kick", "knockback", "message", "potion", "smite");
         if (arguments.isTabCompletion)
             return;
 

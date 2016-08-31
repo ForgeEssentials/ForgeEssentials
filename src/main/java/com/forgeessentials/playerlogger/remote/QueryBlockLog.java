@@ -26,10 +26,10 @@ public class QueryBlockLog extends GenericRemoteHandler<QueryLogRequest>
         QueryLogRequest data = request.data == null ? new QueryLogRequest() : request.data;
         List<Action01Block> result;
         if (data.hasArea())
-            result = ModulePlayerLogger.getLogger().getLoggedBlockChanges(data.getArea(), data.startTime, data.endTime, data.getLimit());
+            result = ModulePlayerLogger.getLogger().getLoggedBlockChanges(data.getArea(), data.startTime, data.endTime, 0, data.getLimit());
         else
-            result = ModulePlayerLogger.getLogger().getLoggedBlockChanges(data.getPoint(), data.startTime, data.endTime, data.getLimit());
-        return new RemoteResponse<QueryLogResponse<Action01Block>>(request, new QueryLogResponse<Action01Block>(request.data, result));
+            result = ModulePlayerLogger.getLogger().getLoggedBlockChanges(data.getPoint(), data.startTime, data.endTime, 0, data.getLimit());
+        return new RemoteResponse<>(request, new QueryLogResponse<>(request.data, result));
     }
 
 }

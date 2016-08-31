@@ -16,6 +16,8 @@ import java.util.TreeMap;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -24,7 +26,6 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.FileUtils;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.ScriptHandler;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -40,10 +41,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 @FEModule(name = "Scripting", parentMod = ForgeEssentials.class, isCore = false)
 public class ModuleScripting extends ServerEventHandler implements ScriptHandler
@@ -73,14 +70,14 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent event)
     {
-        APIRegistry.scripts = this;
-        new ScriptEventHandler();
-
+        // APIRegistry.scripts = this;
     }
 
     @SubscribeEvent
     public void load(FEModuleInitEvent event)
     {
+        new ScriptEventHandler();
+
         commandsDir = new File(moduleDir, "commands");
         commandsDir.mkdirs();
 
@@ -249,7 +246,10 @@ public class ModuleScripting extends ServerEventHandler implements ScriptHandler
         if (System.currentTimeMillis() - lastCronCheck >= CRON_CHECK_INTERVAL)
         {
             lastCronCheck = System.currentTimeMillis();
-            for (Entry<String, List<String>> script : scripts.get(ScriptEventHandler.SCRIPTKEY_CRON).entrySet())
+            Map<String, List<String>> cronScripts = scripts.get(ScriptEventHandler.SCRIPTKEY_CRON);
+            if (cronScripts == null)
+                return;
+            for (Entry<String, List<String>> script : cronScripts.entrySet())
             {
                 List<String> lines = new ArrayList<>(script.getValue());
                 if (lines.size() < 2)

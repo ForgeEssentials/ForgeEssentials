@@ -29,6 +29,42 @@ public class CommandBubble extends ForgeEssentialsCommandBase
         APIRegistry.getFEEventBus().register(this);
     }
 
+    @Override
+    public String getCommandName()
+    {
+        return "febubble";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "bubble" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/bubble [on|off]";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".bubble";
+    }
+
     @SubscribeEvent
     public void permissionInitializeEvent(PermissionEvent.Initialize e)
     {
@@ -38,18 +74,6 @@ public class CommandBubble extends ForgeEssentialsCommandBase
         e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_BREAK + Zone.ALL_PERMS, false);
         e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT + Zone.ALL_PERMS, false);
         e.serverZone.setGroupPermission(BUBBLE_GROUP, ModuleProtection.PERM_INTERACT_ENTITY + Zone.ALL_PERMS, false);
-    }
-
-    @Override
-    public String getCommandName()
-    {
-        return "bubble";
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
     }
 
     @Override
@@ -76,12 +100,6 @@ public class CommandBubble extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
@@ -89,18 +107,6 @@ public class CommandBubble extends ForgeEssentialsCommandBase
             return getListOfStringsMatchingLastWord(args, "on", "off");
         }
         return null;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/bubble [on|off]";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

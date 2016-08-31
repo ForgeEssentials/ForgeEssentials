@@ -19,6 +19,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.sql.rowset.serial.SerialBlob;
@@ -50,8 +51,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
-
-import org.hibernate.jpa.criteria.predicate.CompoundPredicate;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -470,10 +469,18 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return changes;
     }
 
-    protected CompoundPredicate getActionPredicate(Root<? extends Action> root, WorldArea area, Date startTime, Date endTime)
+    /**
+     * @param root
+     * @param area
+     * @param startTime startTime <= t <= endTime
+     * @param endTime startTime <= t <= endTime
+     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @return
+     */
+    protected Predicate getActionPredicate(Root<? extends Action> root, WorldArea area, Date startTime, Date endTime, long fromId)
     {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CompoundPredicate predicate = (CompoundPredicate) cb.and();
+        Predicate predicate = cb.and();
         if (area != null)
         {
             predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(area.getDimension())));
@@ -487,13 +494,23 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             predicate.getExpressions().add(cb.greaterThanOrEqualTo(root.get(Action_.time), cb.literal(startTime)));
         if (endTime != null)
             predicate.getExpressions().add(cb.lessThanOrEqualTo(root.get(Action_.time), cb.literal(endTime)));
+        if (fromId != 0)
+            predicate.getExpressions().add(cb.lessThan(root.get(Action_.id), cb.literal(fromId)));
         return predicate;
     }
 
-    protected CompoundPredicate getActionPredicate(Root<? extends Action> root, WorldPoint point, Date startTime, Date endTime)
+    /**
+     * @param root
+     * @param point
+     * @param startTime startTime <= t <= endTime
+     * @param endTime startTime <= t <= endTime
+     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @return
+     */
+    protected Predicate getActionPredicate(Root<? extends Action> root, WorldPoint point, Date startTime, Date endTime, long fromId)
     {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CompoundPredicate predicate = (CompoundPredicate) cb.and();
+        Predicate predicate = cb.and();
         if (point != null)
         {
             predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(point.getDimension())));
@@ -504,17 +521,27 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         if (startTime != null)
             predicate.getExpressions().add(cb.greaterThanOrEqualTo(root.get(Action_.time), cb.literal(startTime)));
         if (endTime != null)
-            predicate.getExpressions().add(cb.lessThan(root.get(Action_.time), cb.literal(endTime)));
+            predicate.getExpressions().add(cb.lessThanOrEqualTo(root.get(Action_.time), cb.literal(endTime)));
+        if (fromId != 0)
+            predicate.getExpressions().add(cb.lessThan(root.get(Action_.id), cb.literal(fromId)));
         return predicate;
     }
 
-    public List<Action> getLoggedActions(WorldArea area, Date startTime, Date endTime, int maxResults)
+    /**
+     * @param area
+     * @param startTime startTime <= t <= endTime
+     * @param endTime startTime <= t <= endTime
+     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param maxResults
+     * @return
+     */
+    public List<Action> getLoggedActions(WorldArea area, Date startTime, Date endTime, long fromId, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Action> cQuery = cBuilder.createQuery(Action.class);
         Root<Action> cRoot = cQuery.from(Action.class);
         cQuery.select(cRoot);
-        cQuery.where(getActionPredicate(cRoot, area, startTime, endTime));
+        cQuery.where(getActionPredicate(cRoot, area, startTime, endTime, fromId));
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
         TypedQuery<Action> query = em.createQuery(cQuery);
         if (maxResults > 0)
@@ -522,13 +549,21 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return executeQuery(query);
     }
 
-    public List<Action> getLoggedActions(WorldPoint point, Date startTime, Date endTime, int maxResults)
+    /**
+     * @param point
+     * @param startTime startTime <= t <= endTime
+     * @param endTime startTime <= t <= endTime
+     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param maxResults
+     * @return
+     */
+    public List<Action> getLoggedActions(WorldPoint point, Date startTime, Date endTime, long fromId, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Action> cQuery = cBuilder.createQuery(Action.class);
         Root<Action> cRoot = cQuery.from(Action.class);
         cQuery.select(cRoot);
-        cQuery.where(getActionPredicate(cRoot, point, startTime, endTime));
+        cQuery.where(getActionPredicate(cRoot, point, startTime, endTime, fromId));
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
         TypedQuery<Action> query = em.createQuery(cQuery);
         if (maxResults > 0)
@@ -536,13 +571,21 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return executeQuery(query);
     }
 
-    public List<Action01Block> getLoggedBlockChanges(WorldArea area, Date startTime, Date endTime, int maxResults)
+    /**
+     * @param area
+     * @param startTime startTime <= t <= endTime
+     * @param endTime startTime <= t <= endTime
+     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param maxResults
+     * @return
+     */
+    public List<Action01Block> getLoggedBlockChanges(WorldArea area, Date startTime, Date endTime, long fromId, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Action01Block> cQuery = cBuilder.createQuery(Action01Block.class);
         Root<Action01Block> cRoot = cQuery.from(Action01Block.class);
         cQuery.select(cRoot);
-        cQuery.where(getActionPredicate(cRoot, area, startTime, endTime));
+        cQuery.where(getActionPredicate(cRoot, area, startTime, endTime, fromId));
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
         TypedQuery<Action01Block> query = em.createQuery(cQuery);
         if (maxResults > 0)
@@ -550,13 +593,13 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return executeQuery(query);
     }
 
-    public List<Action01Block> getLoggedBlockChanges(WorldPoint point, Date startTime, Date endTime, int maxResults)
+    public List<Action01Block> getLoggedBlockChanges(WorldPoint point, Date startTime, Date endTime, long fromId, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Action01Block> cQuery = cBuilder.createQuery(Action01Block.class);
         Root<Action01Block> cRoot = cQuery.from(Action01Block.class);
         cQuery.select(cRoot);
-        cQuery.where(getActionPredicate(cRoot, point, startTime, endTime));
+        cQuery.where(getActionPredicate(cRoot, point, startTime, endTime, fromId));
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
         TypedQuery<Action01Block> query = em.createQuery(cQuery);
         if (maxResults > 0)
@@ -564,28 +607,28 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return executeQuery(query);
     }
 
-    public List<Action02Command> getLoggedCommands(WorldArea area, Date startTime, Date endTime, int maxResults)
+    public List<Action02Command> getLoggedCommands(WorldArea area, Date startTime, Date endTime, long fromId, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Action02Command> cQuery = cBuilder.createQuery(Action02Command.class);
         Root<Action02Command> cRoot = cQuery.from(Action02Command.class);
         cQuery.select(cRoot);
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
-        cQuery.where(getActionPredicate(cRoot, area, startTime, endTime));
+        cQuery.where(getActionPredicate(cRoot, area, startTime, endTime, fromId));
         TypedQuery<Action02Command> query = em.createQuery(cQuery);
         if (maxResults > 0)
             query.setMaxResults(maxResults);
         return executeQuery(query);
     }
 
-    public List<Action02Command> getLoggedCommands(WorldPoint point, Date startTime, Date endTime, int maxResults)
+    public List<Action02Command> getLoggedCommands(WorldPoint point, Date startTime, Date endTime, long fromId, int maxResults)
     {
         CriteriaBuilder cBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Action02Command> cQuery = cBuilder.createQuery(Action02Command.class);
         Root<Action02Command> cRoot = cQuery.from(Action02Command.class);
         cQuery.select(cRoot);
         cQuery.orderBy(cBuilder.desc(cRoot.get(Action_.time)));
-        cQuery.where(getActionPredicate(cRoot, point, startTime, endTime));
+        cQuery.where(getActionPredicate(cRoot, point, startTime, endTime, fromId));
         TypedQuery<Action02Command> query = em.createQuery(cQuery);
         if (maxResults > 0)
             query.setMaxResults(maxResults);

@@ -1,8 +1,5 @@
 package com.forgeessentials.worldborder.effect;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -46,7 +43,7 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
     @Override
     public void afterLoad()
     {
-        if ((Integer) id == null)
+        if (id == 0)
         {
             id = 9;
             duration = 5;
@@ -74,11 +71,13 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
         }
     }
 
+    @Override
     public String getSyntax()
     {
         return "<interval> <effect> <seconds> <amplifier>";
     }
 
+    @Override
     public String toString()
     {
         return String.format("potion interval: %d1 id: %d2 duration: %d3 amplifier: %d4", interval, id, duration, modifier);

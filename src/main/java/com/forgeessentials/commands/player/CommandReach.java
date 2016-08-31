@@ -18,13 +18,25 @@ public class CommandReach extends ParserCommandBase
     @Override
     public String getCommandName()
     {
-        return "reach";
+        return "fereach";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "reach" };
     }
 
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
         return "/reach <distance>: Set block reach distance";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
     }
 
     @Override
@@ -36,13 +48,7 @@ public class CommandReach extends ParserCommandBase
     @Override
     public String getPermissionNode()
     {
-        return ModuleCommands.PERM + "." + getCommandName();
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
+        return ModuleCommands.PERM + ".reach";
     }
 
     @Override

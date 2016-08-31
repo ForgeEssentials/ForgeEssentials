@@ -31,13 +31,16 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
 
         public WorldPoint checkPoint;
 
-        public Date checkStartTime;
+        public long checkStartId;
 
     }
 
     public Map<EntityPlayer, LoggerCheckInfo> playerInfo = new WeakHashMap<>();
+
     public static int pickerRange = 0;
+
     public static int eventType = 0b1111;
+
     public static String searchCriteria = "";
 
     private WorldArea getAreaAround(WorldPoint wp)
@@ -84,7 +87,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         if (newCheck)
         {
             info.checkPoint = point;
-            info.checkStartTime = new Date();
+            info.checkStartId = 0;
             if (event instanceof RightClickBlock)
                 ChatOutputHandler.chatNotification(event.getEntityPlayer(), "Showing recent block changes (clicked side):");
             else
@@ -93,7 +96,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
 
         if ((0b00100 & eventType) != 0)
         {
-            List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getAreaAround(point), null, info.checkStartTime, 4);
+            List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getAreaAround(point), null, null, info.checkStartTime, 4);
 
             if (changes.size() == 0 && !newCheck)
             {
@@ -103,7 +106,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
 
             for (Action01Block change : changes)
             {
-                info.checkStartTime = change.time;
+                info.checkStartId = change.id;
 
                 String msg = String.format("%1$tm/%1$te %1$tH:%1$tM:%1$tS", change.time);
                 if (change.player != null)

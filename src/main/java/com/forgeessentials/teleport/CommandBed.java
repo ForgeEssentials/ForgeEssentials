@@ -33,7 +33,38 @@ public class CommandBed extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "bed";
+        return "febed";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "bed" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+
+        return "/bed [player]: Teleport you or another player to the bed last used.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return TeleportModule.PERM_BED;
     }
 
     @Override
@@ -95,18 +126,6 @@ public class CommandBed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_BED;
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
@@ -119,16 +138,4 @@ public class CommandBed extends ForgeEssentialsCommandBase
         }
     }
 
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.TRUE;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-
-        return "/bed [player] Teleport you or another player to the bed last used.";
-    }
 }

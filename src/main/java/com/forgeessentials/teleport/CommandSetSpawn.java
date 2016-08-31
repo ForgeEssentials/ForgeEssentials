@@ -23,15 +23,15 @@ public class CommandSetSpawn extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public String getCommandUsage(ICommandSender sender)
     {
         PermissionCommandParser.parseGroupSpawn(arguments, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
     {
-        PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender, server), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
+        PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
     }
 
     @Override
@@ -41,22 +41,21 @@ public class CommandSetSpawn extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return PERM_SETSPAWN;
-    }
-
-    @Override
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.OP;
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getPermissionNode()
     {
+        return PERM_SETSPAWN;
+    }
 
-        return "/setspawn (here|x y z) | (bed enable|disable)";
+    @Override
+    public void parse(CommandParserArgs arguments) throws CommandException
+    {
+        PermissionCommandParser.parseGroupSpawn(arguments, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
     }
 
 }

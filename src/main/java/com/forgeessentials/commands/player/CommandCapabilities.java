@@ -25,8 +25,6 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 
 /**
  * Allows you to modify a bunch of interesting stuff...
- *
- * @author Dries007
  */
 
 public class CommandCapabilities extends ForgeEssentialsCommandBase
@@ -35,7 +33,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 
     static
     {
-        names = new ArrayList<String>();
+        names = new ArrayList<>();
         names.add("disabledamage");
         names.add("isflying");
         names.add("allowflying");
@@ -46,7 +44,43 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "capabilities";
+        return "fecapabilities";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "capabilities" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/capabilities [player] [capability] [value|default] Allows you to modify player capabilities.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".capabilities";
+    }
+
+    @Override
+    public void registerExtraPermissions()
+    {
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
     }
 
     @Override
@@ -156,18 +190,6 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void registerExtraPermissions()
-    {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
@@ -186,24 +208,6 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
         {
             return null;
         }
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/capabilities [player] [capability] [value|default] Allows you to modify player capabilities.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

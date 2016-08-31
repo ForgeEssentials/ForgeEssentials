@@ -17,7 +17,37 @@ public class CommandModlist extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "modlist";
+        return "femodlist";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "modlist" };
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/modlist: Get a list of all mods running on this server.";
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".modlist";
     }
 
     @Override
@@ -42,27 +72,4 @@ public class CommandModlist extends ForgeEssentialsCommandBase
         }
     }
 
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.TRUE;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/modlist Get a list of all mods running on this server.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
-    }
 }

@@ -20,6 +20,18 @@ public class CommandTp extends CommandTeleport implements PermissionObject
 {
 
     @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return TeleportModule.PERM_TP;
+    }
+
+    @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 1)
@@ -136,18 +148,6 @@ public class CommandTp extends CommandTeleport implements PermissionObject
                 }
             }
         }
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return TeleportModule.PERM_TP;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
     }
 
 }

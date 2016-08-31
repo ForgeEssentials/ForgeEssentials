@@ -30,7 +30,13 @@ public class CommandEnchant extends ParserCommandBase
     @Override
     public String getCommandName()
     {
-        return "enchant";
+        return "feenchant";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "enchant" };
     }
 
     @Override
@@ -40,9 +46,9 @@ public class CommandEnchant extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public boolean canConsoleUseCommand()
     {
-        return PERM;
+        return false;
     }
 
     @Override
@@ -52,9 +58,9 @@ public class CommandEnchant extends ParserCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
+    public String getPermissionNode()
     {
-        return false;
+        return PERM;
     }
 
     @Override
@@ -82,7 +88,6 @@ public class CommandEnchant extends ParserCommandBase
             return;
         }
 
-        @SuppressWarnings("unchecked")
         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
         while (!arguments.isEmpty())
         {

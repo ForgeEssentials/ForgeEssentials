@@ -25,7 +25,50 @@ public class CommandHeal extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "heal";
+        return "feheal";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "heal" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        if (sender instanceof EntityPlayer)
+        {
+            return "/heal <player> Heal yourself or other players (if you have permission).";
+        }
+        else
+        {
+            return "/heal <player> Heal a player.";
+        }
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".heal";
+    }
+
+    @Override
+    public void registerExtraPermissions()
+    {
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
     }
 
     @Override
@@ -80,18 +123,6 @@ public class CommandHeal extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public void registerExtraPermissions()
-    {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
-    }
-
-    @Override
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.OP;
@@ -108,25 +139,6 @@ public class CommandHeal extends ForgeEssentialsCommandBase
         {
             return null;
         }
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/heal <player> Heal yourself or other players (if you have permission).";
-        }
-        else
-        {
-            return "/heal <player> Heal a player.";
-        }
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

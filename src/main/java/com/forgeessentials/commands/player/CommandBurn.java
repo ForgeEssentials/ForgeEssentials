@@ -21,10 +21,48 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandBurn extends ForgeEssentialsCommandBase
 {
+
     @Override
     public String getCommandName()
     {
-        return "burn";
+        return "feburn";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "burn" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        if (sender instanceof EntityPlayer)
+        {
+            return "/burn <me|player> Set a player on fire.";
+        }
+        else
+        {
+            return "/burn <player> Set a player on fire.";
+        }
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".burn";
     }
 
     @Override
@@ -99,12 +137,6 @@ public class CommandBurn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
@@ -117,28 +149,4 @@ public class CommandBurn extends ForgeEssentialsCommandBase
         }
     }
 
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/burn <me|player> Set a player on fire.";
-        }
-        else
-        {
-            return "/burn <player> Set a player on fire.";
-        }
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
-    }
 }

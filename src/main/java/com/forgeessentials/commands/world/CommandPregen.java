@@ -86,9 +86,9 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     }
 
     @Override
-    public String getPermissionNode()
+    public boolean canConsoleUseCommand()
     {
-        return ModuleCommands.PERM + ".pregen";
+        return true;
     }
 
     @Override
@@ -98,9 +98,9 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     }
 
     @Override
-    public boolean canConsoleUseCommand()
+    public String getPermissionNode()
     {
-        return true;
+        return ModuleCommands.PERM + ".pregen";
     }
 
     @Override

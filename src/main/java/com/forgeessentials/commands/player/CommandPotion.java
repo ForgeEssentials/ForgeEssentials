@@ -26,7 +26,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
 
     static
     {
-        names = new HashMap<String, Integer>();
+        names = new HashMap<>();
         names.put("speed", 1);
         names.put("slowness", 2);
         names.put("haste", 3);
@@ -52,12 +52,44 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "potion";
+        return "fepotion";
     }
 
-    /*
-     * Expected syntax: /potion player effect duration [ampl]
-     */
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "potion" };
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/potion <player> <effect> <duration> [ampl] Give the specified player a potion effect.";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleCommands.PERM + ".potion";
+    }
+
+    @Override
+    public void registerExtraPermissions()
+    {
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
+    }
 
     @Override
     public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
@@ -127,12 +159,6 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
@@ -147,30 +173,6 @@ public class CommandPotion extends ForgeEssentialsCommandBase
         {
             return null;
         }
-    }
-
-    @Override
-    public void registerExtraPermissions()
-    {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/potion <player> <effect> <duration> [ampl] Give the specified player a potion effect.";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleCommands.PERM + "." + getCommandName();
     }
 
 }

@@ -27,6 +27,7 @@ import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
+import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -512,13 +513,13 @@ public class PermissionCommandParser
         }
 
         String loc = arguments.args.remove().toLowerCase();
-        WorldPoint point = null;
+        WarpPoint point = null;
         switch (loc)
         {
         case "here":
             if (arguments.senderPlayer == null)
                 throw new TranslatedCommandException("[here] cannot be used from console.");
-            point = new WorldPoint(arguments.senderPlayer);
+            point = new WarpPoint(arguments.senderPlayer);
             break;
         case "bed":
         {
@@ -551,7 +552,7 @@ public class PermissionCommandParser
                 int y = CommandBase.parseInt(arguments.args.remove());
                 int z = CommandBase.parseInt(arguments.args.remove());
                 int dimension = CommandBase.parseInt(arguments.args.remove());
-                point = new WorldPoint(dimension, x, y, z);
+                point = new WarpPoint(dimension, x, y, z, 0, 0);
             }
             catch (NumberFormatException e)
             {
@@ -605,7 +606,7 @@ public class PermissionCommandParser
             {
                 if (arguments.args.size() == 1)
                 {
-                    arguments.tabCompletion = new ArrayList<String>();
+                    arguments.tabCompletion = new ArrayList<>();
                     for (String group : APIRegistry.perms.getServerZone().getGroups())
                     {
                         if (CommandBase.doesStringStartWith(arguments.args.peek(), group))
@@ -938,13 +939,13 @@ public class PermissionCommandParser
         }
 
         String loc = arguments.args.remove().toLowerCase();
-        WorldPoint point = null;
+        WarpPoint point = null;
         switch (loc)
         {
         case "here":
             if (arguments.senderPlayer == null)
                 throw new TranslatedCommandException("[here] cannot be used from console.");
-            point = new WorldPoint(arguments.senderPlayer);
+            point = new WarpPoint(arguments.senderPlayer);
             break;
         case "bed":
         {
@@ -977,7 +978,7 @@ public class PermissionCommandParser
                 int y = CommandBase.parseInt(arguments.args.remove());
                 int z = CommandBase.parseInt(arguments.args.remove());
                 int dimension = CommandBase.parseInt(arguments.args.remove());
-                point = new WorldPoint(dimension, x, y, z);
+                point = new WarpPoint(dimension, x, y, z, 0, 0);
             }
             catch (NumberFormatException e)
             {
@@ -1062,7 +1063,7 @@ public class PermissionCommandParser
         {
             if (arguments.args.size() == 1)
             {
-                arguments.tabCompletion = new ArrayList<String>();
+                arguments.tabCompletion = new ArrayList<>();
                 for (String g : APIRegistry.perms.getServerZone().getGroups())
                 {
                     if (CommandBase.doesStringStartWith(arguments.args.peek(), g))
@@ -1098,7 +1099,7 @@ public class PermissionCommandParser
 
     public static List<String> completePermission(String permission, Collection<String> permissionSet)
     {
-        Set<String> result = new TreeSet<String>();
+        Set<String> result = new TreeSet<>();
         for (String perm : permissionSet)
         {
             int nodeIndex = perm.indexOf('.', permission.length());
@@ -1107,7 +1108,7 @@ public class PermissionCommandParser
             if (CommandBase.doesStringStartWith(permission, perm))
                 result.add(perm);
         }
-        return new ArrayList<String>(result);
+        return new ArrayList<>(result);
     }
 
     public static List<String> completePermission(String permission)

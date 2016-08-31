@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.server.CommandMessage;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
@@ -338,6 +340,18 @@ public abstract class ServerUtil
         {
             return false;
         }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static void copyNbt(NBTTagCompound nbt, NBTTagCompound data)
+    {
+        // Clear old data
+        for (String key : new HashSet<String>(nbt.getKeySet()))
+            nbt.removeTag(key);
+    
+        // Write new data
+        for (String key : (Set<String>) data.getKeySet())
+            nbt.setTag(key, data.getTag(key));
     }
 
     /* ------------------------------------------------------------ */

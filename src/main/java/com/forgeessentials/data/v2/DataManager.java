@@ -53,7 +53,7 @@ public class DataManager
 
     private static boolean formatsChanged;
 
-    private static Set<String> defaultSerializationGroups = new HashSet<String>(Arrays.asList(DEFAULT_GROUP));
+    private static Set<String> defaultSerializationGroups = new HashSet<>(Arrays.asList(DEFAULT_GROUP));
 
     private static Set<String> serializationGroups = defaultSerializationGroups;
 
@@ -286,8 +286,32 @@ public class DataManager
         try
         {
             if (groups.length > 0)
-                serializationGroups = new HashSet<String>(Arrays.asList(groups));
+                serializationGroups = new HashSet<>(Arrays.asList(groups));
             return getGson().toJson(src);
+        }
+        finally
+        {
+            serializationGroups = defaultSerializationGroups;
+        }
+    }
+
+    public static <T> T fromJson(String src, Class<T> clazz)
+    {
+        try
+        {
+            return getGson().fromJson(src, clazz);
+        }
+        finally
+        {
+            serializationGroups = defaultSerializationGroups;
+        }
+    }
+
+    public static <T> T fromJson(String src, Type type)
+    {
+        try
+        {
+            return getGson().fromJson(src, type);
         }
         finally
         {
@@ -300,7 +324,7 @@ public class DataManager
         try
         {
             if (groups.length > 0)
-                serializationGroups = new HashSet<String>(Arrays.asList(groups));
+                serializationGroups = new HashSet<>(Arrays.asList(groups));
             getGson().toJson(src, writer);
         }
         finally

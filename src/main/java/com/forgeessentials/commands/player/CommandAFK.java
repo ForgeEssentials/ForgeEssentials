@@ -8,7 +8,6 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.Translator;
@@ -39,7 +38,13 @@ public class CommandAFK extends ForgeEssentialsCommandBase
     @Override
     public String getCommandName()
     {
-        return "afk";
+        return "feafk";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "afk" };
     }
 
     @Override
@@ -49,9 +54,21 @@ public class CommandAFK extends ForgeEssentialsCommandBase
     }
 
     @Override
+    public boolean canConsoleUseCommand()
+    {
+        return false;
+    }
+
+    @Override
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.TRUE;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return PERM;
     }
 
     @Override
@@ -61,12 +78,6 @@ public class CommandAFK extends ForgeEssentialsCommandBase
         APIRegistry.perms.registerPermissionProperty(PERM_WARMUP, "10", "Time a player needs to wait before he can go afk with /afk");
         APIRegistry.perms.registerPermissionProperty(PERM_AUTOTIME, "480", "Auto afk time in seconds. Set to 0 to disable.");
         APIRegistry.perms.registerPermission(PERM_AUTOKICK, PermissionLevel.FALSE, "Automatically kick a player, when he is AFK");
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return false;
     }
 
     @Override
@@ -113,9 +124,4 @@ public class CommandAFK extends ForgeEssentialsCommandBase
         }
     }
 
-    @Override
-    public String getPermissionNode()
-    {
-        return PERM;
-    }
 }

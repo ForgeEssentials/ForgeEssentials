@@ -1,6 +1,5 @@
 package com.forgeessentials.core.preloader.asminjector;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,31 +27,31 @@ public class ASMClassWriter extends ClassWriter
             return type1;
         try
         {
-            ClassNode c = ASMUtil.loadClassNode(type1);
-            ClassNode d = ASMUtil.loadClassNode(type2);
+            ClassNode clazz1 = ASMUtil.getClassNode(type1);
+            ClassNode clazz2 = ASMUtil.getClassNode(type2);
 
-            if (ASMUtil.isInterface(c.access) && ASMUtil.isInterface(d.access))
+            if (ASMUtil.isInterface(clazz1.access) && ASMUtil.isInterface(clazz2.access))
             {
                 return "java/lang/Object";
             }
 
             Set<String> cAncestors = new HashSet<>();
-            while (c != null)
+            while (clazz1 != null)
             {
-                cAncestors.add(c.name);
-                c = ASMUtil.loadSuperClassNode(c);
+                cAncestors.add(clazz1.name);
+                clazz1 = ASMUtil.loadSuperClassNode(clazz1);
             }
-            while (d != null)
+            while (clazz2 != null)
             {
-                if (cAncestors.contains(d.name))
-                    return d.name;
-                d = ASMUtil.loadSuperClassNode(d);
+                if (cAncestors.contains(clazz2.name))
+                    return clazz2.name;
+                clazz2 = ASMUtil.loadSuperClassNode(clazz2);
             }
             throw new RuntimeException("Could not find common superclass");
         }
-        catch (IOException e)
+        catch (ClassNotFoundException e)
         {
-            throw new RuntimeException(String.format("Error in getCommonSuperClass(\"%s\", \"%s\"): ", type1, type2) + e.toString(), e);
+            throw new RuntimeException(String.format("Error in getCommonSuperClass(\"%s\", \"%s\"): ", type1, type2), e);
         }
     }
 

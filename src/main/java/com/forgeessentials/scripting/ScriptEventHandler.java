@@ -39,6 +39,7 @@ public class ScriptEventHandler extends ServerEventHandler
     public static final String SCRIPTKEY_PLAYERINTERACT_USE = "interact_use";
     public static final String SCRIPTKEY_PLAYERSLEEP = "sleep";
     public static final String SCRIPTKEY_PLAYERWAKE = "wake";
+
     public ScriptEventHandler()
     {
         super();
@@ -58,6 +59,7 @@ public class ScriptEventHandler extends ServerEventHandler
         APIRegistry.scripts.addScriptType(SCRIPTKEY_PLAYERSLEEP);
         APIRegistry.scripts.addScriptType(SCRIPTKEY_PLAYERWAKE);
     }
+
     @SubscribeEvent
     public void serverStarted(FEModuleServerPostInitEvent event)
     {
@@ -103,7 +105,7 @@ public class ScriptEventHandler extends ServerEventHandler
     @SubscribeEvent
     public void playerRespawn(PlayerEvent.PlayerRespawnEvent e)
     {
-        APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERRESPAWN,e.player);
+        APIRegistry.scripts.runEventScripts(SCRIPTKEY_PLAYERRESPAWN, e.player);
     }
     @SubscribeEvent (priority = EventPriority.LOWEST)
     public void playerInteract(PlayerInteractEvent.LeftClickBlock e)
@@ -132,7 +134,7 @@ public class ScriptEventHandler extends ServerEventHandler
         }
     }
 
-    @SubscribeEvent (priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerSleep(PlayerSleepInBedEvent e)
     {
         if (e.getResultStatus() == null || e.getResultStatus().equals(SleepResult.OK))

@@ -37,21 +37,33 @@ public class CommandServerSettings extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
-    {
-        return "/serversettings [option] [value]: View or change server settings (server.properties)";
-    }
-
-    @Override
     public String[] getDefaultAliases()
     {
         return new String[] { "ss" };
     }
 
     @Override
+    public String getCommandUsage(ICommandSender sender)
+    {
+        return "/serversettings [option] [value]: View or change server settings (server.properties)";
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
     public String getPermissionNode()
     {
-        return ModuleCommands.PERM + "." + getCommandName();
+        return ModuleCommands.PERM + ".serversettings";
     }
 
     @SideOnly(Side.SERVER)
@@ -166,18 +178,6 @@ public class CommandServerSettings extends ParserCommandBase
         default:
             arguments.error(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
     }
 
 }

@@ -88,7 +88,7 @@ ext.sharedManifest = manifest {
 		"BuildNumber": buildNumber,
 		"FMLCorePluginContainsFMLMod": "true",
 		"ForceLoadAsMod": "true",
-        "MixinCompatibilityLevel": "JAVA_7",
+        "MixinCompatibilityLevel": "JAVA_8",
 	)
 }
 
@@ -97,8 +97,7 @@ ext.serverManifest = manifest {
 	attributes (
 		"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
 		"TweakOrder": "0",
-		"FMLCorePlugin": "com.forgeessentials.core.preloader.FELoadingPlugin",
-        "MixinConfigs": "mixins.forgeessentials.json",
+		"MixinConfigs": "mixins.forgeessentials.json",
 		"FMLAT": "forgeessentials_at.cfg",
 	)
 }
@@ -117,6 +116,8 @@ configurations {
 	compile.extendsFrom buildDep, shade, shadeClient, serverLib
 }
 
+// def jdkHome = System.getenv("JAVA_HOME")
+
 // Configure dependencies (build-only, shaded and packed libraries)
 dependencies {
 	// IRC
@@ -127,11 +128,11 @@ dependencies {
         exclude module: 'commons-codec'
     }
 	
-	// Database libraries
-	serverLib "com.h2database:h2:1.3.175"
-	serverLib "mysql:mysql-connector-java:5.1.22"
-	serverLib "org.hibernate:hibernate-entitymanager:4.3.7.Final"
-	buildDep "org.hibernate:hibernate-jpamodelgen:4.3.7.Final"
+	// Database libraries	
+	serverLib group: 'com.h2database', 	name: 'h2', 					version: '1.3.175'
+	serverLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
+	serverLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
+	buildDep  group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
@@ -150,6 +151,10 @@ dependencies {
 	shadeClient (group: "org.spongepowered", name: "mixin", version: "0.5.10-SNAPSHOT", changing: true) {
 		exclude group: 'org.ow2.asm', module: 'asm-tree'
 	}
+
+	// TOOLS.jar from jdk for javadoc support
+    // compile files("$jdkHome/lib/tools.jar")
+    compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
 }
 
 /************************************************************
@@ -225,7 +230,8 @@ jar {
 	
 	from sourceSets.main.output
 	from sourceSets.utils.output
-	from fileTree(serverLibArchive.archivePath)
+    exclude('com/forgeessentials/client/**')
+    from fileTree(serverLibArchive.archivePath)
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 	}

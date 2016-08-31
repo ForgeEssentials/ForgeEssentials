@@ -27,7 +27,13 @@ public class CommandDechant extends ParserCommandBase
     @Override
     public String getCommandName()
     {
-        return "dechant";
+        return "fedechant";
+    }
+
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "dechant" };
     }
 
     @Override
@@ -37,9 +43,9 @@ public class CommandDechant extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
+    public boolean canConsoleUseCommand()
     {
-        return PERM;
+        return false;
     }
 
     @Override
@@ -49,9 +55,9 @@ public class CommandDechant extends ParserCommandBase
     }
 
     @Override
-    public boolean canConsoleUseCommand()
+    public String getPermissionNode()
     {
-        return false;
+        return PERM;
     }
 
     @Override
@@ -60,7 +66,6 @@ public class CommandDechant extends ParserCommandBase
         ItemStack stack = arguments.senderPlayer.getHeldItemMainhand();
         if (stack == null)
             throw new TranslatedCommandException("You are not holding a valid item");
-        @SuppressWarnings("unchecked")
         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
 
         List<String> validEnchantmentNames = new ArrayList<>();
