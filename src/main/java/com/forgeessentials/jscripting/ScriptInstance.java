@@ -38,6 +38,7 @@ import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.event.JsEvent;
 import com.forgeessentials.jscripting.wrapper.event.JsPlayerInteractEvent;
 import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
+import com.forgeessentials.jscripting.wrapper.server.JsPermissionsStatic;
 import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
@@ -169,6 +170,7 @@ public class ScriptInstance
             script.getEngine().put("Block", new JsBlockStatic());
             script.getEngine().put("Item", new JsItemStatic());
             script.getEngine().put("World", new JsWorldStatic());
+            script.getEngine().put("Permissions", new JsPermissionsStatic());
             script.getEngine().eval("" +
                     "var exports = {};" +
                     // NBT constants
