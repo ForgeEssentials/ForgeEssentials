@@ -55,10 +55,9 @@ public class ScriptUpgrader
                 continue;
             File outDir = new File(ModuleJScripting.moduleDir, eventType);
 
-            for (Iterator<File> it = FileUtils.iterateFiles(dir, new String[] { "txt", "json" }, true); it.hasNext();)
+            for (Iterator<File> it = FileUtils.iterateFiles(dir, new String[] { "txt" }, true); it.hasNext();)
             {
                 File file = it.next();
-                ChatOutputHandler.chatNotification(sender, file.toString());
                 String scriptName = file.getName().substring(0, file.getName().lastIndexOf('.'));
                 File outFile = new File(outDir, scriptName + ".js");
                 if (outFile.exists())
