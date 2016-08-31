@@ -52,6 +52,11 @@ public class JsCommandSender extends JsWrapper<ICommandSender>
         return new JsCommandSender(result);
     }
 
+    public void chat(String message)
+    {
+        ChatOutputHandler.sendMessage(that, message);
+    }
+
     public void chatConfirm(String message)
     {
         ChatOutputHandler.chatConfirmation(that, message);

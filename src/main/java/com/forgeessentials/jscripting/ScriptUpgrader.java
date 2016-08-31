@@ -17,6 +17,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 public class ScriptUpgrader
@@ -46,6 +47,7 @@ public class ScriptUpgrader
         if (!baseDir.exists())
             return;
 
+        int count = 0;
         for (String eventType : UPGRADE_EVENTS)
         {
             File dir = new File(baseDir, eventType);
@@ -56,9 +58,13 @@ public class ScriptUpgrader
             for (Iterator<File> it = FileUtils.iterateFiles(dir, new String[] { "txt" }, true); it.hasNext();)
             {
                 File file = it.next();
-                File outFile = new File(outDir, file.getName().substring(0, file.getName().lastIndexOf('.')) + ".js");
-                // if (outFile.exists())
-                // continue;
+                String scriptName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+                File outFile = new File(outDir, scriptName + ".js");
+                if (outFile.exists())
+                {
+                    ChatOutputHandler.chatNotification(sender, "Already upgraded: " + scriptName);
+                    continue;
+                }
                 try
                 {
                     List<String> lines = FileUtils.readLines(file);
@@ -72,6 +78,8 @@ public class ScriptUpgrader
                         try (Writer writer = new FileWriter(outFile))
                         {
                             writer.write(newScript.toString());
+                            count++;
+                            ChatOutputHandler.chatConfirmation(sender, "Upgraded: " + scriptName);
                         }
                         catch (IOException e)
                         {
@@ -81,14 +89,19 @@ public class ScriptUpgrader
                 }
                 catch (IOException e)
                 {
-                    LoggingHandler.felog.error(String.format("Could upgrade script %s: %s", file.getName(), e.getMessage()));
+                    String msg = String.format("Could upgrade script %s: %s", file.getName(), e.getMessage());
+                    LoggingHandler.felog.error(msg);
+                    ChatOutputHandler.chatError(sender, msg);
                 }
                 catch (Exception e)
                 {
-                    LoggingHandler.felog.error(String.format("Could upgrade script %s: %s", file.getName(), e.getMessage()));
+                    String msg = String.format("Could upgrade script %s: %s", file.getName(), e.getMessage());
+                    LoggingHandler.felog.error(msg);
+                    ChatOutputHandler.chatError(sender, msg);
                 }
             }
         }
+        ChatOutputHandler.chatConfirmation(sender, "Upgraded " + count + " old scripts");
     }
 
     public static StringBuilder upgradeOldScript(String eventType, List<String> lines) throws Exception
@@ -163,7 +176,6 @@ public class ScriptUpgrader
                 {
                     out.append(", ");
                     out.append(arg);
-
                 }
                 out.append(");");
             }
@@ -182,8 +194,69 @@ public class ScriptUpgrader
                 // case "permcheck":
                 // break;
                 case "echo":
+                    out.append("sender.chat(");
+                    out.append(StringUtils.join(args, " + ' ' + "));
+                    out.append(");");
+                    break;
+                case "confirm":
                     out.append("sender.chatConfirm(");
                     out.append(StringUtils.join(args, " + ' ' + "));
+                    out.append(");");
+                    break;
+                case "notify":
+                    out.append("sender.chatNotification(");
+                    out.append(StringUtils.join(args, " + ' ' + "));
+                    out.append(");");
+                    break;
+                case "warn":
+                    out.append("sender.chatWarning(");
+                    out.append(StringUtils.join(args, " + ' ' + "));
+                    out.append(");");
+                    break;
+                case "error":
+                    out.append("sender.chatError(");
+                    out.append(StringUtils.join(args, " + ' ' + "));
+                    out.append(");");
+                    break;
+                case "confirmall":
+                    out.append("Server.chatConfirm(");
+                    out.append(StringUtils.join(args, " + ' ' + "));
+                    out.append(");");
+                    break;
+                case "notifyall":
+                    out.append("Server.chatNotification(");
+                    out.append(StringUtils.join(args, " + ' ' + "));
+                    out.append(");");
+                    break;
+                case "warnall":
+                    out.append("Server.chatWarning(");
+                    out.append(StringUtils.join(args, " + ' ' + "));
+                    out.append(");");
+                    break;
+                case "errorall":
+                    out.append("Server.chatError(");
+                    out.append(StringUtils.join(args, " + ' ' + "));
+                    out.append(");");
+                    break;
+                case "timeout":
+                    String timeout = args.remove(0);
+                    // startTimeout
+                    out.append("setTimeout(function() {\n\t\t");
+
+                    // run command
+                    out.append("Server.runCommand(sender, '");
+                    out.append(command);
+                    out.append("'");
+                    for (String arg : args)
+                    {
+                        out.append(", ");
+                        out.append(arg);
+                    }
+                    out.append(");");
+
+                    // close handler
+                    out.append("}, ");
+                    out.append(timeout);
                     out.append(");");
                     break;
                 default:
