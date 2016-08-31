@@ -1,10 +1,11 @@
 
 export function sheepRandomCommand(args: MC.CommandArgs) {
-    var player = args.player;
-
     if (args.isTabCompletion) // This is important so TAB completion does not actually change stuff
         return;
+    sheepRandom(args.player);
+}
 
+export function sheepRandom(player: MC.Entity.EntityPlayer) {
     var aabb = createAxisAlignedBB(player.getX() - 10, player.getY() - 10, player.getZ() - 10, player.getX() + 10, player.getY() + 10, player.getZ() + 10);
     var list = player.getWorld().getEntitiesWithinAABB(aabb);
     var listArray = list.toArray();
@@ -14,6 +15,10 @@ export function sheepRandomCommand(args: MC.CommandArgs) {
         }
     }
 }
+
+Server.registerEvent('playerInteractEvent', (event: MC.Event.PlayerInteractEvent) => {
+    sheepRandom(event.getPlayer());
+});
 
 Server.registerCommand({
     name: 'sheeprandom',

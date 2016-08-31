@@ -33,9 +33,15 @@ function clearInterval(id) {
 }
 
 // window utilities
-var createPoint = window.createPoint;
-var createWorldPoint = window.createWorldPoint;
-var createAxisAlignedBB = window.createAxisAlignedBB;
+function createAxisAlignedBB(arg1, arg2, arg3, arg4, arg5, arg6) {
+	return window.createAxisAlignedBB(arg1, arg2, arg3, arg4, arg5, arg6);
+}
+function createPoint(arg1, arg2, arg3) {
+	return window.createPoint(arg1, arg2, arg3);
+}
+function createWorldPoint(arg1, arg2, arg3, arg4) {
+	return window.createWorldPoint(arg1, arg2, arg3, arg4);
+}
 
 // NBT handling
 function getNbt(e) {

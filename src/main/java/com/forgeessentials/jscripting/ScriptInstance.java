@@ -195,6 +195,8 @@ public class ScriptInstance
             engine.put("Item", new JsItemStatic());
             engine.put("World", new JsWorldStatic());
             engine.put("Permissions", new JsPermissionsStatic());
+
+            INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js")); // TODO: DEV ONLY REALOD OF INIT SCRIPT
             engine.eval(INIT_SCRIPT);
             // initScript.eval(engine.getContext());
 
