@@ -146,8 +146,10 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             }
             catch (CommandException | IOException | ScriptException e)
             {
-                ChatOutputHandler.chatError(sender, "FE Script error: " + e.getMessage());
-                LoggingHandler.felog.error("FE Script error: " + e.getMessage());
+                String scriptName = file.getName();
+                ChatOutputHandler.chatError(sender, String.format("FE Script error in %s:", scriptName));
+                ChatOutputHandler.chatError(sender, e.getMessage());
+                LoggingHandler.felog.error(String.format("FE Script error in %s: %s", scriptName, e.getMessage()));
             }
         }
     }

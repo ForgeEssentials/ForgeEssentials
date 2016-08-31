@@ -4,22 +4,46 @@ declare type long = number;
 declare type float = number;
 declare type double = number;
 
+declare function getNbt(entity: MC.Entity.Entity | MC.Item.ItemStack): any;
+declare function setNbt(entity: MC.Entity.Entity | MC.Item.ItemStack, data: any);
+
+/**
+ * Constants that tell getNbt and setNbt the types of entries. Use nbt[NBT_INT + 'myVar'] for access
+ */ 
+declare const NBT_BYTE: string;
+declare const NBT_SHORT: string;
+declare const NBT_INT: string;
+declare const NBT_LONG: string;
+declare const NBT_FLOAT: string;
+declare const NBT_DOUBLE: string;
+declare const NBT_BYTE_ARRAY: string;
+declare const NBT_STRING: string;
+declare const NBT_COMPOUND: string;
+declare const NBT_INT_ARRAY: string;
+
+/**
+ * Constants for permission level used when registering permissions
+ */ 
+declare const PERMLEVEL_TRUE: int;
+declare const PERMLEVEL_OP: int;
+declare const PERMLEVEL_FALSE: int;
+
 declare namespace MC {
-	
-	interface JavaList<T> {
-		size(): int;
-		isEmpty(): boolean;
-		toArray(): any[];
-		get(index: int): T;
-		add(element: T): T;
-		set(index: int, element: T): T;
-		clear(): void;
-		remove(index: int): T;
-		remove(element: T): boolean;
-	}
-	
-	type CommandCallback = (args: CommandArgs) => void;
-	
+    
+    interface JavaList<T> {
+        size(): int;
+        isEmpty(): boolean;
+        toArray(): any[];
+        get(index: int): T;
+        add(element: T): T;
+        set(index: int, element: T): T;
+        clear(): void;
+        remove(index: int): T;
+        remove(element: T): boolean;
+    }
+    
+    type CommandCallback = (args: CommandArgs) => void;
+    
 	namespace World {
 		
 		interface Block extends MC.JavaObject {
@@ -198,6 +222,10 @@ declare namespace MC {
 		
 		interface ItemStatic {
 			getItem(name: string): Item;
+			createItemStack(block: MC.World.Block, stackSize: int): ItemStack;
+			createItemStack(block: MC.World.Block, stackSize: int, damage: int): ItemStack;
+			createItemStack(item: Item, stackSize: int): ItemStack;
+			createItemStack(item: Item, stackSize: int, damage: int): ItemStack;
 		}
 		
 	}
@@ -295,22 +323,9 @@ declare namespace MC {
 			 * Registers a new event handler.
 			 */
 			registerEvent(event: string, handler: (event: MC.Event.Event) => void): void;
-			/**
-			 * Set a timeout to call 'handler' after 'timeout' milliseconds.
-			 */
-			setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
-			/**
-			 * Set a interval to call 'handler' fn repeatedly each 'interval' milliseconds.
-			 */
-			setInterval(handler: (...args: any[]) => void, interval?: any, ...args: any[]): number;
-			/**
-			 * Clear a timeout.
-			 */
-			clearTimeout(handle: int): void;
-			/**
-			 * Clear an interval.
-			 */
-			clearInterval(handle: int): void;
+			createPoint(x: int, y: int, z: int): MC.Point;
+			createWorldPoint(dimension: int, x: int, y: int, z: int): MC.World.WorldPoint;
+			createAxisAlignedBB(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): MC.AxisAlignedBB;
 		}
 		
 		interface ServerZone extends MC.JavaObject {
@@ -406,16 +421,6 @@ declare namespace MC {
 		chatWarning(message: string): void;
 	}
 	
-	interface FactoryStatic {
-		createItemStack(block: World.Block, stackSize: int): Item.ItemStack;
-		createItemStack(block: World.Block, stackSize: int, damage: int): Item.ItemStack;
-		createItemStack(item: Item.Item, stackSize: int): Item.ItemStack;
-		createItemStack(item: Item.Item, stackSize: int, damage: int): Item.ItemStack;
-		createPoint(x: int, y: int, z: int): Point;
-		createWorldPoint(dimension: int, x: int, y: int, z: int): World.WorldPoint;
-		createAxisAlignedBB(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): AxisAlignedBB;
-	}
-	
 	interface Point extends JavaObject {
 		getX(): int;
 		getY(): int;
@@ -430,6 +435,28 @@ declare namespace MC {
 		distance(x: int, y: int, z: int): double;
 		add(x: int, y: int, z: int): void;
 		subtract(x: int, y: int, z: int): void;
+	}
+	
+	interface WindowStatic {
+		/**
+		 * Set a timeout to call 'handler' after 'timeout' milliseconds.
+		 */
+		setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
+		/**
+		 * Set a interval to call 'handler' fn repeatedly each 'interval' milliseconds.
+		 */
+		setInterval(handler: (...args: any[]) => void, interval?: any, ...args: any[]): number;
+		/**
+		 * Clear a timeout.
+		 */
+		clearTimeout(handle: int): void;
+		/**
+		 * Clear an interval.
+		 */
+		clearInterval(handle: int): void;
+		createPoint(x: int, y: int, z: int): Point;
+		createWorldPoint(dimension: int, x: int, y: int, z: int): World.WorldPoint;
+		createAxisAlignedBB(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): AxisAlignedBB;
 	}
 	
 	/**
@@ -466,33 +493,29 @@ declare namespace MC {
 	
 }
 
-declare var Factory: MC.FactoryStatic;
+declare var window: MC.WindowStatic;
 declare var Server: MC.Server.ServerStatic;
 declare var World: MC.World.WorldStatic;
 declare var Block: MC.World.BlockStatic;
 declare var Item: MC.Item.ItemStatic;
 declare var Permissions: MC.Server.PermissionsStatic;
 
-declare function getNbt(entity: MC.Entity.Entity | MC.Item.ItemStack): any;
-declare function setNbt(entity: MC.Entity.Entity | MC.Item.ItemStack, data: any);
-
 /**
- * Constants that tell getNbt and setNbt the types of entries. Use nbt[NBT_INT + 'myVar'] for access
- */ 
-declare const NBT_BYTE: string;
-declare const NBT_SHORT: string;
-declare const NBT_INT: string;
-declare const NBT_LONG: string;
-declare const NBT_FLOAT: string;
-declare const NBT_DOUBLE: string;
-declare const NBT_BYTE_ARRAY: string;
-declare const NBT_STRING: string;
-declare const NBT_COMPOUND: string;
-declare const NBT_INT_ARRAY: string;
-
+ * Set a timeout to call 'handler' after 'timeout' milliseconds.
+ */
+declare function setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
 /**
- * Constants for permission level used when registering permissions
- */ 
-declare const PERMLEVEL_TRUE: int;
-declare const PERMLEVEL_OP: int;
-declare const PERMLEVEL_FALSE: int;
+ * Set a interval to call 'handler' fn repeatedly each 'interval' milliseconds.
+ */
+declare function setInterval(handler: (...args: any[]) => void, interval?: any, ...args: any[]): number;
+/**
+ * Clear a timeout.
+ */
+declare function clearTimeout(handle: int): void;
+/**
+ * Clear an interval.
+ */
+declare function clearInterval(handle: int): void;
+declare function createPoint(x: int, y: int, z: int): MC.Point;
+declare function createWorldPoint(dimension: int, x: int, y: int, z: int): MC.World.WorldPoint;
+declare function createAxisAlignedBB(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): MC.AxisAlignedBB;

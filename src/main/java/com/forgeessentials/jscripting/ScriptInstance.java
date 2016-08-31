@@ -21,13 +21,14 @@ import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
 import javax.script.Invocable;
+import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.permission.PermissionLevel;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.forgeessentials.core.commands.ParserCommandBase;
@@ -35,7 +36,7 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
-import com.forgeessentials.jscripting.wrapper.JsFactoryStatic;
+import com.forgeessentials.jscripting.wrapper.JsWindowStatic;
 import com.forgeessentials.jscripting.wrapper.event.JsEvent;
 import com.forgeessentials.jscripting.wrapper.event.JsPlayerInteractEvent;
 import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
@@ -44,11 +45,14 @@ import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.google.common.base.Throwables;
 
 public class ScriptInstance
 {
 
     public static final String SCRIPT_ERROR_TEXT = "Script error: ";
+
+    private static String INIT_SCRIPT;
 
     public static class ProptertiesInfo<T>
     {
@@ -98,8 +102,10 @@ public class ScriptInstance
         }
     }
 
-    // private static WeakReference<ScriptInstance> lastActive;
     private static ScriptInstance lastActive;
+
+    @SuppressWarnings("unused")
+    private static CompiledScript initScript;
 
     private static Compilable propertyEngine = ModuleJScripting.getCompilable();
 
@@ -117,6 +123,9 @@ public class ScriptInstance
     private CompiledScript script;
 
     private Invocable invocable;
+    
+    @SuppressWarnings("unused")
+    private Bindings exports;
 
     private SimpleBindings getPropertyBindings = new SimpleBindings();
 
@@ -133,6 +142,15 @@ public class ScriptInstance
     static
     {
         eventTypes.put("playerInteractEvent", JsPlayerInteractEvent.class);
+        try
+        {
+            INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js"));
+            initScript = ModuleJScripting.getCompilable().compile(INIT_SCRIPT);
+        }
+        catch (IOException |ScriptException e)
+        {
+            Throwables.propagate(e);
+        }
     }
 
     public ScriptInstance(File file) throws IOException, ScriptException
@@ -161,54 +179,30 @@ public class ScriptInstance
 
     protected void compileScript() throws IOException, FileNotFoundException, ScriptException
     {
+        illegalFunctions.clear();
+        script = null;
         try (BufferedReader reader = new BufferedReader(new FileReader(file)))
         {
             // Load and compile script
             script = ModuleJScripting.getCompilable().compile(reader);
 
             // Initialization of module environment
-            script.getEngine().put("Factory", new JsFactoryStatic());
-            script.getEngine().put("Server", new JsServerStatic(this));
-            script.getEngine().put("Block", new JsBlockStatic());
-            script.getEngine().put("Item", new JsItemStatic());
-            script.getEngine().put("World", new JsWorldStatic());
-            script.getEngine().put("Permissions", new JsPermissionsStatic());
-            script.getEngine().eval("" +
-                    "var exports = {};" +
-                    // NBT constants
-                    "var NBT_BYTE = 'b:';" +
-                    "var NBT_SHORT = 's:';" +
-                    "var NBT_INT = 'i:';" +
-                    "var NBT_LONG = 'l:';" +
-                    "var NBT_FLOAT = 'f:';" +
-                    "var NBT_DOUBLE = 'd:';" +
-                    "var NBT_BYTE_ARRAY = 'B:';" +
-                    "var NBT_STRING = 'S:';" +
-                    "var NBT_COMPOUND = 'c:';" +
-                    "var NBT_INT_ARRAY = 'I:';" +
-                    // PermissionLevel constants
-                    "var PERMLEVEL_TRUE = " + PermissionLevel.TRUE.getOpLevel() + ";" +
-                    "var PERMLEVEL_OP = " + PermissionLevel.OP.getOpLevel() + ";" +
-                    "var PERMLEVEL_FALSE = " + PermissionLevel.FALSE.getOpLevel() + ";" +
-                    // timeouts
-                    "function setTimeout(fn, t, args) { return Server.setTimeout(fn, t, args); };" +
-                    "function setInterval(fn, t, args) { return Server.setInterval(fn, t, args); };" +
-                    "function clearTimeout(id) { return Server.clearTimeout(id); };" +
-                    "function clearInterval(id) { return Server.clearInterval(id); };" +
-                    // NBT handling
-                    "function getNbt(e) { return JSON.parse(e._getNbt()); }" +
-                    "function setNbt(e, d) { e._setNbt(JSON.stringify(d)); }" +
-                    "" +
-                    "");
+            ScriptEngine engine = script.getEngine();
+            invocable = (Invocable) engine;
+            engine.put("window", new JsWindowStatic(this));
+            engine.put("Server", new JsServerStatic(this));
+            engine.put("Block", new JsBlockStatic());
+            engine.put("Item", new JsItemStatic());
+            engine.put("World", new JsWorldStatic());
+            engine.put("Permissions", new JsPermissionsStatic());
+            engine.eval(INIT_SCRIPT);
+            // initScript.eval(engine.getContext());
 
             // Start script
             script.eval();
-            // script.getEngine().get("exports")
-
-            invocable = (Invocable) script.getEngine();
-            illegalFunctions.clear();
-            lastModified = file.lastModified();
+            exports = (Bindings) engine.get("exports");
         }
+        lastModified = file.lastModified();
     }
 
     public void checkIfModified() throws IOException, FileNotFoundException, ScriptException
