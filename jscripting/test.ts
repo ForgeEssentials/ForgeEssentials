@@ -1,46 +1,4 @@
 
-// function isInt(value: any): boolean {
-//     return !isNaN(value) && parseInt(value) === value && !isNaN(parseInt(value, 10));
-// }
-
-// function nbt2js(nbt: any): any {
-//     for (let field in Object.keys(nbt)) {
-//         let value: any = nbt[field];
-//         let fieldParts = field.split(':');
-//         let type = fieldParts[0];
-//         let key = fieldParts[1];
-//         switch (type) {
-//             case NBT_STRING:
-//                 delete nbt[field];
-//                 nbt[key] = value;
-//                 break;
-//             case NBT_COMPOUND:
-//                 delete nbt[field];
-//                 nbt[key] = nbt2js(value);
-//                 break;
-//             default:
-//                 break;
-//         }
-//     }
-// }
-//
-// function js2nbt(nbt: any): any {
-//     for (let field in Object.keys(nbt)) {
-//         let value: any = nbt[field];
-//         let fieldParts = field.split(':');
-//         if (fieldParts.length !== 2) {
-//             delete nbt[field];
-//             if (typeof value === 'object') {
-//                 nbt[NBT_COMPOUND + ':' + field] = js2nbt(value);
-//             } else if (typeof value === 'string') {
-//                 nbt[NBT_STRING + ':' + field] = js2nbt(value);
-//             } else {
-//                 // TODO: Error
-//             }
-//         }
-//     }
-// }
-
 export function processCommand(args: MC.CommandArgs) {
     args.confirm('Hello JavaScript! Hello ' + args.sender.getName() + '!');
 
@@ -85,10 +43,48 @@ export function processCommand(args: MC.CommandArgs) {
     }, 2000);
 }
 
-export function onInteract_left(sender: MC.ICommandSender) {
-    sender.chatConfirm('interact_left');
-}
+Server.registerEvent('playerInteractEvent', (event: MC.Event.PlayerInteractEvent) => {
+    Server.chatConfirm('player interact event from ' + event.getPlayer().getName());
+});
 
-export function onInteract_right(sender: MC.ICommandSender) {
-    sender.chatConfirm('interact_right');
-}
+// function isInt(value: any): boolean {
+//     return !isNaN(value) && parseInt(value) === value && !isNaN(parseInt(value, 10));
+// }
+
+// function nbt2js(nbt: any): any {
+//     for (let field in Object.keys(nbt)) {
+//         let value: any = nbt[field];
+//         let fieldParts = field.split(':');
+//         let type = fieldParts[0];
+//         let key = fieldParts[1];
+//         switch (type) {
+//             case NBT_STRING:
+//                 delete nbt[field];
+//                 nbt[key] = value;
+//                 break;
+//             case NBT_COMPOUND:
+//                 delete nbt[field];
+//                 nbt[key] = nbt2js(value);
+//                 break;
+//             default:
+//                 break;
+//         }
+//     }
+// }
+//
+// function js2nbt(nbt: any): any {
+//     for (let field in Object.keys(nbt)) {
+//         let value: any = nbt[field];
+//         let fieldParts = field.split(':');
+//         if (fieldParts.length !== 2) {
+//             delete nbt[field];
+//             if (typeof value === 'object') {
+//                 nbt[NBT_COMPOUND + ':' + field] = js2nbt(value);
+//             } else if (typeof value === 'string') {
+//                 nbt[NBT_STRING + ':' + field] = js2nbt(value);
+//             } else {
+//                 // TODO: Error
+//             }
+//         }
+//     }
+// }

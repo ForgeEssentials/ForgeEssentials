@@ -3,13 +3,24 @@ package com.forgeessentials.jscripting;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.forgeessentials.jscripting.wrapper.JsFactoryStatic;
+import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
+import com.forgeessentials.jscripting.wrapper.server.JsPermissionsStatic;
+import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
+import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
+import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
@@ -17,6 +28,7 @@ import com.sun.javadoc.Doclet;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.LanguageVersion;
 import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.PackageDoc;
 import com.sun.javadoc.Parameter;
 import com.sun.javadoc.ParameterizedType;
 import com.sun.javadoc.RootDoc;
@@ -29,11 +41,18 @@ public class TsdGenerator extends Doclet
 
     public static TsdGenerator generator = new TsdGenerator();
 
+    public static final String NAMESPACE = "MC";
+    public static final String PACKAGE = "com.forgeessentials.jscripting.wrapper";
+
     private File outFile = new File("jscripting/mc.d.ts");
 
     private PrintStream writer;
 
     private int indention = 0;
+
+    private String packageName;
+
+    private String fullPackageName;
 
     private Set<String> declaredTypes = new HashSet<>();
 
@@ -50,15 +69,17 @@ public class TsdGenerator extends Doclet
         declaredTypes.add("any");
         declaredTypes.add("number");
         declaredTypes.add("void");
-        declaredTypes.add("JavaObject");
         declaredTypes.add("JavaList");
+        declaredTypes.add("JavaObject");
 
-        classNameMap.put("Object", "any");
-        classNameMap.put("String", "string");
-        classNameMap.put("Boolean", "boolean");
-        classNameMap.put("JsWrapper", "JavaObject");
-        classNameMap.put("MappedList", "JavaList");
-        classNameMap.put("ICommandSender", "CommandSender");
+        classNameMap.put("void", "void");
+        classNameMap.put("java.lang.Object", "any");
+        classNameMap.put("java.lang.String", "string");
+        classNameMap.put("java.lang.Boolean", "boolean");
+        classNameMap.put("com.forgeessentials.util.MappedList", "JavaList");
+
+        List<String> externalClasses = new ArrayList<>();
+        externalClasses.add(UUID.class.getName());
 
         try
         {
@@ -71,7 +92,7 @@ public class TsdGenerator extends Doclet
                 writeLn("declare type float = number;");
                 writeLn("declare type double = number;");
                 writeLn("");
-                writeLn("declare namespace MC {");
+                writeLn("declare namespace " + NAMESPACE + " {");
                 indention++;
                 writeLn("");
                 writeLn("interface JavaList<T> {");
@@ -92,35 +113,95 @@ public class TsdGenerator extends Doclet
                 writeLn("type CommandCallback = (args: CommandArgs) => void;");
                 writeLn("");
 
-                List<ClassDoc> allClasses = Arrays.asList(root.packageNamed("com.forgeessentials.jscripting.wrapper").allClasses());
-                allClasses.sort((a, b) -> a.name().compareTo(b.name()));
+                List<PackageDoc> packages = Arrays.asList(root.specifiedPackages());
+                packages.sort((a, b) -> a.name().compareTo(b.name()));
+                Collections.swap(packages, 0, packages.size() - 1);
 
-                for (ClassDoc classDoc : allClasses)
-                    preprocessClass(classDoc);
-                for (ClassDoc classDoc : allClasses)
-                    generateClass(classDoc);
+                packageName = "";
+                fullPackageName = NAMESPACE;
+                for (String externalClass : externalClasses)
+                    preprocessClass(root.classNamed(externalClass));
+
+                for (PackageDoc packageDoc : packages)
+                {
+                    packageName = StringUtils.capitalize(packageDoc.name().substring(Math.min(packageDoc.name().length(), PACKAGE.length() + 1)));
+                    fullPackageName = NAMESPACE + (packageName.length() == 0 ? "" : "." + packageName);
+                    for (ClassDoc classDoc : packageDoc.allClasses())
+                        preprocessClass(classDoc);
+                }
+
+                for (PackageDoc packageDoc : packages)
+                {
+                    packageName = StringUtils.capitalize(packageDoc.name().substring(Math.min(packageDoc.name().length(), PACKAGE.length() + 1)));
+                    fullPackageName = NAMESPACE + (packageName.length() == 0 ? "" : "." + packageName);
+                    if (packageName.length() > 0)
+                    {
+                        writeComment(packageDoc);
+                        writeLn("namespace " + packageName + " {");
+                        indention++;
+                        writeLn("");
+                    }
+
+                    List<ClassDoc> classes = Arrays.asList(packageDoc.allClasses());
+                    classes.sort((a, b) -> a.name().compareTo(b.name()));
+
+                    for (ClassDoc classDoc : classes)
+                        generateClass(classDoc);
+
+                    if (packageName.length() > 0)
+                    {
+                        indention--;
+                        writeLn("}");
+                        writeLn("");
+                    }
+                }
+                packageName = "";
+                fullPackageName = NAMESPACE;
+
+                for (String externalClass : externalClasses)
+                    generateClass(root.classNamed(externalClass));
 
                 // for (String type : knownTypes)
-                for (String type : classNameMap.values())
+                List<String> undefinedTypes = new ArrayList<>(classNameMap.values());
+                undefinedTypes.sort((a, b) -> a.compareTo(b));
+                for (String type : undefinedTypes)
                 {
                     if (declaredTypes.contains(type))
                         continue;
-                    writeLn("interface ");
-                    write(type);
-                    write(" { }");
+
+                    System.err.println("Warning: Type " + type + " not defined!");
+
+                    type = type.substring(NAMESPACE.length() + 1);
+                    if (type.contains("."))
+                    {
+                        writeLn("namespace ");
+                        write(stripPackageName(type));
+                        write(" { ");
+                        write("interface ");
+                        write(stripClassName(type));
+                        write(" { } }");
+                    }
+                    else
+                    {
+                        writeLn("interface ");
+                        write(type);
+                        write(" { }");
+                    }
                     writeLn("");
                 }
 
                 indention--;
                 writeLn("}");
                 writeLn("");
-                writeLn("declare var Server: MC.ServerStatic;");
-                writeLn("declare var World: MC.WorldStatic;");
-                writeLn("declare var Block: MC.BlockStatic;");
-                writeLn("declare var Item: MC.ItemStatic;");
+                writeLn("declare var Factory: " + classNameMap.get(JsFactoryStatic.class.getName()) + ";");
+                writeLn("declare var Server: " + classNameMap.get(JsServerStatic.class.getName()) + ";");
+                writeLn("declare var World: " + classNameMap.get(JsWorldStatic.class.getName()) + ";");
+                writeLn("declare var Block: " + classNameMap.get(JsBlockStatic.class.getName()) + ";");
+                writeLn("declare var Item: " + classNameMap.get(JsItemStatic.class.getName()) + ";");
+                writeLn("declare var Permissions: " + classNameMap.get(JsPermissionsStatic.class.getName()) + ";");
                 writeLn("");
-                writeLn("declare function getNbt(entity: MC.Entity | MC.ItemStack): any;");
-                writeLn("declare function setNbt(entity: MC.Entity | MC.ItemStack, data: any);");
+                writeLn("declare function getNbt(entity: " + NAMESPACE + ".Entity.Entity | " + NAMESPACE + ".Item.ItemStack): any;");
+                writeLn("declare function setNbt(entity: " + NAMESPACE + ".Entity.Entity | " + NAMESPACE + ".Item.ItemStack, data: any);");
                 writeLn("");
                 writeLn("/**");
                 writeLn(" * Constants that tell getNbt and setNbt the types of entries. Use nbt[NBT_INT + 'myVar'] for access");
@@ -135,6 +216,13 @@ public class TsdGenerator extends Doclet
                 writeLn("declare const NBT_STRING: string;");
                 writeLn("declare const NBT_COMPOUND: string;");
                 writeLn("declare const NBT_INT_ARRAY: string;");
+                writeLn("");
+                writeLn("/**");
+                writeLn(" * Constants for permission level used when registering permissions");
+                writeLn(" */ ");
+                writeLn("declare const PERMLEVEL_TRUE: int;");
+                writeLn("declare const PERMLEVEL_OP: int;");
+                writeLn("declare const PERMLEVEL_FALSE: int;");
                 writeLn("");
             }
         }
@@ -151,29 +239,33 @@ public class TsdGenerator extends Doclet
             return;
         String typeName = getFirstTagText(classDoc, "tsd.type");
         if (typeName == null)
-            typeName = mapClassName(classDoc.name());
-        classNameMap.put(classDoc.name(), typeName);
+            typeName = mapClassName(classDoc);
+        else
+        {
+            typeName = fullPackageName + "." + typeName;
+            classNameMap.put(classDoc.qualifiedName(), typeName);
+        }
     }
 
     private void generateClass(ClassDoc classDoc)
     {
         if (ignoreClass(classDoc))
             return;
-        String typeName = classNameMap.get(classDoc.name());
+        String typeName = classNameMap.get(classDoc.qualifiedName());
 
         writeComment(classDoc);
 
         // Write interface header
         writeLn("interface ");
-        write(typeName);
-        if (!classDoc.superclass().qualifiedName().equals("java.lang.Object"))
+        write(stripClassName(typeName));
+        if (classDoc.superclass() != null && !classDoc.superclass().qualifiedName().equals("java.lang.Object"))
         {
             write(" extends ");
-            write(mapClassName(classDoc.superclassType().typeName()));
+            write(mapClassName(classDoc.superclassType()));
             if (classDoc.superclassType() instanceof ParameterizedType && classDoc.superclass().name().equals("MappedList"))
             {
                 write("<");
-                write(mapClassName(classDoc.superclassType().asParameterizedType().typeArguments()[1].typeName()));
+                write(mapClassName(classDoc.superclassType().asParameterizedType().typeArguments()[1]));
                 write(">");
             }
         }
@@ -250,7 +342,7 @@ public class TsdGenerator extends Doclet
                 write("...");
             write(parameter.name());
             write(": ");
-            write(mapClassName(parameter.type().simpleTypeName()));
+            write(mapClassName(parameter.type()));
             write(parameter.type().dimension());
         }
         write("): ");
@@ -261,13 +353,13 @@ public class TsdGenerator extends Doclet
     private void writeType(Doc doc, Type type)
     {
         String typeOverride = getFirstTagText(doc, "tsd.type");
-        write(typeOverride != null ? typeOverride : mapClassName(type.simpleTypeName()));
+        write(typeOverride != null ? typeOverride : mapClassName(type));
         if (type instanceof ParameterizedType)
         {
             if (type.simpleTypeName().equals("MappedList"))
             {
                 write("<");
-                write(mapClassName(type.asParameterizedType().typeArguments()[1].simpleTypeName()));
+                write(mapClassName(type.asParameterizedType().typeArguments()[1]));
                 write(">");
             }
         }
@@ -282,7 +374,12 @@ public class TsdGenerator extends Doclet
         if (fieldDoc.commentText().length() > 0)
         {
             writeLn("/**");
-            for (String line : fieldDoc.commentText().replace("\r", "").replace("<br>", "").split("\n"))
+            String comment = fieldDoc.commentText()
+                    .replace("\r", "")
+                    .replace("<br>", "")
+                    .replace("<b>", "")
+                    .replace("</b>", "");
+            for (String line : comment.split("\n"))
                 writeLn(" * " + line.trim());
             writeLn(" */");
         }
@@ -290,12 +387,12 @@ public class TsdGenerator extends Doclet
 
     private boolean ignoreDoc(Doc doc)
     {
-        return doc.tags("tsd.ignore").length > 0;
+        return doc.name().startsWith("_") || doc.tags("tsd.ignore").length > 0;
     }
 
     private boolean ignoreClass(ClassDoc classDoc)
     {
-        return !classDoc.isPublic() || ignoreDoc(classDoc) || !classDoc.name().startsWith("Js");
+        return !classDoc.isPublic() || ignoreDoc(classDoc); // || !classDoc.name().startsWith("Js");
     }
 
     private String getFirstTagText(Doc doc, String name)
@@ -304,28 +401,38 @@ public class TsdGenerator extends Doclet
         return tags.length > 0 ? tags[0].text() : null;
     }
 
-    private String mapClassName(String type)
+    private String mapClassName(Type type)
     {
-        type = stripInnerClasses(type);
-        String mappedName = classNameMap.get(type);
-        if (mappedName != null)
-            return mappedName;
+        // Directly return simple types like void and int
+        if (!type.qualifiedTypeName().contains("."))
+            return type.qualifiedTypeName();
 
-        mappedName = type;
-        if (mappedName.startsWith("Js"))
-            mappedName = mappedName.substring(2);
+        String mappedName = classNameMap.get(type.qualifiedTypeName());
+        if (mappedName == null)
+        {
+            mappedName = stripClassName(type.typeName());
+            if (mappedName.startsWith("Js"))
+                mappedName = mappedName.substring(2);
 
-        classNameMap.put(type, mappedName);
-        // knownTypes.add(mappedName);
+            mappedName = fullPackageName + "." + mappedName;
+            classNameMap.put(type.qualifiedTypeName(), mappedName);
+        }
+
+        if (mappedName.startsWith(fullPackageName))
+            return mappedName.substring(fullPackageName.length() + 1);
         return mappedName;
     }
 
-    private String stripInnerClasses(String type)
+    private String stripPackageName(String name)
     {
-        int idx;
-        while ((idx = type.indexOf('.')) >= 0)
-            type = type.substring(idx + 1);
-        return type;
+        int idx = name.lastIndexOf('.');
+        return idx < 0 ? "" : name.substring(0, idx);
+    }
+
+    private String stripClassName(String name)
+    {
+        int idx = name.lastIndexOf('.');
+        return idx < 0 ? name : name.substring(idx + 1);
     }
 
     private void print(String text)
@@ -392,7 +499,7 @@ public class TsdGenerator extends Doclet
                 "-doclet", TsdGenerator.class.getName(),
                 "-out", "jscripting/mc.d.ts",
                 "-public",
-                "com.forgeessentials.jscripting.wrapper"
+                "-subpackages", PACKAGE
         });
     }
 

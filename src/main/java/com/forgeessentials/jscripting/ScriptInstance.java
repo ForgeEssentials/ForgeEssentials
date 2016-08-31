@@ -24,25 +24,31 @@ import javax.script.Invocable;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.jscripting.wrapper.JsBlockStatic;
-import com.forgeessentials.jscripting.wrapper.JsCommandArgs;
-import com.forgeessentials.jscripting.wrapper.JsItemStatic;
-import com.forgeessentials.jscripting.wrapper.JsServerStatic;
-import com.forgeessentials.jscripting.wrapper.JsWorldStatic;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.jscripting.command.CommandJScriptCommand;
+import com.forgeessentials.jscripting.wrapper.JsFactoryStatic;
+import com.forgeessentials.jscripting.wrapper.event.JsEvent;
+import com.forgeessentials.jscripting.wrapper.event.JsPlayerInteractEvent;
+import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
+import com.forgeessentials.jscripting.wrapper.server.JsPermissionsStatic;
+import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
+import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
+import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class ScriptInstance
 {
+
+    public static final String SCRIPT_ERROR_TEXT = "Script error: ";
 
     public static class ProptertiesInfo<T>
     {
@@ -101,6 +107,9 @@ public class ScriptInstance
 
     private static Map<Class<?>, ProptertiesInfo<?>> propertyInfos = new HashMap<>();
 
+    @SuppressWarnings("rawtypes")
+    public static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
+
     private File file;
 
     private long lastModified;
@@ -115,7 +124,16 @@ public class ScriptInstance
 
     private Map<Integer, TimerTask> tasks = new HashMap<>();
 
+    private List<CommandJScriptCommand> commands = new ArrayList<>();
+
+    private Map<Object, JsEvent<?>> eventHandlers = new HashMap<>();
+
     private WeakReference<ICommandSender> lastSender;
+
+    static
+    {
+        eventTypes.put("playerInteractEvent", JsPlayerInteractEvent.class);
+    }
 
     public ScriptInstance(File file) throws IOException, ScriptException
     {
@@ -126,6 +144,21 @@ public class ScriptInstance
         compileScript();
     }
 
+    public void dispose()
+    {
+        for (TimerTask task : tasks.values())
+            TaskRegistry.remove(task);
+        tasks.clear();
+
+        for (ParserCommandBase command : commands)
+            FECommandManager.deegisterCommand(command.getCommandName());
+        commands.clear();
+
+        for (JsEvent<?> eventHandler : eventHandlers.values())
+            eventHandler._unregister();
+        eventHandlers.clear();
+    }
+
     protected void compileScript() throws IOException, FileNotFoundException, ScriptException
     {
         try (BufferedReader reader = new BufferedReader(new FileReader(file)))
@@ -134,10 +167,12 @@ public class ScriptInstance
             script = ModuleJScripting.getCompilable().compile(reader);
 
             // Initialization of module environment
+            script.getEngine().put("Factory", new JsFactoryStatic());
             script.getEngine().put("Server", new JsServerStatic(this));
             script.getEngine().put("Block", new JsBlockStatic());
             script.getEngine().put("Item", new JsItemStatic());
             script.getEngine().put("World", new JsWorldStatic());
+            script.getEngine().put("Permissions", new JsPermissionsStatic());
             script.getEngine().eval("" +
                     "var exports = {};" +
                     // NBT constants
@@ -151,6 +186,10 @@ public class ScriptInstance
                     "var NBT_STRING = 'S:';" +
                     "var NBT_COMPOUND = 'c:';" +
                     "var NBT_INT_ARRAY = 'I:';" +
+                    // PermissionLevel constants
+                    "var PERMLEVEL_TRUE = " + PermissionLevel.TRUE.getOpLevel() + ";" +
+                    "var PERMLEVEL_OP = " + PermissionLevel.OP.getOpLevel() + ";" +
+                    "var PERMLEVEL_FALSE = " + PermissionLevel.FALSE.getOpLevel() + ";" +
                     // timeouts
                     "function setTimeout(fn, t, args) { return Server.setTimeout(fn, t, args); };" +
                     "function setInterval(fn, t, args) { return Server.setInterval(fn, t, args); };" +
@@ -219,15 +258,7 @@ public class ScriptInstance
 
     public boolean hasGlobalCallFailed(String fnName)
     {
-        try
-        {
-            setLastActive();
-            return illegalFunctions.contains(fnName);
-        }
-        finally
-        {
-            clearLastActive();
-        }
+        return illegalFunctions.contains(fnName);
     }
 
     public Object call(Object fn, Object thiz, Object... args) throws NoSuchMethodException, ScriptException
@@ -333,6 +364,14 @@ public class ScriptInstance
         return lastActive;
     }
 
+    /**
+     * This should be called every time a script is invoked by a user to send errors to the correct user
+     */
+    public void setLastSender(ICommandSender sender)
+    {
+        this.lastSender = new WeakReference<>(sender);
+    }
+
     /* ************************************************************ */
     /* Timeout & Promise handling */
 
@@ -345,7 +384,7 @@ public class ScriptInstance
             }
             catch (NoSuchMethodException | ScriptException e)
             {
-                chatError("Error in callback: " + e.getMessage());
+                chatError("Error in script callback: " + e.getMessage());
             }
         });
     }
@@ -388,9 +427,48 @@ public class ScriptInstance
     /* ************************************************************ */
     /* Event handling */
 
+    public void registerScriptCommand(CommandJScriptCommand command)
+    {
+        commands.add(command);
+        FECommandManager.registerCommand(command, true);
+    }
+
+    @SuppressWarnings({ "rawtypes" })
     public void registerEventHandler(String event, Object handler)
     {
-        System.out.println("TODO!");
+        Class<? extends JsEvent> eventType = eventTypes.get(event);
+        if (eventType == null)
+        {
+            chatError(SCRIPT_ERROR_TEXT + "Invalid event type " + event);
+            return;
+        }
+        try
+        {
+            // Constructor<? extends JsEvent> constructor = eventType.getConstructor(ScriptInstance.class, Object.class);
+            // JsEvent<?> eventHandler = constructor.newInstance(this, handler);
+            JsEvent<?> eventHandler = eventType.newInstance();
+            eventHandler._script = this;
+            eventHandler._handler = handler;
+            eventHandler._eventType = event;
+
+            // TODO: Handle reuse of one handler for multiple events!
+            eventHandlers.put(handler, eventHandler);
+
+            eventHandler._register();
+        }
+        catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException e)
+        {
+            e.printStackTrace();
+            chatError(SCRIPT_ERROR_TEXT + e.getMessage());
+        }
+    }
+
+    public void unregisterEventHandler(Object handler)
+    {
+        JsEvent<?> eventHandler = eventHandlers.remove(handler);
+        if (eventHandler == null)
+            return;
+        eventHandler._unregister();
     }
 
     /* ************************************************************ */
@@ -401,29 +479,21 @@ public class ScriptInstance
         return file;
     }
 
-    public void runCommand(CommandParserArgs arguments) throws CommandException
+    public String getName()
     {
-        try
-        {
-            callGlobal(arguments.isTabCompletion ? "tabComplete" : "processCommand", new JsCommandArgs(arguments));
-        }
-        catch (CommandException e)
-        {
-            throw e;
-        }
-        catch (NoSuchMethodException e)
-        {
-            if (!arguments.isTabCompletion)
-                throw new TranslatedCommandException("Script missing processCommand function.");
-        }
-        catch (ScriptException e)
-        {
-            e.printStackTrace();
-            throw new TranslatedCommandException("Error in script: %s", e.getMessage());
-        }
+        String fileName = file.getAbsolutePath().substring(ModuleJScripting.getModuleDir().getAbsolutePath().length() + 1).replace('\\', '/');
+        return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 
-    /* ************************************************************ */
+    public List<CommandJScriptCommand> getCommands()
+    {
+        return commands;
+    }
+
+    public List<String> getEventHandlers()
+    {
+        return eventHandlers.values().stream().map(x -> x.getEventType()).collect(Collectors.toList());
+    }
 
     /**
      * Tries to send an error message to the last player using this script.<br>
@@ -447,7 +517,7 @@ public class ScriptInstance
 
     /**
      * This should be called every time a script is invoked by a user to send errors to the correct user
-     *
+     * 
      * @param sender
      */
     public void setLastSender(ICommandSender sender)

@@ -1,10 +1,11 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.server;
 
 import java.util.UUID;
 
-import net.minecraft.world.WorldServer;
-
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
+import com.forgeessentials.jscripting.wrapper.entity.JsEntityPlayer;
+import com.forgeessentials.jscripting.wrapper.world.JsWorldServer;
 
 public class JsUserIdent extends JsWrapper<UserIdent>
 {
@@ -69,9 +70,9 @@ public class JsUserIdent extends JsWrapper<UserIdent>
         return new JsEntityPlayer(that.getFakePlayer());
     }
 
-    public JsEntityPlayer getFakePlayer(WorldServer world)
+    public JsEntityPlayer getFakePlayer(JsWorldServer world)
     {
-        return new JsEntityPlayer(that.getFakePlayer(world));
+        return new JsEntityPlayer(that.getFakePlayer(world.getThat()));
     }
 
     public String toSerializeString()

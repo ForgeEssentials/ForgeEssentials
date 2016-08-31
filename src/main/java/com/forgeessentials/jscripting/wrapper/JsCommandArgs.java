@@ -2,15 +2,15 @@ package com.forgeessentials.jscripting.wrapper;
 
 import java.util.Collection;
 
-import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
-import net.minecraft.item.Item;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.world.WorldServer;
 
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.WorldZone;
-import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.jscripting.wrapper.entity.JsEntityPlayer;
+import com.forgeessentials.jscripting.wrapper.item.JsItem;
+import com.forgeessentials.jscripting.wrapper.server.JsUserIdent;
+import com.forgeessentials.jscripting.wrapper.world.JsBlock;
+import com.forgeessentials.jscripting.wrapper.world.JsWorldPoint;
+import com.forgeessentials.jscripting.wrapper.world.JsWorldServer;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class JsCommandArgs
@@ -86,6 +86,11 @@ public class JsCommandArgs
         return that.peek();
     }
 
+    public String get(int index)
+    {
+        return that.get(index);
+    }
+
     public boolean isEmpty()
     {
         return that.isEmpty();
@@ -96,47 +101,47 @@ public class JsCommandArgs
         return that.hasPlayer();
     }
 
-    public UserIdent parsePlayer() throws CommandException
+    public JsUserIdent parsePlayer()
     {
-        return that.parsePlayer(true, false);
+        return new JsUserIdent(that.parsePlayer(true, false));
     }
 
-    public UserIdent parsePlayer(boolean mustExist) throws CommandException
+    public JsUserIdent parsePlayer(boolean mustExist)
     {
-        return that.parsePlayer(mustExist, false);
+        return new JsUserIdent(that.parsePlayer(mustExist, false));
     }
 
-    public UserIdent parsePlayer(boolean mustExist, boolean mustBeOnline) throws CommandException
+    public JsUserIdent parsePlayer(boolean mustExist, boolean mustBeOnline)
     {
-        return that.parsePlayer(mustExist, mustBeOnline);
+        return new JsUserIdent(that.parsePlayer(mustExist, mustBeOnline));
     }
 
-    public Item parseItem() throws CommandException
+    public JsItem parseItem()
     {
-        return that.parseItem();
+        return JsItem.get(that.parseItem());
     }
 
-    public Block parseBlock() throws CommandException
+    public JsBlock parseBlock()
     {
-        return that.parseBlock();
+        return JsBlock.get(that.parseBlock());
     }
 
-    public String parsePermission() throws CommandException
+    public String parsePermission()
     {
         return that.parsePermission();
     }
 
-    public void checkPermission(String perm) throws CommandException
+    public void checkPermission(String perm)
     {
         that.checkPermission(perm);
     }
 
-    public boolean hasPermission(String perm) throws CommandException
+    public boolean hasPermission(String perm)
     {
         return that.hasPermission(perm);
     }
 
-    public void tabComplete(String... completionList) throws CommandException
+    public void tabComplete(String... completionList)
     {
         that.tabComplete(completionList);
     }
@@ -144,7 +149,7 @@ public class JsCommandArgs
     /**
      * @tsd.ignore
      */
-    public void tabComplete(Collection<String> completionList) throws CommandException
+    public void tabComplete(Collection<String> completionList)
     {
         that.tabComplete(completionList);
     }
@@ -154,12 +159,12 @@ public class JsCommandArgs
         that.tabCompleteWord(completion);
     }
 
-    public WorldServer parseWorld() throws CommandException
+    public JsWorldServer parseWorld()
     {
-        return that.parseWorld();
+        return new JsWorldServer(that.parseWorld());
     }
 
-    public int parseInt() throws CommandException
+    public int parseInt()
     {
         return that.parseInt();
     }
@@ -169,47 +174,48 @@ public class JsCommandArgs
         return that.parseInt(min, max);
     }
 
-    public long parseLong() throws CommandException
+    public long parseLong()
     {
         return that.parseLong();
     }
 
-    public double parseDouble() throws CommandException
+    public double parseDouble()
     {
         return that.parseDouble();
     }
 
-    public boolean parseBoolean() throws CommandException
+    public boolean parseBoolean()
     {
         return that.parseBoolean();
     }
 
-    public long parseTimeReadable() throws CommandException
+    public long parseTimeReadable()
     {
         return that.parseTimeReadable();
     }
 
-    public void checkTabCompletion() throws CommandException
+    public void checkTabCompletion()
     {
         that.checkTabCompletion();
     }
 
-    public void requirePlayer() throws CommandException
+    public void requirePlayer()
     {
         that.requirePlayer();
     }
 
-    public WorldPoint getSenderPoint() throws CommandException
+    public JsWorldPoint<?> getSenderPoint()
     {
-        return that.getSenderPoint();
+        return new JsWorldPoint<>(that.getSenderPoint());
     }
 
-    public WorldZone getWorldZone() throws CommandException
-    {
-        return that.getWorldZone();
-    }
+    // TODO: Add permissions to scripting
+    // public JsWorldZone getWorldZone()
+    // {
+    // return that.getWorldZone();
+    // }
 
-    public void needsPlayer() throws CommandException
+    public void needsPlayer()
     {
         that.needsPlayer();
     }

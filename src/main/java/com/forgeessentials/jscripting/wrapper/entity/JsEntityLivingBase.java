@@ -1,4 +1,4 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

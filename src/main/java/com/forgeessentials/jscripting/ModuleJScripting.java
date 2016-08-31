@@ -2,10 +2,9 @@ package com.forgeessentials.jscripting;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.script.Compilable;
@@ -16,6 +15,7 @@ import javax.script.ScriptException;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,19 +23,19 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.ScriptHandler;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
-import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.JsCommandSender;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 
@@ -51,10 +51,11 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     private static final ScriptEngineManager SEM = new ScriptEngineManager(null);
 
-    @FEModule.ModuleDir
-    private static File moduleDir;
+    @FEModule.Instance
+    protected static ModuleJScripting instance;
 
-    private static File commandsDir;
+    @FEModule.ModuleDir
+    static File moduleDir;
 
     public static boolean isNashorn;
 
@@ -65,9 +66,12 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
      */
     protected static Map<File, ScriptInstance> scripts = new HashMap<>();
 
-    protected static List<CommandJScriptCommand> commands = new ArrayList<>();
-
     /* ------------------------------------------------------------ */
+
+    public static ModuleJScripting instance()
+    {
+        return instance;
+    }
 
     @Preconditions
     public boolean canLoad()
@@ -89,50 +93,60 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public void load(FEModuleInitEvent event)
     {
         FECommandManager.registerCommand(new CommandJScript());
-        commandsDir = new File(moduleDir, COMMANDS_DIR);
-        commandsDir.mkdirs();
+    }
+
+    @SubscribeEvent
+    public void serverStarting(FEModuleServerInitEvent event)
+    {
+        loadScripts(MinecraftServer.getServer());
     }
 
     @SubscribeEvent
     public void serverStarted(FEModuleServerPostInitEvent event)
     {
-        loadScripts();
+        // loadScripts();
     }
 
     @Override
     @SubscribeEvent
     public void serverStopped(FEModuleServerStoppedEvent e)
     {
-        deregisterCommands();
-        scripts.clear();
+        unloadScripts();
     }
 
     @SubscribeEvent
     public void reload(ConfigReloadEvent event)
     {
-        deregisterCommands();
-        scripts.clear();
-        loadScripts();
+        reloadScripts(MinecraftServer.getServer());
     }
 
-    private void deregisterCommands()
+    public void reloadScripts(ICommandSender sender)
     {
-        for (ParserCommandBase command : commands)
-            FECommandManager.deegisterCommand(command.getCommandName());
-        commands.clear();
+        unloadScripts();
+        loadScripts(sender);
     }
 
-    private void loadScripts()
+    public void unloadScripts()
+    {
+        for (ScriptInstance script : scripts.values())
+            script.dispose();
+        scripts.clear();
+    }
+
+    public void loadScripts(ICommandSender sender)
     {
         for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js" }, true); it.hasNext();)
         {
             File file = it.next();
+            if (scripts.containsKey(file))
+                continue;
             try
             {
                 getScript(file);
             }
             catch (CommandException | IOException | ScriptException e)
             {
+                ChatOutputHandler.chatError(sender, "FE Script error: " + e.getMessage());
                 LoggingHandler.felog.error("FE Script error: " + e.getMessage());
             }
         }
@@ -168,12 +182,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             catch (IOException | ScriptException e)
             {
                 result = scripts.remove(file);
-                for (Iterator<CommandJScriptCommand> it = commands.iterator(); it.hasNext();)
-                {
-                    CommandJScriptCommand command = it.next();
-                    if (command.script == result)
-                        it.remove();
-                }
+                if (result != null)
+                    result.dispose();
                 throw e;
             }
         }
@@ -188,15 +198,14 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         return getScript(f);
     }
 
-    public static File getCommandsDir()
+    public static Collection<ScriptInstance> getScripts()
     {
-        return commandsDir;
+        return scripts.values();
     }
 
-    public static void registerScriptCommand(CommandJScriptCommand command)
+    public static File getModuleDir()
     {
-        commands.add(command);
-        FECommandManager.registerCommand(command, true);
+        return moduleDir;
     }
 
     /* ------------------------------------------------------------ */

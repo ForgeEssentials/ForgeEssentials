@@ -1,4 +1,4 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.world;
 
 import net.minecraft.block.Block;
 

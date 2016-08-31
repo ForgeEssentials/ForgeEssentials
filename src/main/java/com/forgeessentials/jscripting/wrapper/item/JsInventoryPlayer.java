@@ -1,4 +1,4 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.item;
 
 import net.minecraft.entity.player.InventoryPlayer;
 

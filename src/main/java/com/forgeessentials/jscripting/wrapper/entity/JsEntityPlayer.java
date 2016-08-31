@@ -1,10 +1,14 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.entity;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
 
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.jscripting.wrapper.JsCommandSender;
+import com.forgeessentials.jscripting.wrapper.JsPoint;
+import com.forgeessentials.jscripting.wrapper.item.JsInventoryPlayer;
+import com.forgeessentials.jscripting.wrapper.world.JsWorldPoint;
 
 public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 {
@@ -39,7 +43,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
         ((EntityPlayerMP) that).playerNetServerHandler.setPlayerLocation(x, y, z, yaw, pitch);
     }
 
-    public JsCommandSender getCommandSender()
+    public JsCommandSender asCommandSender()
     {
         if (commandSender != null || !(that instanceof EntityPlayer))
             return commandSender;

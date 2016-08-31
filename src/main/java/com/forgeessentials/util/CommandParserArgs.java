@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -45,7 +44,7 @@ public class CommandParserArgs
 {
 
     public final ICommand command;
-    public final Queue<String> args;
+    public final LinkedList<String> args;
     public final ICommandSender sender;
     public final EntityPlayerMP senderPlayer;
     public final UserIdent ident;
@@ -57,7 +56,7 @@ public class CommandParserArgs
     public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, boolean isTabCompletion)
     {
         this.command = command;
-        this.args = new LinkedList<String>(Arrays.asList(args));
+        this.args = new LinkedList<>(Arrays.asList(args));
         this.sender = sender;
         this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
         this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null)
@@ -71,6 +70,12 @@ public class CommandParserArgs
     public CommandParserArgs(ICommand command, String[] args, ICommandSender sender)
     {
         this(command, args, sender, false);
+    }
+
+    public void sendMessage(String message)
+    {
+        if (!isTabCompletion)
+            ChatOutputHandler.sendMessage(sender, message);
     }
 
     public void sendMessage(IChatComponent message)
@@ -116,6 +121,11 @@ public class CommandParserArgs
     public String peek()
     {
         return args.peek();
+    }
+
+    public String get(int index)
+    {
+        return args.get(index);
     }
 
     public boolean isEmpty()
@@ -177,7 +187,7 @@ public class CommandParserArgs
 
     public static List<String> completePlayer(String arg)
     {
-        Set<String> result = new TreeSet<String>();
+        Set<String> result = new TreeSet<>();
         for (UserIdent knownPlayerIdent : APIRegistry.perms.getServerZone().getKnownPlayers())
         {
             if (CommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
@@ -188,7 +198,7 @@ public class CommandParserArgs
             if (CommandBase.doesStringStartWith(arg, player.getName()))
                 result.add(player.getName());
         }
-        return new ArrayList<String>(result);
+        return new ArrayList<>(result);
     }
 
     public Item parseItem() throws CommandException
@@ -232,7 +242,7 @@ public class CommandParserArgs
         {
             String permission = peek();
             Set<String> permissionSet = APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions();
-            Set<String> result = new TreeSet<String>();
+            Set<String> result = new TreeSet<>();
             for (String perm : permissionSet)
             {
                 int nodeIndex = perm.indexOf('.', permission.length());
@@ -241,7 +251,7 @@ public class CommandParserArgs
                 if (CommandBase.doesStringStartWith(permission, perm))
                     result.add(perm);
             }
-            tabCompletion = new ArrayList<String>(result);
+            tabCompletion = new ArrayList<>(result);
             throw new CancelParsingException();
         }
         return remove();
@@ -501,5 +511,6 @@ public class CommandParserArgs
         if (senderPlayer == null)
             throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
+
 
 }

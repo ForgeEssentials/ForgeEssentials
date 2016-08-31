@@ -1,6 +1,8 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.item;
 
 import net.minecraft.inventory.IInventory;
+
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
 public class JsInventory<T extends IInventory> extends JsWrapper<T>
 {
