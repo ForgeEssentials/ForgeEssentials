@@ -110,7 +110,7 @@ public class Multiworld
 
     public WorldServer getWorldServer()
     {
-        return MinecraftServer.getServer().worldServerForDimension(dimensionId);
+        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimensionId);
     }
 
     public int getDimensionId()

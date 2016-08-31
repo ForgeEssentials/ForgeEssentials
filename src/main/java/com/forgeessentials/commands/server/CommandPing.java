@@ -53,13 +53,13 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
     }

@@ -1,8 +1,11 @@
 package com.forgeessentials.teleport;
 
+import java.util.List;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -25,13 +28,7 @@ public class CommandSetSpawn extends ParserCommandBase
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        PermissionCommandParser.parseGroupSpawn(arguments, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args) throws CommandException
-    {
-        PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
+        return "/setspawn (here|x y z) | (bed enable|disable)";
     }
 
     @Override
@@ -56,6 +53,22 @@ public class CommandSetSpawn extends ParserCommandBase
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         PermissionCommandParser.parseGroupSpawn(arguments, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
+    }
+
+    @Override
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    {
+        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true, server);
+        try
+        {
+            PermissionCommandParser.parseGroupSpawn(arguments, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
+        }
+        catch (CommandException e)
+        {
+            return arguments.tabCompletion;
+        }
+        return arguments.tabCompletion;
+
     }
 
 }

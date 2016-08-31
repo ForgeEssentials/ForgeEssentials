@@ -122,7 +122,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
      */
     public void register()
     {
-        if (MinecraftServer.getServer() == null)
+        if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
             return;
 
         Map<?, ?> commandMap = ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).getCommands();
@@ -143,9 +143,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
     @SuppressWarnings("unchecked")
     public void deregister()
     {
-        if (MinecraftServer.getServer() == null)
+        if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
             return;
-        CommandHandler cmdHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+        CommandHandler cmdHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
         Map<String, ICommand> commandMap = cmdHandler.getCommands();
         Set<ICommand> commandSet = (Set<ICommand>) ReflectionHelper.getPrivateValue(CommandHandler.class, cmdHandler, "field_71561_b", "commandSet");
 

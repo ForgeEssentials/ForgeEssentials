@@ -2,7 +2,7 @@ package com.forgeessentials.jscripting.wrapper.entity;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.jscripting.wrapper.JsCommandSender;
@@ -32,7 +32,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
         that.posX = x;
         that.posY = y;
         that.posZ = z;
-        ((EntityPlayerMP) that).playerNetServerHandler.setPlayerLocation(x, y, z, that.cameraYaw, that.cameraPitch);
+        ((EntityPlayerMP) that).connection.setPlayerLocation(x, y, z, that.cameraYaw, that.cameraPitch);
     }
 
     public void setPosition(double x, double y, double z, float yaw, float pitch)
@@ -40,7 +40,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
         that.posX = x;
         that.posY = y;
         that.posZ = z;
-        ((EntityPlayerMP) that).playerNetServerHandler.setPlayerLocation(x, y, z, yaw, pitch);
+        ((EntityPlayerMP) that).connection.setPlayerLocation(x, y, z, yaw, pitch);
     }
 
     public JsCommandSender asCommandSender()

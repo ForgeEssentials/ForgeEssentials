@@ -250,7 +250,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         IBlockState blockState = event.getWorld().getBlockState(event.getPos());
         String permission = ModuleProtection.getBlockBreakPermission(blockState);
         ModuleProtection.debugPermission(event.getPlayer(), permission);
-        if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
+        if (!APIRegistry.perms.checkUserPermission(ident, permission))
         {
             event.setCanceled(true);
             TileEntity te = event.getWorld().getTileEntity(event.getPos());
@@ -258,7 +258,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 updateBrokenTileEntity((EntityPlayerMP) event.getPlayer(), te);
             if (PlayerInfo.get(ident).getHasFEClient())
             {
-                int blockId = (GameRegistry.findRegistry(Block.class)).getId(blockState.getBlock());
+                int blockId = Block.REGISTRY.getIDForObject(blockState.getBlock());
                 Set<Integer> ids = new HashSet<>();
                 ids.add(blockId);
                 NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, null, ids), ident.getPlayerMP());
@@ -914,7 +914,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public static void updateBrokenTileEntity(final EntityPlayerMP player, final TileEntity te)
     {
-        if (player == null || player.playerNetServerHandler == null)
+        if (player == null || player.connection == null)
             return;
         final Packet<?> packet = te.getUpdatePacket();
         if (packet == null)

@@ -4,6 +4,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -38,13 +39,13 @@ public class CommandEffect extends ZoneEffect
                 if (args[i].equals("@player"))
                     args[i] = player.getName();
 
-            ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmdName);
+            ICommand mcCommand = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(cmdName);
             if (mcCommand == null)
             {
                 LoggingHandler.felog.error(String.format("Could not find command for WorldBorder effect: ", command));
                 return;
             }
-            mcCommand.processCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), args);
+            mcCommand.execute(FMLCommonHandler.instance().getMinecraftServerInstance(), new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), args);
         }
         catch (CommandException e)
         {

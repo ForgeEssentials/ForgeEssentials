@@ -21,7 +21,7 @@ public abstract class JsLivingEvent<T extends LivingEvent> extends JsEntityEvent
 
     public JsEntityLivingBase<?> getPlayer()
     {
-        return new JsEntityLivingBase<>(_event.entityLiving);
+        return new JsEntityLivingBase<>(_event.getEntityLiving());
     }
 
 }

@@ -96,7 +96,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
 
         if ((0b00100 & eventType) != 0)
         {
-            List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getAreaAround(point), null, null, info.checkStartTime, 4);
+            List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getAreaAround(point), null, null, info.checkStartId, 4);
 
             if (changes.size() == 0 && !newCheck)
             {

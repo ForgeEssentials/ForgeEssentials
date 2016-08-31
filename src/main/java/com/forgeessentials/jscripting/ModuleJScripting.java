@@ -14,6 +14,7 @@ import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.server.MinecraftServer;
 
@@ -98,7 +99,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent event)
     {
-        loadScripts(MinecraftServer.getServer());
+        loadScripts(FMLCommonHandler.instance().getMinecraftServerInstance());
     }
 
     @SubscribeEvent
@@ -117,7 +118,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void reload(ConfigReloadEvent event)
     {
-        reloadScripts(MinecraftServer.getServer());
+        reloadScripts(FMLCommonHandler.instance().getMinecraftServerInstance());
     }
 
     public void reloadScripts(ICommandSender sender)

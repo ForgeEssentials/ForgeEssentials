@@ -57,7 +57,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         EntityPlayerMP player = sender;
         if (player.openContainer != player.inventoryContainer)

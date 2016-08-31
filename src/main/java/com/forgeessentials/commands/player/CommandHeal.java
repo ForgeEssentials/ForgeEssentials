@@ -123,12 +123,6 @@ public class CommandHeal extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)

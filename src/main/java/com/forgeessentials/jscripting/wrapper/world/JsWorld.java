@@ -1,7 +1,6 @@
 package com.forgeessentials.jscripting.wrapper.world;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -18,7 +17,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public int getDimension()
     {
-        return that.provider.getDimensionId();
+        return that.provider.getDimension();
     }
 
     public int getDifficulty()

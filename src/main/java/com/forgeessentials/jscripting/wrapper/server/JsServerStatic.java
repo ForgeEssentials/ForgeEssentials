@@ -5,6 +5,7 @@ import javax.script.ScriptException;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,7 +29,7 @@ public class JsServerStatic
 
     public JsCommandSender getServer()
     {
-        MinecraftServer srv = MinecraftServer.getServer();
+        MinecraftServer srv = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (server == null || server.getThat() != srv)
             server = srv == null ? null : new JsCommandSender(srv);
         return server;
@@ -59,7 +60,7 @@ public class JsServerStatic
         if (sender == null)
             sender = server;
 
-        ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmd);
+        ICommand mcCommand = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(cmd);
         if (mcCommand == null)
         {
             script.chatError("Command \"" + cmd + "\" not found");
@@ -76,7 +77,7 @@ public class JsServerStatic
 
         try
         {
-            mcCommand.processCommand(sender.getThat(), strArgs);
+            mcCommand.execute(FMLCommonHandler.instance().getMinecraftServerInstance(), sender.getThat(), strArgs);
         }
         catch (CommandException e)
         {

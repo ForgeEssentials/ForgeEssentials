@@ -59,7 +59,7 @@ public class CommandDelayedAction extends ParserCommandBase
             @Override
             public void run()
             {
-                MinecraftServer.getServer().getCommandManager().executeCommand(arguments.sender, execute);
+                arguments.server.getCommandManager().executeCommand(arguments.sender, execute);
             }
         }, time);
         arguments.notify("Timer set to run command '%s' in %s", execute, ChatOutputHandler.formatTimeDurationReadableMilli(time, true));

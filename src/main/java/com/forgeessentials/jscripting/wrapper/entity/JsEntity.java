@@ -118,14 +118,14 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
     public JsEntity<Entity> getRidingEntity()
     {
         if (ridingEntity == null)
-            ridingEntity = new JsEntity<>(that.ridingEntity);
+            ridingEntity = new JsEntity<>(that.getRidingEntity());
         return ridingEntity;
     }
 
     public JsEntity<Entity> getRiddenByEntity()
     {
         if (riddenByEntity == null)
-            riddenByEntity = new JsEntity<>(that.riddenByEntity);
+            riddenByEntity = new JsEntity<>(that.getPassengers().get(0));
         return riddenByEntity;
     }
 

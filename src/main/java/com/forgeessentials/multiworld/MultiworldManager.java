@@ -440,7 +440,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     @SubscribeEvent
     public void worldUnloadEvent(WorldEvent.Unload event)
     {
-        Multiworld mw = getMultiworld(event.world.provider.getDimensionId());
+        Multiworld mw = getMultiworld(event.getWorld().provider.getDimension());
         if (mw != null)
             mw.worldLoaded = false;
     }

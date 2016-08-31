@@ -130,7 +130,7 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (point.getWorld() == null)
         {
-            MinecraftServer.getServer().worldServerForDimension(point.getDimension());
+            FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(point.getDimension());
             if (point.getWorld() == null)
             {
                 ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target dimension does not exist"));

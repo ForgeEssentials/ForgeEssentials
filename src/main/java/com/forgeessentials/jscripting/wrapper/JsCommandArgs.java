@@ -3,7 +3,7 @@ package com.forgeessentials.jscripting.wrapper;
 import java.util.Collection;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 
 import com.forgeessentials.jscripting.wrapper.entity.JsEntityPlayer;
 import com.forgeessentials.jscripting.wrapper.item.JsItem;
@@ -46,7 +46,7 @@ public class JsCommandArgs
         return that.toString();
     }
 
-    public void sendMessage(IChatComponent message)
+    public void sendMessage(ITextComponent message)
     {
         that.sendMessage(message);
     }

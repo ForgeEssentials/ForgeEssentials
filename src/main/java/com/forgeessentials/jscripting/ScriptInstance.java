@@ -26,7 +26,7 @@ import javax.script.SimpleBindings;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -501,7 +501,7 @@ public class ScriptInstance
 
     public void chatError(ICommandSender sender, String message)
     {
-        IChatComponent msg = ChatOutputHandler.error(message);
+        ITextComponent msg = ChatOutputHandler.error(message);
         if (sender == null)
             ChatOutputHandler.broadcast(msg); // TODO: Replace with broadcast to admins only
         else
