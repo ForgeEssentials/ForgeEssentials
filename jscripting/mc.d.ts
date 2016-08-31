@@ -34,6 +34,7 @@ declare namespace MC {
 			getDimension(): int;
 			getDifficulty(): int;
 			getPlayerEntities(): MC.Entity.EntityPlayerList;
+			getEntitiesWithinAABB(axisAlignedBB: MC.AxisAlignedBB): MC.Entity.EntityList;
 			blockExists(x: int, y: int, z: int): boolean;
 			getBlock(x: int, y: int, z: int): Block;
 			setBlock(x: int, y: int, z: int, block: Block): void;
@@ -85,6 +86,10 @@ declare namespace MC {
 			getRidingEntity(): Entity;
 			getRiddenByEntity(): Entity;
 			getWorld(): MC.World.World;
+			getEntityType(): string;
+		}
+		
+		interface EntityList extends JavaList<Entity> {
 		}
 		
 		interface EntityLivingBase extends Entity {
@@ -104,6 +109,13 @@ declare namespace MC {
 		}
 		
 		interface EntityPlayerList extends JavaList<EntityPlayer> {
+		}
+		
+		interface EntitySheep extends Entity {
+			getFleeceColor(): int;
+			setFleeceColor(color: int): void;
+			isSheared(): boolean;
+			setSheared(sheared: boolean): void;
 		}
 		
 	}
@@ -329,6 +341,10 @@ declare namespace MC {
 	interface AreaBase extends JavaObject {
 	}
 	
+	interface AxisAlignedBB extends JavaObject {
+		setBounds(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): AxisAlignedBB;
+	}
+	
 	interface CommandArgs {
 		sender: ICommandSender;
 		player: Entity.EntityPlayer;
@@ -397,6 +413,7 @@ declare namespace MC {
 		createItemStack(item: Item.Item, stackSize: int, damage: int): Item.ItemStack;
 		createPoint(x: int, y: int, z: int): Point;
 		createWorldPoint(dimension: int, x: int, y: int, z: int): World.WorldPoint;
+		createAxisAlignedBB(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): AxisAlignedBB;
 	}
 	
 	interface Point extends JavaObject {

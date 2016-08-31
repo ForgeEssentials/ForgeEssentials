@@ -4,23 +4,23 @@ import java.util.UUID;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.world.JsWorld;
 import com.forgeessentials.util.ServerUtil;
+import com.google.common.base.Throwables;
 
 public class JsEntity<T extends Entity> extends JsWrapper<T>
 {
 
-    private JsWorld<World> world;
+    private JsWorld<?> world;
 
-    private JsEntity<Entity> ridingEntity;
+    private JsEntity<?> ridingEntity;
 
-    private JsEntity<Entity> riddenByEntity;
+    private JsEntityList riddenByEntity;
 
-    public JsEntity(T that)
+    protected JsEntity(T that)
     {
         super(that);
     }
@@ -115,21 +115,21 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
         return that.onGround;
     }
 
-    public JsEntity<Entity> getRidingEntity()
+    public JsEntity<?> getRidingEntity()
     {
         if (ridingEntity == null)
-            ridingEntity = new JsEntity<>(that.getRidingEntity());
+            ridingEntity = get(that.getRidingEntity());
         return ridingEntity;
     }
 
-    public JsEntity<Entity> getRiddenByEntity()
+    public JsEntityList getRiddenByEntity()
     {
         if (riddenByEntity == null)
-            riddenByEntity = new JsEntity<>(that.getPassengers().get(0));
+            riddenByEntity = new JsEntityList(that.getPassengers());
         return riddenByEntity;
     }
 
-    public JsWorld<World> getWorld()
+    public JsWorld<?> getWorld()
     {
         if (world == null)
             world = new JsWorld<>(that.worldObj);
@@ -150,6 +150,31 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
     public void _setNbt(String value)
     {
         ServerUtil.copyNbt(that.getEntityData(), DataManager.fromJson(value, NBTTagCompound.class));
+    }
+
+    public String getEntityType() {
+        return that.getClass().getSimpleName();
+    }
+
+    public static JsEntity<?> get(Entity entity) {
+        // Fancy reflection crap to get a specific entity type if it exists
+        String className = entity.getClass().getSimpleName();
+        try
+        {
+            Class<?> clazz = Class.forName("com.forgeessentials.jscripting.wrapper.entity.Js" + className);
+            if (JsEntity.class.isAssignableFrom(clazz)) {
+                return (JsEntity<?>)clazz.getConstructor(entity.getClass()).newInstance(entity);
+            }
+        }
+        catch (ClassNotFoundException e)
+        {
+            /* do nothing */
+        }
+        catch (Exception e)
+        {
+            Throwables.propagate(e);
+        }
+        return new JsEntity<>(entity);
     }
 
 }
