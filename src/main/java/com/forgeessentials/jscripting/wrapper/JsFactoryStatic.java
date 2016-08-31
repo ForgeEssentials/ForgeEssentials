@@ -1,6 +1,7 @@
 package com.forgeessentials.jscripting.wrapper;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -32,11 +33,18 @@ public class JsFactoryStatic
         return new JsItemStack(new ItemStack(item.getThat(), stackSize, damage));
     }
 
-    public JsPoint<?> createPoint(int x, int y, int z) {
+    public JsPoint<?> createPoint(int x, int y, int z)
+    {
         return new JsPoint<>(new Point(x, y, z));
     }
 
-    public JsWorldPoint<?> createWorldPoint(int dimension, int x, int y, int z) {
+    public JsWorldPoint<?> createWorldPoint(int dimension, int x, int y, int z)
+    {
         return new JsWorldPoint<>(new WorldPoint(dimension, x, y, z));
+    }
+
+    public JsAxisAlignedBB createAxisAlignedBB(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
+    {
+        return new JsAxisAlignedBB(AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ));
     }
 }
