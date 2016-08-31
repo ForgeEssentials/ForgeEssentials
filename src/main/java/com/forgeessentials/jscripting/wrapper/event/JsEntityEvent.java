@@ -1,6 +1,5 @@
 package com.forgeessentials.jscripting.wrapper.event;
 
-import net.minecraft.entity.Entity;
 import net.minecraftforge.event.entity.EntityEvent;
 
 import com.forgeessentials.jscripting.wrapper.entity.JsEntity;
@@ -20,9 +19,9 @@ public abstract class JsEntityEvent<T extends EntityEvent> extends JsEvent<T>
     // _callEvent(event);
     // }
 
-    public JsEntity<Entity> getEntity()
+    public JsEntity<?> getEntity()
     {
-        return new JsEntity<>(_event.entity);
+        return JsEntity.get(_event.entity);
     }
 
 }
