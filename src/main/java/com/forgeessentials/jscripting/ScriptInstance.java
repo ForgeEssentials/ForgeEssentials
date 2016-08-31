@@ -26,6 +26,7 @@ import javax.script.SimpleBindings;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -181,6 +182,10 @@ public class ScriptInstance
                     "var NBT_STRING = 'S:';" +
                     "var NBT_COMPOUND = 'c:';" +
                     "var NBT_INT_ARRAY = 'I:';" +
+                    // PermissionLevel constants
+                    "var PERMLEVEL_TRUE = " + PermissionLevel.TRUE.getOpLevel() + ";" +
+                    "var PERMLEVEL_OP = " + PermissionLevel.OP.getOpLevel() + ";" +
+                    "var PERMLEVEL_FALSE = " + PermissionLevel.FALSE.getOpLevel() + ";" +
                     // timeouts
                     "function setTimeout(fn, t, args) { return Server.setTimeout(fn, t, args); };" +
                     "function setInterval(fn, t, args) { return Server.setInterval(fn, t, args); };" +
@@ -489,7 +494,7 @@ public class ScriptInstance
     /**
      * Tries to send an error message to the last player using this script.<br>
      * If no player can be determined, the message will be broadcasted.
-     * 
+     *
      * @param message
      */
     public void chatError(String message)

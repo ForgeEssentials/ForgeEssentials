@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
+import com.forgeessentials.jscripting.wrapper.server.JsPermissionsStatic;
 import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
@@ -195,6 +196,7 @@ public class TsdGenerator extends Doclet
                 writeLn("declare var World: " + classNameMap.get(JsWorldStatic.class.getName()) + ";");
                 writeLn("declare var Block: " + classNameMap.get(JsBlockStatic.class.getName()) + ";");
                 writeLn("declare var Item: " + classNameMap.get(JsItemStatic.class.getName()) + ";");
+                writeLn("declare var Permissions: " + classNameMap.get(JsPermissionsStatic.class.getName()) + ";");
                 writeLn("");
                 writeLn("declare function getNbt(entity: " + NAMESPACE + ".Entity.Entity | " + NAMESPACE + ".Item.ItemStack): any;");
                 writeLn("declare function setNbt(entity: " + NAMESPACE + ".Entity.Entity | " + NAMESPACE + ".Item.ItemStack, data: any);");
@@ -212,6 +214,13 @@ public class TsdGenerator extends Doclet
                 writeLn("declare const NBT_STRING: string;");
                 writeLn("declare const NBT_COMPOUND: string;");
                 writeLn("declare const NBT_INT_ARRAY: string;");
+                writeLn("");
+                writeLn("/**");
+                writeLn(" * Constants for permission level used when registering permissions");
+                writeLn(" */ ");
+                writeLn("declare const PERMLEVEL_TRUE: int;");
+                writeLn("declare const PERMLEVEL_OP: int;");
+                writeLn("declare const PERMLEVEL_FALSE: int;");
                 writeLn("");
             }
         }

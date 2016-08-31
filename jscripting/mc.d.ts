@@ -41,6 +41,9 @@ declare namespace MC {
 			asWorldServer(): WorldServer;
 		}
 		
+		interface WorldArea extends MC.AreaBase {
+		}
+		
 		interface WorldPoint extends MC.Point {
 			getDimension(): int;
 			setDimension(dim: int): void;
@@ -193,6 +196,54 @@ declare namespace MC {
 	
 	namespace Server {
 		
+		interface PermissionsStatic {
+			checkBooleanPermission(permissionValue: string): boolean;
+			getPermission(ident: UserIdent, point: MC.World.WorldPoint, area: MC.World.WorldArea, groups: string[], permissionNode: string, isProperty: boolean): string;
+			checkPermission(player: MC.Entity.EntityPlayer, permissionNode: string): boolean;
+			getPermissionProperty(player: MC.Entity.EntityPlayer, permissionNode: string): string;
+			registerPermissionDescription(permissionNode: string, description: string): void;
+			getPermissionDescription(permissionNode: string): string;
+			registerPermission(permission: string, level: int): void;
+			registerPermission(permissionNode: string, level: int, description: string): void;
+			registerPermissionProperty(permissionNode: string, defaultValue: string): void;
+			registerPermissionProperty(permissionNode: string, defaultValue: string, description: string): void;
+			registerPermissionPropertyOp(permissionNode: string, defaultValue: string): void;
+			registerPermissionPropertyOp(permissionNode: string, defaultValue: string, description: string): void;
+			checkUserPermission(ident: UserIdent, permissionNode: string): boolean;
+			getUserPermissionProperty(ident: UserIdent, permissionNode: string): string;
+			getUserPermissionPropertyInt(ident: UserIdent, permissionNode: string): int;
+			checkUserPermission(ident: UserIdent, targetPoint: MC.World.WorldPoint, permissionNode: string): boolean;
+			getUserPermissionProperty(ident: UserIdent, targetPoint: MC.World.WorldPoint, permissionNode: string): string;
+			checkUserPermission(ident: UserIdent, targetArea: MC.World.WorldArea, permissionNode: string): boolean;
+			getUserPermissionProperty(ident: UserIdent, targetArea: MC.World.WorldArea, permissionNode: string): string;
+			checkUserPermission(ident: UserIdent, zone: MC.Zone, permissionNode: string): boolean;
+			getUserPermissionProperty(ident: UserIdent, zone: MC.Zone, permissionNode: string): string;
+			getGroupPermissionProperty(group: string, permissionNode: string): string;
+			getGroupPermissionProperty(group: string, zone: MC.Zone, permissionNode: string): string;
+			checkGroupPermission(group: string, permissionNode: string): boolean;
+			checkGroupPermission(group: string, zone: MC.Zone, permissionNode: string): boolean;
+			getGroupPermissionProperty(group: string, point: MC.World.WorldPoint, permissionNode: string): string;
+			checkGroupPermission(group: string, point: MC.World.WorldPoint, permissionNode: string): boolean;
+			getGlobalPermissionProperty(permissionNode: string): string;
+			getGlobalPermissionProperty(zone: MC.Zone, permissionNode: string): string;
+			checkGlobalPermission(permissionNode: string): boolean;
+			checkGlobalPermission(zone: MC.Zone, permissionNode: string): boolean;
+			setPlayerPermission(ident: UserIdent, permissionNode: string, value: boolean): void;
+			setPlayerPermissionProperty(ident: UserIdent, permissionNode: string, value: string): void;
+			setGroupPermission(group: string, permissionNode: string, value: boolean): void;
+			setGroupPermissionProperty(group: string, permissionNode: string, value: string): void;
+			getZones(): MC.Zone[];
+			getZoneById(id: int): MC.Zone;
+			getZoneById(id: string): MC.Zone;
+			getServerZone(): ServerZone;
+			isSystemGroup(group: string): boolean;
+			groupExists(groupName: string): boolean;
+			createGroup(groupName: string): boolean;
+			addPlayerToGroup(ident: UserIdent, group: string): void;
+			removePlayerFromGroup(ident: UserIdent, group: string): void;
+			getPrimaryGroup(ident: UserIdent): string;
+		}
+		
 		interface ServerStatic {
 			getServer(): MC.ICommandSender;
 			/**
@@ -210,7 +261,7 @@ declare namespace MC {
 			/**
 			 * Broadcast an uncolored message to all players
 			 */
-			chatMessage(message: string): void;
+			chat(message: string): void;
 			/**
 			 * Broadcast a confirmation message to all players
 			 */
@@ -254,6 +305,9 @@ declare namespace MC {
 			clearInterval(handle: int): void;
 		}
 		
+		interface ServerZone extends MC.JavaObject {
+		}
+		
 		interface UserIdent extends MC.JavaObject {
 			hasUsername(): boolean;
 			hasUuid(): boolean;
@@ -274,6 +328,9 @@ declare namespace MC {
 			getPermissionProperty(permissionNode: string): string;
 		}
 		
+	}
+	
+	interface AreaBase extends JavaObject {
 	}
 	
 	interface CommandArgs {
@@ -330,6 +387,7 @@ declare namespace MC {
 		getName(): string;
 		getPlayer(): Entity.EntityPlayer;
 		doAs(userIdOrPlayer: any, hideChatOutput: boolean): ICommandSender;
+		chat(message: string): void;
 		chatConfirm(message: string): void;
 		chatNotification(message: string): void;
 		chatError(message: string): void;
@@ -361,6 +419,9 @@ declare namespace MC {
 		hashCode(): int;
 	}
 	
+	interface Zone extends JavaObject {
+	}
+	
 	interface UUID {
 		getLeastSignificantBits(): long;
 		getMostSignificantBits(): long;
@@ -387,6 +448,7 @@ declare var Server: MC.Server.ServerStatic;
 declare var World: MC.World.WorldStatic;
 declare var Block: MC.World.BlockStatic;
 declare var Item: MC.Item.ItemStatic;
+declare var Permissions: MC.Server.PermissionsStatic;
 
 declare function getNbt(entity: MC.Entity.Entity | MC.Item.ItemStack): any;
 declare function setNbt(entity: MC.Entity.Entity | MC.Item.ItemStack, data: any);
@@ -404,3 +466,10 @@ declare const NBT_BYTE_ARRAY: string;
 declare const NBT_STRING: string;
 declare const NBT_COMPOUND: string;
 declare const NBT_INT_ARRAY: string;
+
+/**
+ * Constants for permission level used when registering permissions
+ */ 
+declare const PERMLEVEL_TRUE: int;
+declare const PERMLEVEL_OP: int;
+declare const PERMLEVEL_FALSE: int;
