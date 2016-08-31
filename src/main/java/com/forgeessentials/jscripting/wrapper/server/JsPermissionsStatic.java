@@ -2,22 +2,13 @@ package com.forgeessentials.jscripting.wrapper.server;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.WeakHashMap;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.permission.PermissionContext;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.GroupEntry;
-import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.commons.selections.WorldArea;
-import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.jscripting.wrapper.JsZone;
 import com.forgeessentials.jscripting.wrapper.entity.JsEntityPlayer;
 import com.forgeessentials.jscripting.wrapper.world.JsWorldArea;
