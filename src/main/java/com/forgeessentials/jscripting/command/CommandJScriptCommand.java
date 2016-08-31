@@ -83,7 +83,7 @@ public class CommandJScriptCommand extends ParserCommandBase
         }
         catch (NoSuchMethodException e)
         {
-            throw new TranslatedCommandException("Script error: method not found");
+            throw new TranslatedCommandException("Script error: method not found: " + e.getMessage());
         }
         catch (ScriptException e)
         {
