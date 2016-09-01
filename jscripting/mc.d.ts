@@ -71,6 +71,10 @@ declare namespace mc {
 			subtract(x: int, y: int, z: int): void;
 		}
 		
+		class TileEntity extends mc.JavaObject {
+			getInventory(): mc.item.Inventory;
+		}
+		
 		class World extends mc.JavaObject {
 			getDimension(): int;
 			getDifficulty(): int;
@@ -80,6 +84,7 @@ declare namespace mc {
 			getBlock(x: int, y: int, z: int): Block;
 			setBlock(x: int, y: int, z: int, block: Block): void;
 			setBlock(x: int, y: int, z: int, block: Block, meta: int): void;
+			getTileEntity(x: int, y: int, z: int): TileEntity;
 			asWorldServer(): WorldServer;
 		}
 		
