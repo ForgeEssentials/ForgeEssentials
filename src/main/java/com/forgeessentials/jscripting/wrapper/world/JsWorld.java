@@ -1,6 +1,10 @@
 package com.forgeessentials.jscripting.wrapper.world;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -11,8 +15,10 @@ import com.forgeessentials.jscripting.wrapper.entity.JsEntityPlayerList;
 
 public class JsWorld<T extends World> extends JsWrapper<T>
 {
+    private static Map<World, JsWorld<?>> worldCache = new WeakHashMap<>();
+    protected Map<TileEntity, JsTileEntity<?>> tileEntityCache = new WeakHashMap<>();
 
-    public JsWorld(T that)
+    protected JsWorld(T that)
     {
         super(that);
     }
@@ -60,9 +66,29 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         that.setBlock(x, y, z, block.getThat(), meta, 3);
     }
 
+    public JsTileEntity<?> getTileEntity(int x, int y, int z)
+    {
+        TileEntity tileEntity = that.getTileEntity(x, y, z);
+        if (tileEntityCache.containsKey(tileEntity))
+            return tileEntityCache.get(tileEntity);
+        JsTileEntity<?> jsTileEntity = new JsTileEntity<>(tileEntity);
+        tileEntityCache.put(tileEntity, jsTileEntity);
+        return jsTileEntity;
+    }
+
     public JsWorldServer asWorldServer()
     {
         return that instanceof WorldServer ? new JsWorldServer((WorldServer) that) : null;
+    }
+
+    public static JsWorld<?> get(World world)
+    {
+        if (worldCache.containsKey(world))
+            return worldCache.get(world);
+        JsWorld<?> jsWorld = new JsWorld<>(world);
+        worldCache.put(world, jsWorld);
+        return jsWorld;
+
     }
 
 }

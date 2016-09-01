@@ -93,6 +93,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public void load(FEModuleInitEvent event)
     {
         FECommandManager.registerCommand(new CommandJScript());
+
     }
 
     @SubscribeEvent

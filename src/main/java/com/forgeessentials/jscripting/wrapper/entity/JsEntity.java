@@ -132,7 +132,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
     public JsWorld<?> getWorld()
     {
         if (world == null)
-            world = new JsWorld<>(that.worldObj);
+            world = JsWorld.get(that.worldObj);
         return world;
     }
 
