@@ -13,11 +13,6 @@ var NBT_STRING = 'S:';
 var NBT_COMPOUND = 'c:';
 var NBT_INT_ARRAY = 'I:';
 
-// PermissionLevel constants
-var PERMLEVEL_TRUE = " + PermissionLevel.TRUE.getOpLevel() + ";
-var PERMLEVEL_OP = " + PermissionLevel.OP.getOpLevel() + ";
-var PERMLEVEL_FALSE = " + PermissionLevel.FALSE.getOpLevel() + ";
-
 // timeouts
 function setTimeout(fn, t, args) {
 	return window.setTimeout(fn, t, args);

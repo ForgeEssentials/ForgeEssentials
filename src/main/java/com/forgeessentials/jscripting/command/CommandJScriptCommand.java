@@ -89,6 +89,10 @@ public class CommandJScriptCommand extends ParserCommandBase
         {
             throw new TranslatedCommandException("Script error: " + e.getMessage());
         }
+        catch (Exception e)
+        {
+            throw new TranslatedCommandException("Script error: " + e.getMessage());
+        }
     }
 
 }

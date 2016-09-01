@@ -10,7 +10,8 @@ public class JsAxisAlignedBB extends JsWrapper<AxisAlignedBB>
         super(that);
     }
 
-    public JsAxisAlignedBB setBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+    public JsAxisAlignedBB setBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
+    {
         that.setBounds(minX, minY, minZ, maxX, maxY, maxZ);
         return this;
     }

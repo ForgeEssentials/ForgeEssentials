@@ -1,5 +1,5 @@
 
-export function randomTpCommand(args: MC.CommandArgs) {
+export function randomTpCommand(args: mc.CommandArgs) {
     if (args.isEmpty()) {
         args.confirm('/jscript randomtp range [x z]: Teleport to some random location');
         return;

@@ -10,19 +10,23 @@ public class JsEntitySheep<T extends EntitySheep> extends JsEntity<T>
         super(that);
     }
 
-    public int getFleeceColor() {
+    public int getFleeceColor()
+    {
         return that.getFleeceColor();
     }
 
-    public void setFleeceColor(int color) {
+    public void setFleeceColor(int color)
+    {
         that.setFleeceColor(color);
     }
 
-    public boolean isSheared() {
+    public boolean isSheared()
+    {
         return that.getSheared();
     }
 
-    public void setSheared(boolean sheared) {
+    public void setSheared(boolean sheared)
+    {
         that.setSheared(sheared);
     }
 

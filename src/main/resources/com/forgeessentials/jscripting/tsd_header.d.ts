@@ -4,8 +4,8 @@ declare type long = number;
 declare type float = number;
 declare type double = number;
 
-declare function getNbt(entity: MC.Entity.Entity | MC.Item.ItemStack): any;
-declare function setNbt(entity: MC.Entity.Entity | MC.Item.ItemStack, data: any);
+declare function getNbt(entity: mc.entity.Entity | mc.item.ItemStack): any;
+declare function setNbt(entity: mc.entity.Entity | mc.item.ItemStack, data: any);
 
 /**
  * Constants that tell getNbt and setNbt the types of entries. Use nbt[NBT_INT + 'myVar'] for access
@@ -24,23 +24,23 @@ declare const NBT_INT_ARRAY: string;
 /**
  * Constants for permission level used when registering permissions
  */ 
-declare const PERMLEVEL_TRUE: int;
-declare const PERMLEVEL_OP: int;
-declare const PERMLEVEL_FALSE: int;
+declare enum PermissionLevel {
+    TRUE, OP, FALSE
+}
 
-declare namespace MC {
-    
-    interface JavaList<T> {
-        size(): int;
-        isEmpty(): boolean;
-        toArray(): any[];
-        get(index: int): T;
-        add(element: T): T;
-        set(index: int, element: T): T;
-        clear(): void;
-        remove(index: int): T;
-        remove(element: T): boolean;
-    }
+declare abstract class JavaList<T> {
+    size(): int;
+    isEmpty(): boolean;
+    toArray(): any[];
+    get(index: int): T;
+    add(element: T): T;
+    set(index: int, element: T): T;
+    clear(): void;
+    remove(index: int): T;
+    remove(element: T): boolean;
+}
+
+declare namespace mc {
     
     type CommandCallback = (args: CommandArgs) => void;
     

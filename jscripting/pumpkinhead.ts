@@ -1,9 +1,9 @@
 
-export function tabComplete(args: MC.CommandArgs) {
+export function tabComplete(args: mc.CommandArgs) {
     processCommand(args);
 }
 
-export function processCommand(args: MC.CommandArgs) {
+export function processCommand(args: mc.CommandArgs) {
     var player = args.player;
     if (!args.player) {
         args.confirm('Error: no player!');

@@ -6,7 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +30,7 @@ import javax.script.SimpleBindings;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -38,7 +42,6 @@ import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.JsWindowStatic;
 import com.forgeessentials.jscripting.wrapper.event.JsEvent;
-import com.forgeessentials.jscripting.wrapper.event.JsPlayerInteractEvent;
 import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
 import com.forgeessentials.jscripting.wrapper.server.JsPermissionsStatic;
 import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
@@ -46,11 +49,20 @@ import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
+import com.sun.xml.internal.ws.util.StringUtils;
+
+import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ScriptInstance
 {
 
     public static final String SCRIPT_ERROR_TEXT = "Script error: ";
+
+    public static final String WRAPPER_PACKAGE = "com.forgeessentials.jscripting.wrapper";
 
     private static String INIT_SCRIPT;
 
@@ -114,7 +126,11 @@ public class ScriptInstance
     private static Map<Class<?>, ProptertiesInfo<?>> propertyInfos = new HashMap<>();
 
     @SuppressWarnings("rawtypes")
-    public static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
+    private static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
+
+    private static SimpleBindings rootPkg = new SimpleBindings();
+
+    public static PermissionLevelObj permissionLevelObj = new PermissionLevelObj();
 
     private File file;
 
@@ -123,7 +139,7 @@ public class ScriptInstance
     private CompiledScript script;
 
     private Invocable invocable;
-    
+
     @SuppressWarnings("unused")
     private Bindings exports;
 
@@ -141,15 +157,90 @@ public class ScriptInstance
 
     static
     {
-        eventTypes.put("playerInteractEvent", JsPlayerInteractEvent.class);
         try
         {
             INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js"));
             initScript = ModuleJScripting.getCompilable().compile(INIT_SCRIPT);
         }
-        catch (IOException |ScriptException e)
+        catch (IOException | ScriptException e)
         {
             Throwables.propagate(e);
+        }
+        try
+        {
+            ImmutableSet<ClassInfo> classes = ClassPath.from(ScriptInstance.class.getClassLoader()).getTopLevelClassesRecursive(WRAPPER_PACKAGE);
+            for (ClassInfo classInfo : classes)
+            {
+                registerWrapperClass(classInfo);
+            }
+        }
+        catch (IOException e)
+        {
+            Throwables.propagate(e);
+        }
+    }
+
+    public static Object toNashornClass(Class<?> c)
+    {
+        try
+        {
+            Class<?> cl = Class.forName("jdk.internal.dynalink.beans.StaticClass", true, ClassLoader.getSystemClassLoader());
+            Constructor<?> constructor = cl.getDeclaredConstructor(Class.class);
+            constructor.setAccessible(true);
+            return constructor.newInstance(c);
+        }
+        catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e)
+        {
+            throw Throwables.propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void registerWrapperClass(ClassInfo classInfo)
+    {
+        if (!classInfo.getSimpleName().startsWith("Js"))
+            return;
+        Class<?> clazz = classInfo.load();
+        // if (!JsWrapper.class.isAssignableFrom(clazz))
+        // return;
+
+        String jsName = classInfo.getName().substring(WRAPPER_PACKAGE.length() + 1);
+        String[] jsNameParts = jsName.split("\\.");
+        SimpleBindings pkg = rootPkg;
+        for (int i = 0; i < jsNameParts.length - 1; i++)
+        {
+            String name = StringUtils.capitalize(jsNameParts[i]);
+            SimpleBindings parentPkg = pkg;
+            pkg = (SimpleBindings) parentPkg.get(name);
+            if (pkg == null)
+            {
+                pkg = new SimpleBindings();
+                parentPkg.put(name, pkg);
+            }
+        }
+        pkg.put(jsNameParts[jsNameParts.length - 1].substring(2), toNashornClass(clazz));
+
+        // Check for event handlers
+        try
+        {
+            Method[] methods = clazz.getDeclaredMethods();
+            for (Method method : methods)
+            {
+                if (method.getName().equals("_handle") && method.getParameterCount() == 1 && Event.class.isAssignableFrom(method.getParameterTypes()[0]))
+                {
+                    SubscribeEvent annotation = method.getAnnotation(SubscribeEvent.class);
+                    if (annotation != null)
+                    {
+                        eventTypes.put(clazz.getSimpleName().substring(2), (Class<? extends JsEvent<?>>) clazz);
+                        break;
+                    }
+                }
+            }
+        }
+        catch (SecurityException e)
+        {
+            throw Throwables.propagate(e);
         }
     }
 
@@ -195,10 +286,11 @@ public class ScriptInstance
             engine.put("Item", new JsItemStatic());
             engine.put("World", new JsWorldStatic());
             engine.put("Permissions", new JsPermissionsStatic());
+            engine.put("PermissionLevel", new PermissionLevelObj());
+            engine.put("MC", rootPkg);
 
-            INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js")); // TODO: DEV ONLY REALOD OF INIT SCRIPT
+            // INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js")); // TODO: DEV ONLY REALOD OF INIT SCRIPT
             engine.eval(INIT_SCRIPT);
-            // initScript.eval(engine.getContext());
 
             // Start script
             script.eval();
@@ -511,4 +603,10 @@ public class ScriptInstance
             ChatOutputHandler.sendMessage(sender, msg);
     }
 
+    public static class PermissionLevelObj
+    {
+        public PermissionLevel TRUE = PermissionLevel.TRUE;
+        public PermissionLevel OP = PermissionLevel.OP;
+        public PermissionLevel FALSE = PermissionLevel.FALSE;
+    }
 }

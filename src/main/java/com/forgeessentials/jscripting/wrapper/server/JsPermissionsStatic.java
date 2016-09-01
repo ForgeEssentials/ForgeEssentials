@@ -16,7 +16,9 @@ import com.forgeessentials.jscripting.wrapper.world.JsWorldPoint;
 
 public class JsPermissionsStatic
 {
-    private static JsServerZone<?> serverZone;
+    
+    private JsServerZone<?> serverZone;
+    
     private static Map<Zone, JsZone<?>> cache = new WeakHashMap<>();
 
     public boolean checkBooleanPermission(String permissionValue)
@@ -49,14 +51,14 @@ public class JsPermissionsStatic
         return APIRegistry.perms.getPermissionDescription(permissionNode);
     }
 
-    public void registerPermission(String permission, int level)
+    public void registerPermission(String permission, PermissionLevel level)
     {
-        APIRegistry.perms.registerPermission(permission, PermissionLevel.fromInteger(level));
+        APIRegistry.perms.registerPermission(permission, level);
     }
 
-    public void registerPermission(String permissionNode, int level, String description)
+    public void registerPermission(String permissionNode, PermissionLevel level, String description)
     {
-        APIRegistry.perms.registerPermission(permissionNode, PermissionLevel.fromInteger(level), description);
+        APIRegistry.perms.registerPermission(permissionNode, level, description);
     }
 
     public void registerPermissionProperty(String permissionNode, String defaultValue)

@@ -155,6 +155,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     /* ------------------------------------------------------------ */
+
+    /* ------------------------------------------------------------ */
     /* Script handling OLD */
 
     public static ScriptEngine getEngine()

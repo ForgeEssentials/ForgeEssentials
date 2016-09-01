@@ -1,7 +1,5 @@
 package com.forgeessentials.jscripting.wrapper;
 
-import net.minecraft.entity.Entity;
-
 import com.google.common.base.Preconditions;
 
 /**

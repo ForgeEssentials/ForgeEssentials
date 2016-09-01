@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.jscripting.wrapper.JsWindowStatic;
 import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
@@ -23,6 +22,7 @@ import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
 import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ConstructorDoc;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Doclet;
@@ -42,7 +42,7 @@ public class TsdGenerator extends Doclet
 
     public static TsdGenerator generator = new TsdGenerator();
 
-    public static final String NAMESPACE = "MC";
+    public static final String NAMESPACE = "mc";
     public static final String PACKAGE = "com.forgeessentials.jscripting.wrapper";
 
     private File outFile = new File("jscripting/mc.d.ts");
@@ -110,7 +110,7 @@ public class TsdGenerator extends Doclet
 
                 for (PackageDoc packageDoc : packages)
                 {
-                    packageName = StringUtils.capitalize(packageDoc.name().substring(Math.min(packageDoc.name().length(), PACKAGE.length() + 1)));
+                    packageName = packageDoc.name().substring(Math.min(packageDoc.name().length(), PACKAGE.length() + 1));
                     fullPackageName = NAMESPACE + (packageName.length() == 0 ? "" : "." + packageName);
                     for (ClassDoc classDoc : packageDoc.allClasses())
                         preprocessClass(classDoc);
@@ -118,7 +118,7 @@ public class TsdGenerator extends Doclet
 
                 for (PackageDoc packageDoc : packages)
                 {
-                    packageName = StringUtils.capitalize(packageDoc.name().substring(Math.min(packageDoc.name().length(), PACKAGE.length() + 1)));
+                    packageName = packageDoc.name().substring(Math.min(packageDoc.name().length(), PACKAGE.length() + 1));
                     fullPackageName = NAMESPACE + (packageName.length() == 0 ? "" : "." + packageName);
                     if (packageName.length() > 0)
                     {
@@ -190,7 +190,7 @@ public class TsdGenerator extends Doclet
                     write(";");
                 }
                 writeLn("");
-                
+
                 // Generate window public defs
                 ClassDoc window = root.classNamed(JsWindowStatic.class.getName());
                 for (FieldDoc fieldDoc : window.fields())
@@ -227,10 +227,12 @@ public class TsdGenerator extends Doclet
             return;
         String typeName = classNameMap.get(classDoc.qualifiedName());
 
+        boolean isClass = !typeName.endsWith("Static");
+
         writeComment(classDoc);
 
         // Write interface header
-        writeLn("interface ");
+        writeLn(isClass ? "class " : "interface ");
         write(stripClassName(typeName));
         if (classDoc.superclass() != null && !classDoc.superclass().qualifiedName().equals("java.lang.Object"))
         {
@@ -250,6 +252,10 @@ public class TsdGenerator extends Doclet
         for (FieldDoc fieldDoc : classDoc.fields())
             generateField(fieldDoc);
 
+        if (isClass)
+            for (ConstructorDoc constructorDoc : classDoc.constructors())
+                generateConstructor(constructorDoc);
+
         for (MethodDoc methodDoc : classDoc.methods())
             generateMethod(methodDoc);
 
@@ -259,13 +265,54 @@ public class TsdGenerator extends Doclet
         declaredTypes.add(typeName);
     }
 
+    private void generateConstructor(ConstructorDoc constructorDoc)
+    {
+        if (!constructorDoc.isPublic() || ignoreDoc(constructorDoc))
+            return;
+        if (constructorDoc.parameters().length > 0 && constructorDoc.parameters()[0].name().equals("that"))
+            return;
+
+        writeComment(constructorDoc);
+
+        if (indention == 0)
+            writeLn("declare function ");
+        else
+            writeLn("constructor");
+
+        Tag[] defTags = constructorDoc.tags("tsd.def");
+        if (defTags.length > 0)
+        {
+            for (Tag tag : defTags)
+            {
+                write(tag.text());
+            }
+            return;
+        }
+
+        write("(");
+        Parameter[] parameters = constructorDoc.parameters();
+        for (int i = 0; i < parameters.length; i++)
+        {
+            if (i > 0)
+                write(", ");
+            Parameter parameter = parameters[i];
+            if (constructorDoc.isVarArgs() && i == parameters.length - 1)
+                write("...");
+            write(parameter.name());
+            write(": ");
+            write(mapClassName(parameter.type()));
+            write(parameter.type().dimension());
+        }
+        write(");");
+    }
+
     private void generateField(FieldDoc fieldDoc)
     {
         if (!fieldDoc.isPublic() || fieldDoc.isStatic() || ignoreDoc(fieldDoc))
             return;
 
         writeComment(fieldDoc);
-        
+
         if (indention == 0)
             writeLn("declare var ");
         else
@@ -297,7 +344,7 @@ public class TsdGenerator extends Doclet
             return;
 
         writeComment(methodDoc);
-        
+
         if (indention == 0)
             writeLn("declare function ");
         else

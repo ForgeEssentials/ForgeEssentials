@@ -16,7 +16,7 @@ import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.JsAxisAlignedBB;
 import com.forgeessentials.jscripting.wrapper.JsCommandOptions;
 import com.forgeessentials.jscripting.wrapper.JsCommandSender;
-import com.forgeessentials.jscripting.wrapper.JsPoint;
+import com.forgeessentials.jscripting.wrapper.world.JsPoint;
 import com.forgeessentials.jscripting.wrapper.world.JsWorldPoint;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -146,7 +146,7 @@ public class JsServerStatic
     /**
      * Registers a new event handler.
      * 
-     * @tsd.def registerEvent(event: string, handler: (event: MC.Event.Event) => void): void;
+     * @tsd.def registerEvent(event: string, handler: (event: mc.event.Event) => void): void;
      */
     public void registerEvent(String event, Object handler) throws ScriptException
     {
