@@ -67,7 +67,7 @@ Server.registerCommand({
 });
 
 Server.registerEvent('PlayerInteractEvent', (event: mc.event.PlayerInteractEvent) => {
-    Server.chatConfirm('player interact event from ' + event.getPlayer().getName());
+    // Server.chatConfirm('player interact event from ' + event.getPlayer().getName());
 });
 
 // function isInt(value: any): boolean {

@@ -6,7 +6,11 @@ export function sheepRandomCommand(args: mc.CommandArgs) {
 }
 
 export function sheepRandom(player: mc.entity.EntityPlayer) {
-    var aabb = createAxisAlignedBB(player.getX() - 10, player.getY() - 10, player.getZ() - 10, player.getX() + 10, player.getY() + 10, player.getZ() + 10);
+    var r = 60;
+    var aabb = createAxisAlignedBB(
+        player.getX() - r, player.getY() - r, player.getZ() - r,
+        player.getX() + r, player.getY() + r, player.getZ() + r
+    );
     var list = player.getWorld().getEntitiesWithinAABB(aabb);
     var listArray = list.toArray();
     for (var i = 0; i < listArray.length; i++) {
