@@ -53,14 +53,12 @@ public abstract class JsEvent<T extends Event>
 
     public void _register()
     {
-        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.FE_EVENTBUS.register(this);
     }
 
     public void _unregister()
     {
-        FMLCommonHandler.instance().bus().unregister(this);
         MinecraftForge.EVENT_BUS.unregister(this);
         APIRegistry.FE_EVENTBUS.unregister(this);
     }
