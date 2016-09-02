@@ -10,15 +10,18 @@ public class JsInventoryPlayer<T extends InventoryPlayer> extends JsInventory<T>
         super(that);
     }
 
-    public JsItemStack getCurrentItem() {
+    public JsItemStack getCurrentItem()
+    {
         return new JsItemStack(that.getCurrentItem());
     }
 
-    public int getCurrentItemIndex() {
+    public int getCurrentItemIndex()
+    {
         return that.currentItem;
     }
 
-    public void setCurrentItemIndex(int index) {
+    public void setCurrentItemIndex(int index)
+    {
         that.currentItem = index;
     }
 

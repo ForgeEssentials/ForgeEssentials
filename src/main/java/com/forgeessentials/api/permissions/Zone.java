@@ -54,7 +54,7 @@ public abstract class Zone
 
         public List<String> toList()
         {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             for (Map.Entry<String, String> perm : this.entrySet())
             {
                 if (perm.getValue() == null)
@@ -159,9 +159,9 @@ public abstract class Zone
 
     private int id;
 
-    protected Map<UserIdent, PermissionList> playerPermissions = new HashMap<UserIdent, PermissionList>();
+    protected Map<UserIdent, PermissionList> playerPermissions = new HashMap<>();
 
-    protected Map<String, PermissionList> groupPermissions = new HashMap<String, PermissionList>();
+    protected Map<String, PermissionList> groupPermissions = new HashMap<>();
 
     public Zone(int id)
     {
@@ -617,7 +617,7 @@ public abstract class Zone
      */
     public Set<String> enumRegisteredPermissions()
     {
-        Set<String> perms = new TreeSet<String>();
+        Set<String> perms = new TreeSet<>();
         for (Entry<UserIdent, PermissionList> permList : playerPermissions.entrySet())
             for (String perm : permList.getValue().keySet())
             {

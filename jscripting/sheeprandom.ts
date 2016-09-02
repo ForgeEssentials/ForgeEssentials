@@ -1,18 +1,28 @@
 
-export function sheepRandomCommand(args: MC.CommandArgs) {
-    var player = args.player;
-
+export function sheepRandomCommand(args: mc.CommandArgs) {
     if (args.isTabCompletion) // This is important so TAB completion does not actually change stuff
         return;
+    sheepRandom(args.player);
+}
 
-    var list = player.getWorld().getEntitiesWithinAABB(Factory.createAxisAlignedBB(player.getX() - 10, player.getY() - 10, player.getZ() - 10, player.getX() + 10, player.getY() + 10, player.getZ() + 10));
+export function sheepRandom(player: mc.entity.EntityPlayer) {
+    var r = 60;
+    var aabb = createAxisAlignedBB(
+        player.getX() - r, player.getY() - r, player.getZ() - r,
+        player.getX() + r, player.getY() + r, player.getZ() + r
+    );
+    var list = player.getWorld().getEntitiesWithinAABB(aabb);
     var listArray = list.toArray();
     for (var i = 0; i < listArray.length; i++) {
-        if (listArray[i].getEntityType() == "EntitySheep") {
+        if (listArray[i].getEntityType() === 'EntitySheep') {
             listArray[i].setFleeceColor(Math.round(Math.random() * 15));
         }
     }
 }
+
+Server.registerEvent('PlayerInteractEvent', (event: mc.event.PlayerInteractEvent) => {
+    sheepRandom(event.getPlayer());
+});
 
 Server.registerCommand({
     name: 'sheeprandom',

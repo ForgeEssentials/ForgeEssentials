@@ -6,9 +6,9 @@ import net.minecraft.entity.EntityLivingBase;
 public class JsEntityLivingBase<T extends EntityLivingBase> extends JsEntity<T>
 {
 
-    public JsEntityLivingBase(T entity)
+    public JsEntityLivingBase(T that)
     {
-        super(entity);
+        super(that);
     }
 
     public float getHealth()

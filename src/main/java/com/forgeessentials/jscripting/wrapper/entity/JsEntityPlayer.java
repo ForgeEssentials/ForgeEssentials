@@ -6,8 +6,8 @@ import net.minecraft.util.math.BlockPos;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.jscripting.wrapper.JsCommandSender;
-import com.forgeessentials.jscripting.wrapper.JsPoint;
 import com.forgeessentials.jscripting.wrapper.item.JsInventoryPlayer;
+import com.forgeessentials.jscripting.wrapper.world.JsPoint;
 import com.forgeessentials.jscripting.wrapper.world.JsWorldPoint;
 
 public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
@@ -57,7 +57,8 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
         return inventory;
     }
 
-    public JsPoint<?> getBedLocation(int dimension) {
+    public JsPoint<?> getBedLocation(int dimension)
+    {
         BlockPos coord = EntityPlayer.getBedSpawnLocation(that.worldObj, that.getBedLocation(dimension), false);
         return coord != null ? new JsWorldPoint<>(new WorldPoint(dimension, coord)) : null;
     }

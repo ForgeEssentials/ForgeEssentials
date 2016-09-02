@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 
 /**
  * Basic wrapped java object
- * 
+ *
  * @tsd.type JavaObject
  */
 public class JsWrapper<T>
@@ -44,7 +44,7 @@ public class JsWrapper<T>
         }
         return false;
     }
-    
+
     @Override
     public String toString()
     {
@@ -55,6 +55,18 @@ public class JsWrapper<T>
     public int hashCode()
     {
         return that.hashCode();
+    }
+
+    public boolean isInstanceOf(String type)
+    {
+        for (Class<?> clazz = that.getClass(); clazz.getSuperclass() != null; clazz = clazz.getSuperclass())
+        {
+            if (clazz.getSimpleName().equals(type))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

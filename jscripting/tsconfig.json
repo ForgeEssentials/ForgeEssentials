@@ -11,7 +11,9 @@
         "noImplicitAny": false,
         "noImplicitUseStrict": false,
         "removeComments": true,
-        "noLib": false,
+        "lib": [
+            "es5"
+        ],
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
         "outDir": "../run/ForgeEssentials/JScripting/commands"
@@ -23,8 +25,10 @@
     "exclude": [],
     "files": [
         "mc.d.ts",
+        "cabin.ts",
         "pumpkinhead.ts",
         "randomtp.ts",
+        "sheeprandom.ts",
         "test.ts"
     ],
     "compileOnSave": true,
