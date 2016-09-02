@@ -7,16 +7,12 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public class JsPlayerInteractEvent<T extends PlayerInteractEvent> extends JsPlayerEvent<T>
 {
 
-    // public JsPlayerInteractEvent(ScriptInstance script, Object handler)
-    // {
-    // super(script, handler);
-    // }
-
     @Override
     @SubscribeEvent
-    public void _handle(T event)
+    @SuppressWarnings("unchecked")
+    public void _handle(PlayerInteractEvent event)
     {
-        _callEvent(event);
+        _callEvent((T) event);
     }
 
 }
