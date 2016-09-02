@@ -6,22 +6,29 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 public class ScriptUpgrader
 {
+
+    public static boolean OVERWRITE_EXISTING = true;
 
     public static final String[] UPGRADE_EVENTS = {
             "afk",
@@ -60,7 +67,7 @@ public class ScriptUpgrader
                 File file = it.next();
                 String scriptName = file.getName().substring(0, file.getName().lastIndexOf('.'));
                 File outFile = new File(outDir, scriptName + ".js");
-                if (outFile.exists())
+                if (!OVERWRITE_EXISTING && outFile.exists())
                 {
                     ChatOutputHandler.chatNotification(sender, "Already upgraded: " + scriptName);
                     continue;
@@ -101,7 +108,95 @@ public class ScriptUpgrader
                 }
             }
         }
+
+        File commandsDir = new File(baseDir, "commands");
+        if (commandsDir.exists())
+        {
+            File outDir = new File(ModuleJScripting.moduleDir, "commands");
+            Map<String, PatternCommand> patternCommands = DataManager.loadAll(PatternCommand.class, commandsDir);
+            for (Entry<String, PatternCommand> cmd : patternCommands.entrySet())
+            {
+                String scriptName = cmd.getKey();
+                File outFile = new File(outDir, scriptName + ".js");
+                if (!OVERWRITE_EXISTING && outFile.exists())
+                {
+                    ChatOutputHandler.chatNotification(sender, "Already upgraded: " + scriptName);
+                    continue;
+                }
+
+                try
+                {
+                    StringBuilder newScript = updatePatternCommand(cmd.getValue());
+                    if (newScript != null)
+                    {
+                        outDir.mkdirs();
+                        try (Writer writer = new FileWriter(outFile))
+                        {
+                            writer.write(newScript.toString());
+                            count++;
+                            ChatOutputHandler.chatConfirmation(sender, "Upgraded: " + scriptName);
+                        }
+                        catch (IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    String msg = String.format("Could upgrade script %s: %s", scriptName, e.getMessage());
+                    LoggingHandler.felog.error(msg);
+                    ChatOutputHandler.chatError(sender, msg);
+                }
+            }
+        }
+
         ChatOutputHandler.chatConfirmation(sender, "Upgraded " + count + " old scripts");
+    }
+
+    private static StringBuilder updatePatternCommand(PatternCommand cmd) throws Exception
+    {
+        StringBuilder out = new StringBuilder();
+        out.append("function cmd(args) {\n\t");
+        List<Entry<String, List<String>>> sortedPatterns = new ArrayList<>(cmd.patterns.entrySet());
+        sortedPatterns.sort((a, b) -> b.getKey().split(" ").length - a.getKey().split(" ").length);
+        for (Entry<String, List<String>> pattern : sortedPatterns)
+        {
+            out.append("if (");
+            upgradePattern(out, pattern.getKey());
+            out.append(") {");
+            out.append(" // >>");
+            out.append(pattern.getKey());
+            out.append("<<");
+            for (String line : pattern.getValue())
+            {
+                out.append("\n\t\t");
+                if (line.isEmpty())
+                    continue;
+                upgradeAction(out, line);
+            }
+            out.append("\n\t} else ");
+        }
+        out.append(" {");
+        out.append("\n\t\targs.error('Invalid command syntax');\n\t}");
+        out.append("\n}");
+        out.append("\n\t");
+        out.append("\nServer.registerCommand({");
+        out.append("\n\tname: '" + cmd.name + "',");
+        out.append("\n\tusage: '" + cmd.usage + "',");
+        out.append("\n\tpermission: " + cmd.permission + ",");
+        out.append("\n\topOnly: " + (cmd.permissionLevel == PermissionLevel.OP ? "true" : "false") + ",");
+        out.append("\n\tprocessCommand: cmd,");
+        // out.append("\n\ttabComplete: processCommand,");
+        out.append("\n});");
+        out.append("\n");
+        return out;
+    }
+
+    private static void upgradePattern(StringBuilder out, String pattern)
+    {
+        if (pattern.isEmpty())
+            out.append("true");
     }
 
     public static StringBuilder upgradeOldScript(String eventType, List<String> lines) throws Exception
@@ -123,164 +218,7 @@ public class ScriptUpgrader
             out.append("(sender) {");
         }
 
-        for (String line : lines)
-        {
-            out.append("\n\t");
-            if (line.isEmpty())
-                continue;
-
-            List<String> args = new ArrayList<>(Arrays.asList(line.split(" ")));
-            String command = args.remove(0);
-
-            upgradeOldScriptArgs(args);
-
-            char c = command.charAt(0);
-            if (c == '/' || c == '$' || c == '?' || c == '*')
-            {
-                // Handle MC commands
-                boolean hideChat = false;
-                boolean ignoreErrors = false;
-                boolean asServer = false;
-                modifierLoop: while (true)
-                {
-                    command = command.substring(1);
-                    switch (c)
-                    {
-                    case '$':
-                        asServer = true;
-                        break;
-                    case '?':
-                        ignoreErrors = true;
-                        break;
-                    case '*':
-                        hideChat = true;
-                        break;
-                    case '/':
-                        break modifierLoop;
-                    default:
-                        throw new Exception(String.format("Could not handle script action \"%s\"", command));
-                    }
-                    c = command.charAt(0);
-                }
-                out.append(ignoreErrors ? "Server.tryRunCommand(sender" : "Server.runCommand(sender");
-                if (hideChat || asServer)
-                {
-                    out.append("doAs(");
-                    out.append(asServer ? "null" : "sender.getPlayer()");
-                    out.append(hideChat ? ", true)" : ", false)");
-                }
-                out.append(", '");
-                out.append(command);
-                out.append("'");
-                for (String arg : args)
-                {
-                    out.append(", ");
-                    out.append(arg);
-                }
-                out.append(");");
-            }
-            else
-            {
-                // TODO: Handle other commands
-                switch (command)
-                {
-                case "set":
-                    out.append("var ");
-                    out.append(args.remove(0));
-                    out.append(" = ");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(";");
-                    break;
-                // case "permcheck":
-                // break;
-                case "echo":
-                    out.append("sender.chat(");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(");");
-                    break;
-                case "confirm":
-                    out.append("sender.chatConfirm(");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(");");
-                    break;
-                case "notify":
-                    out.append("sender.chatNotification(");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(");");
-                    break;
-                case "warn":
-                    out.append("sender.chatWarning(");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(");");
-                    break;
-                case "error":
-                    out.append("sender.chatError(");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(");");
-                    break;
-                case "fail":
-                    out.append("sender.chatError(");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(");\n\treturn;");
-                    break;
-                case "echoall":
-                    out.append("Server.chat(");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(");");
-                    break;
-                case "confirmall":
-                    out.append("Server.chatConfirm(");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(");");
-                    break;
-                case "notifyall":
-                    out.append("Server.chatNotification(");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(");");
-                    break;
-                case "warnall":
-                    out.append("Server.chatWarning(");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(");");
-                    break;
-                case "errorall":
-                    out.append("Server.chatError(");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(");");
-                    break;
-                case "failall":
-                    out.append("Server.chatError(");
-                    out.append(StringUtils.join(args, " + ' ' + "));
-                    out.append(");\n\treturn;");
-                    break;
-                case "timeout":
-                    String timeout = args.remove(0);
-                    // startTimeout
-                    out.append("setTimeout(function() {\n\t\t");
-
-                    // run command
-                    out.append("Server.runCommand(sender, '");
-                    out.append(command);
-                    out.append("'");
-                    for (String arg : args)
-                    {
-                        out.append(", ");
-                        out.append(arg);
-                    }
-                    out.append(");");
-
-                    // close handler
-                    out.append("}, ");
-                    out.append(timeout);
-                    out.append(");");
-                    break;
-                default:
-                    out.append("// ");
-                    out.append(line);
-                    break;
-                }
-            }
-        }
+        upgradeActions(lines, out);
 
         // Close function
         if (cronInterval > 0)
@@ -293,6 +231,173 @@ public class ScriptUpgrader
             out.append("\n}\n");
 
         return out;
+    }
+
+    private static void upgradeActions(List<String> lines, StringBuilder out) throws Exception
+    {
+        for (String line : lines)
+        {
+            out.append("\n\t");
+            if (line.isEmpty())
+                continue;
+            upgradeAction(out, line);
+        }
+    }
+
+    private static void upgradeAction(StringBuilder out, String line) throws Exception
+    {
+
+        List<String> args = new ArrayList<>(Arrays.asList(line.split(" ")));
+        String command = args.remove(0);
+
+        upgradeOldScriptArgs(args);
+
+        char c = command.charAt(0);
+        if (c == '/' || c == '$' || c == '?' || c == '*')
+        {
+            // Handle MC commands
+            boolean hideChat = false;
+            boolean ignoreErrors = false;
+            boolean asServer = false;
+            modifierLoop: while (true)
+            {
+                command = command.substring(1);
+                switch (c)
+                {
+                case '$':
+                    asServer = true;
+                    break;
+                case '?':
+                    ignoreErrors = true;
+                    break;
+                case '*':
+                    hideChat = true;
+                    break;
+                case '/':
+                    break modifierLoop;
+                default:
+                    throw new Exception(String.format("Could not handle script action \"%s\"", command));
+                }
+                c = command.charAt(0);
+            }
+            out.append(ignoreErrors ? "Server.tryRunCommand(sender" : "Server.runCommand(sender");
+            if (hideChat || asServer)
+            {
+                out.append("doAs(");
+                out.append(asServer ? "null" : "sender.getPlayer()");
+                out.append(hideChat ? ", true)" : ", false)");
+            }
+            out.append(", '");
+            out.append(command);
+            out.append("'");
+            for (String arg : args)
+            {
+                out.append(", ");
+                out.append(arg);
+            }
+            out.append(");");
+        }
+        else
+        {
+            // TODO: Handle other commands
+            switch (command)
+            {
+            case "set":
+                out.append("var ");
+                out.append(args.remove(0));
+                out.append(" = ");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(";");
+                break;
+            // case "permcheck":
+            // break;
+            case "echo":
+                out.append("sender.chat(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");");
+                break;
+            case "confirm":
+                out.append("sender.chatConfirm(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");");
+                break;
+            case "notify":
+                out.append("sender.chatNotification(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");");
+                break;
+            case "warn":
+                out.append("sender.chatWarning(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");");
+                break;
+            case "error":
+                out.append("sender.chatError(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");");
+                break;
+            case "fail":
+                out.append("sender.chatError(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");\n\treturn;");
+                break;
+            case "echoall":
+                out.append("Server.chat(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");");
+                break;
+            case "confirmall":
+                out.append("Server.chatConfirm(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");");
+                break;
+            case "notifyall":
+                out.append("Server.chatNotification(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");");
+                break;
+            case "warnall":
+                out.append("Server.chatWarning(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");");
+                break;
+            case "errorall":
+                out.append("Server.chatError(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");");
+                break;
+            case "failall":
+                out.append("Server.chatError(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");\n\treturn;");
+                break;
+            case "timeout":
+                String timeout = args.remove(0);
+                // startTimeout
+                out.append("setTimeout(function() {\n\t\t");
+
+                // run command
+                out.append("Server.runCommand(sender, '");
+                out.append(command);
+                out.append("'");
+                for (String arg : args)
+                {
+                    out.append(", ");
+                    out.append(arg);
+                }
+                out.append(");");
+
+                // close handler
+                out.append("}, ");
+                out.append(timeout);
+                out.append(");");
+                break;
+            default:
+                out.append("// ");
+                out.append(line);
+                break;
+            }
+        }
     }
 
     public static void upgradeOldScriptArgs(List<String> args)
@@ -364,6 +469,16 @@ public class ScriptUpgrader
         {
             return 0;
         }
+    }
+
+    public static class PatternCommand
+    {
+        protected String name;
+        protected String usage;
+        protected String permission;
+        protected Map<String, PermissionLevel> extraPermissions = new HashMap<>();
+        protected PermissionLevel permissionLevel = PermissionLevel.TRUE;
+        protected Map<String, List<String>> patterns = new HashMap<>();
     }
 
 }

@@ -7,11 +7,6 @@ import com.forgeessentials.jscripting.wrapper.entity.JsEntityLivingBase;
 public abstract class JsLivingEvent<T extends LivingEvent> extends JsEntityEvent<T>
 {
 
-    // public JsLivingEvent(ScriptInstance script, Object handler)
-    // {
-    // super(script, handler);
-    // }
-
     // @Override
     // @SubscribeEvent
     // public void _handle(T event)

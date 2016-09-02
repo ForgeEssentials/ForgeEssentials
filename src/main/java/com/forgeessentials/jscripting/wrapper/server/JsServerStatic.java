@@ -14,9 +14,9 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
-import com.forgeessentials.jscripting.wrapper.JsAxisAlignedBB;
 import com.forgeessentials.jscripting.wrapper.JsCommandOptions;
 import com.forgeessentials.jscripting.wrapper.JsCommandSender;
+import com.forgeessentials.jscripting.wrapper.util.JsAxisAlignedBB;
 import com.forgeessentials.jscripting.wrapper.world.JsPoint;
 import com.forgeessentials.jscripting.wrapper.world.JsWorldPoint;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -135,7 +135,7 @@ public class JsServerStatic
     /**
      * Registers a new command in the game. <br>
      * The processCommand and tabComplete handler can be the same, if the processCommand handler properly checks for args.isTabCompletion.
-     * 
+     *
      * @tsd.def registerCommand(options: CommandOptions): void;
      */
     public void registerCommand(Object options) throws ScriptException
@@ -146,27 +146,12 @@ public class JsServerStatic
 
     /**
      * Registers a new event handler.
-     * 
+     *
      * @tsd.def registerEvent(event: string, handler: (event: mc.event.Event) => void): void;
      */
     public void registerEvent(String event, Object handler) throws ScriptException
     {
         script.registerEventHandler(event, handler);
-    }
-
-    public JsPoint<?> createPoint(int x, int y, int z)
-    {
-        return new JsPoint<>(new Point(x, y, z));
-    }
-
-    public JsWorldPoint<?> createWorldPoint(int dimension, int x, int y, int z)
-    {
-        return new JsWorldPoint<>(new WorldPoint(dimension, x, y, z));
-    }
-
-    public JsAxisAlignedBB createAxisAlignedBB(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
-    {
-        return new JsAxisAlignedBB(new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ));
     }
 
 }

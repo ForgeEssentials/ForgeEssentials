@@ -6,14 +6,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class JsPlayerInteractEvent<T extends PlayerInteractEvent> extends JsPlayerEvent<T>
 {
 
-    // public JsPlayerInteractEvent(ScriptInstance script, Object handler)
-    // {
-    // super(script, handler);
-    // }
-
-    @Override
     @SubscribeEvent
-    public void _handle(T event)
+    public final void _handlePlayerInteractEvent(T event)
     {
         _callEvent(event);
     }

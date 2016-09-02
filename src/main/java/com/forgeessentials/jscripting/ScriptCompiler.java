@@ -128,7 +128,7 @@ public final class ScriptCompiler
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods)
             {
-                if (method.getName().equals("_handle") && method.getParameterCount() == 1 && Event.class.isAssignableFrom(method.getParameterTypes()[0]))
+                if (method.getParameterCount() == 1 && Event.class.isAssignableFrom(method.getParameterTypes()[0]))
                 {
                     SubscribeEvent annotation = method.getAnnotation(SubscribeEvent.class);
                     if (annotation != null)
@@ -148,8 +148,8 @@ public final class ScriptCompiler
     public static void initEngine(ScriptEngine engine, ScriptInstance script) throws ScriptException
     {
         engine.put("PermissionLevel", permissionLevelObj);
-        engine.put("MC", rootPkg);
-        
+        engine.put("mc", rootPkg);
+
         engine.put("window", new JsWindowStatic(script));
         engine.put("Server", new JsServerStatic(script));
         engine.put("Block", new JsBlockStatic());
