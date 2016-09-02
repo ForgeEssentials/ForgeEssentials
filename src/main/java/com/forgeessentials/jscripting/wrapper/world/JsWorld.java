@@ -8,10 +8,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import com.forgeessentials.jscripting.wrapper.JsAxisAlignedBB;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.entity.JsEntityList;
 import com.forgeessentials.jscripting.wrapper.entity.JsEntityPlayerList;
+import com.forgeessentials.jscripting.wrapper.util.JsAxisAlignedBB;
 
 public class JsWorld<T extends World> extends JsWrapper<T>
 {
