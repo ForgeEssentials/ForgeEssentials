@@ -8,7 +8,7 @@ public class JsPlayerInteractEvent<T extends PlayerInteractEvent> extends JsPlay
 {
 
     @SubscribeEvent
-    public void _handle(T event)
+    public final void _handlePlayerInteractEvent(T event)
     {
         _callEvent(event);
     }
