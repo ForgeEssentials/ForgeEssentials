@@ -4,11 +4,11 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class JsPlayerInteractEvent extends JsPlayerEvent<PlayerInteractEvent>
+public class JsPlayerInteractEvent<T extends PlayerInteractEvent> extends JsPlayerEvent<T>
 {
 
     @SubscribeEvent
-    public void _handle(PlayerInteractEvent event)
+    public void _handle(T event)
     {
         _callEvent(event);
     }
