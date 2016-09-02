@@ -4,15 +4,13 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-public class JsPlayerInteractEvent<T extends PlayerInteractEvent> extends JsPlayerEvent<T>
+public class JsPlayerInteractEvent extends JsPlayerEvent<PlayerInteractEvent>
 {
 
-    @Override
     @SubscribeEvent
-    @SuppressWarnings("unchecked")
     public void _handle(PlayerInteractEvent event)
     {
-        _callEvent((T) event);
+        _callEvent(event);
     }
 
 }

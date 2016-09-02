@@ -42,8 +42,6 @@ public abstract class JsEvent<T extends Event>
         return _event;
     }
 
-    public abstract void _handle(T event);
-
     public ICommandSender _getSender()
     {
         return null;
