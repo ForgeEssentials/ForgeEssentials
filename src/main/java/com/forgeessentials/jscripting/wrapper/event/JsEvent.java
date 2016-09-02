@@ -37,12 +37,6 @@ public abstract class JsEvent<T extends Event>
      */
     public String _eventType;
 
-    // public JsEvent(ScriptInstance script, Object handler)
-    // {
-    // this._script = script;
-    // this._handler = handler;
-    // }
-
     public T _getEvent()
     {
         return _event;

@@ -148,7 +148,7 @@ public final class ScriptCompiler
     public static void initEngine(ScriptEngine engine, ScriptInstance script) throws ScriptException
     {
         engine.put("PermissionLevel", permissionLevelObj);
-        engine.put("MC", rootPkg);
+        engine.put("mc", rootPkg);
         
         engine.put("window", new JsWindowStatic(script));
         engine.put("Server", new JsServerStatic(script));
