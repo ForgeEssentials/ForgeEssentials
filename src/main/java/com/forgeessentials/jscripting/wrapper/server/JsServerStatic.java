@@ -5,13 +5,19 @@ import javax.script.ScriptException;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.AxisAlignedBB;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
+import com.forgeessentials.jscripting.wrapper.JsAxisAlignedBB;
 import com.forgeessentials.jscripting.wrapper.JsCommandOptions;
 import com.forgeessentials.jscripting.wrapper.JsCommandSender;
+import com.forgeessentials.jscripting.wrapper.world.JsPoint;
+import com.forgeessentials.jscripting.wrapper.world.JsWorldPoint;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class JsServerStatic
@@ -69,7 +75,7 @@ public class JsServerStatic
         String[] strArgs = new String[args.length];
         for (int i = 0; i < args.length; i++)
             strArgs[i] = args[i].toString();
-        
+
         // Join and split again to fix invalid arguments containing spaces
         String cmdLine = StringUtils.join(strArgs, " ");
         strArgs = cmdLine.split(" ");
@@ -140,47 +146,26 @@ public class JsServerStatic
     /**
      * Registers a new event handler.
      * 
-     * @tsd.def registerEvent(event: string, handler: (event: MC.Event.Event) => void): void;
+     * @tsd.def registerEvent(event: string, handler: (event: mc.event.Event) => void): void;
      */
     public void registerEvent(String event, Object handler) throws ScriptException
     {
         script.registerEventHandler(event, handler);
     }
 
-    /**
-     * Set a timeout to call 'handler' after 'timeout' milliseconds.
-     * 
-     * @tsd.def setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
-     */
-    public int setTimeout(Object fn, long timeout, Object... args)
+    public JsPoint<?> createPoint(int x, int y, int z)
     {
-        return script.setTimeout(fn, timeout, args);
+        return new JsPoint<>(new Point(x, y, z));
     }
 
-    /**
-     * Set a interval to call 'handler' fn repeatedly each 'interval' milliseconds.
-     * 
-     * @tsd.def setInterval(handler: (...args: any[]) => void, interval?: any, ...args: any[]): number;
-     */
-    public int setInterval(Object fn, long timeout, Object... args)
+    public JsWorldPoint<?> createWorldPoint(int dimension, int x, int y, int z)
     {
-        return script.setInterval(fn, timeout, args);
+        return new JsWorldPoint<>(new WorldPoint(dimension, x, y, z));
     }
 
-    /**
-     * Clear a timeout.
-     */
-    public void clearTimeout(int handle)
+    public JsAxisAlignedBB createAxisAlignedBB(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
     {
-        script.clearTimeout(handle);
-    }
-
-    /**
-     * Clear an interval.
-     */
-    public void clearInterval(int handle)
-    {
-        script.clearTimeout(handle);
+        return new JsAxisAlignedBB(AxisAlignedBB.fromBounds(minX, minY, minZ, maxX, maxY, maxZ));
     }
 
 }

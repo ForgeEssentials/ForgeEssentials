@@ -27,7 +27,6 @@ import javax.script.SimpleBindings;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -36,14 +35,7 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
-import com.forgeessentials.jscripting.wrapper.JsFactoryStatic;
 import com.forgeessentials.jscripting.wrapper.event.JsEvent;
-import com.forgeessentials.jscripting.wrapper.event.JsPlayerInteractEvent;
-import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
-import com.forgeessentials.jscripting.wrapper.server.JsPermissionsStatic;
-import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
-import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
-import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class ScriptInstance
@@ -71,7 +63,7 @@ public class ScriptInstance
                 }
             }
             String scriptSrc = fields.stream().map((f) -> "o." + f.getName()).collect(Collectors.joining(",", "[", "]"));
-            script = propertyEngine.compile(scriptSrc);
+            script = ScriptInstance.propertyEngine.compile(scriptSrc);
         }
 
         public ProptertiesInfo(Class<T> clazz, T instance) throws ScriptException
@@ -95,21 +87,13 @@ public class ScriptInstance
                 }
             }
             String scriptSrc = fields.stream().map((f) -> "o." + f.getName()).collect(Collectors.joining(",", "[", "]"));
-            script = propertyEngine.compile(scriptSrc);
+            script = ScriptInstance.propertyEngine.compile(scriptSrc);
         }
     }
 
-    // private static WeakReference<ScriptInstance> lastActive;
     private static ScriptInstance lastActive;
 
-    private static Compilable propertyEngine = ModuleJScripting.getCompilable();
-
-    private static Map<String, CompiledScript> propertyScripts = new HashMap<>();
-
-    private static Map<Class<?>, ProptertiesInfo<?>> propertyInfos = new HashMap<>();
-
-    @SuppressWarnings("rawtypes")
-    public static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
+    /* ************************************************************ */
 
     private File file;
 
@@ -119,7 +103,8 @@ public class ScriptInstance
 
     private Invocable invocable;
 
-    private SimpleBindings getPropertyBindings = new SimpleBindings();
+    @SuppressWarnings("unused")
+    private Bindings exports;
 
     private Set<String> illegalFunctions = new HashSet<>();
 
@@ -131,10 +116,18 @@ public class ScriptInstance
 
     private WeakReference<ICommandSender> lastSender;
 
-    static
-    {
-        eventTypes.put("playerInteractEvent", JsPlayerInteractEvent.class);
-    }
+    /* ************************************************************ */
+    /* PROPERTY ACCESSING */
+
+    private static Compilable propertyEngine = ModuleJScripting.getCompilable();
+
+    private static Map<String, CompiledScript> propertyScripts = new HashMap<>();
+
+    private static Map<Class<?>, ProptertiesInfo<?>> propertyInfos = new HashMap<>();
+
+    private SimpleBindings getPropertyBindings = new SimpleBindings();
+
+    /* ************************************************************ */
 
     public ScriptInstance(File file) throws IOException, ScriptException
     {
@@ -160,56 +153,38 @@ public class ScriptInstance
         eventHandlers.clear();
     }
 
-    protected void compileScript() throws IOException, FileNotFoundException, ScriptException
+    protected void compileScript() throws IOException, ScriptException
     {
+        illegalFunctions.clear();
+        script = null;
         try (BufferedReader reader = new BufferedReader(new FileReader(file)))
         {
             // Load and compile script
             script = ModuleJScripting.getCompilable().compile(reader);
 
-            // Initialization of module environment
-            script.getEngine().put("Factory", new JsFactoryStatic());
-            script.getEngine().put("Server", new JsServerStatic(this));
-            script.getEngine().put("Block", new JsBlockStatic());
-            script.getEngine().put("Item", new JsItemStatic());
-            script.getEngine().put("World", new JsWorldStatic());
-            script.getEngine().put("Permissions", new JsPermissionsStatic());
-            script.getEngine().eval("" +
-                    "var exports = {};" +
-                    // NBT constants
-                    "var NBT_BYTE = 'b:';" +
-                    "var NBT_SHORT = 's:';" +
-                    "var NBT_INT = 'i:';" +
-                    "var NBT_LONG = 'l:';" +
-                    "var NBT_FLOAT = 'f:';" +
-                    "var NBT_DOUBLE = 'd:';" +
-                    "var NBT_BYTE_ARRAY = 'B:';" +
-                    "var NBT_STRING = 'S:';" +
-                    "var NBT_COMPOUND = 'c:';" +
-                    "var NBT_INT_ARRAY = 'I:';" +
-                    // PermissionLevel constants
-                    "var PERMLEVEL_TRUE = " + PermissionLevel.TRUE.getOpLevel() + ";" +
-                    "var PERMLEVEL_OP = " + PermissionLevel.OP.getOpLevel() + ";" +
-                    "var PERMLEVEL_FALSE = " + PermissionLevel.FALSE.getOpLevel() + ";" +
-                    // timeouts
-                    "function setTimeout(fn, t, args) { return Server.setTimeout(fn, t, args); };" +
-                    "function setInterval(fn, t, args) { return Server.setInterval(fn, t, args); };" +
-                    "function clearTimeout(id) { return Server.clearTimeout(id); };" +
-                    "function clearInterval(id) { return Server.clearInterval(id); };" +
-                    // NBT handling
-                    "function getNbt(e) { return JSON.parse(e._getNbt()); }" +
-                    "function setNbt(e, d) { e._setNbt(JSON.stringify(d)); }" +
-                    "" +
-                    "");
-
-            // Start script
-            script.eval();
-            // script.getEngine().get("exports")
-
+            // Initialization of environment and script
             invocable = (Invocable) script.getEngine();
-            illegalFunctions.clear();
-            lastModified = file.lastModified();
+            ScriptCompiler.initEngine(script.getEngine(), this);
+            script.eval();
+
+            // Get exports
+            exports = (Bindings) script.getEngine().get("exports");
         }
+        catch (IOException | ScriptException e)
+        {
+            throw e;
+        }
+        catch (RuntimeException e)
+        {
+            e.printStackTrace();
+            throw new ScriptException(e);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new ScriptException(e);
+        }
+        lastModified = file.lastModified();
     }
 
     public void checkIfModified() throws IOException, FileNotFoundException, ScriptException
@@ -292,6 +267,24 @@ public class ScriptInstance
         }
     }
 
+    private void setLastActive()
+    {
+        lastActive = this;
+    }
+
+    private void clearLastActive()
+    {
+        lastActive = null;
+    }
+
+    public ScriptInstance getLastActive()
+    {
+        return lastActive;
+    }
+
+    /* ************************************************************ */
+    /* Property access */
+
     @SuppressWarnings("unchecked")
     public <T> T getProperty(Object object, String property) throws ScriptException
     {
@@ -300,7 +293,7 @@ public class ScriptInstance
         CompiledScript propertyScript = propertyScripts.get(property);
         if (propertyScript == null)
         {
-            propertyScript = propertyEngine.compile(property);
+            propertyScript = ScriptInstance.propertyEngine.compile(property);
             propertyScripts.put(property, propertyScript);
         }
         return (T) propertyScript.eval(getPropertyBindings);
@@ -347,22 +340,6 @@ public class ScriptInstance
             }
         }
         return instance;
-    }
-
-    private void setLastActive()
-    {
-        // lastActive = new WeakReference<ScriptInstance>(this);
-        lastActive = this;
-    }
-
-    private void clearLastActive()
-    {
-        lastActive = null;
-    }
-
-    public ScriptInstance getLastActive()
-    {
-        return lastActive;
     }
 
     /* ************************************************************ */
@@ -429,7 +406,7 @@ public class ScriptInstance
     @SuppressWarnings({ "rawtypes" })
     public void registerEventHandler(String event, Object handler)
     {
-        Class<? extends JsEvent> eventType = eventTypes.get(event);
+        Class<? extends JsEvent> eventType = ScriptCompiler.eventTypes.get(event);
         if (eventType == null)
         {
             chatError(SCRIPT_ERROR_TEXT + "Invalid event type " + event);
@@ -510,7 +487,7 @@ public class ScriptInstance
 
     /**
      * This should be called every time a script is invoked by a user to send errors to the correct user
-     * 
+     *
      * @param sender
      */
     public void setLastSender(ICommandSender sender)

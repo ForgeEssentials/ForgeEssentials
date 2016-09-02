@@ -1,7 +1,6 @@
 package com.forgeessentials.jscripting.wrapper.world;
 
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.jscripting.wrapper.JsPoint;
 
 public class JsWorldPoint<T extends WorldPoint> extends JsPoint<T>
 {
@@ -9,6 +8,12 @@ public class JsWorldPoint<T extends WorldPoint> extends JsPoint<T>
     public JsWorldPoint(T that)
     {
         super(that);
+    }
+
+    @SuppressWarnings("unchecked")
+    public JsWorldPoint(int dim, int x, int y, int z)
+    {
+        super((T) new WorldPoint(dim, x, y, z));
     }
 
     public int getDimension()

@@ -3,7 +3,6 @@ package com.forgeessentials.jscripting.wrapper.entity;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 
 import com.forgeessentials.util.MappedList;
 

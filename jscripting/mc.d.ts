@@ -4,25 +4,49 @@ declare type long = number;
 declare type float = number;
 declare type double = number;
 
-declare namespace MC {
-	
-	interface JavaList<T> {
-		size(): int;
-		isEmpty(): boolean;
-		toArray(): any[];
-		get(index: int): T;
-		add(element: T): T;
-		set(index: int, element: T): T;
-		clear(): void;
-		remove(index: int): T;
-		remove(element: T): boolean;
-	}
-	
-	type CommandCallback = (args: CommandArgs) => void;
-	
-	namespace World {
+declare function getNbt(entity: mc.entity.Entity | mc.item.ItemStack): any;
+declare function setNbt(entity: mc.entity.Entity | mc.item.ItemStack, data: any);
+
+/**
+ * Constants that tell getNbt and setNbt the types of entries. Use nbt[NBT_INT + 'myVar'] for access
+ */ 
+declare const NBT_BYTE: string;
+declare const NBT_SHORT: string;
+declare const NBT_INT: string;
+declare const NBT_LONG: string;
+declare const NBT_FLOAT: string;
+declare const NBT_DOUBLE: string;
+declare const NBT_BYTE_ARRAY: string;
+declare const NBT_STRING: string;
+declare const NBT_COMPOUND: string;
+declare const NBT_INT_ARRAY: string;
+
+/**
+ * Constants for permission level used when registering permissions
+ */ 
+declare enum PermissionLevel {
+    TRUE, OP, FALSE
+}
+
+declare abstract class JavaList<T> {
+    size(): int;
+    isEmpty(): boolean;
+    toArray(): any[];
+    get(index: int): T;
+    add(element: T): T;
+    set(index: int, element: T): T;
+    clear(): void;
+    remove(index: int): T;
+    remove(element: T): boolean;
+}
+
+declare namespace mc {
+    
+    type CommandCallback = (args: CommandArgs) => void;
+    
+	namespace world {
 		
-		interface Block extends MC.JavaObject {
+		class Block extends mc.JavaObject {
 			getName(): string;
 		}
 		
@@ -30,22 +54,45 @@ declare namespace MC {
 			getBlock(name: string): Block;
 		}
 		
-		interface World extends MC.JavaObject {
+		class Point extends mc.JavaObject {
+			constructor(x: int, y: int, z: int);
+			getX(): int;
+			getY(): int;
+			getZ(): int;
+			setX(x: int): Point;
+			setY(y: int): Point;
+			setZ(z: int): Point;
+			length(): double;
+			distance(other: Point): double;
+			add(other: Point): void;
+			subtract(other: Point): void;
+			distance(x: int, y: int, z: int): double;
+			add(x: int, y: int, z: int): void;
+			subtract(x: int, y: int, z: int): void;
+		}
+		
+		class TileEntity extends mc.JavaObject {
+			getInventory(): mc.item.Inventory;
+		}
+		
+		class World extends mc.JavaObject {
 			getDimension(): int;
 			getDifficulty(): int;
-			getPlayerEntities(): MC.Entity.EntityPlayerList;
-			getEntitiesWithinAABB(axisAlignedBB: MC.AxisAlignedBB): MC.Entity.EntityList;
+			getPlayerEntities(): mc.entity.EntityPlayerList;
+			getEntitiesWithinAABB(axisAlignedBB: mc.AxisAlignedBB): mc.entity.EntityList;
 			blockExists(x: int, y: int, z: int): boolean;
 			getBlock(x: int, y: int, z: int): Block;
 			setBlock(x: int, y: int, z: int, block: Block): void;
 			setBlock(x: int, y: int, z: int, block: Block, meta: int): void;
+			getTileEntity(x: int, y: int, z: int): TileEntity;
 			asWorldServer(): WorldServer;
 		}
 		
-		interface WorldArea extends MC.AreaBase {
+		class WorldArea extends mc.AreaBase {
 		}
 		
-		interface WorldPoint extends MC.Point {
+		class WorldPoint extends Point {
+			constructor(dim: int, x: int, y: int, z: int);
 			getDimension(): int;
 			setDimension(dim: int): void;
 			setX(x: int): WorldPoint;
@@ -53,7 +100,7 @@ declare namespace MC {
 			setZ(z: int): WorldPoint;
 		}
 		
-		interface WorldServer extends World {
+		class WorldServer extends World {
 		}
 		
 		interface WorldStatic {
@@ -62,12 +109,12 @@ declare namespace MC {
 		
 	}
 	
-	namespace Entity {
+	namespace entity {
 		
-		interface Entity extends MC.JavaObject {
+		class Entity extends mc.JavaObject {
 			getName(): string;
 			getId(): string;
-			getUuid(): MC.UUID;
+			getUuid(): mc.UUID;
 			getEntityId(): int;
 			getDimension(): int;
 			getX(): double;
@@ -85,14 +132,15 @@ declare namespace MC {
 			isOnGround(): boolean;
 			getRidingEntity(): Entity;
 			getRiddenByEntity(): Entity;
-			getWorld(): MC.World.World;
+			getWorld(): mc.world.World;
 			getEntityType(): string;
 		}
 		
-		interface EntityList extends JavaList<Entity> {
+		class EntityList extends JavaList<Entity> {
+			constructor(list: List);
 		}
 		
-		interface EntityLivingBase extends Entity {
+		class EntityLivingBase extends Entity {
 			getHealth(): float;
 			setHealth(value: float): void;
 			getMaxHealth(): float;
@@ -100,18 +148,21 @@ declare namespace MC {
 			canEntityBeSeen(other: Entity): boolean;
 		}
 		
-		interface EntityPlayer extends EntityLivingBase {
+		class EntityPlayer extends EntityLivingBase {
+			constructor(player: EntityPlayer);
+			constructor(player: EntityPlayer, commandSender: mc.ICommandSender);
 			setPosition(x: double, y: double, z: double): void;
 			setPosition(x: double, y: double, z: double, yaw: float, pitch: float): void;
-			asCommandSender(): MC.ICommandSender;
-			getInventory(): MC.Item.InventoryPlayer;
-			getBedLocation(dimension: int): MC.Point;
+			asCommandSender(): mc.ICommandSender;
+			getInventory(): mc.item.InventoryPlayer;
+			getBedLocation(dimension: int): mc.world.Point;
 		}
 		
-		interface EntityPlayerList extends JavaList<EntityPlayer> {
+		class EntityPlayerList extends JavaList<EntityPlayer> {
+			constructor(list: List);
 		}
 		
-		interface EntitySheep extends Entity {
+		class EntitySheep extends Entity {
 			getFleeceColor(): int;
 			setFleeceColor(color: int): void;
 			isSheared(): boolean;
@@ -120,13 +171,15 @@ declare namespace MC {
 		
 	}
 	
-	namespace Event {
+	namespace event {
 		
-		interface EntityEvent extends Event {
-			getEntity(): MC.Entity.Entity;
+		class EntityEvent extends Event {
+			constructor();
+			getEntity(): mc.entity.Entity;
 		}
 		
-		interface Event {
+		class Event {
+			constructor();
 			getEventType(): string;
 			isCancelable(): boolean;
 			isCanceled(): boolean;
@@ -139,25 +192,28 @@ declare namespace MC {
 			toString(): string;
 		}
 		
-		interface LivingEvent extends EntityEvent {
-			getPlayer(): MC.Entity.EntityLivingBase;
+		class LivingEvent extends EntityEvent {
+			constructor();
+			getPlayer(): mc.entity.EntityLivingBase;
 		}
 		
-		interface PlayerEvent extends LivingEvent {
-			getPlayer(): MC.Entity.EntityPlayer;
+		class PlayerEvent extends LivingEvent {
+			constructor();
+			getPlayer(): mc.entity.EntityPlayer;
 		}
 		
-		interface PlayerInteractEvent extends PlayerEvent {
+		class PlayerInteractEvent extends PlayerEvent {
+			constructor();
 		}
 		
 	}
 	
-	namespace Item {
+	namespace item {
 		
-		interface Enchantment extends MC.JavaObject {
+		class Enchantment extends mc.JavaObject {
 		}
 		
-		interface Inventory extends MC.JavaObject {
+		class Inventory extends mc.JavaObject {
 			getStackInSlot(slot: int): ItemStack;
 			setStackInSlot(slot: int, stack: ItemStack): void;
 			isStackValidForSlot(slot: int, stack: ItemStack): boolean;
@@ -167,17 +223,17 @@ declare namespace MC {
 			hasCustomName(): boolean;
 		}
 		
-		interface InventoryPlayer extends Inventory {
+		class InventoryPlayer extends Inventory {
 			getCurrentItem(): ItemStack;
 			getCurrentItemIndex(): int;
 			setCurrentItemIndex(index: int): void;
 		}
 		
-		interface Item extends MC.JavaObject {
+		class Item extends mc.JavaObject {
 			getName(): string;
 		}
 		
-		interface ItemStack extends MC.JavaObject {
+		class ItemStack extends mc.JavaObject {
 			getItem(): Item;
 			getStackSize(): int;
 			setStackSize(size: int): void;
@@ -198,21 +254,25 @@ declare namespace MC {
 		
 		interface ItemStatic {
 			getItem(name: string): Item;
+			createItemStack(block: mc.world.Block, stackSize: int): ItemStack;
+			createItemStack(block: mc.world.Block, stackSize: int, damage: int): ItemStack;
+			createItemStack(item: Item, stackSize: int): ItemStack;
+			createItemStack(item: Item, stackSize: int, damage: int): ItemStack;
 		}
 		
 	}
 	
-	namespace Server {
+	namespace server {
 		
 		interface PermissionsStatic {
 			checkBooleanPermission(permissionValue: string): boolean;
-			getPermission(ident: UserIdent, point: MC.World.WorldPoint, area: MC.World.WorldArea, groups: string[], permissionNode: string, isProperty: boolean): string;
-			checkPermission(player: MC.Entity.EntityPlayer, permissionNode: string): boolean;
-			getPermissionProperty(player: MC.Entity.EntityPlayer, permissionNode: string): string;
+			getPermission(ident: UserIdent, point: mc.world.WorldPoint, area: mc.world.WorldArea, groups: string[], permissionNode: string, isProperty: boolean): string;
+			checkPermission(player: mc.entity.EntityPlayer, permissionNode: string): boolean;
+			getPermissionProperty(player: mc.entity.EntityPlayer, permissionNode: string): string;
 			registerPermissionDescription(permissionNode: string, description: string): void;
 			getPermissionDescription(permissionNode: string): string;
-			registerPermission(permission: string, level: int): void;
-			registerPermission(permissionNode: string, level: int, description: string): void;
+			registerPermission(permission: string, level: PermissionLevel): void;
+			registerPermission(permissionNode: string, level: PermissionLevel, description: string): void;
 			registerPermissionProperty(permissionNode: string, defaultValue: string): void;
 			registerPermissionProperty(permissionNode: string, defaultValue: string, description: string): void;
 			registerPermissionPropertyOp(permissionNode: string, defaultValue: string): void;
@@ -220,29 +280,29 @@ declare namespace MC {
 			checkUserPermission(ident: UserIdent, permissionNode: string): boolean;
 			getUserPermissionProperty(ident: UserIdent, permissionNode: string): string;
 			getUserPermissionPropertyInt(ident: UserIdent, permissionNode: string): int;
-			checkUserPermission(ident: UserIdent, targetPoint: MC.World.WorldPoint, permissionNode: string): boolean;
-			getUserPermissionProperty(ident: UserIdent, targetPoint: MC.World.WorldPoint, permissionNode: string): string;
-			checkUserPermission(ident: UserIdent, targetArea: MC.World.WorldArea, permissionNode: string): boolean;
-			getUserPermissionProperty(ident: UserIdent, targetArea: MC.World.WorldArea, permissionNode: string): string;
-			checkUserPermission(ident: UserIdent, zone: MC.Zone, permissionNode: string): boolean;
-			getUserPermissionProperty(ident: UserIdent, zone: MC.Zone, permissionNode: string): string;
+			checkUserPermission(ident: UserIdent, targetPoint: mc.world.WorldPoint, permissionNode: string): boolean;
+			getUserPermissionProperty(ident: UserIdent, targetPoint: mc.world.WorldPoint, permissionNode: string): string;
+			checkUserPermission(ident: UserIdent, targetArea: mc.world.WorldArea, permissionNode: string): boolean;
+			getUserPermissionProperty(ident: UserIdent, targetArea: mc.world.WorldArea, permissionNode: string): string;
+			checkUserPermission(ident: UserIdent, zone: mc.Zone, permissionNode: string): boolean;
+			getUserPermissionProperty(ident: UserIdent, zone: mc.Zone, permissionNode: string): string;
 			getGroupPermissionProperty(group: string, permissionNode: string): string;
-			getGroupPermissionProperty(group: string, zone: MC.Zone, permissionNode: string): string;
+			getGroupPermissionProperty(group: string, zone: mc.Zone, permissionNode: string): string;
 			checkGroupPermission(group: string, permissionNode: string): boolean;
-			checkGroupPermission(group: string, zone: MC.Zone, permissionNode: string): boolean;
-			getGroupPermissionProperty(group: string, point: MC.World.WorldPoint, permissionNode: string): string;
-			checkGroupPermission(group: string, point: MC.World.WorldPoint, permissionNode: string): boolean;
+			checkGroupPermission(group: string, zone: mc.Zone, permissionNode: string): boolean;
+			getGroupPermissionProperty(group: string, point: mc.world.WorldPoint, permissionNode: string): string;
+			checkGroupPermission(group: string, point: mc.world.WorldPoint, permissionNode: string): boolean;
 			getGlobalPermissionProperty(permissionNode: string): string;
-			getGlobalPermissionProperty(zone: MC.Zone, permissionNode: string): string;
+			getGlobalPermissionProperty(zone: mc.Zone, permissionNode: string): string;
 			checkGlobalPermission(permissionNode: string): boolean;
-			checkGlobalPermission(zone: MC.Zone, permissionNode: string): boolean;
+			checkGlobalPermission(zone: mc.Zone, permissionNode: string): boolean;
 			setPlayerPermission(ident: UserIdent, permissionNode: string, value: boolean): void;
 			setPlayerPermissionProperty(ident: UserIdent, permissionNode: string, value: string): void;
 			setGroupPermission(group: string, permissionNode: string, value: boolean): void;
 			setGroupPermissionProperty(group: string, permissionNode: string, value: string): void;
-			getZones(): MC.Zone[];
-			getZoneById(id: int): MC.Zone;
-			getZoneById(id: string): MC.Zone;
+			getZones(): mc.Zone[];
+			getZoneById(id: int): mc.Zone;
+			getZoneById(id: string): mc.Zone;
 			getServerZone(): ServerZone;
 			isSystemGroup(group: string): boolean;
 			groupExists(groupName: string): boolean;
@@ -253,7 +313,7 @@ declare namespace MC {
 		}
 		
 		interface ServerStatic {
-			getServer(): MC.ICommandSender;
+			getServer(): mc.ICommandSender;
 			/**
 			 * Runs a Minecraft command.
 			 * Be sure to separate each argument of the command as a single argument to this function.
@@ -261,11 +321,11 @@ declare namespace MC {
 			 * Right: runCommand(sender, 'give', player.getName(), 'minecraft:dirt', 1);
 			 * Wrong: runCommand(sender, 'give ' + player.getName() + ' minecraft:dirt 1');
 			 */
-			runCommand(sender: MC.ICommandSender, cmd: string, ...args: any[]): void;
+			runCommand(sender: mc.ICommandSender, cmd: string, ...args: any[]): void;
 			/**
 			 * Runs a Minecraft command and ignores any errors it might throw
 			 */
-			tryRunCommand(sender: MC.ICommandSender, cmd: string, ...args: any[]): void;
+			tryRunCommand(sender: mc.ICommandSender, cmd: string, ...args: any[]): void;
 			/**
 			 * Broadcast an uncolored message to all players
 			 */
@@ -294,41 +354,28 @@ declare namespace MC {
 			/**
 			 * Registers a new event handler.
 			 */
-			registerEvent(event: string, handler: (event: MC.Event.Event) => void): void;
-			/**
-			 * Set a timeout to call 'handler' after 'timeout' milliseconds.
-			 */
-			setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
-			/**
-			 * Set a interval to call 'handler' fn repeatedly each 'interval' milliseconds.
-			 */
-			setInterval(handler: (...args: any[]) => void, interval?: any, ...args: any[]): number;
-			/**
-			 * Clear a timeout.
-			 */
-			clearTimeout(handle: int): void;
-			/**
-			 * Clear an interval.
-			 */
-			clearInterval(handle: int): void;
+			registerEvent(event: string, handler: (event: mc.event.Event) => void): void;
+			createPoint(x: int, y: int, z: int): mc.world.Point;
+			createWorldPoint(dimension: int, x: int, y: int, z: int): mc.world.WorldPoint;
+			createAxisAlignedBB(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): mc.AxisAlignedBB;
 		}
 		
-		interface ServerZone extends MC.JavaObject {
+		class ServerZone extends mc.JavaObject {
 		}
 		
-		interface UserIdent extends MC.JavaObject {
+		class UserIdent extends mc.JavaObject {
 			hasUsername(): boolean;
 			hasUuid(): boolean;
 			hasPlayer(): boolean;
 			isFakePlayer(): boolean;
 			isPlayer(): boolean;
 			isNpc(): boolean;
-			getUuid(): MC.UUID;
+			getUuid(): mc.UUID;
 			getUsername(): string;
 			getUsernameOrUuid(): string;
-			getPlayer(): MC.Entity.EntityPlayer;
-			getFakePlayer(): MC.Entity.EntityPlayer;
-			getFakePlayer(world: MC.World.WorldServer): MC.Entity.EntityPlayer;
+			getPlayer(): mc.entity.EntityPlayer;
+			getFakePlayer(): mc.entity.EntityPlayer;
+			getFakePlayer(world: mc.world.WorldServer): mc.entity.EntityPlayer;
 			toSerializeString(): string;
 			toString(): string;
 			hashCode(): int;
@@ -338,18 +385,19 @@ declare namespace MC {
 		
 	}
 	
-	interface AreaBase extends JavaObject {
+	class AreaBase extends JavaObject {
 	}
 	
-	interface AxisAlignedBB extends JavaObject {
+	class AxisAlignedBB extends JavaObject {
 		setBounds(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): AxisAlignedBB;
 	}
 	
-	interface CommandArgs {
+	class CommandArgs {
 		sender: ICommandSender;
-		player: Entity.EntityPlayer;
-		ident: Server.UserIdent;
+		player: entity.EntityPlayer;
+		ident: server.UserIdent;
 		isTabCompletion: boolean;
+		constructor(args: CommandParserArgs);
 		toArray(): string[];
 		toString(): string;
 		sendMessage(message: IChatComponent): void;
@@ -363,17 +411,17 @@ declare namespace MC {
 		get(index: int): string;
 		isEmpty(): boolean;
 		hasPlayer(): boolean;
-		parsePlayer(): Server.UserIdent;
-		parsePlayer(mustExist: boolean): Server.UserIdent;
-		parsePlayer(mustExist: boolean, mustBeOnline: boolean): Server.UserIdent;
-		parseItem(): Item.Item;
-		parseBlock(): World.Block;
+		parsePlayer(): server.UserIdent;
+		parsePlayer(mustExist: boolean): server.UserIdent;
+		parsePlayer(mustExist: boolean, mustBeOnline: boolean): server.UserIdent;
+		parseItem(): item.Item;
+		parseBlock(): world.Block;
 		parsePermission(): string;
 		checkPermission(perm: string): void;
 		hasPermission(perm: string): boolean;
 		tabComplete(...completionList: string[]): void;
 		tabCompleteWord(completion: string): void;
-		parseWorld(): World.WorldServer;
+		parseWorld(): world.WorldServer;
 		parseInt(): int;
 		parseInt(min: int, max: int): int;
 		parseLong(): long;
@@ -382,22 +430,25 @@ declare namespace MC {
 		parseTimeReadable(): long;
 		checkTabCompletion(): void;
 		requirePlayer(): void;
-		getSenderPoint(): World.WorldPoint;
+		getSenderPoint(): world.WorldPoint;
 		needsPlayer(): void;
 	}
 	
-	interface CommandOptions {
+	class CommandOptions {
 		name: string;
 		usage?: string;
 		permission?: string;
 		opOnly?: boolean;
 		processCommand: CommandCallback;
 		tabComplete?: CommandCallback;
+		constructor();
 	}
 	
-	interface ICommandSender extends JavaObject {
+	class ICommandSender extends JavaObject {
+		constructor(sender: ICommandSender);
+		constructor(player: entity.EntityPlayer, jsPlayer: entity.EntityPlayer);
 		getName(): string;
-		getPlayer(): Entity.EntityPlayer;
+		getPlayer(): entity.EntityPlayer;
 		doAs(userIdOrPlayer: any, hideChatOutput: boolean): ICommandSender;
 		chat(message: string): void;
 		chatConfirm(message: string): void;
@@ -406,45 +457,43 @@ declare namespace MC {
 		chatWarning(message: string): void;
 	}
 	
-	interface FactoryStatic {
-		createItemStack(block: World.Block, stackSize: int): Item.ItemStack;
-		createItemStack(block: World.Block, stackSize: int, damage: int): Item.ItemStack;
-		createItemStack(item: Item.Item, stackSize: int): Item.ItemStack;
-		createItemStack(item: Item.Item, stackSize: int, damage: int): Item.ItemStack;
-		createPoint(x: int, y: int, z: int): Point;
-		createWorldPoint(dimension: int, x: int, y: int, z: int): World.WorldPoint;
+	interface WindowStatic {
+		/**
+		 * Set a timeout to call 'handler' after 'timeout' milliseconds.
+		 */
+		setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
+		/**
+		 * Set a interval to call 'handler' fn repeatedly each 'interval' milliseconds.
+		 */
+		setInterval(handler: (...args: any[]) => void, interval?: any, ...args: any[]): number;
+		/**
+		 * Clear a timeout.
+		 */
+		clearTimeout(handle: int): void;
+		/**
+		 * Clear an interval.
+		 */
+		clearInterval(handle: int): void;
+		createPoint(x: int, y: int, z: int): world.Point;
+		createWorldPoint(dimension: int, x: int, y: int, z: int): world.WorldPoint;
 		createAxisAlignedBB(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): AxisAlignedBB;
-	}
-	
-	interface Point extends JavaObject {
-		getX(): int;
-		getY(): int;
-		getZ(): int;
-		setX(x: int): Point;
-		setY(y: int): Point;
-		setZ(z: int): Point;
-		length(): double;
-		distance(other: Point): double;
-		add(other: Point): void;
-		subtract(other: Point): void;
-		distance(x: int, y: int, z: int): double;
-		add(x: int, y: int, z: int): void;
-		subtract(x: int, y: int, z: int): void;
 	}
 	
 	/**
 	 * Basic wrapped java object
 	 */
-	interface JavaObject {
+	class JavaObject {
 		equals(obj: JavaObject): boolean;
 		toString(): string;
 		hashCode(): int;
+		isInstanceOf(type: string): boolean;
 	}
 	
-	interface Zone extends JavaObject {
+	class Zone extends JavaObject {
 	}
 	
-	interface UUID {
+	class UUID {
+		constructor(arg0: long, arg1: long);
 		getLeastSignificantBits(): long;
 		getMostSignificantBits(): long;
 		version(): int;
@@ -458,41 +507,43 @@ declare namespace MC {
 		compareTo(arg0: UUID): int;
 	}
 	
-	namespace Event { interface EventPriority { } }
-	
-	namespace Event { interface Result { } }
+	interface CommandParserArgs { }
 	
 	interface IChatComponent { }
 	
+	namespace entity { interface List { } }
+	
+	namespace event { interface EventPriority { } }
+	
+	namespace event { interface Result { } }
+	
+	namespace server { interface PermissionLevel { } }
+	
 }
 
-declare var Factory: MC.FactoryStatic;
-declare var Server: MC.Server.ServerStatic;
-declare var World: MC.World.WorldStatic;
-declare var Block: MC.World.BlockStatic;
-declare var Item: MC.Item.ItemStatic;
-declare var Permissions: MC.Server.PermissionsStatic;
-
-declare function getNbt(entity: MC.Entity.Entity | MC.Item.ItemStack): any;
-declare function setNbt(entity: MC.Entity.Entity | MC.Item.ItemStack, data: any);
+declare var window: mc.WindowStatic;
+declare var Server: mc.server.ServerStatic;
+declare var World: mc.world.WorldStatic;
+declare var Block: mc.world.BlockStatic;
+declare var Item: mc.item.ItemStatic;
+declare var Permissions: mc.server.PermissionsStatic;
 
 /**
- * Constants that tell getNbt and setNbt the types of entries. Use nbt[NBT_INT + 'myVar'] for access
- */ 
-declare const NBT_BYTE: string;
-declare const NBT_SHORT: string;
-declare const NBT_INT: string;
-declare const NBT_LONG: string;
-declare const NBT_FLOAT: string;
-declare const NBT_DOUBLE: string;
-declare const NBT_BYTE_ARRAY: string;
-declare const NBT_STRING: string;
-declare const NBT_COMPOUND: string;
-declare const NBT_INT_ARRAY: string;
-
+ * Set a timeout to call 'handler' after 'timeout' milliseconds.
+ */
+declare function setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
 /**
- * Constants for permission level used when registering permissions
- */ 
-declare const PERMLEVEL_TRUE: int;
-declare const PERMLEVEL_OP: int;
-declare const PERMLEVEL_FALSE: int;
+ * Set a interval to call 'handler' fn repeatedly each 'interval' milliseconds.
+ */
+declare function setInterval(handler: (...args: any[]) => void, interval?: any, ...args: any[]): number;
+/**
+ * Clear a timeout.
+ */
+declare function clearTimeout(handle: int): void;
+/**
+ * Clear an interval.
+ */
+declare function clearInterval(handle: int): void;
+declare function createPoint(x: int, y: int, z: int): mc.world.Point;
+declare function createWorldPoint(dimension: int, x: int, y: int, z: int): mc.world.WorldPoint;
+declare function createAxisAlignedBB(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): mc.AxisAlignedBB;

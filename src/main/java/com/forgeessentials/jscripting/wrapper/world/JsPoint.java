@@ -1,6 +1,7 @@
-package com.forgeessentials.jscripting.wrapper;
+package com.forgeessentials.jscripting.wrapper.world;
 
 import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
 public class JsPoint<T extends Point> extends JsWrapper<T>
 {
@@ -8,6 +9,12 @@ public class JsPoint<T extends Point> extends JsWrapper<T>
     public JsPoint(T that)
     {
         super(that);
+    }
+
+    @SuppressWarnings("unchecked")
+    public JsPoint(int x, int y, int z)
+    {
+        super((T) new Point(x, y, z));
     }
 
     public int getX()

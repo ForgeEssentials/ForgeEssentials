@@ -132,7 +132,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
     public JsWorld<?> getWorld()
     {
         if (world == null)
-            world = new JsWorld<>(that.worldObj);
+            world = JsWorld.get(that.worldObj);
         return world;
     }
 
@@ -152,23 +152,31 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
         ServerUtil.copyNbt(that.getEntityData(), DataManager.fromJson(value, NBTTagCompound.class));
     }
 
-    public String getEntityType() {
+    public String getEntityType()
+    {
         return that.getClass().getSimpleName();
     }
 
-    public static JsEntity<?> get(Entity entity) {
+    public static JsEntity<?> get(Entity entity)
+    {
         // Fancy reflection crap to get a specific entity type if it exists
-        String className = entity.getClass().getSimpleName();
         try
         {
-            Class<?> clazz = Class.forName("com.forgeessentials.jscripting.wrapper.entity.Js" + className);
-            if (JsEntity.class.isAssignableFrom(clazz)) {
-                return (JsEntity<?>)clazz.getConstructor(entity.getClass()).newInstance(entity);
+            for (Class<?> entityClazz = entity.getClass(); Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass())
+            {
+                try
+                {
+                    Class<?> clazz = Class.forName("com.forgeessentials.jscripting.wrapper.entity.Js" + entityClazz.getSimpleName());
+                    if (JsEntity.class.isAssignableFrom(clazz))
+                    {
+                        return (JsEntity<?>) clazz.getConstructor(entityClazz).newInstance(entity);
+                    }
+                }
+                catch (ClassNotFoundException e)
+                {
+                    /* do nothing */
+                }
             }
-        }
-        catch (ClassNotFoundException e)
-        {
-            /* do nothing */
         }
         catch (Exception e)
         {

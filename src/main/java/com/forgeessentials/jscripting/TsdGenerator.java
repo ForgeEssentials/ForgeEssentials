@@ -13,15 +13,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.IOUtils;
 
-import com.forgeessentials.jscripting.wrapper.JsFactoryStatic;
+import com.forgeessentials.jscripting.wrapper.JsWindowStatic;
 import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
 import com.forgeessentials.jscripting.wrapper.server.JsPermissionsStatic;
 import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
 import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
 import com.sun.javadoc.ClassDoc;
+import com.sun.javadoc.ConstructorDoc;
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.DocErrorReporter;
 import com.sun.javadoc.Doclet;
@@ -41,7 +42,7 @@ public class TsdGenerator extends Doclet
 
     public static TsdGenerator generator = new TsdGenerator();
 
-    public static final String NAMESPACE = "MC";
+    public static final String NAMESPACE = "mc";
     public static final String PACKAGE = "com.forgeessentials.jscripting.wrapper";
 
     private File outFile = new File("jscripting/mc.d.ts");
@@ -81,37 +82,22 @@ public class TsdGenerator extends Doclet
         List<String> externalClasses = new ArrayList<>();
         externalClasses.add(UUID.class.getName());
 
+        List<String> staticClasses = new ArrayList<>();
+        staticClasses.add(JsWindowStatic.class.getName());
+        staticClasses.add(JsServerStatic.class.getName());
+        staticClasses.add(JsWorldStatic.class.getName());
+        staticClasses.add(JsBlockStatic.class.getName());
+        staticClasses.add(JsItemStatic.class.getName());
+        staticClasses.add(JsPermissionsStatic.class.getName());
+
         try
         {
             try (PrintStream w = new PrintStream(new FileOutputStream(outFile)))
             {
                 writer = w;
                 indention = 0;
-                writeLn("declare type int = number;");
-                writeLn("declare type long = number;");
-                writeLn("declare type float = number;");
-                writeLn("declare type double = number;");
-                writeLn("");
-                writeLn("declare namespace " + NAMESPACE + " {");
-                indention++;
-                writeLn("");
-                writeLn("interface JavaList<T> {");
-                indention++;
-                writeLn("size(): int;");
-                writeLn("isEmpty(): boolean;");
-                writeLn("toArray(): any[];");
-                // writeLn("toArray(in: T[]): T[];");
-                writeLn("get(index: int): T;");
-                writeLn("add(element: T): T;");
-                writeLn("set(index: int, element: T): T;");
-                writeLn("clear(): void;");
-                writeLn("remove(index: int): T;");
-                writeLn("remove(element: T): boolean;");
-                indention--;
-                writeLn("}");
-                writeLn("");
-                writeLn("type CommandCallback = (args: CommandArgs) => void;");
-                writeLn("");
+                write(IOUtils.toString(ScriptInstance.class.getResource("tsd_header.d.ts")));
+                indention = 1;
 
                 List<PackageDoc> packages = Arrays.asList(root.specifiedPackages());
                 packages.sort((a, b) -> a.name().compareTo(b.name()));
@@ -124,7 +110,7 @@ public class TsdGenerator extends Doclet
 
                 for (PackageDoc packageDoc : packages)
                 {
-                    packageName = StringUtils.capitalize(packageDoc.name().substring(Math.min(packageDoc.name().length(), PACKAGE.length() + 1)));
+                    packageName = packageDoc.name().substring(Math.min(packageDoc.name().length(), PACKAGE.length() + 1));
                     fullPackageName = NAMESPACE + (packageName.length() == 0 ? "" : "." + packageName);
                     for (ClassDoc classDoc : packageDoc.allClasses())
                         preprocessClass(classDoc);
@@ -132,7 +118,7 @@ public class TsdGenerator extends Doclet
 
                 for (PackageDoc packageDoc : packages)
                 {
-                    packageName = StringUtils.capitalize(packageDoc.name().substring(Math.min(packageDoc.name().length(), PACKAGE.length() + 1)));
+                    packageName = packageDoc.name().substring(Math.min(packageDoc.name().length(), PACKAGE.length() + 1));
                     fullPackageName = NAMESPACE + (packageName.length() == 0 ? "" : "." + packageName);
                     if (packageName.length() > 0)
                     {
@@ -193,36 +179,24 @@ public class TsdGenerator extends Doclet
                 indention--;
                 writeLn("}");
                 writeLn("");
-                writeLn("declare var Factory: " + classNameMap.get(JsFactoryStatic.class.getName()) + ";");
-                writeLn("declare var Server: " + classNameMap.get(JsServerStatic.class.getName()) + ";");
-                writeLn("declare var World: " + classNameMap.get(JsWorldStatic.class.getName()) + ";");
-                writeLn("declare var Block: " + classNameMap.get(JsBlockStatic.class.getName()) + ";");
-                writeLn("declare var Item: " + classNameMap.get(JsItemStatic.class.getName()) + ";");
-                writeLn("declare var Permissions: " + classNameMap.get(JsPermissionsStatic.class.getName()) + ";");
+                for (String className : staticClasses)
+                {
+                    String mappedName = classNameMap.get(className);
+                    String varName = mappedName.substring(mappedName.lastIndexOf('.') + 1, mappedName.length() - "Static".length());
+                    writeLn("declare var ");
+                    write(varName.equals("Window") ? "window" : varName);
+                    write(": ");
+                    write(mappedName);
+                    write(";");
+                }
                 writeLn("");
-                writeLn("declare function getNbt(entity: " + NAMESPACE + ".Entity.Entity | " + NAMESPACE + ".Item.ItemStack): any;");
-                writeLn("declare function setNbt(entity: " + NAMESPACE + ".Entity.Entity | " + NAMESPACE + ".Item.ItemStack, data: any);");
-                writeLn("");
-                writeLn("/**");
-                writeLn(" * Constants that tell getNbt and setNbt the types of entries. Use nbt[NBT_INT + 'myVar'] for access");
-                writeLn(" */ ");
-                writeLn("declare const NBT_BYTE: string;");
-                writeLn("declare const NBT_SHORT: string;");
-                writeLn("declare const NBT_INT: string;");
-                writeLn("declare const NBT_LONG: string;");
-                writeLn("declare const NBT_FLOAT: string;");
-                writeLn("declare const NBT_DOUBLE: string;");
-                writeLn("declare const NBT_BYTE_ARRAY: string;");
-                writeLn("declare const NBT_STRING: string;");
-                writeLn("declare const NBT_COMPOUND: string;");
-                writeLn("declare const NBT_INT_ARRAY: string;");
-                writeLn("");
-                writeLn("/**");
-                writeLn(" * Constants for permission level used when registering permissions");
-                writeLn(" */ ");
-                writeLn("declare const PERMLEVEL_TRUE: int;");
-                writeLn("declare const PERMLEVEL_OP: int;");
-                writeLn("declare const PERMLEVEL_FALSE: int;");
+
+                // Generate window public defs
+                ClassDoc window = root.classNamed(JsWindowStatic.class.getName());
+                for (FieldDoc fieldDoc : window.fields())
+                    generateField(fieldDoc);
+                for (MethodDoc methodDoc : window.methods())
+                    generateMethod(methodDoc);
                 writeLn("");
             }
         }
@@ -253,10 +227,12 @@ public class TsdGenerator extends Doclet
             return;
         String typeName = classNameMap.get(classDoc.qualifiedName());
 
+        boolean isClass = !typeName.endsWith("Static");
+
         writeComment(classDoc);
 
         // Write interface header
-        writeLn("interface ");
+        writeLn(isClass ? "class " : "interface ");
         write(stripClassName(typeName));
         if (classDoc.superclass() != null && !classDoc.superclass().qualifiedName().equals("java.lang.Object"))
         {
@@ -276,6 +252,10 @@ public class TsdGenerator extends Doclet
         for (FieldDoc fieldDoc : classDoc.fields())
             generateField(fieldDoc);
 
+        if (isClass)
+            for (ConstructorDoc constructorDoc : classDoc.constructors())
+                generateConstructor(constructorDoc);
+
         for (MethodDoc methodDoc : classDoc.methods())
             generateMethod(methodDoc);
 
@@ -285,6 +265,47 @@ public class TsdGenerator extends Doclet
         declaredTypes.add(typeName);
     }
 
+    private void generateConstructor(ConstructorDoc constructorDoc)
+    {
+        if (!constructorDoc.isPublic() || ignoreDoc(constructorDoc))
+            return;
+        if (constructorDoc.parameters().length > 0 && constructorDoc.parameters()[0].name().equals("that"))
+            return;
+
+        writeComment(constructorDoc);
+
+        if (indention == 0)
+            writeLn("declare function ");
+        else
+            writeLn("constructor");
+
+        Tag[] defTags = constructorDoc.tags("tsd.def");
+        if (defTags.length > 0)
+        {
+            for (Tag tag : defTags)
+            {
+                write(tag.text());
+            }
+            return;
+        }
+
+        write("(");
+        Parameter[] parameters = constructorDoc.parameters();
+        for (int i = 0; i < parameters.length; i++)
+        {
+            if (i > 0)
+                write(", ");
+            Parameter parameter = parameters[i];
+            if (constructorDoc.isVarArgs() && i == parameters.length - 1)
+                write("...");
+            write(parameter.name());
+            write(": ");
+            write(mapClassName(parameter.type()));
+            write(parameter.type().dimension());
+        }
+        write(");");
+    }
+
     private void generateField(FieldDoc fieldDoc)
     {
         if (!fieldDoc.isPublic() || fieldDoc.isStatic() || ignoreDoc(fieldDoc))
@@ -292,17 +313,22 @@ public class TsdGenerator extends Doclet
 
         writeComment(fieldDoc);
 
+        if (indention == 0)
+            writeLn("declare var ");
+        else
+            writeLn("");
+
         Tag[] defTags = fieldDoc.tags("tsd.def");
         if (defTags.length > 0)
         {
             for (Tag tag : defTags)
             {
-                writeLn(tag.text());
+                write(tag.text());
             }
             return;
         }
 
-        writeLn(fieldDoc.name());
+        write(fieldDoc.name());
 
         if (fieldDoc.tags("tsd.optional").length > 0)
             write("?");
@@ -319,17 +345,22 @@ public class TsdGenerator extends Doclet
 
         writeComment(methodDoc);
 
+        if (indention == 0)
+            writeLn("declare function ");
+        else
+            writeLn("");
+
         Tag[] defTags = methodDoc.tags("tsd.def");
         if (defTags.length > 0)
         {
             for (Tag tag : defTags)
             {
-                writeLn(tag.text());
+                write(tag.text());
             }
             return;
         }
 
-        writeLn(methodDoc.name());
+        write(methodDoc.name());
 
         write("(");
         Parameter[] parameters = methodDoc.parameters();
@@ -418,7 +449,7 @@ public class TsdGenerator extends Doclet
             classNameMap.put(type.qualifiedTypeName(), mappedName);
         }
 
-        if (mappedName.startsWith(fullPackageName))
+        if (indention > 0 && mappedName.startsWith(fullPackageName))
             return mappedName.substring(fullPackageName.length() + 1);
         return mappedName;
     }
