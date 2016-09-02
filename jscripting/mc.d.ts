@@ -79,7 +79,7 @@ declare namespace mc {
 			getDimension(): int;
 			getDifficulty(): int;
 			getPlayerEntities(): mc.entity.EntityPlayerList;
-			getEntitiesWithinAABB(axisAlignedBB: mc.AxisAlignedBB): mc.entity.EntityList;
+			getEntitiesWithinAABB(axisAlignedBB: mc.util.AxisAlignedBB): mc.entity.EntityList;
 			blockExists(x: int, y: int, z: int): boolean;
 			getBlock(x: int, y: int, z: int): Block;
 			setBlock(x: int, y: int, z: int, block: Block): void;
@@ -234,6 +234,10 @@ declare namespace mc {
 		}
 		
 		class ItemStack extends mc.JavaObject {
+			constructor(block: mc.world.Block, stackSize: int);
+			constructor(block: mc.world.Block, stackSize: int, damage: int);
+			constructor(item: Item, stackSize: int);
+			constructor(item: Item, stackSize: int, damage: int);
 			getItem(): Item;
 			getStackSize(): int;
 			setStackSize(size: int): void;
@@ -254,10 +258,6 @@ declare namespace mc {
 		
 		interface ItemStatic {
 			getItem(name: string): Item;
-			createItemStack(block: mc.world.Block, stackSize: int): ItemStack;
-			createItemStack(block: mc.world.Block, stackSize: int, damage: int): ItemStack;
-			createItemStack(item: Item, stackSize: int): ItemStack;
-			createItemStack(item: Item, stackSize: int, damage: int): ItemStack;
 		}
 		
 	}
@@ -355,9 +355,6 @@ declare namespace mc {
 			 * Registers a new event handler.
 			 */
 			registerEvent(event: string, handler: (event: mc.event.Event) => void): void;
-			createPoint(x: int, y: int, z: int): mc.world.Point;
-			createWorldPoint(dimension: int, x: int, y: int, z: int): mc.world.WorldPoint;
-			createAxisAlignedBB(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): mc.AxisAlignedBB;
 		}
 		
 		class ServerZone extends mc.JavaObject {
@@ -385,11 +382,16 @@ declare namespace mc {
 		
 	}
 	
-	class AreaBase extends JavaObject {
+	namespace util {
+		
+		class AxisAlignedBB extends mc.JavaObject {
+			constructor(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double);
+			setBounds(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): AxisAlignedBB;
+		}
+		
 	}
 	
-	class AxisAlignedBB extends JavaObject {
-		setBounds(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): AxisAlignedBB;
+	class AreaBase extends JavaObject {
 	}
 	
 	class CommandArgs {
@@ -474,9 +476,6 @@ declare namespace mc {
 		 * Clear an interval.
 		 */
 		clearInterval(handle: int): void;
-		createPoint(x: int, y: int, z: int): world.Point;
-		createWorldPoint(dimension: int, x: int, y: int, z: int): world.WorldPoint;
-		createAxisAlignedBB(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): AxisAlignedBB;
 	}
 	
 	/**
@@ -544,6 +543,3 @@ declare function clearTimeout(handle: int): void;
  * Clear an interval.
  */
 declare function clearInterval(handle: int): void;
-declare function createPoint(x: int, y: int, z: int): mc.world.Point;
-declare function createWorldPoint(dimension: int, x: int, y: int, z: int): mc.world.WorldPoint;
-declare function createAxisAlignedBB(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): mc.AxisAlignedBB;

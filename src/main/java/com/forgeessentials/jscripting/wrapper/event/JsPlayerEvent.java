@@ -8,11 +8,6 @@ import com.forgeessentials.jscripting.wrapper.entity.JsEntityPlayer;
 public abstract class JsPlayerEvent<T extends PlayerEvent> extends JsLivingEvent<T>
 {
 
-    // public JsPlayerEvent(ScriptInstance script, Object handler)
-    // {
-    // super(script, handler);
-    // }
-
     // @Override
     // @SubscribeEvent
     // public void _handle(T event)

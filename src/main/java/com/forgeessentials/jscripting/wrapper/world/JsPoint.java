@@ -14,7 +14,7 @@ public class JsPoint<T extends Point> extends JsWrapper<T>
     @SuppressWarnings("unchecked")
     public JsPoint(int x, int y, int z)
     {
-        super((T) new Point(x, y, z));
+        this((T) new Point(x, y, z));
     }
 
     public int getX()

@@ -174,13 +174,9 @@ public class ScriptInstance
         {
             throw e;
         }
-        catch (RuntimeException e)
-        {
-            e.printStackTrace();
-            throw new ScriptException(e);
-        }
         catch (Exception e)
         {
+            // TODO: Maybe only catch certain exceptions like NullPointerException etc.
             e.printStackTrace();
             throw new ScriptException(e);
         }
@@ -203,10 +199,16 @@ public class ScriptInstance
             setLastActive();
             return this.invocable.invokeFunction(fn, args);
         }
-        catch (Exception e)
+        catch (NoSuchMethodException | ScriptException e)
         {
             illegalFunctions.add(fn);
             throw e;
+        }
+        catch (Exception e)
+        {
+            // TODO: Maybe only catch certain exceptions like NullPointerException etc.
+            illegalFunctions.add(fn);
+            throw new ScriptException(e);
         }
         finally
         {
@@ -226,6 +228,17 @@ public class ScriptInstance
             illegalFunctions.add(fn);
             return null;
         }
+        catch (ScriptException e)
+        {
+            illegalFunctions.add(fn);
+            throw e;
+        }
+        catch (Exception e)
+        {
+            // TODO: Maybe only catch certain exceptions like NullPointerException etc.
+            illegalFunctions.add(fn);
+            throw new ScriptException(e);
+        }
         finally
         {
             clearLastActive();
@@ -244,6 +257,15 @@ public class ScriptInstance
             setLastActive();
             return this.invocable.invokeMethod(fn, "call", ArrayUtils.add(args, 0, thiz));
         }
+        catch (NoSuchMethodException | ScriptException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            // TODO: Maybe only catch certain exceptions like NullPointerException etc.
+            throw new ScriptException(e);
+        }
         finally
         {
             clearLastActive();
@@ -260,6 +282,15 @@ public class ScriptInstance
         catch (NoSuchMethodException e)
         {
             return null;
+        }
+        catch (ScriptException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            // TODO: Maybe only catch certain exceptions like NullPointerException etc.
+            throw new ScriptException(e);
         }
         finally
         {
@@ -324,19 +355,24 @@ public class ScriptInstance
         }
         else
         {
-            getPropertyBindings.put("o", object);
-            Object eval = props.script.eval(getPropertyBindings);
-            if (!(eval instanceof Bindings))
-                throw new ScriptException("Unable to access properties");
-            Bindings bindings = (Bindings) eval;
             try
             {
+                getPropertyBindings.put("o", object);
+                Object eval = props.script.eval(getPropertyBindings);
+                if (!(eval instanceof Bindings))
+                    throw new ScriptException("Unable to access properties");
+                Bindings bindings = (Bindings) eval;
                 for (int i = 0; i < props.fields.size(); i++)
                     props.fields.get(i).set(instance, bindings.get(i));
             }
             catch (IllegalArgumentException | IllegalAccessException e)
             {
                 e.printStackTrace();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                throw new ScriptException(e);
             }
         }
         return instance;

@@ -16,24 +16,4 @@ public class JsItemStatic
         return item == null ? null : JsItem.get(item);
     }
 
-    public JsItemStack createItemStack(JsBlock block, int stackSize)
-    {
-        return new JsItemStack(new ItemStack(block.getThat(), stackSize));
-    }
-
-    public JsItemStack createItemStack(JsBlock block, int stackSize, int damage)
-    {
-        return new JsItemStack(new ItemStack(block.getThat(), stackSize, damage));
-    }
-
-    public JsItemStack createItemStack(JsItem item, int stackSize)
-    {
-        return new JsItemStack(new ItemStack(item.getThat(), stackSize));
-    }
-
-    public JsItemStack createItemStack(JsItem item, int stackSize, int damage)
-    {
-        return new JsItemStack(new ItemStack(item.getThat(), stackSize, damage));
-    }
-
 }

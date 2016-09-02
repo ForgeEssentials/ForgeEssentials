@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
+import com.forgeessentials.jscripting.wrapper.world.JsBlock;
 
 public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 {
@@ -15,6 +16,26 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
     {
         super(that);
         this.item = JsItem.get(that.getItem());
+    }
+
+    public JsItemStack(JsBlock block, int stackSize)
+    {
+        this(new ItemStack(block.getThat(), stackSize));
+    }
+
+    public JsItemStack(JsBlock block, int stackSize, int damage)
+    {
+        this(new ItemStack(block.getThat(), stackSize, damage));
+    }
+
+    public JsItemStack(JsItem item, int stackSize)
+    {
+        this(new ItemStack(item.getThat(), stackSize));
+    }
+
+    public JsItemStack(JsItem item, int stackSize, int damage)
+    {
+        this(new ItemStack(item.getThat(), stackSize, damage));
     }
 
     public JsItem getItem()
