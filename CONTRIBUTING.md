@@ -25,10 +25,11 @@ If you open ForgeEssentials in your IDE, you must turn on annotation processing,
 ![](http://files.forgeessentials.com/Idea_apt_settings.jpg)
 - Go to `Settings > Build, Execution and Deployment > Compiler > Annotation Processors`
  - Check `Enable annotation processing`
+ - Check `Obtain processors from project classpath`
+ - Enter `.apt_generated` as "Production sources directory"
  - Under `Annotation Processors`, add this fully qualified name: `org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor`
-
- ### If all else fails
- - Manually add the "PL Generated Files.jar" library in the 'lib' folder to your workspace.
+ - Run `Build > Rebuild Project`
+ - Right click `.apt_generated` directory and select `Mark as > Source directory`
 
 # Notes
 1. Please consider squashing all commits before initially submitting pull requests
