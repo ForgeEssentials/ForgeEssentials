@@ -30,7 +30,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
                     Class<?> clazz = Class.forName("com.forgeessentials.jscripting.wrapper.entity.Js" + entityClazz.getSimpleName());
                     if (JsEntity.class.isAssignableFrom(clazz))
                     {
-                        return (JsEntity<?>) clazz.getConstructor(entityClazz).newInstance(entity);
+                        return (JsEntity<?>) clazz.getDeclaredConstructor(entityClazz).newInstance(entity);
                     }
                 }
                 catch (ClassNotFoundException e)
