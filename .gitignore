@@ -37,3 +37,4 @@ modlist.txt
 /bin
 /.apt_generated/
 /jscripting/generated.d.ts
+/src/*/generated/
