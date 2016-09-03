@@ -158,6 +158,8 @@ public class ScriptUpgrader
     {
         StringBuilder out = new StringBuilder();
         out.append("function cmd(args) {\n\t");
+        out.append("var match;\n\t");
+        out.append("var argsLine = args.toString();\n\t");
         List<Entry<String, List<String>>> sortedPatterns = new ArrayList<>(cmd.patterns.entrySet());
         sortedPatterns.sort((a, b) -> b.getKey().split(" ").length - a.getKey().split(" ").length);
         for (Entry<String, List<String>> pattern : sortedPatterns)
@@ -168,6 +170,8 @@ public class ScriptUpgrader
             out.append(" // >>");
             out.append(pattern.getKey());
             out.append("<<");
+            out.append("\n\t\t");
+            out.append("args.confirm(JSON.stringify(match));\n\t\t");
             for (String line : pattern.getValue())
             {
                 out.append("\n\t\t");
@@ -195,8 +199,70 @@ public class ScriptUpgrader
 
     private static void upgradePattern(StringBuilder out, String pattern)
     {
-        if (pattern.isEmpty())
-            out.append("true");
+        out.append("(match = argsLine.match(/^");
+        boolean mustEnd = false;
+        for (String part : pattern.split(" "))
+        {
+            if (part.isEmpty())
+                continue;
+            if (mustEnd)
+                throw new IllegalArgumentException("Pattern must end after @*");
+            if (out.length() > 0)
+                out.append("\\s+");
+            if (part.charAt(0) == '@')
+            {
+                switch (part.substring(1))
+                {
+                case "f":
+                    out.append("([+-]?\\d+(?:\\.\\d+)?)");
+                    // argumentTypes.add(ArgumentType.FLOAT);
+                    break;
+                case "d":
+                    out.append("([+-]?\\d+)");
+                    // argumentTypes.add(ArgumentType.DECIMAL);
+                    break;
+                case "p":
+                case "player":
+                    out.append("(\\S+)");
+                    // argumentTypes.add(ArgumentType.PLAYER);
+                    break;
+                case "g":
+                case "group":
+                    out.append("(\\S+)");
+                    // argumentTypes.add(ArgumentType.GROUP);
+                    break;
+                case "zone":
+                    out.append("(\\d+)");
+                    // argumentTypes.add(ArgumentType.ZONE);
+                    break;
+                case "*":
+                    out.append("(.*)");
+                    // argumentTypes.add(ArgumentType.REST);
+                    mustEnd = true;
+                    break;
+                case "+":
+                    out.append("(.+)");
+                    // argumentTypes.add(ArgumentType.REST);
+                    mustEnd = true;
+                    break;
+                case "":
+                    out.append("(\\S+)");
+                    // argumentTypes.add(ArgumentType.NONE);
+                    break;
+                default:
+                    throw new IllegalArgumentException(String.format("Unknown pattern argument type %s ", part.substring(1)));
+                }
+            }
+            else
+            {
+                out.append(part);
+                // regex.append(java.util.regex.Pattern.quote(part));
+            }
+        }
+        // Cut off final space
+        if (out.length() > 0 && out.charAt(out.length() - 1) == ' ')
+            out.setLength(out.length() - 1);
+        out.append("/)) !== null");
     }
 
     public static StringBuilder upgradeOldScript(String eventType, List<String> lines) throws Exception

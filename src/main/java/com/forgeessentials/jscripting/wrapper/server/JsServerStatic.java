@@ -5,19 +5,13 @@ import javax.script.ScriptException;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.AxisAlignedBB;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.JsCommandOptions;
 import com.forgeessentials.jscripting.wrapper.JsCommandSender;
-import com.forgeessentials.jscripting.wrapper.util.JsAxisAlignedBB;
-import com.forgeessentials.jscripting.wrapper.world.JsPoint;
-import com.forgeessentials.jscripting.wrapper.world.JsWorldPoint;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class JsServerStatic

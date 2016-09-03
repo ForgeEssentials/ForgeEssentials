@@ -14,6 +14,38 @@ import com.google.common.base.Throwables;
 public class JsEntity<T extends Entity> extends JsWrapper<T>
 {
 
+    /**
+     * @tsd.ignore
+     */
+    public static JsEntity<?> get(Entity entity)
+    {
+        // Fancy reflection crap to get a specific entity type if it exists
+        // TODO: Maybe use cache of existing wrappers from ScriptCompiler instead?
+        try
+        {
+            for (Class<?> entityClazz = entity.getClass(); Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass())
+            {
+                try
+                {
+                    Class<?> clazz = Class.forName("com.forgeessentials.jscripting.wrapper.entity.Js" + entityClazz.getSimpleName());
+                    if (JsEntity.class.isAssignableFrom(clazz))
+                    {
+                        return (JsEntity<?>) clazz.getConstructor(entityClazz).newInstance(entity);
+                    }
+                }
+                catch (ClassNotFoundException e)
+                {
+                    /* do nothing */
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Throwables.propagate(e);
+        }
+        return new JsEntity<>(entity);
+    }
+
     private JsWorld<?> world;
 
     private JsEntity<?> ridingEntity;
@@ -155,34 +187,6 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
     public String getEntityType()
     {
         return that.getClass().getSimpleName();
-    }
-
-    public static JsEntity<?> get(Entity entity)
-    {
-        // Fancy reflection crap to get a specific entity type if it exists
-        try
-        {
-            for (Class<?> entityClazz = entity.getClass(); Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass())
-            {
-                try
-                {
-                    Class<?> clazz = Class.forName("com.forgeessentials.jscripting.wrapper.entity.Js" + entityClazz.getSimpleName());
-                    if (JsEntity.class.isAssignableFrom(clazz))
-                    {
-                        return (JsEntity<?>) clazz.getConstructor(entityClazz).newInstance(entity);
-                    }
-                }
-                catch (ClassNotFoundException e)
-                {
-                    /* do nothing */
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Throwables.propagate(e);
-        }
-        return new JsEntity<>(entity);
     }
 
 }
