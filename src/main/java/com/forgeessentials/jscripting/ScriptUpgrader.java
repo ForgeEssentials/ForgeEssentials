@@ -158,8 +158,9 @@ public class ScriptUpgrader
     {
         StringBuilder out = new StringBuilder();
         out.append("function cmd(args) {\n\t");
-        out.append("var match;\n\t");
+        out.append("var sender = args.sender;\n\t");
         out.append("var argsLine = args.toString();\n\t");
+        out.append("var match;\n\t");
         List<Entry<String, List<String>>> sortedPatterns = new ArrayList<>(cmd.patterns.entrySet());
         sortedPatterns.sort((a, b) -> b.getKey().split(" ").length - a.getKey().split(" ").length);
         for (Entry<String, List<String>> pattern : sortedPatterns)
@@ -167,16 +168,12 @@ public class ScriptUpgrader
             out.append("if (");
             upgradePattern(out, pattern.getKey());
             out.append(") {");
-            out.append(" // >>");
-            out.append(pattern.getKey());
-            out.append("<<");
-            out.append("\n\t\t");
-            out.append("args.confirm(JSON.stringify(match));\n\t\t");
+            // out.append("\n\t\targs.confirm(JSON.stringify(match));");
             for (String line : pattern.getValue())
             {
-                out.append("\n\t\t");
                 if (line.isEmpty())
                     continue;
+                out.append("\n\t\t");
                 upgradeAction(out, line);
             }
             out.append("\n\t} else ");
@@ -199,16 +196,18 @@ public class ScriptUpgrader
 
     private static void upgradePattern(StringBuilder out, String pattern)
     {
-        out.append("(match = argsLine.match(/^");
+        out.append("match = argsLine.match(/^");
         boolean mustEnd = false;
+        boolean first = true;
         for (String part : pattern.split(" "))
         {
             if (part.isEmpty())
                 continue;
             if (mustEnd)
                 throw new IllegalArgumentException("Pattern must end after @*");
-            if (out.length() > 0)
+            if (!first)
                 out.append("\\s+");
+            first = false;
             if (part.charAt(0) == '@')
             {
                 switch (part.substring(1))
@@ -262,7 +261,7 @@ public class ScriptUpgrader
         // Cut off final space
         if (out.length() > 0 && out.charAt(out.length() - 1) == ' ')
             out.setLength(out.length() - 1);
-        out.append("/)) !== null");
+        out.append("$/)");
     }
 
     public static StringBuilder upgradeOldScript(String eventType, List<String> lines) throws Exception
@@ -349,7 +348,7 @@ public class ScriptUpgrader
             out.append(ignoreErrors ? "Server.tryRunCommand(sender" : "Server.runCommand(sender");
             if (hideChat || asServer)
             {
-                out.append("doAs(");
+                out.append(".doAs(");
                 out.append(asServer ? "null" : "sender.getPlayer()");
                 out.append(hideChat ? ", true)" : ", false)");
             }
@@ -485,7 +484,7 @@ public class ScriptUpgrader
         try
         {
             int idx = Integer.parseInt(arg);
-            return "args.get(" + idx + ")";
+            return "match[" + (idx + 1) + "]";
         }
         catch (NumberFormatException e)
         {
@@ -507,7 +506,7 @@ public class ScriptUpgrader
         switch (arg)
         {
         case "player":
-            return "sender.getPlayer()";
+            return "sender.getPlayer().getName()";
         case "x":
             return "sender.getPlayer().getX()";
         case "y":
