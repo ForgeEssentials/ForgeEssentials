@@ -22,6 +22,7 @@ If you open ForgeEssentials in your IDE, you must turn on annotation processing,
     `$HOME/.gradle/caches/modules-2/files-2.1/org.hibernate/hibernate-jpamodelgen/4.3.7.Final`
 
 ### IntelliJ IDEA
+![](http://files.forgeessentials.com/Idea_apt_settings.jpg)
 - Go to `Settings > Build, Execution and Deployment > Compiler > Annotation Processors`
  - Check `Enable annotation processing`
  - Under `Annotation Processors`, add this fully qualified name: `org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor`
