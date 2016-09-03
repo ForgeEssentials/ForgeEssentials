@@ -1,6 +1,8 @@
 package com.forgeessentials.jscripting.wrapper.entity;
 
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
@@ -15,6 +17,8 @@ import com.google.common.base.Throwables;
 public class JsEntity<T extends Entity> extends JsWrapper<T>
 {
 
+    private static Map<Class<?>, Constructor<?>> entityWrapperConstructors = new HashMap<>();
+
     /**
      * @tsd.ignore
      */
@@ -24,15 +28,21 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
         // TODO: Maybe use cache of existing wrappers from ScriptCompiler instead?
         try
         {
-            for (Class<?> entityClazz = entity.getClass(); Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass())
+            Class<?> entityClazz = entity.getClass();
+            Constructor<?> con = entityWrapperConstructors.get(entity.getClass());
+            if (con != null)
+                return (JsEntity<?>) con.newInstance(entity);
+
+            for (; Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass())
             {
                 try
                 {
                     Class<?> clazz = Class.forName("com.forgeessentials.jscripting.wrapper.entity.Js" + entityClazz.getSimpleName());
                     if (JsEntity.class.isAssignableFrom(clazz))
                     {
-                        Constructor<?> con = clazz.getDeclaredConstructor(entityClazz);
+                        con = clazz.getDeclaredConstructor(entityClazz);
                         con.setAccessible(true);
+                        entityWrapperConstructors.put(entity.getClass(), con);
                         return (JsEntity<?>) con.newInstance(entity);
                     }
                 }
