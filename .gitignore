@@ -37,3 +37,4 @@ modlist.txt
 /bin
 /.apt_generated/
 /src/*/generated/
+/jscripting/tsconfig.json
