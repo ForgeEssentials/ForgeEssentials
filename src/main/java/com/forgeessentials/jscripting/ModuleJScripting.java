@@ -93,7 +93,23 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public void load(FEModuleInitEvent event)
     {
         FECommandManager.registerCommand(new CommandJScript());
+        try
+        {
+            copyResourceFileIfNotExists("mc.d.ts");
+            copyResourceFileIfNotExists("fe.d.ts");
+            copyResourceFileIfNotExists("tsconfig.json");
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
+    private void copyResourceFileIfNotExists(String fileName) throws IOException
+    {
+        File file = new File(moduleDir, fileName);
+        if (!file.exists())
+            FileUtils.copyInputStreamToFile(ModuleJScripting.class.getResourceAsStream(fileName), file);
     }
 
     @SubscribeEvent
@@ -136,7 +152,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     public void loadScripts(ICommandSender sender)
     {
-        for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js" }, true); it.hasNext();)
+        for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js" }, true); it.hasNext(); )
         {
             File file = it.next();
             if (scripts.containsKey(file))

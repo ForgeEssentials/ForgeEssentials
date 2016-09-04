@@ -16,22 +16,12 @@
         ],
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "../rundir/ForgeEssentials/JScripting/commands"
+        "outDir": "./"
     },
     "filesGlob": [
         "mc.d.ts",
-        "fe.d.ts",
-        "**.ts"
-    ],
-    "exclude": [],
-    "files": [
-        "mc.d.ts",
-        "fe.d.ts",
-        "pumpkinhead.ts",
-        "radar.ts",
-        "randomtp.ts",
-        "sheeprandom.ts",
-        "test.ts"
+        "**/*.d.ts",
+        "**/*.ts"
     ],
     "compileOnSave": true,
     "buildOnSave": false,

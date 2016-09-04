@@ -3,6 +3,7 @@ package com.forgeessentials.jscripting;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import com.forgeessentials.jscripting.fewrapper.fe.JsFEServer;
@@ -644,13 +646,17 @@ public class TsdGenerator extends Doclet
         return LanguageVersion.JAVA_1_5;
     }
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
+        File outDir = new File("jscripting");
+        File feDtsFile = new File("src/main/resources/com/forgeessentials/jscripting/fe.d.ts");
+        File mcDtsFile = new File("src/main/resources/com/forgeessentials/jscripting/mc.d.ts");
+
         generator = new TsdGenerator();
         Main.execute(ClassLoader.getSystemClassLoader(), "-doclet", TsdGenerator.class.getName(), "-public",
                 "-sourcepath", "src/main/java",
                 "-subpackages", "com.forgeessentials.jscripting.fewrapper",
-                "-out", "jscripting/fe.d.ts",
+                "-out", feDtsFile.getAbsolutePath(),
                 "-header", "src/main/resources/com/forgeessentials/jscripting/fe_header.d.ts",
                 "-interface", JsFEServer.class.getName(),
                 "-static", JsPermissions.class.getName()
@@ -660,7 +666,7 @@ public class TsdGenerator extends Doclet
         Main.execute(ClassLoader.getSystemClassLoader(), "-doclet", TsdGenerator.class.getName(), "-public",
                 "-sourcepath", "src/main/java",
                 "-subpackages", "com.forgeessentials.jscripting.wrapper",
-                "-out", "jscripting/mc.d.ts",
+                "-out", mcDtsFile.getAbsolutePath(),
                 "-header", "src/main/resources/com/forgeessentials/jscripting/mc_header.d.ts",
                 "-external", UUID.class.getName(),
                 "-interface", JsWindow.class.getName(),
@@ -669,6 +675,9 @@ public class TsdGenerator extends Doclet
                 "-static", JsBlock.class.getName(),
                 "-static", JsItem.class.getName()
         );
+
+        FileUtils.copyFileToDirectory(feDtsFile, outDir);
+        FileUtils.copyFileToDirectory(mcDtsFile, outDir);
     }
 
 }
