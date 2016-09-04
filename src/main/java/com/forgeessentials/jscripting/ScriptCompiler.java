@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
@@ -16,13 +17,15 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.IOUtils;
 
-import com.forgeessentials.jscripting.wrapper.JsWindowStatic;
-import com.forgeessentials.jscripting.wrapper.event.JsEvent;
-import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
-import com.forgeessentials.jscripting.wrapper.server.JsPermissionsStatic;
-import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
-import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
-import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
+import com.forgeessentials.jscripting.fewrapper.fe.JsFEServer;
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
+import com.forgeessentials.jscripting.wrapper.mc.JsWindow;
+import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
+import com.forgeessentials.jscripting.wrapper.mc.item.JsItem;
+import com.forgeessentials.jscripting.fewrapper.fe.JsPermissions;
+import com.forgeessentials.jscripting.wrapper.mc.JsServer;
+import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
+import com.forgeessentials.jscripting.wrapper.mc.world.JsWorld;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
@@ -46,8 +49,6 @@ public final class ScriptCompiler
 
     private static SimpleBindings rootPkg = new SimpleBindings();
 
-    private static PermissionLevelObj permissionLevelObj = new PermissionLevelObj();
-
     static
     {
         try
@@ -59,25 +60,9 @@ public final class ScriptCompiler
         {
             Throwables.propagate(e);
         }
-        try
-        {
-            ImmutableSet<ClassInfo> classes = ClassPath.from(ScriptInstance.class.getClassLoader()).getTopLevelClassesRecursive(WRAPPER_PACKAGE);
-            for (ClassInfo classInfo : classes)
-            {
-                registerWrapperClass(classInfo);
-            }
-        }
-        catch (IOException e)
-        {
-            Throwables.propagate(e);
-        }
-    }
 
-    public static class PermissionLevelObj
-    {
-        public PermissionLevel TRUE = PermissionLevel.TRUE;
-        public PermissionLevel OP = PermissionLevel.OP;
-        public PermissionLevel FALSE = PermissionLevel.FALSE;
+        registerPackageClasses("com.forgeessentials.jscripting.wrapper");
+        registerPackageClasses("com.forgeessentials.jscripting.fewrapper");
     }
 
     public static Object toNashornClass(Class<?> c)
@@ -96,16 +81,33 @@ public final class ScriptCompiler
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public static void registerWrapperClass(ClassInfo classInfo)
+    public static void registerPackageClasses(String packageBase)
     {
-        if (!classInfo.getSimpleName().startsWith("Js"))
+        try
+        {
+            ImmutableSet<ClassInfo> classes = ClassPath.from(ScriptInstance.class.getClassLoader()).getTopLevelClassesRecursive(packageBase);
+            for (ClassInfo classInfo : classes)
+            {
+                registerWrapperClass(classInfo, packageBase);
+            }
+        }
+        catch (IOException e)
+        {
+            Throwables.propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void registerWrapperClass(ClassInfo classInfo, String packageBase)
+    {
+        if (!classInfo.getSimpleName().startsWith("Js") || classInfo.getName().equals(JsWrapper.class.getName()))
             return;
         Class<?> clazz = classInfo.load();
         // if (!JsWrapper.class.isAssignableFrom(clazz))
         // return;
 
-        String jsName = classInfo.getName().substring(WRAPPER_PACKAGE.length() + 1);
+        String jsName = classInfo.getName().substring(packageBase.length() + 1);
+
         String[] jsNameParts = jsName.split("\\.");
         SimpleBindings pkg = rootPkg;
         for (int i = 0; i < jsNameParts.length - 1; i++)
@@ -146,17 +148,26 @@ public final class ScriptCompiler
 
     public static void initEngine(ScriptEngine engine, ScriptInstance script) throws ScriptException
     {
-        engine.put("PermissionLevel", permissionLevelObj);
-        engine.put("mc", rootPkg);
+        for (Entry<String, Object> pkg : rootPkg.entrySet())
+            engine.put(pkg.getKey(), pkg.getValue());
 
-        engine.put("window", new JsWindowStatic(script));
-        engine.put("Server", new JsServerStatic(script));
-        engine.put("Block", new JsBlockStatic());
-        engine.put("Item", new JsItemStatic());
-        engine.put("World", new JsWorldStatic());
-        engine.put("Permissions", new JsPermissionsStatic());
+        engine.put("window", new JsWindow(script));
+        engine.put("Server", new JsServer(script));
+        engine.put("Block", toNashornClass(JsBlock.class));
+        engine.put("Item", toNashornClass(JsItem.class));
+        engine.put("World", toNashornClass(JsWorld.class));
 
-        // INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js")); // TODO: DEV ONLY: REALOD OF INIT SCRIPT
+        engine.put("Permissions", toNashornClass(JsPermissions.class));
+        engine.put("FEServer", new JsFEServer(script));
+
+        //        try
+        //        {
+        //            INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js")); // TODO: DEV ONLY: REALOD OF INIT SCRIPT
+        //        }
+        //        catch (IOException e)
+        //        {
+        //            e.printStackTrace();
+        //        }
         engine.eval(ScriptCompiler.INIT_SCRIPT);
     }
 }

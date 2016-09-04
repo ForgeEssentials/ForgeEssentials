@@ -1,5 +1,5 @@
 
-export function randomTpCommand(args: mc.CommandArgs) {
+export function randomTpCommand(args: fe.CommandArgs) {
     if (args.isEmpty()) {
         args.confirm('/jscript randomtp range [x z]: Teleport to some random location');
         return;
@@ -31,7 +31,7 @@ export function randomTpCommand(args: mc.CommandArgs) {
     Server.runCommand(hiddenChatSender, 'spreadplayers', x, z, 0, r, false, args.sender.getName());
 }
 
-Server.registerCommand({
+FEServer.registerCommand({
     name: 'randomtp',
     usage: '/randomtp range [x z] [player]',
     permission: 'fe.teleport.randomtp',

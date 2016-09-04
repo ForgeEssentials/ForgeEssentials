@@ -20,11 +20,13 @@
     },
     "filesGlob": [
         "mc.d.ts",
+        "fe.d.ts",
         "**.ts"
     ],
     "exclude": [],
     "files": [
         "mc.d.ts",
+        "fe.d.ts",
         "pumpkinhead.ts",
         "randomtp.ts",
         "sheeprandom.ts",

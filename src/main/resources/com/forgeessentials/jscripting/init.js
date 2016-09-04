@@ -27,21 +27,23 @@ function clearInterval(id) {
 	return window.clearInterval(id);
 }
 
-// window utilities
-function createAxisAlignedBB(arg1, arg2, arg3, arg4, arg5, arg6) {
-	return window.createAxisAlignedBB(arg1, arg2, arg3, arg4, arg5, arg6);
-}
-function createPoint(arg1, arg2, arg3) {
-	return window.createPoint(arg1, arg2, arg3);
-}
-function createWorldPoint(arg1, arg2, arg3, arg4) {
-	return window.createWorldPoint(arg1, arg2, arg3, arg4);
-}
-
 // NBT handling
 function getNbt(e) {
 	return JSON.parse(e._getNbt());
 }
 function setNbt(e, d) {
 	e._setNbt(JSON.stringify(d));
+}
+
+// window utilities
+function createAxisAlignedBB(arg1, arg2, arg3, arg4, arg5, arg6) {
+	return new mc.util.AxisAlignedBB(arg1, arg2, arg3, arg4, arg5, arg6);
+}
+
+// FE utilities
+function createPoint(arg1, arg2, arg3) {
+	return new fe.Point(arg1, arg2, arg3);
+}
+function createWorldPoint(arg1, arg2, arg3, arg4) {
+	return new fe.WorldPoint(arg1, arg2, arg3, arg4);
 }

@@ -26,7 +26,7 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
-import com.forgeessentials.jscripting.wrapper.JsCommandSender;
+import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -233,7 +233,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @Override
     public synchronized void runEventScripts(String key, ICommandSender sender)
     {
-        JsCommandSender jsSender = sender == null ? null : new JsCommandSender(sender);
+        JsICommandSender jsSender = sender == null ? null : new JsICommandSender(sender);
         String fnName = "on" + StringUtils.capitalize(key);
         for (ScriptInstance script : scripts.values())
         {
