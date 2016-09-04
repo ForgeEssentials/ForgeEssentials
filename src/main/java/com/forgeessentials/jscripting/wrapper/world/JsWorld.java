@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.entity.JsEntityList;
@@ -17,7 +18,28 @@ import com.forgeessentials.jscripting.wrapper.util.JsAxisAlignedBB;
 
 public class JsWorld<T extends World> extends JsWrapper<T>
 {
+
     private static Map<World, JsWorld<?>> worldCache = new WeakHashMap<>();
+
+    /**
+     * @tsd.ignore
+     */
+    public static JsWorld<?> get(World world)
+    {
+        if (worldCache.containsKey(world))
+            return worldCache.get(world);
+        JsWorld<?> jsWorld = new JsWorld<>(world);
+        worldCache.put(world, jsWorld);
+        return jsWorld;
+
+    }
+
+    public static JsWorldServer get(int dim)
+    {
+        WorldServer world = DimensionManager.getWorld(dim);
+        return world == null ? null : new JsWorldServer(world);
+    }
+
     protected Map<TileEntity, JsTileEntity<?>> tileEntityCache = new WeakHashMap<>();
 
     protected JsWorld(T that)
@@ -81,16 +103,6 @@ public class JsWorld<T extends World> extends JsWrapper<T>
     public JsWorldServer asWorldServer()
     {
         return that instanceof WorldServer ? new JsWorldServer((WorldServer) that) : null;
-    }
-
-    public static JsWorld<?> get(World world)
-    {
-        if (worldCache.containsKey(world))
-            return worldCache.get(world);
-        JsWorld<?> jsWorld = new JsWorld<>(world);
-        worldCache.put(world, jsWorld);
-        return jsWorld;
-
     }
 
 }

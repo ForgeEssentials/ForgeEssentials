@@ -13,6 +13,9 @@ public class JsBlock extends JsWrapper<Block>
 
     private static Map<Block, JsBlock> blockCache = new HashMap<>();
 
+    /**
+     * @tsd.ignore
+     */
     public static JsBlock get(Block block)
     {
         JsBlock result = blockCache.get(block);
@@ -22,6 +25,12 @@ public class JsBlock extends JsWrapper<Block>
             blockCache.put(block, result);
         }
         return result;
+    }
+
+    public static JsBlock get(String name)
+    {
+        Block block = Block.getBlockFromName(name);
+        return block == null ? null : JsBlock.get(block);
     }
 
     private JsBlock(Block that)

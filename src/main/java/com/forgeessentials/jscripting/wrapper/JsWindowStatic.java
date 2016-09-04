@@ -1,12 +1,6 @@
 package com.forgeessentials.jscripting.wrapper;
 
-import net.minecraft.util.AxisAlignedBB;
-
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.jscripting.ScriptInstance;
-import com.forgeessentials.jscripting.wrapper.world.JsPoint;
-import com.forgeessentials.jscripting.wrapper.world.JsWorldPoint;
 
 public class JsWindowStatic
 {

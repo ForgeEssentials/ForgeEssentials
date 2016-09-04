@@ -1,14 +1,15 @@
 package com.forgeessentials.jscripting.wrapper.world;
 
-import net.minecraft.block.Block;
-
 public class JsBlockStatic
 {
 
+    /**
+     * @deprecated Use mc.world.Block.get(name) instead
+     */
+    @Deprecated
     public JsBlock getBlock(String name)
     {
-        Block block = Block.getBlockFromName(name);
-        return block == null ? null : JsBlock.get(block);
+        return JsBlock.get(name);
     }
 
 }

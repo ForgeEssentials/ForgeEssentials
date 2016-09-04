@@ -17,7 +17,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.jscripting.wrapper.JsWindowStatic;
 import com.forgeessentials.jscripting.wrapper.event.JsEvent;
@@ -111,7 +110,7 @@ public final class ScriptCompiler
         SimpleBindings pkg = rootPkg;
         for (int i = 0; i < jsNameParts.length - 1; i++)
         {
-            String name = StringUtils.capitalize(jsNameParts[i]);
+            String name = jsNameParts[i];
             SimpleBindings parentPkg = pkg;
             pkg = (SimpleBindings) parentPkg.get(name);
             if (pkg == null)
@@ -157,7 +156,7 @@ public final class ScriptCompiler
         engine.put("World", new JsWorldStatic());
         engine.put("Permissions", new JsPermissionsStatic());
 
-        // INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js")); // TODO: DEV ONLY REALOD OF INIT SCRIPT
+        // INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js")); // TODO: DEV ONLY: REALOD OF INIT SCRIPT
         engine.eval(ScriptCompiler.INIT_SCRIPT);
     }
 }

@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 import com.forgeessentials.client.core.CommonProxy;
 import com.forgeessentials.commons.BuildInfo;
 
-@Mod(modid = ForgeEssentialsClient.MODID, name = "ForgeEssentials Client Addon", version = BuildInfo.BASE_VERSION, guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory", useMetadata = true, dependencies = "required-after:Forge@[10.13.4.1448,)")
+@Mod(modid = ForgeEssentialsClient.MODID, name = "ForgeEssentials Client Addon", version = BuildInfo.BASE_VERSION, guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory", useMetadata = true, dependencies = BuildInfo.DEPENDENCIES)
 public class ForgeEssentialsClient
 {
     

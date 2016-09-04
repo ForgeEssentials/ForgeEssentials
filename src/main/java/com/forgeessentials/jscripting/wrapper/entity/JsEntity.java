@@ -1,5 +1,8 @@
 package com.forgeessentials.jscripting.wrapper.entity;
 
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
@@ -13,6 +16,48 @@ import com.google.common.base.Throwables;
 
 public class JsEntity<T extends Entity> extends JsWrapper<T>
 {
+
+    private static Map<Class<?>, Constructor<?>> entityWrapperConstructors = new HashMap<>();
+
+    /**
+     * @tsd.ignore
+     */
+    public static JsEntity<?> get(Entity entity)
+    {
+        // Fancy reflection crap to get a specific entity type if it exists
+        // TODO: Maybe use cache of existing wrappers from ScriptCompiler instead?
+        try
+        {
+            Class<?> entityClazz = entity.getClass();
+            Constructor<?> con = entityWrapperConstructors.get(entity.getClass());
+            if (con != null)
+                return (JsEntity<?>) con.newInstance(entity);
+
+            for (; Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass())
+            {
+                try
+                {
+                    Class<?> clazz = Class.forName("com.forgeessentials.jscripting.wrapper.entity.Js" + entityClazz.getSimpleName());
+                    if (JsEntity.class.isAssignableFrom(clazz))
+                    {
+                        con = clazz.getDeclaredConstructor(entityClazz);
+                        con.setAccessible(true);
+                        entityWrapperConstructors.put(entity.getClass(), con);
+                        return (JsEntity<?>) con.newInstance(entity);
+                    }
+                }
+                catch (ClassNotFoundException e)
+                {
+                    /* do nothing */
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Throwables.propagate(e);
+        }
+        return new JsEntity<>(entity);
+    }
 
     private JsWorld<?> world;
 
@@ -155,34 +200,6 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
     public String getEntityType()
     {
         return that.getClass().getSimpleName();
-    }
-
-    public static JsEntity<?> get(Entity entity)
-    {
-        // Fancy reflection crap to get a specific entity type if it exists
-        try
-        {
-            for (Class<?> entityClazz = entity.getClass(); Entity.class.isAssignableFrom(entityClazz); entityClazz = entityClazz.getSuperclass())
-            {
-                try
-                {
-                    Class<?> clazz = Class.forName("com.forgeessentials.jscripting.wrapper.entity.Js" + entityClazz.getSimpleName());
-                    if (JsEntity.class.isAssignableFrom(clazz))
-                    {
-                        return (JsEntity<?>) clazz.getConstructor(entityClazz).newInstance(entity);
-                    }
-                }
-                catch (ClassNotFoundException e)
-                {
-                    /* do nothing */
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Throwables.propagate(e);
-        }
-        return new JsEntity<>(entity);
     }
 
 }

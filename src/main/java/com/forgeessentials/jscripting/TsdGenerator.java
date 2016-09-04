@@ -196,7 +196,7 @@ public class TsdGenerator extends Doclet
                 for (FieldDoc fieldDoc : window.fields())
                     generateField(fieldDoc);
                 for (MethodDoc methodDoc : window.methods())
-                    generateMethod(methodDoc);
+                    generateMethod(methodDoc, false);
                 writeLn("");
             }
         }
@@ -253,11 +253,16 @@ public class TsdGenerator extends Doclet
             generateField(fieldDoc);
 
         if (isClass)
+        {
+            for (MethodDoc methodDoc : classDoc.methods())
+                generateMethod(methodDoc, true);
+
             for (ConstructorDoc constructorDoc : classDoc.constructors())
                 generateConstructor(constructorDoc);
+        }
 
         for (MethodDoc methodDoc : classDoc.methods())
-            generateMethod(methodDoc);
+            generateMethod(methodDoc, false);
 
         indention--;
         writeLn("}");
@@ -338,17 +343,16 @@ public class TsdGenerator extends Doclet
         write(";");
     }
 
-    private void generateMethod(MethodDoc methodDoc)
+    private void generateMethod(MethodDoc methodDoc, boolean staticOnly)
     {
-        if (!methodDoc.isPublic() || methodDoc.isStatic() || ignoreDoc(methodDoc))
+        if (!methodDoc.isPublic() || ignoreDoc(methodDoc))
+            return;
+        if (methodDoc.isStatic() != staticOnly)
             return;
 
         writeComment(methodDoc);
 
-        if (indention == 0)
-            writeLn("declare function ");
-        else
-            writeLn("");
+        writeLn(indention == 0 ? "declare function " : (staticOnly ? "static " : ""));
 
         Tag[] defTags = methodDoc.tags("tsd.def");
         if (defTags.length > 0)
@@ -402,7 +406,8 @@ public class TsdGenerator extends Doclet
 
     private void writeComment(Doc fieldDoc)
     {
-        if (fieldDoc.commentText().length() > 0)
+        String deprecation = getFirstTagText(fieldDoc, "deprecated");
+        if (fieldDoc.commentText().length() > 0 || deprecation != null)
         {
             writeLn("/**");
             String comment = fieldDoc.commentText()
@@ -410,8 +415,11 @@ public class TsdGenerator extends Doclet
                     .replace("<br>", "")
                     .replace("<b>", "")
                     .replace("</b>", "");
-            for (String line : comment.split("\n"))
-                writeLn(" * " + line.trim());
+            if (comment.length() > 0)
+                for (String line : comment.split("\n"))
+                    writeLn(" * " + line.trim());
+            if (deprecation != null)
+                writeLn(" * @deprecated " + deprecation);
             writeLn(" */");
         }
     }

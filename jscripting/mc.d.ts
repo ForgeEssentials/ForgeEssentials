@@ -47,10 +47,14 @@ declare namespace mc {
 	namespace world {
 		
 		class Block extends mc.JavaObject {
+			static get(name: string): Block;
 			getName(): string;
 		}
 		
 		interface BlockStatic {
+			/**
+			 * @deprecated Use mc.world.Block.get(name) instead
+			 */
 			getBlock(name: string): Block;
 		}
 		
@@ -76,6 +80,7 @@ declare namespace mc {
 		}
 		
 		class World extends mc.JavaObject {
+			static get(dim: int): WorldServer;
 			getDimension(): int;
 			getDifficulty(): int;
 			getPlayerEntities(): mc.entity.EntityPlayerList;
@@ -104,6 +109,9 @@ declare namespace mc {
 		}
 		
 		interface WorldStatic {
+			/**
+			 * @deprecated Use mc.world.World.get(dim) instead
+			 */
 			getWorld(dim: int): WorldServer;
 		}
 		
@@ -230,6 +238,7 @@ declare namespace mc {
 		}
 		
 		class Item extends mc.JavaObject {
+			static get(name: string): Item;
 			getName(): string;
 		}
 		
@@ -257,6 +266,9 @@ declare namespace mc {
 		}
 		
 		interface ItemStatic {
+			/**
+			 * @deprecated Use mc.item.Item.get(name) instead
+			 */
 			getItem(name: string): Item;
 		}
 		
@@ -492,6 +504,9 @@ declare namespace mc {
 	}
 	
 	class UUID {
+		static randomUUID(): UUID;
+		static nameUUIDFromBytes(arg0: byte[]): UUID;
+		static fromString(arg0: string): UUID;
 		constructor(arg0: long, arg1: long);
 		getLeastSignificantBits(): long;
 		getMostSignificantBits(): long;
