@@ -57,7 +57,7 @@ def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
-ext.baseVersion = "1.4.4"
+ext.baseVersion = "1.4.5"
 version = baseVersion + "." + buildNumber
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
@@ -66,7 +66,7 @@ targetCompatibility = 1.8
 
 // Set up forge options
 minecraft {
-	version = "1.7.10-10.13.4.1448-1.7.10"
+	version = "1.7.10-10.13.4.1558-1.7.10"
 	runDir = "rundir"
 	
 	replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
