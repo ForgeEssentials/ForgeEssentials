@@ -437,7 +437,8 @@ public class TsdGenerator extends Doclet
 
     private void writeType(Doc doc, Type type)
     {
-        write(mapClassName(type));
+        String typeOverride = getFirstTagText(doc, "tsd.type");
+        write(typeOverride != null ? typeOverride : mapClassName(type));
         if (type instanceof ParameterizedType)
         {
             if (type.simpleTypeName().equals("MappedList"))
@@ -593,6 +594,10 @@ public class TsdGenerator extends Doclet
         case "-external":
         case "-static":
         case "-interface":
+            // Ignored options for gradle compat:
+        case "-d":
+        case "-doctitle":
+        case "-windowtitle":
             return 2;
         }
         return 0;

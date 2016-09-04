@@ -1,13 +1,8 @@
 
-/**
- * Constants for permission level used when registering permissions
- */ 
-declare enum PermissionLevel {
-    TRUE, OP, FALSE
-}
+declare namespace fe {
 
-declare namespace mc {
     type CommandCallback = (args: fe.CommandArgs) => void;
+    
 }
 
 declare namespace net.minecraftforge.permission {
@@ -22,7 +17,7 @@ declare function createPoint(x: int, y: int, z: int);
 declare function createWorldPoint(dim: int, x: int, y: int, z: int);
 
 declare namespace fe {
-	
+
 	class CommandArgs extends Wrapper {
 		sender: mc.ICommandSender;
 		player: mc.entity.EntityPlayer;
@@ -62,16 +57,16 @@ declare namespace fe {
 		getSenderPoint(): WorldPoint;
 		needsPlayer(): void;
 	}
-	
+
 	class CommandOptions {
 		name: string;
 		usage?: string;
 		permission?: string;
 		opOnly?: boolean;
-		processCommand: any;
-		tabComplete?: any;
+		processCommand: CommandCallback;
+		tabComplete?: CommandCallback;
 	}
-	
+
 	interface FEServer {
 		/**
 		 * Registers a new command in the game.
@@ -79,13 +74,13 @@ declare namespace fe {
 		 */
 		registerCommand(options: CommandOptions): void;
 	}
-	
+
 	class PermissionLevel {
 		static TRUE: net.minecraftforge.permission.PermissionLevel;
 		static OP: net.minecraftforge.permission.PermissionLevel;
 		static FALSE: net.minecraftforge.permission.PermissionLevel;
 	}
-	
+
 	class Permissions {
 		static checkBooleanPermission(permissionValue: string): boolean;
 		static getPermission(ident: UserIdent, point: WorldPoint, area: WorldArea, groups: string[], permissionNode: string, isProperty: boolean): string;
@@ -133,7 +128,7 @@ declare namespace fe {
 		static removePlayerFromGroup(ident: UserIdent, group: string): void;
 		static getPrimaryGroup(ident: UserIdent): string;
 	}
-	
+
 	class Point extends Wrapper {
 		constructor(x: int, y: int, z: int);
 		getX(): int;
@@ -150,10 +145,10 @@ declare namespace fe {
 		add(x: int, y: int, z: int): void;
 		subtract(x: int, y: int, z: int): void;
 	}
-	
+
 	class ServerZone extends Wrapper {
 	}
-	
+
 	class UserIdent extends Wrapper {
 		hasUsername(): boolean;
 		hasUuid(): boolean;
@@ -173,10 +168,10 @@ declare namespace fe {
 		checkPermission(permissionNode: string): boolean;
 		getPermissionProperty(permissionNode: string): string;
 	}
-	
+
 	class WorldArea extends mc.AreaBase {
 	}
-	
+
 	class WorldPoint extends Point {
 		constructor(dim: int, x: int, y: int, z: int);
 		getDimension(): int;
@@ -185,15 +180,15 @@ declare namespace fe {
 		setY(y: int): WorldPoint;
 		setZ(z: int): WorldPoint;
 	}
-	
+
 }
 
 declare namespace fe.event.entity.player {
-	
+
 	class FEPlayerEvent extends mc.event.entity.player.PlayerEvent {
 		constructor();
 	}
-	
+
 }
 
 

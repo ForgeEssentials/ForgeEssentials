@@ -182,7 +182,7 @@ public class ScriptUpgrader
         out.append("\n\t\targs.error('Invalid command syntax');\n\t}");
         out.append("\n}");
         out.append("\n\t");
-        out.append("\nServer.registerCommand({");
+        out.append("\nFEServer.registerCommand({");
         out.append("\n\tname: '" + cmd.name + "',");
         out.append("\n\tusage: '" + cmd.usage + "',");
         out.append("\n\tpermission: " + cmd.permission + ",");
@@ -433,6 +433,15 @@ public class ScriptUpgrader
                 break;
             case "failall":
                 out.append("Server.chatError(");
+                out.append(StringUtils.join(args, " + ' ' + "));
+                out.append(");\n\treturn;");
+                break;
+            case "permcheck":
+                out.append("if (!fe.Permissions.checkPermission(");
+                args.remove(0);
+                out.append(", ");
+                args.remove(0);
+                out.append(")) return sender.chatError(");
                 out.append(StringUtils.join(args, " + ' ' + "));
                 out.append(");\n\treturn;");
                 break;

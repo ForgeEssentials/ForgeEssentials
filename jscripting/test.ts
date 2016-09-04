@@ -11,7 +11,7 @@ export function processCommand(args: fe.CommandArgs) {
         args.confirm('Running script as server');
     }
 
-    fe.Permissions.registerPermission('script.test', PermissionLevel.TRUE, 'script test!');
+    fe.Permissions.registerPermission('script.test', fe.PermissionLevel.TRUE, 'script test!');
 
     args.confirm(``);
     var point: fe.Point = new fe.Point(1, 2, 3);

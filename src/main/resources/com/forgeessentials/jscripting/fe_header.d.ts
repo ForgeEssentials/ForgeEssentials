@@ -1,13 +1,8 @@
 
-/**
- * Constants for permission level used when registering permissions
- */ 
-declare enum PermissionLevel {
-    TRUE, OP, FALSE
-}
+declare namespace fe {
 
-declare namespace mc {
     type CommandCallback = (args: fe.CommandArgs) => void;
+
 }
 
 declare namespace net.minecraftforge.permission {
