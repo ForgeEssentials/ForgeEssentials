@@ -1,10 +1,14 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
+import java.util.Date;
+import java.util.UUID;
+
 import javax.script.ScriptException;
 
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
+import com.forgeessentials.util.PlayerInfo;
 
 /**
  * @tsd.interface FEServer
@@ -32,5 +36,27 @@ public class JsFEServer
         JsCommandOptions opt = script.getProperties(new JsCommandOptions(), options, JsCommandOptions.class);
         script.registerScriptCommand(new CommandJScriptCommand(script, opt));
     }
+
+    /**
+     * Returns the amount of time this player was active on the server in seconds
+     */
+    public long getTimePlayed(UUID playerId)
+    {
+        PlayerInfo pi = PlayerInfo.get(playerId);
+        return pi == null ? 0 : pi.getTimePlayed() / 1000;
+    }
+
+    public Date getLastLogout(UUID playerId)
+    {
+        PlayerInfo pi = PlayerInfo.get(playerId);
+        return pi == null ? null : pi.getLastLogout();
+    }
+
+    public Date getLastLogin(UUID playerId)
+    {
+        PlayerInfo pi = PlayerInfo.get(playerId);
+        return pi == null ? null : pi.getLastLogin();
+    }
+
 
 }

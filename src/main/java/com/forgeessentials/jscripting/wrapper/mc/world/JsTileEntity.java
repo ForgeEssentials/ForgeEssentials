@@ -20,7 +20,7 @@ public class JsTileEntity<T extends TileEntity> extends JsWrapper<T>
         if (!(that instanceof IInventory))
             return null;
         if (inventory == null)
-            inventory = new JsInventory<>((IInventory) that);
+            inventory = JsInventory.get((IInventory) that);
         return inventory;
     }
 

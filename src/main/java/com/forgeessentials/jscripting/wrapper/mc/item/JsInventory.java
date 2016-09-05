@@ -7,14 +7,22 @@ import com.forgeessentials.jscripting.wrapper.JsWrapper;
 public class JsInventory<T extends IInventory> extends JsWrapper<T>
 {
 
-    public JsInventory(T that)
+    /**
+     * @tsd.ignore
+     */
+    public static <T extends IInventory> JsInventory<T> get(T inventory)
+    {
+        return inventory == null ? null : new JsInventory(inventory);
+    }
+
+    protected JsInventory(T that)
     {
         super(that);
     }
 
     public JsItemStack getStackInSlot(int slot)
     {
-        return new JsItemStack(that.getStackInSlot(slot));
+        return JsItemStack.get(that.getStackInSlot(slot));
     }
 
     public void setStackInSlot(int slot, JsItemStack stack)

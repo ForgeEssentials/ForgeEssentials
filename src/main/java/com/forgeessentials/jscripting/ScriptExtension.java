@@ -12,4 +12,8 @@ public interface ScriptExtension
 
     void initEngine(ScriptEngine engine, ScriptInstance script) throws ScriptException;
 
+    void serverStarted();
+
+    void serverStopped();
+
 }

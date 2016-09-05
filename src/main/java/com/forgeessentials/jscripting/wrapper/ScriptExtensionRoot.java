@@ -7,8 +7,8 @@ import javax.script.ScriptException;
 
 import org.apache.commons.io.IOUtils;
 
-import com.forgeessentials.jscripting.ScriptExtension;
 import com.forgeessentials.jscripting.ScriptCompiler;
+import com.forgeessentials.jscripting.ScriptExtension;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.wrapper.mc.JsServer;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsItem;
@@ -47,6 +47,16 @@ public class ScriptExtensionRoot implements ScriptExtension
         engine.put("localStorage", ScriptCompiler.toNashornClass(JsLocalStorage.class));
 
         engine.eval(INIT_SCRIPT);
+    }
+
+    @Override
+    public void serverStarted()
+    {
+    }
+
+    @Override
+    public void serverStopped()
+    {
     }
 
 }

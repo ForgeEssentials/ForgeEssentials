@@ -256,7 +256,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @Override
     public synchronized void runEventScripts(String key, ICommandSender sender)
     {
-        JsICommandSender jsSender = sender == null ? null : new JsICommandSender(sender);
+        JsICommandSender jsSender = JsICommandSender.get(sender);
         String fnName = "on" + StringUtils.capitalize(key);
         for (ScriptInstance script : scripts.values())
         {

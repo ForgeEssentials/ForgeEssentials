@@ -73,6 +73,12 @@ declare namespace fe {
 		 * The processCommand and tabComplete handler can be the same, if the processCommand handler properly checks for args.isTabCompletion.
 		 */
 		registerCommand(options: CommandOptions): void;
+		/**
+		 * Returns the amount of time this player was active on the server in seconds
+		 */
+		getTimePlayed(playerId: java.util.UUID): long;
+		getLastLogout(playerId: java.util.UUID): java.util.Date;
+		getLastLogin(playerId: java.util.UUID): java.util.Date;
 	}
 	
 	class PermissionLevel {
@@ -101,25 +107,25 @@ declare namespace fe {
 		static getUserPermissionProperty(ident: UserIdent, targetPoint: WorldPoint, permissionNode: string): string;
 		static checkUserPermission(ident: UserIdent, targetArea: WorldArea, permissionNode: string): boolean;
 		static getUserPermissionProperty(ident: UserIdent, targetArea: WorldArea, permissionNode: string): string;
-		static checkUserPermission(ident: UserIdent, zone: mc.Zone, permissionNode: string): boolean;
-		static getUserPermissionProperty(ident: UserIdent, zone: mc.Zone, permissionNode: string): string;
+		static checkUserPermission(ident: UserIdent, zone: Zone, permissionNode: string): boolean;
+		static getUserPermissionProperty(ident: UserIdent, zone: Zone, permissionNode: string): string;
 		static getGroupPermissionProperty(group: string, permissionNode: string): string;
-		static getGroupPermissionProperty(group: string, zone: mc.Zone, permissionNode: string): string;
+		static getGroupPermissionProperty(group: string, zone: Zone, permissionNode: string): string;
 		static checkGroupPermission(group: string, permissionNode: string): boolean;
-		static checkGroupPermission(group: string, zone: mc.Zone, permissionNode: string): boolean;
+		static checkGroupPermission(group: string, zone: Zone, permissionNode: string): boolean;
 		static getGroupPermissionProperty(group: string, point: WorldPoint, permissionNode: string): string;
 		static checkGroupPermission(group: string, point: WorldPoint, permissionNode: string): boolean;
 		static getGlobalPermissionProperty(permissionNode: string): string;
-		static getGlobalPermissionProperty(zone: mc.Zone, permissionNode: string): string;
+		static getGlobalPermissionProperty(zone: Zone, permissionNode: string): string;
 		static checkGlobalPermission(permissionNode: string): boolean;
-		static checkGlobalPermission(zone: mc.Zone, permissionNode: string): boolean;
+		static checkGlobalPermission(zone: Zone, permissionNode: string): boolean;
 		static setPlayerPermission(ident: UserIdent, permissionNode: string, value: boolean): void;
 		static setPlayerPermissionProperty(ident: UserIdent, permissionNode: string, value: string): void;
 		static setGroupPermission(group: string, permissionNode: string, value: boolean): void;
 		static setGroupPermissionProperty(group: string, permissionNode: string, value: string): void;
-		static getZones(): mc.Zone[];
-		static getZoneById(id: int): mc.Zone;
-		static getZoneById(id: string): mc.Zone;
+		static getZones(): Zone[];
+		static getZoneById(id: int): Zone;
+		static getZoneById(id: string): Zone;
 		static getServerZone(): ServerZone;
 		static isSystemGroup(group: string): boolean;
 		static groupExists(groupName: string): boolean;
@@ -146,7 +152,13 @@ declare namespace fe {
 		subtract(x: int, y: int, z: int): void;
 	}
 	
-	class ServerZone extends Wrapper {
+	class ServerZone extends Zone {
+		getRootZone(): Zone;
+		groupExists(name: string): boolean;
+		createGroup(name: string): boolean;
+		getZonesAt(worldPoint: WorldPoint): java.util.List;
+		getZoneAt(worldPoint: WorldPoint): Zone;
+		getPlayerGroups(player: mc.entity.EntityPlayer): java.util.List;
 	}
 	
 	class UserIdent extends Wrapper {
@@ -179,6 +191,17 @@ declare namespace fe {
 		setX(x: int): WorldPoint;
 		setY(y: int): WorldPoint;
 		setZ(z: int): WorldPoint;
+	}
+	
+	class Zone extends Wrapper {
+		getId(): int;
+		isPlayerInZone(player: mc.entity.EntityPlayer): boolean;
+		isInZone(point: WorldPoint): boolean;
+		isInZone(point: WorldArea): boolean;
+		isPartOfZone(point: WorldArea): boolean;
+		getName(): string;
+		getParent(): com.forgeessentials.api.permissions.Zone;
+		getServerZone(): ServerZone;
 	}
 	
 }

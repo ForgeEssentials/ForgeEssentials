@@ -20,7 +20,15 @@ public class JsICommandSender extends JsWrapper<ICommandSender>
 
     private JsEntityPlayer player;
 
-    public JsICommandSender(ICommandSender that)
+    /**
+     * @tsd.ignore
+     */
+    public static JsICommandSender get(ICommandSender sender)
+    {
+        return sender == null ? null : new JsICommandSender(sender);
+    }
+
+    private JsICommandSender(ICommandSender that)
     {
         super(that);
     }

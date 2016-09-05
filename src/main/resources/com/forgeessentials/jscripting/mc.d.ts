@@ -90,6 +90,10 @@ declare namespace mc {
 		 */
 		tryRunCommand(sender: ICommandSender, cmd: string, ...args: any[]): void;
 		/**
+		 * Registers a new event handler.
+		 */
+		registerEvent(event: string, handler: (event: mc.event.Event) => void): void;
+		/**
 		 * Broadcast an uncolored message to all players
 		 */
 		chat(message: string): void;
@@ -110,12 +114,21 @@ declare namespace mc {
 		 */
 		chatWarning(message: string): void;
 		/**
-		 * Registers a new event handler.
+		 * Returns the amount of time this player was active on the server in seconds
 		 */
-		registerEvent(event: string, handler: (event: mc.event.Event) => void): void;
-	}
-	
-	class Zone extends Wrapper {
+		getTps(): double;
+		/**
+		 * Time since server start in ms
+		 */
+		getUptime(): long;
+		/**
+		 * Returns the number of players currently online
+		 */
+		getCurrentPlayerCount(): int;
+		/**
+		 * Returns the total number of unique players that have connected to this server
+		 */
+		getUniquePlayerCount(): int;
 	}
 	
 }
@@ -164,6 +177,100 @@ declare namespace mc.entity {
 		asCommandSender(): mc.ICommandSender;
 		getInventory(): mc.item.InventoryPlayer;
 		getBedLocation(dimension: int): fe.Point;
+		getGameType(): net.minecraft.world.WorldSettings.GameType;
+		/**
+		 * Sets the player's game mode and sends it to them.
+		 */
+		setGameType(gameType: net.minecraft.world.WorldSettings.GameType): void;
+		/**
+		 * Whether the player is currently using an item (by holding down use button)
+		 */
+		isUsingItem(): boolean;
+		/**
+		 * Whether the player is currently using an item to block attacks
+		 */
+		isBlocking(): boolean;
+		getScore(): int;
+		/**
+		 * Set player's score
+		 */
+		setScore(score: int): void;
+		/**
+		 * Add to player's score
+		 */
+		addScore(score: int): void;
+		/**
+		 * Returns how strong the player is against the specified block at this moment
+		 */
+		getBreakSpeed(block: mc.world.Block, cannotHarvestBlock: boolean, meta: int, x: int, y: int, z: int): float;
+		/**
+		 * Checks if the player has the ability to harvest a block (checks current inventory item for a tool if necessary)
+		 */
+		canHarvestBlock(block: mc.world.Block): boolean;
+		getEyeHeight(): float;
+		canAttackPlayer(player: EntityPlayer): boolean;
+		/**
+		 * Returns the current armor value as determined by a call to InventoryPlayer.getTotalArmorValue
+		 */
+		getTotalArmorValue(): int;
+		/**
+		 * When searching for vulnerable players, if a player is invisible, the return value of this is the chance of seeing
+		 * them anyway.
+		 */
+		getArmorVisibility(): float;
+		interactWith(entity: Entity): boolean;
+		/**
+		 * Returns the currently being used item by the player.
+		 */
+		getCurrentEquippedItem(): mc.item.ItemStack;
+		/**
+		 * Destroys the currently equipped item from the player's inventory.
+		 */
+		destroyCurrentEquippedItem(): void;
+		/**
+		 * Attacks for the player the targeted entity with the currently equipped item.
+		 * The equipped item has hitEntity called on it.
+		 */
+		attackTargetEntityWithCurrentItem(targetEntity: Entity): void;
+		/**
+		 * Returns whether player is sleeping or not
+		 */
+		isPlayerSleeping(): boolean;
+		/**
+		 * Returns whether or not the player is asleep and the screen has fully faded.
+		 */
+		isPlayerFullyAsleep(): boolean;
+		getCurrentArmor(slot: int): mc.item.ItemStack;
+		/**
+		 * Add experience points to player.
+		 */
+		addExperience(exp: int): void;
+		/**
+		 * Add experience levels to this player.
+		 */
+		addExperienceLevel(levels: int): void;
+		/**
+		 * increases exhaustion level by supplied amount
+		 */
+		addExhaustion(exhaustion: float): void;
+		/**
+		 * Get the player's food level.
+		 */
+		getFoodLevel(): int;
+		/**
+		 * Get the player's food saturation level.
+		 */
+		getSaturationLevel(): float;
+		addFoodStats(foodLevel: int, foodSaturationModifier: float): void;
+		/**
+		 * If foodLevel is not max.
+		 */
+		needFood(): boolean;
+		canEat(canEatWithoutHunger: boolean): boolean;
+		/**
+		 * Returns the InventoryEnderChest of this player.
+		 */
+		getInventoryEnderChest(): mc.item.Inventory;
 	}
 	
 	class EntityPlayerList extends JavaList<EntityPlayer> {
@@ -349,6 +456,104 @@ declare namespace mc.world {
 		setBlock(x: int, y: int, z: int, block: Block, meta: int): void;
 		getTileEntity(x: int, y: int, z: int): TileEntity;
 		asWorldServer(): WorldServer;
+		getWorldTime(): long;
+		getTotalWorldTime(): long;
+		/**
+		 * Sets the world time.
+		 */
+		setWorldTime(time: long): void;
+		setSpawnLocation(x: int, y: int, z: int): void;
+		/**
+		 * Called when checking if a certain block can be mined or not. The 'spawn safe zone' check is located here.
+		 */
+		canMineBlock(player: mc.entity.EntityPlayer, x: int, y: int, z: int): boolean;
+		getWeightedThunderStrength(weight: float): float;
+		/**
+		 * Not sure about this actually. Reverting this one myself.
+		 */
+		getRainStrength(strength: float): float;
+		/**
+		 * Returns true if the current thunder strength (weighted with the rain strength) is greater than 0.9
+		 */
+		isThundering(): boolean;
+		/**
+		 * Returns true if the current rain strength is greater than 0.2
+		 */
+		isRaining(): boolean;
+		canLightningStrikeAt(x: int, y: int, z: int): boolean;
+		/**
+		 * Checks to see if the biome rainfall values for a given x,y,z coordinate set are extremely high
+		 */
+		isBlockHighHumidity(x: int, y: int, z: int): boolean;
+		/**
+		 * Returns current world height.
+		 */
+		getHeight(): int;
+		/**
+		 * Returns current world height.
+		 */
+		getActualHeight(): int;
+		getTopBlock(x: int, z: int): Block;
+		/**
+		 * Returns true if the block at the specified coordinates is empty
+		 */
+		isAirBlock(x: int, y: int, z: int): boolean;
+		/**
+		 * Checks if the specified block is able to see the sky
+		 */
+		canBlockSeeTheSky(x: int, y: int, z: int): boolean;
+		/**
+		 * Does the same as getBlockLightValue_do but without checking if its not a normal block
+		 */
+		getFullBlockLightValue(x: int, y: int, z: int): int;
+		/**
+		 * Gets the light value of a block location
+		 */
+		getBlockLightValue(x: int, y: int, z: int): int;
+		/**
+		 * Gets the light value of a block location. This is the actual function that gets the value and has a bool flag
+		 * that indicates if its a half step block to get the maximum light value of a direct neighboring block (left,
+		 * right, forward, back, and up)
+		 */
+		getBlockLightValue_do(x: int, y: int, z: int, isHalfBlock: boolean): int;
+		/**
+		 * Returns the y coordinate with a block in it at this x, z coordinate
+		 */
+		getHeightValue(x: int, z: int): int;
+		/**
+		 * Returns how bright the block is shown as which is the block's light value looked up in a lookup table (light
+		 * values aren't linear for brightness). Args: x, y, z
+		 */
+		getLightBrightness(x: int, y: int, z: int): float;
+		/**
+		 * Checks whether its daytime by seeing if the light subtracted from the skylight is less than 4
+		 */
+		isDaytime(): boolean;
+		/**
+		 * calls calculateCelestialAngle
+		 */
+		getCelestialAngle(arg1: float): float;
+		/**
+		 * gets the current fullness of the moon expressed as a float between 1.0 and 0.0, in steps of .25
+		 */
+		getCurrentMoonPhaseFactor(): float;
+		getCurrentMoonPhaseFactorBody(): float;
+		/**
+		 * Return getCelestialAngle() * 2 * PI
+		 */
+		getCelestialAngleRadians(arg1: float): float;
+		/**
+		 * Gets the closest player to the entity within the specified distance (if distance is less than 0 then ignored).
+		 */
+		getClosestPlayerToEntity(entity: mc.entity.Entity, dist: double): mc.entity.EntityPlayer;
+		/**
+		 * Gets the closest player to the point within the specified distance (distance can be set to less than 0 to not limit the distance).
+		 */
+		getClosestPlayer(x: double, y: double, z: double, dist: double): mc.entity.EntityPlayer;
+		/**
+		 * Retrieve the world seed from level.dat
+		 */
+		getSeed(): long;
 	}
 	
 	class WorldServer extends World {

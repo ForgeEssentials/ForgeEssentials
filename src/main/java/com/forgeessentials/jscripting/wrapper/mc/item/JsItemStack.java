@@ -12,7 +12,15 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 
     protected JsItem item;
 
-    public JsItemStack(ItemStack that)
+    /**
+     * @tsd.ignore
+     */
+    public static JsItemStack get(ItemStack itemStack)
+    {
+        return itemStack == null ? null : new JsItemStack(itemStack);
+    }
+
+    private JsItemStack(ItemStack that)
     {
         super(that);
         this.item = JsItem.get(that.getItem());

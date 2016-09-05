@@ -62,17 +62,17 @@ public class JsUserIdent extends JsWrapper<UserIdent>
 
     public JsEntityPlayer getPlayer()
     {
-        return new JsEntityPlayer(that.getPlayer());
+        return JsEntityPlayer.get(that.getPlayer());
     }
 
     public JsEntityPlayer getFakePlayer()
     {
-        return new JsEntityPlayer(that.getFakePlayer());
+        return JsEntityPlayer.get(that.getFakePlayer());
     }
 
     public JsEntityPlayer getFakePlayer(JsWorldServer world)
     {
-        return new JsEntityPlayer(that.getFakePlayer(world.getThat()));
+        return JsEntityPlayer.get(that.getFakePlayer(world.getThat()));
     }
 
     public String toSerializeString()

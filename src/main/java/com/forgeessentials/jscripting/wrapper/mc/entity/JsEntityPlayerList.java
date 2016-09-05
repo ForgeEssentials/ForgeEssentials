@@ -17,7 +17,7 @@ public class JsEntityPlayerList extends MappedList<EntityPlayer, JsEntityPlayer>
     @Override
     protected JsEntityPlayer map(EntityPlayer in)
     {
-        return new JsEntityPlayer(in);
+        return JsEntityPlayer.get(in);
     }
 
     @Override

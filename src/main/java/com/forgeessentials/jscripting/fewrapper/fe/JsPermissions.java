@@ -9,7 +9,6 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.jscripting.wrapper.mc.JsZone;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 
 /**
@@ -17,10 +16,16 @@ import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
  */
 public class JsPermissions
 {
-    
-    private static JsServerZone<?> serverZone;
-    
-    private static Map<Zone, JsZone<?>> cache = new WeakHashMap<>();
+
+    /**
+     * @tsd.ignore
+     */
+    public static JsServerZone<?> serverZone;
+
+    /**
+     * @tsd.ignore
+     */
+    public static Map<Zone, JsZone<?>> cache = new WeakHashMap<>();
 
     public static boolean checkBooleanPermission(String permissionValue)
     {

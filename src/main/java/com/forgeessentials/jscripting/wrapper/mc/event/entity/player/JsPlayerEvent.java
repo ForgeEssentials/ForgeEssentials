@@ -9,19 +9,15 @@ import com.forgeessentials.jscripting.wrapper.mc.event.entity.JsLivingEvent;
 public abstract class JsPlayerEvent<T extends PlayerEvent> extends JsLivingEvent<T>
 {
 
-    // @Override
-    // @SubscribeEvent
-    // public void _handle(T event)
-    // {
-    // _callEvent(event);
-    // }
-
     @Override
     public JsEntityPlayer getPlayer()
     {
-        return new JsEntityPlayer(_event.entityPlayer);
+        return JsEntityPlayer.get(_event.entityPlayer);
     }
 
+    /**
+     * @tsd.ignore
+     */
     @Override
     public ICommandSender _getSender()
     {

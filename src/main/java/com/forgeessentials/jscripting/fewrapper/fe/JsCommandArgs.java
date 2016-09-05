@@ -26,8 +26,8 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
     public JsCommandArgs(CommandParserArgs that)
     {
         super(that);
-        this.sender = new JsICommandSender(that.sender);
-        this.player = that.senderPlayer == null ? null : new JsEntityPlayer(that.senderPlayer);
+        this.sender = JsICommandSender.get(that.sender);
+        this.player = that.senderPlayer == null ? null : JsEntityPlayer.get(that.senderPlayer);
         this.ident = that.ident == null ? null : new JsUserIdent(that.ident);
         this.isTabCompletion = that.isTabCompletion;
     }

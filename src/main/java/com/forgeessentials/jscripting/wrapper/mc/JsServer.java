@@ -1,5 +1,8 @@
 package com.forgeessentials.jscripting.wrapper.mc;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+
 import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
@@ -8,7 +11,9 @@ import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.jscripting.ScriptInstance;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 /**
@@ -30,7 +35,7 @@ public class JsServer
     {
         MinecraftServer srv = MinecraftServer.getServer();
         if (server == null || server.getThat() != srv)
-            server = srv == null ? null : new JsICommandSender(srv);
+            server = JsICommandSender.get(srv);
         return server;
     }
 
@@ -86,6 +91,16 @@ public class JsServer
     }
 
     /**
+     * Registers a new event handler.
+     *
+     * @tsd.def registerEvent(event: string, handler: (event: mc.event.Event) => void): void;
+     */
+    public void registerEvent(String event, Object handler) throws ScriptException
+    {
+        script.registerEventHandler(event, handler);
+    }
+
+    /**
      * Broadcast an uncolored message to all players
      */
     public void chat(String message)
@@ -126,13 +141,37 @@ public class JsServer
     }
 
     /**
-     * Registers a new event handler.
-     *
-     * @tsd.def registerEvent(event: string, handler: (event: mc.event.Event) => void): void;
+     * Returns the amount of time this player was active on the server in seconds
      */
-    public void registerEvent(String event, Object handler) throws ScriptException
+    public double getTps()
     {
-        script.registerEventHandler(event, handler);
+        return Math.min(20, ServerUtil.getTPS());
+    }
+
+    /**
+     * Time since server start in ms
+     */
+    public long getUptime()
+    {
+        RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
+        return rb.getUptime();
+    }
+
+    /**
+     * Returns the number of players currently online
+     */
+    public int getCurrentPlayerCount()
+    {
+        MinecraftServer server = MinecraftServer.getServer();
+        return server == null ? 0 : server.getCurrentPlayerCount();
+    }
+
+    /**
+     * Returns the total number of unique players that have connected to this server
+     */
+    public int getUniquePlayerCount()
+    {
+        return APIRegistry.perms.getServerZone().getKnownPlayers().size();
     }
 
 }

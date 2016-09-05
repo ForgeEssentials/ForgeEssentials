@@ -5,14 +5,22 @@ import net.minecraft.entity.player.InventoryPlayer;
 public class JsInventoryPlayer<T extends InventoryPlayer> extends JsInventory<T>
 {
 
-    public JsInventoryPlayer(T that)
+    /**
+     * @tsd.ignore
+     */
+    public static <T extends InventoryPlayer> JsInventoryPlayer<T> get(T inventory)
+    {
+        return inventory == null ? null : new JsInventoryPlayer(inventory);
+    }
+
+    protected JsInventoryPlayer(T that)
     {
         super(that);
     }
 
     public JsItemStack getCurrentItem()
     {
-        return new JsItemStack(that.getCurrentItem());
+        return JsItemStack.get(that.getCurrentItem());
     }
 
     public int getCurrentItemIndex()

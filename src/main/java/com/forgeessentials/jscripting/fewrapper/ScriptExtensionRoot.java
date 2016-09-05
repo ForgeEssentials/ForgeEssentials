@@ -43,4 +43,16 @@ public class ScriptExtensionRoot implements ScriptExtension
         engine.eval(INIT_SCRIPT);
     }
 
+    @Override
+    public void serverStarted()
+    {
+    }
+
+    @Override
+    public void serverStopped()
+    {
+        JsPermissions.serverZone = null;
+        JsPermissions.cache.clear();
+    }
+
 }

@@ -24,6 +24,8 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
      */
     public static JsEntity<?> get(Entity entity)
     {
+        if (entity == null)
+            return null;
         // Fancy reflection crap to get a specific entity type if it exists
         // TODO: Maybe use cache of existing wrappers from ScriptCompiler instead?
         try
