@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -13,19 +15,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
-import net.minecraftforge.permission.PermissionLevel;
-
-import org.apache.commons.io.IOUtils;
-
-import com.forgeessentials.jscripting.fewrapper.fe.JsFEServer;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
-import com.forgeessentials.jscripting.wrapper.mc.JsWindow;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsItem;
-import com.forgeessentials.jscripting.fewrapper.fe.JsPermissions;
-import com.forgeessentials.jscripting.wrapper.mc.JsServer;
-import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
-import com.forgeessentials.jscripting.wrapper.mc.world.JsWorld;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
@@ -45,25 +36,11 @@ public final class ScriptCompiler
     private static CompiledScript initScript;
 
     @SuppressWarnings("rawtypes")
-    static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
+    public static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
 
     private static SimpleBindings rootPkg = new SimpleBindings();
 
-    static
-    {
-        try
-        {
-            INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js"));
-            ScriptCompiler.initScript = ModuleJScripting.getCompilable().compile(INIT_SCRIPT);
-        }
-        catch (IOException | ScriptException e)
-        {
-            Throwables.propagate(e);
-        }
-
-        registerPackageClasses("com.forgeessentials.jscripting.wrapper");
-        registerPackageClasses("com.forgeessentials.jscripting.fewrapper");
-    }
+    private static List<ScriptExtension> extensions = new ArrayList<>();
 
     public static Object toNashornClass(Class<?> c)
     {
@@ -81,7 +58,7 @@ public final class ScriptCompiler
         }
     }
 
-    public static void registerPackageClasses(String packageBase)
+    private static void registerPackageClasses(String packageBase)
     {
         try
         {
@@ -98,7 +75,7 @@ public final class ScriptCompiler
     }
 
     @SuppressWarnings("unchecked")
-    public static void registerWrapperClass(ClassInfo classInfo, String packageBase)
+    private static void registerWrapperClass(ClassInfo classInfo, String packageBase)
     {
         if (!classInfo.getSimpleName().startsWith("Js") || classInfo.getName().equals(JsWrapper.class.getName()))
             return;
@@ -150,24 +127,14 @@ public final class ScriptCompiler
     {
         for (Entry<String, Object> pkg : rootPkg.entrySet())
             engine.put(pkg.getKey(), pkg.getValue());
-
-        engine.put("window", new JsWindow(script));
-        engine.put("Server", new JsServer(script));
-        engine.put("Block", toNashornClass(JsBlock.class));
-        engine.put("Item", toNashornClass(JsItem.class));
-        engine.put("World", toNashornClass(JsWorld.class));
-
-        engine.put("Permissions", toNashornClass(JsPermissions.class));
-        engine.put("FEServer", new JsFEServer(script));
-
-        //        try
-        //        {
-        //            INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js")); // TODO: DEV ONLY: REALOD OF INIT SCRIPT
-        //        }
-        //        catch (IOException e)
-        //        {
-        //            e.printStackTrace();
-        //        }
-        engine.eval(ScriptCompiler.INIT_SCRIPT);
+        for (ScriptExtension extension : extensions)
+            extension.initEngine(engine, script);
     }
+
+    public static void registerExtension(ScriptExtension extension)
+    {
+        extensions.add(extension);
+        registerPackageClasses(extension.getClass().getPackage().getName());
+    }
+
 }

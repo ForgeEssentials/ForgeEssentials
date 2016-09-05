@@ -11,19 +11,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import com.forgeessentials.jscripting.fewrapper.fe.JsFEServer;
-import com.forgeessentials.jscripting.fewrapper.fe.JsPermissions;
-import com.forgeessentials.jscripting.wrapper.mc.JsServer;
-import com.forgeessentials.jscripting.wrapper.mc.JsWindow;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsItem;
-import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
-import com.forgeessentials.jscripting.wrapper.mc.world.JsWorld;
 import com.forgeessentials.util.MappedList;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ConstructorDoc;
@@ -52,9 +46,9 @@ public class TsdGenerator extends Doclet
 
     public List<String> externalClasses = new ArrayList<>();
 
-    public List<String> staticClasses = new ArrayList<>();
+    public Map<String, String> staticClasses = new HashMap<>();
 
-    public List<String> interfaceClasses = new ArrayList<>();
+    public Map<String, String> interfaceClasses = new HashMap<>();
 
     /* ************************************************************ */
 
@@ -171,85 +165,31 @@ public class TsdGenerator extends Doclet
                     indention--;
                     writeLn("}");
                 }
-
                 writeLn("");
 
-                for (String className : interfaceClasses)
+                // Print interface alias
+                for (Entry<String, String> className : interfaceClasses.entrySet())
                 {
-                    String mappedName = classNameMap.get(className);
-                    String varName = mappedName.substring(mappedName.lastIndexOf('.') + 1, mappedName.length());
+                    String mappedName = classNameMap.get(className.getKey());
                     writeLn("declare var ");
-                    write(varName.equals("Window") ? "window" : varName);
+                    write(className.getValue());
                     write(": ");
                     write(mappedName);
                     write(";");
                 }
                 writeLn("");
-                for (String className : staticClasses)
+
+                // Print static alias
+                for (Entry<String, String> className : staticClasses.entrySet())
                 {
-                    String mappedName = classNameMap.get(className);
-                    String varName = mappedName.substring(mappedName.lastIndexOf('.') + 1, mappedName.length());
+                    String mappedName = classNameMap.get(className.getKey());
                     writeLn("declare var ");
-                    write(varName.equals("Window") ? "window" : varName);
+                    write(className.getValue());
                     write(": typeof ");
                     write(mappedName);
                     write(";");
                 }
                 writeLn("");
-
-                /*
-                // for (String type : knownTypes)
-                List<String> undefinedTypes = new ArrayList<>(classNameMap.values());
-                undefinedTypes.sort((a, b) -> a.compareTo(b));
-                for (String type : undefinedTypes)
-                {
-                    if (declaredTypes.contains(type))
-                        continue;
-
-                    System.err.println("Warning: Type " + type + " not defined!");
-
-                    // type = type.substring(baseNamespace.length() + 1);
-                    if (type.contains("."))
-                    {
-                        writeLn("declare namespace ");
-                        write(stripPackageName(type));
-                        write(" { ");
-                        write("interface ");
-                        write(stripClassName(type));
-                        write(" { } }");
-                    }
-                    else
-                    {
-                        writeLn("declare interface ");
-                        write(type);
-                        write(" { }");
-                    }
-                    writeLn("");
-                }
-
-                indention--;
-                writeLn("}");
-                writeLn("");
-                for (String className : staticClasses)
-                {
-                    String mappedName = classNameMap.get(className);
-                    String varName = mappedName.substring(mappedName.lastIndexOf('.') + 1, mappedName.length() - "Static".length());
-                    writeLn("declare var ");
-                    write(varName.equals("Window") ? "window" : varName);
-                    write(": ");
-                    write(mappedName);
-                    write(";");
-                }
-                writeLn("");
-
-                // Generate window public defs
-                ClassDoc window = root.classNamed(JsWindow.class.getName());
-                for (FieldDoc fieldDoc : window.fields())
-                    generateField(fieldDoc);
-                for (MethodDoc methodDoc : window.methods())
-                    generateMethod(methodDoc, false);
-                writeLn("");
-                */
             }
         }
         catch (Exception ex)
@@ -272,7 +212,15 @@ public class TsdGenerator extends Doclet
             return;
         String typeName = classNameMap.get(classDoc.qualifiedName());
 
-        boolean isClass = getFirstTagText(classDoc, "tsd.interface") == null;
+        String interfaceType = getFirstTagText(classDoc, "tsd.interface");
+        if (interfaceType != null)
+            interfaceClasses.put(classDoc.qualifiedName(), interfaceType);
+
+        String staticType = getFirstTagText(classDoc, "tsd.static");
+        if (staticType != null)
+            staticClasses.put(classDoc.qualifiedName(), staticType);
+
+        boolean isClass = (interfaceType == null);
 
         writeComment(classDoc);
 
@@ -483,7 +431,7 @@ public class TsdGenerator extends Doclet
 
     private boolean ignoreClass(ClassDoc classDoc)
     {
-        return !classDoc.isPublic() || ignoreDoc(classDoc) || classDoc.name().equals("WrapperPackage"); // || !classDoc.name().startsWith("Js");
+        return !classDoc.isPublic() || ignoreDoc(classDoc) || classDoc.name().equals("ScriptExtensionRoot");
     }
 
     private String getFirstTagText(Doc doc, String name)
@@ -537,7 +485,7 @@ public class TsdGenerator extends Doclet
                     return name.substring(Math.min(baseName.length() + 1, name.length()));
                 }
             }
-            ClassDoc wrapperClass = rootDoc.classNamed(baseName + ".WrapperPackage");
+            ClassDoc wrapperClass = rootDoc.classNamed(baseName + ".ScriptExtensionRoot");
             if (wrapperClass != null)
                 return name.substring(Math.min(baseName.length() + 1, name.length()));
 
@@ -594,8 +542,6 @@ public class TsdGenerator extends Doclet
         case "-out":
         case "-header":
         case "-external":
-        case "-static":
-        case "-interface":
             // Ignored options for gradle compat:
         case "-d":
         case "-doctitle":
@@ -628,14 +574,6 @@ public class TsdGenerator extends Doclet
                 System.out.println("Added external class " + argGroup[1]);
                 generator.externalClasses.add(argGroup[1]);
                 break;
-            case "-static":
-                System.out.println("Added static class " + argGroup[1]);
-                generator.staticClasses.add(argGroup[1]);
-                break;
-            case "-interface":
-                System.out.println("Added interface class " + argGroup[1]);
-                generator.interfaceClasses.add(argGroup[1]);
-                break;
             }
         }
         return true;
@@ -657,9 +595,7 @@ public class TsdGenerator extends Doclet
                 "-sourcepath", "src/main/java",
                 "-subpackages", "com.forgeessentials.jscripting.fewrapper",
                 "-out", feDtsFile.getAbsolutePath(),
-                "-header", "src/main/resources/com/forgeessentials/jscripting/fe_header.d.ts",
-                "-interface", JsFEServer.class.getName(),
-                "-static", JsPermissions.class.getName()
+                "-header", "src/main/resources/com/forgeessentials/jscripting/fe_header.d.ts"
         );
 
         generator = new TsdGenerator();
@@ -668,12 +604,7 @@ public class TsdGenerator extends Doclet
                 "-subpackages", "com.forgeessentials.jscripting.wrapper",
                 "-out", mcDtsFile.getAbsolutePath(),
                 "-header", "src/main/resources/com/forgeessentials/jscripting/mc_header.d.ts",
-                "-external", UUID.class.getName(),
-                "-interface", JsWindow.class.getName(),
-                "-interface", JsServer.class.getName(),
-                "-static", JsWorld.class.getName(),
-                "-static", JsBlock.class.getName(),
-                "-static", JsItem.class.getName()
+                "-external", UUID.class.getName()
         );
 
         FileUtils.copyFileToDirectory(feDtsFile, outDir);

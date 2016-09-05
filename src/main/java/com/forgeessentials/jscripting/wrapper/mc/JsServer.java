@@ -12,7 +12,7 @@ import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 /**
- * @tsd.interface
+ * @tsd.interface Server
  */
 public class JsServer
 {

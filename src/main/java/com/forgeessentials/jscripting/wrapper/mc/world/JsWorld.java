@@ -14,6 +14,9 @@ import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityList;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayerList;
 import com.forgeessentials.jscripting.wrapper.mc.util.JsAxisAlignedBB;
 
+/**
+ * @tsd.static World
+ */
 public class JsWorld<T extends World> extends JsWrapper<T>
 {
 

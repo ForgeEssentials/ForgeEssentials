@@ -9,6 +9,9 @@ import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
 import cpw.mods.fml.common.registry.GameData;
 
+/**
+ * @tsd.static Item
+ */
 public class JsItem extends JsWrapper<Item>
 {
 

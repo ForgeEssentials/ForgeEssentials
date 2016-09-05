@@ -7,7 +7,7 @@ import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
 
 /**
- * @tsd.interface
+ * @tsd.interface FEServer
  */
 public class JsFEServer
 {

@@ -1,9 +1,9 @@
-package com.forgeessentials.jscripting.wrapper.mc;
+package com.forgeessentials.jscripting.wrapper;
 
 import com.forgeessentials.jscripting.ScriptInstance;
 
 /**
- * @tsd.interface
+ * @tsd.interface window
  */
 public class JsWindow
 {

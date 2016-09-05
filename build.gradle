@@ -185,7 +185,7 @@ project.processClientResources {
  // Javadoc task for generating tsd - does not work yet
 task tsd(type: Javadoc) {
 	dependsOn "classes"
-	source = fileTree(dir: 'src/main/java/com/forgeessentials/jscripting/fewrapper', include: 'WrapperPackage.java')
+	source = fileTree(dir: 'src/main/java/com/forgeessentials/jscripting/fewrapper', include: 'ScriptExtensionRoot.java')
 	classpath = project.sourceSets.main.compileClasspath
 	
 	options.doclet = "com.forgeessentials.jscripting.TsdGenerator"

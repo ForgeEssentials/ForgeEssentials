@@ -115,25 +115,6 @@ declare namespace mc {
 		registerEvent(event: string, handler: (event: mc.event.Event) => void): void;
 	}
 	
-	interface Window {
-		/**
-		 * Set a timeout to call 'handler' after 'timeout' milliseconds.
-		 */
-		setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
-		/**
-		 * Set a interval to call 'handler' fn repeatedly each 'interval' milliseconds.
-		 */
-		setInterval(handler: (...args: any[]) => void, interval?: any, ...args: any[]): number;
-		/**
-		 * Clear a timeout.
-		 */
-		clearTimeout(handle: int): void;
-		/**
-		 * Clear an interval.
-		 */
-		clearInterval(handle: int): void;
-	}
-	
 	class Zone extends Wrapper {
 	}
 	
@@ -376,6 +357,54 @@ declare namespace mc.world {
 	
 }
 
+declare class LocalStorage {
+	/**
+	 * Returns an integer representing the number of data items stored in the Storage object.
+	 */
+	static length(): int;
+	/**
+	 * When passed a number n, this method will return the name of the nth key in the storage.
+	 */
+	static key(n: int): string;
+	/**
+	 * When passed a key name, will return that key's value.
+	 */
+	static getItem(key: string): string;
+	/**
+	 * When passed a key name and value, will add that key to the storage, or update that key's value if it already exists.
+	 * Returns the previous value for the passed key.
+	 */
+	static setItem(key: string, value: any): string;
+	/**
+	 * When passed a key name, will remove that key from the storage.
+	 * Returns the previous value for the passed key.
+	 */
+	static removeItem(key: string): any;
+	/**
+	 * When invoked, will empty all keys out of the storage.
+	 */
+	static clear(): void;
+}
+
+declare interface Window {
+	/**
+	 * Set a timeout to call 'handler' after 'timeout' milliseconds.
+	 */
+	setTimeout(handler: (...args: any[]) => void, timeout?: any, ...args: any[]): number;
+	/**
+	 * Set a interval to call 'handler' fn repeatedly each 'interval' milliseconds.
+	 */
+	setInterval(handler: (...args: any[]) => void, interval?: any, ...args: any[]): number;
+	/**
+	 * Clear a timeout.
+	 */
+	clearTimeout(handle: int): void;
+	/**
+	 * Clear an interval.
+	 */
+	clearInterval(handle: int): void;
+}
+
 /**
  * Basic wrapped java object
  */
@@ -407,9 +436,10 @@ declare namespace java.util {
 	
 }
 
-declare var window: mc.Window;
 declare var Server: mc.Server;
+declare var window: Window;
 
 declare var World: typeof mc.world.World;
-declare var Block: typeof mc.world.Block;
 declare var Item: typeof mc.item.Item;
+declare var Block: typeof mc.world.Block;
+declare var localStorage: typeof LocalStorage;

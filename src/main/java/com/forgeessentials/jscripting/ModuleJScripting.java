@@ -26,6 +26,8 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
+import com.forgeessentials.jscripting.wrapper.JsLocalStorage;
+import com.forgeessentials.jscripting.wrapper.ScriptExtensionRoot;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
@@ -103,6 +105,9 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         {
             e.printStackTrace();
         }
+
+        ScriptCompiler.registerExtension(new ScriptExtensionRoot());
+        ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.fewrapper.ScriptExtensionRoot());
     }
 
     private void copyResourceFileIfNotExists(String fileName) throws IOException
@@ -115,6 +120,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent event)
     {
+        JsLocalStorage.load();
         loadScripts(MinecraftServer.getServer());
     }
 
@@ -129,6 +135,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public void serverStopped(FEModuleServerStoppedEvent e)
     {
         unloadScripts();
+        JsLocalStorage.save();
     }
 
     @SubscribeEvent

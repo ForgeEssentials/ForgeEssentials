@@ -11,6 +11,11 @@ export function processCommand(args: fe.CommandArgs) {
         args.confirm('Running script as server');
     }
 
+    var counter = +LocalStorage.getItem('test_counter') || 0;
+    counter++;
+    args.confirm('Counter at ' + counter);
+    LocalStorage.setItem('test_counter', counter);
+
     fe.Permissions.registerPermission('script.test', fe.PermissionLevel.TRUE, 'script test!');
 
     args.confirm(``);

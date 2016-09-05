@@ -9,6 +9,9 @@ import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
 import cpw.mods.fml.common.registry.GameData;
 
+/**
+ * @tsd.static Block
+ */
 public class JsBlock extends JsWrapper<Block>
 {
 

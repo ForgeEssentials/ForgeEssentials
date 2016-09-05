@@ -13,7 +13,7 @@ import com.forgeessentials.jscripting.wrapper.mc.JsZone;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 
 /**
- * @tsd.static
+ * @tsd.static Permissions
  */
 public class JsPermissions
 {

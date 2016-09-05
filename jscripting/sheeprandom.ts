@@ -67,7 +67,11 @@ export function sheepRandom(player: mc.entity.EntityPlayer) {
     });
 }
 
-Server.registerEvent('PlayerInteractEvent', (event: mc.event.entity.player.PlayerInteractEvent) => {
+// Server.registerEvent('PlayerInteractEvent', (event: mc.event.entity.player.PlayerInteractEvent) => {
+//     sheepRandom(event.getPlayer());
+// });
+
+Server.registerEvent('AttackEntityEvent', (event: mc.event.entity.player.PlayerInteractEvent) => {
     sheepRandom(event.getPlayer());
 });
 
