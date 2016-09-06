@@ -1,6 +1,8 @@
 package com.forgeessentials.jscripting.wrapper;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
@@ -34,6 +36,8 @@ public class ScriptExtensionRoot implements ScriptExtension
         {
             Throwables.propagate(e);
         }
+        ScriptCompiler.registerWrapperClass(Date.class, "");
+        ScriptCompiler.registerWrapperClass(Calendar.class, "");
     }
 
     @Override
@@ -45,6 +49,7 @@ public class ScriptExtensionRoot implements ScriptExtension
         engine.put("Item", ScriptCompiler.toNashornClass(JsItem.class));
         engine.put("World", ScriptCompiler.toNashornClass(JsWorld.class));
         engine.put("localStorage", ScriptCompiler.toNashornClass(JsLocalStorage.class));
+        engine.put("Color", ScriptCompiler.toNashornClass(JsFormat.class));
 
         engine.eval(INIT_SCRIPT);
     }

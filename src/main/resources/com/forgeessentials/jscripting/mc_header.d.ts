@@ -1,4 +1,5 @@
 
+declare type char = string;
 declare type byte = number;
 declare type int = number;
 declare type long = number;
@@ -56,5 +57,81 @@ declare namespace cpw.mods.fml.common.eventhandler {
         NORMAL,
         LOW,
         LOWEST // Last to execute
+    }
+}
+
+declare namespace java.util {
+	interface GenericCollection<E> {
+	}
+    interface Collection extends GenericCollection<any> {
+    }
+	interface GenericList<E> extends GenericCollection<E> {
+		size(): int;
+		isEmpty(): boolean;
+		contains(arg0: any): boolean;
+		// iterator(): Iterator;
+		toArray(): any[];
+		toArray(arg0: E[]): E[];
+		add(arg0: E): boolean;
+		remove(arg0: any): boolean;
+		containsAll(arg0: Collection | GenericCollection<E>): boolean;
+		addAll(arg0: Collection | GenericCollection<E>): boolean;
+		addAll(arg0: int, arg1: Collection | GenericCollection<E>): boolean;
+		removeAll(arg0: Collection | GenericCollection<E>): boolean;
+		retainAll(arg0: Collection | GenericCollection<E>): boolean;
+		// replaceAll(arg0: UnaryOperator): void;
+		// sort(arg0: Comparator): void;
+		clear(): void;
+		equals(arg0: any): boolean;
+		hashCode(): int;
+		get(arg0: int): E;
+		set(arg0: int, arg1: E): E;
+		add(arg0: int, arg1: E): void;
+		remove(arg0: int): E;
+		indexOf(arg0: any): int;
+		lastIndexOf(arg0: any): int;
+		// listIterator(): ListIterator;
+		// listIterator(arg0: int): ListIterator;
+		subList(arg0: int, arg1: int): GenericList<E>;
+		// spliterator(): Spliterator;
+	}
+    interface List extends GenericList<any> {
+    }
+
+    interface GenericSet<T> extends GenericCollection<T> {
+    }
+    interface Set extends GenericSet<any> {
+    }
+
+    interface GenericMap<TKey, TValue> {
+    }
+    interface Map extends GenericMap<any, any> {
+    }
+
+    namespace Locale {
+        interface Category {
+        }
+        interface FilteringMode {
+        }
+    }
+}
+
+declare namespace java.time {
+    interface Instant {
+    }
+    interface ZoneId {
+    }
+}
+
+declare namespace java.lang {
+    class Enum {
+        toString(): string;
+        equals(obj: any): boolean;
+    }
+}
+
+
+declare namespace net.minecraft.entity.player {
+    interface PlayerCapabilities {
     }
 }

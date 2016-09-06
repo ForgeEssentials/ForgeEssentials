@@ -1,8 +1,43 @@
 
+const colors = [
+    Format.BLACK,
+    Format.DARK_BLUE,
+    Format.DARK_GREEN,
+    Format.DARK_AQUA,
+    Format.DARK_RED,
+    Format.DARK_PURPLE,
+    Format.GOLD,
+    Format.GRAY,
+    Format.DARK_GRAY,
+    Format.BLUE,
+    Format.GREEN,
+    Format.AQUA,
+    Format.RED,
+    Format.LIGHT_PURPLE,
+    Format.YELLOW,
+    Format.WHITE,
+    // Format.OBFUSCATED,
+    // Format.BOLD,
+    // Format.STRIKETHROUGH,
+    // Format.UNDERLINE,
+    // Format.ITALIC,
+    // Format.RESET,
+];
+
 export function processCommand(args: fe.CommandArgs) {
     args.confirm('Hello JavaScript! Hello ' + args.sender.getName() + '!');
 
-    args.confirm('sin(3) = ' + Math.sin(3));
+    function print(message: string) {
+        var sOut = '';
+        for (let i = 0; i < message.length; i++)
+            sOut += colors[Math.floor(Math.random() * colors.length)] + message[i];
+        args.confirm(sOut);
+    }
+
+    print('Hello colors!');
+
+    // for (let i = 0; i < colors.length; i++)
+    //     args.confirm(colors[i] + 'TEST');
 
     if (args.player) {
         args.confirm('Running script as player');
@@ -11,23 +46,20 @@ export function processCommand(args: fe.CommandArgs) {
         args.confirm('Running script as server');
     }
 
-    var counter = +LocalStorage.getItem('test_counter') || 0;
-    counter++;
-    args.confirm('Counter at ' + counter);
-    LocalStorage.setItem('test_counter', counter);
+    args.confirm('uptime = ' + Server.getUptime());
+    args.confirm('timePlayed = ' + FEServer.getTimePlayed(args.player.getUuid()));
+    args.confirm('lastLogin = ' + FEServer.getLastLogin(args.player.getUuid()));
+    args.confirm('lastLogout = ' + FEServer.getLastLogout(args.player.getUuid()));
 
-    fe.Permissions.registerPermission('script.test', fe.PermissionLevel.TRUE, 'script test!');
+    fe.Permissions.registerPermission('script.test', PermissionLevel.TRUE, 'script test!');
 
-    args.confirm(``);
     var point: fe.Point = new fe.Point(1, 2, 3);
     args.confirm(`new fe.Point(1, 2, 3) = ${point.getX()}, ${point.getY()}, ${point.getZ()}`);
-    args.confirm(`instanceof fe.Point = ${point instanceof fe.Point ? 'true' : 'false'}`);
     args.confirm(`instanceof fe.WorldPoint = ${point instanceof fe.WorldPoint ? 'true' : 'false'}`);
 
     args.confirm(``);
     var point2: fe.WorldPoint = new fe.WorldPoint(0, 4, 5, 6);
     args.confirm(`new fe.WorldPoint(0, 4, 5, 6) = ${point2.getX()}, ${point2.getY()}, ${point2.getZ()}, dim = ${point2.getDimension()}`);
-    args.confirm(`instanceof fe.Point = ${point2 instanceof fe.Point ? 'true' : 'false'}`);
     args.confirm(`instanceof fe.WorldPoint = ${point2 instanceof fe.WorldPoint ? 'true' : 'false'}`);
     args.confirm(``);
 
@@ -41,26 +73,30 @@ export function processCommand(args: fe.CommandArgs) {
     if (args.player) {
         var nbt = getNbt(args.player);
         nbt[NBT_INT + 'jscript_counter'] = (nbt[NBT_INT + 'jscript_counter'] || 0) + 1;
-        args.confirm('NBT data of player:');
-        args.confirm(JSON.stringify(nbt));
+        args.confirm('NBT data of player: ' + JSON.stringify(nbt));
         setNbt(args.player, nbt);
     }
+
+    var counter = +LocalStorage.getItem('test_counter') || 0;
+    counter++;
+    args.confirm('Counter at ' + counter);
+    LocalStorage.setItem('test_counter', counter);
 
     // var doAsHideChat = args.doAs(sender, sender, true);
     // args.cmd(doAsHideChat, 'give', args.sender.getCommandSenderName(), 'minecraft:dirt', '1');
 
-    setTimeout(() => {
-        args.notify('Timeout 3 (6s)');
-    }, 6000);
-
-    var t1 = setTimeout(() => {
-        args.notify('Timeout 2 (4s)');
-    }, 4000);
-
-    setTimeout(() => {
-        args.notify('Timeout 1 (2s) -> clear timeout 2');
-        clearTimeout(t1);
-    }, 2000);
+    // setTimeout(() => {
+    //     args.notify('Timeout 3 (6s)');
+    // }, 6000);
+    //
+    // var t1 = setTimeout(() => {
+    //     args.notify('Timeout 2 (4s)');
+    // }, 4000);
+    //
+    // setTimeout(() => {
+    //     args.notify('Timeout 1 (2s) -> clear timeout 2');
+    //     clearTimeout(t1);
+    // }, 2000);
 }
 
 FEServer.registerCommand({

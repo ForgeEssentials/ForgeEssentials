@@ -1,4 +1,4 @@
-package com.forgeessentials.jscripting.fewrapper.fe;
+package com.forgeessentials.jscripting.fewrapper;
 
 import net.minecraftforge.permission.PermissionLevel;
 

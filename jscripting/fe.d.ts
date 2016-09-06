@@ -65,6 +65,7 @@ declare namespace fe {
 		opOnly?: boolean;
 		processCommand: CommandCallback;
 		tabComplete?: CommandCallback;
+		constructor();
 	}
 	
 	interface FEServer {
@@ -79,12 +80,6 @@ declare namespace fe {
 		getTimePlayed(playerId: java.util.UUID): long;
 		getLastLogout(playerId: java.util.UUID): java.util.Date;
 		getLastLogin(playerId: java.util.UUID): java.util.Date;
-	}
-	
-	class PermissionLevel {
-		static TRUE: net.minecraftforge.permission.PermissionLevel;
-		static OP: net.minecraftforge.permission.PermissionLevel;
-		static FALSE: net.minecraftforge.permission.PermissionLevel;
 	}
 	
 	class Permissions {
@@ -133,6 +128,7 @@ declare namespace fe {
 		static addPlayerToGroup(ident: UserIdent, group: string): void;
 		static removePlayerFromGroup(ident: UserIdent, group: string): void;
 		static getPrimaryGroup(ident: UserIdent): string;
+		constructor();
 	}
 	
 	class Point extends Wrapper {
@@ -200,7 +196,7 @@ declare namespace fe {
 		isInZone(point: WorldArea): boolean;
 		isPartOfZone(point: WorldArea): boolean;
 		getName(): string;
-		getParent(): com.forgeessentials.api.permissions.Zone;
+		getParent(): Zone;
 		getServerZone(): ServerZone;
 	}
 	
@@ -212,6 +208,13 @@ declare namespace fe.event.entity.player {
 		constructor();
 	}
 	
+}
+
+declare class PermissionLevel {
+	static TRUE: net.minecraftforge.permission.PermissionLevel;
+	static OP: net.minecraftforge.permission.PermissionLevel;
+	static FALSE: net.minecraftforge.permission.PermissionLevel;
+	constructor();
 }
 
 

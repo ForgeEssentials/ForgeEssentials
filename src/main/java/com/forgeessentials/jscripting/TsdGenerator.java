@@ -5,14 +5,20 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -271,8 +277,8 @@ public class TsdGenerator extends Doclet
     {
         if (!constructorDoc.isPublic() || ignoreDoc(constructorDoc))
             return;
-        // Hide default constructors
-        if (constructorDoc.containingClass().superclass().qualifiedName().equals(Object.class.getName()) && constructorDoc.parameters().length == 0)
+        // Hide default constructors of classes extending Object
+        if (constructorDoc.containingClass().superclass().qualifiedName().equals(Object.class.getName()) && constructorDoc.isSynthetic())
             return;
         // Hide wrapper constructors
         if (constructorDoc.parameters().length >= 1 && constructorDoc.parameters()[0].name().equals("that"))
@@ -604,7 +610,14 @@ public class TsdGenerator extends Doclet
                 "-subpackages", "com.forgeessentials.jscripting.wrapper",
                 "-out", mcDtsFile.getAbsolutePath(),
                 "-header", "src/main/resources/com/forgeessentials/jscripting/mc_header.d.ts",
-                "-external", UUID.class.getName()
+                "-external", UUID.class.getName(),
+                "-external", Date.class.getName(),
+                "-external", Calendar.class.getName(),
+                "-external", TimeZone.class.getName(),
+                "-external", Locale.class.getName(),
+                // "-external", Instant.class.getName(),
+                // "-external", Collection.class.getName(),
+                "-external", net.minecraft.world.WorldSettings.GameType.class.getName()
         );
 
         FileUtils.copyFileToDirectory(feDtsFile, outDir);

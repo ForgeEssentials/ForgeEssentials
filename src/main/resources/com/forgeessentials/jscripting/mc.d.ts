@@ -1,4 +1,5 @@
 
+declare type char = string;
 declare type byte = number;
 declare type int = number;
 declare type long = number;
@@ -56,6 +57,82 @@ declare namespace cpw.mods.fml.common.eventhandler {
         NORMAL,
         LOW,
         LOWEST // Last to execute
+    }
+}
+
+declare namespace java.util {
+	interface GenericCollection<E> {
+	}
+    interface Collection extends GenericCollection<any> {
+    }
+	interface GenericList<E> extends GenericCollection<E> {
+		size(): int;
+		isEmpty(): boolean;
+		contains(arg0: any): boolean;
+		// iterator(): Iterator;
+		toArray(): any[];
+		toArray(arg0: E[]): E[];
+		add(arg0: E): boolean;
+		remove(arg0: any): boolean;
+		containsAll(arg0: Collection | GenericCollection<E>): boolean;
+		addAll(arg0: Collection | GenericCollection<E>): boolean;
+		addAll(arg0: int, arg1: Collection | GenericCollection<E>): boolean;
+		removeAll(arg0: Collection | GenericCollection<E>): boolean;
+		retainAll(arg0: Collection | GenericCollection<E>): boolean;
+		// replaceAll(arg0: UnaryOperator): void;
+		// sort(arg0: Comparator): void;
+		clear(): void;
+		equals(arg0: any): boolean;
+		hashCode(): int;
+		get(arg0: int): E;
+		set(arg0: int, arg1: E): E;
+		add(arg0: int, arg1: E): void;
+		remove(arg0: int): E;
+		indexOf(arg0: any): int;
+		lastIndexOf(arg0: any): int;
+		// listIterator(): ListIterator;
+		// listIterator(arg0: int): ListIterator;
+		subList(arg0: int, arg1: int): GenericList<E>;
+		// spliterator(): Spliterator;
+	}
+    interface List extends GenericList<any> {
+    }
+
+    interface GenericSet<T> extends GenericCollection<T> {
+    }
+    interface Set extends GenericSet<any> {
+    }
+
+    interface GenericMap<TKey, TValue> {
+    }
+    interface Map extends GenericMap<any, any> {
+    }
+
+    namespace Locale {
+        interface Category {
+        }
+        interface FilteringMode {
+        }
+    }
+}
+
+declare namespace java.time {
+    interface Instant {
+    }
+    interface ZoneId {
+    }
+}
+
+declare namespace java.lang {
+    class Enum {
+        toString(): string;
+        equals(obj: any): boolean;
+    }
+}
+
+
+declare namespace net.minecraft.entity.player {
+    interface PlayerCapabilities {
     }
 }
 
@@ -288,6 +365,7 @@ declare namespace mc.entity {
 declare namespace mc.event {
 	
 	class Event {
+		constructor();
 		getEventType(): string;
 		isCancelable(): boolean;
 		isCanceled(): boolean;
@@ -562,6 +640,36 @@ declare namespace mc.world {
 	
 }
 
+/**
+ * tsd.static Color // not needed because this class is already registered on root level
+ */
+declare class Format {
+	static FORMAT_CHAR: string;
+	static BLACK: string;
+	static DARK_BLUE: string;
+	static DARK_GREEN: string;
+	static DARK_AQUA: string;
+	static DARK_RED: string;
+	static DARK_PURPLE: string;
+	static GOLD: string;
+	static GRAY: string;
+	static DARK_GRAY: string;
+	static BLUE: string;
+	static GREEN: string;
+	static AQUA: string;
+	static RED: string;
+	static LIGHT_PURPLE: string;
+	static YELLOW: string;
+	static WHITE: string;
+	static OBFUSCATED: string;
+	static BOLD: string;
+	static STRIKETHROUGH: string;
+	static UNDERLINE: string;
+	static ITALIC: string;
+	static RESET: string;
+	constructor();
+}
+
 declare class LocalStorage {
 	/**
 	 * Returns an integer representing the number of data items stored in the Storage object.
@@ -589,6 +697,7 @@ declare class LocalStorage {
 	 * When invoked, will empty all keys out of the storage.
 	 */
 	static clear(): void;
+	constructor();
 }
 
 declare interface Window {
@@ -637,6 +746,271 @@ declare namespace java.util {
 		hashCode(): int;
 		equals(arg0: any): boolean;
 		compareTo(arg0: UUID): int;
+	}
+	
+}
+declare namespace java.util { 
+	class Date {
+		static UTC(arg0: int, arg1: int, arg2: int, arg3: int, arg4: int, arg5: int): long;
+		static parse(arg0: string): long;
+		static from(arg0: java.time.Instant): Date;
+		constructor();
+		constructor(arg0: long);
+		constructor(arg0: int, arg1: int, arg2: int);
+		constructor(arg0: int, arg1: int, arg2: int, arg3: int, arg4: int);
+		constructor(arg0: int, arg1: int, arg2: int, arg3: int, arg4: int, arg5: int);
+		constructor(arg0: string);
+		clone(): any;
+		getYear(): int;
+		setYear(arg0: int): void;
+		getMonth(): int;
+		setMonth(arg0: int): void;
+		getDate(): int;
+		setDate(arg0: int): void;
+		getDay(): int;
+		getHours(): int;
+		setHours(arg0: int): void;
+		getMinutes(): int;
+		setMinutes(arg0: int): void;
+		getSeconds(): int;
+		setSeconds(arg0: int): void;
+		getTime(): long;
+		setTime(arg0: long): void;
+		before(arg0: Date): boolean;
+		after(arg0: Date): boolean;
+		equals(arg0: any): boolean;
+		compareTo(arg0: Date): int;
+		hashCode(): int;
+		toString(): string;
+		toLocaleString(): string;
+		toGMTString(): string;
+		getTimezoneOffset(): int;
+		toInstant(): java.time.Instant;
+	}
+	
+}
+declare namespace java.util { 
+	class Calendar {
+		static ERA: int;
+		static YEAR: int;
+		static MONTH: int;
+		static WEEK_OF_YEAR: int;
+		static WEEK_OF_MONTH: int;
+		static DATE: int;
+		static DAY_OF_MONTH: int;
+		static DAY_OF_YEAR: int;
+		static DAY_OF_WEEK: int;
+		static DAY_OF_WEEK_IN_MONTH: int;
+		static AM_PM: int;
+		static HOUR: int;
+		static HOUR_OF_DAY: int;
+		static MINUTE: int;
+		static SECOND: int;
+		static MILLISECOND: int;
+		static ZONE_OFFSET: int;
+		static DST_OFFSET: int;
+		static FIELD_COUNT: int;
+		static SUNDAY: int;
+		static MONDAY: int;
+		static TUESDAY: int;
+		static WEDNESDAY: int;
+		static THURSDAY: int;
+		static FRIDAY: int;
+		static SATURDAY: int;
+		static JANUARY: int;
+		static FEBRUARY: int;
+		static MARCH: int;
+		static APRIL: int;
+		static MAY: int;
+		static JUNE: int;
+		static JULY: int;
+		static AUGUST: int;
+		static SEPTEMBER: int;
+		static OCTOBER: int;
+		static NOVEMBER: int;
+		static DECEMBER: int;
+		static UNDECIMBER: int;
+		static AM: int;
+		static PM: int;
+		static ALL_STYLES: int;
+		static SHORT: int;
+		static LONG: int;
+		static NARROW_FORMAT: int;
+		static NARROW_STANDALONE: int;
+		static SHORT_FORMAT: int;
+		static LONG_FORMAT: int;
+		static SHORT_STANDALONE: int;
+		static LONG_STANDALONE: int;
+		static getInstance(): Calendar;
+		static getInstance(arg0: TimeZone): Calendar;
+		static getInstance(arg0: Locale): Calendar;
+		static getInstance(arg0: TimeZone, arg1: Locale): Calendar;
+		static getAvailableLocales(): Locale[];
+		static getAvailableCalendarTypes(): Set;
+		getTime(): Date;
+		setTime(arg0: Date): void;
+		getTimeInMillis(): long;
+		setTimeInMillis(arg0: long): void;
+		get(arg0: int): int;
+		set(arg0: int, arg1: int): void;
+		set(arg0: int, arg1: int, arg2: int): void;
+		set(arg0: int, arg1: int, arg2: int, arg3: int, arg4: int): void;
+		set(arg0: int, arg1: int, arg2: int, arg3: int, arg4: int, arg5: int): void;
+		clear(): void;
+		clear(arg0: int): void;
+		isSet(arg0: int): boolean;
+		getDisplayName(arg0: int, arg1: int, arg2: Locale): string;
+		getDisplayNames(arg0: int, arg1: int, arg2: Locale): Map;
+		getCalendarType(): string;
+		equals(arg0: any): boolean;
+		hashCode(): int;
+		before(arg0: any): boolean;
+		after(arg0: any): boolean;
+		compareTo(arg0: Calendar): int;
+		add(arg0: int, arg1: int): void;
+		roll(arg0: int, arg1: boolean): void;
+		roll(arg0: int, arg1: int): void;
+		setTimeZone(arg0: TimeZone): void;
+		getTimeZone(): TimeZone;
+		setLenient(arg0: boolean): void;
+		isLenient(): boolean;
+		setFirstDayOfWeek(arg0: int): void;
+		getFirstDayOfWeek(): int;
+		setMinimalDaysInFirstWeek(arg0: int): void;
+		getMinimalDaysInFirstWeek(): int;
+		isWeekDateSupported(): boolean;
+		getWeekYear(): int;
+		setWeekDate(arg0: int, arg1: int, arg2: int): void;
+		getWeeksInWeekYear(): int;
+		getMinimum(arg0: int): int;
+		getMaximum(arg0: int): int;
+		getGreatestMinimum(arg0: int): int;
+		getLeastMaximum(arg0: int): int;
+		getActualMinimum(arg0: int): int;
+		getActualMaximum(arg0: int): int;
+		clone(): any;
+		toString(): string;
+		toInstant(): java.time.Instant;
+	}
+	
+}
+declare namespace java.util { 
+	class TimeZone {
+		static SHORT: int;
+		static LONG: int;
+		static getTimeZone(arg0: string): TimeZone;
+		static getTimeZone(arg0: java.time.ZoneId): TimeZone;
+		static getAvailableIDs(arg0: int): string[];
+		static getAvailableIDs(): string[];
+		static getDefault(): TimeZone;
+		static setDefault(arg0: TimeZone): void;
+		constructor();
+		getOffset(arg0: int, arg1: int, arg2: int, arg3: int, arg4: int, arg5: int): int;
+		getOffset(arg0: long): int;
+		setRawOffset(arg0: int): void;
+		getRawOffset(): int;
+		getID(): string;
+		setID(arg0: string): void;
+		getDisplayName(): string;
+		getDisplayName(arg0: Locale): string;
+		getDisplayName(arg0: boolean, arg1: int): string;
+		getDisplayName(arg0: boolean, arg1: int, arg2: Locale): string;
+		getDSTSavings(): int;
+		useDaylightTime(): boolean;
+		observesDaylightTime(): boolean;
+		inDaylightTime(arg0: Date): boolean;
+		toZoneId(): java.time.ZoneId;
+		hasSameRules(arg0: TimeZone): boolean;
+		clone(): any;
+	}
+	
+}
+declare namespace java.util { 
+	class Locale {
+		static ENGLISH: Locale;
+		static FRENCH: Locale;
+		static GERMAN: Locale;
+		static ITALIAN: Locale;
+		static JAPANESE: Locale;
+		static KOREAN: Locale;
+		static CHINESE: Locale;
+		static SIMPLIFIED_CHINESE: Locale;
+		static TRADITIONAL_CHINESE: Locale;
+		static FRANCE: Locale;
+		static GERMANY: Locale;
+		static ITALY: Locale;
+		static JAPAN: Locale;
+		static KOREA: Locale;
+		static CHINA: Locale;
+		static PRC: Locale;
+		static TAIWAN: Locale;
+		static UK: Locale;
+		static US: Locale;
+		static CANADA: Locale;
+		static CANADA_FRENCH: Locale;
+		static ROOT: Locale;
+		static PRIVATE_USE_EXTENSION: char;
+		static UNICODE_LOCALE_EXTENSION: char;
+		static getDefault(): Locale;
+		static getDefault(arg0: Locale.Category): Locale;
+		static setDefault(arg0: Locale): void;
+		static setDefault(arg0: Locale.Category, arg1: Locale): void;
+		static getAvailableLocales(): Locale[];
+		static getISOCountries(): string[];
+		static getISOLanguages(): string[];
+		static forLanguageTag(arg0: string): Locale;
+		static filter(arg0: List, arg1: Collection, arg2: Locale.FilteringMode): List;
+		static filter(arg0: List, arg1: Collection): List;
+		static filterTags(arg0: List, arg1: Collection, arg2: Locale.FilteringMode): List;
+		static filterTags(arg0: List, arg1: Collection): List;
+		static lookup(arg0: List, arg1: Collection): Locale;
+		static lookupTag(arg0: List, arg1: Collection): string;
+		constructor(arg0: string, arg1: string, arg2: string);
+		constructor(arg0: string, arg1: string);
+		constructor(arg0: string);
+		getLanguage(): string;
+		getScript(): string;
+		getCountry(): string;
+		getVariant(): string;
+		hasExtensions(): boolean;
+		stripExtensions(): Locale;
+		getExtension(arg0: char): string;
+		getExtensionKeys(): Set;
+		getUnicodeLocaleAttributes(): Set;
+		getUnicodeLocaleType(arg0: string): string;
+		getUnicodeLocaleKeys(): Set;
+		toString(): string;
+		toLanguageTag(): string;
+		getISO3Language(): string;
+		getISO3Country(): string;
+		getDisplayLanguage(): string;
+		getDisplayLanguage(arg0: Locale): string;
+		getDisplayScript(): string;
+		getDisplayScript(arg0: Locale): string;
+		getDisplayCountry(): string;
+		getDisplayCountry(arg0: Locale): string;
+		getDisplayVariant(): string;
+		getDisplayVariant(arg0: Locale): string;
+		getDisplayName(): string;
+		getDisplayName(arg0: Locale): string;
+		clone(): any;
+		hashCode(): int;
+		equals(arg0: any): boolean;
+	}
+	
+}
+declare namespace net.minecraft.world.WorldSettings { 
+	class GameType extends java.lang.Enum {
+		static values(): GameType[];
+		static valueOf(arg0: string): GameType;
+		static getByID(arg0: int): GameType;
+		static getByName(arg0: string): GameType;
+		getID(): int;
+		getName(): string;
+		configurePlayerCapabilities(arg0: net.minecraft.entity.player.PlayerCapabilities): void;
+		isAdventure(): boolean;
+		isCreative(): boolean;
+		isSurvivalOrAdventure(): boolean;
 	}
 	
 }

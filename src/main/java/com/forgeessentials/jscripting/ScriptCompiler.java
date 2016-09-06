@@ -75,15 +75,18 @@ public final class ScriptCompiler
     }
 
     @SuppressWarnings("unchecked")
-    private static void registerWrapperClass(ClassInfo classInfo, String packageBase)
+    public static void registerWrapperClass(ClassInfo classInfo, String packageBase)
     {
         if (!classInfo.getSimpleName().startsWith("Js") || classInfo.getName().equals(JsWrapper.class.getName()))
             return;
-        Class<?> clazz = classInfo.load();
-        // if (!JsWrapper.class.isAssignableFrom(clazz))
-        // return;
+        registerWrapperClass(classInfo.load(), packageBase);
+    }
 
-        String jsName = classInfo.getName().substring(packageBase.length() + 1);
+    public static void registerWrapperClass(Class<?> clazz, String packageBase)
+    {
+        String jsName = clazz.getName();
+        if (packageBase != null && !packageBase.isEmpty())
+            jsName = jsName.substring(packageBase.length() + 1);
 
         String[] jsNameParts = jsName.split("\\.");
         SimpleBindings pkg = rootPkg;
@@ -98,7 +101,12 @@ public final class ScriptCompiler
                 parentPkg.put(name, pkg);
             }
         }
-        pkg.put(jsNameParts[jsNameParts.length - 1].substring(2), toNashornClass(clazz));
+
+        String className = jsNameParts[jsNameParts.length - 1];
+        if (className.startsWith("Js"))
+            className = className.substring(2);
+
+        pkg.put(className, toNashornClass(clazz));
 
         // Check for event handlers
         try
