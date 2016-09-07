@@ -263,10 +263,7 @@ public class CommandWorldBorder extends ParserCommandBase
 
         // Get distance argument
         if (arguments.isEmpty())
-        {
-            arguments.error("Missing distance argument");
-            return;
-        }
+            throw new TranslatedCommandException("Missing distance argument");
         int trigger = arguments.parseInt();
 
         if (arguments.isTabCompletion)
@@ -279,16 +276,11 @@ public class CommandWorldBorder extends ParserCommandBase
             arguments.error("command, damage, kick, knockback, message, potion ,smite");
             return;
         }
-        if (effect.provideArguments(arguments.toArray()))
-        {
-            effect.triggerDistance = trigger;
-            border.addEffect(effect);
-            arguments.confirm("Effect added!");
-        }
-        else
-        {
-            arguments.error("Wrong syntax! How about trying <triggerdistance> " + effect.getSyntax());
-        }
+
+        effect.provideArguments(arguments);
+        effect.triggerDistance = trigger;
+        border.addEffect(effect);
+        arguments.confirm("Effect added!");
     }
 
 }
