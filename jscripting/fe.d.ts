@@ -143,6 +143,8 @@ declare namespace fe {
 		static removePlayerFromGroup(ident: UserIdent, group: string): void;
 		static getPrimaryGroup(ident: UserIdent): string;
 		constructor();
+		getZoneAt(worldPoint: WorldPoint): Zone;
+		getZonesAt(worldPoint: WorldPoint): java.util.List;
 	}
 	
 	class Point extends Wrapper {
@@ -205,11 +207,11 @@ declare namespace fe {
 	
 	class Zone extends Wrapper {
 		getId(): int;
+		getName(): string;
 		isPlayerInZone(player: mc.entity.EntityPlayer): boolean;
 		isInZone(point: WorldPoint): boolean;
 		isInZone(point: WorldArea): boolean;
 		isPartOfZone(point: WorldArea): boolean;
-		getName(): string;
 		getParent(): Zone;
 		getServerZone(): ServerZone;
 	}
@@ -227,6 +229,7 @@ declare namespace fe.event.entity.player {
 declare namespace fe.world {
 	
 	class WorldBorder extends Wrapper {
+		static get(world: mc.world.World): WorldBorder;
 		isEnabled(): boolean;
 		setEnabled(enabled: boolean): void;
 		getCenter(): fe.Point;

@@ -18,6 +18,9 @@ public class JsZone<T extends Zone> extends JsWrapper<T>
      */
     public static Map<Zone, JsZone<?>> cache = new WeakHashMap<>();
 
+    /**
+     * @tsd.ignore
+     */
     public static JsZone<?> get(Zone zone)
     {
         if (zone instanceof ServerZone)

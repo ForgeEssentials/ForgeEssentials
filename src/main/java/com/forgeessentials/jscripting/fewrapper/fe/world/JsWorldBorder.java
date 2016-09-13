@@ -1,16 +1,24 @@
 package com.forgeessentials.jscripting.fewrapper.fe.world;
 
+import java.util.WeakHashMap;
+
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.jscripting.fewrapper.fe.JsPoint;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.JsAreaBase;
+import com.forgeessentials.jscripting.wrapper.mc.world.JsWorld;
+import com.forgeessentials.worldborder.ModuleWorldBorder;
 import com.forgeessentials.worldborder.WorldBorder;
 
-public class JsWorldBorder<T extends WorldBorder> extends JsWrapper<T>
+public class JsWorldBorder extends JsWrapper<WorldBorder>
 {
-    public JsWorldBorder(T that)
+    public JsWorldBorder(WorldBorder that)
     {
         super(that);
+    }
+
+    public static JsWorldBorder get(JsWorld<?> world) {
+        return new JsWorldBorder(ModuleWorldBorder.getInstance().getBorder(world.getThat()));
     }
 
     public boolean isEnabled()
@@ -57,4 +65,5 @@ public class JsWorldBorder<T extends WorldBorder> extends JsWrapper<T>
     {
         return new JsAreaBase<>(that.getArea());
     }
+
 }
