@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import com.forgeessentials.jscripting.ScriptExtension;
 import com.forgeessentials.jscripting.ScriptCompiler;
 import com.forgeessentials.jscripting.ScriptInstance;
+import com.forgeessentials.jscripting.fewrapper.fe.JsAreaShape;
 import com.forgeessentials.jscripting.fewrapper.fe.JsFEServer;
 import com.forgeessentials.jscripting.fewrapper.fe.JsPermissions;
 import com.forgeessentials.jscripting.fewrapper.fe.JsZone;
@@ -39,6 +40,8 @@ public class ScriptExtensionRoot implements ScriptExtension
     public void initEngine(ScriptEngine engine, ScriptInstance script) throws ScriptException
     {
         engine.put("Permissions", ScriptCompiler.toNashornClass(JsPermissions.class));
+        engine.put("PermissionLevel", ScriptCompiler.toNashornClass(JsPermissionLevel.class));
+        engine.put("AreaShape", ScriptCompiler.toNashornClass(JsAreaShape.class));
         engine.put("FEServer", new JsFEServer(script));
 
         engine.eval(INIT_SCRIPT);

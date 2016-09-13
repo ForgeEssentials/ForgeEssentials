@@ -13,5 +13,13 @@ declare namespace net.minecraftforge.permission {
     }
 }
 
+declare namespace com.forgeessentials.commons.selections {
+    enum AreaShape {
+        BOX,
+        ELLIPSOID,
+        CYLINDER,
+    }
+}
+
 declare function createPoint(x: int, y: int, z: int);
 declare function createWorldPoint(dim: int, x: int, y: int, z: int);

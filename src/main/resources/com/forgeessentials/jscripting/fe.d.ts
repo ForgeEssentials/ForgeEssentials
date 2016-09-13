@@ -13,10 +13,24 @@ declare namespace net.minecraftforge.permission {
     }
 }
 
+declare namespace com.forgeessentials.commons.selections {
+    enum AreaShape {
+        BOX,
+        ELLIPSOID,
+        CYLINDER,
+    }
+}
+
 declare function createPoint(x: int, y: int, z: int);
 declare function createWorldPoint(dim: int, x: int, y: int, z: int);
 
 declare namespace fe {
+	
+	class AreaShape {
+		static BOX: com.forgeessentials.commons.selections.AreaShape;
+		static ELLIPSOID: com.forgeessentials.commons.selections.AreaShape;
+		static CYLINDER: com.forgeessentials.commons.selections.AreaShape;
+	}
 	
 	class CommandArgs extends Wrapper {
 		sender: mc.ICommandSender;
@@ -210,14 +224,30 @@ declare namespace fe.event.entity.player {
 	
 }
 
+declare namespace fe.world {
+	
+	class WorldBorder extends Wrapper {
+		isEnabled(): boolean;
+		setEnabled(enabled: boolean): void;
+		getCenter(): fe.Point;
+		setCenter(center: fe.Point): void;
+		getSize(): fe.Point;
+		setSize(size: fe.Point): void;
+		getShape(): com.forgeessentials.commons.selections.AreaShape;
+		setShape(shape: com.forgeessentials.commons.selections.AreaShape): void;
+		getArea(): mc.AreaBase;
+	}
+	
+}
+
 declare class PermissionLevel {
 	static TRUE: net.minecraftforge.permission.PermissionLevel;
 	static OP: net.minecraftforge.permission.PermissionLevel;
 	static FALSE: net.minecraftforge.permission.PermissionLevel;
-	constructor();
 }
 
 
 declare var FEServer: fe.FEServer;
 
 declare var Permissions: typeof fe.Permissions;
+declare var AreaShape: typeof fe.AreaShape;

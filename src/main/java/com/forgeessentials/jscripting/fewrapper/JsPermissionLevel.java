@@ -5,10 +5,10 @@ import net.minecraftforge.permission.PermissionLevel;
 public class JsPermissionLevel
 {
 
-    public static PermissionLevel TRUE = PermissionLevel.TRUE;
+    private JsPermissionLevel() {}
 
-    public static PermissionLevel OP = PermissionLevel.OP;
-
-    public static PermissionLevel FALSE = PermissionLevel.FALSE;
+    public static final PermissionLevel TRUE = PermissionLevel.TRUE;
+    public static final PermissionLevel OP = PermissionLevel.OP;
+    public static final PermissionLevel FALSE = PermissionLevel.FALSE;
 
 }
