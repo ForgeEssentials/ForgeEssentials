@@ -25,11 +25,11 @@ public class JsZone<T extends Zone> extends JsWrapper<T>
         JsZone<?> result = cache.get(zone);
         if (result == null) {
             if (zone instanceof AreaZone)
-                result = new JsZone<>((AreaZone) zone);
+                result = new JsZone<>((AreaZone) zone); // TODO: Add additional zone types
             else if (zone instanceof WorldZone)
-                result = new JsZone<>((WorldZone) zone);
+                result = new JsZone<>((WorldZone) zone); // TODO: Add additional zone types
             else
-                result = new JsZone<>((WorldZone) zone);
+                result = new JsZone<>(zone);
         }
         return result;
     }

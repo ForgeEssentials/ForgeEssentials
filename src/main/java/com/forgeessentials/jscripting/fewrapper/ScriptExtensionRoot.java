@@ -12,6 +12,7 @@ import com.forgeessentials.jscripting.ScriptCompiler;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.fewrapper.fe.JsFEServer;
 import com.forgeessentials.jscripting.fewrapper.fe.JsPermissions;
+import com.forgeessentials.jscripting.fewrapper.fe.JsZone;
 import com.google.common.base.Throwables;
 
 /**
@@ -52,7 +53,7 @@ public class ScriptExtensionRoot implements ScriptExtension
     public void serverStopped()
     {
         JsPermissions.serverZone = null;
-        JsPermissions.cache.clear();
+        JsZone.cache.clear();
     }
 
 }
