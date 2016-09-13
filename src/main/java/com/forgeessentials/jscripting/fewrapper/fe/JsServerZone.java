@@ -14,14 +14,14 @@ import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 public class JsServerZone<T extends ServerZone> extends JsZone<T>
 {
 
-    public JsServerZone(T that)
+    protected JsServerZone(T that)
     {
         super(that);
     }
 
-    public JsZone<RootZone> getRootZone()
+    public JsZone<?> getRootZone()
     {
-        return new JsZone<>(that.getRootZone());
+        return JsZone.get(that.getRootZone());
     }
 
     public boolean groupExists(String name)
@@ -34,18 +34,18 @@ public class JsServerZone<T extends ServerZone> extends JsZone<T>
         return that.createGroup(name);
     }
 
-    public List<JsZone<Zone>> getZonesAt(JsWorldPoint<?> worldPoint)
+    public List<JsZone<?>> getZonesAt(JsWorldPoint<?> worldPoint)
     {
         List<Zone> zones = that.getZonesAt(worldPoint.getThat());
-        List<JsZone<Zone>> result = new ArrayList<>(zones.size());
+        List<JsZone<?>> result = new ArrayList<>(zones.size());
         for (Zone zone : zones)
-            result.add(new JsZone<>(zone));
+            result.add(JsZone.get(zone));
         return result;
     }
 
     public JsZone getZoneAt(JsWorldPoint<?> worldPoint)
     {
-        return new JsZone<>(that.getZoneAt(worldPoint.getThat()));
+        return JsZone.get(that.getZoneAt(worldPoint.getThat()));
     }
 
     public List<String> getPlayerGroups(JsEntityPlayer player)

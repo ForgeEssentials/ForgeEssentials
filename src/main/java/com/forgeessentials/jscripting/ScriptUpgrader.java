@@ -442,8 +442,31 @@ public class ScriptUpgrader
                 out.append(", ");
                 args.remove(0);
                 out.append(")) return sender.chatError(");
-                out.append(StringUtils.join(args, " + ' ' + "));
-                out.append(");\n\treturn;");
+                out.append(args.isEmpty() ? "You don't have permission to use this command" : StringUtils.join(args, " + ' ' + "));
+                out.append(");");
+                break;
+            case "permchecksilent":
+                out.append("if (!fe.Permissions.checkPermission(");
+                args.remove(0);
+                out.append(", ");
+                args.remove(0);
+                out.append(")) return;");
+                break;
+            case "!permcheck":
+                out.append("if (fe.Permissions.checkPermission(");
+                args.remove(0);
+                out.append(", ");
+                args.remove(0);
+                out.append(")) return sender.chatError(");
+                out.append(args.isEmpty() ? "You don't have permission to use this command" : StringUtils.join(args, " + ' ' + "));
+                out.append(");");
+                break;
+            case "!permchecksilent":
+                out.append("if (fe.Permissions.checkPermission(");
+                args.remove(0);
+                out.append(", ");
+                args.remove(0);
+                out.append(")) return;");
                 break;
             case "timeout":
                 String timeout = args.remove(0);
@@ -514,16 +537,38 @@ public class ScriptUpgrader
     {
         switch (arg)
         {
+        case "sender":
+            return "sender.getName()";
         case "player":
             return "sender.getPlayer().getName()";
+        case "uuid":
+            return "sender.getPlayer().getUuid()";
         case "x":
-            return "sender.getPlayer().getX()";
+            return "Math.round(sender.getPlayer().getX())";
         case "y":
-            return "sender.getPlayer().getY()";
+            return "Math.round(sender.getPlayer().getY())";
         case "z":
+            return "Math.round(sender.getPlayer().getZ())";
+        case "xd":
+            return "sender.getPlayer().getX()";
+        case "yd":
+            return "sender.getPlayer().getY()";
+        case "zd":
             return "sender.getPlayer().getZ()";
         case "dim":
             return "sender.getPlayer().getDimension()";
+        case "gm":
+            return "sender.getPlayer().getGameType()";
+        case "health":
+            return "sender.getPlayer().getHealth()";
+        case "hunger":
+            return "sender.getPlayer().getFoodLevel()";
+        case "saturation":
+            return "sender.getPlayer().getSaturationLevel()";
+        case "zone":
+            return "fe.Permissions.getZoneAt(sender.getPlayer()).getName()";
+        case "zoneid":
+            return "fe.Permissions.getZoneAt(sender.getPlayer()).getId()";
         default:
             return "'" + arg + "'";
         }

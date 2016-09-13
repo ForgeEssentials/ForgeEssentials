@@ -2,6 +2,7 @@ package com.forgeessentials.jscripting.fewrapper.fe;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -21,11 +22,6 @@ public class JsPermissions
      * @tsd.ignore
      */
     public static JsServerZone<?> serverZone;
-
-    /**
-     * @tsd.ignore
-     */
-    public static Map<Zone, JsZone<?>> cache = new WeakHashMap<>();
 
     public static boolean checkBooleanPermission(String permissionValue)
     {
@@ -208,19 +204,19 @@ public class JsPermissions
         JsZone<?>[] jsZones = new JsZone<?>[zones.size()];
         int i = 0;
         for (Zone zone : zones) {
-            jsZones[i++] = getCachedZone(zone);
+            jsZones[i++] = JsZone.get(zone);
         }
         return jsZones;
     }
 
     public static JsZone<?> getZoneById(int id)
     {
-        return getCachedZone(APIRegistry.perms.getZoneById(id));
+        return JsZone.get(APIRegistry.perms.getZoneById(id));
     }
 
     public static JsZone<?> getZoneById(String id)
     {
-        return getCachedZone(APIRegistry.perms.getZoneById(id));
+        return JsZone.get(APIRegistry.perms.getZoneById(id));
     }
 
     public static JsServerZone<?> getServerZone()
@@ -260,12 +256,14 @@ public class JsPermissions
         return APIRegistry.perms.getPrimaryGroup(ident.getThat());
     }
 
-    private static JsZone<?> getCachedZone(Zone zone) {
-        if (cache.containsKey(zone))
-            return cache.get(zone);
-        JsZone<?> jsZone = new JsZone<>(zone);
-        cache.put(zone, jsZone);
-        return jsZone;
+    public JsZone getZoneAt(JsWorldPoint<?> worldPoint)
+    {
+        return getServerZone().getZoneAt(worldPoint);
+    }
+
+    public List<JsZone<?>> getZonesAt(JsWorldPoint<?> worldPoint)
+    {
+        return getServerZone().getZonesAt(worldPoint);
     }
 
 }

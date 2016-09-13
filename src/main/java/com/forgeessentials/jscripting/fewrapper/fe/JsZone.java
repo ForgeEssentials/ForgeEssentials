@@ -1,5 +1,11 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
+import com.forgeessentials.api.permissions.AreaZone;
+import com.forgeessentials.api.permissions.ServerZone;
+import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
@@ -7,7 +13,28 @@ import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 public class JsZone<T extends Zone> extends JsWrapper<T>
 {
 
-    public JsZone(T that)
+    /**
+     * @tsd.ignore
+     */
+    public static Map<Zone, JsZone<?>> cache = new WeakHashMap<>();
+
+    public static JsZone<?> get(Zone zone)
+    {
+        if (zone instanceof ServerZone)
+            return JsPermissions.getServerZone();
+        JsZone<?> result = cache.get(zone);
+        if (result == null) {
+            if (zone instanceof AreaZone)
+                result = new JsZone<>((AreaZone) zone);
+            else if (zone instanceof WorldZone)
+                result = new JsZone<>((WorldZone) zone);
+            else
+                result = new JsZone<>((WorldZone) zone);
+        }
+        return result;
+    }
+
+    protected JsZone(T that)
     {
         super(that);
     }
@@ -15,6 +42,11 @@ public class JsZone<T extends Zone> extends JsWrapper<T>
     public int getId()
     {
         return that.getId();
+    }
+
+    public String getName()
+    {
+        return that.getName();
     }
 
     public boolean isPlayerInZone(JsEntityPlayer player)
@@ -37,11 +69,6 @@ public class JsZone<T extends Zone> extends JsWrapper<T>
         return that.isPartOfZone(point.getThat());
     }
 
-    public String getName()
-    {
-        return that.getName();
-    }
-
     public JsZone<?> getParent()
     {
         return new JsZone(that.getParent());
@@ -51,4 +78,5 @@ public class JsZone<T extends Zone> extends JsWrapper<T>
     {
         return JsPermissions.getServerZone();
     }
+
 }
