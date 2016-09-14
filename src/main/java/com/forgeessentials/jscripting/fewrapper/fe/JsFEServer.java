@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.script.ScriptException;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
@@ -35,6 +36,14 @@ public class JsFEServer
     {
         JsCommandOptions opt = script.getProperties(new JsCommandOptions(), options, JsCommandOptions.class);
         script.registerScriptCommand(new CommandJScriptCommand(script, opt));
+    }
+
+    /**
+     * Returns the total number of unique players that have connected to this server
+     */
+    public int getUniquePlayerCount()
+    {
+        return APIRegistry.perms.getServerZone().getKnownPlayers().size();
     }
 
     /**
