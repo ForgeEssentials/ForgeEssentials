@@ -153,11 +153,11 @@ public class WorldPoint extends Point
         return "[" + x + "," + y + "," + z + ",dim=" + dim + "]";
     }
 
-    private static final Pattern fromStringPattern = Pattern.compile(
-            "\\s*\\[\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*dim\\s*=\\s*(-?\\d+)\\s*\\]\\s*");
+    private static final Pattern fromStringPattern = Pattern.compile("\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=(-?\\d+)\\]");
 
     public static WorldPoint fromString(String value)
     {
+        value = value.replaceAll("\\s ", "");
         Matcher m = fromStringPattern.matcher(value);
         if (m.matches())
         {
@@ -165,9 +165,9 @@ public class WorldPoint extends Point
             {
                 return new WorldPoint(
                         Integer.parseInt(m.group(4)),
-                        Integer.parseInt(m.group(1)),
-                        Integer.parseInt(m.group(2)),
-                        Integer.parseInt(m.group(3)));
+                        (int) Double.parseDouble(m.group(1)),
+                        (int) Double.parseDouble(m.group(2)),
+                        (int) Double.parseDouble(m.group(3)));
             }
             catch (NumberFormatException e)
             {

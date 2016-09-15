@@ -35,6 +35,8 @@ public abstract class BuildInfo
 
     public static final String BASE_VERSION = "1.8.5"; // update manually because gradle is a derp
 
+    public static final String DEPENDENCIES = "required-after:Forge@[10.13.4.1558,)";
+
     static
     {
         // Check for latest version asap
