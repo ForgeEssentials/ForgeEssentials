@@ -75,9 +75,13 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     }
 
     @Override
-    public TransactionResult resetBalances(Cause cause, Set<Context> contexts)
+    public Map<Currency, TransactionResult> resetBalances(Cause cause, Set<Context> contexts)
     {
-        return null;
+        Map<Currency, TransactionResult> returned = new HashMap();
+        Currency currency = new FECurrency();
+        APIRegistry.economy.getWallet(ident).set(getDefaultBalance(currency).longValue());
+        returned.put(currency, new FETransaction(this, currency, new BigDecimal(APIRegistry.economy.getWallet(ident).get()), contexts, ResultType.SUCCESS, "resetacc"));
+        return returned;
     }
 
     @Override
@@ -154,7 +158,7 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     }
 
     @Override
-    public UUID getUUID()
+    public UUID getUniqueId()
     {
         return ident.getUuid();
     }

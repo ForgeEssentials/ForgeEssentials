@@ -31,25 +31,25 @@ public class FEEconService implements EconomyService
     }
 
     @Override
-    public Optional<UniqueAccount> getAccount(UUID uuid)
+    public boolean hasAccount(UUID uuid)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean hasAccount(String identifier)
+    {
+        return false;
+    }
+
+    @Override
+    public Optional<UniqueAccount> getOrCreateAccount(UUID uuid)
     {
         return Optional.of(new AccountWrapper(UserIdent.get(uuid)));
     }
 
     @Override
-    public Optional<Account> getAccount(String identifier)
-    {
-        return Optional.of(new AccountWrapper(UserIdent.get(identifier)));
-    }
-
-    @Override
-    public Optional<UniqueAccount> createAccount(UUID uuid)
-    {
-        return Optional.of(new AccountWrapper(UserIdent.get(uuid)));
-    }
-
-    @Override
-    public Optional<VirtualAccount> createVirtualAccount(String identifier)
+    public Optional<Account> getOrCreateAccount(String identifier)
     {
         return Optional.of(new AccountWrapper(UserIdent.get(identifier)));
     }
