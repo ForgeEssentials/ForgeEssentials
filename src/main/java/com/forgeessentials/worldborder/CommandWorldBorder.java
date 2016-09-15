@@ -200,7 +200,7 @@ public class CommandWorldBorder extends ParserCommandBase
         }
     }
 
-    public static void  parseEffect(CommandParserArgs arguments, WorldBorder border)
+    public static void parseEffect(CommandParserArgs arguments, WorldBorder border)
     {
         if (arguments.isEmpty())
         {
@@ -251,19 +251,24 @@ public class CommandWorldBorder extends ParserCommandBase
 
     public static void addEffect(WorldBorder border, CommandParserArgs arguments)
     {
+        // Get effect type argument
         if (arguments.isEmpty())
         {
             arguments.error("No effect provided! How about trying one of these:");
             arguments.error("command, damage, kick, knockback, message, potion ,smite");
             return;
         }
-
         arguments.tabComplete("command", "damage", "kick", "knockback", "message", "potion", "smite");
+        String subCommand = arguments.remove().toLowerCase();
+
+        // Get distance argument
+        if (arguments.isEmpty())
+            throw new TranslatedCommandException("Missing distance argument");
+        int trigger = arguments.parseInt();
+
         if (arguments.isTabCompletion)
             return;
 
-        String subCommand = arguments.remove().toLowerCase();
-        int trigger = Integer.parseInt(arguments.remove().toLowerCase());
         WorldBorderEffect effect = WorldBorderEffects.valueOf(subCommand.toUpperCase()).get();
         if (effect == null)
         {
@@ -271,16 +276,11 @@ public class CommandWorldBorder extends ParserCommandBase
             arguments.error("command, damage, kick, knockback, message, potion ,smite");
             return;
         }
-        if (effect.provideArguments(arguments.toArray()))
-        {
-            effect.triggerDistance = trigger;
-            border.addEffect(effect);
-            arguments.confirm("Effect added!");
-        }
-        else
-        {
-            arguments.error("Wrong syntax! How about trying <triggerdistance> " + effect.getSyntax());
-        }
+
+        effect.provideArguments(arguments);
+        effect.triggerDistance = trigger;
+        border.addEffect(effect);
+        arguments.confirm("Effect added!");
     }
 
 }

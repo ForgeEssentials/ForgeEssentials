@@ -3,10 +3,13 @@ package com.forgeessentials.worldborder.effect;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 
@@ -16,15 +19,14 @@ import com.forgeessentials.worldborder.WorldBorderEffect;
 public class EffectKick extends WorldBorderEffect
 {
 
-    private int TIMEOUT = 0;
+    private int timeout = 0;
 
     @Override
-    public boolean provideArguments(String[] args)
+    public void provideArguments(CommandParserArgs args) throws CommandException
     {
-        if (args.length < 1)
-            return false;
-        TIMEOUT = Integer.parseInt(args[0]);
-        return true;
+        if (args.isEmpty())
+            throw new TranslatedCommandException("Missing interval argument");
+        timeout = args.parseInt();
     }
 
     @Override
@@ -35,9 +37,9 @@ public class EffectKick extends WorldBorderEffect
             LoggingHandler.felog.warn("[WorldBorder] Kick effect is not supported on integrated servers!");
             return;
         }
-        ChatOutputHandler.chatError(player, Translator.format("You have %d seconds to return inside the world border, or you will get kicked!", TIMEOUT));
+        ChatOutputHandler.chatError(player, Translator.format("You have %d seconds to return inside the world border, or you will get kicked!", timeout));
         PlayerInfo pi = PlayerInfo.get(player);
-        pi.startTimeout(this.getClass().getName(), TIMEOUT * 1000);
+        pi.startTimeout(this.getClass().getName(), timeout * 1000);
     }
 
     @Override
@@ -48,13 +50,13 @@ public class EffectKick extends WorldBorderEffect
         {
             player.playerNetServerHandler.kickPlayerFromServer("You left the world border");
             // For safety restart the timeout
-            pi.startTimeout(this.getClass().getName(), TIMEOUT);
+            pi.startTimeout(this.getClass().getName(), timeout);
         }
     }
 
     public String toString()
     {
-        return "kick trigger: " + triggerDistance + "interval: " + TIMEOUT;
+        return "kick trigger: " + triggerDistance + "interval: " + timeout;
     }
 
     public String getSyntax()

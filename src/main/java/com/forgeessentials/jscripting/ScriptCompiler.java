@@ -4,25 +4,19 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
-import net.minecraftforge.permission.PermissionLevel;
-
-import org.apache.commons.io.IOUtils;
-
-import com.forgeessentials.jscripting.wrapper.JsWindowStatic;
-import com.forgeessentials.jscripting.wrapper.event.JsEvent;
-import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
-import com.forgeessentials.jscripting.wrapper.server.JsPermissionsStatic;
-import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
-import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
-import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
+import com.forgeessentials.jscripting.wrapper.JsWrapper;
+import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
@@ -42,43 +36,11 @@ public final class ScriptCompiler
     private static CompiledScript initScript;
 
     @SuppressWarnings("rawtypes")
-    static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
+    public static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
 
     private static SimpleBindings rootPkg = new SimpleBindings();
 
-    private static PermissionLevelObj permissionLevelObj = new PermissionLevelObj();
-
-    static
-    {
-        try
-        {
-            INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js"));
-            ScriptCompiler.initScript = ModuleJScripting.getCompilable().compile(INIT_SCRIPT);
-        }
-        catch (IOException | ScriptException e)
-        {
-            Throwables.propagate(e);
-        }
-        try
-        {
-            ImmutableSet<ClassInfo> classes = ClassPath.from(ScriptInstance.class.getClassLoader()).getTopLevelClassesRecursive(WRAPPER_PACKAGE);
-            for (ClassInfo classInfo : classes)
-            {
-                registerWrapperClass(classInfo);
-            }
-        }
-        catch (IOException e)
-        {
-            Throwables.propagate(e);
-        }
-    }
-
-    public static class PermissionLevelObj
-    {
-        public PermissionLevel TRUE = PermissionLevel.TRUE;
-        public PermissionLevel OP = PermissionLevel.OP;
-        public PermissionLevel FALSE = PermissionLevel.FALSE;
-    }
+    private static List<ScriptExtension> extensions = new ArrayList<>();
 
     public static Object toNashornClass(Class<?> c)
     {
@@ -96,16 +58,36 @@ public final class ScriptCompiler
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public static void registerWrapperClass(ClassInfo classInfo)
+    private static void registerPackageClasses(String packageBase)
     {
-        if (!classInfo.getSimpleName().startsWith("Js"))
-            return;
-        Class<?> clazz = classInfo.load();
-        // if (!JsWrapper.class.isAssignableFrom(clazz))
-        // return;
+        try
+        {
+            ImmutableSet<ClassInfo> classes = ClassPath.from(ScriptInstance.class.getClassLoader()).getTopLevelClassesRecursive(packageBase);
+            for (ClassInfo classInfo : classes)
+            {
+                registerWrapperClass(classInfo, packageBase);
+            }
+        }
+        catch (IOException e)
+        {
+            Throwables.propagate(e);
+        }
+    }
 
-        String jsName = classInfo.getName().substring(WRAPPER_PACKAGE.length() + 1);
+    @SuppressWarnings("unchecked")
+    public static void registerWrapperClass(ClassInfo classInfo, String packageBase)
+    {
+        if (!classInfo.getSimpleName().startsWith("Js") || classInfo.getName().equals(JsWrapper.class.getName()))
+            return;
+        registerWrapperClass(classInfo.load(), packageBase);
+    }
+
+    public static void registerWrapperClass(Class<?> clazz, String packageBase)
+    {
+        String jsName = clazz.getName();
+        if (packageBase != null && !packageBase.isEmpty())
+            jsName = jsName.substring(packageBase.length() + 1);
+
         String[] jsNameParts = jsName.split("\\.");
         SimpleBindings pkg = rootPkg;
         for (int i = 0; i < jsNameParts.length - 1; i++)
@@ -119,7 +101,12 @@ public final class ScriptCompiler
                 parentPkg.put(name, pkg);
             }
         }
-        pkg.put(jsNameParts[jsNameParts.length - 1].substring(2), toNashornClass(clazz));
+
+        String className = jsNameParts[jsNameParts.length - 1];
+        if (className.startsWith("Js"))
+            className = className.substring(2);
+
+        pkg.put(className, toNashornClass(clazz));
 
         // Check for event handlers
         try
@@ -146,17 +133,16 @@ public final class ScriptCompiler
 
     public static void initEngine(ScriptEngine engine, ScriptInstance script) throws ScriptException
     {
-        engine.put("PermissionLevel", permissionLevelObj);
-        engine.put("mc", rootPkg);
-
-        engine.put("window", new JsWindowStatic(script));
-        engine.put("Server", new JsServerStatic(script));
-        engine.put("Block", new JsBlockStatic());
-        engine.put("Item", new JsItemStatic());
-        engine.put("World", new JsWorldStatic());
-        engine.put("Permissions", new JsPermissionsStatic());
-
-        // INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js")); // TODO: DEV ONLY: REALOD OF INIT SCRIPT
-        engine.eval(ScriptCompiler.INIT_SCRIPT);
+        for (Entry<String, Object> pkg : rootPkg.entrySet())
+            engine.put(pkg.getKey(), pkg.getValue());
+        for (ScriptExtension extension : extensions)
+            extension.initEngine(engine, script);
     }
+
+    public static void registerExtension(ScriptExtension extension)
+    {
+        extensions.add(extension);
+        registerPackageClasses(extension.getClass().getPackage().getName());
+    }
+
 }
