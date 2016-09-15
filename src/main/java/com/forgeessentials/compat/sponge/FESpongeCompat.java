@@ -19,7 +19,8 @@ import com.google.inject.Inject;
  *
  * Watch this space, more to come.
  */
-@Plugin(id = "forgeessentials", name = "FESpongeCompat", version = BuildInfo.BASE_VERSION)
+@Plugin(id = "forgeessentials-sponge", name = "FESpongeCompat", version = BuildInfo.BASE_VERSION,
+        description = "ForgeEssentials interoperability module with the Sponge API, providing additional functionality to bridge Forge and Sponge.")
 public class FESpongeCompat
 {
 
