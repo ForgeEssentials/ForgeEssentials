@@ -142,7 +142,7 @@ dependencies {
 	//includeMod files('lib/worldedit-forge-mc1.8.9-6.1.1-SNAPSHOT-dist.jar')
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
-	buildDep 'org.spongepowered:spongeapi:3.0.0'
+	buildDep 'org.spongepowered:spongeapi:4.1.0'
 
 	// Shade Mixin library
 	shade (group: "org.spongepowered", name: "mixin", version: "0.5.10-SNAPSHOT", changing: true) {
