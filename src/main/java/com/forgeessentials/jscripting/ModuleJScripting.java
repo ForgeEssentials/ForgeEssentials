@@ -27,7 +27,9 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
-import com.forgeessentials.jscripting.wrapper.JsCommandSender;
+import com.forgeessentials.jscripting.wrapper.JsLocalStorage;
+import com.forgeessentials.jscripting.wrapper.ScriptExtensionRoot;
+import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -93,12 +95,32 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public void load(FEModuleInitEvent event)
     {
         FECommandManager.registerCommand(new CommandJScript());
+        try
+        {
+            copyResourceFileIfNotExists("mc.d.ts");
+            copyResourceFileIfNotExists("fe.d.ts");
+            copyResourceFileIfNotExists("tsconfig.json");
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
+        ScriptCompiler.registerExtension(new ScriptExtensionRoot());
+        ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.fewrapper.ScriptExtensionRoot());
+    }
+
+    private void copyResourceFileIfNotExists(String fileName) throws IOException
+    {
+        File file = new File(moduleDir, fileName);
+        if (!file.exists())
+            FileUtils.copyInputStreamToFile(ModuleJScripting.class.getResourceAsStream(fileName), file);
     }
 
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent event)
     {
+        JsLocalStorage.load();
         loadScripts(MinecraftServer.getServer());
     }
 
@@ -113,6 +135,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public void serverStopped(FEModuleServerStoppedEvent e)
     {
         unloadScripts();
+        JsLocalStorage.save();
     }
 
     @SubscribeEvent
@@ -136,7 +159,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     public void loadScripts(ICommandSender sender)
     {
-        for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js" }, true); it.hasNext();)
+        for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js" }, true); it.hasNext(); )
         {
             File file = it.next();
             if (scripts.containsKey(file))
@@ -233,7 +256,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @Override
     public synchronized void runEventScripts(String key, ICommandSender sender)
     {
-        JsCommandSender jsSender = sender == null ? null : new JsCommandSender(sender);
+        JsICommandSender jsSender = JsICommandSender.get(sender);
         String fnName = "on" + StringUtils.capitalize(key);
         for (ScriptInstance script : scripts.values())
         {

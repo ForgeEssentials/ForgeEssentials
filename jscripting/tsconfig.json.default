@@ -1,0 +1,41 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "isolatedModules": false,
+        "jsx": "react",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "declaration": false,
+        "noImplicitAny": false,
+        "noImplicitUseStrict": false,
+        "removeComments": true,
+        "lib": [
+            "es5"
+        ],
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "../rundir/ForgeEssentials/JScripting/commands"
+    },
+    "filesGlob": [
+        "mc.d.ts",
+        "fe.d.ts",
+        "**.ts"
+    ],
+    "exclude": [],
+    "files": [
+        "mc.d.ts",
+        "fe.d.ts",
+        "pumpkinhead.ts",
+        "radar.ts",
+        "randomtp.ts",
+        "sheeprandom.ts",
+        "test.ts"
+    ],
+    "compileOnSave": true,
+    "buildOnSave": false,
+    "atom": {
+        "rewriteTsconfig": true
+    }
+}

@@ -34,7 +34,7 @@ public class RespawnHandler
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public static WarpPoint getSpawn(EntityPlayer player, WarpPoint location)
+    public static WarpPoint getSpawn(EntityPlayer player, WarpPoint location, boolean doDefaultSpawn)
     {
         UserIdent ident = UserIdent.get(player);
         String spawnProperty = APIRegistry.perms.getPermission(ident, location == null ? null : location.toWorldPoint(), null,
@@ -42,16 +42,24 @@ public class RespawnHandler
         if (spawnProperty != null)
         {
             WarpPoint point = WarpPoint.fromString(spawnProperty);
-            if (point == null)
-            {
-                WorldPoint worldPoint = WorldPoint.fromString(spawnProperty);
-                if (worldPoint != null)
-                    point = new WarpPoint(worldPoint, player.cameraYaw, player.cameraPitch);
-            }
+//            if (point == null)
+//            {
+//                WorldPoint worldPoint = WorldPoint.fromString(spawnProperty);
+//                if (worldPoint != null)
+//                    point = new WarpPoint(worldPoint, player.cameraYaw, player.cameraPitch);
+//            }
             if (point != null)
                 return point;
         }
-        return new WarpPoint(0, player.worldObj.getSpawnPoint(), player.cameraYaw, player.cameraPitch);
+        if (doDefaultSpawn)
+            return null;
+        else
+            return new WarpPoint(0, player.worldObj.getSpawnPoint(), player.cameraYaw, player.cameraPitch);
+    }
+
+    public static WarpPoint getSpawn(EntityPlayer player, WarpPoint location)
+    {
+        return getSpawn(player, location, true);
     }
 
     public static WarpPoint getPlayerSpawn(EntityPlayer player, WarpPoint location, boolean doDefaultSpawn)
@@ -73,19 +81,7 @@ public class RespawnHandler
             }
         }
 
-        String spawnProperty = APIRegistry.perms.getPermission(ident, location == null ? null : location.toWorldPoint(), null,
-                GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident)), FEPermissions.SPAWN_LOC, true);
-        if (spawnProperty != null)
-        {
-            WorldPoint point = WorldPoint.fromString(spawnProperty);
-            if (point != null)
-                return new WarpPoint(point, player.cameraYaw, player.cameraPitch);
-        }
-
-        if (doDefaultSpawn)
-            return null;
-        else
-            return new WarpPoint(player.dimension, player.worldObj.getSpawnPoint(), 0, 0);
+        return getSpawn(player, location, doDefaultSpawn);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)

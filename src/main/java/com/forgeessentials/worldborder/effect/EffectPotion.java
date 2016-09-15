@@ -1,9 +1,12 @@
 package com.forgeessentials.worldborder.effect;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.potion.PotionEffect;
 
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.Loadable;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
@@ -27,16 +30,23 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
     }
 
     @Override
-    public boolean provideArguments(String[] args)
+    public void provideArguments(CommandParserArgs args) throws CommandException
     {
-        if (args.length < 4)
-            return false;
-        interval = Integer.parseInt(args[0]);
-        id = Integer.parseInt(args[1]);
-        duration = Integer.parseInt(args[2]);
-        modifier = Integer.parseInt(args[3]);
+        if (args.isEmpty())
+            throw new TranslatedCommandException("Missing interval argument");
+        interval = args.parseInt();
 
-        return true;
+        if (args.isEmpty())
+            throw new TranslatedCommandException("Missing potion id argument");
+        id = args.parseInt();
+
+        if (args.isEmpty())
+            throw new TranslatedCommandException("Missing duration id argument");
+        duration = args.parseInt();
+
+        if (args.isEmpty())
+            throw new TranslatedCommandException("Missing modifier id argument");
+        modifier = args.parseInt();
     }
 
     @Override
