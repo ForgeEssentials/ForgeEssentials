@@ -16,7 +16,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.preloader.api.EntityTrackerHelper;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 
 public class CommandVanish extends ParserCommandBase
 {
@@ -70,7 +70,7 @@ public class CommandVanish extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         UserIdent player;
         if (arguments.isEmpty())

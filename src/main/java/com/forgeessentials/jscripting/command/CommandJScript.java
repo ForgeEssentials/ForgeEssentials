@@ -5,13 +5,13 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.ScriptUpgrader;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 
 public class CommandJScript extends ParserCommandBase
 {
@@ -53,7 +53,7 @@ public class CommandJScript extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -77,11 +77,11 @@ public class CommandJScript extends ParserCommandBase
             ScriptUpgrader.upgradeOldScripts(arguments.sender);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
+            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subcmd);
         }
     }
 
-    private static void parseReload(CommandParserArgs arguments)
+    private static void parseReload(FeCommandParserArgs arguments)
     {
         if (arguments.isTabCompletion)
             return;
@@ -90,7 +90,7 @@ public class CommandJScript extends ParserCommandBase
         arguments.confirm("Done!");
     }
 
-    private static void parseList(CommandParserArgs arguments)
+    private static void parseList(FeCommandParserArgs arguments)
     {
         if (arguments.isTabCompletion)
             return;

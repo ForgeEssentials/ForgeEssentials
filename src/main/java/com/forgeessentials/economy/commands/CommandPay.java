@@ -10,8 +10,8 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandPay extends ParserCommandBase
@@ -48,7 +48,7 @@ public class CommandPay extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Player needed");
@@ -56,7 +56,7 @@ public class CommandPay extends ParserCommandBase
 
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing value");
-        Long amount = ServerUtil.tryParseLong(arguments.remove());
+        Long amount = Utils.tryParseLong(arguments.remove());
         if (amount == null)
             throw new TranslatedCommandException("Invalid number");
         if (amount < 1)

@@ -25,7 +25,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -146,7 +146,7 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         // Get and check teleport cooldown
-        int teleportCooldown = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, TELEPORT_COOLDOWN), 0) * 1000;
+        int teleportCooldown = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, TELEPORT_COOLDOWN), 0) * 1000;
         if (teleportCooldown > 0)
         {
             PlayerInfo pi = PlayerInfo.get(player);
@@ -159,7 +159,7 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         // Get and check teleport warmup
-        int teleportWarmup = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, TELEPORT_WARMUP), 0);
+        int teleportWarmup = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, TELEPORT_WARMUP), 0);
         if (teleportWarmup <= 0)
         {
             checkedTeleport(player, point);

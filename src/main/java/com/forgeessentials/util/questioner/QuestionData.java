@@ -7,7 +7,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
 
 public class QuestionData
 {
@@ -36,7 +36,7 @@ public class QuestionData
 
     public void sendQuestion()
     {
-        ChatOutputHandler.sendMessage(target, question);
+        ChatUtil.sendMessage(target, question);
         sendYesNoMessage();
     }
 
@@ -58,7 +58,7 @@ public class QuestionData
         yesNoMessage.appendSibling(noMessage);
         yesNoMessage.appendSibling(new ChatComponentText(" " + Translator.format("(timeout: %d)", timeout)));
 
-        ChatOutputHandler.sendMessage(target, yesNoMessage);
+        ChatUtil.sendMessage(target, yesNoMessage);
     }
 
     protected void doAnswer(Boolean answer)

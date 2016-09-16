@@ -9,7 +9,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -18,7 +18,8 @@ import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLoggerEventHandler;
 import com.forgeessentials.playerlogger.entity.Action;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
@@ -91,7 +92,7 @@ public class CommandPlayerlogger extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -120,8 +121,8 @@ public class CommandPlayerlogger extends ParserCommandBase
                 // Set the lookup range of the picker tool (Clock)
                 int oldRange = PlayerLoggerEventHandler.pickerRange;
                 PlayerLoggerEventHandler.pickerRange = arguments.parseInt();
-                ChatOutputHandler.sendMessage(arguments.sender,
-                        ChatOutputHandler.formatColors("Range changed from " + oldRange + " to " + PlayerLoggerEventHandler.pickerRange));
+                ChatUtil.sendMessage(arguments.sender,
+                        ChatUtil.formatColors("Range changed from " + oldRange + " to " + PlayerLoggerEventHandler.pickerRange));
                 break;
             case "filter":
                 // filter event type shown (player, command, block, explosion)
@@ -158,14 +159,14 @@ public class CommandPlayerlogger extends ParserCommandBase
                                 PlayerLoggerEventHandler.eventType = 0b11111;
                         }
                         else
-                            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
+                            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
                     }
                 }
-                ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors(outputFilterReadable(PlayerLoggerEventHandler.eventType)
+                ChatUtil.sendMessage(arguments.sender, ChatUtil.formatColors(outputFilterReadable(PlayerLoggerEventHandler.eventType)
                         + (PlayerLoggerEventHandler.searchCriteria.equals("") ? "" : "with SearchCriteria " + PlayerLoggerEventHandler.searchCriteria)));
                 break;
             default:
-                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd2);
+                throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd2);
             }
 
             break;
@@ -206,7 +207,7 @@ public class CommandPlayerlogger extends ParserCommandBase
                     if (arguments.isEmpty())
                         searchCriteria = subCmd3;
                     else
-                        throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
+                        throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
                 }
             }
 
@@ -256,7 +257,7 @@ public class CommandPlayerlogger extends ParserCommandBase
             }
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
     }
 

@@ -12,17 +12,17 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.remote.RemoteSession;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet7Remote;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandRemote extends ForgeEssentialsCommandBase
 {
@@ -38,14 +38,14 @@ public class CommandRemote extends ForgeEssentialsCommandBase
     @Override
     public void processCommand(ICommandSender sender, String[] vargs)
     {
-        CommandParserArgs args = new CommandParserArgs(this, vargs, sender);
+        FeCommandParserArgs args = new FeCommandParserArgs(this, vargs, sender);
         parse(args);
     }
 
     /**
      * @param args
      */
-    public void parse(CommandParserArgs args)
+    public void parse(FeCommandParserArgs args)
     {
         if (args.isTabCompletion && args.size() == 1)
         {
@@ -55,7 +55,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
         if (args.isEmpty())
         {
             if (!args.hasPlayer())
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+                throw new TranslatedCommandException(MessageConstants.MSG_NO_CONSOLE_COMMAND);
             showPasskey(args, args.ident, false);
         }
         else
@@ -91,7 +91,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
                 if (!ident.equals(args.ident))
                     args.checkPermission(ModuleRemote.PERM_CONTROL);
                 if (args.isEmpty())
-                    throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+                    throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
                 String key = args.remove();
                 if (args.isTabCompletion)
                     return;
@@ -181,7 +181,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
      * @param args
      * @param ident
      */
-    public void showPasskey(CommandParserArgs args, UserIdent ident, boolean hideKey)
+    public void showPasskey(FeCommandParserArgs args, UserIdent ident, boolean hideKey)
     {
         String passkey = ModuleRemote.getInstance().getPasskey(ident);
         if (hideKey && !ident.hasPlayer())
@@ -199,8 +199,8 @@ public class CommandRemote extends ForgeEssentialsCommandBase
         qrLink.getChatStyle().setUnderlined(true);
         msg.appendSibling(qrLink);
 
-        ChatOutputHandler.sendMessage(args.sender, msg);
-        ChatOutputHandler.sendMessage(args.sender, new ChatComponentText("Port = " + ModuleRemote.getInstance().getPort()));
+        ChatUtil.sendMessage(args.sender, msg);
+        ChatUtil.sendMessage(args.sender, new ChatComponentText("Port = " + ModuleRemote.getInstance().getPort()));
     }
 
     @Override
@@ -208,7 +208,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
     {
         try
         {
-            CommandParserArgs args = new CommandParserArgs(this, vargs, sender, true);
+            FeCommandParserArgs args = new FeCommandParserArgs(this, vargs, sender, true);
             parse(args);
             return args.tabCompletion;
         }

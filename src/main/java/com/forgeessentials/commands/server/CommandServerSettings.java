@@ -14,12 +14,12 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.FeCommandParserArgs;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -81,7 +81,7 @@ public class CommandServerSettings extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             arguments.error("You can use this command only on dedicated servers");
@@ -145,7 +145,7 @@ public class CommandServerSettings extends ParserCommandBase
                 String motd = ScriptArguments.process(arguments.toString(), null);
                 if (arguments.isTabCompletion)
                     return;
-                server.func_147134_at().func_151315_a(new ChatComponentText(ChatOutputHandler.formatColors(motd)));
+                server.func_147134_at().func_151315_a(new ChatComponentText(ChatUtil.formatColors(motd)));
                 server.setMOTD(motd);
                 setProperty("motd", motd);
                 arguments.confirm("Set MotD to %s", motd);
@@ -193,7 +193,7 @@ public class CommandServerSettings extends ParserCommandBase
             break;
 
         default:
-            arguments.error(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            arguments.error(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
     }
 

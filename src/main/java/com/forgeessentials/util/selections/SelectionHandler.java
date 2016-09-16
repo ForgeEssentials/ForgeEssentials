@@ -13,10 +13,10 @@ import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -75,7 +75,7 @@ public class SelectionHandler extends ServerEventHandler
         {
             SelectionHandler.setStart((EntityPlayerMP) event.entityPlayer, point);
             String message = Translator.format("Pos1 set to %d, %d, %d", event.x, event.y, event.z);
-            ChatOutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
+            ChatUtil.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
             event.setCanceled(true);
         }
         // right Click
@@ -83,7 +83,7 @@ public class SelectionHandler extends ServerEventHandler
         {
             SelectionHandler.setEnd((EntityPlayerMP) event.entityPlayer, point);
             String message = Translator.format("Pos2 set to %d, %d, %d", event.x, event.y, event.z);
-            ChatOutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
+            ChatUtil.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
             event.setCanceled(true);
         }
     }

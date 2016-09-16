@@ -11,14 +11,14 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.Utils;
 
 public class CommandPersonalWarp extends ParserCommandBase
 {
@@ -86,7 +86,7 @@ public class CommandPersonalWarp extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -133,7 +133,7 @@ public class CommandPersonalWarp extends ParserCommandBase
                 arguments.checkPermission(PERM_SET);
 
                 // Check limit
-                int limit = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, PERM_LIMIT), Integer.MAX_VALUE);
+                int limit = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, PERM_LIMIT), Integer.MAX_VALUE);
                 if (warps.size() >= limit)
                     throw new TranslatedCommandException("You reached your personal warp limit");
 
@@ -147,7 +147,7 @@ public class CommandPersonalWarp extends ParserCommandBase
                 arguments.confirm("Deleted personal warp \"%s\"", warpName);
                 break;
             default:
-                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
+                throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCommand);
             }
             DataManager.getInstance().save(warps, arguments.senderPlayer.getPersistentID().toString());
         }

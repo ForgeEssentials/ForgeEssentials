@@ -10,7 +10,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 
 public class CommandGroupMessage extends ParserCommandBase
 {
@@ -48,7 +48,7 @@ public class CommandGroupMessage extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

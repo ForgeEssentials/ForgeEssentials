@@ -75,9 +75,10 @@ import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
 import com.forgeessentials.protection.effect.PotionEffect;
 import com.forgeessentials.protection.effect.ZoneEffect;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.PlayerUtil;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -505,7 +506,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_SLEEP))
         {
             event.result = EnumStatus.NOT_POSSIBLE_HERE;
-            ChatOutputHandler.sendMessage(event.entityPlayer, Translator.translate("You are not allowed to sleep here"));
+            ChatUtil.sendMessage(event.entityPlayer, Translator.translate("You are not allowed to sleep here"));
             return;
         }
         checkMajoritySleep = true;
@@ -517,12 +518,12 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
         checkMajoritySleep = false;
 
-        WorldServer world = ServerUtil.getOverworld();
+        WorldServer world = Utils.getOverworld();
         if (FEConfig.majoritySleep >= 1 || world.isDaytime())
             return;
 
         int sleepingPlayers = 0;
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (EntityPlayerMP player : Utils.getPlayerList())
             if (player.isPlayerSleeping())
                 sleepingPlayers++;
         float percentage = (float) sleepingPlayers / MinecraftServer.getServer().getCurrentPlayerCount();
@@ -535,7 +536,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 long time = world.getWorldInfo().getWorldTime() + 24000L;
                 world.getWorldInfo().setWorldTime(time - time % 24000L);
             }
-            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            for (EntityPlayerMP player : Utils.getPlayerList())
                 if (player.isPlayerSleeping())
                     player.wakeUpPlayer(false, false, true);
             // TODO: We change some vanilla behaviour here - is this ok?
@@ -809,15 +810,15 @@ public class ProtectionEventHandler extends ServerEventHandler
         String command = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_COMMAND);
         if (command != null && !command.isEmpty())
         {
-            int interval = ServerUtil
+            int interval = Utils
                     .parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_COMMAND_INTERVAL), 0);
             effects.add(new CommandEffect(ident.getPlayerMP(), interval, command));
         }
 
-        int damage = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE), 0);
+        int damage = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE), 0);
         if (damage > 0)
         {
-            int interval = ServerUtil
+            int interval = Utils
                     .parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE_INTERVAL), 0);
             effects.add(new DamageEffect(ident.getPlayerMP(), interval, damage));
         }
@@ -826,7 +827,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         String potion = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION);
         if (potion != null && !potion.isEmpty())
         {
-            int interval = ServerUtil
+            int interval = Utils
                     .parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION_INTERVAL), 0);
             effects.add(new PotionEffect(ident.getPlayerMP(), interval, potion));
         }
@@ -856,9 +857,9 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (checkMajoritySleep)
             checkMajoritySleep();
 
-        if (ServerUtil.getOverworld().getWorldInfo().getWorldTotalTime() % (20 * 4) == 0)
+        if (Utils.getOverworld().getWorldInfo().getWorldTotalTime() % (20 * 4) == 0)
         {
-            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            for (EntityPlayerMP player : Utils.getPlayerList())
                 sendPermissionUpdate(UserIdent.get(player), false);
         }
     }

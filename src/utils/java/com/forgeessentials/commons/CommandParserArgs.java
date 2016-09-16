@@ -1,4 +1,4 @@
-package com.forgeessentials.util;
+package com.forgeessentials.commons;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,26 +20,19 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.permission.PermissionContext;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.DoAsCommandSender;
+import com.forgeessentials.util.Utils;
 
 import cpw.mods.fml.common.registry.GameData;
 
-/**
- *
- */
 public class CommandParserArgs
 {
 
@@ -49,7 +42,6 @@ public class CommandParserArgs
     public final EntityPlayerMP senderPlayer;
     public final UserIdent ident;
     public final boolean isTabCompletion;
-    public final PermissionContext permissionContext;
 
     public List<String> tabCompletion;
 
@@ -64,7 +56,6 @@ public class CommandParserArgs
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
-        this.permissionContext = new PermissionContext(sender, command);
     }
 
     public CommandParserArgs(ICommand command, String[] args, ICommandSender sender)
@@ -75,37 +66,13 @@ public class CommandParserArgs
     public void sendMessage(String message)
     {
         if (!isTabCompletion)
-            ChatOutputHandler.sendMessage(sender, message);
+            ChatUtil.sendMessage(sender, message);
     }
 
     public void sendMessage(IChatComponent message)
     {
         if (!isTabCompletion)
-            ChatOutputHandler.sendMessage(sender, message);
-    }
-
-    public void confirm(String message, Object... args)
-    {
-        if (!isTabCompletion)
-            ChatOutputHandler.chatConfirmation(sender, Translator.format(message, args));
-    }
-
-    public void notify(String message, Object... args)
-    {
-        if (!isTabCompletion)
-            ChatOutputHandler.chatNotification(sender, Translator.format(message, args));
-    }
-
-    public void warn(String message, Object... args)
-    {
-        if (!isTabCompletion)
-            ChatOutputHandler.chatWarning(sender, Translator.format(message, args));
-    }
-
-    public void error(String message, Object... args)
-    {
-        if (!isTabCompletion)
-            ChatOutputHandler.chatError(sender, Translator.format(message, args));
+            ChatUtil.sendMessage(sender, message);
     }
 
     public int size()
@@ -162,7 +129,7 @@ public class CommandParserArgs
             if (ident != null)
                 return ident;
             else
-                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new CommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
         }
         else
         {
@@ -170,16 +137,16 @@ public class CommandParserArgs
             if (name.equalsIgnoreCase("_ME_"))
             {
                 if (senderPlayer == null)
-                    throw new TranslatedCommandException("_ME_ cannot be used in console.");
+                    throw new CommandException("_ME_ cannot be used in console.");
                 return ident;
             }
             else
             {
                 UserIdent ident = UserIdent.get(name, sender, mustExist);
                 if (mustExist && (ident == null || !ident.hasUuid()))
-                    throw new TranslatedCommandException("Player %s not found", name);
+                    throw new CommandException("Player %s not found", name);
                 else if (mustBeOnline && !ident.hasPlayer())
-                    throw new TranslatedCommandException("Player %s is not online", name);
+                    throw new CommandException("Player %s is not online", name);
                 return ident;
             }
         }
@@ -193,7 +160,7 @@ public class CommandParserArgs
             if (CommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
                 result.add(knownPlayerIdent.getUsernameOrUuid());
         }
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (EntityPlayerMP player : Utils.getPlayerList())
         {
             if (CommandBase.doesStringStartWith(arg, player.getCommandSenderName()))
                 result.add(player.getCommandSenderName());
@@ -216,7 +183,7 @@ public class CommandParserArgs
         String itemName = remove();
         Item item = CommandBase.getItemByText(sender, itemName);
         if (item == null)
-            throw new TranslatedCommandException("Item %s not found", itemName);
+            throw new CommandException("Item %s not found", itemName);
         return item;
     }
 
@@ -234,38 +201,6 @@ public class CommandParserArgs
         }
         String itemName = remove();
         return CommandBase.getBlockByText(sender, itemName);
-    }
-
-    public String parsePermission()
-    {
-        if (isTabCompletion && size() == 1)
-        {
-            String permission = peek();
-            Set<String> permissionSet = APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions();
-            Set<String> result = new TreeSet<>();
-            for (String perm : permissionSet)
-            {
-                int nodeIndex = perm.indexOf('.', permission.length());
-                if (nodeIndex >= 0)
-                    perm = perm.substring(0, nodeIndex);
-                if (CommandBase.doesStringStartWith(permission, perm))
-                    result.add(perm);
-            }
-            tabCompletion = new ArrayList<>(result);
-            throw new CancelParsingException();
-        }
-        return remove();
-    }
-
-    public void checkPermission(String perm)
-    {
-        if (!isTabCompletion && sender != null && !hasPermission(perm))
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
-    }
-
-    public boolean hasPermission(String perm)
-    {
-        return APIRegistry.perms.checkPermission(permissionContext, perm);
     }
 
     public void tabComplete(String... completionList)
@@ -292,36 +227,6 @@ public class CommandParserArgs
             tabCompletion.add(completion);
     }
 
-    public WorldServer parseWorld()
-    {
-        if (isTabCompletion && size() == 1)
-        {
-            tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), APIRegistry.namedWorldHandler.getWorldNames());
-            throw new CancelParsingException();
-        }
-        if (isEmpty())
-        {
-            if (senderPlayer != null)
-                return (WorldServer) senderPlayer.worldObj;
-            else
-                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-        }
-        else
-        {
-            String name = remove();
-            if (name.equalsIgnoreCase("here"))
-            {
-                if (senderPlayer == null)
-                    throw new TranslatedCommandException("\"here\" cannot be used in console.");
-                return (WorldServer) senderPlayer.worldObj;
-            }
-            else
-            {
-                return APIRegistry.namedWorldHandler.getWorld(name);
-            }
-        }
-    }
-
     public int parseInt()
     {
         checkTabCompletion();
@@ -332,7 +237,7 @@ public class CommandParserArgs
         }
         catch (NumberFormatException e)
         {
-            throw new TranslatedCommandException("Invalid number: %s", value);
+            throw new CommandException("Invalid number: %s", value);
         }
     }
 
@@ -351,7 +256,7 @@ public class CommandParserArgs
         }
         catch (NumberFormatException e)
         {
-            throw new TranslatedCommandException("Invalid number: %s", strValue);
+            throw new CommandException("Invalid number: %s", strValue);
         }
     }
 
@@ -365,7 +270,7 @@ public class CommandParserArgs
         }
         catch (NumberFormatException e)
         {
-            throw new TranslatedCommandException("Invalid number: %s", value);
+            throw new CommandException("Invalid number: %s", value);
         }
     }
 
@@ -392,7 +297,7 @@ public class CommandParserArgs
         case "enabled":
             return true;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_ARGUMENT, value);
+            throw new CommandException(MessageConstants.MSG_INVALID_ARGUMENT, value);
         }
     }
 
@@ -405,7 +310,7 @@ public class CommandParserArgs
         Matcher m = timeFormatPattern.matcher(value);
         if (!m.find())
         {
-            throw new TranslatedCommandException("Invalid time format: %s", value);
+            throw new CommandException("Invalid time format: %s", value);
         }
 
         long result = 0;
@@ -449,7 +354,7 @@ public class CommandParserArgs
                     resultPart *= 1000 * 60 * 60 * 24 * 30;
                     break;
                 default:
-                    throw new TranslatedCommandException("Invalid time format: %s", value);
+                    throw new CommandException("Invalid time format: %s", value);
                 }
             }
 
@@ -466,20 +371,10 @@ public class CommandParserArgs
             throw new CancelParsingException();
     }
 
-    public static class CancelParsingException extends CommandException
-    {
-
-        public CancelParsingException()
-        {
-            super("");
-        }
-
-    }
-
     public void requirePlayer()
     {
         if (senderPlayer == null)
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            throw new CommandException(MessageConstants.MSG_NO_CONSOLE_COMMAND);
     }
 
     public String[] toArray()
@@ -499,17 +394,18 @@ public class CommandParserArgs
         return new WorldPoint(s.getEntityWorld(), s.getPlayerCoordinates());
     }
 
-    public WorldZone getWorldZone()
+    /**
+     * Utility exception which tells a command parser to cancel parsing.
+     * Used to break out of parsing for tab completion.
+     */
+    public static class CancelParsingException extends CommandException
     {
-        if (senderPlayer == null)
-            throw new TranslatedCommandException("Player needed");
-        return APIRegistry.perms.getServerZone().getWorldZone(senderPlayer.dimension);
-    }
 
-    public void needsPlayer()
-    {
-        if (senderPlayer == null)
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+        public CancelParsingException()
+        {
+            super("");
+        }
+
     }
 
 }

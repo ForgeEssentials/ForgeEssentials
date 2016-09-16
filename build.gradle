@@ -148,11 +148,11 @@ sourceSets {
 	utils {
 		compileClasspath = files(configurations.compile, sourceSets.api.output)
 	}
-    scriptsdk {
+    jscripting {
         compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
     }
 	main {
-		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output, sourceSets.scriptsdk.output)
+		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output, sourceSets.jscripting.output)
 	}
 	client {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
@@ -225,7 +225,7 @@ jar {
 	
 	from sourceSets.main.output
 	from sourceSets.utils.output
-    from sourceSets.scriptsdk.output
+    from sourceSets.jscripting.output
     exclude('com/forgeessentials/client/**')
     from fileTree(serverLibArchive.archivePath)
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
@@ -273,7 +273,7 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 	
 	from sourceSets.main.output
 	from sourceSets.utils.output
-    from sourceSets.scriptsdk.output
+    from sourceSets.jscripting.output
 
 	from (sourceSets.main.allSource) {
 		into ("src/")
@@ -288,14 +288,14 @@ task deobfJar(dependsOn: "classes", type: Jar) {
  * JScripting SDK only
  */
 
-task scriptSdkJar(dependsOn: "scriptsdkClasses", type: Jar) {
-    classifier = "scriptsdk"
+task jscriptingJar(dependsOn: "jscriptingClasses", type: Jar) {
+    classifier = "jscripting"
     appendix = minecraft.version
 
-    from sourceSets.scriptsdk.output
+    from sourceSets.jscripting.output
     from sourceSets.utils.output
 
-    from (sourceSets.scriptsdk.allSource) {
+    from (sourceSets.jscripting.allSource) {
         into ("src/")
     }
 
@@ -365,7 +365,7 @@ reobf {
 artifacts {
 	archives deobfJar
 	archives clientJar
-    archives scriptSdkJar
+    archives jscriptingJar
 }
 
 task wrapper(type: Wrapper) {
@@ -392,7 +392,7 @@ publishing {
 			artifact deobfJar
 			artifact sourceJar
 			artifact javadocJar
-            artifact scriptSdkJar
+            artifact jscriptingJar
 
 			pom.withXml {
 				def dependenciesNode = asNode().appendNode("dependencies")

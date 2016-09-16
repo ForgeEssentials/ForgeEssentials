@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import net.minecraft.block.Block;
 
 import com.forgeessentials.data.v2.DataManager.DataType;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
@@ -19,7 +19,7 @@ public class BlockType implements DataType<Block>
     @Override
     public JsonElement serialize(Block src, Type typeOfSrc, JsonSerializationContext context)
     {
-        return new JsonPrimitive(ServerUtil.getBlockName(src));
+        return new JsonPrimitive(Utils.getBlockName(src));
     }
 
     @Override

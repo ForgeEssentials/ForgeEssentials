@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.ServerEventHandler;
 
 public class StatsManager extends ServerEventHandler
@@ -27,7 +27,7 @@ public class StatsManager extends ServerEventHandler
             @Override
             public Integer getValue()
             {
-                return ServerUtil.getPlayerList().size();
+                return Utils.getPlayerList().size();
             }
         });
     }

@@ -13,8 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
@@ -74,10 +74,10 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
         {
             EntityPlayerMP player = (EntityPlayerMP) sender;
             if (!PermissionManager.checkPermission(player, "fe.commands.doas.console"))
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+                throw new TranslatedCommandException(MessageConstants.MSG_NO_COMMAND_PERM);
 
             if (args.length < 2)
-                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
 
             args = Arrays.copyOfRange(args, 1, args.length);
             String cmd = StringUtils.join(args, " ");

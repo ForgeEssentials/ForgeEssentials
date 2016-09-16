@@ -11,14 +11,14 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.world.CommandWeather.WeatherData;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -89,7 +89,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -112,11 +112,11 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
             parseTime(arguments, true);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
     }
 
-    public static void parseFreeze(CommandParserArgs arguments)
+    public static void parseFreeze(FeCommandParserArgs arguments)
     {
         World world = arguments.isEmpty() ? null : arguments.parseWorld();
         if (arguments.isTabCompletion)
@@ -147,7 +147,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
         save();
     }
 
-    public static void parseTime(CommandParserArgs arguments, boolean addTime)
+    public static void parseTime(FeCommandParserArgs arguments, boolean addTime)
     {
         long time;
         if (!addTime)

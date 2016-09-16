@@ -9,6 +9,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -62,7 +63,7 @@ public class JsICommandSender extends JsWrapper<ICommandSender>
 
     public void chat(String message)
     {
-        ChatOutputHandler.sendMessage(that, message);
+        ChatUtil.sendMessage(that, message);
     }
 
     public void chatConfirm(String message)

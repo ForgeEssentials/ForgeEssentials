@@ -6,7 +6,6 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 
 public class DoAsCommandSender implements ICommandSender
@@ -20,7 +19,7 @@ public class DoAsCommandSender implements ICommandSender
 
     public DoAsCommandSender()
     {
-        this.ident = APIRegistry.IDENT_SERVER;
+        this.ident = null;
         this.sender = MinecraftServer.getServer();
     }
 

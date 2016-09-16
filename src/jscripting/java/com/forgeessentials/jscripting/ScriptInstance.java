@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
@@ -37,6 +36,7 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Charsets;
 
@@ -526,9 +526,9 @@ public class ScriptInstance
     {
         IChatComponent msg = ChatOutputHandler.error(message);
         if (sender == null)
-            ChatOutputHandler.broadcast(msg); // TODO: Replace with broadcast to admins only
+            ChatUtil.broadcast(msg); // TODO: Replace with broadcast to admins only
         else
-            ChatOutputHandler.sendMessage(sender, msg);
+            ChatUtil.sendMessage(sender, msg);
     }
 
 }

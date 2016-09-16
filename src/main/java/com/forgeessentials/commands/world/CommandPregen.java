@@ -18,15 +18,15 @@ import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.TickTask;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.worldborder.ModuleWorldBorder;
 import com.forgeessentials.worldborder.WorldBorder;
@@ -103,7 +103,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -133,13 +133,13 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             flush(arguments);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
     }
 
     /* ------------------------------------------------------------ */
 
-    private void parseStart(CommandParserArgs arguments)
+    private void parseStart(FeCommandParserArgs arguments)
     {
         if (running)
         {
@@ -177,7 +177,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         arguments.confirm("Pregen started");
     }
 
-    private void parseStop(CommandParserArgs arguments)
+    private void parseStop(FeCommandParserArgs arguments)
     {
         if (!running)
         {
@@ -187,7 +187,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         running = false;
     }
 
-    private void flush(CommandParserArgs arguments)
+    private void flush(FeCommandParserArgs arguments)
     {
         if (!running)
         {
@@ -211,7 +211,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
         ChunkProviderServer providerServer = (ChunkProviderServer) world.getChunkProvider();
 
-        double tps = ServerUtil.getTPS();
+        double tps = Utils.getTPS();
         if (totalTicks % 80 == 0)
             notifyPlayers(String.format("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ * 4, tps,
                     providerServer.getLoadedChunkCount()));
@@ -296,7 +296,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     public void notifyPlayers(String message)
     {
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (EntityPlayerMP player : Utils.getPlayerList())
             if (APIRegistry.perms.checkPermission(player, getPermissionNode()))
                 ChatOutputHandler.chatNotification(player, message);
     }

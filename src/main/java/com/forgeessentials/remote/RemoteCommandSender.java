@@ -14,9 +14,9 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.network.ChatResponse;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.DoAsCommandSender;
-import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.output.LoggingHandler;
 
 public class RemoteCommandSender extends DoAsCommandSender
@@ -53,7 +53,7 @@ public class RemoteCommandSender extends DoAsCommandSender
         if (session.getUserIdent() != null)
             this.sender = session.getUserIdent().getFakePlayer();
         else
-            this.sender = FakePlayerFactory.get(ServerUtil.getOverworld(), ModuleRemote.FAKEPLAYER);
+            this.sender = FakePlayerFactory.get(Utils.getOverworld(), ModuleRemote.FAKEPLAYER);
         this.session = session;
     }
 
@@ -82,14 +82,14 @@ public class RemoteCommandSender extends DoAsCommandSender
         ICommandSender receiver = MinecraftServer.getServer();
         if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
             receiver = session.getUserIdent().getPlayer();
-        ChatOutputHandler.sendMessage(receiver, chatComponent);
+        ChatUtil.sendMessage(receiver, chatComponent);
 
         if (!session.isClosed())
         {
             try
             {
                 // TODO: Add second message WITH formatting
-                ChatResponse msg = new ChatResponse(null, ChatOutputHandler.stripFormatting(chatComponent.getUnformattedText()));
+                ChatResponse msg = new ChatResponse(null, ChatUtil.stripFormatting(chatComponent.getUnformattedText()));
                 session.sendMessage(new RemoteResponse<ChatResponse>(RemoteMessageID.CHAT, msg));
             }
             catch (IOException e)

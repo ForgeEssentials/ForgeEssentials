@@ -16,8 +16,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
-import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.UserIdentUtils;
+import com.forgeessentials.util.Utils;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 
@@ -617,7 +617,7 @@ public class UserIdent
 
     public static EntityPlayerMP getPlayerByUuid(UUID uuid)
     {
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (EntityPlayerMP player : Utils.getPlayerList())
             if (player.getPersistentID().equals(uuid))
                 return player;
         return null;

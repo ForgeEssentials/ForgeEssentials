@@ -17,8 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -30,9 +30,9 @@ import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
 import com.forgeessentials.protection.MobType;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.DoAsCommandSender;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
@@ -107,7 +107,7 @@ public class CommandPlot extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -170,11 +170,11 @@ public class CommandPlot extends ParserCommandBase
         case "sell":
             throw new TranslatedCommandException("Not yet implemented. Use \"/plot set price\" instead.");
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
+            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subcmd);
         }
     }
 
-    public static void parseDefine(CommandParserArgs arguments)
+    public static void parseDefine(FeCommandParserArgs arguments)
     {
         arguments.checkPermission(Plot.PERM_DEFINE);
         arguments.requirePlayer();
@@ -201,7 +201,7 @@ public class CommandPlot extends ParserCommandBase
         }
     }
 
-    public static void parseDelete(CommandParserArgs arguments)
+    public static void parseDelete(FeCommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
         if (plot.getOwner() != UserIdent.get(arguments.senderPlayer) || arguments.hasPermission(Plot.PERM_DELETE))
@@ -213,7 +213,7 @@ public class CommandPlot extends ParserCommandBase
             throw new TranslatedCommandException("You are not the owner of this plot, you can't delete it!");
     }
 
-    public static void parseClaim(final CommandParserArgs arguments)
+    public static void parseClaim(final FeCommandParserArgs arguments)
     {
         arguments.checkPermission(Plot.PERM_CLAIM);
         arguments.requirePlayer();
@@ -273,12 +273,12 @@ public class CommandPlot extends ParserCommandBase
 
     }
 
-    private static void checkLimits(CommandParserArgs arguments, WorldArea newArea)
+    private static void checkLimits(FeCommandParserArgs arguments, WorldArea newArea)
     {
         int plotSize = newArea.getXLength() * newArea.getZLength() * (Plot.isColumnMode(newArea.getDimension()) ? 1 : newArea.getYLength());
 
-        int minAxis = ServerUtil.parseIntDefault(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MIN), Integer.MIN_VALUE);
-        int maxAxis = ServerUtil.parseIntDefault(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MAX), Integer.MAX_VALUE);
+        int minAxis = Utils.parseIntDefault(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MIN), Integer.MIN_VALUE);
+        int maxAxis = Utils.parseIntDefault(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MAX), Integer.MAX_VALUE);
 
         if (newArea.getXLength() < minAxis || newArea.getZLength() < minAxis)
         {
@@ -290,8 +290,8 @@ public class CommandPlot extends ParserCommandBase
             throw new TranslatedCommandException("Plot is too big!");
         }
 
-        int limitCount = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_COUNT), Integer.MAX_VALUE);
-        int limitSize = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_SIZE), Integer.MAX_VALUE);
+        int limitCount = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_COUNT), Integer.MAX_VALUE);
+        int limitSize = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_SIZE), Integer.MAX_VALUE);
         int usedCount = 0;
         long usedSize = 0;
         for (Plot plot : Plot.getPlots())
@@ -306,7 +306,7 @@ public class CommandPlot extends ParserCommandBase
             throw new TranslatedCommandException("You have reached your limit of %s blocks^2 already!", limitSize);
     }
 
-    public static void parseList(final CommandParserArgs arguments)
+    public static void parseList(final FeCommandParserArgs arguments)
     {
         arguments.checkPermission(Plot.PERM_LIST);
 
@@ -320,7 +320,7 @@ public class CommandPlot extends ParserCommandBase
             }
             catch (IllegalArgumentException e)
             {
-                throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
+                throw new TranslatedCommandException(MessageConstants.MSG_INVALID_SYNTAX);
             }
         }
 
@@ -357,7 +357,7 @@ public class CommandPlot extends ParserCommandBase
             plot.printInfo(arguments.sender);
     }
 
-    public static void parseLimits(CommandParserArgs arguments)
+    public static void parseLimits(FeCommandParserArgs arguments)
     {
         String limitCount = APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_COUNT);
         if (limitCount == null || limitCount.isEmpty())
@@ -380,14 +380,14 @@ public class CommandPlot extends ParserCommandBase
         arguments.confirm("You use %d of %s allowed plot size.", usedSize, limitSize);
     }
 
-    public static void parseSelect(CommandParserArgs arguments)
+    public static void parseSelect(FeCommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
         SelectionHandler.select(arguments.senderPlayer, plot.getDimension(), plot.getZone().getArea());
         arguments.confirm("Selected plot");
     }
 
-    public static void parseMods(CommandParserArgs arguments, boolean modifyUsers)
+    public static void parseMods(FeCommandParserArgs arguments, boolean modifyUsers)
     {
         Plot plot = getPlot(arguments.sender);
         String type = modifyUsers ? "users" : "mods";
@@ -425,7 +425,7 @@ public class CommandPlot extends ParserCommandBase
         }
     }
 
-    public static void parseSet(CommandParserArgs arguments)
+    public static void parseSet(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -459,7 +459,7 @@ public class CommandPlot extends ParserCommandBase
         }
     }
 
-    public static void parseSetPrice(CommandParserArgs arguments)
+    public static void parseSetPrice(FeCommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
@@ -499,7 +499,7 @@ public class CommandPlot extends ParserCommandBase
         }
     }
 
-    public static void parseSetFee(CommandParserArgs arguments)
+    public static void parseSetFee(FeCommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
@@ -522,7 +522,7 @@ public class CommandPlot extends ParserCommandBase
         arguments.confirm(Translator.format("Set plot price to %s and timeout to %d", APIRegistry.economy.toString(amount), timeout));
     }
 
-    public static void parseSetName(CommandParserArgs arguments)
+    public static void parseSetName(FeCommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
@@ -543,7 +543,7 @@ public class CommandPlot extends ParserCommandBase
         arguments.confirm("Set plot name to \"%s\"", name);
     }
 
-    public static void parseSetOwner(CommandParserArgs arguments)
+    public static void parseSetOwner(FeCommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
@@ -567,7 +567,7 @@ public class CommandPlot extends ParserCommandBase
         arguments.confirm("Set plot owner to \"%s\"", newOwner.getUsernameOrUuid());
     }
 
-    public static void parsePerms(CommandParserArgs arguments, boolean userPerms)
+    public static void parsePerms(FeCommandParserArgs arguments, boolean userPerms)
     {
         final String[] tabCompletion = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
 
@@ -602,7 +602,7 @@ public class CommandPlot extends ParserCommandBase
             allow = false;
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
+            throw new TranslatedCommandException(MessageConstants.MSG_INVALID_SYNTAX);
         }
 
         String msgBase = (allow ? "Allowed " : "Denied ") + (userPerms ? "users " : "guests ");
@@ -648,11 +648,11 @@ public class CommandPlot extends ParserCommandBase
             arguments.confirm(msgBase + "to hurt animals");
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
+            throw new TranslatedCommandException(MessageConstants.MSG_INVALID_SYNTAX);
         }
     }
 
-    public static void parseBuyStart(final CommandParserArgs arguments)
+    public static void parseBuyStart(final FeCommandParserArgs arguments)
     {
         final Plot plot = getPlot(arguments.sender);
         if (plot == null)
@@ -756,7 +756,7 @@ public class CommandPlot extends ParserCommandBase
         Questioner.addChecked(arguments.sender, message, handler, 30);
     }
 
-    public static void buyPlot(CommandParserArgs arguments, Plot plot, long price)
+    public static void buyPlot(FeCommandParserArgs arguments, Plot plot, long price)
     {
         String priceStr = APIRegistry.economy.toString(price);
         Wallet buyerWallet = APIRegistry.economy.getWallet(arguments.ident);

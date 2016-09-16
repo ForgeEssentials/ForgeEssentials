@@ -10,7 +10,7 @@ import java.io.IOException;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 
 public class SingleFileProvider extends ZonePersistenceProvider
 {
@@ -19,7 +19,7 @@ public class SingleFileProvider extends ZonePersistenceProvider
 
     public SingleFileProvider()
     {
-        file = new File(ServerUtil.getWorldPath(), "FEData/permissions.json");
+        file = new File(Utils.getWorldPath(), "FEData/permissions.json");
     }
 
     public SingleFileProvider(File file)

@@ -3,7 +3,7 @@ package com.forgeessentials.worldborder.effect;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
@@ -14,7 +14,7 @@ public class EffectKnockback extends WorldBorderEffect
 {
 
     @Override
-    public void provideArguments(CommandParserArgs args) throws CommandException
+    public void provideArguments(FeCommandParserArgs args) throws CommandException
     {
     }
 

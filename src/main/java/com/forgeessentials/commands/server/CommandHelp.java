@@ -25,7 +25,8 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandHelp extends ParserCommandBase implements ConfigLoader
@@ -81,7 +82,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
 
     @Override
     @SuppressWarnings("unchecked")
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -154,7 +155,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
         IChatComponent chatMsg = new ChatComponentTranslation(command.getCommandUsage(sender));
         chatMsg.getChatStyle().setColor(color);
         chatMsg.getChatStyle().setChatClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getCommandName() + " "));
-        ChatOutputHandler.sendMessage(sender, chatMsg);
+        ChatUtil.sendMessage(sender, chatMsg);
     }
 
     public void showHelpPage(ICommandSender sender)

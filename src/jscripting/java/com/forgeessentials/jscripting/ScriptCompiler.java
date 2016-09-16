@@ -28,13 +28,6 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public final class ScriptCompiler
 {
 
-    public static final String WRAPPER_PACKAGE = "com.forgeessentials.jscripting.wrapper";
-
-    private static String INIT_SCRIPT;
-
-    @SuppressWarnings("unused")
-    private static CompiledScript initScript;
-
     @SuppressWarnings("rawtypes")
     public static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
 

@@ -12,7 +12,7 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -61,7 +61,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase
         if (args.length == 3)
         {
             double x = func_110666_a(sender, sender.posX, args[0]);
-            double y = ServerUtil.parseYLocation(sender, sender.posY, args[1]);
+            double y = Utils.parseYLocation(sender, sender.posY, args[1]);
             double z = func_110666_a(sender, sender.posZ, args[2]);
             TeleportHelper.teleport(sender, new WarpPoint(sender.dimension, x, y, z, sender.cameraPitch, sender.cameraYaw));
         }

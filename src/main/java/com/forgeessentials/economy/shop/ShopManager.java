@@ -42,6 +42,7 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ProtectionEventHandler;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -302,7 +303,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             {
                 ChatComponentTranslation msg = new ChatComponentTranslation("You do not have enough %s", itemName);
                 msg.getChatStyle().setColor(ChatOutputHandler.chatConfirmationColor);
-                ChatOutputHandler.sendMessage(event.entityPlayer, msg);
+                ChatUtil.sendMessage(event.entityPlayer, msg);
                 return;
             }
             int removedAmount = 0;
@@ -321,7 +322,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             String price = APIRegistry.economy.toString(shop.sellPrice);
             ChatComponentTranslation msg = new ChatComponentTranslation("Sold %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
             msg.getChatStyle().setColor(ChatOutputHandler.chatConfirmationColor);
-            ChatOutputHandler.sendMessage(event.entityPlayer, msg);
+            ChatUtil.sendMessage(event.entityPlayer, msg);
         }
         else
         {
@@ -342,7 +343,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             String price = APIRegistry.economy.toString(shop.buyPrice);
             ChatComponentTranslation msg = new ChatComponentTranslation("Bought %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
             msg.getChatStyle().setColor(ChatOutputHandler.chatConfirmationColor);
-            ChatOutputHandler.sendMessage(event.entityPlayer, msg);
+            ChatUtil.sendMessage(event.entityPlayer, msg);
         }
     }
 

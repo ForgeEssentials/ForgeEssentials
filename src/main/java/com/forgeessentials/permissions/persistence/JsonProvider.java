@@ -27,7 +27,7 @@ import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -40,7 +40,7 @@ public class JsonProvider extends ZonePersistenceProvider
 
     public JsonProvider()
     {
-        path = new File(ServerUtil.getWorldPath(), "FEData/json/Permissions");
+        path = new File(Utils.getWorldPath(), "FEData/json/Permissions");
         gson = new GsonBuilder().disableHtmlEscaping().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
     }
 

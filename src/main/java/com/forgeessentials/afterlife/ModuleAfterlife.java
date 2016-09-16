@@ -19,7 +19,7 @@ import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.PlayerUtil;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
@@ -105,11 +105,11 @@ public class ModuleAfterlife extends ServerEventHandler
         if (potionEffects != null)
             PlayerUtil.applyPotionEffects(e.player, potionEffects);
 
-        Integer respawnHP = ServerUtil.tryParseInt(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.player), ModuleAfterlife.PERM_HP));
+        Integer respawnHP = Utils.tryParseInt(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.player), ModuleAfterlife.PERM_HP));
         if (respawnHP != null)
             e.player.setHealth(respawnHP);
 
-        Integer respawnFood = ServerUtil.tryParseInt(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.player), ModuleAfterlife.PERM_FOOD));
+        Integer respawnFood = Utils.tryParseInt(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.player), ModuleAfterlife.PERM_FOOD));
         if (respawnFood != null)
             e.player.getFoodStats().addStats(-1 * (20 - respawnFood), 0);
     }

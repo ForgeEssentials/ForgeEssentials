@@ -19,7 +19,7 @@ import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.api.remote.data.DataFloatLocation;
 import com.forgeessentials.remote.RemoteMessageID;
 import com.forgeessentials.remote.network.QueryPlayerRequest;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
@@ -56,7 +56,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
         Map<UUID, Map<String, JsonElement>> players = new HashMap<>();
         if (request.data == null || request.data.name == null)
         {
-            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            for (EntityPlayerMP player : Utils.getPlayerList())
             {
                 UserIdent ident = UserIdent.get(player);
                 players.put(ident.getUuid(), getPlayerInfoResponse(session, ident, request.data == null ? null : request.data.flags));

@@ -11,7 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsWorld;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.google.common.base.Throwables;
 
 public class JsEntity<T extends Entity> extends JsWrapper<T>
@@ -196,7 +196,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
      */
     public void _setNbt(String value)
     {
-        ServerUtil.copyNbt(that.getEntityData(), DataManager.fromJson(value, NBTTagCompound.class));
+        Utils.copyNbt(that.getEntityData(), DataManager.fromJson(value, NBTTagCompound.class));
     }
 
     public String getEntityType()
