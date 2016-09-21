@@ -3,7 +3,10 @@ package com.forgeessentials.worldborder.effect;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
 
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 
@@ -15,18 +18,20 @@ import com.forgeessentials.worldborder.WorldBorderEffect;
 public class EffectDamage extends WorldBorderEffect
 {
 
-    private static int INTERVAL;
+    private int interval = 1000;
 
     private int damage = 1;
 
     @Override
-    public boolean provideArguments(String[] args)
+    public void provideArguments(CommandParserArgs args) throws CommandException
     {
-        if (args.length < 2)
-            return false;
-        INTERVAL = Integer.parseInt(args[0]);
-        damage = Integer.parseInt(args[1]);
-        return true;
+        if (args.isEmpty())
+            throw new TranslatedCommandException("Missing interval argument");
+        interval = args.parseInt();
+
+        if (args.isEmpty())
+            throw new TranslatedCommandException("Missing damage argument");
+        damage = args.parseInt();
     }
 
     @Override
@@ -36,13 +41,13 @@ public class EffectDamage extends WorldBorderEffect
         if (pi.checkTimeout(this.getClass().getName()))
         {
             player.attackEntityFrom(DamageSource.outOfWorld, damage);
-            pi.startTimeout(this.getClass().getName(), INTERVAL *  1000);
+            pi.startTimeout(this.getClass().getName(), interval *  1000);
         }
     }
 
     public String toString()
     {
-        return "damage trigger: " + triggerDistance + "interval: " + INTERVAL + " damage: " + damage;
+        return "damage trigger: " + triggerDistance + " damage: " + damage;
     }
 
     public String getSyntax()

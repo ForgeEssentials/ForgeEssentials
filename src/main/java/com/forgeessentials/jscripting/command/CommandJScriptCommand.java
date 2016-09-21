@@ -10,8 +10,8 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
-import com.forgeessentials.jscripting.wrapper.JsCommandArgs;
-import com.forgeessentials.jscripting.wrapper.JsCommandOptions;
+import com.forgeessentials.jscripting.fewrapper.fe.JsCommandArgs;
+import com.forgeessentials.jscripting.fewrapper.fe.JsCommandOptions;
 import com.forgeessentials.util.CommandParserArgs;
 import com.google.common.base.Preconditions;
 
@@ -83,11 +83,13 @@ public class CommandJScriptCommand extends ParserCommandBase
         }
         catch (NoSuchMethodException e)
         {
+            e.printStackTrace();
             throw new TranslatedCommandException("Script error: method not found: " + e.getMessage());
         }
         catch (ScriptException e)
         {
-            throw new TranslatedCommandException("Script error: " + e.getMessage());
+            e.printStackTrace();
+            throw new TranslatedCommandException(e.getMessage());
         }
     }
 

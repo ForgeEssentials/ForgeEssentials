@@ -256,10 +256,11 @@ public class WarpPoint
     }
 
     private static final Pattern fromStringPattern = Pattern.compile(
-            "\\s*\\[\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*(-?\\d+)\\s*,\\s*dim\\s*=\\s*(-?\\d+)\\s*,\\s*pitch\\s*=\\s*(-?\\d+)\\s*,\\s*yaw\\s*=\\s*(-?\\d+)\\s*\\]\\s*");
+            "\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=(-?\\d+),pitch=(-?[\\d.]+),yaw=(-?[\\d.]+)\\]");
 
     public static WarpPoint fromString(String value)
     {
+        value = value.replaceAll("\\s ", "");
         Matcher m = fromStringPattern.matcher(value);
         if (m.matches())
         {
@@ -267,11 +268,11 @@ public class WarpPoint
             {
                 return new WarpPoint(
                         Integer.parseInt(m.group(4)),
-                        Integer.parseInt(m.group(1)),
-                        Integer.parseInt(m.group(2)),
-                        Integer.parseInt(m.group(3)),
-                        Integer.parseInt(m.group(5)),
-                        Integer.parseInt(m.group(6)));
+                        Double.parseDouble(m.group(1)),
+                        Double.parseDouble(m.group(2)),
+                        Double.parseDouble(m.group(3)),
+                        Float.parseFloat(m.group(5)),
+                        Float.parseFloat(m.group(6)));
             }
             catch (NumberFormatException e)
             {

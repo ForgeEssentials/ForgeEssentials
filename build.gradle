@@ -57,7 +57,7 @@ def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
-ext.baseVersion = "1.4.4"
+ext.baseVersion = "1.4.5"
 version = baseVersion + "." + buildNumber
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
@@ -66,7 +66,7 @@ targetCompatibility = 1.8
 
 // Set up forge options
 minecraft {
-	version = "1.7.10-10.13.4.1448-1.7.10"
+	version = "1.7.10-10.13.4.1558-1.7.10"
 	runDir = "rundir"
 	
 	replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
@@ -182,6 +182,22 @@ project.processClientResources {
  * Configure server jar (default)
  */
 
+ // Javadoc task for generating tsd - does not work yet
+task tsd(type: Javadoc) {
+	dependsOn "classes"
+	source = fileTree(dir: 'src/main/java/com/forgeessentials/jscripting/fewrapper', include: 'ScriptExtensionRoot.java')
+	classpath = project.sourceSets.main.compileClasspath
+	
+	options.doclet = "com.forgeessentials.jscripting.TsdGenerator"
+	options.docletpath = [ file("build/classes/main") ]
+	options.addStringOption("sourcepath", "src/main/java")
+	options.addStringOption("subpackages", "com.forgeessentials.jscripting.fewrapper")
+	options.addStringOption("out", "jscripting/fe.d.ts")
+	options.addStringOption("header", "src/main/resources/com/forgeessentials/jscripting/fe_header.d.ts")
+	options.addStringOption("interface", "com.forgeessentials.jscripting.fewrapper.fe.JsFEServer")
+	options.addStringOption("static", "com.forgeessentials.jscripting.fewrapper.fe.JsPermissions")
+}
+ 
 // Pack libraries as zip file to include them in the jar file
 task serverLibArchive(type: Zip) {
 	archiveName = "libraries.zip"

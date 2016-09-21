@@ -5,9 +5,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 
@@ -22,13 +25,15 @@ public class EffectMessage extends WorldBorderEffect
     public int interval = 6000;
 
     @Override
-    public boolean provideArguments(String[] args)
+    public void provideArguments(CommandParserArgs args) throws CommandException
     {
-        if (args.length < 2)
-            return false;
-        interval = Integer.parseInt(args[0]);
-        message = StringUtils.join(ServerUtil.dropFirst(args), " ");
-        return true;
+        if (args.isEmpty())
+            throw new TranslatedCommandException("Missing interval argument");
+        interval = args.parseInt();
+
+        if (args.isEmpty())
+            throw new TranslatedCommandException("Missing message argument");
+        message = args.toString();
     }
 
     @Override

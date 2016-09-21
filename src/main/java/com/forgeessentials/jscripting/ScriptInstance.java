@@ -2,9 +2,11 @@ package com.forgeessentials.jscripting;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -21,14 +23,12 @@ import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
 import javax.script.Invocable;
-import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.IChatComponent;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.forgeessentials.core.commands.ParserCommandBase;
@@ -36,23 +36,14 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
-import com.forgeessentials.jscripting.wrapper.JsWindowStatic;
-import com.forgeessentials.jscripting.wrapper.event.JsEvent;
-import com.forgeessentials.jscripting.wrapper.event.JsPlayerInteractEvent;
-import com.forgeessentials.jscripting.wrapper.item.JsItemStatic;
-import com.forgeessentials.jscripting.wrapper.server.JsPermissionsStatic;
-import com.forgeessentials.jscripting.wrapper.server.JsServerStatic;
-import com.forgeessentials.jscripting.wrapper.world.JsBlockStatic;
-import com.forgeessentials.jscripting.wrapper.world.JsWorldStatic;
+import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.google.common.base.Throwables;
+import com.google.common.base.Charsets;
 
 public class ScriptInstance
 {
 
     public static final String SCRIPT_ERROR_TEXT = "Script error: ";
-
-    private static String INIT_SCRIPT;
 
     public static class ProptertiesInfo<T>
     {
@@ -74,7 +65,7 @@ public class ScriptInstance
                 }
             }
             String scriptSrc = fields.stream().map((f) -> "o." + f.getName()).collect(Collectors.joining(",", "[", "]"));
-            script = propertyEngine.compile(scriptSrc);
+            script = ScriptInstance.propertyEngine.compile(scriptSrc);
         }
 
         public ProptertiesInfo(Class<T> clazz, T instance) throws ScriptException
@@ -98,23 +89,13 @@ public class ScriptInstance
                 }
             }
             String scriptSrc = fields.stream().map((f) -> "o." + f.getName()).collect(Collectors.joining(",", "[", "]"));
-            script = propertyEngine.compile(scriptSrc);
+            script = ScriptInstance.propertyEngine.compile(scriptSrc);
         }
     }
 
     private static ScriptInstance lastActive;
 
-    @SuppressWarnings("unused")
-    private static CompiledScript initScript;
-
-    private static Compilable propertyEngine = ModuleJScripting.getCompilable();
-
-    private static Map<String, CompiledScript> propertyScripts = new HashMap<>();
-
-    private static Map<Class<?>, ProptertiesInfo<?>> propertyInfos = new HashMap<>();
-
-    @SuppressWarnings("rawtypes")
-    public static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
+    /* ************************************************************ */
 
     private File file;
 
@@ -123,11 +104,9 @@ public class ScriptInstance
     private CompiledScript script;
 
     private Invocable invocable;
-    
+
     @SuppressWarnings("unused")
     private Bindings exports;
-
-    private SimpleBindings getPropertyBindings = new SimpleBindings();
 
     private Set<String> illegalFunctions = new HashSet<>();
 
@@ -139,19 +118,18 @@ public class ScriptInstance
 
     private WeakReference<ICommandSender> lastSender;
 
-    static
-    {
-        eventTypes.put("playerInteractEvent", JsPlayerInteractEvent.class);
-        try
-        {
-            INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js"));
-            initScript = ModuleJScripting.getCompilable().compile(INIT_SCRIPT);
-        }
-        catch (IOException |ScriptException e)
-        {
-            Throwables.propagate(e);
-        }
-    }
+    /* ************************************************************ */
+    /* PROPERTY ACCESSING */
+
+    private static Compilable propertyEngine = ModuleJScripting.getCompilable();
+
+    private static Map<String, CompiledScript> propertyScripts = new HashMap<>();
+
+    private static Map<Class<?>, ProptertiesInfo<?>> propertyInfos = new HashMap<>();
+
+    private SimpleBindings getPropertyBindings = new SimpleBindings();
+
+    /* ************************************************************ */
 
     public ScriptInstance(File file) throws IOException, ScriptException
     {
@@ -177,32 +155,32 @@ public class ScriptInstance
         eventHandlers.clear();
     }
 
-    protected void compileScript() throws IOException, FileNotFoundException, ScriptException
+    protected void compileScript() throws IOException, ScriptException
     {
         illegalFunctions.clear();
         script = null;
-        try (BufferedReader reader = new BufferedReader(new FileReader(file)))
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)))
         {
             // Load and compile script
             script = ModuleJScripting.getCompilable().compile(reader);
 
-            // Initialization of module environment
-            ScriptEngine engine = script.getEngine();
-            invocable = (Invocable) engine;
-            engine.put("window", new JsWindowStatic(this));
-            engine.put("Server", new JsServerStatic(this));
-            engine.put("Block", new JsBlockStatic());
-            engine.put("Item", new JsItemStatic());
-            engine.put("World", new JsWorldStatic());
-            engine.put("Permissions", new JsPermissionsStatic());
-
-            INIT_SCRIPT = IOUtils.toString(ScriptInstance.class.getResource("init.js")); // TODO: DEV ONLY REALOD OF INIT SCRIPT
-            engine.eval(INIT_SCRIPT);
-            // initScript.eval(engine.getContext());
-
-            // Start script
+            // Initialization of environment and script
+            invocable = (Invocable) script.getEngine();
+            ScriptCompiler.initEngine(script.getEngine(), this);
             script.eval();
-            exports = (Bindings) engine.get("exports");
+
+            // Get exports
+            exports = (Bindings) script.getEngine().get("exports");
+        }
+        catch (IOException | ScriptException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            // TODO: Maybe only catch certain exceptions like NullPointerException etc.
+            e.printStackTrace();
+            throw new ScriptException(e);
         }
         lastModified = file.lastModified();
     }
@@ -223,10 +201,16 @@ public class ScriptInstance
             setLastActive();
             return this.invocable.invokeFunction(fn, args);
         }
-        catch (Exception e)
+        catch (NoSuchMethodException | ScriptException e)
         {
             illegalFunctions.add(fn);
             throw e;
+        }
+        catch (Exception e)
+        {
+            // TODO: Maybe only catch certain exceptions like NullPointerException etc.
+            illegalFunctions.add(fn);
+            throw new ScriptException(e);
         }
         finally
         {
@@ -246,6 +230,17 @@ public class ScriptInstance
             illegalFunctions.add(fn);
             return null;
         }
+        catch (ScriptException e)
+        {
+            illegalFunctions.add(fn);
+            throw e;
+        }
+        catch (Exception e)
+        {
+            // TODO: Maybe only catch certain exceptions like NullPointerException etc.
+            illegalFunctions.add(fn);
+            throw new ScriptException(e);
+        }
         finally
         {
             clearLastActive();
@@ -264,6 +259,15 @@ public class ScriptInstance
             setLastActive();
             return this.invocable.invokeMethod(fn, "call", ArrayUtils.add(args, 0, thiz));
         }
+        catch (NoSuchMethodException | ScriptException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            // TODO: Maybe only catch certain exceptions like NullPointerException etc.
+            throw new ScriptException(e);
+        }
         finally
         {
             clearLastActive();
@@ -281,11 +285,38 @@ public class ScriptInstance
         {
             return null;
         }
+        catch (ScriptException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            // TODO: Maybe only catch certain exceptions like NullPointerException etc.
+            throw new ScriptException(e);
+        }
         finally
         {
             clearLastActive();
         }
     }
+
+    private void setLastActive()
+    {
+        lastActive = this;
+    }
+
+    private void clearLastActive()
+    {
+        lastActive = null;
+    }
+
+    public ScriptInstance getLastActive()
+    {
+        return lastActive;
+    }
+
+    /* ************************************************************ */
+    /* Property access */
 
     @SuppressWarnings("unchecked")
     public <T> T getProperty(Object object, String property) throws ScriptException
@@ -295,7 +326,7 @@ public class ScriptInstance
         CompiledScript propertyScript = propertyScripts.get(property);
         if (propertyScript == null)
         {
-            propertyScript = propertyEngine.compile(property);
+            propertyScript = ScriptInstance.propertyEngine.compile(property);
             propertyScripts.put(property, propertyScript);
         }
         return (T) propertyScript.eval(getPropertyBindings);
@@ -326,13 +357,13 @@ public class ScriptInstance
         }
         else
         {
-            getPropertyBindings.put("o", object);
-            Object eval = props.script.eval(getPropertyBindings);
-            if (!(eval instanceof Bindings))
-                throw new ScriptException("Unable to access properties");
-            Bindings bindings = (Bindings) eval;
             try
             {
+                getPropertyBindings.put("o", object);
+                Object eval = props.script.eval(getPropertyBindings);
+                if (!(eval instanceof Bindings))
+                    throw new ScriptException("Unable to access properties");
+                Bindings bindings = (Bindings) eval;
                 for (int i = 0; i < props.fields.size(); i++)
                     props.fields.get(i).set(instance, bindings.get(i));
             }
@@ -340,24 +371,13 @@ public class ScriptInstance
             {
                 e.printStackTrace();
             }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                throw new ScriptException(e);
+            }
         }
         return instance;
-    }
-
-    private void setLastActive()
-    {
-        // lastActive = new WeakReference<ScriptInstance>(this);
-        lastActive = this;
-    }
-
-    private void clearLastActive()
-    {
-        lastActive = null;
-    }
-
-    public ScriptInstance getLastActive()
-    {
-        return lastActive;
     }
 
     /**
@@ -432,7 +452,7 @@ public class ScriptInstance
     @SuppressWarnings({ "rawtypes" })
     public void registerEventHandler(String event, Object handler)
     {
-        Class<? extends JsEvent> eventType = eventTypes.get(event);
+        Class<? extends JsEvent> eventType = ScriptCompiler.eventTypes.get(event);
         if (eventType == null)
         {
             chatError(SCRIPT_ERROR_TEXT + "Invalid event type " + event);

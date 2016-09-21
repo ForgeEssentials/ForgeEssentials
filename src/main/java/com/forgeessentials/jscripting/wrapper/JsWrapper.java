@@ -1,13 +1,9 @@
 package com.forgeessentials.jscripting.wrapper;
 
-import net.minecraft.entity.Entity;
-
 import com.google.common.base.Preconditions;
 
 /**
  * Basic wrapped java object
- *
- * @tsd.type JavaObject
  */
 public class JsWrapper<T>
 {
@@ -32,7 +28,7 @@ public class JsWrapper<T>
     }
 
     /**
-     * @tsd.def equals(obj: JavaObject): boolean;
+     * @tsd.def equals(obj: Wrapper): boolean;
      */
     @Override
     public boolean equals(Object obj)
