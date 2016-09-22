@@ -35,6 +35,8 @@ public class FilterConfig
 
     public static ArrayList<String> actiontabs = new ArrayList<>();
 
+    public static Boolean whitelist = null;
+
     static {
         keywords.add("action");
         keywords.add("blockid");
@@ -78,6 +80,15 @@ public class FilterConfig
 
             }
 
+        }
+
+        //If the filter has not been set to a whitelist or a blacklist assume blacklist when the blocks field is empty and whitelist otherwise.
+        if (whitelist == null)
+        {
+            if (blocks.isEmpty())
+                whitelist = false;
+            else
+                whitelist = true;
         }
 
 
