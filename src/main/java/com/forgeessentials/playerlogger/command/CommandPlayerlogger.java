@@ -14,6 +14,7 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.playerlogger.FilterConfig;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLoggerEventHandler;
@@ -124,8 +125,14 @@ public class CommandPlayerlogger extends ParserCommandBase
                         ChatOutputHandler.formatColors("Range changed from " + oldRange + " to " + PlayerLoggerEventHandler.pickerRange));
                 break;
             case "filter":
+                FilterConfig fc = new FilterConfig();
+                fc.parse(arguments);
+
+                ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors("Before: " + fc.before + "\nAfter: " + fc.after + "\nActions: " + fc.actions + "\nBlocks: " + fc.blocks + "\nWhitelist: " + fc.whitelist));
+
+                //TODO: Finish adding filterconfig to playerlogger functions
                 // filter event type shown (player, command, block, explosion)
-                PlayerLoggerEventHandler.eventType = arguments.isEmpty() ? 0b11111 : 0;
+                /*PlayerLoggerEventHandler.eventType = arguments.isEmpty() ? 0b11111 : 0;
                 PlayerLoggerEventHandler.searchCriteria = "";
                 while (!arguments.isEmpty())
                 {
@@ -162,7 +169,8 @@ public class CommandPlayerlogger extends ParserCommandBase
                     }
                 }
                 ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors(outputFilterReadable(PlayerLoggerEventHandler.eventType)
-                        + (PlayerLoggerEventHandler.searchCriteria.equals("") ? "" : "with SearchCriteria " + PlayerLoggerEventHandler.searchCriteria)));
+                        + (PlayerLoggerEventHandler.searchCriteria.equals("") ? "" : "with SearchCriteria " + PlayerLoggerEventHandler.searchCriteria)));*/
+
                 break;
             default:
                 throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd2);
