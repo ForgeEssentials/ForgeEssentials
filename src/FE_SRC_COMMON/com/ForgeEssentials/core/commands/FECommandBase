@@ -1,0 +1,272 @@
+package com.ForgeEssentials.core.commands;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntityCommandBlock;
+
+import com.ForgeEssentials.api.permissions.PermissionsAPI;
+import com.ForgeEssentials.api.permissions.query.PermQueryPlayer;
+import com.ForgeEssentials.util.Localization;
+import com.ForgeEssentials.util.OutputHandler;
+
+public abstract class FECommandBase extends CommandBase
+{
+  public boolean		enableCmdBlock;
+	public boolean		enableConsole;
+	public boolean		enablePlayer;
+	public String		commandPermission;
+	public String		commandName;
+	public List<String>	tabCompletionOptions;
+
+	@Override
+	public boolean isUsernameIndex(String[] par1ArrayOfStr, int par1)
+	{
+		return true;
+	}
+
+	// ---------------------------
+	// processing command
+	// ---------------------------
+
+	@Override
+	public void processCommand(ICommandSender sender, String[] args)
+	{
+		if (sender instanceof EntityPlayer)
+		{
+			if (!enablePlayer)
+				error(sender, Localization.COMMAND_NO_PLAYER);
+			else if (!canCommandSenderUseCommand(sender))
+			{
+				error(sender, Localization.ERROR_NOPERMISSION);
+			}
+			else
+				processCommandPlayer((EntityPlayer) sender, args);
+			return;
+		}
+		else if (sender instanceof TileEntityCommandBlock)
+		{
+			if (!enableCmdBlock)
+				error(sender, Localization.COMMAND_NO_COMMAND_BLOCK);
+			else
+				processCommandBlock((TileEntityCommandBlock) sender, args);
+			return;
+		}
+		else
+		{
+			if (!enableConsole)
+				error(sender, Localization.COMMAND_NO_CONSOLE);
+			else
+				processCommandConsole(sender, args);
+		}
+	}
+
+	public void processCommandPlayer(EntityPlayer sender, String[] args)
+	{
+		sender.sendChatToPlayer(Localization.get("command.unimplemented"));
+	}
+
+	/**
+	 * Override is optional.
+	 */
+	public void processCommandBlock(TileEntityCommandBlock block, String[] args)
+	{
+		processCommandConsole(block, args);
+	}
+
+	public void processCommandConsole(ICommandSender sender, String[] args)
+	{
+		sender.sendChatToPlayer(Localization.UNIMPLEMENTED);
+	}
+
+	// ---------------------------
+	// command usage
+	// ---------------------------
+
+	@Override
+	public String getCommandUsage(ICommandSender sender)
+	{
+		if (sender instanceof EntityPlayer)
+		{
+			if (!enablePlayer)
+				return Localization.COMMAND_NO_PLAYER;
+			else if (!canCommandSenderUseCommand(sender))
+			{
+				return Localization.ERROR_NOPERMISSION;
+			}
+			else
+				return "/" + Localization.get("command." + commandName) + Localization.get("command." + commandName + ".syntax.player") + Localization.get("command." + commandName + ".info.player");
+		}
+		else if (sender instanceof TileEntityCommandBlock)
+		{
+			if (!enableCmdBlock)
+				return Localization.COMMAND_NO_COMMAND_BLOCK;
+			else
+				return "/" + Localization.get("command." + commandName) + Localization.get("command." + commandName + ".syntax.commandBlock") + Localization.get("command." + commandName + ".info.commandBlock");
+		}
+		else
+		{
+			if (!enableConsole)
+				return Localization.COMMAND_NO_CONSOLE;
+			else
+				return "/" + Localization.get("command." + commandName) + Localization.get("command." + commandName + ".syntax.console") + Localization.get("command." + commandName + ".info.console");
+		}
+	}
+
+	// ---------------------------
+	// command info
+	// ---------------------------
+
+	public String getCommandInfo(ICommandSender sender)
+	{
+		if (sender instanceof EntityPlayer)
+		{
+			if (!enablePlayer)
+				return Localization.COMMAND_NO_PLAYER;
+			else if (!canCommandSenderUseCommand(sender))
+			{
+				return Localization.ERROR_NOPERMISSION;
+			}
+			else
+				return Localization.get("command." + commandName + ".info.player");
+		}
+		else if (sender instanceof TileEntityCommandBlock)
+		{
+			if (!enableCmdBlock)
+				return Localization.COMMAND_NO_COMMAND_BLOCK;
+			else
+				return Localization.get("command." + commandName + ".info.commandBlock");
+		}
+		else
+		{
+			if (!enableConsole)
+				return Localization.COMMAND_NO_CONSOLE;
+			else
+				return Localization.get("command." + commandName + ".info.console");
+		}
+	}
+
+	// ---------------------------
+	// command syntax
+	// ---------------------------
+
+	public String getCommandSyntax(ICommandSender sender)
+	{
+		if (sender instanceof EntityPlayer)
+		{
+			if (!enablePlayer)
+				return Localization.COMMAND_NO_PLAYER;
+			else if (!canCommandSenderUseCommand(sender))
+			{
+				return Localization.ERROR_NOPERMISSION;
+			}
+			else
+				return Localization.get("command." + commandName + ".syntax.player");
+		}
+		else if (sender instanceof TileEntityCommandBlock)
+		{
+			if (!enableCmdBlock)
+				return Localization.COMMAND_NO_COMMAND_BLOCK;
+			else
+				return Localization.get("command." + commandName + ".syntax.commandBlock");
+		}
+		else
+		{
+			if (!enableConsole)
+				return Localization.COMMAND_NO_CONSOLE;
+			else
+				return Localization.get("command." + commandName + ".syntax.console");
+		}
+	}
+
+	// ---------------------------
+	// permissions
+	// ---------------------------
+
+	@Override
+	public boolean canCommandSenderUseCommand(ICommandSender sender)
+	{
+		if (sender instanceof EntityPlayer)
+		{
+			return enablePlayer && PermissionsAPI.checkPermAllowed(new PermQueryPlayer((EntityPlayer) sender, commandPermission));
+		}
+		else if (sender instanceof TileEntityCommandBlock)
+		{
+			return enableCmdBlock;
+		}
+		else
+		{
+			return enableConsole;
+		}
+	}
+
+	public String getCommandPerm()
+	{
+		return commandPermission;
+	}
+
+	// ---------------------------
+	// command errors
+	// ---------------------------
+
+	/**
+	 * Simply prints a usage message to the sender of the command.
+	 * @param sender
+	 * Object that issued the command
+	 */
+	public void error(ICommandSender sender)
+	{
+		this.error(sender, getCommandUsage(sender));
+	}
+
+	/**
+	 * Prints an error message to the sender of the command.
+	 * @param sender
+	 * Object that issued the command
+	 * @param message
+	 * Error message
+	 */
+	public void error(ICommandSender sender, String message)
+	{
+		if (!(sender instanceof EntityPlayer))
+		{
+			OutputHandler.chatError(sender, message);
+		}
+		else
+		{
+			sender.sendChatToPlayer(message);
+		}
+	}
+
+	// ---------------------------
+	// command auto-complete
+	// ---------------------------
+	@Override
+	public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+	{
+		return tabCompletionOptions;
+	}
+
+	// ---------------------------
+	// command aliases
+	// ---------------------------
+	@Override
+	public List<String> getCommandAliases()
+	{
+		List<String> aliases = new ArrayList<String>();
+		for (int i = 1; i <= Integer.decode(Localization.get("command." + commandName + ".aliasNumber")); i++)
+		{
+			aliases.add(Localization.get("command." + commandName + ".alias." + i));
+		}
+		return aliases;
+	}
+
+	@Override
+	public String getCommandName()
+	{
+		return commandName;
+	}
+}
