@@ -2,6 +2,7 @@ package com.forgeessentials.jscripting;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -95,9 +96,9 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         FECommandManager.registerCommand(new CommandJScript());
         try
         {
-            copyResourceFileIfNotExists("mc.d.ts");
-            copyResourceFileIfNotExists("fe.d.ts");
-            copyResourceFileIfNotExists("tsconfig.json");
+            copyResourceFileIfNotExists("mc.d.ts", "com/forgeessentials/jscripting/mc.d.ts");
+            copyResourceFileIfNotExists("fe.d.ts", "com/forgeessentials/jscripting/fe.d.ts");
+            copyResourceFileIfNotExists("tsconfig.json", "com/forgeessentials/jscripting/tsconfig.d.ts");
         }
         catch (IOException e)
         {
@@ -108,11 +109,15 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.fewrapper.ScriptExtensionRoot());
     }
 
-    private void copyResourceFileIfNotExists(String fileName) throws IOException
+    private void copyResourceFileIfNotExists(String dst, String src) throws IOException
     {
-        File file = new File(moduleDir, fileName);
+        File file = new File(moduleDir, dst);
         if (!file.exists())
-            FileUtils.copyInputStreamToFile(ModuleJScripting.class.getResourceAsStream(fileName), file);
+        {
+            InputStream stream = ClassLoader.getSystemResourceAsStream(src);
+            if (stream != null)
+                FileUtils.copyInputStreamToFile(stream, file);
+        }
     }
 
     @SubscribeEvent

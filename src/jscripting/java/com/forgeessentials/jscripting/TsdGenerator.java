@@ -590,9 +590,8 @@ public class TsdGenerator extends Doclet
 
     public static void main(String[] args) throws IOException
     {
-        File outDir = new File("jscripting");
         File feDtsFile = new File("src/main/resources/com/forgeessentials/jscripting/fe.d.ts");
-        File mcDtsFile = new File("src/main/resources/com/forgeessentials/jscripting/mc.d.ts");
+        File mcDtsFile = new File("src/jscripting/resources/com/forgeessentials/jscripting/mc.d.ts");
 
         generator = new TsdGenerator();
         Main.execute(ClassLoader.getSystemClassLoader(), "-doclet", TsdGenerator.class.getName(), "-public",
@@ -604,10 +603,10 @@ public class TsdGenerator extends Doclet
 
         generator = new TsdGenerator();
         Main.execute(ClassLoader.getSystemClassLoader(), "-doclet", TsdGenerator.class.getName(), "-public",
-                "-sourcepath", "src/main/java",
+                "-sourcepath", "src/jscripting/java",
                 "-subpackages", "com.forgeessentials.jscripting.wrapper",
                 "-out", mcDtsFile.getAbsolutePath(),
-                "-header", "src/main/resources/com/forgeessentials/jscripting/mc_header.d.ts",
+                "-header", "src/jscripting/resources/com/forgeessentials/jscripting/mc_header.d.ts",
                 "-external", UUID.class.getName(),
                 "-external", Date.class.getName(),
                 "-external", Calendar.class.getName(),
@@ -618,6 +617,7 @@ public class TsdGenerator extends Doclet
                 "-external", net.minecraft.world.WorldSettings.GameType.class.getName()
         );
 
+        File outDir = new File("jscripting");
         FileUtils.copyFileToDirectory(feDtsFile, outDir);
         FileUtils.copyFileToDirectory(mcDtsFile, outDir);
     }
