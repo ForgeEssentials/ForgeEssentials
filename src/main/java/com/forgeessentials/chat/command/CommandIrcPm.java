@@ -11,8 +11,9 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Utils;
 
 public class CommandIrcPm extends ForgeEssentialsCommandBase
 {
@@ -83,7 +84,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBase
     {
         if (args.length != 1)
             return null;
-        return getListOfStringsMatchingLastWord(args, IrcHandler.getInstance().getIrcUserNames());
+        return Utils.getListOfStringsMatchingLastWord(args, IrcHandler.getInstance().getIrcUserNames());
     }
 
 }

@@ -14,9 +14,9 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.TranslatedCommandException;
 
 public class CommandPush extends ForgeEssentialsCommandBase
 {
@@ -101,7 +101,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
             else
             {
                 var7.getBlock(var3, var4, var5).onBlockActivated(var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
-                ChatOutputHandler.chatConfirmation(sender, "Button/Lever Pushed");
+                ChatUtil.chatConfirmation(sender, "Button/Lever Pushed");
             }
         }
     }
@@ -134,7 +134,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
             else
             {
                 var7.getBlock(var3, var4, var5).onBlockActivated(var7, var3, var4, var5, (EntityPlayer) null, 0, 0.0F, 0.0F, 0.0F);
-                ChatOutputHandler.chatConfirmation(sender, "Button/Lever Pushed");
+                ChatUtil.chatConfirmation(sender, "Button/Lever Pushed");
             }
         }
     }

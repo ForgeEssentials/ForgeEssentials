@@ -8,6 +8,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.jscripting.wrapper.mc.JsWorldPoint;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 
 public class JsServerZone<T extends ServerZone> extends JsZone<T>

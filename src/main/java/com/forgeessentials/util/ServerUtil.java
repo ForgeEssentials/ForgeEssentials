@@ -10,7 +10,6 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.server.CommandMessage;
 import net.minecraft.server.MinecraftServer;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.util.output.LoggingHandler;
 

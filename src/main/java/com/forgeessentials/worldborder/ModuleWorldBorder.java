@@ -16,9 +16,9 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.util.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.data.DataUtils;
 import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -49,7 +49,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     {
         super();
         instance = this;
-        DataManager.addDataType(new WorldBorderEffectType());
+        DataUtils.addDataType(new WorldBorderEffectType());
     }
 
     public static ModuleWorldBorder getInstance()

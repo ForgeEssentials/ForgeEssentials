@@ -15,26 +15,27 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
 import com.forgeessentials.protection.MobType;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.DoAsCommandSender;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.EventCancelledException;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.selections.SelectionHandler;
@@ -107,7 +108,7 @@ public class CommandPlot extends ParserCommandBase
     }
 
     @Override
-    public void parse(final FeCommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -174,7 +175,7 @@ public class CommandPlot extends ParserCommandBase
         }
     }
 
-    public static void parseDefine(FeCommandParserArgs arguments)
+    public static void parseDefine(CommandParserArgs arguments)
     {
         arguments.checkPermission(Plot.PERM_DEFINE);
         arguments.requirePlayer();
@@ -201,7 +202,7 @@ public class CommandPlot extends ParserCommandBase
         }
     }
 
-    public static void parseDelete(FeCommandParserArgs arguments)
+    public static void parseDelete(CommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
         if (plot.getOwner() != UserIdent.get(arguments.senderPlayer) || arguments.hasPermission(Plot.PERM_DELETE))
@@ -213,7 +214,7 @@ public class CommandPlot extends ParserCommandBase
             throw new TranslatedCommandException("You are not the owner of this plot, you can't delete it!");
     }
 
-    public static void parseClaim(final FeCommandParserArgs arguments)
+    public static void parseClaim(final CommandParserArgs arguments)
     {
         arguments.checkPermission(Plot.PERM_CLAIM);
         arguments.requirePlayer();
@@ -273,7 +274,7 @@ public class CommandPlot extends ParserCommandBase
 
     }
 
-    private static void checkLimits(FeCommandParserArgs arguments, WorldArea newArea)
+    private static void checkLimits(CommandParserArgs arguments, WorldArea newArea)
     {
         int plotSize = newArea.getXLength() * newArea.getZLength() * (Plot.isColumnMode(newArea.getDimension()) ? 1 : newArea.getYLength());
 
@@ -306,7 +307,7 @@ public class CommandPlot extends ParserCommandBase
             throw new TranslatedCommandException("You have reached your limit of %s blocks^2 already!", limitSize);
     }
 
-    public static void parseList(final FeCommandParserArgs arguments)
+    public static void parseList(final CommandParserArgs arguments)
     {
         arguments.checkPermission(Plot.PERM_LIST);
 
@@ -357,7 +358,7 @@ public class CommandPlot extends ParserCommandBase
             plot.printInfo(arguments.sender);
     }
 
-    public static void parseLimits(FeCommandParserArgs arguments)
+    public static void parseLimits(CommandParserArgs arguments)
     {
         String limitCount = APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_COUNT);
         if (limitCount == null || limitCount.isEmpty())
@@ -380,14 +381,14 @@ public class CommandPlot extends ParserCommandBase
         arguments.confirm("You use %d of %s allowed plot size.", usedSize, limitSize);
     }
 
-    public static void parseSelect(FeCommandParserArgs arguments)
+    public static void parseSelect(CommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
         SelectionHandler.select(arguments.senderPlayer, plot.getDimension(), plot.getZone().getArea());
         arguments.confirm("Selected plot");
     }
 
-    public static void parseMods(FeCommandParserArgs arguments, boolean modifyUsers)
+    public static void parseMods(CommandParserArgs arguments, boolean modifyUsers)
     {
         Plot plot = getPlot(arguments.sender);
         String type = modifyUsers ? "users" : "mods";
@@ -425,7 +426,7 @@ public class CommandPlot extends ParserCommandBase
         }
     }
 
-    public static void parseSet(FeCommandParserArgs arguments)
+    public static void parseSet(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -459,7 +460,7 @@ public class CommandPlot extends ParserCommandBase
         }
     }
 
-    public static void parseSetPrice(FeCommandParserArgs arguments)
+    public static void parseSetPrice(CommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
@@ -499,7 +500,7 @@ public class CommandPlot extends ParserCommandBase
         }
     }
 
-    public static void parseSetFee(FeCommandParserArgs arguments)
+    public static void parseSetFee(CommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
@@ -522,7 +523,7 @@ public class CommandPlot extends ParserCommandBase
         arguments.confirm(Translator.format("Set plot price to %s and timeout to %d", APIRegistry.economy.toString(amount), timeout));
     }
 
-    public static void parseSetName(FeCommandParserArgs arguments)
+    public static void parseSetName(CommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
@@ -543,7 +544,7 @@ public class CommandPlot extends ParserCommandBase
         arguments.confirm("Set plot name to \"%s\"", name);
     }
 
-    public static void parseSetOwner(FeCommandParserArgs arguments)
+    public static void parseSetOwner(CommandParserArgs arguments)
     {
         Plot plot = getPlot(arguments.sender);
         if (arguments.isEmpty())
@@ -551,11 +552,11 @@ public class CommandPlot extends ParserCommandBase
             if (arguments.hasPermission(Plot.PERM_SET_OWNER))
             {
                 arguments.confirm("/plot set owner <player>: Set plot owner");
-                arguments.confirm("/plot set owner " + APIRegistry.IDENT_SERVER.getUsernameOrUuid() + ": Set plot owner to server");
+                arguments.confirm("/plot set owner " + FEApi.IDENT_SERVER.getUsernameOrUuid() + ": Set plot owner to server");
             }
             UserIdent owner = plot.getOwner();
             if (owner == null)
-                owner = APIRegistry.IDENT_SERVER;
+                owner = FEApi.IDENT_SERVER;
             arguments.confirm("Current plot owner: %s", owner.getUsernameOrUuid());
             return;
         }
@@ -567,7 +568,7 @@ public class CommandPlot extends ParserCommandBase
         arguments.confirm("Set plot owner to \"%s\"", newOwner.getUsernameOrUuid());
     }
 
-    public static void parsePerms(FeCommandParserArgs arguments, boolean userPerms)
+    public static void parsePerms(CommandParserArgs arguments, boolean userPerms)
     {
         final String[] tabCompletion = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
 
@@ -652,7 +653,7 @@ public class CommandPlot extends ParserCommandBase
         }
     }
 
-    public static void parseBuyStart(final FeCommandParserArgs arguments)
+    public static void parseBuyStart(final CommandParserArgs arguments)
     {
         final Plot plot = getPlot(arguments.sender);
         if (plot == null)
@@ -731,7 +732,7 @@ public class CommandPlot extends ParserCommandBase
                             }
                             else if (response == false)
                             {
-                                ChatOutputHandler.chatError(plot.getOwner().getPlayerMP(), Translator.translate("Trade declined"));
+                                ChatUtil.chatError(plot.getOwner().getPlayerMP(), Translator.translate("Trade declined"));
                                 arguments.error(Translator.format("%s declined to sell you plot \"%s\" for %s", //
                                         plot.getOwner().getUsernameOrUuid(), plot.getName(), buyPriceStr));
                                 return;
@@ -756,7 +757,7 @@ public class CommandPlot extends ParserCommandBase
         Questioner.addChecked(arguments.sender, message, handler, 30);
     }
 
-    public static void buyPlot(FeCommandParserArgs arguments, Plot plot, long price)
+    public static void buyPlot(CommandParserArgs arguments, Plot plot, long price)
     {
         String priceStr = APIRegistry.economy.toString(price);
         Wallet buyerWallet = APIRegistry.economy.getWallet(arguments.ident);
@@ -771,7 +772,7 @@ public class CommandPlot extends ParserCommandBase
             sellerWallet.add(price);
             if (plot.getOwner().hasPlayer())
             {
-                ChatOutputHandler.chatConfirmation(plot.getOwner().getPlayerMP(), Translator.format("You sold plot \"%s\" to %s for %s", //
+                ChatUtil.chatConfirmation(plot.getOwner().getPlayerMP(), Translator.format("You sold plot \"%s\" to %s for %s", //
                         plot.getName(), arguments.senderPlayer.getCommandSenderName(), priceStr));
                 ModuleEconomy.confirmNewWalletAmount(plot.getOwner(), sellerWallet);
             }

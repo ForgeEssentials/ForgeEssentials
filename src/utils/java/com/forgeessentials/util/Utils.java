@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,7 +26,6 @@ import net.minecraft.world.WorldServer;
 
 import org.apache.logging.log4j.LogManager;
 
-import com.forgeessentials.core.environment.Environment;
 import com.google.common.base.Throwables;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -35,6 +35,26 @@ public abstract class Utils
 {
 
     public static final org.apache.logging.log4j.Logger felog = LogManager.getLogger("ForgeEssentials");
+
+    public static boolean isClient = false;
+
+    static {
+        // Check if dedicated or integrated server
+        try
+        {
+            Class.forName("net.minecraft.client.Minecraft");
+            Utils.isClient = true;
+        }
+        catch (ClassNotFoundException e)
+        {
+            Utils.isClient = false;
+        }
+    }
+
+    public static boolean isClient()
+    {
+        return isClient;
+    }
 
     /**
      * Try to parse integer or return defaultValue on failure
@@ -96,6 +116,48 @@ public abstract class Utils
         catch (NumberFormatException e)
         {
             return defaultValue;
+        }
+    }
+
+    /**
+     * Parse int with support for relative int.
+     *
+     * @param sender
+     * @param string
+     * @param relativeStart
+     * @return
+     */
+    public static int parseInt(ICommandSender sender, String string, int relativeStart)
+    {
+        if (string.startsWith("~"))
+        {
+            string = string.substring(1);
+            return relativeStart + CommandBase.parseInt(sender, string);
+        }
+        else
+        {
+            return CommandBase.parseInt(sender, string);
+        }
+    }
+
+    /**
+     * Parse double with support for relative values.
+     *
+     * @param sender
+     * @param string
+     * @param relativeStart
+     * @return
+     */
+    public static double parseDouble(ICommandSender sender, String string, double relativeStart)
+    {
+        if (string.startsWith("~"))
+        {
+            string = string.substring(1);
+            return relativeStart + CommandBase.parseInt(sender, string);
+        }
+        else
+        {
+            return CommandBase.parseInt(sender, string);
         }
     }
 
@@ -231,7 +293,7 @@ public abstract class Utils
      */
     public static File getWorldPath()
     {
-        if (Environment.isClient())
+        if (isClient())
             return new File(MinecraftServer.getServer().getFile("saves"), MinecraftServer.getServer().getFolderName());
         else
             return MinecraftServer.getServer().getFile(MinecraftServer.getServer().getFolderName());
@@ -362,4 +424,43 @@ public abstract class Utils
     {
         return GameData.getBlockRegistry().getNameForObject(block).replace(':', '.').replace(' ', '_');
     }
+
+    public static List<String> getListOfStringsMatchingLastWord(String arg, Collection<String> possibleMatches)
+    {
+        List<String> arraylist = new ArrayList<>();
+        for (String s2 : possibleMatches)
+        {
+            if (CommandBase.doesStringStartWith(arg, s2))
+            {
+                arraylist.add(s2);
+            }
+        }
+        return arraylist;
+    }
+
+    public static List<String> getListOfStringsMatchingLastWord(String[] args, Collection<String> possibleMatches)
+    {
+        return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
+    }
+
+    public static List<String> getListOfStringsMatchingLastWord(String arg, String... possibleMatches)
+    {
+        List<String> arraylist = new ArrayList<>();
+        int i = possibleMatches.length;
+        for (int j = 0; j < i; ++j)
+        {
+            String s2 = possibleMatches[j];
+            if (CommandBase.doesStringStartWith(arg, s2))
+            {
+                arraylist.add(s2);
+            }
+        }
+        return arraylist;
+    }
+
+    public static List<String> getListOfStringsMatchingLastWord(String[] args, String... possibleMatches)
+    {
+        return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
+    }
+
 }

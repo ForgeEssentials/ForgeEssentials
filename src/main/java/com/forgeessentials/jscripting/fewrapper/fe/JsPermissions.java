@@ -8,6 +8,9 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.jscripting.wrapper.mc.JsUserIdent;
+import com.forgeessentials.jscripting.wrapper.mc.JsWorldArea;
+import com.forgeessentials.jscripting.wrapper.mc.JsWorldPoint;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 
 /**

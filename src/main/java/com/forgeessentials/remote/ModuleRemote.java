@@ -27,12 +27,13 @@ import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
-import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.data.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
+import com.forgeessentials.util.data.DataUtils;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
@@ -344,7 +345,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
             // passkey = hashPasskey(passkey);
             passkeys.put(userIdent, passkey);
         }
-        DataManager.save(passkeys, getSaveFile());
+        DataUtils.save(passkeys, getSaveFile());
     }
 
     public static String hashPasskey(String passkey)
@@ -367,7 +368,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
      */
     public void loadPasskeys()
     {
-        passkeys = DataManager.load(PasskeyMap.class, getSaveFile());
+        passkeys = DataUtils.load(PasskeyMap.class, getSaveFile());
         if (passkeys == null)
             passkeys = new PasskeyMap();
     }
@@ -380,7 +381,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     @Override
     public Gson getGson()
     {
-        return DataManager.getGson();
+        return DataUtils.getGson();
     }
 
     /**

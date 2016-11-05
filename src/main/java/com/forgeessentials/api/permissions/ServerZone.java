@@ -20,10 +20,11 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.data.v2.Loadable;
+import com.forgeessentials.util.data.Loadable;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -53,7 +54,7 @@ public class ServerZone extends Zone implements Loadable
     public ServerZone()
     {
         super(1);
-        APIRegistry.getFEEventBus().post(new PermissionEvent.Initialize(this));
+        FEApi.getFEEventBus().post(new PermissionEvent.Initialize(this));
         addZone(this);
     }
 
@@ -183,7 +184,7 @@ public class ServerZone extends Zone implements Loadable
 
     public boolean createGroup(String name)
     {
-        if (APIRegistry.getFEEventBus().post(new PermissionEvent.Group.Create(this, name)))
+        if (FEApi.getFEEventBus().post(new PermissionEvent.Group.Create(this, name)))
             return false;
         setGroupPermission(name, FEPermissions.GROUP, true);
         setGroupPermissionProperty(name, FEPermissions.GROUP_PRIORITY, Integer.toString(FEPermissions.GROUP_PRIORITY_DEFAULT));
@@ -259,7 +260,7 @@ public class ServerZone extends Zone implements Loadable
         }
         if (!groupSet.contains(group))
         {
-            if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
+            if (FEApi.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.ADD, group)))
                 return false;
             groupSet.add(group);
         }
@@ -270,7 +271,7 @@ public class ServerZone extends Zone implements Loadable
     public boolean removePlayerFromGroup(UserIdent ident, String group)
     {
         registerPlayer(ident);
-        if (APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
+        if (FEApi.getFEEventBus().post(new PermissionEvent.User.ModifyGroups(this, ident, PermissionEvent.User.ModifyGroups.Action.REMOVE, group)))
             return false;
         Set<String> groupSet = playerGroups.get(ident);
         if (groupSet != null)
@@ -656,7 +657,7 @@ public class ServerZone extends Zone implements Loadable
             boolean isProperty)
     {
         PermissionCheckEvent event = new PermissionCheckEvent(ident, zones, groups, nodes, isProperty);
-        APIRegistry.FE_EVENTBUS.post(event);
+        FEApi.FE_EVENTBUS.post(event);
         return event;
     }
 

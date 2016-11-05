@@ -6,12 +6,13 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commons.BuildInfo;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.preloader.mixin.FEMixinConfig;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.util.TranslatedCommandException;
 
 public class CommandFEInfo extends ParserCommandBase
 {
@@ -47,7 +48,7 @@ public class CommandFEInfo extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

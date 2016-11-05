@@ -7,10 +7,10 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.data.v2.Loadable;
+import com.forgeessentials.util.data.Loadable;
 import com.google.gson.annotations.Expose;
 
 /**
@@ -112,7 +112,7 @@ public class WorldZone extends Zone implements Loadable
 
     public boolean removeAreaZone(AreaZone zone)
     {
-        if (APIRegistry.getFEEventBus().post(new PermissionEvent.Zone.Delete(getServerZone(), zone)))
+        if (FEApi.getFEEventBus().post(new PermissionEvent.Zone.Delete(getServerZone(), zone)))
             return false;
         return serverZone.removeZone(zone) | areaZones.remove(zone);
     }

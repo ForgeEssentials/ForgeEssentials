@@ -9,11 +9,11 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.TranslatedCommandException;
 
 public class CommandItemPermission extends ParserCommandBase
 {
@@ -49,7 +49,7 @@ public class CommandItemPermission extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         ItemStack stack = arguments.senderPlayer.getCurrentEquippedItem();
 

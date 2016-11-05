@@ -6,8 +6,8 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.Translator;
 
 public class QuestionData
 {

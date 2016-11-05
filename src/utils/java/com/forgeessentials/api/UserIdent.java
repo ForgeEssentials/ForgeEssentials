@@ -341,7 +341,7 @@ public class UserIdent
 
         if (usernameIdent != null && usernameIdent != ident)
         {
-            APIRegistry.getFEEventBus().post(new UserIdentInvalidatedEvent(usernameIdent, ident));
+            FEApi.getFEEventBus().post(new UserIdentInvalidatedEvent(usernameIdent, ident));
 
             // Change data for already existing references to old UserIdent
             usernameIdent.player = new WeakReference<EntityPlayer>(player);
@@ -588,12 +588,12 @@ public class UserIdent
 
     public boolean checkPermission(String permissionNode)
     {
-        return APIRegistry.perms.checkUserPermission(this, permissionNode);
+        return FEApi.perms.checkUserPermission(this, permissionNode);
     }
 
     public String getPermissionProperty(String permissionNode)
     {
-        return APIRegistry.perms.getUserPermissionProperty(this, permissionNode);
+        return FEApi.perms.getUserPermissionProperty(this, permissionNode);
     }
 
     /* ------------------------------------------------------------ */

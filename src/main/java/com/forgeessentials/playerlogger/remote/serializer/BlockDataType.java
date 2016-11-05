@@ -2,7 +2,7 @@ package com.forgeessentials.playerlogger.remote.serializer;
 
 import java.lang.reflect.Type;
 
-import com.forgeessentials.data.v2.DataManager.DataType;
+import com.forgeessentials.util.data.DataUtils.DataType;
 import com.forgeessentials.playerlogger.entity.BlockData;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;

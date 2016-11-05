@@ -11,10 +11,11 @@ import net.minecraftforge.permission.PermissionManager;
 import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.mcstats.Metrics.Plotter;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.util.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.permissions.commands.CommandItemPermission;
@@ -67,6 +68,7 @@ public class ModulePermissions extends ConfigLoaderBase
         // Earliest initialization of permission system possible
         permissionHelper = new ZonedPermissionHelper();
         APIRegistry.perms = permissionHelper;
+        FEApi.perms = permissionHelper;
         PermissionManager.setPermissionProvider(permissionHelper);
     }
 

@@ -4,11 +4,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
 
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.TranslatedCommandException;
 
 public class CommandProtectionDebug extends ParserCommandBase
 {
@@ -44,7 +44,7 @@ public class CommandProtectionDebug extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isTabCompletion)
             return;

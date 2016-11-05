@@ -17,8 +17,9 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.CommandButcherTickTask.ButcherMobType;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Utils;
 
 public class CommandButcher extends ForgeEssentialsCommandBase
 {
@@ -66,11 +67,11 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, "-1");
+            return Utils.getListOfStringsMatchingLastWord(args, "-1");
         }
         else if (args.length == 2)
         {
-            return getListOfStringsMatchingLastWord(args, typeList);
+            return Utils.getListOfStringsMatchingLastWord(args, typeList);
         }
         else
         {
@@ -105,9 +106,9 @@ public class CommandButcher extends ForgeEssentialsCommandBase
         {
             if (argsStack.size() < 3)
                 throw new TranslatedCommandException("Improper syntax: <radius> [type] [x y z] [world]");
-            x = parseDouble(sender, argsStack.remove(), sender.posX);
-            y = parseDouble(sender, argsStack.remove(), sender.posY);
-            z = parseDouble(sender, argsStack.remove(), sender.posZ);
+            x = Utils.parseDouble(sender, argsStack.remove(), sender.posX);
+            y = Utils.parseDouble(sender, argsStack.remove(), sender.posY);
+            z = Utils.parseDouble(sender, argsStack.remove(), sender.posZ);
         }
 
         if (!argsStack.isEmpty())

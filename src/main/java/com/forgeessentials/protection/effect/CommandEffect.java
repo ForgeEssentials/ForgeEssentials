@@ -7,7 +7,7 @@ import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -44,7 +44,7 @@ public class CommandEffect extends ZoneEffect
                 LoggingHandler.felog.error(String.format("Could not find command for WorldBorder effect: ", command));
                 return;
             }
-            mcCommand.processCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), args);
+            mcCommand.processCommand(new DoAsCommandSender(FEApi.IDENT_SERVER, player), args);
         }
         catch (CommandException e)
         {

@@ -8,9 +8,9 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
 
 public class CommandSetSpawn extends ForgeEssentialsCommandBase
 {

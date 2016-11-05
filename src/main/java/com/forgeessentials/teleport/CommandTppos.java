@@ -9,9 +9,9 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.TranslatedCommandException;
 import com.forgeessentials.util.Utils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -76,7 +76,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase
     {
         if (args.length == 1 || args.length == 2)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

@@ -3,9 +3,9 @@ package com.forgeessentials.jscripting.wrapper.mc.item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
+import com.forgeessentials.util.data.DataUtils;
 
 public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 {
@@ -140,7 +140,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
      */
     public String _getNbt()
     {
-        return that.getTagCompound() == null ? null : DataManager.toJson(that.getTagCompound());
+        return that.getTagCompound() == null ? null : DataUtils.toJson(that.getTagCompound());
     }
 
     /**
@@ -148,7 +148,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
      */
     public void _setNbt(String value)
     {
-        that.setTagCompound(value == null ? null : DataManager.fromJson(value, NBTTagCompound.class));
+        that.setTagCompound(value == null ? null : DataUtils.fromJson(value, NBTTagCompound.class));
     }
 
 }

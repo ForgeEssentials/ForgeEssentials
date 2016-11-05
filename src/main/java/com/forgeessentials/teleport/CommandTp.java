@@ -13,13 +13,13 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.Utils;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -166,8 +166,8 @@ public class CommandTp extends ForgeEssentialsCommandBase
         }
         else
         {
-            ChatOutputHandler.chatError(sender, Translator.translate("Improper syntax. Please try this instead:"));
-            ChatOutputHandler.chatNotification(sender, getCommandUsage(sender));
+            ChatUtil.chatError(sender, Translator.translate("Improper syntax. Please try this instead:"));
+            ChatUtil.chatNotification(sender, getCommandUsage(sender));
         }
     }
 
@@ -176,7 +176,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
     {
         if (args.length == 1 || args.length == 2)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

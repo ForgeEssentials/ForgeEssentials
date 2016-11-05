@@ -4,12 +4,12 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet2Reach;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.Translator;
 
 public class CommandReach extends ParserCommandBase
 {
@@ -51,7 +51,7 @@ public class CommandReach extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

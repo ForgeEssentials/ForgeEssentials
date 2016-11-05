@@ -56,6 +56,7 @@ import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.fe.event.world.PressurePlateEvent;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.PermissionEvent.Group;
@@ -67,9 +68,7 @@ import com.forgeessentials.commons.network.Packet3PlayerPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
@@ -78,10 +77,11 @@ import com.forgeessentials.protection.effect.ZoneEffect;
 import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.PlayerUtil;
+import com.forgeessentials.util.TaskRegistry;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -283,7 +283,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, ModuleProtection.PERM_GAMEMODE)) == GameType.CREATIVE
                 && stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, point, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
         {
-            ChatOutputHandler.chatError(event.player, Translator.translate("Cannot place block outside creative area"));
+            ChatUtil.chatError(event.player, Translator.translate("Cannot place block outside creative area"));
             event.setCanceled(true);
             return;
         }
@@ -360,7 +360,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (exploder instanceof EntityPlayer)
             ident = UserIdent.get((EntityPlayer) exploder);
         else if (exploder instanceof EntityLiving)
-            ident = APIRegistry.IDENT_NPC;
+            ident = FEApi.IDENT_NPC;
 
         int cx = (int) Math.floor(event.explosion.explosionX);
         int cy = (int) Math.floor(event.explosion.explosionY);
@@ -404,7 +404,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (exploder instanceof EntityPlayer)
             ident = UserIdent.get((EntityPlayer) exploder);
         else if (exploder instanceof EntityLiving)
-            ident = APIRegistry.IDENT_NPC;
+            ident = FEApi.IDENT_NPC;
 
         List<ChunkPosition> positions = event.explosion.affectedBlockPositions;
         for (Iterator<ChunkPosition> it = positions.iterator(); it.hasNext();)
@@ -472,7 +472,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             // If entity is in creative area, but player not, deny interaction
             event.useBlock = DENY;
             if (event.action != LEFT_CLICK_BLOCK)
-                ChatOutputHandler.chatError(event.entityPlayer, Translator.translate("Cannot interact with creative area if not in creative mode."));
+                ChatUtil.chatError(event.entityPlayer, Translator.translate("Cannot interact with creative area if not in creative mode."));
         }
     }
 
@@ -1013,7 +1013,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout("zone_denied_message"))
         {
-            ChatOutputHandler.chatError(player, ModuleProtection.MSG_ZONE_DENIED);
+            ChatUtil.chatError(player, ModuleProtection.MSG_ZONE_DENIED);
             pi.startTimeout("zone_denied_message", 4000);
         }
     }

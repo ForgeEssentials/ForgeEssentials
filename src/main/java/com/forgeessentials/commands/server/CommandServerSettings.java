@@ -15,11 +15,11 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.FeCommandParserArgs;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -81,7 +81,7 @@ public class CommandServerSettings extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             arguments.error("You can use this command only on dedicated servers");

@@ -43,16 +43,15 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
-import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.TaskRegistry;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -519,10 +518,10 @@ public class ModuleBackup extends ConfigLoaderBase
 
     private static void notify(String message)
     {
-        IChatComponent messageComponent = ChatOutputHandler.notification(message);
+        IChatComponent messageComponent = ChatUtil.notification(message);
         if (!MinecraftServer.getServer().isServerStopped())
             for (EntityPlayerMP player : Utils.getPlayerList())
-                if (UserIdent.get(player).checkPermission(PERM_NOTIFY))
+                if (APIRegistry.perms.checkUserPermission(UserIdent.get(player), PERM_NOTIFY))
                     ChatUtil.sendMessage(player, messageComponent);
         ChatUtil.sendMessage(MinecraftServer.getServer(), messageComponent);
     }

@@ -8,11 +8,11 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet5Noclip;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.TranslatedCommandException;
 import com.forgeessentials.util.WorldUtil;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandNoClip extends ForgeEssentialsCommandBase
 {
@@ -58,8 +58,8 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
     {
         if (!PlayerInfo.get(player).getHasFEClient())
         {
-            ChatOutputHandler.chatError(player, "You need the FE client addon to use this command.");
-            ChatOutputHandler.chatError(player, "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information.");
+            ChatUtil.chatError(player, "You need the FE client addon to use this command.");
+            ChatUtil.chatError(player, "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information.");
             return;
         }
 
@@ -81,7 +81,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
             WorldUtil.placeInWorld(player);
 
         NetworkUtils.netHandler.sendTo(new Packet5Noclip(player.noClip), player);
-        ChatOutputHandler.chatConfirmation(player, "Noclip " + (player.noClip ? "enabled" : "disabled"));
+        ChatUtil.chatConfirmation(player, "Noclip " + (player.noClip ? "enabled" : "disabled"));
     }
 
     public static void checkClip(EntityPlayer player)
@@ -95,7 +95,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
                 if (!player.worldObj.isRemote)
                 {
                     NetworkUtils.netHandler.sendTo(new Packet5Noclip(player.noClip), (EntityPlayerMP) player);
-                    ChatOutputHandler.chatNotification(player, "NoClip auto-disabled: the targeted player is not flying");
+                    ChatUtil.chatNotification(player, "NoClip auto-disabled: the targeted player is not flying");
                 }
             }
         }

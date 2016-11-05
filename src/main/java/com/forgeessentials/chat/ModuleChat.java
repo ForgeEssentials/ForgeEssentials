@@ -48,7 +48,7 @@ import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.util.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.ChatUtil;
@@ -211,16 +211,16 @@ public class ModuleChat
     {
         UserIdent ident = UserIdent.get(event.player);
 
-        if (!ident.checkPermission(PERM_CHAT))
+        if (!APIRegistry.perms.checkUserPermission(ident, PERM_CHAT))
         {
-            ChatOutputHandler.chatWarning(event.player, "You don't have the permission to write in public chat.");
+            ChatUtil.chatWarning(event.player, "You don't have the permission to write in public chat.");
             event.setCanceled(true);
             return;
         }
 
         if (PlayerUtil.getPersistedTag(event.player, false).getBoolean("mute"))
         {
-            ChatOutputHandler.chatWarning(event.player, "You are currently muted.");
+            ChatUtil.chatWarning(event.player, "You are currently muted.");
             event.setCanceled(true);
             return;
         }
@@ -240,12 +240,12 @@ public class ModuleChat
         IChatComponent header = getChatHeader(ident);
 
         // Apply colors
-        if (event.message.contains("&") && ident.checkPermission(PERM_COLOR))
+        if (event.message.contains("&") && APIRegistry.perms.checkUserPermission(ident, PERM_COLOR))
             message = ChatUtil.formatColors(message);
 
         // Build message part with links
         IChatComponent messageComponent;
-        if (ident.checkPermission(PERM_URL))
+        if (APIRegistry.perms.checkUserPermission(ident, PERM_URL))
         {
             messageComponent = filterChatLinks(message);
         }
@@ -262,7 +262,7 @@ public class ModuleChat
         event.component = new ChatComponentTranslation("%s%s", header, messageComponent);
 
         // Handle chat range
-        Double range = Utils.tryParseDouble(ident.getPermissionProperty(PERM_RANGE));
+        Double range = Utils.tryParseDouble(APIRegistry.perms.getUserPermissionProperty(ident, PERM_RANGE));
         if (range != null)
         {
             WorldPoint source = new WorldPoint(event.player);
@@ -310,7 +310,7 @@ public class ModuleChat
             return;
         if (!ChatConfig.mutedCommands.contains(event.command.getCommandName()))
             return;
-        ChatOutputHandler.chatWarning(event.sender, "You are currently muted.");
+        ChatUtil.chatWarning(event.sender, "You are currently muted.");
         event.setCanceled(true);
     }
 

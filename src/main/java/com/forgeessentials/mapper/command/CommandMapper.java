@@ -10,11 +10,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
 
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.mapper.MapperUtil;
 import com.forgeessentials.mapper.ModuleMapper;
-import com.forgeessentials.util.FeCommandParserArgs;
 
 public class CommandMapper extends ParserCommandBase
 {
@@ -50,7 +50,7 @@ public class CommandMapper extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         int x = (int) Math.floor(arguments.senderPlayer.posX);
         int z = (int) Math.floor(arguments.senderPlayer.posZ);

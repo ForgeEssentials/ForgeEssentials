@@ -11,7 +11,7 @@ import net.minecraft.world.WorldType;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.data.DataManager;
 import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.WorldUtil;
 import com.google.gson.annotations.Expose;

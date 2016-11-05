@@ -9,8 +9,8 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.VirtualChest;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.util.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
 
 /**
  * Opens a configurable virtual chest

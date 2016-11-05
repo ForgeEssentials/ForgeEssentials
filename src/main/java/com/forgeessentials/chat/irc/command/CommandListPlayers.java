@@ -6,7 +6,7 @@ import java.util.Collection;
 import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.commons.CommandParserArgs;
 
 public class CommandListPlayers extends IrcCommandParser
 {
@@ -36,7 +36,7 @@ public class CommandListPlayers extends IrcCommandParser
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         arguments.confirm("List of players:");
         for (String username : MinecraftServer.getServer().getConfigurationManager().getAllUsernames())

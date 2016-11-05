@@ -11,12 +11,13 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Utils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -97,7 +98,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
             }
 
             PlayerInfo.get(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-            ChatOutputHandler.chatConfirmation(player, "Teleporting to spawn.");
+            ChatUtil.chatConfirmation(player, "Teleporting to spawn.");
             TeleportHelper.teleport(player, point);
         }
     }
@@ -134,7 +135,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

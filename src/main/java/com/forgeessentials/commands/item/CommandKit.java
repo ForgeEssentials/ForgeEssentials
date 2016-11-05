@@ -12,15 +12,16 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.Kit;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.util.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.util.data.DataManager;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
@@ -45,7 +46,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
 
     public CommandKit()
     {
-        APIRegistry.getFEEventBus().register(this);
+        FEApi.getFEEventBus().register(this);
     }
 
     @Override
@@ -91,7 +92,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
         APIRegistry.perms.registerPermission(PERM_BYPASS_COOLDOWN, PermissionLevel.OP);
     }
 
-    public List<String> getAvailableKits(FeCommandParserArgs arguments)
+    public List<String> getAvailableKits(CommandParserArgs arguments)
     {
         List<String> availableKits = new ArrayList<>();
         for (Kit kit : kits.values())
@@ -101,7 +102,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public void parse(final FeCommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

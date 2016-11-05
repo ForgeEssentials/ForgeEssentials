@@ -16,15 +16,15 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.PlayerUtil;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -171,7 +171,7 @@ public class ModuleAfterlife extends ServerEventHandler
         if (grave.isProtected)
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getPlayer(), Translator.translate("You may not defile the grave of a player"));
+            ChatUtil.chatError(event.getPlayer(), Translator.translate("You may not defile the grave of a player"));
             return;
         }
         if (grave.canOpen(event.getPlayer()))

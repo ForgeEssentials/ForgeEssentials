@@ -15,12 +15,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException.InvalidSyntaxException;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.DoAsCommandSender;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.TranslatedCommandException.InvalidSyntaxException;
+import com.forgeessentials.util.Translator;
 
 public class CommandSellCommand extends ForgeEssentialsCommandBase
 {
@@ -93,11 +93,11 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 
         if (foundStacks < amount)
         {
-            ChatOutputHandler.chatError(player, Translator.format("You do not have enough %s to afford this", itemStack.getDisplayName()));
+            ChatUtil.chatError(player, Translator.format("You do not have enough %s to afford this", itemStack.getDisplayName()));
             return;
         }
 
-        ChatOutputHandler.chatConfirmation(player, Translator.format("You paid %d x %s", //
+        ChatUtil.chatConfirmation(player, Translator.format("You paid %d x %s", //
                 amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(UserIdent.get(player)).toString()));
 
         args = Arrays.copyOfRange(args, 4, args.length);

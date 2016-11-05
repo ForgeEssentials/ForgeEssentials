@@ -4,9 +4,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandDeselect extends ForgeEssentialsCommandBase
 {
@@ -30,7 +30,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
         info.setSel1(null);
         info.setSel2(null);
         SelectionHandler.sendUpdate(sender);
-        ChatOutputHandler.chatConfirmation(sender, "Selection cleared.");
+        ChatUtil.chatConfirmation(sender, "Selection cleared.");
     }
 
     @Override

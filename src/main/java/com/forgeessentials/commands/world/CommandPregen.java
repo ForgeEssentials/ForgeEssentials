@@ -19,15 +19,15 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.AreaShape;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.TaskRegistry.TickTask;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.TaskRegistry;
+import com.forgeessentials.util.TaskRegistry.TickTask;
+import com.forgeessentials.util.TranslatedCommandException;
 import com.forgeessentials.util.Utils;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.worldborder.ModuleWorldBorder;
 import com.forgeessentials.worldborder.WorldBorder;
 
@@ -103,7 +103,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -139,7 +139,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     /* ------------------------------------------------------------ */
 
-    private void parseStart(FeCommandParserArgs arguments)
+    private void parseStart(CommandParserArgs arguments)
     {
         if (running)
         {
@@ -177,7 +177,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         arguments.confirm("Pregen started");
     }
 
-    private void parseStop(FeCommandParserArgs arguments)
+    private void parseStop(CommandParserArgs arguments)
     {
         if (!running)
         {
@@ -187,7 +187,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         running = false;
     }
 
-    private void flush(FeCommandParserArgs arguments)
+    private void flush(CommandParserArgs arguments)
     {
         if (!running)
         {
@@ -298,7 +298,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     {
         for (EntityPlayerMP player : Utils.getPlayerList())
             if (APIRegistry.perms.checkPermission(player, getPermissionNode()))
-                ChatOutputHandler.chatNotification(player, message);
+                ChatUtil.chatNotification(player, message);
     }
 
     /* ------------------------------------------------------------ */

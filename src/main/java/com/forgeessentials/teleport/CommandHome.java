@@ -10,12 +10,13 @@ import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
+import com.forgeessentials.util.Utils;
 
 public class CommandHome extends ForgeEssentialsCommandBase
 {
@@ -93,7 +94,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
                 PlayerInfo info = PlayerInfo.get(player.getPersistentID());
                 info.setHome(p);
                 info.save();
-                ChatOutputHandler.chatConfirmation(sender, Translator.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
+                ChatUtil.chatConfirmation(sender, Translator.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
             }
             else
                 throw new TranslatedCommandException("Unknown subcommand");
@@ -105,7 +106,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, "here");
+            return Utils.getListOfStringsMatchingLastWord(args, "here");
         }
         else
         {

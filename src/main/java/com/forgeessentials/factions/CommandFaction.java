@@ -13,12 +13,11 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.Utils;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
@@ -69,7 +68,7 @@ public class CommandFaction extends ParserCommandBase
     }
 
     @Override
-    public void parse(final FeCommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -161,7 +160,7 @@ public class CommandFaction extends ParserCommandBase
         }
     }
 
-    public static void parseList(FeCommandParserArgs arguments)
+    public static void parseList(CommandParserArgs arguments)
     {
         arguments.checkPermission(ModuleFactions.PERM_LIST);
         if (arguments.isTabCompletion)
@@ -171,7 +170,7 @@ public class CommandFaction extends ParserCommandBase
         throw new TranslatedCommandException("Not yet implemented");
     }
 
-    public static void parseCreate(FeCommandParserArgs arguments)
+    public static void parseCreate(CommandParserArgs arguments)
     {
         if (arguments.isTabCompletion)
             return;
@@ -197,7 +196,7 @@ public class CommandFaction extends ParserCommandBase
         arguments.confirm("Created faction [%s] \"%s\"", faction, name);
     }
 
-    public static void parseJoin(final FeCommandParserArgs arguments)
+    public static void parseJoin(final CommandParserArgs arguments)
     {
         arguments.requirePlayer();
         arguments.checkPermission(ModuleFactions.PERM_JOIN);
@@ -243,7 +242,7 @@ public class CommandFaction extends ParserCommandBase
         for (EntityPlayerMP player : Utils.getPlayerList())
         {
             UserIdent playerIdent = UserIdent.get(player);
-            if (ModuleFactions.isInFaction(playerIdent, faction) && playerIdent.checkPermission(ModuleFactions.PERM_INVITE))
+            if (ModuleFactions.isInFaction(playerIdent, faction) && APIRegistry.perms.checkUserPermission(playerIdent, ModuleFactions.PERM_INVITE))
             {
                 try
                 {
@@ -260,7 +259,7 @@ public class CommandFaction extends ParserCommandBase
         arguments.error("No player found to accept join request");
     }
 
-    public static void parseLeave(FeCommandParserArgs arguments, String faction)
+    public static void parseLeave(CommandParserArgs arguments, String faction)
     {
         if (arguments.isTabCompletion)
             return;
@@ -273,7 +272,7 @@ public class CommandFaction extends ParserCommandBase
         arguments.confirm(MSG_LEFT_FACTION, ModuleFactions.getFactionName(faction));
     }
 
-    public static void parseInvite(FeCommandParserArgs arguments, String faction)
+    public static void parseInvite(CommandParserArgs arguments, String faction)
     {
         if (faction == null)
             throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
@@ -288,7 +287,7 @@ public class CommandFaction extends ParserCommandBase
         throw new TranslatedCommandException("Not yet implemented");
     }
 
-    public static void parseAlly(FeCommandParserArgs arguments, String faction, boolean ally)
+    public static void parseAlly(CommandParserArgs arguments, String faction, boolean ally)
     {
         if (faction == null)
             throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
@@ -303,7 +302,7 @@ public class CommandFaction extends ParserCommandBase
         throw new TranslatedCommandException("Not yet implemented");
     }
 
-    public static void parseMembers(FeCommandParserArgs arguments, String faction)
+    public static void parseMembers(CommandParserArgs arguments, String faction)
     {
         if (faction == null)
             throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
@@ -323,7 +322,7 @@ public class CommandFaction extends ParserCommandBase
         throw new TranslatedCommandException("Not yet implemented");
     }
 
-    public static void parseFrindlyFire(FeCommandParserArgs arguments, String faction)
+    public static void parseFrindlyFire(CommandParserArgs arguments, String faction)
     {
         if (faction == null)
             throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
@@ -338,7 +337,7 @@ public class CommandFaction extends ParserCommandBase
         throw new TranslatedCommandException("Not yet implemented");
     }
 
-    public static void parseBonus(FeCommandParserArgs arguments, String faction)
+    public static void parseBonus(CommandParserArgs arguments, String faction)
     {
         if (faction == null)
             throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
@@ -353,7 +352,7 @@ public class CommandFaction extends ParserCommandBase
         throw new TranslatedCommandException("Not yet implemented");
     }
 
-    public static void parseDelete(final FeCommandParserArgs arguments, final String faction)
+    public static void parseDelete(final CommandParserArgs arguments, final String faction)
     {
         if (arguments.isTabCompletion)
             return;
@@ -379,7 +378,7 @@ public class CommandFaction extends ParserCommandBase
                 for (Entry<UserIdent, Set<String>> player : APIRegistry.perms.getServerZone().getPlayerGroups().entrySet())
                 {
                     if (player.getValue().remove(factionGroup) && player.getKey().hasPlayer())
-                        ChatOutputHandler.chatNotification(player.getKey().getPlayer(), Translator.format("Faction %s has been deleted", faction));
+                        ChatUtil.chatNotification(player.getKey().getPlayer(), Translator.format("Faction %s has been deleted", faction));
                     for (Iterator<String> it = player.getValue().iterator(); it.hasNext();)
                         if (it.next().startsWith(ModuleFactions.RANK_PREFIX))
                             it.remove();
@@ -398,7 +397,7 @@ public class CommandFaction extends ParserCommandBase
         }
     }
 
-    public static void subCommandHelp(FeCommandParserArgs arguments, String msg)
+    public static void subCommandHelp(CommandParserArgs arguments, String msg)
     {
         arguments.confirm("/faction " + msg);
         throw new CommandParserArgs.CancelParsingException();

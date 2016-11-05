@@ -13,9 +13,10 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.Translator;
+import com.forgeessentials.util.Utils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -113,7 +114,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
         EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
         if (player == null)
         {
-            ChatOutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
+            ChatUtil.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
             return;
         }
         setGameMode(sender, target, player.capabilities.isCreativeMode ? WorldSettings.GameType.SURVIVAL : WorldSettings.GameType.CREATIVE);
@@ -124,7 +125,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
         EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
         if (player == null)
         {
-            ChatOutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
+            ChatUtil.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
             return;
         }
         setGameMode(sender, player, mode);
@@ -135,7 +136,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
         target.setGameType(mode);
         target.fallDistance = 0.0F;
         String modeName = StatCollector.translateToLocal("gameMode." + mode.getName());
-        ChatOutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getCommandSenderName(), modeName));
+        ChatUtil.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getCommandSenderName(), modeName));
     }
 
     private WorldSettings.GameType getGameTypeFromString(String string)
@@ -169,11 +170,11 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, new String[] { "survival", "creative", "adventure" });
+            return Utils.getListOfStringsMatchingLastWord(args, new String[] { "survival", "creative", "adventure" });
         }
         else
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
 
     }

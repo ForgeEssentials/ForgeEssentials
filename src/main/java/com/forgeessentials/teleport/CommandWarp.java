@@ -11,13 +11,13 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.data.DataManager;
+import com.forgeessentials.util.TranslatedCommandException;
 import com.forgeessentials.util.Utils;
 
 public class CommandWarp extends ParserCommandBase
@@ -88,7 +88,7 @@ public class CommandWarp extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

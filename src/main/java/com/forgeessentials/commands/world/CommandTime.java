@@ -13,12 +13,12 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.world.CommandWeather.WeatherData;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.util.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.util.data.DataManager;
+import com.forgeessentials.util.TranslatedCommandException;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -89,7 +89,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -116,7 +116,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
         }
     }
 
-    public static void parseFreeze(FeCommandParserArgs arguments)
+    public static void parseFreeze(CommandParserArgs arguments)
     {
         World world = arguments.isEmpty() ? null : arguments.parseWorld();
         if (arguments.isTabCompletion)
@@ -147,7 +147,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
         save();
     }
 
-    public static void parseTime(FeCommandParserArgs arguments, boolean addTime)
+    public static void parseTime(CommandParserArgs arguments, boolean addTime)
     {
         long time;
         if (!addTime)

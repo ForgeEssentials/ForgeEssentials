@@ -5,10 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
@@ -23,85 +20,6 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 {
 
     public static final String CONFIG_CAT = "Core.Output";
-
-    public static EnumChatFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
-
-    /* ------------------------------------------------------------ */
-
-    /* ------------------------------------------------------------ */
-
-    public static IChatComponent confirmation(String message)
-    {
-        return ChatUtil.setChatColor(new ChatComponentText(ChatUtil.formatColors(message)), chatConfirmationColor);
-    }
-
-    public static IChatComponent notification(String message)
-    {
-        return ChatUtil.setChatColor(new ChatComponentText(ChatUtil.formatColors(message)), chatNotificationColor);
-    }
-
-    public static IChatComponent warning(String message)
-    {
-        return ChatUtil.setChatColor(new ChatComponentText(ChatUtil.formatColors(message)), chatWarningColor);
-    }
-
-    public static IChatComponent error(String message)
-    {
-        return ChatUtil.setChatColor(new ChatComponentText(ChatUtil.formatColors(message)), chatErrorColor);
-    }
-
-    /* ------------------------------------------------------------ */
-
-    /**
-     * outputs an error message to the chat box of the given sender.
-     *
-     * @param sender
-     *            CommandSender to chat to.
-     * @param msg
-     *            the message to be sent
-     */
-    public static void chatError(ICommandSender sender, String msg)
-    {
-        ChatUtil.sendMessage(sender, msg, chatErrorColor);
-    }
-
-    /**
-     * outputs a confirmation message to the chat box of the given sender.
-     *
-     * @param sender
-     *            CommandSender to chat to.
-     * @param msg
-     *            the message to be sent
-     */
-    public static void chatConfirmation(ICommandSender sender, String msg)
-    {
-        ChatUtil.sendMessage(sender, msg, chatConfirmationColor);
-    }
-
-    /**
-     * outputs a warning message to the chat box of the given sender.
-     *
-     * @param sender
-     *            CommandSender to chat to.
-     * @param msg
-     *            the message to be sent
-     */
-    public static void chatWarning(ICommandSender sender, String msg)
-    {
-        ChatUtil.sendMessage(sender, msg, chatWarningColor);
-    }
-
-    /**
-     * outputs a notification message to the chat box of the given sender.
-     *
-     * @param sender
-     *            CommandSender to chat to.
-     * @param msg
-     */
-    public static void chatNotification(ICommandSender sender, String msg)
-    {
-        ChatUtil.sendMessage(sender, msg, chatNotificationColor);
-    }
 
     /* ------------------------------------------------------------ */
 
@@ -382,30 +300,30 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     public static void setConfirmationColor(String color)
     {
-        chatConfirmationColor = EnumChatFormatting.getValueByName(color);
-        if (chatConfirmationColor == null)
-            chatConfirmationColor = EnumChatFormatting.GREEN;
+        ChatUtil.chatConfirmationColor = EnumChatFormatting.getValueByName(color);
+        if (ChatUtil.chatConfirmationColor == null)
+            ChatUtil.chatConfirmationColor = EnumChatFormatting.GREEN;
     }
 
     public static void setErrorColor(String color)
     {
-        chatErrorColor = EnumChatFormatting.getValueByName(color);
-        if (chatErrorColor == null)
-            chatErrorColor = EnumChatFormatting.RED;
+        ChatUtil.chatErrorColor = EnumChatFormatting.getValueByName(color);
+        if (ChatUtil.chatErrorColor == null)
+            ChatUtil.chatErrorColor = EnumChatFormatting.RED;
     }
 
     public static void setNotificationColor(String color)
     {
-        chatNotificationColor = EnumChatFormatting.getValueByName(color);
-        if (chatNotificationColor == null)
-            chatNotificationColor = EnumChatFormatting.AQUA;
+        ChatUtil.chatNotificationColor = EnumChatFormatting.getValueByName(color);
+        if (ChatUtil.chatNotificationColor == null)
+            ChatUtil.chatNotificationColor = EnumChatFormatting.AQUA;
     }
 
     public static void setWarningColor(String color)
     {
-        chatWarningColor = EnumChatFormatting.getValueByName(color);
-        if (chatWarningColor == null)
-            chatWarningColor = EnumChatFormatting.YELLOW;
+        ChatUtil.chatWarningColor = EnumChatFormatting.getValueByName(color);
+        if (ChatUtil.chatWarningColor == null)
+            ChatUtil.chatWarningColor = EnumChatFormatting.YELLOW;
     }
 
     @Override

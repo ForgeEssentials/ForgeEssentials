@@ -14,8 +14,8 @@ import net.minecraft.world.World;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.data.v2.Loadable;
+import com.forgeessentials.util.data.DataManager;
+import com.forgeessentials.util.data.Loadable;
 import com.google.gson.annotations.Expose;
 
 public class WorldBorder implements Loadable

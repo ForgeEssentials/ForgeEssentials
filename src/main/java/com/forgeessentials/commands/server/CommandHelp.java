@@ -19,15 +19,14 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.FeCommandParserArgs;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandHelp extends ParserCommandBase implements ConfigLoader
 {
@@ -82,7 +81,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
 
     @Override
     @SuppressWarnings("unchecked")
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -125,7 +124,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
                         results.add(cmd.getValue());
                 }
 
-                EnumChatFormatting color = ChatOutputHandler.chatConfirmationColor;
+                EnumChatFormatting color = ChatUtil.chatConfirmationColor;
                 if (results.size() > 1 || command == null)
                     arguments.confirm("Searching commands by \"%s\"", name);
 
@@ -163,7 +162,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
         if (messages.length == 0)
             showHelpPage(sender, 1);
         for (int i = 0; i < messages.length; i++)
-            ChatOutputHandler.chatConfirmation(sender, ScriptArguments.processSafe(messages[i], sender));
+            ChatUtil.chatConfirmation(sender, ScriptArguments.processSafe(messages[i], sender));
     }
 
     public void showHelpPage(ICommandSender sender, int page)

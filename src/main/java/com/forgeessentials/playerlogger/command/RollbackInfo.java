@@ -13,12 +13,12 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLogger;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.Translator;
 import com.google.common.collect.Lists;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -51,7 +51,7 @@ public class RollbackInfo
 
     public void previewChanges()
     {
-        ChatOutputHandler.chatNotification(player, Translator.format("Showing changes before %s", time.toString()));
+        ChatUtil.chatNotification(player, Translator.format("Showing changes before %s", time.toString()));
         
         List<Action01Block> lastChanges = changes;
         if (lastChanges == null)

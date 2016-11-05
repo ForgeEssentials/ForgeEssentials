@@ -31,12 +31,10 @@ import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
-import com.forgeessentials.core.misc.FECommandManager;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
-import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.data.DataManager;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
 import com.forgeessentials.economy.commands.CommandPay;
 import com.forgeessentials.economy.commands.CommandSell;
@@ -47,13 +45,15 @@ import com.forgeessentials.economy.commands.CommandWallet;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.economy.shop.ShopManager;
 import com.forgeessentials.protection.ProtectionEventHandler;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.ItemUtil;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -172,7 +172,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public static void confirmNewWalletAmount(UserIdent ident, Wallet wallet)
     {
         if (ident.hasPlayer())
-            ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have now %s", wallet.toString()));
+            ChatUtil.chatConfirmation(ident.getPlayerMP(), Translator.format("You have now %s", wallet.toString()));
     }
 
     public static int tryRemoveItems(EntityPlayer player, ItemStack itemStack, int amount)
@@ -259,7 +259,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             if (loss <= 0)
                 return;
             wallet.set(newAmount);
-            ChatOutputHandler.chatNotification((ICommandSender) e.entity, Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
+            ChatUtil.chatNotification((ICommandSender) e.entity, Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
         }
 
         if (e.source.getEntity() instanceof EntityPlayerMP)
@@ -272,7 +272,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
                 Wallet wallet = APIRegistry.economy.getWallet(killer);
                 wallet.add(bounty);
                 if (APIRegistry.perms.checkUserPermission(killer, PERM_BOUNTY_MESSAGE))
-                    ChatOutputHandler.chatNotification(killer.getPlayer(),
+                    ChatUtil.chatNotification(killer.getPlayer(),
                             Translator.format("You received %s as bounty", APIRegistry.economy.toString((long) bounty)));
             }
         }

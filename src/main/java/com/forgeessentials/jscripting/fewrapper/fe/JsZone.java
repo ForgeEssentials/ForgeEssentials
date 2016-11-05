@@ -8,6 +8,8 @@ import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
+import com.forgeessentials.jscripting.wrapper.mc.JsWorldArea;
+import com.forgeessentials.jscripting.wrapper.mc.JsWorldPoint;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 
 public class JsZone<T extends Zone> extends JsWrapper<T>

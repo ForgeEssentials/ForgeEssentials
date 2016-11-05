@@ -11,11 +11,11 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.FeCommandParserArgs;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.commons.CommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 
 public class CommandPromote extends ParserCommandBase
 {
@@ -53,11 +53,11 @@ public class CommandPromote extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
-            ChatOutputHandler.chatConfirmation(arguments.sender, "/promote <player> <group>");
+            ChatUtil.chatConfirmation(arguments.sender, "/promote <player> <group>");
             return;
         }
 
@@ -92,14 +92,14 @@ public class CommandPromote extends ParserCommandBase
             if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), FEPermissions.GROUP_PROMOTION)))
             {
                 APIRegistry.perms.removePlayerFromGroup(ident, group.getGroup());
-                ChatOutputHandler.chatConfirmation(arguments.sender, Translator.format("Removed %s from group %s", ident.getUsernameOrUuid(), group));
+                ChatUtil.chatConfirmation(arguments.sender, Translator.format("Removed %s from group %s", ident.getUsernameOrUuid(), group));
                 if (ident.hasPlayer())
-                    ChatOutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have been removed from the %s group", group));
+                    ChatUtil.chatConfirmation(ident.getPlayer(), Translator.format("You have been removed from the %s group", group));
             }
         APIRegistry.perms.addPlayerToGroup(ident, groupName);
-        ChatOutputHandler.chatConfirmation(arguments.sender, Translator.format("Added %s to group %s", ident.getUsernameOrUuid(), groupName));
+        ChatUtil.chatConfirmation(arguments.sender, Translator.format("Added %s to group %s", ident.getUsernameOrUuid(), groupName));
         if (ident.hasPlayer())
-            ChatOutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have been added to the %s group", groupName));
+            ChatUtil.chatConfirmation(ident.getPlayer(), Translator.format("You have been added to the %s group", groupName));
     }
 
 }

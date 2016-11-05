@@ -1,14 +1,15 @@
 package com.forgeessentials.core.preloader.mixin.command;
 
-import com.forgeessentials.util.Utils;
-
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionManager;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+
+import com.forgeessentials.util.Utils;
 
 @Mixin(CommandHandler.class)
 public class MixinCommandHandler

@@ -52,17 +52,16 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
-import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.util.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
 import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.TaskRegistry;
 import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -329,7 +328,7 @@ public class ModuleProtection
 
         ChatComponentTranslation msg = new ChatComponentTranslation(permission);
         msg.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
-        msg.getChatStyle().setColor(ChatOutputHandler.chatNotificationColor);
+        msg.getChatStyle().setColor(ChatUtil.chatNotificationColor);
         msg.getChatStyle().setUnderlined(true);
         ChatUtil.sendMessage(player, msg);
     }

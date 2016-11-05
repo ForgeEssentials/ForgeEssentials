@@ -20,11 +20,11 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.data.v2.Loadable;
+import com.forgeessentials.util.data.DataManager;
+import com.forgeessentials.util.data.Loadable;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.WorldUtil;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
 
 import cpw.mods.fml.common.registry.GameData;
@@ -200,7 +200,7 @@ public class Grave implements Loadable
     {
         if (!canOpen(player))
         {
-            ChatOutputHandler.chatWarning(player, "This grave is still under divine protection.");
+            ChatUtil.chatWarning(player, "This grave is still under divine protection.");
             return;
         }
 

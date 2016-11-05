@@ -2,7 +2,7 @@ package com.forgeessentials.util;
 
 import net.minecraft.world.WorldServer;
 
-import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -43,7 +43,7 @@ public class NamedWorldArea extends WorldArea
     public NamedWorldArea(int dimension, Point start, Point end)
     {
         super(dimension, start, end);
-        this.worldName = APIRegistry.namedWorldHandler.getWorldName(dimension);
+        this.worldName = FEApi.namedWorldHandler.getWorldName(dimension);
         isLinked();
     }
 
@@ -71,7 +71,7 @@ public class NamedWorldArea extends WorldArea
             if (worldName != null)
             {
                 // If there is a name for the dimension, use it
-                WorldServer world = APIRegistry.namedWorldHandler.getWorld(worldName);
+                WorldServer world = FEApi.namedWorldHandler.getWorld(worldName);
                 if (world != null)
                 {
                     this.dim = world.provider.dimensionId;

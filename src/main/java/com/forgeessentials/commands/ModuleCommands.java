@@ -50,7 +50,7 @@ import com.forgeessentials.commands.world.CommandRemove;
 import com.forgeessentials.commands.world.CommandTime;
 import com.forgeessentials.commands.world.CommandWeather;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.util.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;

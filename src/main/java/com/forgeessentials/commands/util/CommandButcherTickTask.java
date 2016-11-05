@@ -26,11 +26,11 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.EnumMobType;
-import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.TaskRegistry.TickTask;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.TaskRegistry;
+import com.forgeessentials.util.TaskRegistry.TickTask;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 
 public class CommandButcherTickTask implements TickTask
 {
@@ -112,7 +112,7 @@ public class CommandButcherTickTask implements TickTask
                     if (tickKillCount >= 32)
                         return false;
                 }
-            ChatOutputHandler.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
+            ChatUtil.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
         }
         else
         {
@@ -129,7 +129,7 @@ public class CommandButcherTickTask implements TickTask
                                 return false;
                         }
                     }
-            ChatOutputHandler.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
+            ChatUtil.chatConfirmation(sender, Translator.format("%s mobs killed.", killCount));
         }
         return true;
     }

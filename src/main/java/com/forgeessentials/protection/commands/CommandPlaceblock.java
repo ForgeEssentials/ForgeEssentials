@@ -10,8 +10,8 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.commons.CommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
 import com.mojang.authlib.GameProfile;
 
 public class CommandPlaceblock extends ParserCommandBase
@@ -52,7 +52,7 @@ public class CommandPlaceblock extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         // EntityPlayerMP player = FakePlayerFactory.get((WorldServer) arguments.senderPlayer.worldObj, gp);
         EntityPlayerMP player = FakePlayerFactory.get((WorldServer) arguments.senderPlayer.worldObj, new GameProfile(arguments.senderPlayer.getPersistentID(),

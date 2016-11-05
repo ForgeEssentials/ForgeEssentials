@@ -15,12 +15,11 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
-import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.data.DataManager;
 import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -147,9 +146,9 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
 
             schedule.state = desiredState;
             if (schedule.state && schedule.onMessage != null)
-                ChatUtil.broadcast(ChatOutputHandler.confirmation(schedule.onMessage));
+                ChatUtil.broadcast(ChatUtil.confirmation(schedule.onMessage));
             if (!schedule.state && schedule.offMessage != null)
-                ChatUtil.broadcast(ChatOutputHandler.confirmation(schedule.offMessage));
+                ChatUtil.broadcast(ChatUtil.confirmation(schedule.offMessage));
         }
     }
 

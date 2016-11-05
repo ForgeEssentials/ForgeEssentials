@@ -13,10 +13,10 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.commons.CommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.core.preloader.api.EntityTrackerHelper;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.TranslatedCommandException;
 
 public class CommandVanish extends ParserCommandBase
 {
@@ -70,7 +70,7 @@ public class CommandVanish extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         UserIdent player;
         if (arguments.isEmpty())

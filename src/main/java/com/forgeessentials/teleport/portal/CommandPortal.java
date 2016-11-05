@@ -5,13 +5,13 @@ import java.util.Map.Entry;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.util.NamedWorldArea;
 import com.forgeessentials.util.NamedWorldPoint;
+import com.forgeessentials.util.TranslatedCommandException;
 import com.forgeessentials.util.selections.SelectionHandler;
 
 public class CommandPortal extends ParserCommandBase
@@ -56,7 +56,7 @@ public class CommandPortal extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -90,7 +90,7 @@ public class CommandPortal extends ParserCommandBase
         }
     }
 
-    private static void parseCreate(FeCommandParserArgs arguments, boolean recreate)
+    private static void parseCreate(CommandParserArgs arguments, boolean recreate)
     {
         if (arguments.isEmpty())
         {
@@ -150,7 +150,7 @@ public class CommandPortal extends ParserCommandBase
         arguments.confirm("Created new portal leading to %s", target.toString());
     }
 
-    private static void parseTarget(FeCommandParserArgs arguments)
+    private static void parseTarget(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -186,7 +186,7 @@ public class CommandPortal extends ParserCommandBase
         arguments.confirm("Set target for portal %s to %s", name, target.toString());
     }
 
-    private static void parseDelete(FeCommandParserArgs arguments)
+    private static void parseDelete(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -209,7 +209,7 @@ public class CommandPortal extends ParserCommandBase
     /**
      * Print lists of portals, their locations and dimensions
      */
-    private static void listPortals(FeCommandParserArgs arguments)
+    private static void listPortals(CommandParserArgs arguments)
     {
         if (arguments.isTabCompletion)
             return;

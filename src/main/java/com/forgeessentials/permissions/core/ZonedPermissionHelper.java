@@ -33,6 +33,7 @@ import net.minecraftforge.permission.PermissionContext;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.UserIdent.UserIdentInvalidatedEvent;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -117,7 +118,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         rootZone.setPermissionDebugger(this);
 
         ServerZone serverZone = new ServerZone(rootZone);
-        APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
+        FEApi.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
         rootZone.setServerZone(serverZone);
 
         permissionDebugFilters.add("fe.protection.mobspawn");
@@ -146,7 +147,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         if (persistenceProvider != null)
         {
             LoggingHandler.felog.debug("Saving permissions...");
-            APIRegistry.getFEEventBus().post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
+            FEApi.getFEEventBus().post(new PermissionEvent.BeforeSave(rootZone.getServerZone()));
             persistenceProvider.save(rootZone.getServerZone());
             dirty = false;
         }
@@ -169,7 +170,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 rootZone.setServerZone(serverZone);
                 serverZone.rebuildZonesMap();
                 dirty = false;
-                APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
+                FEApi.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
                 return true;
             }
         }
@@ -182,7 +183,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         rootZone.setServerZone(serverZone);
         serverZone.rebuildZonesMap();
         dirty = false;
-        APIRegistry.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
+        FEApi.getFEEventBus().post(new PermissionEvent.AfterLoad(serverZone));
     }
 
     public boolean isDirty()
@@ -432,7 +433,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             IChatComponent msgZone = new ChatComponentText(zone.getName());
             msgZone.getChatStyle().setColor(EnumChatFormatting.LIGHT_PURPLE);
 
-            IChatComponent msgUser = new ChatComponentText(ident == null ? APIRegistry.IDENT_SERVER.getUsername() : ident.getUsernameOrUuid());
+            IChatComponent msgUser = new ChatComponentText(ident == null ? FEApi.IDENT_SERVER.getUsername() : ident.getUsernameOrUuid());
             msgUser.getChatStyle().setColor(EnumChatFormatting.GOLD);
 
             if (isGroupPermission)
@@ -516,9 +517,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         event.serverZone.setGroupPermission(Zone.GROUP_CREATIVE, FEPermissions.GROUP, true);
         event.serverZone.setGroupPermission(Zone.GROUP_ADVENTURE, FEPermissions.GROUP, true);
 
-        event.serverZone.setPlayerPermission(APIRegistry.IDENT_SERVER, "*", true);
-        event.serverZone.setPlayerPermission(APIRegistry.IDENT_CMDBLOCK, "*", true);
-        event.serverZone.setPlayerPermission(APIRegistry.IDENT_RCON, "*", true);
+        event.serverZone.setPlayerPermission(FEApi.IDENT_SERVER, "*", true);
+        event.serverZone.setPlayerPermission(FEApi.IDENT_CMDBLOCK, "*", true);
+        event.serverZone.setPlayerPermission(FEApi.IDENT_RCON, "*", true);
     }
 
     @SubscribeEvent
@@ -750,9 +751,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         if (context.getSender() instanceof DoAsCommandSender)
             ident = ((DoAsCommandSender) context.getSender()).getUserIdent();
         else if (context.getSender() instanceof CommandBlockLogic)
-            ident = APIRegistry.IDENT_CMDBLOCK;
+            ident = FEApi.IDENT_CMDBLOCK;
         else if (context.getSender() instanceof RConConsoleSource)
-            ident = APIRegistry.IDENT_RCON;
+            ident = FEApi.IDENT_RCON;
 
         if (context.getTargetLocationStart() != null)
         {

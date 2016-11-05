@@ -3,7 +3,7 @@ package com.forgeessentials.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.WorldServer;
 
-import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.google.gson.annotations.Expose;
 
@@ -36,7 +36,7 @@ public class NamedWorldPoint extends WorldPoint
     public NamedWorldPoint(int dimension, int x, int y, int z)
     {
         super(dimension, x, y, z);
-        this.worldName = APIRegistry.namedWorldHandler.getWorldName(dimension);
+        this.worldName = FEApi.namedWorldHandler.getWorldName(dimension);
         isLinked();
     }
 
@@ -48,7 +48,7 @@ public class NamedWorldPoint extends WorldPoint
     public NamedWorldPoint(Entity entity)
     {
         super(entity);
-        this.worldName = APIRegistry.namedWorldHandler.getWorldName(dim);
+        this.worldName = FEApi.namedWorldHandler.getWorldName(dim);
         isLinked();
     }
 
@@ -66,7 +66,7 @@ public class NamedWorldPoint extends WorldPoint
             if (worldName != null)
             {
                 // If there is a name for the dimension, use it
-                WorldServer world = APIRegistry.namedWorldHandler.getWorld(worldName);
+                WorldServer world = FEApi.namedWorldHandler.getWorld(worldName);
                 if (world != null)
                 {
                     this.dim = world.provider.dimensionId;

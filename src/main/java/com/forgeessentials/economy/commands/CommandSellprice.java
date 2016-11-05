@@ -35,12 +35,12 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
+import com.forgeessentials.util.Translator;
 
 import cpw.mods.fml.common.registry.GameData;
 
@@ -91,7 +91,7 @@ public class CommandSellprice extends ParserCommandBase
     }
 
     @Override
-    public void parse(final FeCommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -114,7 +114,7 @@ public class CommandSellprice extends ParserCommandBase
         }
     }
 
-    public static void parseSetprice(FeCommandParserArgs arguments)
+    public static void parseSetprice(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -134,7 +134,7 @@ public class CommandSellprice extends ParserCommandBase
         arguments.confirm(Translator.format("Set price for %s to %d", itemId, (int) price));
     }
 
-    public static void calcPriceList(FeCommandParserArgs arguments, boolean save)
+    public static void calcPriceList(CommandParserArgs arguments, boolean save)
     {
         /*
          * Map<Item, Double> priceMap = new TreeMap<>(new Comparator<Item>() {
@@ -307,7 +307,7 @@ public class CommandSellprice extends ParserCommandBase
         }
     }
 
-    private static Map<String, Double> loadPriceList(FeCommandParserArgs arguments)
+    private static Map<String, Double> loadPriceList(CommandParserArgs arguments)
     {
         Map<String, Double> priceMap = new TreeMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(priceFile)))

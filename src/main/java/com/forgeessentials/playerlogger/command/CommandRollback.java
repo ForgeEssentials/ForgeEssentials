@@ -12,13 +12,13 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.util.FeCommandParserArgs;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.TranslatedCommandException;
 import com.forgeessentials.util.selections.SelectionHandler;
 
 public class CommandRollback extends ParserCommandBase
@@ -71,7 +71,7 @@ public class CommandRollback extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs args)
+    public void parse(CommandParserArgs args)
     {
         if (args.isEmpty())
         {
@@ -113,7 +113,7 @@ public class CommandRollback extends ParserCommandBase
     }
 
     @SuppressWarnings("deprecation")
-    private void startRollback(FeCommandParserArgs args)
+    private void startRollback(CommandParserArgs args)
     {
         args.checkPermission(PERM_PREVIEW);
 
@@ -152,10 +152,10 @@ public class CommandRollback extends ParserCommandBase
         rb.step(step);
         rb.previewChanges();
 
-        ChatOutputHandler.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
+        ChatUtil.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
     }
 
-    private void stepRollback(FeCommandParserArgs args, int sec)
+    private void stepRollback(CommandParserArgs args, int sec)
     {
         args.checkPermission(PERM_PREVIEW);
 
@@ -171,10 +171,10 @@ public class CommandRollback extends ParserCommandBase
 
         rb.step(sec);
         rb.previewChanges();
-        ChatOutputHandler.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
+        ChatUtil.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
     }
 
-    private void confirmRollback(FeCommandParserArgs args)
+    private void confirmRollback(CommandParserArgs args)
     {
         args.checkPermission(PERM);
 
@@ -186,20 +186,20 @@ public class CommandRollback extends ParserCommandBase
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
 
         rb.confirm();
-        ChatOutputHandler.chatConfirmation(args.sender, "Successfully restored changes");
+        ChatUtil.chatConfirmation(args.sender, "Successfully restored changes");
     }
 
-    private void cancelRollback(FeCommandParserArgs args)
+    private void cancelRollback(CommandParserArgs args)
     {
         RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress.");
 
         rb.cancel();
-        ChatOutputHandler.chatConfirmation(args.sender, "Cancelled active rollback");
+        ChatUtil.chatConfirmation(args.sender, "Cancelled active rollback");
     }
 
-    private void playRollback(FeCommandParserArgs args)
+    private void playRollback(CommandParserArgs args)
     {
         args.checkPermission(PERM_PREVIEW);
 
@@ -222,17 +222,17 @@ public class CommandRollback extends ParserCommandBase
         {
             rb.task.cancel();
             rb.task = null;
-            ChatOutputHandler.chatConfirmation(args.sender, "Stopped playback");
+            ChatUtil.chatConfirmation(args.sender, "Stopped playback");
         }
         else
         {
             rb.task = new RollbackInfo.PlaybackTask(rb, (int) (Math.signum(speed)));
             playbackTimer.schedule(rb.task, 1000, 1000 / Math.abs(speed));
-            ChatOutputHandler.chatConfirmation(args.sender, "Started playback");
+            ChatUtil.chatConfirmation(args.sender, "Started playback");
         }
     }
 
-    private void stopRollback(FeCommandParserArgs args)
+    private void stopRollback(CommandParserArgs args)
     {
         args.checkPermission(PERM_PREVIEW);
 
@@ -247,19 +247,19 @@ public class CommandRollback extends ParserCommandBase
 
         rb.task.cancel();
         rb.task = null;
-        ChatOutputHandler.chatConfirmation(args.sender, "Stopped playback");
+        ChatUtil.chatConfirmation(args.sender, "Stopped playback");
     }
 
     private static void help(ICommandSender sender)
     {
-        ChatOutputHandler.chatConfirmation(sender, "/rollback: Start rollback");
-        ChatOutputHandler.chatConfirmation(sender, "/rollback start [time]: Start rollback at specified time");
-        ChatOutputHandler.chatConfirmation(sender, "/rollback + [duration]: Go forward in time");
-        ChatOutputHandler.chatConfirmation(sender, "/rollback - [duration]: Go back in time");
-        ChatOutputHandler.chatConfirmation(sender, "/rollback play [speed]: Playback changes like a video");
-        ChatOutputHandler.chatConfirmation(sender, "/rollback stop: Stop playback");
-        ChatOutputHandler.chatConfirmation(sender, "/rollback confirm: Confirm changes");
-        ChatOutputHandler.chatConfirmation(sender, "/rollback cancel: Cancel rollback");
+        ChatUtil.chatConfirmation(sender, "/rollback: Start rollback");
+        ChatUtil.chatConfirmation(sender, "/rollback start [time]: Start rollback at specified time");
+        ChatUtil.chatConfirmation(sender, "/rollback + [duration]: Go forward in time");
+        ChatUtil.chatConfirmation(sender, "/rollback - [duration]: Go back in time");
+        ChatUtil.chatConfirmation(sender, "/rollback play [speed]: Playback changes like a video");
+        ChatUtil.chatConfirmation(sender, "/rollback stop: Stop playback");
+        ChatUtil.chatConfirmation(sender, "/rollback confirm: Confirm changes");
+        ChatUtil.chatConfirmation(sender, "/rollback cancel: Cancel rollback");
     }
 
 }

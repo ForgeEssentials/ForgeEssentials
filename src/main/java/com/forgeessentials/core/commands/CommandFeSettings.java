@@ -11,13 +11,15 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 
 public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
 {
@@ -35,7 +37,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
     public CommandFeSettings()
     {
         instache = this;
-        APIRegistry.getFEEventBus().register(this);
+        FEApi.getFEEventBus().register(this);
         ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
     }
 
@@ -86,7 +88,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

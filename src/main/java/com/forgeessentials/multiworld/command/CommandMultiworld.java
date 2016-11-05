@@ -8,15 +8,15 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.WorldType;
 import net.minecraftforge.permission.PermissionLevel;
 
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
 import com.forgeessentials.multiworld.MultiworldException;
 import com.forgeessentials.multiworld.MultiworldManager;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Utils;
 
 public class CommandMultiworld extends ParserCommandBase
 {
@@ -52,7 +52,7 @@ public class CommandMultiworld extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -90,7 +90,7 @@ public class CommandMultiworld extends ParserCommandBase
     /**
      * Create a new multiworld
      */
-    public static void parseCreate(FeCommandParserArgs arguments)
+    public static void parseCreate(CommandParserArgs arguments)
     {
         arguments.checkPermission(ModuleMultiworld.PERM_MANAGE);
 
@@ -106,7 +106,7 @@ public class CommandMultiworld extends ParserCommandBase
         String provider = MultiworldManager.PROVIDER_NORMAL;
         if (arguments.isTabCompletion && arguments.size() == 1)
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
+            arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
                     .getWorldProviders().keySet());
             return;
         }
@@ -117,7 +117,7 @@ public class CommandMultiworld extends ParserCommandBase
         String worldType = WorldType.DEFAULT.getWorldTypeName();
         if (arguments.isTabCompletion && arguments.size() == 1)
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
+            arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
                     .getWorldTypes().keySet());
             return;
         }
@@ -163,7 +163,7 @@ public class CommandMultiworld extends ParserCommandBase
     /**
      * Delete a multiworld
      */
-    public static void parseDelete(FeCommandParserArgs arguments)
+    public static void parseDelete(CommandParserArgs arguments)
     {
         arguments.checkPermission(ModuleMultiworld.PERM_DELETE);
         Multiworld world = parseWorld(arguments);
@@ -172,7 +172,7 @@ public class CommandMultiworld extends ParserCommandBase
         arguments.confirm("Deleted multiworld " + world.getName());
     }
 
-    public static void parseInfo(FeCommandParserArgs arguments)
+    public static void parseInfo(CommandParserArgs arguments)
     {
         arguments.checkPermission(ModuleMultiworld.PERM_MANAGE);
         Multiworld world = parseWorld(arguments);
@@ -186,7 +186,7 @@ public class CommandMultiworld extends ParserCommandBase
     /**
      * Print lists of multiworlds, available providers and available world-types
      */
-    public static void parseList(FeCommandParserArgs arguments)
+    public static void parseList(CommandParserArgs arguments)
     {
         arguments.checkPermission(ModuleMultiworld.PERM_LIST);
         arguments.tabComplete("worlds", "providers", "worldtypes");
@@ -218,7 +218,7 @@ public class CommandMultiworld extends ParserCommandBase
         }
     }
 
-    public static void parseGamerule(FeCommandParserArgs arguments)
+    public static void parseGamerule(CommandParserArgs arguments)
     {
         arguments.checkPermission(ModuleMultiworld.PERM_MANAGE);
         Multiworld world = parseWorld(arguments);
@@ -257,7 +257,7 @@ public class CommandMultiworld extends ParserCommandBase
         arguments.confirm("Set gamerule %s = %s for world %s", rule, value, world.getName());
     }
 
-    public static Multiworld parseWorld(FeCommandParserArgs arguments)
+    public static Multiworld parseWorld(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Too few arguments!");

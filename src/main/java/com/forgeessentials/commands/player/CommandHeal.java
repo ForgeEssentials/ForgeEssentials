@@ -11,9 +11,10 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Utils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -85,7 +86,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
             }
             else
             {
-                ChatOutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                ChatUtil.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else
@@ -117,7 +118,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
         target.heal(toHealBy);
         target.extinguish();
         target.getFoodStats().addStats(20, 1.0F);
-        ChatOutputHandler.chatConfirmation(target, "You were healed.");
+        ChatUtil.chatConfirmation(target, "You were healed.");
     }
 
     @Override
@@ -125,7 +126,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

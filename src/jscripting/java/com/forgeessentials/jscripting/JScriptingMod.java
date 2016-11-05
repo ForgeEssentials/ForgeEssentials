@@ -32,6 +32,8 @@ public class JScriptingMod
 
     public static final String MODID = "JScripting";
 
+    public static final String PERM = "fe.jscript";
+
     @Instance(JScriptingMod.MODID)
     public static JScriptingMod instance;
 
@@ -52,24 +54,24 @@ public class JScriptingMod
     public void init(FMLInitializationEvent event)
     {
         MinecraftForge.EVENT_BUS.register(this);
-        try
-        {
-            copyResourceFileIfNotExists("mc.d.ts");
-            copyResourceFileIfNotExists("fe.d.ts");
-            copyResourceFileIfNotExists("tsconfig.json");
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+//        try
+//        {
+//            copyResourceFileIfNotExists("mc.d.ts");
+//            copyResourceFileIfNotExists("fe.d.ts");
+//            copyResourceFileIfNotExists("tsconfig.json");
+//        }
+//        catch (IOException e)
+//        {
+//            e.printStackTrace();
+//        }
     }
 
-    private void copyResourceFileIfNotExists(String fileName) throws IOException
-    {
-        File file = new File(moduleDir, fileName);
-        if (!file.exists())
-            FileUtils.copyInputStreamToFile(ModuleJScripting.class.getResourceAsStream(fileName), file);
-    }
+//    private void copyResourceFileIfNotExists(String fileName) throws IOException
+//    {
+//        File file = new File(moduleDir, fileName);
+//        if (!file.exists())
+//            FileUtils.copyInputStreamToFile(ModuleJScripting.class.getResourceAsStream(fileName), file);
+//    }
 
     @EventHandler
     public void serverStartedEvent(FMLServerStartingEvent event)

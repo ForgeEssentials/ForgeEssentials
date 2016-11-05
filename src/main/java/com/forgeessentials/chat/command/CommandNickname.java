@@ -7,10 +7,10 @@ import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 
 public class CommandNickname extends ForgeEssentialsCommandBase
 {
@@ -69,12 +69,12 @@ public class CommandNickname extends ForgeEssentialsCommandBase
             if (args[0].equalsIgnoreCase("del"))
             {
                 ModuleChat.setPlayerNickname(sender, null);
-                ChatOutputHandler.chatConfirmation(sender, "Nickname removed.");
+                ChatUtil.chatConfirmation(sender, "Nickname removed.");
             }
             else
             {
                 ModuleChat.setPlayerNickname(sender, args[0]);
-                ChatOutputHandler.chatConfirmation(sender, "Nickname set to " + args[0]);
+                ChatUtil.chatConfirmation(sender, "Nickname set to " + args[0]);
             }
         }
         else if (args.length == 2)
@@ -86,12 +86,12 @@ public class CommandNickname extends ForgeEssentialsCommandBase
             if (args[1].equalsIgnoreCase("del"))
             {
                 ModuleChat.setPlayerNickname(player, null);
-                ChatOutputHandler.chatConfirmation(sender, Translator.format("Removed nickname of %s", args[0]));
+                ChatUtil.chatConfirmation(sender, Translator.format("Removed nickname of %s", args[0]));
             }
             else
             {
                 ModuleChat.setPlayerNickname(player, args[1]);
-                ChatOutputHandler.chatConfirmation(sender, Translator.format("Set nickname of %s to %s", args[0], args[1]));
+                ChatUtil.chatConfirmation(sender, Translator.format("Set nickname of %s to %s", args[0], args[1]));
             }
         }
         else
@@ -109,12 +109,12 @@ public class CommandNickname extends ForgeEssentialsCommandBase
             if (args[1].equalsIgnoreCase("del"))
             {
                 ModuleChat.setPlayerNickname(player, null);
-                ChatOutputHandler.chatConfirmation(sender, Translator.format("Removed nickname of %s", args[0]));
+                ChatUtil.chatConfirmation(sender, Translator.format("Removed nickname of %s", args[0]));
             }
             else
             {
                 ModuleChat.setPlayerNickname(player, args[1]);
-                ChatOutputHandler.chatConfirmation(sender, Translator.format("Set nickname of %s to %s", args[0], args[1]));
+                ChatUtil.chatConfirmation(sender, Translator.format("Set nickname of %s to %s", args[0], args[1]));
             }
         }
         else

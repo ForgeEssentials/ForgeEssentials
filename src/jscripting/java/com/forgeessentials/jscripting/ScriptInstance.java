@@ -26,18 +26,19 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.FECommandManager;
-import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
+import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.util.FECommandManager;
+import com.forgeessentials.util.TaskRegistry;
+import com.forgeessentials.util.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.base.Charsets;
 
 public class ScriptInstance
@@ -121,7 +122,7 @@ public class ScriptInstance
     /* ************************************************************ */
     /* PROPERTY ACCESSING */
 
-    private static Compilable propertyEngine = ModuleJScripting.getCompilable();
+    private static Compilable propertyEngine = ScriptManager.getCompilable();
 
     private static Map<String, CompiledScript> propertyScripts = new HashMap<>();
 
@@ -162,7 +163,7 @@ public class ScriptInstance
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charsets.UTF_8)))
         {
             // Load and compile script
-            script = ModuleJScripting.getCompilable().compile(reader);
+            script = ScriptManager.getCompilable().compile(reader);
 
             // Initialization of environment and script
             invocable = (Invocable) script.getEngine();
@@ -441,13 +442,21 @@ public class ScriptInstance
     }
 
     /* ************************************************************ */
-    /* Event handling */
+    /* Commands */
 
     public void registerScriptCommand(CommandJScriptCommand command)
     {
         commands.add(command);
         FECommandManager.registerCommand(command, true);
     }
+
+    public List<CommandJScriptCommand> getCommands()
+    {
+        return commands;
+    }
+
+    /* ************************************************************ */
+    /* Event handling */
 
     @SuppressWarnings({ "rawtypes" })
     public void registerEventHandler(String event, Object handler)
@@ -497,13 +506,8 @@ public class ScriptInstance
 
     public String getName()
     {
-        String fileName = file.getAbsolutePath().substring(ModuleJScripting.getModuleDir().getAbsolutePath().length() + 1).replace('\\', '/');
+        String fileName = file.getAbsolutePath().substring(ScriptManager.getModuleDir().getAbsolutePath().length() + 1).replace('\\', '/');
         return fileName.substring(0, fileName.lastIndexOf('.'));
-    }
-
-    public List<CommandJScriptCommand> getCommands()
-    {
-        return commands;
     }
 
     public List<String> getEventHandlers()
@@ -524,7 +528,7 @@ public class ScriptInstance
 
     public void chatError(ICommandSender sender, String message)
     {
-        IChatComponent msg = ChatOutputHandler.error(message);
+        IChatComponent msg = ChatUtil.setChatColor(new ChatComponentText(ChatUtil.formatColors(message)), EnumChatFormatting.RED);
         if (sender == null)
             ChatUtil.broadcast(msg); // TODO: Replace with broadcast to admins only
         else

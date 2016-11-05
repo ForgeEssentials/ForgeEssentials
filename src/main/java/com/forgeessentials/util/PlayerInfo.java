@@ -1,18 +1,5 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.data.v2.Loadable;
-import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
-import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
-import com.google.gson.annotations.Expose;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -20,6 +7,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+
+import com.forgeessentials.api.FEApi;
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.util.data.DataManager;
+import com.forgeessentials.util.data.Loadable;
+import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
+import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
+import com.google.gson.annotations.Expose;
 
 public class PlayerInfo implements Loadable
 {
@@ -147,7 +148,7 @@ public class PlayerInfo implements Loadable
         info = new PlayerInfo(uuid);
         playerInfoMap.put(uuid, info);
         if (player != null)
-            APIRegistry.getFEEventBus().post(new NoPlayerInfoEvent(player));
+            FEApi.getFEEventBus().post(new NoPlayerInfoEvent(player));
         return info;
     }
 
@@ -471,7 +472,7 @@ public class PlayerInfo implements Loadable
     public void setHasFEClient(boolean status)
     {
         this.hasFEClient = status;
-        APIRegistry.getFEEventBus().post(new ClientHandshakeEstablished(this.ident.getPlayer()));
+        FEApi.getFEEventBus().post(new ClientHandshakeEstablished(this.ident.getPlayer()));
     }
 
 }

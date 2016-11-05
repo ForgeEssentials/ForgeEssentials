@@ -15,9 +15,9 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.commons.CommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.util.TranslatedCommandException;
 
 public class CommandDechant extends ParserCommandBase
 {
@@ -60,7 +60,7 @@ public class CommandDechant extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         ItemStack stack = arguments.senderPlayer.getCurrentEquippedItem();
         if (stack == null)

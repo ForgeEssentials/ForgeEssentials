@@ -15,14 +15,14 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.core.moduleLauncher.config.ConfigSaver;
 import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.TaskRegistry;
+import com.forgeessentials.util.TranslatedCommandException;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.JsonParseException;
 
@@ -90,7 +90,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -130,7 +130,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         }
     }
 
-    public void parseAdd(FeCommandParserArgs arguments)
+    public void parseAdd(CommandParserArgs arguments)
     {
         if (arguments.isTabCompletion)
             return;
@@ -146,7 +146,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
     }
 
-    public void parseList(FeCommandParserArgs arguments)
+    public void parseList(CommandParserArgs arguments)
     {
         if (arguments.isTabCompletion)
             return;
@@ -155,7 +155,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             arguments.sendMessage(new ChatComponentTranslation(String.format("%d: %s", i, formatMessage(messages.get(i)))));
     }
 
-    public void parseDelete(FeCommandParserArgs arguments)
+    public void parseDelete(CommandParserArgs arguments)
     {
         if (arguments.isTabCompletion)
             return;
@@ -172,7 +172,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
     }
 
-    public void parseSend(FeCommandParserArgs arguments)
+    public void parseSend(CommandParserArgs arguments)
     {
         if (arguments.isTabCompletion)
             return;
@@ -187,7 +187,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         broadcastMessage(index);
     }
 
-    public void parseInterval(FeCommandParserArgs arguments)
+    public void parseInterval(CommandParserArgs arguments)
     {
         if (arguments.isTabCompletion)
             return;
@@ -200,7 +200,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
     }
 
-    public void parseShuffle(FeCommandParserArgs arguments)
+    public void parseShuffle(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

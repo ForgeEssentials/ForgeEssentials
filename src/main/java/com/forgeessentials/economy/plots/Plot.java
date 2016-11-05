@@ -13,6 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -27,11 +28,11 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ModuleProtection;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.events.PlotEvent;
 import com.forgeessentials.util.events.PlotEvent.OwnerChanged;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class Plot
 {
@@ -125,7 +126,7 @@ public class Plot
 
     public boolean hasOwner()
     {
-        return owner != null && !owner.equals(APIRegistry.IDENT_SERVER);
+        return owner != null && !owner.equals(FEApi.IDENT_SERVER);
     }
 
     public UserIdent getOwner()
@@ -147,7 +148,7 @@ public class Plot
         owner = newOwner;
         zone.setGroupPermissionProperty(GROUP_ALL, PERM_OWNER, owner.getOrGenerateUuid().toString());
         zone.addPlayerToGroup(newOwner, GROUP_PLOT_OWNER);
-        APIRegistry.getFEEventBus().post(event);
+        FEApi.getFEEventBus().post(event);
     }
 
     public String getOwnerName()
@@ -284,20 +285,20 @@ public class Plot
 
     public void printInfo(ICommandSender sender)
     {
-        ChatOutputHandler.chatNotification(sender, String.format("#%d: \"%s\" at %s", zone.getId(), getName(), getCenter().toString()));
+        ChatUtil.chatNotification(sender, String.format("#%d: \"%s\" at %s", zone.getId(), getName(), getCenter().toString()));
     }
 
     public void printDetails(ICommandSender sender)
     {
-        ChatOutputHandler.chatNotification(sender, String.format("Plot #%d: %s", zone.getId(), getName()));
-        ChatOutputHandler.chatNotification(sender, String.format("  Owner: %s", owner.getUsernameOrUuid()));
-        ChatOutputHandler.chatNotification(sender,
+        ChatUtil.chatNotification(sender, String.format("Plot #%d: %s", zone.getId(), getName()));
+        ChatUtil.chatNotification(sender, String.format("  Owner: %s", owner.getUsernameOrUuid()));
+        ChatUtil.chatNotification(sender,
                 String.format("  Location between %s and %s", zone.getArea().getHighPoint().toString(), zone.getArea().getLowPoint().toString()));
         long price = getPrice();
         if (price >= 0)
-            ChatOutputHandler.chatNotification(sender, String.format("  Price: %d", price));
+            ChatUtil.chatNotification(sender, String.format("  Price: %d", price));
         else
-            ChatOutputHandler.chatNotification(sender, "  Not open for sale");
+            ChatUtil.chatNotification(sender, "  Not open for sale");
     }
 
     /* ------------------------------------------------------------ */

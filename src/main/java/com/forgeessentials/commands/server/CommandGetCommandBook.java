@@ -21,7 +21,7 @@ import net.minecraftforge.permission.PermissionManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
 
 public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 {

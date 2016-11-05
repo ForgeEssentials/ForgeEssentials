@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import com.forgeessentials.chat.irc.IrcCommand;
 import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.commons.CommandParserArgs;
 
 public class CommandHelp extends IrcCommandParser
 {
@@ -37,7 +37,7 @@ public class CommandHelp extends IrcCommandParser
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         arguments.confirm("List of commands:");
         for (Entry<String, IrcCommand> command : IrcHandler.getInstance().commands.entrySet())

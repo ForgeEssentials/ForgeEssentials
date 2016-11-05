@@ -11,14 +11,17 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.util.FakePlayer;
 
-import com.forgeessentials.util.output.LoggingHandler;
-
 public final class ChatUtil
 {
 
     public static final char COLOR_FORMAT_CHARACTER = '\u00a7';
 
     public static final Pattern FORMAT_CODE_PATTERN;
+
+    public static EnumChatFormatting chatErrorColor = EnumChatFormatting.RED;
+    public static EnumChatFormatting chatWarningColor = EnumChatFormatting.YELLOW;
+    public static EnumChatFormatting chatConfirmationColor = EnumChatFormatting.GREEN;
+    public static EnumChatFormatting chatNotificationColor = EnumChatFormatting.AQUA;
 
     static
     {
@@ -51,7 +54,7 @@ public final class ChatUtil
     public static void sendMessage(ICommandSender recipient, IChatComponent message)
     {
         if (recipient instanceof FakePlayer && ((EntityPlayerMP) recipient).playerNetServerHandler == null)
-            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getCommandSenderName(), message.getUnformattedText()));
+            Utils.felog.info(String.format("Fakeplayer %s: %s", recipient.getCommandSenderName(), message.getUnformattedText()));
         else
             recipient.addChatMessage(message);
     }
@@ -79,6 +82,83 @@ public final class ChatUtil
             sendMessage(recipient, stripFormatting(message));
     }
 
+    /* ------------------------------------------------------------ */
+
+    public static IChatComponent confirmation(String message)
+    {
+        return setChatColor(new ChatComponentText(formatColors(message)), chatConfirmationColor);
+    }
+
+    public static IChatComponent notification(String message)
+    {
+        return setChatColor(new ChatComponentText(formatColors(message)), chatNotificationColor);
+    }
+
+    public static IChatComponent warning(String message)
+    {
+        return setChatColor(new ChatComponentText(formatColors(message)), chatWarningColor);
+    }
+
+    public static IChatComponent error(String message)
+    {
+        return setChatColor(new ChatComponentText(formatColors(message)), chatErrorColor);
+    }
+
+    /* ------------------------------------------------------------ */
+
+    /**
+     * outputs an error message to the chat box of the given sender.
+     *
+     * @param sender
+     *            CommandSender to chat to.
+     * @param msg
+     *            the message to be sent
+     */
+    public static void chatError(ICommandSender sender, String msg)
+    {
+        sendMessage(sender, error(msg));
+    }
+
+    /**
+     * outputs a confirmation message to the chat box of the given sender.
+     *
+     * @param sender
+     *            CommandSender to chat to.
+     * @param msg
+     *            the message to be sent
+     */
+    public static void chatConfirmation(ICommandSender sender, String msg)
+    {
+        sendMessage(sender, confirmation(msg));
+    }
+
+    /**
+     * outputs a warning message to the chat box of the given sender.
+     *
+     * @param sender
+     *            CommandSender to chat to.
+     * @param msg
+     *            the message to be sent
+     */
+    public static void chatWarning(ICommandSender sender, String msg)
+    {
+        sendMessage(sender, warning(msg));
+    }
+
+    /**
+     * outputs a notification message to the chat box of the given sender.
+     *
+     * @param sender
+     *            CommandSender to chat to.
+     * @param msg
+     */
+    public static void chatNotification(ICommandSender sender, String msg)
+    {
+        sendMessage(sender, notification(msg));
+    }
+
+    /* ------------------------------------------------------------ */
+
     /**
      * Sends a message to all clients
      *
@@ -87,7 +167,7 @@ public final class ChatUtil
      */
     public static void broadcast(String message)
     {
-        broadcast(new ChatComponentText(message));;
+        broadcast(new ChatComponentText(message));
     }
 
     /**
@@ -145,4 +225,5 @@ public final class ChatUtil
     {
         return FORMAT_CODE_PATTERN.matcher(message).replaceAll("");
     }
+
 }

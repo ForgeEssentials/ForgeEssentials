@@ -13,15 +13,15 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.data.DataManager;
 import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.Utils;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandTicket extends ForgeEssentialsCommandBase
 {
@@ -72,7 +72,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
                 throw new TranslatedCommandException("Usage: /ticket view <id>");
             int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
             Ticket t = ModuleTickets.getID(id);
-            ChatOutputHandler.chatNotification(sender, c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
+            ChatUtil.chatNotification(sender, c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
         }
 
         if (args[0].equalsIgnoreCase("list") && permcheck(sender, "view"))
@@ -86,23 +86,23 @@ public class CommandTicket extends ForgeEssentialsCommandBase
 
             if (ModuleTickets.ticketList.size() == 0)
             {
-                ChatOutputHandler.chatNotification(sender, c + "There are no tickets!");
+                ChatUtil.chatNotification(sender, c + "There are no tickets!");
                 return;
             }
-            ChatOutputHandler.chatNotification(sender, c + "--- Ticket List ---");
+            ChatUtil.chatNotification(sender, c + "--- Ticket List ---");
             for (int i = page * 7; i < (page + 1) * 7; i++)
             {
                 try
                 {
                     Ticket t = ModuleTickets.ticketList.get(i);
-                    ChatOutputHandler.chatNotification(sender, "#" + t.id + ": " + t.creator + " - " + t.category + " - " + t.message);
+                    ChatUtil.chatNotification(sender, "#" + t.id + ": " + t.creator + " - " + t.category + " - " + t.message);
                 }
                 catch (Exception e)
                 {
                     break;
                 }
             }
-            ChatOutputHandler.chatNotification(sender, c + Translator.format("--- Page %1$d of %2$d ---", page + 1, pages + 1));
+            ChatUtil.chatNotification(sender, c + Translator.format("--- Page %1$d of %2$d ---", page + 1, pages + 1));
             return;
         }
 
@@ -121,13 +121,13 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             msg = msg.substring(1);
             Ticket t = new Ticket(sender, args[1], msg);
             ModuleTickets.ticketList.add(t);
-            ChatOutputHandler.chatNotification(sender, c + Translator.format("Your ticket with ID %d has been posted.", t.id));
+            ChatUtil.chatNotification(sender, c + Translator.format("Your ticket with ID %d has been posted.", t.id));
 
             // notify any ticket-admins that are online
-            IChatComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", sender.getCommandSenderName()));
+            IChatComponent messageComponent = ChatUtil.notification(Translator.format("Player %s has filed a ticket.", sender.getCommandSenderName()));
                 if (!MinecraftServer.getServer().isServerStopped())
                     for (EntityPlayerMP player : Utils.getPlayerList())
-                        if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
+                        if (APIRegistry.perms.checkUserPermission(UserIdent.get(player), ModuleTickets.PERMBASE + ".admin"))
                             ChatUtil.sendMessage(player, messageComponent);
                 ChatUtil.sendMessage(MinecraftServer.getServer(), messageComponent);
             return;
@@ -149,12 +149,12 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             Ticket toRemove = ModuleTickets.getID(id);
             if (toRemove == null)
             {
-                ChatOutputHandler.chatError(sender, Translator.format("No such ticket with ID %d!", id));
+                ChatUtil.chatError(sender, Translator.format("No such ticket with ID %d!", id));
                 return;
             }
             ModuleTickets.ticketList.remove(toRemove);
             DataManager.getInstance().delete(Ticket.class, args[1]);
-            ChatOutputHandler.chatConfirmation(sender, c + Translator.format("Your ticket with ID %d has been removed.", id));
+            ChatUtil.chatConfirmation(sender, c + Translator.format("Your ticket with ID %d has been removed.", id));
         }
     }
 
@@ -175,12 +175,12 @@ public class CommandTicket extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, "list", "new", "view", "tp", "del");
+            return Utils.getListOfStringsMatchingLastWord(args, "list", "new", "view", "tp", "del");
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("new"))
         {
-            return getListOfStringsMatchingLastWord(args, ModuleTickets.categories);
+            return Utils.getListOfStringsMatchingLastWord(args, ModuleTickets.categories);
         }
 
         if (args.length == 2 && (args[0].equalsIgnoreCase("tp") || args[0].equalsIgnoreCase("del")))
@@ -190,7 +190,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             {
                 list.add("" + t.id);
             }
-            return getListOfStringsMatchingLastWord(args, list);
+            return Utils.getListOfStringsMatchingLastWord(args, list);
         }
         return null;
     }

@@ -22,13 +22,14 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.ScriptHandler;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.util.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.jscripting.command.CommandJScript;
 import com.forgeessentials.jscripting.wrapper.JsLocalStorage;
 import com.forgeessentials.jscripting.wrapper.ScriptExtensionRoot;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
@@ -36,7 +37,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -48,8 +48,6 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public static final long CRON_CHECK_INTERVAL = 1000;
 
     public static final String COMMANDS_DIR = "commands/";
-
-    public static final String PERM = "fe.jscript";
 
     private static final ScriptEngineManager SEM = new ScriptEngineManager(null);
 
@@ -171,8 +169,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             catch (CommandException | IOException | ScriptException e)
             {
                 String scriptName = file.getName();
-                ChatOutputHandler.chatError(sender, String.format("FE Script error in %s:", scriptName));
-                ChatOutputHandler.chatError(sender, e.getMessage());
+                ChatUtil.chatError(sender, String.format("FE Script error in %s:", scriptName));
+                ChatUtil.chatError(sender, e.getMessage());
                 LoggingHandler.felog.error(String.format("FE Script error in %s: %s", scriptName, e.getMessage()));
             }
         }

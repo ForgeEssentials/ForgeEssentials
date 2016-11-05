@@ -4,9 +4,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.Translator;
 
 public class CommandFeReload extends ForgeEssentialsCommandBase
 {
@@ -56,7 +57,7 @@ public class CommandFeReload extends ForgeEssentialsCommandBase
     public static void reload(ICommandSender sender)
     {
         ModuleLauncher.instance.reloadConfigs();
-        ChatOutputHandler.chatConfirmation(sender, Translator.translate("Reloaded configs. (may not work for all settings)"));
+        ChatUtil.chatConfirmation(sender, Translator.translate("Reloaded configs. (may not work for all settings)"));
     }
 
 }

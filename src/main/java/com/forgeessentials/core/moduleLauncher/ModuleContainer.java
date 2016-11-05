@@ -8,7 +8,7 @@ import java.util.HashSet;
 
 import net.minecraft.command.ICommandSender;
 
-import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule.Container;
 import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
@@ -185,7 +185,7 @@ public class ModuleContainer implements Comparable
             return;
         }
 
-        APIRegistry.getFEEventBus().register(module);
+        FEApi.getFEEventBus().register(module);
 
         // now for the fields...
         try

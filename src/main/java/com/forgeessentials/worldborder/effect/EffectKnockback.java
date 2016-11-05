@@ -2,6 +2,7 @@ package com.forgeessentials.worldborder.effect;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.WorldUtil;
@@ -14,7 +15,7 @@ public class EffectKnockback extends WorldBorderEffect
 {
 
     @Override
-    public void provideArguments(FeCommandParserArgs args) throws CommandException
+    public void provideArguments(CommandParserArgs args) throws CommandException
     {
     }
 

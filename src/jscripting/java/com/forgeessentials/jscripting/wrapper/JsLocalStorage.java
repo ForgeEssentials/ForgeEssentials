@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.data.DataManager;
+import com.forgeessentials.util.data.DataUtils;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -26,7 +27,7 @@ public class JsLocalStorage
         Type mapType = new TypeToken<HashMap<String, String>>()
         {
         }.getType();
-        data = DataManager.load(mapType, new File(DataManager.getInstance().getBasePath(), "script_data.json"));
+        data = DataUtils.load(mapType, new File(DataManager.getInstance().getBasePath(), "script_data.json"));
         if (data == null)
             data = new HashMap<>();
     }
@@ -36,7 +37,7 @@ public class JsLocalStorage
      */
     public static void save()
     {
-        DataManager.save(data, new File(DataManager.getInstance().getBasePath(), "script_data.json"));
+        DataUtils.save(data, new File(DataManager.getInstance().getBasePath(), "script_data.json"));
     }
 
     /**
@@ -70,7 +71,7 @@ public class JsLocalStorage
      */
     public static String setItem(String key, Object value)
     {
-        String valueStr = value instanceof String ? (String) value : DataManager.toJson(value);
+        String valueStr = value instanceof String ? (String) value : DataUtils.toJson(value);
         String oldData = data.put(key, valueStr);
         save(); // TODO: Always save?
         return oldData;

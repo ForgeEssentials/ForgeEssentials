@@ -9,12 +9,11 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.TranslatedCommandException;
 
 public class CommandWand extends ForgeEssentialsCommandBase
 {
@@ -30,8 +29,8 @@ public class CommandWand extends ForgeEssentialsCommandBase
     {
         if (ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
-            ChatOutputHandler.chatNotification(sender, "WorldEdit is installed. Please use WorldEdit selections (//wand, //set, etc)");
-            ChatOutputHandler.chatNotification(sender, "Please refer to http://wiki.sk89q.com/wiki/WorldEdit/Selection for more info.");
+            ChatUtil.chatNotification(sender, "WorldEdit is installed. Please use WorldEdit selections (//wand, //set, etc)");
+            ChatUtil.chatNotification(sender, "Please refer to http://wiki.sk89q.com/wiki/WorldEdit/Selection for more info.");
             return;
         }
 
@@ -77,7 +76,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
         info.setWandEnabled(true);
         info.setWandID(wandId);
         info.setWandDmg(wandDmg);
-        ChatOutputHandler.chatConfirmation(sender, "Wand bound to " + wandName);
+        ChatUtil.chatConfirmation(sender, "Wand bound to " + wandName);
     }
 
     @Override

@@ -14,10 +14,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.commons.CommandParserArgs;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.util.ItemUtil;
+import com.forgeessentials.util.TranslatedCommandException;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -71,7 +71,7 @@ public class CommandBind extends ParserCommandBase
 
     @Override
     @SuppressWarnings("unchecked")
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

@@ -6,11 +6,11 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 
@@ -58,7 +58,7 @@ public class CommandTPA extends ParserCommandBase
     }
 
     @Override
-    public void parse(final FeCommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

@@ -12,9 +12,10 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Utils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -71,14 +72,14 @@ public class CommandBurn extends ForgeEssentialsCommandBase
             if (args[0].toLowerCase().equals("me"))
             {
                 sender.setFire(15);
-                ChatOutputHandler.chatError(sender, "Ouch! Hot!");
+                ChatUtil.chatError(sender, "Ouch! Hot!");
             }
             else if (PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
-                    ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
+                    ChatUtil.chatConfirmation(sender, "You should feel bad about doing that.");
                     player.setFire(15);
                 }
                 else
@@ -90,7 +91,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
             if (args[0].toLowerCase().equals("me"))
             {
                 sender.setFire(parseInt(sender, args[1]));
-                ChatOutputHandler.chatError(sender, "Ouch! Hot!");
+                ChatUtil.chatError(sender, "Ouch! Hot!");
             }
             else if (PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
             {
@@ -98,7 +99,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
                 if (player != null)
                 {
                     player.setFire(parseIntWithMin(sender, args[1], 0));
-                    ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
+                    ChatUtil.chatConfirmation(sender, "You should feel bad about doing that.");
                 }
                 else
                     throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -122,7 +123,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
         if (player != null)
         {
             player.setFire(time);
-            ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
+            ChatUtil.chatConfirmation(sender, "You should feel bad about doing that.");
         }
         else
             throw new CommandException("Player %s does not exist, or is not online.", args[0]);
@@ -139,7 +140,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

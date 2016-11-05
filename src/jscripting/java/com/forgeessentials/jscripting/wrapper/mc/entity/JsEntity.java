@@ -8,9 +8,9 @@ import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsWorld;
+import com.forgeessentials.util.data.DataUtils;
 import com.forgeessentials.util.Utils;
 import com.google.common.base.Throwables;
 
@@ -188,7 +188,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
      */
     public String _getNbt()
     {
-        return DataManager.toJson(that.getEntityData());
+        return DataUtils.toJson(that.getEntityData());
     }
 
     /**
@@ -196,7 +196,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
      */
     public void _setNbt(String value)
     {
-        Utils.copyNbt(that.getEntityData(), DataManager.fromJson(value, NBTTagCompound.class));
+        Utils.copyNbt(that.getEntityData(), DataUtils.fromJson(value, NBTTagCompound.class));
     }
 
     public String getEntityType()

@@ -13,16 +13,18 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteSession;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet7Remote;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
 import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
+import com.forgeessentials.util.Utils;
 
 public class CommandRemote extends ForgeEssentialsCommandBase
 {
@@ -45,11 +47,11 @@ public class CommandRemote extends ForgeEssentialsCommandBase
     /**
      * @param args
      */
-    public void parse(FeCommandParserArgs args)
+    public void parse(CommandParserArgs args)
     {
         if (args.isTabCompletion && args.size() == 1)
         {
-            args.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseMainArgs);
+            args.tabCompletion = Utils.getListOfStringsMatchingLastWord(args.peek(), parseMainArgs);
             return;
         }
         if (args.isEmpty())
@@ -181,7 +183,7 @@ public class CommandRemote extends ForgeEssentialsCommandBase
      * @param args
      * @param ident
      */
-    public void showPasskey(FeCommandParserArgs args, UserIdent ident, boolean hideKey)
+    public void showPasskey(CommandParserArgs args, UserIdent ident, boolean hideKey)
     {
         String passkey = ModuleRemote.getInstance().getPasskey(ident);
         if (hideKey && !ident.hasPlayer())

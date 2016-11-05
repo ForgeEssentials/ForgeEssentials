@@ -1,6 +1,6 @@
 package com.forgeessentials.util.questioner;
 
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.TranslatedCommandException;
 
 public class QuestionerStillActiveException extends Exception
 {

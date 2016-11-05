@@ -6,8 +6,8 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.WorldSettings.GameType;
 
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.jscripting.fewrapper.fe.JsPoint;
-import com.forgeessentials.jscripting.fewrapper.fe.JsWorldPoint;
+import com.forgeessentials.jscripting.wrapper.mc.JsPoint;
+import com.forgeessentials.jscripting.wrapper.mc.JsWorldPoint;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsInventory;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsInventoryPlayer;

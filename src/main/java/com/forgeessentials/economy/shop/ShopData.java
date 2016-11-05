@@ -16,8 +16,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.ItemUtil;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.Utils;
 import com.google.gson.annotations.Expose;
 

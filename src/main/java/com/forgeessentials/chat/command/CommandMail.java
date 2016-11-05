@@ -7,14 +7,13 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.Mailer;
 import com.forgeessentials.chat.Mailer.Mail;
 import com.forgeessentials.chat.Mailer.Mails;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.FeCommandParserArgs;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 
 public class CommandMail extends ParserCommandBase
 {
@@ -50,7 +49,7 @@ public class CommandMail extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -110,9 +109,9 @@ public class CommandMail extends ParserCommandBase
 
     public static void readMail(ICommandSender sender, Mail mail)
     {
-        ChatOutputHandler.chatNotification(sender,
+        ChatUtil.chatNotification(sender,
                 Translator.format("Mail from %s on the %s", mail.sender.getUsernameOrUuid(), FEConfig.FORMAT_DATE_TIME.format(mail.timestamp)));
-        ChatOutputHandler.chatConfirmation(sender, ChatUtil.formatColors(mail.message));
+        ChatUtil.chatConfirmation(sender, ChatUtil.formatColors(mail.message));
     }
 
 }

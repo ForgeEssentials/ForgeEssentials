@@ -8,7 +8,7 @@ import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
 
 /**
  * Opens your enderchest.

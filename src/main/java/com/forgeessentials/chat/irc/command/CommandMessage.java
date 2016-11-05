@@ -9,7 +9,7 @@ import net.minecraft.util.IChatComponent;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.commons.CommandParserArgs;
 
 public class CommandMessage extends IrcCommandParser
 {
@@ -39,7 +39,7 @@ public class CommandMessage extends IrcCommandParser
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

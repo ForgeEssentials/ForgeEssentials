@@ -18,9 +18,9 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.TranslatedCommandException;
 
 public class CommandDrop extends ForgeEssentialsCommandBase
 {
@@ -213,7 +213,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
         {
             throw new TranslatedCommandException("Not enough room for items.");
         }
-        ChatOutputHandler.chatConfirmation(sender, "Items dropped into container.");
+        ChatUtil.chatConfirmation(sender, "Items dropped into container.");
     }
 
     private double func_82368_a(ICommandSender par1ICommandSender, double par2, String par4Str)

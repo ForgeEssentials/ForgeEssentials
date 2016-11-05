@@ -20,16 +20,19 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.world.WorldServer;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.DoAsCommandSender;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.Utils;
+import com.sun.tools.corba.se.idl.Util;
 
 import cpw.mods.fml.common.registry.GameData;
 
@@ -73,6 +76,30 @@ public class CommandParserArgs
     {
         if (!isTabCompletion)
             ChatUtil.sendMessage(sender, message);
+    }
+
+    public void confirm(String message, Object... args)
+    {
+        if (!isTabCompletion)
+            ChatUtil.chatConfirmation(sender, Translator.format(message, args));
+    }
+
+    public void notify(String message, Object... args)
+    {
+        if (!isTabCompletion)
+            ChatUtil.chatNotification(sender, Translator.format(message, args));
+    }
+
+    public void warn(String message, Object... args)
+    {
+        if (!isTabCompletion)
+            ChatUtil.chatWarning(sender, Translator.format(message, args));
+    }
+
+    public void error(String message, Object... args)
+    {
+        if (!isTabCompletion)
+            ChatUtil.chatError(sender, Translator.format(message, args));
     }
 
     public int size()
@@ -152,20 +179,67 @@ public class CommandParserArgs
         }
     }
 
-    public static List<String> completePlayer(String arg)
+    public WorldServer parseWorld()
+    {
+        if (isTabCompletion && size() == 1)
+        {
+            tabCompletion = Utils.getListOfStringsMatchingLastWord(args.peek(), FEApi.namedWorldHandler.getWorldNames());
+            throw new CancelParsingException();
+        }
+        if (isEmpty())
+        {
+            if (senderPlayer != null)
+                return (WorldServer) senderPlayer.worldObj;
+            else
+                throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
+        }
+        else
+        {
+            String name = remove();
+            if (name.equalsIgnoreCase("here"))
+            {
+                if (senderPlayer == null)
+                    throw new TranslatedCommandException("\"here\" cannot be used in console.");
+                return (WorldServer) senderPlayer.worldObj;
+            }
+            else
+            {
+                return FEApi.namedWorldHandler.getWorld(name);
+            }
+        }
+    }
+
+    public List<String> completePlayer(String arg)
     {
         Set<String> result = new TreeSet<>();
-        for (UserIdent knownPlayerIdent : APIRegistry.perms.getServerZone().getKnownPlayers())
-        {
-            if (CommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
-                result.add(knownPlayerIdent.getUsernameOrUuid());
-        }
         for (EntityPlayerMP player : Utils.getPlayerList())
         {
             if (CommandBase.doesStringStartWith(arg, player.getCommandSenderName()))
                 result.add(player.getCommandSenderName());
         }
         return new ArrayList<>(result);
+    }
+
+    public String parsePermission()
+    {
+        if (isTabCompletion && size() == 1)
+        {
+            tabCompletion = new ArrayList<>();
+            throw new CancelParsingException();
+        }
+        return remove();
+    }
+
+    public void checkPermission(String perm)
+    {
+        if (!isTabCompletion && sender != null && !hasPermission(perm))
+            throw new TranslatedCommandException(MessageConstants.MSG_NO_COMMAND_PERM);
+    }
+
+    public boolean hasPermission(String perm)
+    {
+        Utils.felog.warn("This should never be called! The subclass FECommandParserArgs should overwrite this.");
+        return false;
     }
 
     public Item parseItem()
@@ -207,7 +281,7 @@ public class CommandParserArgs
     {
         if (!isTabCompletion || args.size() != 1)
             return;
-        tabCompletion.addAll(ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList));
+        tabCompletion.addAll(Utils.getListOfStringsMatchingLastWord(args.peek(), completionList));
         throw new CancelParsingException();
     }
 
@@ -215,7 +289,7 @@ public class CommandParserArgs
     {
         if (!isTabCompletion || args.size() != 1)
             return;
-        tabCompletion.addAll(ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList));
+        tabCompletion.addAll(Utils.getListOfStringsMatchingLastWord(args.peek(), completionList));
         throw new CancelParsingException();
     }
 

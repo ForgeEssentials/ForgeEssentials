@@ -9,18 +9,17 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLoggerEventHandler;
 import com.forgeessentials.playerlogger.entity.Action;
 import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.FeCommandParserArgs;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.TaskRegistry;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 
@@ -92,7 +91,7 @@ public class CommandPlayerlogger extends ParserCommandBase
     }
 
     @Override
-    public void parse(final FeCommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -268,7 +267,7 @@ public class CommandPlayerlogger extends ParserCommandBase
         {
             TypedQuery<Long> qActionCount = logger.buildCountQuery(Action.class, null, null);
             long actionCount = qActionCount.getSingleResult();
-            ChatOutputHandler.chatConfirmation(sender, String.format("Logged action count: %s", actionCount));
+            ChatUtil.chatConfirmation(sender, String.format("Logged action count: %s", actionCount));
         }
     }
 

@@ -13,21 +13,11 @@ import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 
-import cpw.mods.fml.common.eventhandler.EventBus;
-
 /**
  * This is the central access point for all FE API functions
  */
 public class APIRegistry
 {
-
-    public static final ServerUserIdent IDENT_SERVER = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefefe", "$SERVER");
-
-    public static final ServerUserIdent IDENT_RCON = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefecc", "$RCON");
-
-    public static final ServerUserIdent IDENT_CMDBLOCK = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefecb", "$COMMANDBLOCK");
-
-    public static final NpcUserIdent IDENT_NPC = UserIdent.getNpc(null);
 
     /**
      * Use this to call API functions available in the economy module.
@@ -45,12 +35,6 @@ public class APIRegistry
     public static ScriptHandler scripts;
 
     /**
-     * Allows identifying worlds by name. If you change this handler, remember to call the old one in your
-     * implementation!
-     */
-    public static NamedWorldHandler namedWorldHandler = new NamedWorldHandler.DefaultNamedWorldHandler();
-
-    /**
      * This manager allows registering custom {@link RemoteHandler}s for remote-module. Please be careful to use unique
      * IDs when registering handlers.
      * 
@@ -58,16 +42,6 @@ public class APIRegistry
      */
     @Deprecated
     public static RemoteManager remoteManager = new RemoteManager.DefaultRemoteHandlerManager();
-
-    /**
-     * The FE internal event-bus
-     */
-    public static final EventBus FE_EVENTBUS = new EventBus();
-
-    public static EventBus getFEEventBus()
-    {
-        return FE_EVENTBUS;
-    }
 
     /**
      * Use this annotation to mark classes where static methods with other FE annotations might be.

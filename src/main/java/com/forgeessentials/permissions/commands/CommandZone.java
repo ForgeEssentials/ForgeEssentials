@@ -8,13 +8,14 @@ import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.ParserCommandBase;
 import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.selections.SelectionHandler;
 
@@ -66,7 +67,7 @@ public class CommandZone extends ParserCommandBase
     }
 
     @Override
-    public void parse(FeCommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -126,13 +127,13 @@ public class CommandZone extends ParserCommandBase
         return worldZone.getAreaZone(arg);
     }
 
-    public static void parseList(FeCommandParserArgs arguments)
+    public static void parseList(CommandParserArgs arguments)
     {
         if (arguments.isTabCompletion)
             return;
-        
+
         arguments.checkPermission(PERM_LIST);
-        
+
         final int PAGE_SIZE = 12;
         int limit = 1;
         if (!arguments.isEmpty())
@@ -149,7 +150,7 @@ public class CommandZone extends ParserCommandBase
         arguments.confirm("List of areas (page #" + limit + "):");
         limit *= PAGE_SIZE;
 
-        WorldZone worldZone = arguments.getWorldZone();
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(arguments.sender.getEntityWorld());
         if (worldZone == null)
         {
             for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
@@ -191,7 +192,7 @@ public class CommandZone extends ParserCommandBase
         }
     }
 
-    public static void parseDefine(FeCommandParserArgs arguments, boolean redefine)
+    public static void parseDefine(CommandParserArgs arguments, boolean redefine)
     {
         arguments.checkPermission(PERM_DEFINE);
         if (arguments.isEmpty())
@@ -200,7 +201,7 @@ public class CommandZone extends ParserCommandBase
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
 
-        WorldZone worldZone = arguments.getWorldZone();
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(arguments.sender.getEntityWorld());
         AreaZone area = getAreaZone(worldZone, areaName);
         if (!redefine && area != null)
             throw new TranslatedCommandException(String.format("Area \"%s\" already exists!", areaName));
@@ -218,12 +219,12 @@ public class CommandZone extends ParserCommandBase
 
         if (arguments.isTabCompletion)
             return;
-        
+
         AreaBase selection = SelectionHandler.getSelection(arguments.senderPlayer);
         if (selection == null)
             throw new TranslatedCommandException("No selection available. Please select a region first.");
 
-        arguments.permissionContext.setTargetStart(selection.getLowPoint().toVec3()).setTargetEnd(selection.getHighPoint().toVec3());
+        ((FeCommandParserArgs) arguments).permissionContext.setTargetStart(selection.getLowPoint().toVec3()).setTargetEnd(selection.getHighPoint().toVec3());
         arguments.checkPermission(PERM_DEFINE);
 
         if (redefine && area != null)
@@ -249,7 +250,7 @@ public class CommandZone extends ParserCommandBase
         }
     }
 
-    public static void parseDelete(FeCommandParserArgs arguments)
+    public static void parseDelete(CommandParserArgs arguments)
     {
         arguments.checkPermission(PERM_DELETE);
         if (arguments.isEmpty())
@@ -260,8 +261,8 @@ public class CommandZone extends ParserCommandBase
 
         if (arguments.isTabCompletion)
             return;
-        
-        WorldZone worldZone = arguments.getWorldZone();
+
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(arguments.sender.getEntityWorld());
         AreaZone areaZone = getAreaZone(worldZone, areaName);
         if (areaZone == null)
             throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
@@ -269,7 +270,7 @@ public class CommandZone extends ParserCommandBase
         arguments.confirm("Area \"%s\" has been deleted.", areaZone.getName());
     }
 
-    public static void parseSelect(FeCommandParserArgs arguments)
+    public static void parseSelect(CommandParserArgs arguments)
     {
         arguments.checkPermission(PERM_INFO);
         if (arguments.isEmpty())
@@ -280,8 +281,8 @@ public class CommandZone extends ParserCommandBase
 
         if (arguments.isTabCompletion)
             return;
-        
-        WorldZone worldZone = arguments.getWorldZone();
+
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(arguments.sender.getEntityWorld());
         AreaZone areaZone = getAreaZone(worldZone, areaName);
         if (areaZone == null)
             throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
@@ -291,7 +292,7 @@ public class CommandZone extends ParserCommandBase
         arguments.confirm("Area \"%s\" has been selected.", areaName);
     }
 
-    public static void parseInfo(FeCommandParserArgs arguments)
+    public static void parseInfo(CommandParserArgs arguments)
     {
         arguments.checkPermission(PERM_INFO);
         if (arguments.isEmpty())
@@ -299,11 +300,11 @@ public class CommandZone extends ParserCommandBase
 
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
-        
+
         if (arguments.isTabCompletion)
             return;
 
-        WorldZone worldZone = arguments.getWorldZone();
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(arguments.sender.getEntityWorld());
         AreaZone areaZone = getAreaZone(worldZone, areaName);
         if (areaZone == null)
             throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
@@ -314,7 +315,7 @@ public class CommandZone extends ParserCommandBase
         arguments.notify("  end   = " + area.getHighPoint().toString());
     }
 
-    public static void parseEntryExitMessage(FeCommandParserArgs arguments, boolean isEntry)
+    public static void parseEntryExitMessage(CommandParserArgs arguments, boolean isEntry)
     {
         arguments.checkPermission(PERM_SETTINGS);
         if (arguments.isEmpty())
@@ -323,7 +324,7 @@ public class CommandZone extends ParserCommandBase
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
 
-        WorldZone worldZone = arguments.getWorldZone();
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(arguments.sender.getEntityWorld());
         AreaZone areaZone = getAreaZone(worldZone, areaName);
         if (areaZone == null)
             throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
@@ -345,7 +346,7 @@ public class CommandZone extends ParserCommandBase
         areaZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE, msg);
     }
 
-    public static void tabCompleteArea(FeCommandParserArgs arguments)
+    public static void tabCompleteArea(CommandParserArgs arguments)
     {
         if (arguments.isTabCompletion && arguments.size() == 1)
         {

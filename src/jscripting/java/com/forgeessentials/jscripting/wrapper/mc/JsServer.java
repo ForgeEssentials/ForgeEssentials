@@ -11,11 +11,9 @@ import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.Utils;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 /**
  * @tsd.interface Server
@@ -114,7 +112,7 @@ public class JsServer
      */
     public void chatConfirm(String message)
     {
-        ChatUtil.broadcast(ChatOutputHandler.confirmation(message));
+        ChatUtil.broadcast(ChatUtil.confirmation(message));
     }
 
     /**
@@ -122,7 +120,7 @@ public class JsServer
      */
     public void chatNotification(String message)
     {
-        ChatUtil.broadcast(ChatOutputHandler.notification(message));
+        ChatUtil.broadcast(ChatUtil.notification(message));
     }
 
     /**
@@ -130,7 +128,7 @@ public class JsServer
      */
     public void chatError(String message)
     {
-        ChatUtil.broadcast(ChatOutputHandler.error(message));
+        ChatUtil.broadcast(ChatUtil.error(message));
     }
 
     /**
@@ -138,7 +136,7 @@ public class JsServer
      */
     public void chatWarning(String message)
     {
-        ChatUtil.broadcast(ChatOutputHandler.warning(message));
+        ChatUtil.broadcast(ChatUtil.warning(message));
     }
 
     /**
@@ -165,14 +163,6 @@ public class JsServer
     {
         MinecraftServer server = MinecraftServer.getServer();
         return server == null ? 0 : server.getCurrentPlayerCount();
-    }
-
-    /**
-     * Returns the total number of unique players that have connected to this server
-     */
-    public int getUniquePlayerCount()
-    {
-        return APIRegistry.perms.getServerZone().getKnownPlayers().size();
     }
 
 }

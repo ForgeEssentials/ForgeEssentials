@@ -41,16 +41,16 @@ import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 
-import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.command.CommandHelp;
 import com.forgeessentials.chat.irc.command.CommandListPlayers;
 import com.forgeessentials.chat.irc.command.CommandMessage;
 import com.forgeessentials.chat.irc.command.CommandReply;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -128,7 +128,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
         FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
-        APIRegistry.getFEEventBus().register(this);
+        FEApi.getFEEventBus().register(this);
 
         registerCommand(new CommandHelp());
         registerCommand(new CommandListPlayers());

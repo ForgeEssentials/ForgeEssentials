@@ -5,13 +5,12 @@ import java.util.UUID;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.DoAsCommandSender;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 /**
  *
@@ -55,7 +54,7 @@ public class JsICommandSender extends JsWrapper<ICommandSender>
     public JsICommandSender doAs(Object userIdOrPlayer, boolean hideChatOutput)
     {
         UserIdent doAsUser = userIdOrPlayer instanceof UUID ? UserIdent.get((UUID) userIdOrPlayer)
-                : userIdOrPlayer instanceof JsEntityPlayer ? UserIdent.get(((JsEntityPlayer) userIdOrPlayer).getThat()) : APIRegistry.IDENT_SERVER;
+                : userIdOrPlayer instanceof JsEntityPlayer ? UserIdent.get(((JsEntityPlayer) userIdOrPlayer).getThat()) : FEApi.IDENT_SERVER;
         DoAsCommandSender result = new DoAsCommandSender(doAsUser, that);
         result.setHideChatMessages(hideChatOutput);
         return new JsICommandSender(result);
@@ -68,22 +67,22 @@ public class JsICommandSender extends JsWrapper<ICommandSender>
 
     public void chatConfirm(String message)
     {
-        ChatOutputHandler.chatConfirmation(that, message);
+        ChatUtil.chatConfirmation(that, message);
     }
 
     public void chatNotification(String message)
     {
-        ChatOutputHandler.chatNotification(that, message);
+        ChatUtil.chatNotification(that, message);
     }
 
     public void chatError(String message)
     {
-        ChatOutputHandler.chatError(that, message);
+        ChatUtil.chatError(that, message);
     }
 
     public void chatWarning(String message)
     {
-        ChatOutputHandler.chatWarning(that, message);
+        ChatUtil.chatWarning(that, message);
     }
 
 }

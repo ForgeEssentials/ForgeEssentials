@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -40,19 +41,21 @@ import com.forgeessentials.core.mcstats.ConstantPlotter;
 import com.forgeessentials.core.mcstats.Metrics;
 import com.forgeessentials.core.mcstats.Metrics.Graph;
 import com.forgeessentials.core.misc.BlockModListFile;
-import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.FECommandManagerImpl;
+import com.forgeessentials.util.FECommandManager;
 import com.forgeessentials.core.misc.RespawnHandler;
-import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.preloader.FELaunchHandler;
-import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.data.DataManager;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.TaskRegistry;
+import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
@@ -163,6 +166,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         Environment.check();
         FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
+        FECommandManager.instance = new FECommandManagerImpl();
     }
 
     @Mod.EventHandler
@@ -192,7 +196,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         questioner = new Questioner();
         respawnHandler = new RespawnHandler();
         selectionHandler = new SelectionHandler();
-        APIRegistry.getFEEventBus().register(new CompatReiMinimap());
+        FEApi.getFEEventBus().register(new CompatReiMinimap());
 
         // Load submodules
         moduleLauncher = new ModuleLauncher();
@@ -222,13 +226,13 @@ public class ForgeEssentials extends ConfigLoaderBase
             LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
         }
 
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleInitEvent(e));
+        FEApi.getFEEventBus().post(new FEModuleEvent.FEModuleInitEvent(e));
     }
 
     @EventHandler
     public void postLoad(FMLPostInitializationEvent e)
     {
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModulePostInitEvent(e));
+        FEApi.getFEEventBus().post(new FEModuleEvent.FEModulePostInitEvent(e));
         commandManager = new FECommandManager();
     }
 
@@ -297,7 +301,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(Utils.getWorldPath(), "FEData/json")));
-        APIRegistry.getFEEventBus().post(new FEModuleServerPreInitEvent(e));
+        FEApi.getFEEventBus().post(new FEModuleServerPreInitEvent(e));
     }
 
     @EventHandler
@@ -312,13 +316,13 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         registerPermissions();
 
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerInitEvent(e));
+        FEApi.getFEEventBus().post(new FEModuleEvent.FEModuleServerInitEvent(e));
     }
 
     @EventHandler
     public void serverStarted(FMLServerStartedEvent e)
     {
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
+        FEApi.getFEEventBus().post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
 
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         // CommandSetChecker.remove();
@@ -342,7 +346,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent e)
     {
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStopEvent(e));
+        FEApi.getFEEventBus().post(new FEModuleEvent.FEModuleServerStopEvent(e));
         PlayerInfo.discardAll();
     }
 
@@ -350,7 +354,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     public void serverStopped(FMLServerStoppedEvent e)
     {
         mcStats.stop();
-        APIRegistry.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
+        FEApi.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
         FECommandManager.clearRegisteredCommands();
         Translator.save();
     }
@@ -402,8 +406,8 @@ public class ForgeEssentials extends ConfigLoaderBase
             }
 
             // Show version notification
-            if (BuildInfo.isOutdated() && UserIdent.get(player).checkPermission(PERM_VERSIONINFO))
-                ChatOutputHandler.chatWarning(player,
+            if (BuildInfo.isOutdated() && APIRegistry.perms.checkUserPermission(UserIdent.get(player), PERM_VERSIONINFO))
+                ChatUtil.chatWarning(player,
                         String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
                                 BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
         }

@@ -1,7 +1,7 @@
 package com.forgeessentials.jscripting.fewrapper.fe.world;
 
 import com.forgeessentials.commons.selections.AreaShape;
-import com.forgeessentials.jscripting.fewrapper.fe.JsPoint;
+import com.forgeessentials.jscripting.wrapper.mc.JsPoint;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.JsAreaBase;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsWorld;

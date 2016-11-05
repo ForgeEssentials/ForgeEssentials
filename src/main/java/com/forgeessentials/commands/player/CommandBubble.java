@@ -7,13 +7,15 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.Utils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -24,7 +26,7 @@ public class CommandBubble extends ForgeEssentialsCommandBase
 
     public CommandBubble()
     {
-        APIRegistry.getFEEventBus().register(this);
+        FEApi.getFEEventBus().register(this);
     }
 
     @Override
@@ -99,12 +101,12 @@ public class CommandBubble extends ForgeEssentialsCommandBase
         if (toggleOn)
         {
             APIRegistry.perms.getServerZone().groupIncludeAdd(Zone.GROUP_DEFAULT, BUBBLE_GROUP);
-            ChatOutputHandler.chatConfirmation(sender, "Activated bubble. Players are now unable to interact with the world.");
+            ChatUtil.chatConfirmation(sender, "Activated bubble. Players are now unable to interact with the world.");
         }
         else
         {
             APIRegistry.perms.getServerZone().groupIncludeRemove(Zone.GROUP_DEFAULT, BUBBLE_GROUP);
-            ChatOutputHandler.chatConfirmation(sender, "Deactivated bubble");
+            ChatUtil.chatConfirmation(sender, "Deactivated bubble");
         }
     }
 
@@ -113,7 +115,7 @@ public class CommandBubble extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, "on", "off");
+            return Utils.getListOfStringsMatchingLastWord(args, "on", "off");
         }
         return null;
     }
