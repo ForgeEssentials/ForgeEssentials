@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 
 import org.pircbotx.User;
 
-import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.ChatUtil;
 
 public class IrcCommandSender implements ICommandSender
 {
@@ -42,7 +42,7 @@ public class IrcCommandSender implements ICommandSender
     public void addChatMessage(IChatComponent chatComponent)
     {
         if (user.getBot().isConnected())
-            user.send().message(ChatOutputHandler.stripFormatting(chatComponent.getUnformattedText()));
+            user.send().message(ChatUtil.stripFormatting(chatComponent.getUnformattedText()));
     }
 
     @Override

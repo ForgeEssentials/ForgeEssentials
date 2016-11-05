@@ -3,8 +3,6 @@ package com.forgeessentials.jscripting.fewrapper.fe;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 import net.minecraftforge.permission.PermissionLevel;
 

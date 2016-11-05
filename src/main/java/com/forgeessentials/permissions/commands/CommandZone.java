@@ -8,12 +8,13 @@ import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.selections.SelectionHandler;
 
@@ -65,7 +66,7 @@ public class CommandZone extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -106,7 +107,7 @@ public class CommandZone extends ParserCommandBase
             parseEntryExitMessage(arguments, false);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
+            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, arg);
         }
     }
 
@@ -125,7 +126,7 @@ public class CommandZone extends ParserCommandBase
         return worldZone.getAreaZone(arg);
     }
 
-    public static void parseList(CommandParserArgs arguments)
+    public static void parseList(FeCommandParserArgs arguments)
     {
         if (arguments.isTabCompletion)
             return;
@@ -190,11 +191,11 @@ public class CommandZone extends ParserCommandBase
         }
     }
 
-    public static void parseDefine(CommandParserArgs arguments, boolean redefine)
+    public static void parseDefine(FeCommandParserArgs arguments, boolean redefine)
     {
         arguments.checkPermission(PERM_DEFINE);
         if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
 
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
@@ -248,11 +249,11 @@ public class CommandZone extends ParserCommandBase
         }
     }
 
-    public static void parseDelete(CommandParserArgs arguments)
+    public static void parseDelete(FeCommandParserArgs arguments)
     {
         arguments.checkPermission(PERM_DELETE);
         if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
 
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
@@ -268,11 +269,11 @@ public class CommandZone extends ParserCommandBase
         arguments.confirm("Area \"%s\" has been deleted.", areaZone.getName());
     }
 
-    public static void parseSelect(CommandParserArgs arguments)
+    public static void parseSelect(FeCommandParserArgs arguments)
     {
         arguments.checkPermission(PERM_INFO);
         if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
 
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
@@ -290,11 +291,11 @@ public class CommandZone extends ParserCommandBase
         arguments.confirm("Area \"%s\" has been selected.", areaName);
     }
 
-    public static void parseInfo(CommandParserArgs arguments)
+    public static void parseInfo(FeCommandParserArgs arguments)
     {
         arguments.checkPermission(PERM_INFO);
         if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
 
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
@@ -313,11 +314,11 @@ public class CommandZone extends ParserCommandBase
         arguments.notify("  end   = " + area.getHighPoint().toString());
     }
 
-    public static void parseEntryExitMessage(CommandParserArgs arguments, boolean isEntry)
+    public static void parseEntryExitMessage(FeCommandParserArgs arguments, boolean isEntry)
     {
         arguments.checkPermission(PERM_SETTINGS);
         if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
 
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
@@ -344,7 +345,7 @@ public class CommandZone extends ParserCommandBase
         areaZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE, msg);
     }
 
-    public static void tabCompleteArea(CommandParserArgs arguments)
+    public static void tabCompleteArea(FeCommandParserArgs arguments)
     {
         if (arguments.isTabCompletion && arguments.size() == 1)
         {
@@ -358,7 +359,7 @@ public class CommandZone extends ParserCommandBase
                         arguments.tabCompleteWord(Integer.toString(z.getId()));
                 }
             }
-            throw new CommandParserArgs.CancelParsingException();
+            throw new FeCommandParserArgs.CancelParsingException();
         }
     }
 

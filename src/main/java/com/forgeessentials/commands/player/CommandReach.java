@@ -8,7 +8,7 @@ import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet2Reach;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 
 public class CommandReach extends ParserCommandBase
@@ -51,7 +51,7 @@ public class CommandReach extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

@@ -53,6 +53,7 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -235,7 +236,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     private void initConfiguration()
     {
-        configDirectory = new File(ServerUtil.getBaseDir(), "/ForgeEssentials");
+        configDirectory = new File(Utils.getBaseDir(), "/ForgeEssentials");
         configManager = new ConfigManager(configDirectory, "main");
         configManager.registerLoader(configManager.getMainConfigName(), this);
         configManager.registerLoader(configManager.getMainConfigName(), new FEConfig());
@@ -295,7 +296,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
         // Initialize data manager once server begins to start
-        DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
+        DataManager.setInstance(new DataManager(new File(Utils.getWorldPath(), "FEData/json")));
         APIRegistry.getFEEventBus().post(new FEModuleServerPreInitEvent(e));
     }
 

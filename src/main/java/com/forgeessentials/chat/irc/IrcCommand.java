@@ -5,7 +5,7 @@ import java.util.Collection;
 import net.minecraft.command.ICommandSender;
 
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public interface IrcCommand
@@ -26,7 +26,7 @@ public interface IrcCommand
     public static abstract class IrcCommandParser implements IrcCommand
     {
 
-        public static class IrcCommandParserArgs extends CommandParserArgs
+        public static class IrcCommandParserArgs extends FeCommandParserArgs
         {
 
             public final IrcCommand ircCommand;
@@ -61,11 +61,11 @@ public interface IrcCommand
         @Override
         public void processCommand(ICommandSender sender, String[] args)
         {
-            CommandParserArgs arguments = new IrcCommandParserArgs(null, args, sender);
+            FeCommandParserArgs arguments = new IrcCommandParserArgs(null, args, sender);
             parse(arguments);
         }
 
-        public abstract void parse(CommandParserArgs arguments);
+        public abstract void parse(FeCommandParserArgs arguments);
 
     }
 

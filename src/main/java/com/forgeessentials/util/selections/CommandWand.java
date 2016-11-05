@@ -8,10 +8,11 @@ import net.minecraft.item.Item;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -63,14 +64,14 @@ public class CommandWand extends ForgeEssentialsCommandBase
         // Check for unbind
         if (!rebind && ((info.isWandEnabled() && info.getWandID().equals(wandId)) | (args.length > 0 && args[0].equalsIgnoreCase("unbind"))))
         {
-            ChatOutputHandler.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
+            ChatUtil.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
             info.setWandEnabled(false);
             return;
         }
 
         // Check for permissions
         if (!checkCommandPermission(sender))
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(MessageConstants.MSG_NO_COMMAND_PERM);
 
         // Bind wand
         info.setWandEnabled(true);

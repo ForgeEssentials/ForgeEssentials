@@ -19,7 +19,7 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
@@ -90,14 +90,14 @@ public class ModuleAuth extends ConfigLoaderBase
 
     public static boolean isEnabled()
     {
-        return forceEnabled || checkVanillaAuthStatus && !ServerUtil.isOnlineMode();
+        return forceEnabled || checkVanillaAuthStatus && !Utils.isOnlineMode();
     }
 
     public static void checkMojangStatus()
     {
         boolean lastEnabled = isEnabled();
         boolean lastOnline = isOnline;
-        isOnline = ServerUtil.getMojangServerStatus();
+        isOnline = Utils.getMojangServerStatus();
         if (lastOnline == isOnline)
             return;
 

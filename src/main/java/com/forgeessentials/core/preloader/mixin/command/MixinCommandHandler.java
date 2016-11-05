@@ -1,6 +1,7 @@
 package com.forgeessentials.core.preloader.mixin.command;
 
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
+
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -49,7 +50,7 @@ public class MixinCommandHandler
     )
     private String[] dropFirstArg(String[] args)
     {
-        return ServerUtil.dropFirst(args);
+        return Utils.dropFirst(args);
     }
 
     /**

@@ -12,15 +12,15 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.Kit;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
@@ -91,7 +91,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
         APIRegistry.perms.registerPermission(PERM_BYPASS_COOLDOWN, PermissionLevel.OP);
     }
 
-    public List<String> getAvailableKits(CommandParserArgs arguments)
+    public List<String> getAvailableKits(FeCommandParserArgs arguments)
     {
         List<String> availableKits = new ArrayList<>();
         for (Kit kit : kits.values())
@@ -101,7 +101,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -160,7 +160,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
             arguments.confirm("Deleted kit %s", kitName);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
+            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCommand);
         }
     }
 

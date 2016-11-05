@@ -17,7 +17,7 @@ import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 
@@ -71,7 +71,7 @@ public class CommandRollback extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs args)
+    public void parse(FeCommandParserArgs args)
     {
         if (args.isEmpty())
         {
@@ -113,7 +113,7 @@ public class CommandRollback extends ParserCommandBase
     }
 
     @SuppressWarnings("deprecation")
-    private void startRollback(CommandParserArgs args)
+    private void startRollback(FeCommandParserArgs args)
     {
         args.checkPermission(PERM_PREVIEW);
 
@@ -155,7 +155,7 @@ public class CommandRollback extends ParserCommandBase
         ChatOutputHandler.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
     }
 
-    private void stepRollback(CommandParserArgs args, int sec)
+    private void stepRollback(FeCommandParserArgs args, int sec)
     {
         args.checkPermission(PERM_PREVIEW);
 
@@ -174,7 +174,7 @@ public class CommandRollback extends ParserCommandBase
         ChatOutputHandler.chatConfirmation(args.sender, "Showing changes since " + FEConfig.FORMAT_DATE_TIME_SECONDS.format(rb.getTime()));
     }
 
-    private void confirmRollback(CommandParserArgs args)
+    private void confirmRollback(FeCommandParserArgs args)
     {
         args.checkPermission(PERM);
 
@@ -189,7 +189,7 @@ public class CommandRollback extends ParserCommandBase
         ChatOutputHandler.chatConfirmation(args.sender, "Successfully restored changes");
     }
 
-    private void cancelRollback(CommandParserArgs args)
+    private void cancelRollback(FeCommandParserArgs args)
     {
         RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
         if (rb == null)
@@ -199,7 +199,7 @@ public class CommandRollback extends ParserCommandBase
         ChatOutputHandler.chatConfirmation(args.sender, "Cancelled active rollback");
     }
 
-    private void playRollback(CommandParserArgs args)
+    private void playRollback(FeCommandParserArgs args)
     {
         args.checkPermission(PERM_PREVIEW);
 
@@ -232,7 +232,7 @@ public class CommandRollback extends ParserCommandBase
         }
     }
 
-    private void stopRollback(CommandParserArgs args)
+    private void stopRollback(FeCommandParserArgs args)
     {
         args.checkPermission(PERM_PREVIEW);
 

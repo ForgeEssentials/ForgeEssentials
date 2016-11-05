@@ -17,7 +17,14 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = ForgeEssentialsClient.MODID, name = "ForgeEssentials Client Addon", version = BuildInfo.BASE_VERSION, guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory", useMetadata = true, dependencies = BuildInfo.DEPENDENCIES)
+@Mod(
+        modid = ForgeEssentialsClient.MODID,
+        name = "ForgeEssentials Client Addon",
+        version = BuildInfo.BASE_VERSION,
+        guiFactory = "com.forgeessentials.client.gui.forge.FEGUIFactory",
+        useMetadata = true,
+        dependencies = BuildInfo.DEPENDENCIES
+)
 public class ForgeEssentialsClient
 {
     
@@ -28,7 +35,7 @@ public class ForgeEssentialsClient
     @SidedProxy(clientSide = "com.forgeessentials.client.core.ClientProxy", serverSide = "com.forgeessentials.client.core.CommonProxy")
     protected static CommonProxy proxy;
 
-    @Instance("ForgeEssentialsClient")
+    @Instance(ForgeEssentialsClient.MODID)
     protected static ForgeEssentialsClient instance;
 
     protected static boolean serverHasFE;

@@ -11,7 +11,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -60,7 +60,7 @@ public class CommandTestPlayerlogger extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (player == null)
             player = arguments.senderPlayer;

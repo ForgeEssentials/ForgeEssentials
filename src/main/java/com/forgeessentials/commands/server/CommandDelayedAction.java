@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandDelayedAction extends ParserCommandBase
@@ -48,7 +48,7 @@ public class CommandDelayedAction extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final FeCommandParserArgs arguments)
     {
         long time = arguments.parseTimeReadable();
         final String execute = StringUtils.join(arguments.args.iterator(), " ");

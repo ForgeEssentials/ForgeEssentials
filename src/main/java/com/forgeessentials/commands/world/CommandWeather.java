@@ -12,14 +12,14 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -142,7 +142,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
@@ -151,7 +151,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
         }
         if (arguments.senderPlayer == null)
         {
-            arguments.error(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            arguments.error(MessageConstants.MSG_NO_CONSOLE_COMMAND);
             return;
         }
 

@@ -13,7 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.jscripting.ScriptInstance;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 /**
@@ -105,7 +106,7 @@ public class JsServer
      */
     public void chat(String message)
     {
-        ChatOutputHandler.broadcast(message);
+        ChatUtil.broadcast(message);
     }
 
     /**
@@ -113,7 +114,7 @@ public class JsServer
      */
     public void chatConfirm(String message)
     {
-        ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(message));
+        ChatUtil.broadcast(ChatOutputHandler.confirmation(message));
     }
 
     /**
@@ -121,7 +122,7 @@ public class JsServer
      */
     public void chatNotification(String message)
     {
-        ChatOutputHandler.broadcast(ChatOutputHandler.notification(message));
+        ChatUtil.broadcast(ChatOutputHandler.notification(message));
     }
 
     /**
@@ -129,7 +130,7 @@ public class JsServer
      */
     public void chatError(String message)
     {
-        ChatOutputHandler.broadcast(ChatOutputHandler.error(message));
+        ChatUtil.broadcast(ChatOutputHandler.error(message));
     }
 
     /**
@@ -137,7 +138,7 @@ public class JsServer
      */
     public void chatWarning(String message)
     {
-        ChatOutputHandler.broadcast(ChatOutputHandler.warning(message));
+        ChatUtil.broadcast(ChatOutputHandler.warning(message));
     }
 
     /**
@@ -145,7 +146,7 @@ public class JsServer
      */
     public double getTps()
     {
-        return Math.min(20, ServerUtil.getTPS());
+        return Math.min(20, Utils.getTPS());
     }
 
     /**

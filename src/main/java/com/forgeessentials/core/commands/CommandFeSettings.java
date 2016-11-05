@@ -17,7 +17,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 
 public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
 {
@@ -86,7 +86,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 
 public class CommandDechant extends ParserCommandBase
 {
@@ -60,7 +60,7 @@ public class CommandDechant extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         ItemStack stack = arguments.senderPlayer.getCurrentEquippedItem();
         if (stack == null)

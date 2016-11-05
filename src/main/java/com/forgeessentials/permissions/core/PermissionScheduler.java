@@ -16,7 +16,8 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -146,9 +147,9 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
 
             schedule.state = desiredState;
             if (schedule.state && schedule.onMessage != null)
-                ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(schedule.onMessage));
+                ChatUtil.broadcast(ChatOutputHandler.confirmation(schedule.onMessage));
             if (!schedule.state && schedule.offMessage != null)
-                ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(schedule.offMessage));
+                ChatUtil.broadcast(ChatOutputHandler.confirmation(schedule.offMessage));
         }
     }
 
@@ -182,7 +183,7 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
     public void load(Configuration config, boolean isReload)
     {
         enabled = config.get("PermissionScheduler", "enabled", false, HELP).getBoolean();
-        if (ServerUtil.isServerRunning())
+        if (Utils.isServerRunning())
         {
             if (enabled)
             {

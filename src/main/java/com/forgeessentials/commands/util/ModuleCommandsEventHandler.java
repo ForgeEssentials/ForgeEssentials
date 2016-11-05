@@ -15,8 +15,9 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.player.CommandAFK;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEPlayerEvent.PlayerAFKEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -44,7 +45,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         {
             if (!pi.ident.hasPlayer())
                 continue;
-            Integer autoTime = ServerUtil.tryParseInt(pi.ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME));
+            Integer autoTime = Utils.tryParseInt(pi.ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME));
             if (autoTime != null && autoTime > 10)
                 if (pi.getInactiveTime() / 1000 > autoTime)
                     setAfk(pi.ident);
@@ -74,7 +75,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
 
         player.getPlayerMP().capabilities.disableDamage = true;
         if (player.checkPermission(CommandAFK.PERM_ANNOUNCE))
-            ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(Translator.format("Player %s is now AFK", player.getUsernameOrUuid())));
+            ChatUtil.broadcast(ChatOutputHandler.confirmation(Translator.format("Player %s is now AFK", player.getUsernameOrUuid())));
         else
             ChatOutputHandler.chatConfirmation(player.getPlayer(), Translator.translate("You are now AFK"));
 
@@ -100,7 +101,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         }
 
         if (player.checkPermission(CommandAFK.PERM_ANNOUNCE))
-            ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(Translator.format("Player %s is not AFK any more", player.getUsernameOrUuid())));
+            ChatUtil.broadcast(ChatOutputHandler.confirmation(Translator.format("Player %s is not AFK any more", player.getUsernameOrUuid())));
         else
             ChatOutputHandler.chatConfirmation(player.getPlayer(), Translator.translate("You are not AFK any more"));
 

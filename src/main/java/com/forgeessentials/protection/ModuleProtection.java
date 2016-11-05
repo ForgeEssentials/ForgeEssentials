@@ -57,7 +57,8 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
@@ -245,7 +246,7 @@ public class ModuleProtection
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
             {
-                String itemPerm = "." + ServerUtil.getItemPermission(item) + Zone.ALL_PERMS;
+                String itemPerm = "." + Utils.getItemPermission(item) + Zone.ALL_PERMS;
                 String itemName = getItemName(item);
                 APIRegistry.perms.registerPermission(PERM_USE + itemPerm, PermissionLevel.TRUE, "USE " + itemName);
                 APIRegistry.perms.registerPermission(PERM_CRAFT + itemPerm, PermissionLevel.TRUE, "CRAFT " + itemName);
@@ -296,7 +297,7 @@ public class ModuleProtection
             @Override
             public void run()
             {
-                for (EntityPlayerMP p : ServerUtil.getPlayerList())
+                for (EntityPlayerMP p : Utils.getPlayerList())
                     if (!APIRegistry.perms.checkPermission(p, PERM_NEEDSFOOD))
                         p.getFoodStats().addStats(20, 1.0F);
             }
@@ -330,7 +331,7 @@ public class ModuleProtection
         msg.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
         msg.getChatStyle().setColor(ChatOutputHandler.chatNotificationColor);
         msg.getChatStyle().setUnderlined(true);
-        ChatOutputHandler.sendMessage(player, msg);
+        ChatUtil.sendMessage(player, msg);
     }
 
     /* ------------------------------------------------------------ */
@@ -401,9 +402,9 @@ public class ModuleProtection
         {
             int dmg = stack.getItemDamage();
             if (!checkMeta || dmg == 0 || dmg == 32767)
-                return ServerUtil.getItemPermission(stack.getItem());
+                return Utils.getItemPermission(stack.getItem());
             else
-                return ServerUtil.getItemPermission(stack.getItem()) + "." + dmg;
+                return Utils.getItemPermission(stack.getItem()) + "." + dmg;
         }
         catch (Exception e)
         {

@@ -48,7 +48,8 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -308,7 +309,7 @@ public class ModuleBackup extends ConfigLoaderBase
         }
 
         // Prepare directory
-        URI baseUri = ServerUtil.getWorldPath().toURI();
+        URI baseUri = Utils.getWorldPath().toURI();
         File backupFile = getBackupFile(world);
         File backupDir = backupFile.getParentFile();
         if (!backupDir.exists())
@@ -520,10 +521,10 @@ public class ModuleBackup extends ConfigLoaderBase
     {
         IChatComponent messageComponent = ChatOutputHandler.notification(message);
         if (!MinecraftServer.getServer().isServerStopped())
-            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            for (EntityPlayerMP player : Utils.getPlayerList())
                 if (UserIdent.get(player).checkPermission(PERM_NOTIFY))
-                    ChatOutputHandler.sendMessage(player, messageComponent);
-        ChatOutputHandler.sendMessage(MinecraftServer.getServer(), messageComponent);
+                    ChatUtil.sendMessage(player, messageComponent);
+        ChatUtil.sendMessage(MinecraftServer.getServer(), messageComponent);
     }
 
 }

@@ -10,7 +10,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 
 public class CommandSetSpawn extends ForgeEssentialsCommandBase
 {
@@ -51,13 +51,13 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
+        PermissionCommandParser.parseGroupSpawn(new FeCommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
     }
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
+        FeCommandParserArgs arguments = new FeCommandParserArgs(this, args, sender, true);
         PermissionCommandParser.parseGroupSpawn(arguments, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
         return arguments.tabCompletion;
     }
@@ -65,7 +65,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBase
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        PermissionCommandParser.parseGroupSpawn(new CommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
+        PermissionCommandParser.parseGroupSpawn(new FeCommandParserArgs(this, args, sender), Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone());
     }
 
 }

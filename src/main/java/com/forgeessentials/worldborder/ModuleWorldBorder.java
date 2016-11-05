@@ -19,7 +19,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
@@ -165,7 +165,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     public void serverTickEvent(TickEvent.ServerTickEvent event)
     {
         // Tick effects
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (EntityPlayerMP player : Utils.getPlayerList())
         {
             WorldBorder border = getBorder(player.worldObj);
             if (border != null && border.isEnabled())

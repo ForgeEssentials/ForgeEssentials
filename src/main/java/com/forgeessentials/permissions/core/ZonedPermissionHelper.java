@@ -52,11 +52,11 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.protection.ModuleProtection;
+import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -454,8 +454,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             if (point != null && sender instanceof Entity && new WorldPoint((Entity) sender).distance(point) > 32)
                 continue;
-            ChatOutputHandler.sendMessage(sender, msg1);
-            ChatOutputHandler.sendMessage(sender, msg2);
+            ChatUtil.sendMessage(sender, msg1);
+            ChatUtil.sendMessage(sender, msg2);
         }
     }
 
@@ -576,12 +576,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         String exitMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.beforeZone, FEPermissions.ZONE_EXIT_MESSAGE);
         if (exitMsg != null)
         {
-            ChatOutputHandler.sendMessage(event.entityPlayer, ChatOutputHandler.formatColors(exitMsg));
+            ChatUtil.sendMessage(event.entityPlayer, ChatUtil.formatColors(exitMsg));
         }
         String entryMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, FEPermissions.ZONE_ENTRY_MESSAGE);
         if (entryMsg != null)
         {
-            ChatOutputHandler.sendMessage(event.entityPlayer, ChatOutputHandler.formatColors(entryMsg));
+            ChatUtil.sendMessage(event.entityPlayer, ChatUtil.formatColors(entryMsg));
         }
     }
 

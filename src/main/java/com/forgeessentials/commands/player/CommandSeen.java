@@ -8,12 +8,12 @@ import net.minecraft.command.PlayerNotFoundException;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -59,14 +59,14 @@ public class CommandSeen extends ForgeEssentialsCommandBase
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender);
+        FeCommandParserArgs arguments = new FeCommandParserArgs(this, args, sender);
         parse(arguments);
     }
 
     @Override
     public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
     {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
+        FeCommandParserArgs arguments = new FeCommandParserArgs(this, args, sender, true);
         try
         {
             parse(arguments);
@@ -78,10 +78,10 @@ public class CommandSeen extends ForgeEssentialsCommandBase
         return arguments.tabCompletion;
     }
 
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
 
         UserIdent player = arguments.parsePlayer(false, false);
 

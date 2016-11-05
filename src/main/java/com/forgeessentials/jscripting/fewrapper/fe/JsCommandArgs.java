@@ -10,9 +10,9 @@ import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsItem;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsWorldServer;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 
-public class JsCommandArgs extends JsWrapper<CommandParserArgs>
+public class JsCommandArgs extends JsWrapper<FeCommandParserArgs>
 {
 
     public final JsICommandSender sender;
@@ -23,7 +23,7 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
 
     public final boolean isTabCompletion;
 
-    public JsCommandArgs(CommandParserArgs that)
+    public JsCommandArgs(FeCommandParserArgs that)
     {
         super(that);
         this.sender = JsICommandSender.get(that.sender);
@@ -211,10 +211,5 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
     // {
     // return that.getWorldZone();
     // }
-
-    public void needsPlayer()
-    {
-        that.needsPlayer();
-    }
 
 }

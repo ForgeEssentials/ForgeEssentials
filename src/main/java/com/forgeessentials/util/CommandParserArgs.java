@@ -29,6 +29,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.WorldZone;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -75,13 +76,13 @@ public class CommandParserArgs
     public void sendMessage(String message)
     {
         if (!isTabCompletion)
-            ChatOutputHandler.sendMessage(sender, message);
+            ChatUtil.sendMessage(sender, message);
     }
 
     public void sendMessage(IChatComponent message)
     {
         if (!isTabCompletion)
-            ChatOutputHandler.sendMessage(sender, message);
+            ChatUtil.sendMessage(sender, message);
     }
 
     public void confirm(String message, Object... args)
@@ -162,7 +163,7 @@ public class CommandParserArgs
             if (ident != null)
                 return ident;
             else
-                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
         }
         else
         {
@@ -193,7 +194,7 @@ public class CommandParserArgs
             if (CommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
                 result.add(knownPlayerIdent.getUsernameOrUuid());
         }
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (EntityPlayerMP player : Utils.getPlayerList())
         {
             if (CommandBase.doesStringStartWith(arg, player.getCommandSenderName()))
                 result.add(player.getCommandSenderName());
@@ -260,7 +261,7 @@ public class CommandParserArgs
     public void checkPermission(String perm)
     {
         if (!isTabCompletion && sender != null && !hasPermission(perm))
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(MessageConstants.MSG_NO_COMMAND_PERM);
     }
 
     public boolean hasPermission(String perm)
@@ -304,7 +305,7 @@ public class CommandParserArgs
             if (senderPlayer != null)
                 return (WorldServer) senderPlayer.worldObj;
             else
-                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
         }
         else
         {
@@ -392,7 +393,7 @@ public class CommandParserArgs
         case "enabled":
             return true;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_ARGUMENT, value);
+            throw new TranslatedCommandException(MessageConstants.MSG_INVALID_ARGUMENT, value);
         }
     }
 
@@ -479,7 +480,7 @@ public class CommandParserArgs
     public void requirePlayer()
     {
         if (senderPlayer == null)
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            throw new TranslatedCommandException(MessageConstants.MSG_NO_CONSOLE_COMMAND);
     }
 
     public String[] toArray()
@@ -509,7 +510,7 @@ public class CommandParserArgs
     public void needsPlayer()
     {
         if (senderPlayer == null)
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            throw new TranslatedCommandException(MessageConstants.MSG_NO_CONSOLE_COMMAND);
     }
 
 }

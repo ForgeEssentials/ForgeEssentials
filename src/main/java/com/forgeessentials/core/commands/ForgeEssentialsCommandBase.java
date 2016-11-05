@@ -20,7 +20,7 @@ import net.minecraftforge.permission.PermissionObject;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -106,7 +106,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
     public boolean canCommandSenderUseCommand(ICommandSender sender)
     {
         if (!(sender instanceof EntityPlayer) && !canConsoleUseCommand())
-            return canCommandSenderUseCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            return canCommandSenderUseCommandException(MessageConstants.MSG_NO_CONSOLE_COMMAND);
         if (!checkCommandPermission(sender))
             return false;
         return true;

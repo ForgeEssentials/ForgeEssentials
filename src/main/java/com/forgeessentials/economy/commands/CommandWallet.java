@@ -6,13 +6,13 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.Utils;
 
 public class CommandWallet extends ParserCommandBase
 {
@@ -59,12 +59,12 @@ public class CommandWallet extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {
             if (!arguments.hasPlayer())
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+                throw new TranslatedCommandException(MessageConstants.MSG_NO_CONSOLE_COMMAND);
             arguments.confirm(Translator.format("Your wallet contains %s", APIRegistry.economy.getWallet(arguments.ident).toString()));
             return;
         }
@@ -87,7 +87,7 @@ public class CommandWallet extends ParserCommandBase
 
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing value");
-        Long amount = ServerUtil.tryParseLong(arguments.remove());
+        Long amount = Utils.tryParseLong(arguments.remove());
         if (amount == null)
             throw new TranslatedCommandException("Invalid number");
 
@@ -110,7 +110,7 @@ public class CommandWallet extends ParserCommandBase
                     APIRegistry.economy.toString(amount), player.getUsernameOrUuid(), wallet.toString()));
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
+            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCommand);
         }
     }
 

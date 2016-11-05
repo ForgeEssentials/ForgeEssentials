@@ -14,7 +14,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandPromote extends ParserCommandBase
@@ -53,7 +53,7 @@ public class CommandPromote extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(FeCommandParserArgs arguments)
     {
         if (arguments.isEmpty())
         {

@@ -2,7 +2,7 @@ package com.forgeessentials.worldborder;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 
@@ -25,7 +25,7 @@ public abstract class WorldBorderEffect
         return triggerDistance;
     }
 
-    public abstract void provideArguments(CommandParserArgs args) throws CommandException;
+    public abstract void provideArguments(FeCommandParserArgs args) throws CommandException;
 
     public abstract String getSyntax();
 

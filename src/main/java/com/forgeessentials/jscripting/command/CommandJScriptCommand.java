@@ -12,7 +12,7 @@ import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.fewrapper.fe.JsCommandArgs;
 import com.forgeessentials.jscripting.fewrapper.fe.JsCommandOptions;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.google.common.base.Preconditions;
 
 public class CommandJScriptCommand extends ParserCommandBase
@@ -67,7 +67,7 @@ public class CommandJScriptCommand extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public void parse(FeCommandParserArgs arguments) throws CommandException
     {
         try
         {

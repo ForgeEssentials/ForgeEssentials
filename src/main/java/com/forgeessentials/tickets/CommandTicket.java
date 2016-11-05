@@ -19,7 +19,8 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandTicket extends ForgeEssentialsCommandBase
@@ -125,10 +126,10 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             // notify any ticket-admins that are online
             IChatComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", sender.getCommandSenderName()));
                 if (!MinecraftServer.getServer().isServerStopped())
-                    for (EntityPlayerMP player : ServerUtil.getPlayerList())
+                    for (EntityPlayerMP player : Utils.getPlayerList())
                         if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
-                            ChatOutputHandler.sendMessage(player, messageComponent);
-                ChatOutputHandler.sendMessage(MinecraftServer.getServer(), messageComponent);
+                            ChatUtil.sendMessage(player, messageComponent);
+                ChatUtil.sendMessage(MinecraftServer.getServer(), messageComponent);
             return;
         }
 

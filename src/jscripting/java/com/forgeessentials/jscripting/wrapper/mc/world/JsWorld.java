@@ -3,9 +3,7 @@ package com.forgeessentials.jscripting.wrapper.mc.world;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -17,10 +15,6 @@ import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityList;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayerList;
 import com.forgeessentials.jscripting.wrapper.mc.util.JsAxisAlignedBB;
-import com.forgeessentials.util.ServerUtil;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * @tsd.static World

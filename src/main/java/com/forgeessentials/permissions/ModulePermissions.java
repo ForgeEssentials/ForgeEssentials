@@ -31,7 +31,7 @@ import com.forgeessentials.permissions.persistence.SQLProvider;
 import com.forgeessentials.permissions.persistence.SingleFileProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
@@ -99,8 +99,8 @@ public class ModulePermissions extends ConfigLoaderBase
         // Backup FEData directory
         try
         {
-            File path = new File(ServerUtil.getWorldPath(), "FEData");
-            File backupPath = new File(ServerUtil.getWorldPath(), "FEData_backup");
+            File path = new File(Utils.getWorldPath(), "FEData");
+            File backupPath = new File(Utils.getWorldPath(), "FEData_backup");
             if (backupPath.exists())
                 FileUtils.deleteDirectory(backupPath);
             FileUtils.copyDirectory(path, backupPath);
