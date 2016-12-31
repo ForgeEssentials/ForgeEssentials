@@ -11,10 +11,10 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandPos extends ForgeEssentialsCommandBase
 {
@@ -53,7 +53,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
                     SelectionHandler.setEnd(player, new Point(x, y, z));
                 }
 
-                ChatUtil.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
+                ChatOutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
                 return;
 
             }
@@ -90,7 +90,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
                 SelectionHandler.setEnd(player, new Point(x, y, z));
             }
 
-            ChatUtil.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
+            ChatOutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
             return;
         }
 
@@ -116,7 +116,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
             SelectionHandler.setEnd(player, point);
         }
 
-        ChatUtil.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
+        ChatOutputHandler.chatConfirmation(player, "Pos" + type + " set to " + x + ", " + y + ", " + z);
         return;
     }
 

@@ -11,11 +11,10 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -73,7 +72,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
             if (player != null)
             {
                 player.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
-                ChatUtil.chatError(player, Translator.translate("You were killed. You probably deserved it."));
+                ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -81,7 +80,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
         else
         {
             sender.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
-            ChatUtil.chatError(sender, Translator.translate("You were killed. You probably deserved it."));
+            ChatOutputHandler.chatError(sender, Translator.translate("You were killed. You probably deserved it."));
         }
     }
 
@@ -94,7 +93,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
             if (player != null)
             {
                 player.attackEntityFrom(DamageSource.outOfWorld, Float.MAX_VALUE);
-                ChatUtil.chatError(player, Translator.translate("You were killed. You probably deserved it."));
+                ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -108,7 +107,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

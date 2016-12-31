@@ -3,10 +3,9 @@ package com.forgeessentials.worldborder.effect;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TranslatedCommandException;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;

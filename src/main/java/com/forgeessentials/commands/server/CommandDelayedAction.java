@@ -9,9 +9,9 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.util.ParserCommandBase;
-import com.forgeessentials.util.TaskRegistry;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandDelayedAction extends ParserCommandBase

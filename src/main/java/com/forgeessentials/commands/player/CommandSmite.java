@@ -11,11 +11,10 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -73,7 +72,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             if (args[0].toLowerCase().equals("me"))
             {
                 sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ));
-                ChatUtil.chatConfirmation(sender, "Was that really a good idea?");
+                ChatOutputHandler.chatConfirmation(sender, "Was that really a good idea?");
             }
             else
             {
@@ -81,7 +80,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
                 if (player != null)
                 {
                     player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
-                    ChatUtil.chatConfirmation(sender, "You should feel bad about doing that.");
+                    ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
                 }
                 else
                     throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -97,19 +96,19 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             int y = Integer.valueOf(args[1]);
             int z = Integer.valueOf(args[2]);
             sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, x, y, z));
-            ChatUtil.chatConfirmation(sender, "I hope that didn't start a fire.");
+            ChatOutputHandler.chatConfirmation(sender, "I hope that didn't start a fire.");
         }
         else
         {
             MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(sender, 500);
             if (mop == null)
             {
-                ChatUtil.chatError(sender, "You must first look at the ground!");
+                ChatOutputHandler.chatError(sender, "You must first look at the ground!");
             }
             else
             {
                 sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, mop.blockX, mop.blockY, mop.blockZ));
-                ChatUtil.chatConfirmation(sender, "I hope that didn't start a fire.");
+                ChatOutputHandler.chatConfirmation(sender, "I hope that didn't start a fire.");
             }
         }
     }
@@ -123,7 +122,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             if (player != null)
             {
                 player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ));
-                ChatUtil.chatConfirmation(sender, "You should feel bad about doing that.");
+                ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
             }
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -137,7 +136,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

@@ -5,9 +5,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.WorldUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandFly extends ForgeEssentialsCommandBase
 {
@@ -66,7 +66,7 @@ public class CommandFly extends ForgeEssentialsCommandBase
         if (!player.capabilities.allowFlying)
             WorldUtil.placeInWorld(player);
         player.sendPlayerAbilities();
-        ChatUtil.chatNotification(player, "Flying " + (player.capabilities.allowFlying ? "enabled" : "disabled"));
+        ChatOutputHandler.chatNotification(player, "Flying " + (player.capabilities.allowFlying ? "enabled" : "disabled"));
     }
 
 }

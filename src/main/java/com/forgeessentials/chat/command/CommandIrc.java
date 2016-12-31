@@ -7,8 +7,8 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 
 public class CommandIrc extends ForgeEssentialsCommandBase
 {

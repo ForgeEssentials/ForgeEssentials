@@ -9,11 +9,10 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -67,7 +66,7 @@ public class CommandLocate extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 
         WorldPoint point = new WorldPoint(player);
-        ChatUtil.chatConfirmation(sender, Translator.format("%s is at %d, %d, %d in dim %d with gamemode %s", //
+        ChatOutputHandler.chatConfirmation(sender, Translator.format("%s is at %d, %d, %d in dim %d with gamemode %s", //
                 player.getCommandSenderName(), point.getX(), point.getY(), point.getZ(), point.getDimension(), //
                 player.theItemInWorldManager.getGameType().getName()));
     }
@@ -77,7 +76,7 @@ public class CommandLocate extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

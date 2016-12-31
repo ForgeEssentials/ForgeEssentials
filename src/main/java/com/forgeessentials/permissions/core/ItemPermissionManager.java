@@ -16,7 +16,7 @@ import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.PermissionCheckEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
@@ -193,7 +193,7 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
     public void load(Configuration config, boolean isReload)
     {
         enabled = config.get("ItemPermissions", "enabled", false, HELP).getBoolean();
-        if (Utils.isServerRunning())
+        if (ServerUtil.isServerRunning())
         {
             if (enabled)
                 register();

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.forgeessentials.util.data.DataManager;
+import com.forgeessentials.data.v2.DataManager;
 
 public class PasswordManager
 {

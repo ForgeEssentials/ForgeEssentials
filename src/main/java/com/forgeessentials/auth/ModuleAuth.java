@@ -14,12 +14,12 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet6AuthLogin;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.FECommandManager;
+import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.util.TaskRegistry;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
@@ -90,14 +90,14 @@ public class ModuleAuth extends ConfigLoaderBase
 
     public static boolean isEnabled()
     {
-        return forceEnabled || checkVanillaAuthStatus && !Utils.isOnlineMode();
+        return forceEnabled || checkVanillaAuthStatus && !ServerUtil.isOnlineMode();
     }
 
     public static void checkMojangStatus()
     {
         boolean lastEnabled = isEnabled();
         boolean lastOnline = isOnline;
-        isOnline = Utils.getMojangServerStatus();
+        isOnline = ServerUtil.getMojangServerStatus();
         if (lastOnline == isOnline)
             return;
 

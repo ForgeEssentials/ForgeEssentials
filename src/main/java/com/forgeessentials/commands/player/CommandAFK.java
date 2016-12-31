@@ -7,11 +7,11 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.CommandFeSettings;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandAFK extends ForgeEssentialsCommandBase
 {
@@ -115,10 +115,10 @@ public class CommandAFK extends ForgeEssentialsCommandBase
         }
         else
         {
-            int autoTime = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, CommandAFK.PERM_AUTOTIME), 60 * 2);
-            int warmup = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_WARMUP), 0);
+            int autoTime = ServerUtil.parseIntDefault(ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME), 60 * 2);
+            int warmup = ServerUtil.parseIntDefault(ident.getPermissionProperty(PERM_WARMUP), 0);
             PlayerInfo.get(sender).setActive(autoTime * 1000 - warmup * 1000);
-            ChatUtil.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
         }
     }
 

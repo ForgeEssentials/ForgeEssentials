@@ -52,16 +52,16 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.FECommandManager;
+import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.TaskRegistry;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -245,7 +245,7 @@ public class ModuleProtection
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
             {
-                String itemPerm = "." + Utils.getItemPermission(item) + Zone.ALL_PERMS;
+                String itemPerm = "." + ServerUtil.getItemPermission(item) + Zone.ALL_PERMS;
                 String itemName = getItemName(item);
                 APIRegistry.perms.registerPermission(PERM_USE + itemPerm, PermissionLevel.TRUE, "USE " + itemName);
                 APIRegistry.perms.registerPermission(PERM_CRAFT + itemPerm, PermissionLevel.TRUE, "CRAFT " + itemName);
@@ -296,7 +296,7 @@ public class ModuleProtection
             @Override
             public void run()
             {
-                for (EntityPlayerMP p : Utils.getPlayerList())
+                for (EntityPlayerMP p : ServerUtil.getPlayerList())
                     if (!APIRegistry.perms.checkPermission(p, PERM_NEEDSFOOD))
                         p.getFoodStats().addStats(20, 1.0F);
             }
@@ -328,9 +328,9 @@ public class ModuleProtection
 
         ChatComponentTranslation msg = new ChatComponentTranslation(permission);
         msg.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
-        msg.getChatStyle().setColor(ChatUtil.chatNotificationColor);
+        msg.getChatStyle().setColor(ChatOutputHandler.chatNotificationColor);
         msg.getChatStyle().setUnderlined(true);
-        ChatUtil.sendMessage(player, msg);
+        ChatOutputHandler.sendMessage(player, msg);
     }
 
     /* ------------------------------------------------------------ */
@@ -401,9 +401,9 @@ public class ModuleProtection
         {
             int dmg = stack.getItemDamage();
             if (!checkMeta || dmg == 0 || dmg == 32767)
-                return Utils.getItemPermission(stack.getItem());
+                return ServerUtil.getItemPermission(stack.getItem());
             else
-                return Utils.getItemPermission(stack.getItem()) + "." + dmg;
+                return ServerUtil.getItemPermission(stack.getItem()) + "." + dmg;
         }
         catch (Exception e)
         {

@@ -2,7 +2,7 @@ package com.forgeessentials.worldborder;
 
 import java.lang.reflect.Type;
 
-import com.forgeessentials.util.data.DataUtils.DataType;
+import com.forgeessentials.data.v2.DataManager.DataType;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.forgeessentials.worldborder.effect.EffectMessage;
 import com.google.gson.JsonDeserializationContext;

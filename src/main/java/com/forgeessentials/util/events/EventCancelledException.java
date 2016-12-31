@@ -1,7 +1,6 @@
 package com.forgeessentials.util.events;
 
 import net.minecraftforge.common.MinecraftForge;
-
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventBus;
 

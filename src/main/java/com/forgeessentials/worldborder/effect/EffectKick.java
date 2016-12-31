@@ -3,12 +3,11 @@ package com.forgeessentials.worldborder.effect;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 import com.forgeessentials.worldborder.WorldBorder;
@@ -38,7 +37,7 @@ public class EffectKick extends WorldBorderEffect
             LoggingHandler.felog.warn("[WorldBorder] Kick effect is not supported on integrated servers!");
             return;
         }
-        ChatUtil.chatError(player, Translator.format("You have %d seconds to return inside the world border, or you will get kicked!", timeout));
+        ChatOutputHandler.chatError(player, Translator.format("You have %d seconds to return inside the world border, or you will get kicked!", timeout));
         PlayerInfo pi = PlayerInfo.get(player);
         pi.startTimeout(this.getClass().getName(), timeout * 1000);
     }

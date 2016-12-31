@@ -4,11 +4,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandProtectionDebug extends ParserCommandBase
 {
@@ -51,7 +51,7 @@ public class CommandProtectionDebug extends ParserCommandBase
 
         EntityPlayerMP player = arguments.senderPlayer;
         if (player == null)
-            throw new TranslatedCommandException(MessageConstants.MSG_NO_CONSOLE_COMMAND);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
 
         if (ModuleProtection.isDebugMode(player) && arguments.isEmpty())
         {

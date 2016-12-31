@@ -10,13 +10,13 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.permissions.core.ItemPermissionManager;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
-import com.forgeessentials.util.TranslatedCommandException;
 
 public class CommandItemPermission extends ParserCommandBase
 {
@@ -87,14 +87,14 @@ public class CommandItemPermission extends ParserCommandBase
             arguments.confirm("Deleted permission item settings");
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
     }
 
     public static void parseMode(CommandParserArgs arguments, ItemStack stack)
     {
         if (arguments.isEmpty())
-            throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
+            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
         arguments.tabComplete("inventory", "equip"); // , "use");
         String subCmd = arguments.remove().toLowerCase();
         if (arguments.isTabCompletion)
@@ -112,18 +112,18 @@ public class CommandItemPermission extends ParserCommandBase
             getOrCreatePermissionTag(stack).setByte(TAG_MODE, ItemPermissionManager.MODE_USE);
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
     }
 
     public static void parsePermission(CommandParserArgs arguments, ItemStack stack)
     {
         if (arguments.isEmpty())
-            throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
+            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
         String permission = arguments.parsePermission();
 
         if (arguments.isEmpty())
-            throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
+            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
         arguments.tabComplete(Zone.PERMISSION_TRUE, Zone.PERMISSION_FALSE);
         String value = arguments.remove();
 
@@ -136,7 +136,7 @@ public class CommandItemPermission extends ParserCommandBase
     public static void parseGroup(CommandParserArgs arguments, ItemStack stack)
     {
         if (arguments.isEmpty())
-            throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
+            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
 
         arguments.tabComplete(APIRegistry.perms.getServerZone().getGroups());
         String group = arguments.remove();

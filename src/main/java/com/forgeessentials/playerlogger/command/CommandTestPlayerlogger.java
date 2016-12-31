@@ -10,8 +10,8 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.util.CommandParserArgs;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;

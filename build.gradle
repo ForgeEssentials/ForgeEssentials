@@ -148,11 +148,8 @@ sourceSets {
 	utils {
 		compileClasspath = files(configurations.compile, sourceSets.api.output)
 	}
-    jscripting {
-        compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
-    }
 	main {
-		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output, sourceSets.jscripting.output)
+		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
 	}
 	client {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
@@ -225,7 +222,6 @@ jar {
 	
 	from sourceSets.main.output
 	from sourceSets.utils.output
-    from sourceSets.jscripting.output
     exclude('com/forgeessentials/client/**')
     from fileTree(serverLibArchive.archivePath)
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
@@ -273,35 +269,14 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 	
 	from sourceSets.main.output
 	from sourceSets.utils.output
-    from sourceSets.jscripting.output
-
-	from (sourceSets.main.allSource) {
+	
+	from (sourceSets.main.java) {
 		into ("src/")
 	}
 
 	manifest {
 		from serverManifest
 	}
-}
-
-/**
- * JScripting SDK only
- */
-
-task jscriptingJar(dependsOn: "jscriptingClasses", type: Jar) {
-    classifier = "jscripting"
-    appendix = minecraft.version
-
-    from sourceSets.jscripting.output
-    from sourceSets.utils.output
-
-    from (sourceSets.jscripting.allSource) {
-        into ("src/")
-    }
-
-    manifest {
-        from serverManifest
-    }
 }
 
 /************************************************************
@@ -365,7 +340,6 @@ reobf {
 artifacts {
 	archives deobfJar
 	archives clientJar
-    archives jscriptingJar
 }
 
 task wrapper(type: Wrapper) {
@@ -392,7 +366,6 @@ publishing {
 			artifact deobfJar
 			artifact sourceJar
 			artifact javadocJar
-            artifact jscriptingJar
 
 			pom.withXml {
 				def dependenciesNode = asNode().appendNode("dependencies")

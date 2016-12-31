@@ -9,15 +9,14 @@ import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commons.MessageConstants;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -74,7 +73,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
         {
             if (!PermissionManager.checkPermission(sender, TeleportModule.PERM_SPAWN_OTHERS))
             {
-                throw new TranslatedCommandException(MessageConstants.MSG_NO_COMMAND_PERM);
+                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
             }
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player == null)
@@ -98,7 +97,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
             }
 
             PlayerInfo.get(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-            ChatUtil.chatConfirmation(player, "Teleporting to spawn.");
+            ChatOutputHandler.chatConfirmation(player, "Teleporting to spawn.");
             TeleportHelper.teleport(player, point);
         }
     }
@@ -108,12 +107,12 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
     {
         if (args.length < 1)
         {
-            throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
+            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
         }
 
         if (!PermissionManager.checkPermission(sender, this, TeleportModule.PERM_SPAWN_OTHERS))
         {
-            throw new TranslatedCommandException(MessageConstants.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         }
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
@@ -135,7 +134,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

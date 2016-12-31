@@ -1,16 +1,16 @@
 package com.forgeessentials.util.questioner;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Iterator;
 
 import net.minecraft.command.ICommandSender;
 
-import com.forgeessentials.util.FECommandManager;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.Translator;
+import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -100,7 +100,7 @@ public class Questioner extends ServerEventHandler
         if (question != null)
             question.doAnswer(answer);
         else
-            ChatUtil.chatError(target, Translator.translate("There is no question to answer!"));
+            ChatOutputHandler.chatError(target, Translator.translate("There is no question to answer!"));
     }
 
     public static synchronized void tick()

@@ -11,13 +11,14 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.util.ParserCommandBase;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.CommandParserArgs.CancelParsingException;
+import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
@@ -91,16 +92,16 @@ public class CommandFaction extends ParserCommandBase
         {
             arguments.remove();
             if (arguments.isEmpty())
-                throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             arguments.tabComplete(ModuleFactions.getFactions());
             faction = arguments.remove();
             if (arguments.isEmpty())
-                throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             if (!ModuleFactions.isFaction(faction))
                 throw new TranslatedCommandException(MSG_UNKNOWN_FACTION, faction);
             if (!ModuleFactions.isInFaction(arguments.ident, faction))
                 if (!arguments.hasPermission(ModuleFactions.PERM_ADMIN))
-                    throw new TranslatedCommandException(MessageConstants.MSG_NO_COMMAND_PERM);
+                    throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         }
 
         if (arguments.hasPermission(ModuleFactions.PERM_INVITE))
@@ -156,7 +157,7 @@ public class CommandFaction extends ParserCommandBase
             parseDelete(arguments, faction);
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subcmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
         }
     }
 
@@ -198,7 +199,7 @@ public class CommandFaction extends ParserCommandBase
 
     public static void parseJoin(final CommandParserArgs arguments)
     {
-        arguments.requirePlayer();
+        arguments.needsPlayer();
         arguments.checkPermission(ModuleFactions.PERM_JOIN);
         if (arguments.isEmpty())
             subCommandHelp(arguments, "join <faction>: Request to join a faction");
@@ -239,10 +240,10 @@ public class CommandFaction extends ParserCommandBase
             }
         };
 
-        for (EntityPlayerMP player : Utils.getPlayerList())
+        for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
             UserIdent playerIdent = UserIdent.get(player);
-            if (ModuleFactions.isInFaction(playerIdent, faction) && APIRegistry.perms.checkUserPermission(playerIdent, ModuleFactions.PERM_INVITE))
+            if (ModuleFactions.isInFaction(playerIdent, faction) && playerIdent.checkPermission(ModuleFactions.PERM_INVITE))
             {
                 try
                 {
@@ -378,7 +379,7 @@ public class CommandFaction extends ParserCommandBase
                 for (Entry<UserIdent, Set<String>> player : APIRegistry.perms.getServerZone().getPlayerGroups().entrySet())
                 {
                     if (player.getValue().remove(factionGroup) && player.getKey().hasPlayer())
-                        ChatUtil.chatNotification(player.getKey().getPlayer(), Translator.format("Faction %s has been deleted", faction));
+                        ChatOutputHandler.chatNotification(player.getKey().getPlayer(), Translator.format("Faction %s has been deleted", faction));
                     for (Iterator<String> it = player.getValue().iterator(); it.hasNext();)
                         if (it.next().startsWith(ModuleFactions.RANK_PREFIX))
                             it.remove();
@@ -400,7 +401,7 @@ public class CommandFaction extends ParserCommandBase
     public static void subCommandHelp(CommandParserArgs arguments, String msg)
     {
         arguments.confirm("/faction " + msg);
-        throw new CommandParserArgs.CancelParsingException();
+        throw new CancelParsingException();
     }
 
 }

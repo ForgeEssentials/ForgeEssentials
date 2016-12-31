@@ -7,14 +7,14 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.FECommandManager;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.playerlogger.command.CommandPlayerlogger;
 import com.forgeessentials.playerlogger.command.CommandRollback;
 import com.forgeessentials.playerlogger.remote.serializer.BlockDataType;
 import com.forgeessentials.playerlogger.remote.serializer.PlayerDataType;
 import com.forgeessentials.playerlogger.remote.serializer.WorldDataType;
-import com.forgeessentials.util.data.DataUtils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
@@ -75,9 +75,9 @@ public class ModulePlayerLogger
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        DataUtils.addDataType(new WorldDataType());
-        DataUtils.addDataType(new PlayerDataType());
-        DataUtils.addDataType(new BlockDataType());
+        DataManager.addDataType(new WorldDataType());
+        DataManager.addDataType(new PlayerDataType());
+        DataManager.addDataType(new BlockDataType());
         
         logger = new PlayerLogger();
         eventHandler = new PlayerLoggerEventHandler();

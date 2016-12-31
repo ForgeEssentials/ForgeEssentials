@@ -9,14 +9,14 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.api.FEApi;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandMultiworldTeleport extends ParserCommandBase
 {
@@ -60,7 +60,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
             return;
         }
 
-        List<String> worldNames = FEApi.namedWorldHandler.getWorldNames();
+        List<String> worldNames = APIRegistry.namedWorldHandler.getWorldNames();
         worldNames.add(0, "list");
         arguments.tabComplete(worldNames);
         
@@ -89,7 +89,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
         }
 
         Multiworld multiworld = ModuleMultiworld.getMultiworldManager().getMultiworld(worldName);
-        WorldServer world = multiworld != null ? multiworld.getWorldServer() : FEApi.namedWorldHandler.getWorld(worldName);
+        WorldServer world = multiworld != null ? multiworld.getWorldServer() : APIRegistry.namedWorldHandler.getWorld(worldName);
         if (world == null)
             throw new TranslatedCommandException("Could not find world " + worldName);
         int dimId = world.provider.dimensionId;
@@ -121,7 +121,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
             msg += multiworld.getName();
         }
         msg = Translator.format(msg + " at [%.0f, %.0f, %.0f]", x, y, z);
-        ChatUtil.chatConfirmation(player, msg);
+        ChatOutputHandler.chatConfirmation(player, msg);
         Multiworld.teleport(player, world, x, y, z, false);
     }
 

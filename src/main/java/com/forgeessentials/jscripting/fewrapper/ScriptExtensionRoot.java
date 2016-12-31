@@ -7,10 +7,10 @@ import javax.script.ScriptException;
 
 import org.apache.commons.io.IOUtils;
 
-import com.forgeessentials.jscripting.ScriptCompiler;
 import com.forgeessentials.jscripting.ScriptExtension;
+import com.forgeessentials.jscripting.ScriptCompiler;
 import com.forgeessentials.jscripting.ScriptInstance;
-import com.forgeessentials.jscripting.wrapper.mc.JsAreaShape;
+import com.forgeessentials.jscripting.fewrapper.fe.JsAreaShape;
 import com.forgeessentials.jscripting.fewrapper.fe.JsFEServer;
 import com.forgeessentials.jscripting.fewrapper.fe.JsPermissions;
 import com.forgeessentials.jscripting.fewrapper.fe.JsZone;

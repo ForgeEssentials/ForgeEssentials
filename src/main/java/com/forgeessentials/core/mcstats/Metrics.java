@@ -51,7 +51,6 @@ import java.util.zip.GZIPOutputStream;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;

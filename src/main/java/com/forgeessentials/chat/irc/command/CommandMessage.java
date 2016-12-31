@@ -9,7 +9,7 @@ import net.minecraft.util.IChatComponent;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
-import com.forgeessentials.commons.CommandParserArgs;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandMessage extends IrcCommandParser
 {

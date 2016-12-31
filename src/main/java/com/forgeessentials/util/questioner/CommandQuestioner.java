@@ -3,7 +3,7 @@ package com.forgeessentials.util.questioner;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandQuestioner extends ForgeEssentialsCommandBase
 {

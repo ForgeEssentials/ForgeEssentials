@@ -48,13 +48,11 @@ import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.FECommandManager;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.Utils;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
@@ -211,16 +209,16 @@ public class ModuleChat
     {
         UserIdent ident = UserIdent.get(event.player);
 
-        if (!APIRegistry.perms.checkUserPermission(ident, PERM_CHAT))
+        if (!ident.checkPermission(PERM_CHAT))
         {
-            ChatUtil.chatWarning(event.player, "You don't have the permission to write in public chat.");
+            ChatOutputHandler.chatWarning(event.player, "You don't have the permission to write in public chat.");
             event.setCanceled(true);
             return;
         }
 
         if (PlayerUtil.getPersistedTag(event.player, false).getBoolean("mute"))
         {
-            ChatUtil.chatWarning(event.player, "You are currently muted.");
+            ChatOutputHandler.chatWarning(event.player, "You are currently muted.");
             event.setCanceled(true);
             return;
         }
@@ -240,12 +238,12 @@ public class ModuleChat
         IChatComponent header = getChatHeader(ident);
 
         // Apply colors
-        if (event.message.contains("&") && APIRegistry.perms.checkUserPermission(ident, PERM_COLOR))
-            message = ChatUtil.formatColors(message);
+        if (event.message.contains("&") && ident.checkPermission(PERM_COLOR))
+            message = ChatOutputHandler.formatColors(message);
 
         // Build message part with links
         IChatComponent messageComponent;
-        if (APIRegistry.perms.checkUserPermission(ident, PERM_URL))
+        if (ident.checkPermission(PERM_URL))
         {
             messageComponent = filterChatLinks(message);
         }
@@ -262,14 +260,14 @@ public class ModuleChat
         event.component = new ChatComponentTranslation("%s%s", header, messageComponent);
 
         // Handle chat range
-        Double range = Utils.tryParseDouble(APIRegistry.perms.getUserPermissionProperty(ident, PERM_RANGE));
+        Double range = ServerUtil.tryParseDouble(ident.getPermissionProperty(PERM_RANGE));
         if (range != null)
         {
             WorldPoint source = new WorldPoint(event.player);
-            for (EntityPlayerMP player : Utils.getPlayerList())
+            for (EntityPlayerMP player : ServerUtil.getPlayerList())
             {
                 if (player.dimension == source.getDimension() && source.distance(new WorldPoint(player)) <= range)
-                    ChatUtil.sendMessage(player, event.component);
+                    ChatOutputHandler.sendMessage(player, event.component);
             }
             event.setCanceled(true);
         }
@@ -291,7 +289,7 @@ public class ModuleChat
         IChatComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
         IChatComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
         IChatComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
-        IChatComponent header = new ChatComponentTranslation(ChatUtil.formatColors(ChatConfig.chatFormat), //
+        IChatComponent header = new ChatComponentTranslation(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
                 groupPrefix != null ? groupPrefix : "", //
                 playerPrefix != null ? playerPrefix : "", //
                 playerText, //
@@ -310,7 +308,7 @@ public class ModuleChat
             return;
         if (!ChatConfig.mutedCommands.contains(event.command.getCommandName()))
             return;
-        ChatUtil.chatWarning(event.sender, "You are currently muted.");
+        ChatOutputHandler.chatWarning(event.sender, "You are currently muted.");
         event.setCanceled(true);
     }
 
@@ -319,13 +317,13 @@ public class ModuleChat
         message = ScriptArguments.processSafe(message, sender);
         for (Entry<String, String> r : chatConstReplacements.entrySet())
             message = message.replaceAll("%" + r.getKey(), r.getValue());
-        message = ChatUtil.formatColors(message);
+        message = ChatOutputHandler.formatColors(message);
         return message;
     }
 
     public static IChatComponent clickChatComponent(String text, Action action, String uri)
     {
-        IChatComponent component = new ChatComponentText(ChatUtil.formatColors(text));
+        IChatComponent component = new ChatComponentText(ChatOutputHandler.formatColors(text));
         component.getChatStyle().setChatClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, uri));
         return component;
     }
@@ -410,7 +408,7 @@ public class ModuleChat
         if (!ChatConfig.welcomeMessage.isEmpty())
         {
             String message = processChatReplacements(event.getPlayer(), ChatConfig.welcomeMessage);
-            ChatUtil.broadcast(filterChatLinks(message));
+            ChatOutputHandler.broadcast(filterChatLinks(message));
         }
     }
 
@@ -426,7 +424,7 @@ public class ModuleChat
         for (String message : ChatConfig.loginMessage)
         {
             message = processChatReplacements(sender, message);
-            ChatUtil.sendMessage(sender, filterChatLinks(message));
+            ChatOutputHandler.sendMessage(sender, filterChatLinks(message));
         }
     }
 
@@ -504,8 +502,8 @@ public class ModuleChat
                 new Object[] { target.func_145748_c_(), message });
         sentMsg.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(Boolean.valueOf(true));
         senderMsg.getChatStyle().setColor(EnumChatFormatting.GRAY).setItalic(Boolean.valueOf(true));
-        ChatUtil.sendMessage(target, sentMsg);
-        ChatUtil.sendMessage(sender, senderMsg);
+        ChatOutputHandler.sendMessage(target, sentMsg);
+        ChatOutputHandler.sendMessage(sender, senderMsg);
         CommandReply.messageSent(sender, target);
         ModuleCommandsEventHandler.checkAfkMessage(target, message);
     }
@@ -537,12 +535,12 @@ public class ModuleChat
         msgBody.getChatStyle().setColor(EnumChatFormatting.GRAY);
         msg.appendSibling(msgBody);
 
-        for (EntityPlayerMP p : Utils.getPlayerList())
+        for (EntityPlayerMP p : ServerUtil.getPlayerList())
         {
             List<String> groups = GroupEntry.toList(sz.getPlayerGroups(UserIdent.get(p)));
             if (groups.contains(group))
             {
-                ChatUtil.sendMessage(p, msg);
+                ChatOutputHandler.sendMessage(p, msg);
             }
         }
     }

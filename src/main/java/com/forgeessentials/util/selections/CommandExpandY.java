@@ -6,9 +6,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandExpandY extends ForgeEssentialsCommandBase
 {
@@ -32,7 +32,7 @@ public class CommandExpandY extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException("Invalid selection.");
         SelectionHandler.setStart(player, sel.getStart().setY(0));
         SelectionHandler.setEnd(player, sel.getEnd().setY(MinecraftServer.getServer().getBuildLimit()));
-        ChatUtil.chatConfirmation(player, "Selection expanded from bottom to top.");
+        ChatOutputHandler.chatConfirmation(player, "Selection expanded from bottom to top.");
     }
 
     @Override

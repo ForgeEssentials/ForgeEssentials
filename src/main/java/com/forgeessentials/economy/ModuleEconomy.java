@@ -31,10 +31,12 @@ import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
-import com.forgeessentials.util.FECommandManager;
+import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
-import com.forgeessentials.util.data.DataManager;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
 import com.forgeessentials.economy.commands.CommandPay;
 import com.forgeessentials.economy.commands.CommandSell;
@@ -45,15 +47,13 @@ import com.forgeessentials.economy.commands.CommandWallet;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.economy.shop.ShopManager;
 import com.forgeessentials.protection.ProtectionEventHandler;
-import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.ItemUtil;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -172,7 +172,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public static void confirmNewWalletAmount(UserIdent ident, Wallet wallet)
     {
         if (ident.hasPlayer())
-            ChatUtil.chatConfirmation(ident.getPlayerMP(), Translator.format("You have now %s", wallet.toString()));
+            ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have now %s", wallet.toString()));
     }
 
     public static int tryRemoveItems(EntityPlayer player, ItemStack itemStack, int amount)
@@ -230,7 +230,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         if (e.entityPlayer instanceof EntityPlayerMP)
         {
             UserIdent ident = UserIdent.get(e.entityPlayer);
-            double xpMultiplier = Utils.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
+            double xpMultiplier = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
             if (xpMultiplier <= 0)
                 return;
             PlayerWallet wallet = getWallet(ident);
@@ -244,7 +244,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         if (e.entity instanceof EntityPlayerMP)
         {
             UserIdent ident = UserIdent.get((EntityPlayerMP) e.entity);
-            Long deathtoll = Utils.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
+            Long deathtoll = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
             if (deathtoll == null || deathtoll <= 0)
                 return;
             Wallet wallet = APIRegistry.economy.getWallet(ident);
@@ -259,20 +259,20 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             if (loss <= 0)
                 return;
             wallet.set(newAmount);
-            ChatUtil.chatNotification((ICommandSender) e.entity, Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
+            ChatOutputHandler.chatNotification((ICommandSender) e.entity, Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
         }
 
         if (e.source.getEntity() instanceof EntityPlayerMP)
         {
             UserIdent killer = UserIdent.get((EntityPlayerMP) e.source.getEntity());
             String permission = PERM_BOUNTY + "." + ProtectionEventHandler.getEntityName(e.entityLiving);
-            double bounty = Utils.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(killer, permission), 0);
+            double bounty = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(killer, permission), 0);
             if (bounty > 0)
             {
                 Wallet wallet = APIRegistry.economy.getWallet(killer);
                 wallet.add(bounty);
                 if (APIRegistry.perms.checkUserPermission(killer, PERM_BOUNTY_MESSAGE))
-                    ChatUtil.chatNotification(killer.getPlayer(),
+                    ChatOutputHandler.chatNotification(killer.getPlayer(),
                             Translator.format("You received %s as bounty", APIRegistry.economy.toString((long) bounty)));
             }
         }
@@ -289,7 +289,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         {
             String permission = PERM_COMMANDPRICE + '.' + event.command.getCommandName() + //
                     (i == 0 ? "" : ('.' + StringUtils.join(Arrays.copyOf(event.parameters, i), '.')));
-            Long price = Utils.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, permission));
+            Long price = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, permission));
             if (price == null)
                 continue;
 
@@ -310,7 +310,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         if (wallet == null)
             wallet = DataManager.getInstance().load(PlayerWallet.class, ident.getOrGenerateUuid().toString());
         if (wallet == null)
-            wallet = new PlayerWallet(Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_STARTBUDGET), 0));
+            wallet = new PlayerWallet(ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_STARTBUDGET), 0));
         wallets.put(ident, wallet);
         return wallet;
     }
@@ -339,7 +339,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     public static Long getItemPrice(ItemStack itemStack, UserIdent ident)
     {
-        return Utils.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, getItemPricePermission(itemStack)));
+        return ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, getItemPricePermission(itemStack)));
     }
 
     public static void setItemPrice(ItemStack itemStack, long price)

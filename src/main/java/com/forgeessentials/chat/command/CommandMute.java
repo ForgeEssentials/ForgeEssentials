@@ -7,12 +7,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerUtil;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -59,8 +58,8 @@ public class CommandMute extends ForgeEssentialsCommandBase
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 
             PlayerUtil.getPersistedTag(receiver, true).setBoolean("mute", true);
-            ChatUtil.chatError(sender, Translator.format("You muted %s.", args[0]));
-            ChatUtil.chatError(receiver, Translator.format("You were muted by %s.", sender.getCommandSenderName()));
+            ChatOutputHandler.chatError(sender, Translator.format("You muted %s.", args[0]));
+            ChatOutputHandler.chatError(receiver, Translator.format("You were muted by %s.", sender.getCommandSenderName()));
         }
     }
 
@@ -69,7 +68,7 @@ public class CommandMute extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

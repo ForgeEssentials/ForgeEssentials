@@ -4,11 +4,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.permission.PermissionLevel;
 
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.util.ParserCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandBiome extends ParserCommandBase
 {
@@ -96,7 +96,7 @@ public class CommandBiome extends ParserCommandBase
             arguments.notify("Not yet implemented");
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
     }
 

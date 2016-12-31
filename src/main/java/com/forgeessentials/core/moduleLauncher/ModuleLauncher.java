@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
-import com.forgeessentials.api.FEApi;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.events.ConfigReloadEvent;
@@ -125,7 +125,7 @@ public class ModuleLauncher
             }
         }
 
-        FEApi.getFEEventBus().post(new FEModulePreInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModulePreInitEvent(e));
 
         ForgeEssentials.getConfigManager().load(false);
     }
@@ -133,13 +133,13 @@ public class ModuleLauncher
     public void reloadConfigs()
     {
         ForgeEssentials.getConfigManager().load(true);
-        FEApi.getFEEventBus().post(new ConfigReloadEvent());
+        APIRegistry.getFEEventBus().post(new ConfigReloadEvent());
     }
 
     public void unregister(String moduleName)
     {
         ModuleContainer container = containerMap.get(moduleName);
-        FEApi.getFEEventBus().unregister(container.module);
+        APIRegistry.getFEEventBus().unregister(container.module);
         containerMap.remove(moduleName);
     }
 

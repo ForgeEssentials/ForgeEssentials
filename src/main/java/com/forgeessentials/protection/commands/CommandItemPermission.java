@@ -8,12 +8,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandItemPermission extends ParserCommandBase
 {
@@ -65,7 +65,7 @@ public class CommandItemPermission extends ParserCommandBase
         arguments.tabComplete(types);
         String type = arguments.remove().toLowerCase();
         if (!types.contains(type))
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, type);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, type);
 
         Boolean value;
         if (!arguments.isEmpty())
@@ -99,7 +99,7 @@ public class CommandItemPermission extends ParserCommandBase
             arguments.tabComplete("all", "*");
             String arg = arguments.remove();
             if (!arg.equalsIgnoreCase("all") && !arg.equalsIgnoreCase("*"))
-                throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, arg);
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
             permEnd = '.' + ModuleProtection.getItemPermission(stack, false) + ".*";
         }
         else

@@ -16,9 +16,8 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.HashMultimap;
 
 import cpw.mods.fml.common.Loader;
@@ -116,10 +115,10 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
 
         if (!key.equals("*"))
         {
-            ChatUtil.chatNotification(sender, EnumChatFormatting.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
+            ChatOutputHandler.chatNotification(sender, EnumChatFormatting.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
         }
 
-        ChatUtil.chatNotification(sender, "Dim " + world.provider.getDimensionName() + ":");
+        ChatOutputHandler.chatNotification(sender, "Dim " + world.provider.getDimensionName() + ":");
 
         if (key.startsWith("p:") || key.equals("*"))
         {
@@ -129,7 +128,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
                 {
                     if (key.equals("*"))
                     {
-                        ChatUtil.chatNotification(sender, username);
+                        ChatOutputHandler.chatNotification(sender, username);
                     }
 
                     HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
@@ -144,7 +143,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
 
                     for (ChunkCoordIntPair coords : chunks)
                     {
-                        ChatUtil.chatNotification(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
+                        ChatOutputHandler.chatNotification(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
                     }
                 }
             }
@@ -156,7 +155,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
             {
                 if (key.equals("*"))
                 {
-                    ChatUtil.chatNotification(sender, modID);
+                    ChatOutputHandler.chatNotification(sender, modID);
                 }
                 HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
 
@@ -170,7 +169,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
 
                 for (ChunkCoordIntPair coords : chunks)
                 {
-                    ChatUtil.chatNotification(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
+                    ChatOutputHandler.chatNotification(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
                 }
             }
         }
@@ -197,7 +196,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
                 options.add(mod.getName());
             }
 
-            return Utils.getListOfStringsMatchingLastWord(args, options);
+            return getListOfStringsMatchingLastWord(args, options);
         }
         return null;
     }

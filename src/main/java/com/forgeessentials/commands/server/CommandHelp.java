@@ -19,14 +19,14 @@ import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandHelp extends ParserCommandBase implements ConfigLoader
 {
@@ -124,7 +124,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
                         results.add(cmd.getValue());
                 }
 
-                EnumChatFormatting color = ChatUtil.chatConfirmationColor;
+                EnumChatFormatting color = ChatOutputHandler.chatConfirmationColor;
                 if (results.size() > 1 || command == null)
                     arguments.confirm("Searching commands by \"%s\"", name);
 
@@ -154,7 +154,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
         IChatComponent chatMsg = new ChatComponentTranslation(command.getCommandUsage(sender));
         chatMsg.getChatStyle().setColor(color);
         chatMsg.getChatStyle().setChatClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getCommandName() + " "));
-        ChatUtil.sendMessage(sender, chatMsg);
+        ChatOutputHandler.sendMessage(sender, chatMsg);
     }
 
     public void showHelpPage(ICommandSender sender)
@@ -162,7 +162,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
         if (messages.length == 0)
             showHelpPage(sender, 1);
         for (int i = 0; i < messages.length; i++)
-            ChatUtil.chatConfirmation(sender, ScriptArguments.processSafe(messages[i], sender));
+            ChatOutputHandler.chatConfirmation(sender, ScriptArguments.processSafe(messages[i], sender));
     }
 
     public void showHelpPage(ICommandSender sender, int page)

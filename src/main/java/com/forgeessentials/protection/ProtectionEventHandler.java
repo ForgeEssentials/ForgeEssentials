@@ -56,7 +56,6 @@ import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.fe.event.world.PressurePlateEvent;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.PermissionEvent.Group;
@@ -68,20 +67,20 @@ import com.forgeessentials.commons.network.Packet3PlayerPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.protection.effect.CommandEffect;
 import com.forgeessentials.protection.effect.DamageEffect;
 import com.forgeessentials.protection.effect.PotionEffect;
 import com.forgeessentials.protection.effect.ZoneEffect;
-import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.PlayerUtil;
-import com.forgeessentials.util.TaskRegistry;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -283,7 +282,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, ModuleProtection.PERM_GAMEMODE)) == GameType.CREATIVE
                 && stringToGameType(APIRegistry.perms.getUserPermissionProperty(ident, point, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
         {
-            ChatUtil.chatError(event.player, Translator.translate("Cannot place block outside creative area"));
+            ChatOutputHandler.chatError(event.player, Translator.translate("Cannot place block outside creative area"));
             event.setCanceled(true);
             return;
         }
@@ -360,7 +359,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (exploder instanceof EntityPlayer)
             ident = UserIdent.get((EntityPlayer) exploder);
         else if (exploder instanceof EntityLiving)
-            ident = FEApi.IDENT_NPC;
+            ident = APIRegistry.IDENT_NPC;
 
         int cx = (int) Math.floor(event.explosion.explosionX);
         int cy = (int) Math.floor(event.explosion.explosionY);
@@ -404,7 +403,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (exploder instanceof EntityPlayer)
             ident = UserIdent.get((EntityPlayer) exploder);
         else if (exploder instanceof EntityLiving)
-            ident = FEApi.IDENT_NPC;
+            ident = APIRegistry.IDENT_NPC;
 
         List<ChunkPosition> positions = event.explosion.affectedBlockPositions;
         for (Iterator<ChunkPosition> it = positions.iterator(); it.hasNext();)
@@ -472,7 +471,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             // If entity is in creative area, but player not, deny interaction
             event.useBlock = DENY;
             if (event.action != LEFT_CLICK_BLOCK)
-                ChatUtil.chatError(event.entityPlayer, Translator.translate("Cannot interact with creative area if not in creative mode."));
+                ChatOutputHandler.chatError(event.entityPlayer, Translator.translate("Cannot interact with creative area if not in creative mode."));
         }
     }
 
@@ -506,7 +505,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_SLEEP))
         {
             event.result = EnumStatus.NOT_POSSIBLE_HERE;
-            ChatUtil.sendMessage(event.entityPlayer, Translator.translate("You are not allowed to sleep here"));
+            ChatOutputHandler.sendMessage(event.entityPlayer, Translator.translate("You are not allowed to sleep here"));
             return;
         }
         checkMajoritySleep = true;
@@ -518,12 +517,12 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
         checkMajoritySleep = false;
 
-        WorldServer world = Utils.getOverworld();
+        WorldServer world = ServerUtil.getOverworld();
         if (FEConfig.majoritySleep >= 1 || world.isDaytime())
             return;
 
         int sleepingPlayers = 0;
-        for (EntityPlayerMP player : Utils.getPlayerList())
+        for (EntityPlayerMP player : ServerUtil.getPlayerList())
             if (player.isPlayerSleeping())
                 sleepingPlayers++;
         float percentage = (float) sleepingPlayers / MinecraftServer.getServer().getCurrentPlayerCount();
@@ -536,7 +535,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 long time = world.getWorldInfo().getWorldTime() + 24000L;
                 world.getWorldInfo().setWorldTime(time - time % 24000L);
             }
-            for (EntityPlayerMP player : Utils.getPlayerList())
+            for (EntityPlayerMP player : ServerUtil.getPlayerList())
                 if (player.isPlayerSleeping())
                     player.wakeUpPlayer(false, false, true);
             // TODO: We change some vanilla behaviour here - is this ok?
@@ -810,15 +809,15 @@ public class ProtectionEventHandler extends ServerEventHandler
         String command = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_COMMAND);
         if (command != null && !command.isEmpty())
         {
-            int interval = Utils
+            int interval = ServerUtil
                     .parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_COMMAND_INTERVAL), 0);
             effects.add(new CommandEffect(ident.getPlayerMP(), interval, command));
         }
 
-        int damage = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE), 0);
+        int damage = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE), 0);
         if (damage > 0)
         {
-            int interval = Utils
+            int interval = ServerUtil
                     .parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_DAMAGE_INTERVAL), 0);
             effects.add(new DamageEffect(ident.getPlayerMP(), interval, damage));
         }
@@ -827,7 +826,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         String potion = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION);
         if (potion != null && !potion.isEmpty())
         {
-            int interval = Utils
+            int interval = ServerUtil
                     .parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, ModuleProtection.ZONE_POTION_INTERVAL), 0);
             effects.add(new PotionEffect(ident.getPlayerMP(), interval, potion));
         }
@@ -857,9 +856,9 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (checkMajoritySleep)
             checkMajoritySleep();
 
-        if (Utils.getOverworld().getWorldInfo().getWorldTotalTime() % (20 * 4) == 0)
+        if (ServerUtil.getOverworld().getWorldInfo().getWorldTotalTime() % (20 * 4) == 0)
         {
-            for (EntityPlayerMP player : Utils.getPlayerList())
+            for (EntityPlayerMP player : ServerUtil.getPlayerList())
                 sendPermissionUpdate(UserIdent.get(player), false);
         }
     }
@@ -1013,7 +1012,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout("zone_denied_message"))
         {
-            ChatUtil.chatError(player, ModuleProtection.MSG_ZONE_DENIED);
+            ChatOutputHandler.chatError(player, ModuleProtection.MSG_ZONE_DENIED);
             pi.startTimeout("zone_denied_message", 4000);
         }
     }

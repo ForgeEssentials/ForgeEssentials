@@ -4,16 +4,16 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.Mailer;
 import com.forgeessentials.chat.Mailer.Mail;
 import com.forgeessentials.chat.Mailer.Mails;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.util.ParserCommandBase;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandMail extends ParserCommandBase
 {
@@ -66,7 +66,7 @@ public class CommandMail extends ParserCommandBase
         case "read":
         {
             if (arguments.senderPlayer == null)
-                throw new TranslatedCommandException(MessageConstants.MSG_NO_CONSOLE_COMMAND);
+                throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
             if (arguments.isTabCompletion)
                 return;
             Mails mailBag = Mailer.getMailBag(arguments.ident);
@@ -79,7 +79,7 @@ public class CommandMail extends ParserCommandBase
         case "readall":
         {
             if (arguments.senderPlayer == null)
-                throw new TranslatedCommandException(MessageConstants.MSG_NO_CONSOLE_COMMAND);
+                throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
             if (arguments.isTabCompletion)
                 return;
             Mails mailBag = Mailer.getMailBag(arguments.ident);
@@ -103,15 +103,15 @@ public class CommandMail extends ParserCommandBase
             break;
         }
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subArg);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subArg);
         }
     }
 
     public static void readMail(ICommandSender sender, Mail mail)
     {
-        ChatUtil.chatNotification(sender,
+        ChatOutputHandler.chatNotification(sender,
                 Translator.format("Mail from %s on the %s", mail.sender.getUsernameOrUuid(), FEConfig.FORMAT_DATE_TIME.format(mail.timestamp)));
-        ChatUtil.chatConfirmation(sender, ChatUtil.formatColors(mail.message));
+        ChatOutputHandler.chatConfirmation(sender, ChatOutputHandler.formatColors(mail.message));
     }
 
 }

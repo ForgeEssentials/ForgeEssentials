@@ -35,12 +35,12 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
-import com.forgeessentials.util.Translator;
 
 import cpw.mods.fml.common.registry.GameData;
 

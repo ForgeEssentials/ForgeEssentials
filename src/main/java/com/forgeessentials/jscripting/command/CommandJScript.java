@@ -5,14 +5,13 @@ import java.util.List;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.jscripting.JScriptingMod;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.ScriptUpgrader;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandJScript extends ParserCommandBase
 {
@@ -50,7 +49,7 @@ public class CommandJScript extends ParserCommandBase
     @Override
     public String getPermissionNode()
     {
-        return JScriptingMod.PERM + ".manage";
+        return ModuleJScripting.PERM + ".manage";
     }
 
     @Override
@@ -78,7 +77,7 @@ public class CommandJScript extends ParserCommandBase
             ScriptUpgrader.upgradeOldScripts(arguments.sender);
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subcmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
         }
     }
 

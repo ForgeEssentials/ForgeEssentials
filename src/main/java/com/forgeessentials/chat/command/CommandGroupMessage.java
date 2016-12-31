@@ -8,9 +8,9 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.util.ParserCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandGroupMessage extends ParserCommandBase
 {

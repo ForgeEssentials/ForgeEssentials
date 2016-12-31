@@ -16,9 +16,9 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.ItemUtil;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.google.gson.annotations.Expose;
 
 public class ShopData
@@ -109,7 +109,7 @@ public class ShopData
                     error = Translator.translate("Buy price specified twice");
                     return;
                 }
-                buyPrice = Utils.parseIntDefault(matcher.group(1), -1);
+                buyPrice = ServerUtil.parseIntDefault(matcher.group(1), -1);
                 continue;
             }
             matcher = PATTERN_SELL.matcher(text[i]);
@@ -120,7 +120,7 @@ public class ShopData
                     error = Translator.translate("Sell price specified twice");
                     return;
                 }
-                sellPrice = Utils.parseIntDefault(matcher.group(1), -1);
+                sellPrice = ServerUtil.parseIntDefault(matcher.group(1), -1);
                 continue;
             }
             matcher = PATTERN_AMOUNT.matcher(text[i]);
@@ -131,7 +131,7 @@ public class ShopData
                     error = Translator.translate("Amount specified twice");
                     return;
                 }
-                amount = Utils.parseIntDefault(matcher.group(1), 1);
+                amount = ServerUtil.parseIntDefault(matcher.group(1), 1);
                 continue;
             }
         }

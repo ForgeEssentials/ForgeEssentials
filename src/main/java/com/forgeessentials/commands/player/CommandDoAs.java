@@ -11,16 +11,15 @@ import net.minecraftforge.permission.PermissionManager;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.api.FEApi;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.DoAsCommandSender;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -68,21 +67,21 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
     {
         if (args.length == 0)
         {
-            ChatUtil.chatError(sender, getCommandUsage(sender));
+            ChatOutputHandler.chatError(sender, getCommandUsage(sender));
             return;
         }
         if ((sender instanceof EntityPlayerMP) && args[0].equalsIgnoreCase("[CONSOLE]"))
         {
             EntityPlayerMP player = (EntityPlayerMP) sender;
             if (!PermissionManager.checkPermission(player, "fe.commands.doas.console"))
-                throw new TranslatedCommandException(MessageConstants.MSG_NO_COMMAND_PERM);
+                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
             if (args.length < 2)
-                throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
 
             args = Arrays.copyOfRange(args, 1, args.length);
             String cmd = StringUtils.join(args, " ");
-            MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(FEApi.IDENT_SERVER, player), cmd);
+            MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), cmd);
         }
 
         StringBuilder cmd = new StringBuilder(args.toString().length());
@@ -94,9 +93,9 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player != null)
         {
-            ChatUtil.chatWarning(player, Translator.format("Player %s is attempting to issue a command as you.", sender.getCommandSenderName()));
+            ChatOutputHandler.chatWarning(player, Translator.format("Player %s is attempting to issue a command as you.", sender.getCommandSenderName()));
             FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, cmd.toString());
-            ChatUtil.chatConfirmation(sender, Translator.format("Successfully issued command as %s", args[0]));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Successfully issued command as %s", args[0]));
         }
         else
             throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -107,7 +106,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

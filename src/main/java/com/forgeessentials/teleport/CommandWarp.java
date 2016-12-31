@@ -11,14 +11,14 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.data.DataManager;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.ServerUtil;
 
 public class CommandWarp extends ParserCommandBase
 {
@@ -137,7 +137,7 @@ public class CommandWarp extends ParserCommandBase
                 arguments.checkPermission(PERM_SET);
 
                 // Check limit
-                int limit = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, PERM_LIMIT), Integer.MAX_VALUE);
+                int limit = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, PERM_LIMIT), Integer.MAX_VALUE);
                 if (warps.size() >= limit)
                     throw new TranslatedCommandException("You reached the warp limit");
 
@@ -151,7 +151,7 @@ public class CommandWarp extends ParserCommandBase
                 arguments.confirm("Deleted warp \"%s\"", warpName);
                 break;
             default:
-                throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCommand);
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
             }
         }
     }

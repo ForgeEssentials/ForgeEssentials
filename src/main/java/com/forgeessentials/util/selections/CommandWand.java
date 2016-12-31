@@ -8,12 +8,12 @@ import net.minecraft.item.Item;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commons.MessageConstants;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandWand extends ForgeEssentialsCommandBase
 {
@@ -29,8 +29,8 @@ public class CommandWand extends ForgeEssentialsCommandBase
     {
         if (ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
-            ChatUtil.chatNotification(sender, "WorldEdit is installed. Please use WorldEdit selections (//wand, //set, etc)");
-            ChatUtil.chatNotification(sender, "Please refer to http://wiki.sk89q.com/wiki/WorldEdit/Selection for more info.");
+            ChatOutputHandler.chatNotification(sender, "WorldEdit is installed. Please use WorldEdit selections (//wand, //set, etc)");
+            ChatOutputHandler.chatNotification(sender, "Please refer to http://wiki.sk89q.com/wiki/WorldEdit/Selection for more info.");
             return;
         }
 
@@ -63,20 +63,20 @@ public class CommandWand extends ForgeEssentialsCommandBase
         // Check for unbind
         if (!rebind && ((info.isWandEnabled() && info.getWandID().equals(wandId)) | (args.length > 0 && args[0].equalsIgnoreCase("unbind"))))
         {
-            ChatUtil.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
+            ChatOutputHandler.sendMessage(sender, EnumChatFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
             info.setWandEnabled(false);
             return;
         }
 
         // Check for permissions
         if (!checkCommandPermission(sender))
-            throw new TranslatedCommandException(MessageConstants.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         // Bind wand
         info.setWandEnabled(true);
         info.setWandID(wandId);
         info.setWandDmg(wandDmg);
-        ChatUtil.chatConfirmation(sender, "Wand bound to " + wandName);
+        ChatOutputHandler.chatConfirmation(sender, "Wand bound to " + wandName);
     }
 
     @Override

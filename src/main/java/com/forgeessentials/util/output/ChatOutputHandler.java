@@ -5,27 +5,242 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.util.FakePlayer;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.util.ChatUtil;
 
 public final class ChatOutputHandler extends ConfigLoaderBase
 {
 
+    public static final char COLOR_FORMAT_CHARACTER = '\u00a7';
+
     public static final String CONFIG_CAT = "Core.Output";
+
+    public static EnumChatFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
 
     /* ------------------------------------------------------------ */
 
     /**
-     * Apply a set of {@link EnumChatFormatting} to a {@link ChatStyle}
+     * Sends a chat message to the given command sender (usually a player) with the given text and no special
+     * formatting.
      *
+     * @param recipient
+     *            The recipient of the chat message.
+     * @param message
+     *            The message to send.
+     */
+    public static void sendMessage(ICommandSender recipient, String message)
+    {
+        sendMessage(recipient, new ChatComponentText(message));
+    }
+
+    /**
+     * Sends a message to a {@link ICommandSender} and performs some security checks
+     * 
+     * @param recipient
+     * @param message
+     */
+    public static void sendMessage(ICommandSender recipient, IChatComponent message)
+    {
+        if (recipient instanceof FakePlayer && ((EntityPlayerMP) recipient).playerNetServerHandler == null)
+            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getCommandSenderName(), message.getUnformattedText()));
+        else
+            recipient.addChatMessage(message);
+    }
+
+    /**
+     * actually sends the color-formatted message to the sender
+     *
+     * @param recipient
+     *            CommandSender to chat to.
+     * @param message
+     *            The message to be sent
+     * @param color
+     *            Color of text to format
+     */
+    public static void sendMessage(ICommandSender recipient, String message, EnumChatFormatting color)
+    {
+        message = formatColors(message);
+        if (recipient instanceof EntityPlayer)
+        {
+            ChatComponentText component = new ChatComponentText(message);
+            component.getChatStyle().setColor(color);
+            sendMessage(recipient, component);
+        }
+        else
+            sendMessage(recipient, stripFormatting(message));
+    }
+
+    /**
+     * Sends a message to all clients
+     *
+     * @param message
+     *            The message to send
+     */
+    public static void broadcast(String message)
+    {
+        broadcast(new ChatComponentText(message));;
+    }
+
+    /**
+     * Sends a message to all clients
+     *
+     * @param message
+     *            The message to send
+     */
+    public static void broadcast(IChatComponent message)
+    {
+        MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
+    }
+
+    /* ------------------------------------------------------------ */
+
+    public static IChatComponent confirmation(String message)
+    {
+        return setChatColor(new ChatComponentText(formatColors(message)), chatConfirmationColor);
+    }
+
+    public static IChatComponent notification(String message)
+    {
+        return setChatColor(new ChatComponentText(formatColors(message)), chatNotificationColor);
+    }
+
+    public static IChatComponent warning(String message)
+    {
+        return setChatColor(new ChatComponentText(formatColors(message)), chatWarningColor);
+    }
+
+    public static IChatComponent error(String message)
+    {
+        return setChatColor(new ChatComponentText(formatColors(message)), chatErrorColor);
+    }
+
+    /**
+     * Utility method to set {@link IChatComponent} color
+     *
+     * @param message
+     * @param color
+     * @return message
+     */
+    public static IChatComponent setChatColor(IChatComponent message, EnumChatFormatting color)
+    {
+        message.getChatStyle().setColor(color);
+        return message;
+    }
+
+    /* ------------------------------------------------------------ */
+
+    /**
+     * outputs an error message to the chat box of the given sender.
+     *
+     * @param sender
+     *            CommandSender to chat to.
+     * @param msg
+     *            the message to be sent
+     */
+    public static void chatError(ICommandSender sender, String msg)
+    {
+        sendMessage(sender, msg, chatErrorColor);
+    }
+
+    /**
+     * outputs a confirmation message to the chat box of the given sender.
+     *
+     * @param sender
+     *            CommandSender to chat to.
+     * @param msg
+     *            the message to be sent
+     */
+    public static void chatConfirmation(ICommandSender sender, String msg)
+    {
+        sendMessage(sender, msg, chatConfirmationColor);
+    }
+
+    /**
+     * outputs a warning message to the chat box of the given sender.
+     *
+     * @param sender
+     *            CommandSender to chat to.
+     * @param msg
+     *            the message to be sent
+     */
+    public static void chatWarning(ICommandSender sender, String msg)
+    {
+        sendMessage(sender, msg, chatWarningColor);
+    }
+
+    /**
+     * outputs a notification message to the chat box of the given sender.
+     * 
+     * @param sender
+     *            CommandSender to chat to.
+     * @param msg
+     */
+    public static void chatNotification(ICommandSender sender, String msg)
+    {
+        sendMessage(sender, msg, chatNotificationColor);
+    }
+
+    /* ------------------------------------------------------------ */
+
+    /**
+     * Format color codes
+     *
+     * @param message
+     * @return formatted message
+     */
+    public static String formatColors(String message)
+    {
+        // TODO: Improve this to replace codes less aggressively
+        char[] b = message.toCharArray();
+        for (int i = 0; i < b.length - 1; i++)
+        {
+            if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1)
+            {
+                b[i] = COLOR_FORMAT_CHARACTER;
+                b[i + 1] = Character.toLowerCase(b[i + 1]);
+            }
+        }
+        return new String(b);
+    }
+
+    public static final Pattern FORMAT_CODE_PATTERN;
+
+    static
+    {
+        String codes = "";
+        for (EnumChatFormatting code : EnumChatFormatting.values())
+            codes += code.getFormattingCode();
+        FORMAT_CODE_PATTERN = Pattern.compile(COLOR_FORMAT_CHARACTER + "([" + codes + "])");
+    }
+
+    /**
+     * Strips any minecraft formatting codes
+     * 
+     * @param message
+     * @return
+     */
+    public static String stripFormatting(String message)
+    {
+        return FORMAT_CODE_PATTERN.matcher(message).replaceAll("");
+    }
+
+    /**
+     * Apply a set of {@link EnumChatFormatting} to a {@link ChatStyle}
+     * 
      * @param chatStyle
      * @param formattings
      */
@@ -37,7 +252,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     /**
      * Apply an {@link EnumChatFormatting} to a {@link ChatStyle}
-     *
+     * 
      * @param chatStyle
      * @param formatting
      */
@@ -70,7 +285,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     /**
      * Take a string of chat format codes (without \u00a7) and return them as {@link EnumChatFormatting} collection
-     *
+     * 
      * @param textFormats
      * @return
      */
@@ -167,7 +382,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         StringBuilder sb = new StringBuilder();
         int pos = 0;
         int tagCount = 0;
-        Matcher matcher = ChatUtil.FORMAT_CODE_PATTERN.matcher(message);
+        Matcher matcher = FORMAT_CODE_PATTERN.matcher(message);
         while (matcher.find())
         {
             sb.append(StringEscapeUtils.escapeHtml4(message.substring(pos, matcher.start())));
@@ -216,7 +431,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
                 return message;
             default:
             case PLAINTEXT:
-                return ChatUtil.stripFormatting(ChatOutputHandler.getUnformattedMessage(message));
+                return ChatOutputHandler.stripFormatting(ChatOutputHandler.getUnformattedMessage(message));
             }
         }
 
@@ -300,30 +515,30 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     public static void setConfirmationColor(String color)
     {
-        ChatUtil.chatConfirmationColor = EnumChatFormatting.getValueByName(color);
-        if (ChatUtil.chatConfirmationColor == null)
-            ChatUtil.chatConfirmationColor = EnumChatFormatting.GREEN;
+        chatConfirmationColor = EnumChatFormatting.getValueByName(color);
+        if (chatConfirmationColor == null)
+            chatConfirmationColor = EnumChatFormatting.GREEN;
     }
 
     public static void setErrorColor(String color)
     {
-        ChatUtil.chatErrorColor = EnumChatFormatting.getValueByName(color);
-        if (ChatUtil.chatErrorColor == null)
-            ChatUtil.chatErrorColor = EnumChatFormatting.RED;
+        chatErrorColor = EnumChatFormatting.getValueByName(color);
+        if (chatErrorColor == null)
+            chatErrorColor = EnumChatFormatting.RED;
     }
 
     public static void setNotificationColor(String color)
     {
-        ChatUtil.chatNotificationColor = EnumChatFormatting.getValueByName(color);
-        if (ChatUtil.chatNotificationColor == null)
-            ChatUtil.chatNotificationColor = EnumChatFormatting.AQUA;
+        chatNotificationColor = EnumChatFormatting.getValueByName(color);
+        if (chatNotificationColor == null)
+            chatNotificationColor = EnumChatFormatting.AQUA;
     }
 
     public static void setWarningColor(String color)
     {
-        ChatUtil.chatWarningColor = EnumChatFormatting.getValueByName(color);
-        if (ChatUtil.chatWarningColor == null)
-            ChatUtil.chatWarningColor = EnumChatFormatting.YELLOW;
+        chatWarningColor = EnumChatFormatting.getValueByName(color);
+        if (chatWarningColor == null)
+            chatWarningColor = EnumChatFormatting.YELLOW;
     }
 
     @Override

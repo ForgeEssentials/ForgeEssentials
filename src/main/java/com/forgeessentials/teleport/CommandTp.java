@@ -13,13 +13,13 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -103,7 +103,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
             {
                 EntityPlayerMP player = sender;
                 double x = func_110666_a(sender, player.posX, args[0]);
-                double y = Utils.parseYLocation(sender, player.posY, args[1]);
+                double y = ServerUtil.parseYLocation(sender, player.posY, args[1]);
                 double z = func_110666_a(sender, player.posZ, args[2]);
                 PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
@@ -115,7 +115,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
                 if (player != null)
                 {
                     double x = func_110666_a(sender, player.posX, args[1]);
-                    double y = Utils.parseYLocation(sender, player.posY, args[2]);
+                    double y = ServerUtil.parseYLocation(sender, player.posY, args[2]);
                     double z = func_110666_a(sender, player.posZ, args[3]);
                     PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(player));
@@ -157,7 +157,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
             if (player != null)
             {
                 double x = func_110666_a(sender, player.posX, args[1]);
-                double y = Utils.parseYLocation(sender, player.posY, args[2]);
+                double y = ServerUtil.parseYLocation(sender, player.posY, args[2]);
                 double z = func_110666_a(sender, player.posZ, args[3]);
                 TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
             }
@@ -166,8 +166,8 @@ public class CommandTp extends ForgeEssentialsCommandBase
         }
         else
         {
-            ChatUtil.chatError(sender, Translator.translate("Improper syntax. Please try this instead:"));
-            ChatUtil.chatNotification(sender, getCommandUsage(sender));
+            ChatOutputHandler.chatError(sender, Translator.translate("Improper syntax. Please try this instead:"));
+            ChatOutputHandler.chatNotification(sender, getCommandUsage(sender));
         }
     }
 
@@ -176,7 +176,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
     {
         if (args.length == 1 || args.length == 2)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

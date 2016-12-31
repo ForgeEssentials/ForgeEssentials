@@ -15,27 +15,26 @@ import net.minecraftforge.permission.PermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
 import com.forgeessentials.protection.MobType;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.DoAsCommandSender;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.EventCancelledException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.selections.SelectionHandler;
@@ -171,7 +170,7 @@ public class CommandPlot extends ParserCommandBase
         case "sell":
             throw new TranslatedCommandException("Not yet implemented. Use \"/plot set price\" instead.");
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subcmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
         }
     }
 
@@ -278,8 +277,8 @@ public class CommandPlot extends ParserCommandBase
     {
         int plotSize = newArea.getXLength() * newArea.getZLength() * (Plot.isColumnMode(newArea.getDimension()) ? 1 : newArea.getYLength());
 
-        int minAxis = Utils.parseIntDefault(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MIN), Integer.MIN_VALUE);
-        int maxAxis = Utils.parseIntDefault(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MAX), Integer.MAX_VALUE);
+        int minAxis = ServerUtil.parseIntDefault(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MIN), Integer.MIN_VALUE);
+        int maxAxis = ServerUtil.parseIntDefault(APIRegistry.perms.getGlobalPermissionProperty(Plot.PERM_SIZE_MAX), Integer.MAX_VALUE);
 
         if (newArea.getXLength() < minAxis || newArea.getZLength() < minAxis)
         {
@@ -291,8 +290,8 @@ public class CommandPlot extends ParserCommandBase
             throw new TranslatedCommandException("Plot is too big!");
         }
 
-        int limitCount = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_COUNT), Integer.MAX_VALUE);
-        int limitSize = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_SIZE), Integer.MAX_VALUE);
+        int limitCount = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_COUNT), Integer.MAX_VALUE);
+        int limitSize = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, Plot.PERM_LIMIT_SIZE), Integer.MAX_VALUE);
         int usedCount = 0;
         long usedSize = 0;
         for (Plot plot : Plot.getPlots())
@@ -321,7 +320,7 @@ public class CommandPlot extends ParserCommandBase
             }
             catch (IllegalArgumentException e)
             {
-                throw new TranslatedCommandException(MessageConstants.MSG_INVALID_SYNTAX);
+                throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
             }
         }
 
@@ -552,11 +551,11 @@ public class CommandPlot extends ParserCommandBase
             if (arguments.hasPermission(Plot.PERM_SET_OWNER))
             {
                 arguments.confirm("/plot set owner <player>: Set plot owner");
-                arguments.confirm("/plot set owner " + FEApi.IDENT_SERVER.getUsernameOrUuid() + ": Set plot owner to server");
+                arguments.confirm("/plot set owner " + APIRegistry.IDENT_SERVER.getUsernameOrUuid() + ": Set plot owner to server");
             }
             UserIdent owner = plot.getOwner();
             if (owner == null)
-                owner = FEApi.IDENT_SERVER;
+                owner = APIRegistry.IDENT_SERVER;
             arguments.confirm("Current plot owner: %s", owner.getUsernameOrUuid());
             return;
         }
@@ -603,7 +602,7 @@ public class CommandPlot extends ParserCommandBase
             allow = false;
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_INVALID_SYNTAX);
+            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
         }
 
         String msgBase = (allow ? "Allowed " : "Denied ") + (userPerms ? "users " : "guests ");
@@ -649,7 +648,7 @@ public class CommandPlot extends ParserCommandBase
             arguments.confirm(msgBase + "to hurt animals");
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_INVALID_SYNTAX);
+            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
         }
     }
 
@@ -732,7 +731,7 @@ public class CommandPlot extends ParserCommandBase
                             }
                             else if (response == false)
                             {
-                                ChatUtil.chatError(plot.getOwner().getPlayerMP(), Translator.translate("Trade declined"));
+                                ChatOutputHandler.chatError(plot.getOwner().getPlayerMP(), Translator.translate("Trade declined"));
                                 arguments.error(Translator.format("%s declined to sell you plot \"%s\" for %s", //
                                         plot.getOwner().getUsernameOrUuid(), plot.getName(), buyPriceStr));
                                 return;
@@ -772,7 +771,7 @@ public class CommandPlot extends ParserCommandBase
             sellerWallet.add(price);
             if (plot.getOwner().hasPlayer())
             {
-                ChatUtil.chatConfirmation(plot.getOwner().getPlayerMP(), Translator.format("You sold plot \"%s\" to %s for %s", //
+                ChatOutputHandler.chatConfirmation(plot.getOwner().getPlayerMP(), Translator.format("You sold plot \"%s\" to %s for %s", //
                         plot.getName(), arguments.senderPlayer.getCommandSenderName(), priceStr));
                 ModuleEconomy.confirmNewWalletAmount(plot.getOwner(), sellerWallet);
             }

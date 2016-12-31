@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import com.forgeessentials.chat.irc.IrcCommand;
 import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.commons.CommandParserArgs;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandHelp extends IrcCommandParser
 {

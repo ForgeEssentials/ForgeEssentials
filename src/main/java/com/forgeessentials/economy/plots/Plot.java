@@ -13,7 +13,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -28,11 +27,11 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.events.PlotEvent;
 import com.forgeessentials.util.events.PlotEvent.OwnerChanged;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class Plot
 {
@@ -126,7 +125,7 @@ public class Plot
 
     public boolean hasOwner()
     {
-        return owner != null && !owner.equals(FEApi.IDENT_SERVER);
+        return owner != null && !owner.equals(APIRegistry.IDENT_SERVER);
     }
 
     public UserIdent getOwner()
@@ -148,7 +147,7 @@ public class Plot
         owner = newOwner;
         zone.setGroupPermissionProperty(GROUP_ALL, PERM_OWNER, owner.getOrGenerateUuid().toString());
         zone.addPlayerToGroup(newOwner, GROUP_PLOT_OWNER);
-        FEApi.getFEEventBus().post(event);
+        APIRegistry.getFEEventBus().post(event);
     }
 
     public String getOwnerName()
@@ -199,7 +198,7 @@ public class Plot
         String priceStr = APIRegistry.perms.getGroupPermissionProperty(GROUP_ALL, getPlotCenter(), PERM_PRICE);
         if (priceStr == null)
             return 0;
-        double pricePerUnit = Utils.parseDoubleDefault(priceStr, 0);
+        double pricePerUnit = ServerUtil.parseDoubleDefault(priceStr, 0);
         if (pricePerUnit == 0)
             return 0;
         return (long) (getAccountedSize() * pricePerUnit);
@@ -207,7 +206,7 @@ public class Plot
 
     public long getPrice()
     {
-        return Utils.parseLongDefault(zone.getGroupPermission(GROUP_ALL, PERM_SELL_PRICE), -1);
+        return ServerUtil.parseLongDefault(zone.getGroupPermission(GROUP_ALL, PERM_SELL_PRICE), -1);
     }
 
     public void setPrice(long value)
@@ -227,7 +226,7 @@ public class Plot
 
     public int getFee()
     {
-        return Math.max(0, Utils.parseIntDefault(zone.getGroupPermission(GROUP_ALL, PERM_FEE), 0));
+        return Math.max(0, ServerUtil.parseIntDefault(zone.getGroupPermission(GROUP_ALL, PERM_FEE), 0));
     }
 
     public void setFee(int value)
@@ -240,7 +239,7 @@ public class Plot
 
     public int getFeeTimeout()
     {
-        return Math.max(0, Utils.parseIntDefault(zone.getGroupPermission(GROUP_ALL, PERM_FEE_TIMEOUT), 0));
+        return Math.max(0, ServerUtil.parseIntDefault(zone.getGroupPermission(GROUP_ALL, PERM_FEE_TIMEOUT), 0));
     }
 
     public void setFeeTimeout(int minutes)
@@ -285,20 +284,20 @@ public class Plot
 
     public void printInfo(ICommandSender sender)
     {
-        ChatUtil.chatNotification(sender, String.format("#%d: \"%s\" at %s", zone.getId(), getName(), getCenter().toString()));
+        ChatOutputHandler.chatNotification(sender, String.format("#%d: \"%s\" at %s", zone.getId(), getName(), getCenter().toString()));
     }
 
     public void printDetails(ICommandSender sender)
     {
-        ChatUtil.chatNotification(sender, String.format("Plot #%d: %s", zone.getId(), getName()));
-        ChatUtil.chatNotification(sender, String.format("  Owner: %s", owner.getUsernameOrUuid()));
-        ChatUtil.chatNotification(sender,
+        ChatOutputHandler.chatNotification(sender, String.format("Plot #%d: %s", zone.getId(), getName()));
+        ChatOutputHandler.chatNotification(sender, String.format("  Owner: %s", owner.getUsernameOrUuid()));
+        ChatOutputHandler.chatNotification(sender,
                 String.format("  Location between %s and %s", zone.getArea().getHighPoint().toString(), zone.getArea().getLowPoint().toString()));
         long price = getPrice();
         if (price >= 0)
-            ChatUtil.chatNotification(sender, String.format("  Price: %d", price));
+            ChatOutputHandler.chatNotification(sender, String.format("  Price: %d", price));
         else
-            ChatUtil.chatNotification(sender, "  Not open for sale");
+            ChatOutputHandler.chatNotification(sender, "  Not open for sale");
     }
 
     /* ------------------------------------------------------------ */
@@ -337,7 +336,7 @@ public class Plot
         String priceStr = APIRegistry.perms.getGroupPermissionProperty(GROUP_ALL, area.getCenter(), PERM_PRICE);
         if (priceStr == null)
             return 0;
-        double pricePerUnit = Utils.parseDoubleDefault(priceStr, 0);
+        double pricePerUnit = ServerUtil.parseDoubleDefault(priceStr, 0);
         if (pricePerUnit == 0)
             return 0;
         return (long) (getAccountedSize(area) * pricePerUnit);

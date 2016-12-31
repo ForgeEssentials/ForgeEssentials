@@ -10,12 +10,12 @@ import java.util.Set;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.command.CommandMail;
-import com.forgeessentials.util.FECommandManager;
-import com.forgeessentials.util.data.DataManager;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.Translator;
+import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -79,7 +79,7 @@ public class Mailer extends ServerEventHandler
         for (Mail mail : mailBag.mails)
             senders.add(mail.sender);
         String message = Translator.format("You hav unread mails from %s. Use /mail to read.", UserIdent.join(senders, ", ", " and "));
-        ChatUtil.chatConfirmation(event.player, message);
+        ChatOutputHandler.chatConfirmation(event.player, message);
     }
 
     public static void loadAllMails()
@@ -119,7 +119,7 @@ public class Mailer extends ServerEventHandler
         mailBag.mails.add(new Mail(sender, message));
         saveMails(recipent, mailBag);
         if (recipent.hasPlayer())
-            ChatUtil.chatNotification(recipent.getPlayer(),
+            ChatOutputHandler.chatNotification(recipent.getPlayer(),
                     Translator.format("You have a new mail from %s", sender == null ? "the server" : sender.getUsernameOrUuid()));
     }
 

@@ -3,8 +3,8 @@ package com.forgeessentials.backup;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandBackup extends ParserCommandBase
 {

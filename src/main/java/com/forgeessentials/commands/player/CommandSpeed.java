@@ -7,8 +7,8 @@ import net.minecraft.nbt.NBTTagFloat;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandSpeed extends ForgeEssentialsCommandBase
 {
@@ -56,14 +56,14 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
          * ChatOutputHandler.chatError(player, "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information."); return; }
          */
 
-        ChatUtil.chatWarning(player, "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
+        ChatOutputHandler.chatWarning(player, "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
         if (args.length >= 1)
         {
             // float speed = Float.parseFloat(args[0]);
 
             if (args[0].equals("reset"))
             {
-                ChatUtil.chatNotification(player, "Resetting speed to regular walking speed.");
+                ChatOutputHandler.chatNotification(player, "Resetting speed to regular walking speed.");
                 // NetworkUtils.netHandler.sendTo(new Packet6Speed(0.0F), player);
                 NBTTagCompound tagCompound = new NBTTagCompound();
                 player.capabilities.writeCapabilitiesToNBT(tagCompound);
@@ -80,7 +80,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
 
             if (multiplier >= 10)
             {
-                ChatUtil.chatWarning(player, "Multiplier set too high. Bad things may happen, so we're throttling your speed to 10x walking speed.");
+                ChatOutputHandler.chatWarning(player, "Multiplier set too high. Bad things may happen, so we're throttling your speed to 10x walking speed.");
                 multiplier = 10;
             }
             speed = speed * multiplier;
@@ -91,7 +91,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
             player.capabilities.readCapabilitiesFromNBT(tagCompound);
             player.sendPlayerAbilities();
 
-            ChatUtil.chatNotification(player, "Walk/fly speed set to " + speed);
+            ChatOutputHandler.chatNotification(player, "Walk/fly speed set to " + speed);
             // NetworkUtils.netHandler.sendTo(new Packet6Speed(speed), player);
         }
     }

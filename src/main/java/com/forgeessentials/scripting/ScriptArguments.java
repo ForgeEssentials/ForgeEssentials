@@ -29,7 +29,7 @@ import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
 import com.forgeessentials.scripting.ScriptParser.ScriptException;
 import com.forgeessentials.scripting.ScriptParser.SyntaxException;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.ImmutableMap;
 
@@ -577,7 +577,7 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            return new DecimalFormat("#").format(Math.min(20, Utils.getTPS()));
+            return new DecimalFormat("#").format(Math.min(20, ServerUtil.getTPS()));
         }
 
         @Override

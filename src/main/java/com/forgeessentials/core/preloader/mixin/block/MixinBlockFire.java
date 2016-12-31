@@ -1,18 +1,17 @@
 package com.forgeessentials.core.preloader.mixin.block;
 
-import java.util.Random;
-
 import net.minecraft.block.BlockFire;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fe.event.world.FireEvent;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import java.util.Random;
 
 @Mixin(BlockFire.class)
 public class MixinBlockFire

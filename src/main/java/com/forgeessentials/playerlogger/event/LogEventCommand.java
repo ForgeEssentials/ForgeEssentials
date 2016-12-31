@@ -9,7 +9,7 @@ import net.minecraftforge.event.CommandEvent;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.api.FEApi;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action02Command;
 
@@ -41,7 +41,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         else if (event.sender instanceof CommandBlockLogic)
         {
             CommandBlockLogic block = ((CommandBlockLogic) event.sender);
-            action.player = getPlayer(FEApi.IDENT_CMDBLOCK);
+            action.player = getPlayer(APIRegistry.IDENT_CMDBLOCK);
             action.world = getWorld(block.getEntityWorld().provider.dimensionId);
             ChunkCoordinates coords = block.getPlayerCoordinates();
             action.x = coords.posX;

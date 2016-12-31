@@ -2,8 +2,7 @@ package com.forgeessentials.worldborder;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.util.FeCommandParserArgs;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 

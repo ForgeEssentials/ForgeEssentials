@@ -4,8 +4,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandIrcBot extends ForgeEssentialsCommandBase
 {
@@ -56,7 +56,7 @@ public class CommandIrcBot extends ForgeEssentialsCommandBase
         }
         else
         {
-            ChatUtil.sendMessage(sender, "IRC bot is " + (IrcHandler.getInstance().isConnected() ? "online" : "offline"));
+            ChatOutputHandler.sendMessage(sender, "IRC bot is " + (IrcHandler.getInstance().isConnected() ? "online" : "offline"));
         }
     }
 

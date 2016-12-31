@@ -11,7 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandReply extends ForgeEssentialsCommandBase
 {

@@ -5,13 +5,13 @@ import java.util.Map.Entry;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.NamedWorldArea;
 import com.forgeessentials.util.NamedWorldPoint;
-import com.forgeessentials.util.TranslatedCommandException;
 import com.forgeessentials.util.selections.SelectionHandler;
 
 public class CommandPortal extends ParserCommandBase

@@ -11,14 +11,14 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.world.CommandWeather.WeatherData;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.util.ParserCommandBase;
-import com.forgeessentials.util.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.util.data.DataManager;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.CommandParserArgs;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -112,7 +112,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
             parseTime(arguments, true);
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
     }
 

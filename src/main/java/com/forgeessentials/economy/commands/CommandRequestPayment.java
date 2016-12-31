@@ -8,11 +8,10 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -33,14 +32,14 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
         {
-            ChatUtil.chatError(sender, args[0] + " not found!");
+            ChatOutputHandler.chatError(sender, args[0] + " not found!");
         }
         else
         {
             int amount = parseIntWithMin(sender, args[1], 0);
-            ChatUtil.chatConfirmation(sender,
+            ChatOutputHandler.chatConfirmation(sender,
                     Translator.format("You requested %s to pay %s", player.getCommandSenderName(), APIRegistry.economy.toString(amount)));
-            ChatUtil.chatConfirmation(player,
+            ChatOutputHandler.chatConfirmation(player,
                     Translator.format("You have been requested to pay %s by %s", APIRegistry.economy.toString(amount), sender.getCommandSenderName()));
         }
     }
@@ -54,14 +53,14 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
         {
-            ChatUtil.chatError(sender, args[0] + " not found!");
+            ChatOutputHandler.chatError(sender, args[0] + " not found!");
         }
         else
         {
             int amount = parseIntWithMin(sender, args[1], 0);
-            ChatUtil.chatConfirmation(sender,
+            ChatOutputHandler.chatConfirmation(sender,
                     Translator.format("You requested %s to pay %s", player.getCommandSenderName(), APIRegistry.economy.toString(amount)));
-            ChatUtil
+            ChatOutputHandler
                     .chatConfirmation(player, Translator.format("You have been requested to pay %s by the server", APIRegistry.economy.toString(amount)));
         }
     }
@@ -83,7 +82,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else
         {

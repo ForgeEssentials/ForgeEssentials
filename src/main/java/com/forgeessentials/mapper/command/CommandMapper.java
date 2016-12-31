@@ -10,11 +10,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commons.CommandParserArgs;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.mapper.MapperUtil;
 import com.forgeessentials.mapper.ModuleMapper;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandMapper extends ParserCommandBase
 {

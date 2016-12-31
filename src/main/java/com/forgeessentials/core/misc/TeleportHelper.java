@@ -21,15 +21,11 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -97,7 +93,7 @@ public class TeleportHelper extends ServerEventHandler
         {
             if (playerPos.distance(new WarpPoint(player)) > 0.2)
             {
-                ChatUtil.chatWarning(player, "Teleport cancelled.");
+                ChatOutputHandler.chatWarning(player, "Teleport cancelled.");
                 return true;
             }
             if (System.currentTimeMillis() - start < timeout)
@@ -105,7 +101,7 @@ public class TeleportHelper extends ServerEventHandler
                 return false;
             }
             checkedTeleport(player, point);
-            ChatUtil.chatConfirmation(player, "Teleported.");
+            ChatOutputHandler.chatConfirmation(player, "Teleported.");
             return true;
         }
 
@@ -131,7 +127,7 @@ public class TeleportHelper extends ServerEventHandler
             MinecraftServer.getServer().worldServerForDimension(point.getDimension());
             if (point.getWorld() == null)
             {
-                ChatUtil.chatError(player, Translator.translate("Unable to teleport! Target dimension does not exist"));
+                ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target dimension does not exist"));
                 return;
             }
         }
@@ -150,20 +146,20 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         // Get and check teleport cooldown
-        int teleportCooldown = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, TELEPORT_COOLDOWN), 0) * 1000;
+        int teleportCooldown = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, TELEPORT_COOLDOWN), 0) * 1000;
         if (teleportCooldown > 0)
         {
             PlayerInfo pi = PlayerInfo.get(player);
             long cooldownDuration = (pi.getLastTeleportTime() + teleportCooldown) - System.currentTimeMillis();
             if (cooldownDuration >= 0)
             {
-                ChatUtil.chatNotification(player, Translator.format("Cooldown still active. %d seconds to go.", cooldownDuration / 1000));
+                ChatOutputHandler.chatNotification(player, Translator.format("Cooldown still active. %d seconds to go.", cooldownDuration / 1000));
                 return;
             }
         }
 
         // Get and check teleport warmup
-        int teleportWarmup = Utils.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, TELEPORT_WARMUP), 0);
+        int teleportWarmup = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(ident, TELEPORT_WARMUP), 0);
         if (teleportWarmup <= 0)
         {
             checkedTeleport(player, point);
@@ -172,13 +168,13 @@ public class TeleportHelper extends ServerEventHandler
 
         if (!canTeleportTo(point))
         {
-            ChatUtil.chatError(player, Translator.translate("Unable to teleport! Target location obstructed."));
+            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed."));
             return;
         }
 
         // Setup timed teleport
         tpInfos.put(player.getPersistentID(), new TeleportInfo(player, point, teleportWarmup * 1000));
-        ChatUtil.chatNotification(player,
+        ChatOutputHandler.chatNotification(player,
                 Translator.format("Teleporting. Please stand still for %s.", ChatOutputHandler.formatTimeDurationReadable(teleportWarmup, true)));
     }
 
@@ -197,7 +193,7 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (!canTeleportTo(point))
         {
-            ChatUtil.chatError(player, Translator.translate("Unable to teleport! Target location obstructed."));
+            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed."));
             return;
         }
 
@@ -262,7 +258,7 @@ public class TeleportHelper extends ServerEventHandler
         if (e.entity instanceof EntityPlayer)
             ident = UserIdent.get((EntityPlayer) e.entity);
         else if (e.entity instanceof EntityLiving)
-            ident = FEApi.IDENT_NPC;
+            ident = APIRegistry.IDENT_NPC;
         WorldPoint pointFrom = new WorldPoint(e.world, e.x, e.y, e.z);
         WorldPoint pointTo = new WorldPoint(e.targetDimension, e.targetX, e.targetY, e.targetZ);
         if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_PORTALFROM))

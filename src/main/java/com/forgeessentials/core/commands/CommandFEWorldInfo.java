@@ -5,8 +5,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandFEWorldInfo extends ParserCommandBase
 {

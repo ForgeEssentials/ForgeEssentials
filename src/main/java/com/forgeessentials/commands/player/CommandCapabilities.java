@@ -15,11 +15,10 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -93,24 +92,24 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
 
         if (args.length == 0)
         {
-            ChatUtil.chatNotification(sender, "Possible capabilities:");
-            ChatUtil.chatNotification(sender, StringUtils.join(names.toArray(), ", "));
+            ChatOutputHandler.chatNotification(sender, "Possible capabilities:");
+            ChatOutputHandler.chatNotification(sender, StringUtils.join(names.toArray(), ", "));
         }
         else if (args.length == 1)
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                ChatUtil.chatNotification(sender, Translator.format("Capabilities for %s:", player.getCommandSenderName()));
-                ChatUtil.chatNotification(sender, names.get(0) + " = " + player.capabilities.disableDamage);
-                ChatUtil.chatNotification(sender, names.get(1) + " = " + player.capabilities.isFlying);
-                ChatUtil.chatNotification(sender, names.get(2) + " = " + player.capabilities.allowFlying);
-                ChatUtil.chatNotification(sender, names.get(3) + " = " + player.capabilities.isCreativeMode);
-                ChatUtil.chatNotification(sender, names.get(4) + " = " + player.capabilities.allowEdit);
+                ChatOutputHandler.chatNotification(sender, Translator.format("Capabilities for %s:", player.getCommandSenderName()));
+                ChatOutputHandler.chatNotification(sender, names.get(0) + " = " + player.capabilities.disableDamage);
+                ChatOutputHandler.chatNotification(sender, names.get(1) + " = " + player.capabilities.isFlying);
+                ChatOutputHandler.chatNotification(sender, names.get(2) + " = " + player.capabilities.allowFlying);
+                ChatOutputHandler.chatNotification(sender, names.get(3) + " = " + player.capabilities.isCreativeMode);
+                ChatOutputHandler.chatNotification(sender, names.get(4) + " = " + player.capabilities.allowEdit);
             }
             else
             {
-                ChatUtil.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
+                ChatOutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
             }
         }
         else if (args.length == 2)
@@ -123,25 +122,25 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))
                 {
-                    ChatUtil
+                    ChatOutputHandler
                             .chatNotification(sender, player.getCommandSenderName() + " => " + names.get(0) + " = " + player.capabilities.disableDamage);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(1)))
                 {
-                    ChatUtil.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(1) + " = " + player.capabilities.isFlying);
+                    ChatOutputHandler.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(1) + " = " + player.capabilities.isFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(2)))
                 {
-                    ChatUtil.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(2) + " = " + player.capabilities.allowFlying);
+                    ChatOutputHandler.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(2) + " = " + player.capabilities.allowFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(3)))
                 {
-                    ChatUtil
+                    ChatOutputHandler
                             .chatNotification(sender, player.getCommandSenderName() + " => " + names.get(3) + " = " + player.capabilities.isCreativeMode);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(4)))
                 {
-                    ChatUtil.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
+                    ChatOutputHandler.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
                 }
                 else
                     throw new CommandException("Capability '%s' unknown.", args[1]);
@@ -158,31 +157,31 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
                     player.capabilities.disableDamage = bln;
-                    ChatUtil.chatNotification(sender, names.get(0) + " = " + player.capabilities.disableDamage);
+                    ChatOutputHandler.chatNotification(sender, names.get(0) + " = " + player.capabilities.disableDamage);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(1)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
                     player.capabilities.isFlying = bln;
-                    ChatUtil.chatNotification(sender, names.get(1) + " = " + player.capabilities.isFlying);
+                    ChatOutputHandler.chatNotification(sender, names.get(1) + " = " + player.capabilities.isFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(2)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
                     player.capabilities.allowFlying = bln;
-                    ChatUtil.chatNotification(sender, names.get(2) + " = " + player.capabilities.allowFlying);
+                    ChatOutputHandler.chatNotification(sender, names.get(2) + " = " + player.capabilities.allowFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(3)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
                     player.capabilities.isCreativeMode = bln;
-                    ChatUtil.chatNotification(sender, names.get(3) + " = " + player.capabilities.isCreativeMode);
+                    ChatOutputHandler.chatNotification(sender, names.get(3) + " = " + player.capabilities.isCreativeMode);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(4)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
                     player.capabilities.allowEdit = bln;
-                    ChatUtil.chatNotification(sender, names.get(4) + " = " + player.capabilities.allowEdit);
+                    ChatOutputHandler.chatNotification(sender, names.get(4) + " = " + player.capabilities.allowEdit);
                 }
                 else
                     throw new CommandException("command.capabilities.capabilityUnknown", args[1]);
@@ -196,15 +195,15 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
         else if (args.length == 2)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, names);
+            return getListOfStringsMatchingLastWord(args, names);
         }
         else if (args.length == 3)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, "true", "false");
+            return getListOfStringsMatchingLastWord(args, "true", "false");
         }
         else
         {

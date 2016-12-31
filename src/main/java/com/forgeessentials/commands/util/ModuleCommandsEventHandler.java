@@ -11,14 +11,12 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.player.CommandAFK;
-import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.TaskRegistry;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEPlayerEvent.PlayerAFKEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -46,7 +44,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         {
             if (!pi.ident.hasPlayer())
                 continue;
-            Integer autoTime = Utils.tryParseInt(APIRegistry.perms.getUserPermissionProperty(pi.ident, CommandAFK.PERM_AUTOTIME));
+            Integer autoTime = ServerUtil.tryParseInt(pi.ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME));
             if (autoTime != null && autoTime > 10)
                 if (pi.getInactiveTime() / 1000 > autoTime)
                     setAfk(pi.ident);
@@ -65,20 +63,20 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         if (isAfk(player))
             return;
 
-        if (APIRegistry.perms.checkUserPermission(player, CommandAFK.PERM_AUTOKICK))
+        if (player.checkPermission(CommandAFK.PERM_AUTOKICK))
         {
             player.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.translate("You have been kicked for being AFK"));
             return;
         }
 
         PlayerAFKEvent event = new PlayerAFKEvent(player.getPlayerMP(), true);
-        FEApi.getFEEventBus().post(event);
+        APIRegistry.getFEEventBus().post(event);
 
         player.getPlayerMP().capabilities.disableDamage = true;
-        if (APIRegistry.perms.checkUserPermission(player, CommandAFK.PERM_ANNOUNCE))
-            ChatUtil.broadcast(ChatUtil.confirmation(Translator.format("Player %s is now AFK", player.getUsernameOrUuid())));
+        if (player.checkPermission(CommandAFK.PERM_ANNOUNCE))
+            ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(Translator.format("Player %s is now AFK", player.getUsernameOrUuid())));
         else
-            ChatUtil.chatConfirmation(player.getPlayer(), Translator.translate("You are now AFK"));
+            ChatOutputHandler.chatConfirmation(player.getPlayer(), Translator.translate("You are now AFK"));
 
         afkPlayers.add(player);
     }
@@ -88,7 +86,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         if (!isAfk(player))
             return;
         PlayerAFKEvent event = new PlayerAFKEvent(player.getPlayerMP(), false);
-        FEApi.getFEEventBus().post(event);
+        APIRegistry.getFEEventBus().post(event);
 
         switch (player.getPlayerMP().theItemInWorldManager.getGameType())
         {
@@ -101,10 +99,10 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
             break;
         }
 
-        if (APIRegistry.perms.checkUserPermission(player, CommandAFK.PERM_ANNOUNCE))
-            ChatUtil.broadcast(ChatUtil.confirmation(Translator.format("Player %s is not AFK any more", player.getUsernameOrUuid())));
+        if (player.checkPermission(CommandAFK.PERM_ANNOUNCE))
+            ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(Translator.format("Player %s is not AFK any more", player.getUsernameOrUuid())));
         else
-            ChatUtil.chatConfirmation(player.getPlayer(), Translator.translate("You are not AFK any more"));
+            ChatOutputHandler.chatConfirmation(player.getPlayer(), Translator.translate("You are not AFK any more"));
 
         afkPlayers.remove(player);
     }
@@ -123,13 +121,13 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         UserIdent targetIdent = UserIdent.get((EntityPlayerMP) target);
         if (target instanceof EntityPlayerMP && isAfk(targetIdent))
         {
-            ChatUtil.notification(Translator.format("Player %s is currently AFK", targetIdent.getUsernameOrUuid()));
+            ChatOutputHandler.notification(Translator.format("Player %s is currently AFK", targetIdent.getUsernameOrUuid()));
             return;
         }
         String msg = message.getUnformattedText().toLowerCase();
         for (UserIdent player : afkPlayers)
             if (msg.contains(player.getUsernameOrUuid().toLowerCase()))
-                ChatUtil.notification(Translator.format("Player %s is currently AFK", player.getUsernameOrUuid()));
+                ChatOutputHandler.notification(Translator.format("Player %s is currently AFK", player.getUsernameOrUuid()));
     }
 
     /* ------------------------------------------------------------ */
@@ -157,7 +155,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         String msg = event.component.getUnformattedText().toLowerCase();
         for (UserIdent player : afkPlayers)
             if (msg.contains(player.getUsernameOrUuid().toLowerCase()))
-                ChatUtil.notification(Translator.format("Player %s is currently AFK", player.getUsernameOrUuid()));
+                ChatOutputHandler.notification(Translator.format("Player %s is currently AFK", player.getUsernameOrUuid()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

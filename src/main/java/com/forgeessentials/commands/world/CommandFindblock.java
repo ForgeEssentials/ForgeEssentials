@@ -11,10 +11,9 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
-import com.forgeessentials.util.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 
 import cpw.mods.fml.common.registry.GameData;
 
@@ -100,19 +99,19 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
             {
                 names.add(i.getUnlocalizedName());
             }
-            return Utils.getListOfStringsMatchingLastWord(args, names);
+            return getListOfStringsMatchingLastWord(args, names);
         }
         else if (args.length == 2)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, defaultRange + "");
+            return getListOfStringsMatchingLastWord(args, defaultRange + "");
         }
         else if (args.length == 3)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, defaultCount + "");
+            return getListOfStringsMatchingLastWord(args, defaultCount + "");
         }
         else if (args.length == 4)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, defaultSpeed + "");
+            return getListOfStringsMatchingLastWord(args, defaultSpeed + "");
         }
         else
         {

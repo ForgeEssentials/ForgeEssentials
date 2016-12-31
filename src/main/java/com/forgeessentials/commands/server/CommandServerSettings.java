@@ -14,12 +14,12 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -145,7 +145,7 @@ public class CommandServerSettings extends ParserCommandBase
                 String motd = ScriptArguments.process(arguments.toString(), null);
                 if (arguments.isTabCompletion)
                     return;
-                server.func_147134_at().func_151315_a(new ChatComponentText(ChatUtil.formatColors(motd)));
+                server.func_147134_at().func_151315_a(new ChatComponentText(ChatOutputHandler.formatColors(motd)));
                 server.setMOTD(motd);
                 setProperty("motd", motd);
                 arguments.confirm("Set MotD to %s", motd);
@@ -193,7 +193,7 @@ public class CommandServerSettings extends ParserCommandBase
             break;
 
         default:
-            arguments.error(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            arguments.error(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
     }
 

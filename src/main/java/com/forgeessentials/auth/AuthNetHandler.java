@@ -2,7 +2,7 @@ package com.forgeessentials.auth;
 
 import java.util.UUID;
 
-import com.forgeessentials.api.FEApi;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.network.Packet6AuthLogin;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent;
@@ -28,7 +28,7 @@ public class AuthNetHandler implements IMessageHandler<Packet6AuthLogin, IMessag
                 if (PasswordManager.hasSession(UserIdent.get(ctx.getServerHandler().playerEntity).getUuid(), UUID.fromString(message.hash)))
                 {
                     ModuleAuth.authenticate(UserIdent.get(ctx.getServerHandler().playerEntity).getUuid());
-                    FEApi.getFEEventBus().post(new PlayerAuthLoginEvent.Success(ctx.getServerHandler().playerEntity, Source.AUTOLOGIN));
+                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(ctx.getServerHandler().playerEntity, Source.AUTOLOGIN));
                 }
             }
             break;

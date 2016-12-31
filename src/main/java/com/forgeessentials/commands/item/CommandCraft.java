@@ -7,7 +7,7 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.ContainerCheatyWorkbench;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandCraft extends ForgeEssentialsCommandBase
 {

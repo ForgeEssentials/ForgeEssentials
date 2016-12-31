@@ -14,15 +14,15 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.moduleLauncher.config.ConfigSaver;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.TaskRegistry;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.JsonParseException;
 
@@ -126,7 +126,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             parseShuffle(arguments);
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, sumCmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, sumCmd);
         }
     }
 
@@ -232,7 +232,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
     public void broadcastMessage(int index)
     {
         if (index >= 0 && index < messages.size())
-            ChatUtil.broadcast(formatMessage(messages.get(index)));
+            ChatOutputHandler.broadcast(formatMessage(messages.get(index)));
     }
 
     public void addMessage(String message)

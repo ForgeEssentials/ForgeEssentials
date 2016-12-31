@@ -19,7 +19,6 @@ import net.minecraftforge.permission.PermissionManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
@@ -28,20 +27,20 @@ import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
 import com.forgeessentials.permissions.persistence.JsonProvider;
 import com.forgeessentials.permissions.persistence.SingleFileProvider;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.DoAsCommandSender;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class PermissionCommandParser
 {
@@ -90,7 +89,7 @@ public class PermissionCommandParser
     {
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
-            arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseMainArgs);
+            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseMainArgs);
             return;
         }
         if (arguments.args.isEmpty())
@@ -188,7 +187,7 @@ public class PermissionCommandParser
                 arguments.confirm("Permissions saved to json format");
                 break;
             default:
-                throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, action);
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, action);
             }
         }
     }
@@ -202,7 +201,7 @@ public class PermissionCommandParser
         if (arguments.isTabCompletion)
         {
             if (arguments.args.size() == 1)
-                arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseListArgs);
+                arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseListArgs);
             return;
         }
         if (arguments.args.isEmpty())
@@ -216,7 +215,7 @@ public class PermissionCommandParser
             {
             case "zones":
                 if (arguments.senderPlayer == null)
-                    throw new TranslatedCommandException(MessageConstants.MSG_NO_CONSOLE_COMMAND);
+                    throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
                 listZones(arguments.senderPlayer, new WorldPoint(arguments.senderPlayer));
                 break;
             case "worlds":
@@ -224,7 +223,7 @@ public class PermissionCommandParser
                 break;
             case "perms":
                 if (arguments.senderPlayer == null)
-                    throw new TranslatedCommandException(MessageConstants.MSG_NO_CONSOLE_COMMAND);
+                    throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
                 listUserPermissions(arguments.sender, UserIdent.get(arguments.senderPlayer), true);
                 break;
             case "users":
@@ -234,7 +233,7 @@ public class PermissionCommandParser
                 listGroups(arguments.sender);
                 break;
             default:
-                throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, arg);
+                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
             }
         }
     }
@@ -247,7 +246,7 @@ public class PermissionCommandParser
 
         if (arguments.isTabCompletion)
         {
-            arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserArgs);
+            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserArgs);
             for (Zone zone : APIRegistry.perms.getZones())
             {
                 if (CommandBase.doesStringStartWith(arguments.args.peek(), zone.getName()))
@@ -341,7 +340,7 @@ public class PermissionCommandParser
         // TAB-complete command
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
-            arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserArgs);
+            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserArgs);
             if (zone != null)
                 arguments.tabCompletion.remove("zone");
             return;
@@ -409,7 +408,7 @@ public class PermissionCommandParser
             denyDefault(zone.getPlayerPermissions(ident));
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_INVALID_SYNTAX);
+            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
         }
     }
 
@@ -509,7 +508,7 @@ public class PermissionCommandParser
         if (arguments.isTabCompletion)
         {
             if (arguments.args.size() == 1)
-                arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseSpawnArgs);
+                arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseSpawnArgs);
             return;
         }
 
@@ -525,7 +524,7 @@ public class PermissionCommandParser
         case "bed":
         {
             if (arguments.args.isEmpty())
-                throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             String val = arguments.args.peek().toLowerCase();
             if (val.equals("true") | val.equals("enable"))
             {
@@ -546,7 +545,7 @@ public class PermissionCommandParser
             break;
         default:
             if (arguments.args.size() < 3)
-                throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             try
             {
                 int x = CommandBase.parseInt(arguments.sender, loc);
@@ -579,7 +578,7 @@ public class PermissionCommandParser
     {
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
-            arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserGroupArgs);
+            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserGroupArgs);
             return;
         }
         if (arguments.args.isEmpty())
@@ -687,7 +686,7 @@ public class PermissionCommandParser
         {
             if (arguments.isTabCompletion && arguments.args.size() == 1)
             {
-                arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.args.peek(), "create");
+                arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), "create");
                 return;
             }
             if (arguments.args.isEmpty())
@@ -745,7 +744,7 @@ public class PermissionCommandParser
         // TAB-complete command
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
-            arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseGroupArgs);
+            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseGroupArgs);
             if (zone != null)
                 arguments.tabCompletion.remove("zone");
             return;
@@ -825,7 +824,7 @@ public class PermissionCommandParser
             denyDefault(zone.getGroupPermissions(group));
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_INVALID_SYNTAX);
+            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
         }
     }
 
@@ -935,7 +934,7 @@ public class PermissionCommandParser
         if (arguments.isTabCompletion)
         {
             if (arguments.args.size() == 1)
-                arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseSpawnArgs);
+                arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseSpawnArgs);
             return;
         }
 
@@ -951,7 +950,7 @@ public class PermissionCommandParser
         case "bed":
         {
             if (arguments.args.isEmpty())
-                throw new TranslatedCommandException(MessageConstants.MSG_NOT_ENOUGH_ARGUMENTS);
+                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             String val = arguments.args.peek().toLowerCase();
             if (val.equals("true") | val.equals("enable"))
             {
@@ -1026,7 +1025,7 @@ public class PermissionCommandParser
         arguments.checkPermission(PERM_GROUP_PERMS);
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
-            arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseGroupIncludeArgs);
+            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseGroupIncludeArgs);
             return;
         }
 
@@ -1055,7 +1054,7 @@ public class PermissionCommandParser
 
         if (arguments.args.isEmpty())
         {
-            arguments.error(MessageConstants.MSG_INVALID_SYNTAX);
+            arguments.error(FEPermissions.MSG_INVALID_SYNTAX);
             return;
         }
 
@@ -1086,7 +1085,7 @@ public class PermissionCommandParser
             arguments.confirm("Removed group-" + displayName1 + " of %s to group %s", groupsName, group);
             break;
         default:
-            arguments.error(MessageConstants.MSG_INVALID_SYNTAX);
+            arguments.error(FEPermissions.MSG_INVALID_SYNTAX);
             return;
         }
 
@@ -1095,7 +1094,7 @@ public class PermissionCommandParser
     }
 
     // ------------------------------------------------------------
-    // -- ServerUtil
+    // -- Utils
     // ------------------------------------------------------------
 
     public static List<String> completePermission(String permission, Collection<String> permissionSet)
@@ -1123,7 +1122,7 @@ public class PermissionCommandParser
         {
             for (Zone z : APIRegistry.perms.getZones())
                 arguments.tabCompleteWord(z.getName());
-            for (String n : FEApi.namedWorldHandler.getWorldNames())
+            for (String n : APIRegistry.namedWorldHandler.getWorldNames())
                 arguments.tabCompleteWord(n);
             return null;
         }
@@ -1141,7 +1140,7 @@ public class PermissionCommandParser
             if (zone != null)
                 return zone;
 
-            WorldServer world = FEApi.namedWorldHandler.getWorld(zoneId);
+            WorldServer world = APIRegistry.namedWorldHandler.getWorld(zoneId);
             if (world != null)
                 return APIRegistry.perms.getServerZone().getWorldZone(world.provider.dimensionId);
 
@@ -1153,7 +1152,7 @@ public class PermissionCommandParser
             for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
                 if (wz.getName().equals(zoneId))
                     return wz;
-            WorldServer world = FEApi.namedWorldHandler.getWorld(zoneId);
+            WorldServer world = APIRegistry.namedWorldHandler.getWorld(zoneId);
             if (world != null)
                 return APIRegistry.perms.getServerZone().getWorldZone(world.provider.dimensionId);
 
@@ -1175,9 +1174,9 @@ public class PermissionCommandParser
     public static void listUserPermissions(ICommandSender sender, UserIdent ident, boolean showGroupPerms)
     {
         if (!PermissionManager.checkPermission(sender, PERM_LIST_PERMS))
-            throw new TranslatedCommandException(MessageConstants.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
-        ChatUtil.chatNotification(sender, ident.getUsernameOrUuid() + " permissions:");
+        ChatOutputHandler.chatNotification(sender, ident.getUsernameOrUuid() + " permissions:");
 
         Map<Zone, Map<String, String>> userPerms = ModulePermissions.permissionHelper.enumUserPermissions(ident);
         for (Entry<Zone, Map<String, String>> zone : userPerms.entrySet())
@@ -1189,10 +1188,10 @@ public class PermissionCommandParser
                     continue;
                 if (!printedZone)
                 {
-                    ChatUtil.chatWarning(sender, "Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+                    ChatOutputHandler.chatWarning(sender, "Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
                     printedZone = true;
                 }
-                ChatUtil.chatNotification(sender, "  " + perm.getKey() + " = " + perm.getValue());
+                ChatOutputHandler.chatNotification(sender, "  " + perm.getKey() + " = " + perm.getValue());
             }
         }
         if (showGroupPerms)
@@ -1213,15 +1212,15 @@ public class PermissionCommandParser
                                 continue;
                             if (!printedGroup)
                             {
-                                ChatUtil.chatWarning(sender, "Group " + group);
+                                ChatOutputHandler.chatWarning(sender, "Group " + group);
                                 printedGroup = true;
                             }
                             if (!printedZone)
                             {
-                                ChatUtil.chatWarning(sender, "  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+                                ChatOutputHandler.chatWarning(sender, "  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
                                 printedZone = true;
                             }
-                            ChatUtil.chatNotification(sender, "    " + perm.getKey() + " = " + perm.getValue());
+                            ChatOutputHandler.chatNotification(sender, "    " + perm.getKey() + " = " + perm.getValue());
                         }
                     }
                 }
@@ -1244,10 +1243,10 @@ public class PermissionCommandParser
                         continue;
                     if (!printedZone)
                     {
-                        ChatUtil.chatWarning(sender, "  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
+                        ChatOutputHandler.chatWarning(sender, "  Zone #" + zone.getKey().getId() + " " + zone.getKey().toString());
                         printedZone = true;
                     }
-                    ChatUtil.chatNotification(sender, "    " + perm.getKey() + " = " + perm.getValue());
+                    ChatOutputHandler.chatNotification(sender, "    " + perm.getKey() + " = " + perm.getValue());
                 }
             }
         }
@@ -1255,23 +1254,23 @@ public class PermissionCommandParser
 
     public static void listZones(ICommandSender sender, WorldPoint location)
     {
-        ChatUtil.chatNotification(sender, "Zones at position " + location.toString());
+        ChatOutputHandler.chatNotification(sender, "Zones at position " + location.toString());
         for (Zone zone : APIRegistry.perms.getServerZone().getZonesAt(location))
         {
             if (zone.isHidden())
                 continue;
-            ChatUtil.chatNotification(sender, "  #" + zone.getId() + " " + zone.toString());
+            ChatOutputHandler.chatNotification(sender, "  #" + zone.getId() + " " + zone.toString());
         }
     }
 
     public static void listWorlds(ICommandSender sender)
     {
-        ChatUtil.chatNotification(sender, "World IDs:");
+        ChatOutputHandler.chatNotification(sender, "World IDs:");
         for (WorldZone zone : APIRegistry.perms.getServerZone().getWorldZones().values())
         {
             if (zone.isHidden())
                 continue;
-            ChatUtil.chatNotification(sender, String.format("  %s (%d): #%d / %s", FEApi.namedWorldHandler.getWorldName(zone.getDimensionID()),
+            ChatOutputHandler.chatNotification(sender, String.format("  %s (%d): #%d / %s", APIRegistry.namedWorldHandler.getWorldName(zone.getDimensionID()),
                     zone.getDimensionID(), zone.getId(), zone.toString()));
         }
     }
@@ -1279,34 +1278,34 @@ public class PermissionCommandParser
     public static void listGroups(ICommandSender sender)
     {
         if (!PermissionManager.checkPermission(sender, PERM_LIST_GROUPS))
-            throw new TranslatedCommandException(MessageConstants.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
-        ChatUtil.chatNotification(sender, "Groups:");
+        ChatOutputHandler.chatNotification(sender, "Groups:");
         for (String group : APIRegistry.perms.getServerZone().getGroups())
-            ChatUtil.chatNotification(sender, " - " + group);
+            ChatOutputHandler.chatNotification(sender, " - " + group);
     }
 
     public static void listUsers(ICommandSender sender)
     {
         if (!PermissionManager.checkPermission(sender, PERM_LIST_USERS))
-            throw new TranslatedCommandException(MessageConstants.MSG_NO_COMMAND_PERM);
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
-        ChatUtil.chatNotification(sender, "Known players:");
+        ChatOutputHandler.chatNotification(sender, "Known players:");
         for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())
-            ChatUtil.chatNotification(sender, " - " + ident.getUsernameOrUuid());
+            ChatOutputHandler.chatNotification(sender, " - " + ident.getUsernameOrUuid());
 
-        ChatUtil.chatNotification(sender, "Online players:");
-        for (EntityPlayerMP player : Utils.getPlayerList())
-            ChatUtil.chatNotification(sender, " - " + player.getCommandSenderName());
+        ChatOutputHandler.chatNotification(sender, "Online players:");
+        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            ChatOutputHandler.chatNotification(sender, " - " + player.getCommandSenderName());
     }
 
     public static void listGroupUsers(ICommandSender sender, String group)
     {
         Set<UserIdent> players = ModulePermissions.permissionHelper.getServerZone().getGroupPlayers().get(group);
-        ChatUtil.chatNotification(sender, "Players in group " + group + ":");
+        ChatOutputHandler.chatNotification(sender, "Players in group " + group + ":");
         if (players != null)
             for (UserIdent player : players)
-                ChatUtil.chatNotification(sender, "  " + player.getUsernameOrUuid());
+                ChatOutputHandler.chatNotification(sender, "  " + player.getUsernameOrUuid());
     }
 
     public static void denyDefault(PermissionList list)

@@ -11,11 +11,10 @@ import net.minecraftforge.permission.PermissionManager;
 import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.mcstats.Metrics.Plotter;
-import com.forgeessentials.util.FECommandManager;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.permissions.commands.CommandItemPermission;
@@ -32,7 +31,7 @@ import com.forgeessentials.permissions.persistence.SQLProvider;
 import com.forgeessentials.permissions.persistence.SingleFileProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
@@ -68,7 +67,6 @@ public class ModulePermissions extends ConfigLoaderBase
         // Earliest initialization of permission system possible
         permissionHelper = new ZonedPermissionHelper();
         APIRegistry.perms = permissionHelper;
-        FEApi.perms = permissionHelper;
         PermissionManager.setPermissionProvider(permissionHelper);
     }
 
@@ -101,8 +99,8 @@ public class ModulePermissions extends ConfigLoaderBase
         // Backup FEData directory
         try
         {
-            File path = new File(Utils.getWorldPath(), "FEData");
-            File backupPath = new File(Utils.getWorldPath(), "FEData_backup");
+            File path = new File(ServerUtil.getWorldPath(), "FEData");
+            File backupPath = new File(ServerUtil.getWorldPath(), "FEData_backup");
             if (backupPath.exists())
                 FileUtils.deleteDirectory(backupPath);
             FileUtils.copyDirectory(path, backupPath);

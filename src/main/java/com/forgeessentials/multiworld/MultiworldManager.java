@@ -31,12 +31,11 @@ import net.minecraftforge.fe.event.world.WorldPreLoadEvent;
 import org.apache.commons.io.FileUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.FEApi;
 import com.forgeessentials.api.NamedWorldHandler;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.util.data.DataManager;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.multiworld.MultiworldException.Type;
 import com.forgeessentials.multiworld.gen.WorldTypeMultiworld;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -110,8 +109,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 
     public MultiworldManager()
     {
-        parentNamedWorldHandler = FEApi.namedWorldHandler;
-        FEApi.namedWorldHandler = this;
+        parentNamedWorldHandler = APIRegistry.namedWorldHandler;
+        APIRegistry.namedWorldHandler = this;
     }
 
     public void saveAll()

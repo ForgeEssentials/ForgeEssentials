@@ -17,8 +17,8 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.playerlogger.entity.Action01Block;
-import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -89,9 +89,9 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
             info.checkPoint = point;
             info.checkStartId = 0;
             if (event.action == Action.RIGHT_CLICK_BLOCK)
-                ChatUtil.chatNotification(event.entityPlayer, "Showing recent block changes (clicked side):");
+                ChatOutputHandler.chatNotification(event.entityPlayer, "Showing recent block changes (clicked side):");
             else
-                ChatUtil.chatNotification(event.entityPlayer, "Showing recent block changes (clicked block):");
+                ChatOutputHandler.chatNotification(event.entityPlayer, "Showing recent block changes (clicked block):");
         }
 
         if ((0b00100 & eventType) != 0)
@@ -100,7 +100,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
 
             if (changes.size() == 0 && !newCheck)
             {
-                ChatUtil.chatError(event.entityPlayer, "No more changes");
+                ChatOutputHandler.chatError(event.entityPlayer, "No more changes");
                 return;
             }
 
@@ -143,7 +143,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
                 default:
                     continue;
                 }
-                ChatUtil.chatConfirmation(event.entityPlayer, msg);
+                ChatOutputHandler.chatConfirmation(event.entityPlayer, msg);
             }
         }
         // Add other Action events (Command, Player, Explosion, etc)

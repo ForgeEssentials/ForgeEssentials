@@ -103,8 +103,8 @@ declare namespace fe {
 		static getPermissionProperty(player: mc.entity.EntityPlayer, permissionNode: string): string;
 		static registerPermissionDescription(permissionNode: string, description: string): void;
 		static getPermissionDescription(permissionNode: string): string;
-		static registerPermission(permission: string, level: PermissionLevel): void;
-		static registerPermission(permissionNode: string, level: PermissionLevel, description: string): void;
+		static registerPermission(permission: string, level: net.minecraftforge.permission.PermissionLevel): void;
+		static registerPermission(permissionNode: string, level: net.minecraftforge.permission.PermissionLevel, description: string): void;
 		static registerPermissionProperty(permissionNode: string, defaultValue: string): void;
 		static registerPermissionProperty(permissionNode: string, defaultValue: string, description: string): void;
 		static registerPermissionPropertyOp(permissionNode: string, defaultValue: string): void;
@@ -244,9 +244,9 @@ declare namespace fe.world {
 }
 
 declare class PermissionLevel {
-	static TRUE: PermissionLevel;
-	static OP: PermissionLevel;
-	static FALSE: PermissionLevel;
+	static TRUE: net.minecraftforge.permission.PermissionLevel;
+	static OP: net.minecraftforge.permission.PermissionLevel;
+	static FALSE: net.minecraftforge.permission.PermissionLevel;
 }
 
 

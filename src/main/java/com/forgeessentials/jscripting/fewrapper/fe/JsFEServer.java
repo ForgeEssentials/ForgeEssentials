@@ -8,7 +8,6 @@ import javax.script.ScriptException;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
-import com.forgeessentials.jscripting.wrapper.mc.JsCommandOptions;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
 import com.forgeessentials.util.PlayerInfo;
 

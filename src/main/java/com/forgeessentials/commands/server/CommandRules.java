@@ -30,12 +30,11 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 public class CommandRules extends ForgeEssentialsCommandBase implements ConfigurableCommand
@@ -187,7 +186,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         {
             for (String rule : rules)
             {
-                ChatUtil.chatNotification(sender, rule);
+                ChatOutputHandler.chatNotification(sender, rule);
             }
             return;
         }
@@ -200,7 +199,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
 
             for (int i = 0; i < rules.size(); i++)
             {
-                map.put(EnumChatFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n", EnumChatFormatting.RESET + ChatUtil.formatColors(rules.get(i)));
+                map.put(EnumChatFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n", EnumChatFormatting.RESET + ChatOutputHandler.formatColors(rules.get(i)));
             }
 
             SortedSet<String> keys = new TreeSet<>(map.keySet());
@@ -223,18 +222,18 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
 
             if (args[0].equalsIgnoreCase("help"))
             {
-                ChatUtil.chatNotification(sender, " - /rules [#]");
+                ChatOutputHandler.chatNotification(sender, " - /rules [#]");
                 if (PermissionManager.checkPermission(sender, getPermissionNode() + ".edit"))
                 {
-                    ChatUtil.chatNotification(sender, " - /rules &lt;#> [changedRule]");
-                    ChatUtil.chatNotification(sender, " - /rules add &lt;newRule>");
-                    ChatUtil.chatNotification(sender, " - /rules remove &lt;#>");
-                    ChatUtil.chatNotification(sender, " - /rules move &lt;#> &lt;#>");
+                    ChatOutputHandler.chatNotification(sender, " - /rules &lt;#> [changedRule]");
+                    ChatOutputHandler.chatNotification(sender, " - /rules add &lt;newRule>");
+                    ChatOutputHandler.chatNotification(sender, " - /rules remove &lt;#>");
+                    ChatOutputHandler.chatNotification(sender, " - /rules move &lt;#> &lt;#>");
                 }
                 return;
             }
 
-            ChatUtil.chatNotification(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            ChatOutputHandler.chatNotification(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
             return;
         }
 
@@ -249,7 +248,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             index = parseIntBounded(sender, args[1], 1, rules.size());
 
             rules.remove(index - 1);
-            ChatUtil.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
         }
         else if (args[0].equalsIgnoreCase("add"))
         {
@@ -258,9 +257,9 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             {
                 newRule = newRule + args[i] + " ";
             }
-            newRule = ChatUtil.formatColors(newRule);
+            newRule = ChatOutputHandler.formatColors(newRule);
             rules.add(newRule);
-            ChatUtil.chatConfirmation(sender, Translator.format("Rule added as # %s.", args[1]));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule added as # %s.", args[1]));
         }
         else if (args[0].equalsIgnoreCase("move"))
         {
@@ -273,12 +272,12 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             if (index < rules.size())
             {
                 rules.add(index - 1, temp);
-                ChatUtil.chatConfirmation(sender, Translator.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
+                ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
             }
             else
             {
                 rules.add(temp);
-                ChatUtil.chatConfirmation(sender, Translator.format("Rule # %1$s moved to last position.", args[1]));
+                ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to last position.", args[1]));
             }
         }
         else if (args[0].equalsIgnoreCase("change"))
@@ -290,9 +289,9 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             {
                 newRule = newRule + args[i] + " ";
             }
-            newRule = ChatUtil.formatColors(newRule);
+            newRule = ChatOutputHandler.formatColors(newRule);
             rules.set(index - 1, newRule);
-            ChatUtil.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
         }
         else
             throw new TranslatedCommandException(getCommandUsage(sender));
@@ -306,7 +305,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         {
             for (String rule : rules)
             {
-                ChatUtil.sendMessage(sender, rule);
+                ChatOutputHandler.sendMessage(sender, rule);
             }
             return;
         }
@@ -314,15 +313,15 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         {
             if (args[0].equalsIgnoreCase("help"))
             {
-                ChatUtil.chatConfirmation(sender, " - /rules [#]");
-                ChatUtil.chatConfirmation(sender, " - /rules &lt;#> [changedRule]");
-                ChatUtil.chatConfirmation(sender, " - /rules add &lt;newRule>");
-                ChatUtil.chatConfirmation(sender, " - /rules remove &lt;#>");
-                ChatUtil.chatConfirmation(sender, " - /rules move &lt;#> &lt;#>");
+                ChatOutputHandler.chatConfirmation(sender, " - /rules [#]");
+                ChatOutputHandler.chatConfirmation(sender, " - /rules &lt;#> [changedRule]");
+                ChatOutputHandler.chatConfirmation(sender, " - /rules add &lt;newRule>");
+                ChatOutputHandler.chatConfirmation(sender, " - /rules remove &lt;#>");
+                ChatOutputHandler.chatConfirmation(sender, " - /rules move &lt;#> &lt;#>");
 
             }
 
-            ChatUtil.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            ChatOutputHandler.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
             return;
         }
 
@@ -333,7 +332,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             index = parseIntBounded(sender, args[1], 1, rules.size());
 
             rules.remove(index - 1);
-            ChatUtil.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
         }
         else if (args[0].equalsIgnoreCase("add"))
         {
@@ -342,9 +341,9 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             {
                 newRule = newRule + args[i] + " ";
             }
-            newRule = ChatUtil.formatColors(newRule);
+            newRule = ChatOutputHandler.formatColors(newRule);
             rules.add(newRule);
-            ChatUtil.chatConfirmation(sender, Translator.format("Rule added as # %s.", args[1]));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule added as # %s.", args[1]));
         }
         else if (args[0].equalsIgnoreCase("move"))
         {
@@ -357,12 +356,12 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             if (index < rules.size())
             {
                 rules.add(index - 1, temp);
-                ChatUtil.chatConfirmation(sender, Translator.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
+                ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to # %2$s", args[1], args[2]));
             }
             else
             {
                 rules.add(temp);
-                ChatUtil.chatConfirmation(sender, Translator.format("Rule # %1$s moved to last position.", args[1]));
+                ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %1$s moved to last position.", args[1]));
             }
         }
         else if (args[0].equalsIgnoreCase("change"))
@@ -374,9 +373,9 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             {
                 newRule = newRule + args[i] + " ";
             }
-            newRule = ChatUtil.formatColors(newRule);
+            newRule = ChatOutputHandler.formatColors(newRule);
             rules.set(index - 1, newRule);
-            ChatUtil.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
+            ChatOutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
         }
         else
         {
@@ -390,7 +389,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     {
         if (args.length == 1)
         {
-            return Utils.getListOfStringsMatchingLastWord(args, autocomargs);
+            return getListOfStringsMatchingLastWord(args, autocomargs);
         }
         else if (args.length == 2)
         {

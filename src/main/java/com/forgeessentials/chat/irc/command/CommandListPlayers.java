@@ -6,7 +6,7 @@ import java.util.Collection;
 import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
-import com.forgeessentials.commons.CommandParserArgs;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandListPlayers extends IrcCommandParser
 {

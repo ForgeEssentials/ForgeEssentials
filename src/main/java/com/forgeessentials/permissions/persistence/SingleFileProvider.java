@@ -8,9 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import com.forgeessentials.api.permissions.ServerZone;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
-import com.forgeessentials.util.data.DataUtils;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 
 public class SingleFileProvider extends ZonePersistenceProvider
 {
@@ -19,7 +19,7 @@ public class SingleFileProvider extends ZonePersistenceProvider
 
     public SingleFileProvider()
     {
-        file = new File(Utils.getWorldPath(), "FEData/permissions.json");
+        file = new File(ServerUtil.getWorldPath(), "FEData/permissions.json");
     }
 
     public SingleFileProvider(File file)
@@ -32,7 +32,7 @@ public class SingleFileProvider extends ZonePersistenceProvider
     {
         try (BufferedReader in = new BufferedReader(new FileReader(file)))
         {
-            ServerZone serverZone = DataUtils.getGson().fromJson(in, ServerZone.class);
+            ServerZone serverZone = DataManager.getGson().fromJson(in, ServerZone.class);
             if (serverZone == null)
                 return null;
             serverZone.afterLoad();
@@ -52,7 +52,7 @@ public class SingleFileProvider extends ZonePersistenceProvider
         writeUserGroupPermissions(serverZone);
         try (BufferedWriter out = new BufferedWriter(new FileWriter(file)))
         {
-            out.write(DataUtils.getGson().toJson(serverZone));
+            out.write(DataManager.getGson().toJson(serverZone));
         }
         catch (IOException e)
         {

@@ -6,13 +6,13 @@ import net.minecraftforge.permission.PermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Translator;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandPay extends ParserCommandBase
 {
@@ -56,7 +56,7 @@ public class CommandPay extends ParserCommandBase
 
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing value");
-        Long amount = Utils.tryParseLong(arguments.remove());
+        Long amount = ServerUtil.tryParseLong(arguments.remove());
         if (amount == null)
             throw new TranslatedCommandException("Invalid number");
         if (amount < 1)
@@ -73,7 +73,7 @@ public class CommandPay extends ParserCommandBase
 
         Wallet receiver = APIRegistry.economy.getWallet(player);
         receiver.add(amount);
-        ChatUtil.chatConfirmation(player.getPlayerMP(), Translator.format("You were paid %s from %s. You now have %s", //
+        ChatOutputHandler.chatConfirmation(player.getPlayerMP(), Translator.format("You were paid %s from %s. You now have %s", //
                 APIRegistry.economy.toString(amount), arguments.sender.getCommandSenderName(), receiver.toString()));
     }
 

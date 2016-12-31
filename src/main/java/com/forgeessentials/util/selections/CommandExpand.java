@@ -8,9 +8,9 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandExpand extends ForgeEssentialsCommandBase
 {
@@ -106,7 +106,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
                     SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
                 }
             }
-            ChatUtil.chatConfirmation(player, "Region expanded by: " + expandby);
+            ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
             return;
         }
         else if (args.length == 2)
@@ -195,7 +195,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
             }
             else
                 throw new TranslatedCommandException("Invalid Direction");
-            ChatUtil.chatConfirmation(player, "Region expanded by: " + expandby);
+            ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
             return;
         }
         else

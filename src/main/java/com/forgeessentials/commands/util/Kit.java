@@ -8,9 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.commands.item.CommandKit;
-import com.forgeessentials.util.ChatUtil;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class Kit
@@ -71,7 +70,7 @@ public class Kit
             long timeout = pi.getRemainingTimeout("KIT_" + name);
             if (timeout > 0)
             {
-                ChatUtil.chatWarning(player,
+                ChatOutputHandler.chatWarning(player,
                         Translator.format("Kit cooldown active, %s to go!", ChatOutputHandler.formatTimeDurationReadable(timeout / 1000L, true)));
                 return;
             }
@@ -91,8 +90,8 @@ public class Kit
                     couldNotGiveItems |= !player.inventory.addItemStackToInventory(ItemStack.copyItemStack(armor[i]));
 
         if (couldNotGiveItems)
-            ChatUtil.chatError(player, Translator.translate("Could not give some kit items."));
-        ChatUtil.chatConfirmation(player, "Kit dropped.");
+            ChatOutputHandler.chatError(player, Translator.translate("Could not give some kit items."));
+        ChatOutputHandler.chatConfirmation(player, "Kit dropped.");
     }
 
 }

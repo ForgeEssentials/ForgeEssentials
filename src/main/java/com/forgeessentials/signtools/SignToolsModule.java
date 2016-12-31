@@ -17,10 +17,10 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
@@ -63,7 +63,7 @@ public class SignToolsModule extends ConfigLoaderBase
             {
                 if (e.text[i].contains("&"))
                 {
-                    e.text[i] = ChatUtil.formatColors(e.text[i]);
+                    e.text[i] = ChatOutputHandler.formatColors(e.text[i]);
                 }
             }
 
@@ -109,7 +109,7 @@ public class SignToolsModule extends ConfigLoaderBase
 
             else
             {
-                String send = StringUtils.join(Utils.dropFirst(signText), " ");
+                String send = StringUtils.join(ServerUtil.dropFirst(signText), " ");
                 if (send != null)
                 {
                     MinecraftServer.getServer().getCommandManager().executeCommand(e.entityPlayer, send);

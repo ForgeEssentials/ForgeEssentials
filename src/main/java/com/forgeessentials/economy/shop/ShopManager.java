@@ -36,19 +36,18 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
-import com.forgeessentials.util.data.DataManager;
+import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ProtectionEventHandler;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.data.DataUtils;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.PlayerUtil;
-import com.forgeessentials.util.TaskRegistry;
-import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.reflect.TypeToken;
 
@@ -113,7 +112,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
 
     public static void save()
     {
-        DataUtils.save(shops, getSaveFile());
+        DataManager.save(shops, getSaveFile());
     }
 
     public static void load()
@@ -123,7 +122,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
 
         Type type = new TypeToken<List<ShopData>>() {
         }.getType();
-        List<ShopData> shopList = DataUtils.load(type, getSaveFile());
+        List<ShopData> shopList = DataManager.load(type, getSaveFile());
         if (shopList == null)
             return;
         for (ShopData shop : shopList)
@@ -145,7 +144,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         UserIdent ident = UserIdent.get(event.getPlayer());
         if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_DESTROY))
         {
-            ChatUtil.chatError(event.getPlayer(), Translator.translate(MSG_MODIFY_DENIED));
+            ChatOutputHandler.chatError(event.getPlayer(), Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
             TileEntity te = event.world.getTileEntity(event.x, event.y, event.z);
             if (te != null)
@@ -154,7 +153,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         }
 
         removeShop(shop);
-        ChatUtil.chatNotification(event.getPlayer(), Translator.translate("Shop destroyed"));
+        ChatOutputHandler.chatNotification(event.getPlayer(), Translator.translate("Shop destroyed"));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -178,7 +177,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             return;
         if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.entityPlayer), new WorldPoint(event.target), PERM_DESTROY))
         {
-            ChatUtil.chatError(event.entityPlayer, Translator.translate(MSG_MODIFY_DENIED));
+            ChatOutputHandler.chatError(event.entityPlayer, Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
             return;
         }
@@ -190,7 +189,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
                 if (!shop.isValid)
                 {
                     removeShop(shop);
-                    ChatUtil.chatNotification(event.entityPlayer, Translator.translate("Shop destroyed"));
+                    ChatOutputHandler.chatNotification(event.entityPlayer, Translator.translate("Shop destroyed"));
                 }
             }
         });
@@ -206,7 +205,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             return;
         if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.entityPlayer), new WorldPoint(event.target), PERM_CREATE))
         {
-            ChatUtil.chatError(event.entityPlayer, Translator.translate(MSG_MODIFY_DENIED));
+            ChatOutputHandler.chatError(event.entityPlayer, Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
             return;
         }
@@ -250,18 +249,18 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
                 return;
             if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_CREATE))
             {
-                ChatUtil.chatError(event.entityPlayer, Translator.translate("You are not allowed to create shops!"));
+                ChatOutputHandler.chatError(event.entityPlayer, Translator.translate("You are not allowed to create shops!"));
                 return;
             }
             EntityItemFrame frame = ShopData.findFrame(point);
             if (frame == null)
             {
-                ChatUtil.chatError(event.entityPlayer, Translator.translate("No item frame found"));
+                ChatOutputHandler.chatError(event.entityPlayer, Translator.translate("No item frame found"));
                 return;
             }
             if (shopFrameMap.containsKey(frame.getPersistentID()))
             {
-                ChatUtil.chatError(event.entityPlayer, Translator.translate("Item frame already used for another shop!"));
+                ChatOutputHandler.chatError(event.entityPlayer, Translator.translate("Item frame already used for another shop!"));
                 return;
             }
             shop = new ShopData(point, frame);
@@ -270,14 +269,14 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         shop.update();
         if (!shop.isValid)
         {
-            ChatUtil.chatError(event.entityPlayer, Translator.format("Shop invalid: %s", shop.getError()));
+            ChatOutputHandler.chatError(event.entityPlayer, Translator.format("Shop invalid: %s", shop.getError()));
             if (!newShop)
                 removeShop(shop);
             return;
         }
         if (newShop)
         {
-            ChatUtil.chatConfirmation(event.entityPlayer, Translator.translate("Created shop!"));
+            ChatOutputHandler.chatConfirmation(event.entityPlayer, Translator.translate("Created shop!"));
             addShop(shop);
             return;
         }
@@ -286,7 +285,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
 
         if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_USE))
         {
-            ChatUtil.chatError(event.entityPlayer, Translator.translate("You are not allowed to use shops!"));
+            ChatOutputHandler.chatError(event.entityPlayer, Translator.translate("You are not allowed to use shops!"));
             return;
         }
 
@@ -302,8 +301,8 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             if (ModuleEconomy.countInventoryItems(event.entityPlayer, transactionStack) < transactionStack.stackSize)
             {
                 ChatComponentTranslation msg = new ChatComponentTranslation("You do not have enough %s", itemName);
-                msg.getChatStyle().setColor(ChatUtil.chatConfirmationColor);
-                ChatUtil.sendMessage(event.entityPlayer, msg);
+                msg.getChatStyle().setColor(ChatOutputHandler.chatConfirmationColor);
+                ChatOutputHandler.sendMessage(event.entityPlayer, msg);
                 return;
             }
             int removedAmount = 0;
@@ -321,20 +320,20 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
 
             String price = APIRegistry.economy.toString(shop.sellPrice);
             ChatComponentTranslation msg = new ChatComponentTranslation("Sold %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
-            msg.getChatStyle().setColor(ChatUtil.chatConfirmationColor);
-            ChatUtil.sendMessage(event.entityPlayer, msg);
+            msg.getChatStyle().setColor(ChatOutputHandler.chatConfirmationColor);
+            ChatOutputHandler.sendMessage(event.entityPlayer, msg);
         }
         else
         {
             if (useStock && shop.getStock() <= 0)
             {
-                ChatUtil.chatError(event.entityPlayer, "Shop stock is empty");
+                ChatOutputHandler.chatError(event.entityPlayer, "Shop stock is empty");
                 return;
             }
             if (!wallet.withdraw(shop.buyPrice))
             {
                 String errorMsg = Translator.format("You do not have enough %s in your wallet", APIRegistry.economy.currency(2));
-                ChatUtil.chatError(event.entityPlayer, errorMsg);
+                ChatOutputHandler.chatError(event.entityPlayer, errorMsg);
                 return;
             }
             if (useStock)
@@ -342,8 +341,8 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             PlayerUtil.give(event.entityPlayer, transactionStack);
             String price = APIRegistry.economy.toString(shop.buyPrice);
             ChatComponentTranslation msg = new ChatComponentTranslation("Bought %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
-            msg.getChatStyle().setColor(ChatUtil.chatConfirmationColor);
-            ChatUtil.sendMessage(event.entityPlayer, msg);
+            msg.getChatStyle().setColor(ChatOutputHandler.chatConfirmationColor);
+            ChatOutputHandler.sendMessage(event.entityPlayer, msg);
         }
     }
 
@@ -356,7 +355,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             shop.update();
         if (!shop.isValid)
         {
-            ChatUtil.chatError(sender, Translator.format("Shop invalid: %s", shop.getError()));
+            ChatOutputHandler.chatError(sender, Translator.format("Shop invalid: %s", shop.getError()));
             return null;
         }
         return shop;

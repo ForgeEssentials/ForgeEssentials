@@ -1,6 +1,6 @@
 package com.forgeessentials.compat.worldedit;
 
-import com.forgeessentials.api.FEApi;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -67,6 +67,6 @@ public class WEIntegration
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
-        FEApi.getFEEventBus().register(new WEIntegrationHandler());
+        APIRegistry.getFEEventBus().register(new WEIntegrationHandler());
     }
 }

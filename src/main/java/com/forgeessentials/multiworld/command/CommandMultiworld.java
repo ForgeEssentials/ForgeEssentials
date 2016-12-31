@@ -8,15 +8,15 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.WorldType;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
-import com.forgeessentials.util.ParserCommandBase;
+import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
 import com.forgeessentials.multiworld.MultiworldException;
 import com.forgeessentials.multiworld.MultiworldManager;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandMultiworld extends ParserCommandBase
 {
@@ -83,7 +83,7 @@ public class CommandMultiworld extends ParserCommandBase
             parseGamerule(arguments);
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
     }
 
@@ -106,7 +106,7 @@ public class CommandMultiworld extends ParserCommandBase
         String provider = MultiworldManager.PROVIDER_NORMAL;
         if (arguments.isTabCompletion && arguments.size() == 1)
         {
-            arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
+            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
                     .getWorldProviders().keySet());
             return;
         }
@@ -117,7 +117,7 @@ public class CommandMultiworld extends ParserCommandBase
         String worldType = WorldType.DEFAULT.getWorldTypeName();
         if (arguments.isTabCompletion && arguments.size() == 1)
         {
-            arguments.tabCompletion = Utils.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
+            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
                     .getWorldTypes().keySet());
             return;
         }

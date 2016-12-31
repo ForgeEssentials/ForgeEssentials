@@ -3,12 +3,12 @@ package com.forgeessentials.worldborder;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.util.ParserCommandBase;
-import com.forgeessentials.util.TranslatedCommandException;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandWorldBorder extends ParserCommandBase
 {
@@ -111,7 +111,7 @@ public class CommandWorldBorder extends ParserCommandBase
             parseEffect(arguments, border);
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCommand);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
         }
     }
 

@@ -18,11 +18,11 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.servervote.Votifier.VoteReceiver;
-import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -182,13 +182,13 @@ public class ModuleServerVote
         if (!ConfigServerVote.msgAll.equals(""))
         {
             MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(new S02PacketChat(new ChatComponentText(
-                    ChatUtil.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
+                    ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
         }
 
         if (!ConfigServerVote.msgVoter.equals(""))
         {
-            ChatUtil.sendMessage(player,
-                    ChatUtil.formatColors(ConfigServerVote.msgVoter.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
+            ChatOutputHandler.sendMessage(player,
+                    ChatOutputHandler.formatColors(ConfigServerVote.msgVoter.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
         }
 
         APIRegistry.scripts.runEventScripts(scriptKey, player);

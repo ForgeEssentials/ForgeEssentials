@@ -5,12 +5,12 @@ import java.util.Set;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.PermissionEvent;
-import com.forgeessentials.util.FECommandManager;
+import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.plots.command.CommandPlot;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -52,12 +52,12 @@ public class PlotManager extends ServerEventHandler
             if (groups.contains(Plot.GROUP_PLOT_OWNER))
             {
                 message += " " + Translator.translate("as owner");
-                ChatUtil.chatConfirmation(event.entityPlayer, message);
+                ChatOutputHandler.chatConfirmation(event.entityPlayer, message);
             }
             else if (groups.contains(Plot.GROUP_PLOT_USER))
             {
                 message += " " + Translator.translate("with user access");
-                ChatUtil.chatConfirmation(event.entityPlayer, message);
+                ChatOutputHandler.chatConfirmation(event.entityPlayer, message);
             }
             else if (!plot.hasOwner())
             {
@@ -65,21 +65,21 @@ public class PlotManager extends ServerEventHandler
                     message = Translator.translate("You have entered neutral plot which is open for sale");
                 else
                     message = Translator.translate("You have entered a plot owned by the server");
-                ChatUtil.chatConfirmation(event.entityPlayer, message);
+                ChatOutputHandler.chatConfirmation(event.entityPlayer, message);
             }
             else
             {
                 message += " " + Translator.format("owned by %s", plot.getOwnerName());
-                ChatUtil.chatConfirmation(event.entityPlayer, message);
+                ChatOutputHandler.chatConfirmation(event.entityPlayer, message);
             }
 
             // TODO: fee check
 
             long price = plot.getPrice();
             if (price == 0)
-                ChatUtil.chatNotification(event.entityPlayer, Translator.translate("You can buy this plot for free"));
+                ChatOutputHandler.chatNotification(event.entityPlayer, Translator.translate("You can buy this plot for free"));
             else if (price > 0)
-                ChatUtil.chatNotification(event.entityPlayer, Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
+                ChatOutputHandler.chatNotification(event.entityPlayer, Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
         }
     }
 }

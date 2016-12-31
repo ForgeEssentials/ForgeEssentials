@@ -6,9 +6,9 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.util.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandPing extends ForgeEssentialsCommandBase implements ConfigurableCommand
 {
@@ -54,13 +54,13 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     @Override
     public void processCommandPlayer(EntityPlayerMP sender, String[] args)
     {
-        ChatUtil.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
+        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
     }
 
     @Override
     public void processCommandConsole(ICommandSender sender, String[] args)
     {
-        ChatUtil.chatNotification(sender, response.replaceAll("%time", ""));
+        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
     }
 
     @Override

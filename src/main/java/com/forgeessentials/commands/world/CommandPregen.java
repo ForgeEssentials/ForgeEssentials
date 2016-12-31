@@ -18,16 +18,16 @@ import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.commons.CommandParserArgs;
-import com.forgeessentials.commons.MessageConstants;
 import com.forgeessentials.commons.selections.AreaShape;
-import com.forgeessentials.util.ParserCommandBase;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.TaskRegistry;
-import com.forgeessentials.util.TaskRegistry.TickTask;
-import com.forgeessentials.util.TranslatedCommandException;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.misc.TaskRegistry.TickTask;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.worldborder.ModuleWorldBorder;
 import com.forgeessentials.worldborder.WorldBorder;
 
@@ -133,7 +133,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             flush(arguments);
             break;
         default:
-            throw new TranslatedCommandException(MessageConstants.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
     }
 
@@ -211,7 +211,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
         ChunkProviderServer providerServer = (ChunkProviderServer) world.getChunkProvider();
 
-        double tps = Utils.getTPS();
+        double tps = ServerUtil.getTPS();
         if (totalTicks % 80 == 0)
             notifyPlayers(String.format("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ * 4, tps,
                     providerServer.getLoadedChunkCount()));
@@ -296,9 +296,9 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     public void notifyPlayers(String message)
     {
-        for (EntityPlayerMP player : Utils.getPlayerList())
+        for (EntityPlayerMP player : ServerUtil.getPlayerList())
             if (APIRegistry.perms.checkPermission(player, getPermissionNode()))
-                ChatUtil.chatNotification(player, message);
+                ChatOutputHandler.chatNotification(player, message);
     }
 
     /* ------------------------------------------------------------ */

@@ -21,8 +21,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.ChatUtil;
-import com.forgeessentials.util.data.DataUtils;
+import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 public class ScriptUpgrader
@@ -69,7 +69,7 @@ public class ScriptUpgrader
                 File outFile = new File(outDir, scriptName + ".js");
                 if (!OVERWRITE_EXISTING && outFile.exists())
                 {
-                    ChatUtil.chatNotification(sender, "Already upgraded: " + scriptName);
+                    ChatOutputHandler.chatNotification(sender, "Already upgraded: " + scriptName);
                     continue;
                 }
                 try
@@ -86,7 +86,7 @@ public class ScriptUpgrader
                         {
                             writer.write(newScript.toString());
                             count++;
-                            ChatUtil.chatConfirmation(sender, "Upgraded: " + scriptName);
+                            ChatOutputHandler.chatConfirmation(sender, "Upgraded: " + scriptName);
                         }
                         catch (IOException e)
                         {
@@ -98,13 +98,13 @@ public class ScriptUpgrader
                 {
                     String msg = String.format("Could upgrade script %s: %s", file.getName(), e.getMessage());
                     LoggingHandler.felog.error(msg);
-                    ChatUtil.chatError(sender, msg);
+                    ChatOutputHandler.chatError(sender, msg);
                 }
                 catch (Exception e)
                 {
                     String msg = String.format("Could upgrade script %s: %s", file.getName(), e.getMessage());
                     LoggingHandler.felog.error(msg);
-                    ChatUtil.chatError(sender, msg);
+                    ChatOutputHandler.chatError(sender, msg);
                 }
             }
         }
@@ -113,14 +113,14 @@ public class ScriptUpgrader
         if (commandsDir.exists())
         {
             File outDir = new File(ModuleJScripting.moduleDir, "commands");
-            Map<String, PatternCommand> patternCommands = DataUtils.loadAll(PatternCommand.class, commandsDir);
+            Map<String, PatternCommand> patternCommands = DataManager.loadAll(PatternCommand.class, commandsDir);
             for (Entry<String, PatternCommand> cmd : patternCommands.entrySet())
             {
                 String scriptName = cmd.getKey();
                 File outFile = new File(outDir, scriptName + ".js");
                 if (!OVERWRITE_EXISTING && outFile.exists())
                 {
-                    ChatUtil.chatNotification(sender, "Already upgraded: " + scriptName);
+                    ChatOutputHandler.chatNotification(sender, "Already upgraded: " + scriptName);
                     continue;
                 }
 
@@ -134,7 +134,7 @@ public class ScriptUpgrader
                         {
                             writer.write(newScript.toString());
                             count++;
-                            ChatUtil.chatConfirmation(sender, "Upgraded: " + scriptName);
+                            ChatOutputHandler.chatConfirmation(sender, "Upgraded: " + scriptName);
                         }
                         catch (IOException e)
                         {
@@ -146,12 +146,12 @@ public class ScriptUpgrader
                 {
                     String msg = String.format("Could upgrade script %s: %s", scriptName, e.getMessage());
                     LoggingHandler.felog.error(msg);
-                    ChatUtil.chatError(sender, msg);
+                    ChatOutputHandler.chatError(sender, msg);
                 }
             }
         }
 
-        ChatUtil.chatConfirmation(sender, "Upgraded " + count + " old scripts");
+        ChatOutputHandler.chatConfirmation(sender, "Upgraded " + count + " old scripts");
     }
 
     private static StringBuilder updatePatternCommand(PatternCommand cmd) throws Exception

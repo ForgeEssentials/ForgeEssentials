@@ -16,10 +16,10 @@ import net.minecraftforge.permission.PermissionManager;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.FECommandManager;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.data.DataUtils;
-import com.forgeessentials.util.Utils;
+import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
@@ -49,7 +49,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     {
         super();
         instance = this;
-        DataUtils.addDataType(new WorldBorderEffectType());
+        DataManager.addDataType(new WorldBorderEffectType());
     }
 
     public static ModuleWorldBorder getInstance()
@@ -165,7 +165,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     public void serverTickEvent(TickEvent.ServerTickEvent event)
     {
         // Tick effects
-        for (EntityPlayerMP player : Utils.getPlayerList())
+        for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
             WorldBorder border = getBorder(player.worldObj);
             if (border != null && border.isEnabled())
