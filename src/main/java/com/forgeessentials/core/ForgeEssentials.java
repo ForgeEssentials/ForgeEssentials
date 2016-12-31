@@ -42,21 +42,22 @@ import com.forgeessentials.core.mcstats.Metrics;
 import com.forgeessentials.core.mcstats.Metrics.Graph;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.FECommandManagerImpl;
-import com.forgeessentials.util.FECommandManager;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.preloader.FELaunchHandler;
-import com.forgeessentials.util.data.DataManager;
 import com.forgeessentials.util.ChatUtil;
 import com.forgeessentials.util.FEChunkLoader;
+import com.forgeessentials.util.FECommandManager;
+import com.forgeessentials.util.FeCommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.TaskRegistry;
 import com.forgeessentials.util.Translator;
 import com.forgeessentials.util.Utils;
+import com.forgeessentials.util.data.DataManager;
 import com.forgeessentials.util.events.FEModuleEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -206,6 +207,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void load(FMLInitializationEvent e)
     {
+        FeCommandParserArgs.init();
         registerCommands();
 
         // Init McStats

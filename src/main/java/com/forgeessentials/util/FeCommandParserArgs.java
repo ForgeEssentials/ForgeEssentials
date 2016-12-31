@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.forgeessentials.commons.CommandParserArgsFactory;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -22,6 +24,17 @@ import com.forgeessentials.commons.MessageConstants;
  */
 public class FeCommandParserArgs extends CommandParserArgs
 {
+    public static void init()
+    {
+        CommandParserArgs.setFactory(new CommandParserArgsFactory()
+        {
+            @Override
+            public CommandParserArgs createInstance(ICommand command, String[] args, ICommandSender sender, boolean isTabCompletion)
+            {
+                return new FeCommandParserArgs(command, args, sender, isTabCompletion);
+            }
+        });
+    }
 
     public final PermissionContext permissionContext;
 

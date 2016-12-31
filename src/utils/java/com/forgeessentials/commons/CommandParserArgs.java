@@ -45,8 +45,20 @@ public class CommandParserArgs
     public final EntityPlayerMP senderPlayer;
     public final UserIdent ident;
     public final boolean isTabCompletion;
-
+    private static CommandParserArgsFactory factory = null;
     public List<String> tabCompletion;
+
+    //Prevent the factory from being set to null
+    public static void setFactory(CommandParserArgsFactory factory)
+    {
+        if (factory != null)
+            CommandParserArgs.factory = factory;
+    }
+
+    public static CommandParserArgsFactory getFactory()
+    {
+        return factory;
+    }
 
     public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, boolean isTabCompletion)
     {
@@ -59,6 +71,19 @@ public class CommandParserArgs
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
+    }
+
+    public static CommandParserArgs createInstance(ICommand command, String[] args, ICommandSender sender)
+    {
+        return createInstance(command, args, sender, false);
+    }
+
+    public static CommandParserArgs createInstance(ICommand command, String[] args, ICommandSender sender, boolean isTabCompletion)
+    {
+        if (factory != null)
+            return factory.createInstance(command, args, sender, isTabCompletion);
+        else
+            return new CommandParserArgs(command, args, sender, isTabCompletion);
     }
 
     public CommandParserArgs(ICommand command, String[] args, ICommandSender sender)

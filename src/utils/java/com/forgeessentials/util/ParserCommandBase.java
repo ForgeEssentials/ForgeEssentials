@@ -14,7 +14,7 @@ public abstract class ParserCommandBase extends ForgeEssentialsCommandBase
     @Override
     public void processCommand(ICommandSender sender, String[] args)
     {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender);
+        CommandParserArgs arguments = CommandParserArgs.createInstance(this, args, sender);
         try
         {
             parse(arguments);
