@@ -9,7 +9,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -73,9 +73,9 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -87,8 +87,8 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_ADMIN, PermissionLevel.OP);
-        APIRegistry.perms.registerPermission(PERM_BYPASS_COOLDOWN, PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(PERM_ADMIN, DefaultPermissionLevel.OP, "Administer kits");
+        APIRegistry.perms.registerPermission(PERM_BYPASS_COOLDOWN, DefaultPermissionLevel.OP, "Bypass kit cooldown");
     }
 
     public List<String> getAvailableKits(CommandParserArgs arguments)

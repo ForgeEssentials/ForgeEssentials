@@ -9,8 +9,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -42,9 +42,9 @@ public class CommandKill extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -62,13 +62,13 @@ public class CommandKill extends ForgeEssentialsCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Use /kill on other players");
     }
 
     @Override
     public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
-        if (args.length >= 1 && PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
+        if (args.length >= 1 && PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)

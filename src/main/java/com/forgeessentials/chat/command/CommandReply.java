@@ -10,7 +10,7 @@ import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -60,9 +60,9 @@ public class CommandReply extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override

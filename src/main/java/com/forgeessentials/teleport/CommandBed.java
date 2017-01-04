@@ -12,8 +12,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
@@ -56,9 +56,9 @@ public class CommandBed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
-        if (args.length >= 1 && PermissionManager.checkPermission(sender, TeleportModule.PERM_BED_OTHERS))
+        if (args.length >= 1 && PermissionAPI.hasPermission(sender, TeleportModule.PERM_BED_OTHERS))
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)

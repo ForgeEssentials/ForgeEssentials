@@ -13,7 +13,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.world.SignEditEvent;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.PermissionAPI;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -107,11 +108,11 @@ public class MixinNetHandlerPlayServer
     )
     private boolean checkCommandBlockPermission(EntityPlayerMP player, int level, String command)
     {
-        return PermissionManager.checkPermission(player, PermissionManager.PERM_COMMANDBLOCK);
+        return PermissionAPI.hasPermission(player, "commandblock");
     }
 
     /**
-     * Check if the player is in {@link WorldSettings.GameType#CREATIVE}.
+     * Check if the player is in creative mode.
      *
      * @param capabilities the player capabilities
      * @return always {@code true}

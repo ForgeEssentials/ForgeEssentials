@@ -4,7 +4,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -55,9 +55,9 @@ public class CommandExpandY extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
 }

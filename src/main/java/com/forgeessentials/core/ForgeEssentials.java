@@ -31,8 +31,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
@@ -62,6 +61,7 @@ import com.forgeessentials.core.mcstats.Metrics;
 import com.forgeessentials.core.mcstats.Metrics.Graph;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
@@ -353,23 +353,23 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     protected void registerPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_VERSIONINFO, PermissionLevel.OP, "Shows notification to the player if FE version is outdated");
+        APIRegistry.perms.registerPermission(PERM_VERSIONINFO, DefaultPermissionLevel.OP, "Shows notification to the player if FE version is outdated");
 
-        APIRegistry.perms.registerPermission("mc.help", PermissionLevel.TRUE, "Help command");
+        APIRegistry.perms.registerPermission("mc.help", DefaultPermissionLevel.ALL, "Help command");
 
         // Teleport
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_COOLDOWN, "5", "Allow bypassing teleport cooldown");
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_WARMUP, "3", "Allow bypassing teleport warmup");
         APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_COOLDOWN, "0");
         APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_WARMUP, "0");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_FROM, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally from a dimension");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_TO, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally to a dimension");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_PORTALFROM, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally from a dimension via a portal");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_PORTALTO, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally to a dimension via a portal (target coordinates are origin for vanilla portals)");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, PermissionLevel.TRUE, "Allow being teleported from a certain location / dimension");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_TO, PermissionLevel.TRUE, "Allow being teleported to a certain location / dimension");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALFROM, PermissionLevel.TRUE, "Allow being teleported from a certain location / dimension via a portal");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALTO, PermissionLevel.TRUE, "Allow being teleported to a certain location / dimension via a portal");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_FROM, DefaultPermissionLevel.ALL, "Allow teleporting cross-dimensionally from a dimension");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_TO, DefaultPermissionLevel.ALL, "Allow teleporting cross-dimensionally to a dimension");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_PORTALFROM, DefaultPermissionLevel.ALL, "Allow teleporting cross-dimensionally from a dimension via a portal");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_PORTALTO, DefaultPermissionLevel.ALL, "Allow teleporting cross-dimensionally to a dimension via a portal (target coordinates are origin for vanilla portals)");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, DefaultPermissionLevel.ALL, "Allow being teleported from a certain location / dimension");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_TO, DefaultPermissionLevel.ALL, "Allow being teleported to a certain location / dimension");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALFROM, DefaultPermissionLevel.ALL, "Allow being teleported from a certain location / dimension via a portal");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALTO, DefaultPermissionLevel.ALL, "Allow being teleported to a certain location / dimension via a portal");
 
         CommandFeSettings.addAlias("Teleport", "warmup", TeleportHelper.TELEPORT_WARMUP);
         CommandFeSettings.addAlias("Teleport", "cooldown", TeleportHelper.TELEPORT_COOLDOWN);

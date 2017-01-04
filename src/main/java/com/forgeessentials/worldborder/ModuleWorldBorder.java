@@ -10,8 +10,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.Point;
@@ -30,6 +28,8 @@ import com.forgeessentials.worldborder.effect.EffectBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 @FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class)
 public class ModuleWorldBorder extends ServerEventHandler
@@ -67,7 +67,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     public void serverStartingEvent(FEModuleServerInitEvent event)
     {
         APIRegistry.perms.registerPermissionDescription(PERM, "Worldborder permissions");
-        APIRegistry.perms.registerPermission(PERM_BYPASS, PermissionLevel.FALSE, "Ignore worldborders if granted");
+        APIRegistry.perms.registerPermission(PERM_BYPASS, DefaultPermissionLevel.NONE, "Ignore worldborders if granted");
     }
 
     @SubscribeEvent
@@ -123,7 +123,7 @@ public class ModuleWorldBorder extends ServerEventHandler
 
             // Check which effects are active
             Set<WorldBorderEffect> newActiveEffects = new HashSet<>();
-            if (!PermissionManager.checkPermission(player, PERM_BYPASS))
+            if (!PermissionAPI.hasPermission(player, PERM_BYPASS))
             {
                 if (minBorderDistance <= 0)
                     new EffectBlock().playerMove(border, event);

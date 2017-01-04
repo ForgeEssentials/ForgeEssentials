@@ -5,7 +5,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -41,9 +41,9 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override

@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
@@ -21,6 +19,8 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 @FEModule(name = "Tickets", parentMod = ForgeEssentials.class)
 public class ModuleTickets
@@ -46,11 +46,11 @@ public class ModuleTickets
     public void serverStarting(FEModuleServerInitEvent e)
     {
         loadAll();
-        APIRegistry.perms.registerPermission(PERMBASE + ".new", PermissionLevel.TRUE);
-        APIRegistry.perms.registerPermission(PERMBASE + ".view", PermissionLevel.TRUE);
+        APIRegistry.perms.registerPermission(PERMBASE + ".new", DefaultPermissionLevel.ALL, "Create new tickets");
+        APIRegistry.perms.registerPermission(PERMBASE + ".view", DefaultPermissionLevel.ALL, "View tickets");
 
-        APIRegistry.perms.registerPermission(PERMBASE + ".tp", PermissionLevel.TRUE);
-        APIRegistry.perms.registerPermission(PERMBASE + ".admin", PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(PERMBASE + ".tp", DefaultPermissionLevel.ALL, "Teleport to ticket location");
+        APIRegistry.perms.registerPermission(PERMBASE + ".admin", DefaultPermissionLevel.OP, "Administer tickets");
     }
 
     @SubscribeEvent
@@ -101,7 +101,7 @@ public class ModuleTickets
     @SubscribeEvent
     public void loadData(PlayerEvent.PlayerLoggedInEvent e)
     {
-        if (PermissionManager.checkPermission(e.player, ModuleTickets.PERMBASE + ".admin"))
+        if (PermissionAPI.hasPermission(e.player, ModuleTickets.PERMBASE + ".admin"))
         {
             if (!ModuleTickets.ticketList.isEmpty())
             {

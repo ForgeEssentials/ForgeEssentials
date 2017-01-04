@@ -1,14 +1,14 @@
 package com.forgeessentials.jscripting.fewrapper;
 
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 public class JsPermissionLevel
 {
 
     private JsPermissionLevel() {}
 
-    public static final PermissionLevel TRUE = PermissionLevel.TRUE;
-    public static final PermissionLevel OP = PermissionLevel.OP;
-    public static final PermissionLevel FALSE = PermissionLevel.FALSE;
+    public static final DefaultPermissionLevel TRUE = DefaultPermissionLevel.ALL;
+    public static final DefaultPermissionLevel OP = DefaultPermissionLevel.OP;
+    public static final DefaultPermissionLevel FALSE = DefaultPermissionLevel.NONE;
 
 }

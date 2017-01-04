@@ -4,8 +4,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -55,13 +55,13 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_OTHERS, PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(PERM_OTHERS, DefaultPermissionLevel.OP, "Edit other players' nicknames");
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
         }
         else if (args.length == 2)
         {
-            if (!PermissionManager.checkPermission(sender, PERM_OTHERS))
+            if (!PermissionAPI.hasPermission(sender, PERM_OTHERS))
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
             EntityPlayerMP player = getPlayer(server, sender, args[0]);

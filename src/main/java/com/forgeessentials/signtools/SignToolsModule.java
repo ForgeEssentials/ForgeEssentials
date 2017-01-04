@@ -12,8 +12,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fe.event.world.SignEditEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -40,7 +40,7 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void registerPerms(FEModuleServerInitEvent e)
     {
-        PermissionManager.registerPermission(COLORIZE_PERM, PermissionLevel.TRUE);
+        PermissionAPI.registerNode(COLORIZE_PERM, DefaultPermissionLevel.ALL, "Permission to colourize signs");
     }
 
     /**
@@ -51,7 +51,7 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void onSignEdit(SignEditEvent e)
     {
-        if (!PermissionManager.checkPermission(e.editor, COLORIZE_PERM))
+        if (!PermissionAPI.hasPermission(e.editor, COLORIZE_PERM))
         {
             return;
         }
@@ -90,7 +90,7 @@ public class SignToolsModule extends ConfigLoaderBase
                 if(event.getEntityPlayer().getHeldItemMainhand()!= null)
                 {
                     if (event.getEntityPlayer().getHeldItemMainhand().getItem().equals(Items.SIGN) &&
-                            PermissionManager.checkPermission(event.getEntityPlayer(), "fe.protection.use.minecraft.sign"))
+                            PermissionAPI.hasPermission(event.getEntityPlayer(), "fe.protection.use.minecraft.sign"))
                     {
                         event.getEntityPlayer().openEditSign((TileEntitySign) te);
                         event.setCanceled(true);

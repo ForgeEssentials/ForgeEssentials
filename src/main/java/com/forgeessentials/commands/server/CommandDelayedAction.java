@@ -5,7 +5,7 @@ import java.util.TimerTask;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,9 +37,9 @@ public class CommandDelayedAction extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override

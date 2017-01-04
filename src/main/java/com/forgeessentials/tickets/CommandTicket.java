@@ -12,8 +12,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -189,7 +189,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
     {
         if (sender instanceof EntityPlayer)
         {
-            return PermissionManager.checkPermission((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm);
+            return PermissionAPI.hasPermission((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm);
         }
         else
         {
@@ -213,9 +213,9 @@ public class CommandTicket extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
 
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 }

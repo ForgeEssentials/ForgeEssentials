@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -186,7 +186,7 @@ public class ScriptUpgrader
         out.append("\n\tname: '" + cmd.name + "',");
         out.append("\n\tusage: '" + cmd.usage + "',");
         out.append("\n\tpermission: " + cmd.permission + ",");
-        out.append("\n\topOnly: " + (cmd.permissionLevel == PermissionLevel.OP ? "true" : "false") + ",");
+        out.append("\n\topOnly: " + (cmd.permissionLevel == DefaultPermissionLevel.OP ? "true" : "false") + ",");
         out.append("\n\tprocessCommand: cmd,");
         // out.append("\n\ttabComplete: processCommand,");
         out.append("\n});");
@@ -595,8 +595,8 @@ public class ScriptUpgrader
         protected String name;
         protected String usage;
         protected String permission;
-        protected Map<String, PermissionLevel> extraPermissions = new HashMap<>();
-        protected PermissionLevel permissionLevel = PermissionLevel.TRUE;
+        protected Map<String, DefaultPermissionLevel> extraPermissions = new HashMap<>();
+        protected DefaultPermissionLevel permissionLevel = DefaultPermissionLevel.ALL;
         protected Map<String, List<String>> patterns = new HashMap<>();
     }
 

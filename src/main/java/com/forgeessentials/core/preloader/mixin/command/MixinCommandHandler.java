@@ -3,12 +3,16 @@ package com.forgeessentials.core.preloader.mixin.command;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+
+import com.forgeessentials.core.misc.PermissionManager;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @Mixin(CommandHandler.class)
@@ -33,7 +37,7 @@ public class MixinCommandHandler
     )
     private boolean hasPermissionBeginWith(ICommand command, ICommandSender sender)
     {
-        return PermissionManager.checkPermission(sender, command);
+        return PermissionAPI.hasPermission(sender, command);
     }
     */
 
@@ -73,7 +77,9 @@ public class MixinCommandHandler
     )
     private boolean hasPermissionAll(ICommand command, MinecraftServer server, ICommandSender sender)
     {
-        return PermissionManager.checkPermission(sender, command);
+        if (sender instanceof MinecraftServer || sender instanceof CommandBlockBaseLogic)
+            return true;
+        return PermissionAPI.hasPermission((EntityPlayer) sender, PermissionManager.getCommandPermission(command));
     }
 
 }

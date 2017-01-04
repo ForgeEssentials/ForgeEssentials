@@ -20,11 +20,11 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
-import net.minecraftforge.permission.PermissionLevel;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -129,7 +129,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         APIRegistry.perms.registerPermissionDescription(PERM_PRICE, "Default prices for items in economy");
 
         APIRegistry.perms.registerPermissionDescription(PERM_BOUNTY, "Bounty for killing entities (ex.: fe.economy.bounty.Skeleton = 5)");
-        APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, PermissionLevel.TRUE, "Whether to show a message if a bounty is given");
+        APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, DefaultPermissionLevel.ALL, "Whether to show a message if a bounty is given");
         for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.NAME_TO_CLASS).entrySet())
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
                 APIRegistry.perms.registerPermissionProperty(PERM_BOUNTY + "." + e.getKey(), "0");

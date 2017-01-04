@@ -2,7 +2,7 @@ package com.forgeessentials.worldborder;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.AreaShape;
@@ -39,9 +39,9 @@ public class CommandWorldBorder extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override

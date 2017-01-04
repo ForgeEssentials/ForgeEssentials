@@ -10,8 +10,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -66,9 +66,9 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Apply capabilities to others");
     }
 
     @Override
@@ -115,7 +115,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
         }
         else if (args.length == 2)
         {
-            if (sender instanceof EntityPlayer && !PermissionManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
+            if (sender instanceof EntityPlayer && !PermissionAPI.hasPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
                 throw new TranslatedCommandException("You don't have permissions for that.");
 
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
@@ -147,7 +147,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
         }
         else if (args.length == 3)
         {
-            if (sender instanceof EntityPlayer && !PermissionManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
+            if (sender instanceof EntityPlayer && !PermissionAPI.hasPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
                 throw new TranslatedCommandException("You don't have permissions for that.");
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)

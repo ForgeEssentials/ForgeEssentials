@@ -16,13 +16,14 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.PermissionManager;
 
 public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 {
@@ -71,9 +72,9 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -103,7 +104,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
         for (Object cmdObj : server.getCommandManager().getCommands().values())
         {
             ICommand cmd = (ICommand) cmdObj;
-            if (!PermissionManager.checkPermission(sender, cmd))
+            if (!PermissionAPI.hasPermission(sender, PermissionManager.getCommandPermission(cmd)))
                 continue;
 
             Set<String> commands = new HashSet<>();

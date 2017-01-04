@@ -29,7 +29,7 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -178,9 +178,9 @@ public class ModuleChat
         FECommandManager.registerCommand(new CommandIrcBot());
 
         APIRegistry.perms.registerPermissionDescription(PERM, "Chat permissions");
-        APIRegistry.perms.registerPermission(PERM_CHAT, PermissionLevel.TRUE, "Allow players to use the public chat");
-        APIRegistry.perms.registerPermission(PERM_COLOR, PermissionLevel.TRUE, "Allow players to use colors in the public chat");
-        APIRegistry.perms.registerPermission(PERM_URL, PermissionLevel.TRUE, "Allow players to post clickable links in public chat.");
+        APIRegistry.perms.registerPermission(PERM_CHAT, DefaultPermissionLevel.ALL, "Allow players to use the public chat");
+        APIRegistry.perms.registerPermission(PERM_COLOR, DefaultPermissionLevel.ALL, "Allow players to use colors in the public chat");
+        APIRegistry.perms.registerPermission(PERM_URL, DefaultPermissionLevel.ALL, "Allow players to post clickable links in public chat.");
         APIRegistry.perms.registerPermissionProperty(PERM_TEXTFORMAT, "", "Textformat colors. USE ONLY THE COLOR CHARACTERS AND NO &");
         APIRegistry.perms.registerPermissionProperty(PERM_PLAYERFORMAT, "", "Text to show in front of the player name in chat messages");
         APIRegistry.perms.registerPermissionProperty(PERM_RANGE, "", "Send chat messages only to players in this range of the sender");

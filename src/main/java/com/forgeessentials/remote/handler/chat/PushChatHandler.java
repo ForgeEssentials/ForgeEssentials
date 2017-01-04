@@ -9,7 +9,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
@@ -35,7 +35,7 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
     public PushChatHandler()
     {
         super(PERM, Request.class);
-        APIRegistry.perms.registerPermission(PERM, PermissionLevel.TRUE, "Allows requesting chat push messages");
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL, "Allows requesting chat push messages");
         MinecraftForge.EVENT_BUS.register(this);
         instance = this;
     }

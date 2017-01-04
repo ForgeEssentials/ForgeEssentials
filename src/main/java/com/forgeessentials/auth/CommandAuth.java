@@ -11,8 +11,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -65,7 +65,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException("command.auth.usage");
         }
 
-        boolean hasAdmin = PermissionManager.checkPermission(sender, getPermissionNode() + ".admin");
+        boolean hasAdmin = PermissionAPI.hasPermission(sender, getPermissionNode() + ".admin");
 
         // one arg? must be help.
         if (args.length == 1)
@@ -382,9 +382,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
 }

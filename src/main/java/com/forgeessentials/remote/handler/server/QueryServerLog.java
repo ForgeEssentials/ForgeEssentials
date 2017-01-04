@@ -2,7 +2,7 @@ package com.forgeessentials.remote.handler.server;
 
 import java.util.List;
 
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
@@ -23,7 +23,7 @@ public class QueryServerLog extends GenericRemoteHandler<Integer>
     public QueryServerLog()
     {
         super(PERM, Integer.class);
-        APIRegistry.perms.registerPermission(PERM, PermissionLevel.OP, "Allows querying server log");
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows querying server log");
     }
 
     @Override

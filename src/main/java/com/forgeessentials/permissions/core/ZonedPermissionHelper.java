@@ -18,6 +18,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.command.ICommandSender;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.entity.Entity;
@@ -26,10 +28,10 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.permission.PermissionContext;
-import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -57,12 +59,19 @@ import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.authlib.GameProfile;
 
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.context.AreaContext;
+import net.minecraftforge.server.permission.context.BlockPosContext;
+import net.minecraftforge.server.permission.context.ContextKey;
+import net.minecraftforge.server.permission.context.ContextKeys;
+import net.minecraftforge.server.permission.context.IContext;
 
 /**
  * Main permission management class
@@ -659,12 +668,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         rootZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, permissionNode, defaultValue);
     }
 
-    @Override
-    public void registerPermission(String permissionNode, PermissionLevel permLevel)
+    @Deprecated
+    public void registerPermission(String permissionNode, DefaultPermissionLevel permLevel)
     {
-        if (permLevel == PermissionLevel.FALSE)
+        if (permLevel == DefaultPermissionLevel.NONE)
             rootZone.setGroupPermission(Zone.GROUP_DEFAULT, permissionNode, false);
-        else if (permLevel == PermissionLevel.TRUE)
+        else if (permLevel == DefaultPermissionLevel.ALL)
             rootZone.setGroupPermission(Zone.GROUP_DEFAULT, permissionNode, true);
         else
         {
@@ -680,7 +689,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     }
 
     @Override
-    public void registerPermission(String permissionNode, PermissionLevel level, String description)
+    public void registerPermission(String permissionNode, DefaultPermissionLevel level, String description)
+    {
+        registerPermission(permissionNode, level);
+        registerPermissionDescription(permissionNode, description);
+    }
+
+    @Override
+    public void registerNode(String permissionNode, DefaultPermissionLevel level, String description)
     {
         registerPermission(permissionNode, level);
         registerPermissionDescription(permissionNode, description);
@@ -735,41 +751,54 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     // ------------------------------------------------------------
 
     @Override
-    public boolean checkPermission(PermissionContext context, String permissionNode)
+    public boolean checkPermission(GameProfile player, String permissionNode, @Nullable IContext context)
     {
-        if (context.isConsole())
-            return true;
-
-        EntityPlayer player = context.getPlayer();
-        UserIdent ident = player == null ? null : UserIdent.get(player);
-        int dim = context.getDimension();
+        UserIdent ident = player == null ? null : UserIdent.get(player.getId());
+        int dim = context.getWorld().provider.getDimension();
         WorldPoint loc = null;
         WorldArea area = null;
 
-        if (context.getSender() instanceof DoAsCommandSender)
-            ident = ((DoAsCommandSender) context.getSender()).getUserIdent();
-        else if (context.getSender() instanceof CommandBlockBaseLogic)
-            ident = APIRegistry.IDENT_CMDBLOCK;
-        else if (context.isRCon())
-            ident = APIRegistry.IDENT_RCON;
+        if (context != null)
+        {
+            if (context instanceof AreaContext)
+            {
 
-        if (context.getTargetLocationStart() != null)
-        {
-            if (context.getTargetLocationEnd() != null)
-                area = new WorldArea(dim, new Point(context.getTargetLocationStart()), new Point(context.getTargetLocationEnd()));
-            else
-                loc = new WorldPoint(dim, context.getTargetLocationStart());
+                if (context.getTargetLocationStart() != null)
+                {
+                    if (context.getTargetLocationEnd() != null)
+                        area = new WorldArea(dim, new Point(context.getTargetLocationStart()), new Point(context.getTargetLocationEnd()));
+                    else
+                        loc = new WorldPoint(dim, context.getTargetLocationStart());
+                }
+                else if (context.getSourceLocationStart() != null)
+                {
+                    if (context.getSourceLocationEnd() != null)
+                        area = new WorldArea(dim, new Point(context.getSourceLocationStart()), new Point(context.getSourceLocationEnd()));
+                    else
+                        loc = new WorldPoint(dim, context.getSourceLocationStart());
+                }
+            }
+            else if (context instanceof BlockPosContext)
+            {
+                loc = ((BlockPosContext) context).get(ContextKeys.POS);
+            }
         }
-        else if (context.getSourceLocationStart() != null)
-        {
-            if (context.getSourceLocationEnd() != null)
-                area = new WorldArea(dim, new Point(context.getSourceLocationStart()), new Point(context.getSourceLocationEnd()));
-            else
-                loc = new WorldPoint(dim, context.getSourceLocationStart());
-        }
+
 
         SortedSet<GroupEntry> groups = getPlayerGroups(ident);
         return checkBooleanPermission(getPermission(ident, loc, area, GroupEntry.toList(groups), permissionNode, false));
+    }
+
+    @Override
+    public Collection<String> getRegisteredNodes()
+    {
+        return getRegisteredPermissions().toList();
+    }
+
+    @Override
+    public String getNodeDescription(String node)
+    {
+        return getPermissionDescription(node);
     }
 
     // ------------------------------------------------------------

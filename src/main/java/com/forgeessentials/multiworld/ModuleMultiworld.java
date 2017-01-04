@@ -1,8 +1,6 @@
 package com.forgeessentials.multiworld;
 
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -15,6 +13,8 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 /**
  * 
@@ -47,9 +47,9 @@ public class ModuleMultiworld extends ConfigLoaderBase
     {
         multiworldManager.load();
 
-        PermissionManager.registerPermission(PERM_MANAGE, PermissionLevel.OP);
-        PermissionManager.registerPermission(PERM_DELETE, PermissionLevel.OP);
-        PermissionManager.registerPermission(PERM_LIST, PermissionLevel.TRUE);
+        PermissionAPI.registerNode(PERM_MANAGE, DefaultPermissionLevel.OP, "Manage multiworlds");
+        PermissionAPI.registerNode(PERM_DELETE, DefaultPermissionLevel.OP, "Delete multiworlds");
+        PermissionAPI.registerNode(PERM_LIST, DefaultPermissionLevel.ALL, "List multiworlds on the server");
     }
 
     @SubscribeEvent

@@ -7,8 +7,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
@@ -16,6 +15,7 @@ import com.forgeessentials.api.remote.GenericRemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
+import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.remote.RemoteCommandSender;
 import com.forgeessentials.remote.RemoteMessageID;
@@ -29,7 +29,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
     public CommandHandler()
     {
         super(PERM, String.class);
-        APIRegistry.perms.registerPermission(PERM, PermissionLevel.TRUE, "Allows to run commands remotely");
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL, "Allows to run commands remotely");
     }
 
     @Override

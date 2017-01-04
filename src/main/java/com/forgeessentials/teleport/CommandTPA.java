@@ -3,7 +3,7 @@ package com.forgeessentials.teleport;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -41,9 +41,9 @@ public class CommandTPA extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -55,8 +55,8 @@ public class CommandTPA extends ParserCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_HERE, PermissionLevel.TRUE, "Allow teleporting other players to your own location (inversed TPA)");
-        APIRegistry.perms.registerPermission(PERM_LOCATION, PermissionLevel.OP, "Allow teleporting other players to any location");
+        APIRegistry.perms.registerPermission(PERM_HERE, DefaultPermissionLevel.ALL, "Allow teleporting other players to your own location (inversed TPA)");
+        APIRegistry.perms.registerPermission(PERM_LOCATION, DefaultPermissionLevel.OP, "Allow teleporting other players to any location");
     }
 
     @Override

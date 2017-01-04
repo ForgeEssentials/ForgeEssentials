@@ -11,7 +11,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
@@ -36,7 +36,7 @@ public class QueryChatHandler extends GenericRemoteHandler<Request>
     public QueryChatHandler()
     {
         super(PERM, Request.class);
-        APIRegistry.perms.registerPermission(PERM, PermissionLevel.TRUE, "Allows querying chat messages");
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL, "Allows querying chat messages");
         MinecraftForge.EVENT_BUS.register(this);
     }
 

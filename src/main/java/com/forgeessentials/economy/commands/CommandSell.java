@@ -4,7 +4,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.economy.Wallet;
@@ -32,9 +32,9 @@ public class CommandSell extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class CommandSell extends ParserCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".noconfirm", PermissionLevel.FALSE, "Do not confirm selling items to the server.");
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".noconfirm", DefaultPermissionLevel.NONE, "Do not confirm selling items to the server.");
     }
 
     @Override

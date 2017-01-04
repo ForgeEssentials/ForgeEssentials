@@ -31,7 +31,7 @@ import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -97,9 +97,9 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     {
         load();
         APIRegistry.perms.registerPermissionDescription(PERM_BASE, "Shop permissions");
-        APIRegistry.perms.registerPermission(PERM_USE, PermissionLevel.TRUE, "Allow usage of shops");
-        APIRegistry.perms.registerPermission(PERM_CREATE, PermissionLevel.OP, "Allow creating shops");
-        APIRegistry.perms.registerPermission(PERM_DESTROY, PermissionLevel.OP, "Allow destroying shops");
+        APIRegistry.perms.registerPermission(PERM_USE, DefaultPermissionLevel.ALL, "Allow usage of shops");
+        APIRegistry.perms.registerPermission(PERM_CREATE, DefaultPermissionLevel.OP, "Allow creating shops");
+        APIRegistry.perms.registerPermission(PERM_DESTROY, DefaultPermissionLevel.OP, "Allow destroying shops");
     }
 
     public static File getSaveFile()

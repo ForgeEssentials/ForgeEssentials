@@ -17,10 +17,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
+import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.minecraftforge.permission.PermissionManager;
-import net.minecraftforge.permission.PermissionObject;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -28,7 +29,7 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.LoggingHandler;
 
-public abstract class ForgeEssentialsCommandBase extends CommandBase implements PermissionObject
+public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
 
     public List<String> aliases = new ArrayList<>();
@@ -178,7 +179,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
     {
         if (getPermissionNode() == null || getPermissionNode().isEmpty())
             return true;
-        return PermissionManager.checkPermission(sender, this, getPermissionNode());
+        if (sender instanceof MinecraftServer || sender instanceof CommandBlockBaseLogic)
+            return true;
+        return PermissionAPI.hasPermission(UserIdent.get(sender.getName()).getPlayer(), getPermissionNode());
     }
 
     // ------------------------------------------------------------
@@ -270,5 +273,12 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
             return parseInt(string);
         }
     }
+
+    /**
+     * formerly of PermissionObject
+     */
+    public abstract String getPermissionNode();
+
+    public abstract DefaultPermissionLevel getPermissionLevel();
 
 }

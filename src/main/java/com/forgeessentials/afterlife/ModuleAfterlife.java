@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -69,9 +69,9 @@ public class ModuleAfterlife extends ServerEventHandler
         APIRegistry.perms.registerPermissionDescription(PERM_HP, "Respawn HP");
         APIRegistry.perms.registerPermissionDescription(PERM_FOOD, "Respawn food");
 
-        APIRegistry.perms.registerPermission(PERM_DEATHCHEST, PermissionLevel.TRUE, "Allow creation of deathchests");
-        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_FENCE, PermissionLevel.TRUE, "Put the skull on a spike");
-        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_BYPASS, PermissionLevel.OP, "Bypass grave protection");
+        APIRegistry.perms.registerPermission(PERM_DEATHCHEST, DefaultPermissionLevel.ALL, "Allow creation of deathchests");
+        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_FENCE, DefaultPermissionLevel.ALL, "Put the skull on a spike");
+        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_BYPASS, DefaultPermissionLevel.OP, "Bypass grave protection");
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_BLOCK, "", "If set, use this block ID for graves");
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_XP, "0.25",
                 "Ratio of XP that you want to allow someone to keep in a grave. 1 keeps all XP, 0 disables XP recovery.");

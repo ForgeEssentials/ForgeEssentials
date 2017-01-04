@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -57,9 +57,9 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
     {
         if (args.length >= 1)
         {
-            if (!PermissionManager.checkPermission(sender, TeleportModule.PERM_SPAWN_OTHERS))
+            if (!PermissionAPI.hasPermission(sender, TeleportModule.PERM_SPAWN_OTHERS))
             {
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
             }
@@ -110,11 +110,6 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
         if (args.length < 1)
         {
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-        }
-
-        if (!PermissionManager.checkPermission(sender, this, TeleportModule.PERM_SPAWN_OTHERS))
-        {
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         }
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)

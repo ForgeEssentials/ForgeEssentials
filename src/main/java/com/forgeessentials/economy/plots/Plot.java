@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -422,7 +422,7 @@ public class Plot
         perms.registerPermissionDescription(PERM, "Plot permissions");
         perms.registerPermissionProperty(PERM_PRICE, "1", "Price multiplier for plots (plot size will be multiplied with this value)");
         // perms.registerPermissionPropertyOp(PERM_PRICE, "0");
-        perms.registerPermission(PERM_COLUMN, PermissionLevel.TRUE,
+        perms.registerPermission(PERM_COLUMN, DefaultPermissionLevel.ALL,
                 "If true, all plots will always extend from bottom to top of the world. Price will only depend on X and Z dimensions.");
 
         perms.registerPermissionProperty(PERM_LIMIT_COUNT, "20", "Maximum number of plots a player can claim");
@@ -437,26 +437,26 @@ public class Plot
         perms.registerPermissionDescription(PERM_FEE_TIMEOUT, "Duration that a player can access the plot after paying the fee");
         perms.registerPermissionDescription(PERM_SELL_PRICE, "Price that the plot can be bought for by other players (sell offer)");
 
-        perms.registerPermission(PERM_COMMAND, PermissionLevel.TRUE, "Plot management command");
-        perms.registerPermission(PERM_DEFINE, PermissionLevel.OP, "Allows to define plots without paying");
-        perms.registerPermission(PERM_CLAIM, PermissionLevel.TRUE, "Allows to claim plots in exchange for money");
-        perms.registerPermission(PERM_DELETE, PermissionLevel.OP, "Allows a player to delete any plots, including plots not owned by him.");
-        perms.registerPermission(PERM_BUY, PermissionLevel.TRUE, "Allows buying plots");
-        perms.registerPermission(PERM_SELL, PermissionLevel.OP, "Allows selling plots");
-        perms.registerPermission(PERM_MODS, PermissionLevel.OP, "Allows managing plot administrators");
+        perms.registerPermission(PERM_COMMAND, DefaultPermissionLevel.ALL, "Plot management command");
+        perms.registerPermission(PERM_DEFINE, DefaultPermissionLevel.OP, "Allows to define plots without paying");
+        perms.registerPermission(PERM_CLAIM, DefaultPermissionLevel.ALL, "Allows to claim plots in exchange for money");
+        perms.registerPermission(PERM_DELETE, DefaultPermissionLevel.OP, "Allows a player to delete any plots, including plots not owned by him.");
+        perms.registerPermission(PERM_BUY, DefaultPermissionLevel.ALL, "Allows buying plots");
+        perms.registerPermission(PERM_SELL, DefaultPermissionLevel.OP, "Allows selling plots");
+        perms.registerPermission(PERM_MODS, DefaultPermissionLevel.OP, "Allows managing plot administrators");
 
-        perms.registerPermission(PERM_LIST, PermissionLevel.TRUE, "Allows listing plots");
-        perms.registerPermission(PERM_LIST_ALL, PermissionLevel.OP, "List all plots");
-        perms.registerPermission(PERM_LIST_OWN, PermissionLevel.TRUE, "List own plots");
-        perms.registerPermission(PERM_LIST_SALE, PermissionLevel.TRUE, "List plots open for sale");
+        perms.registerPermission(PERM_LIST, DefaultPermissionLevel.ALL, "Allows listing plots");
+        perms.registerPermission(PERM_LIST_ALL, DefaultPermissionLevel.OP, "List all plots");
+        perms.registerPermission(PERM_LIST_OWN, DefaultPermissionLevel.ALL, "List own plots");
+        perms.registerPermission(PERM_LIST_SALE, DefaultPermissionLevel.ALL, "List plots open for sale");
 
-        perms.registerPermission(PERM_SET + ".*", PermissionLevel.OP, "Control plot settings");
+        perms.registerPermission(PERM_SET + ".*", DefaultPermissionLevel.OP, "Control plot settings");
 
-        perms.registerPermission(PERM_PERMS, PermissionLevel.OP, "Control plot settings");
-        perms.registerPermission(PERM_PERMS_BUILD, PermissionLevel.OP, "Control build permissions");
-        perms.registerPermission(PERM_PERMS_USE, PermissionLevel.OP, "Control item usage permissions");
-        perms.registerPermission(PERM_PERMS_INTERACT, PermissionLevel.OP, "Control interaction permissions");
-        perms.registerPermission(PERM_PERMS_CHEST, PermissionLevel.OP, "Control chest permissions");
+        perms.registerPermission(PERM_PERMS, DefaultPermissionLevel.OP, "Control plot settings");
+        perms.registerPermission(PERM_PERMS_BUILD, DefaultPermissionLevel.OP, "Control build permissions");
+        perms.registerPermission(PERM_PERMS_USE, DefaultPermissionLevel.OP, "Control item usage permissions");
+        perms.registerPermission(PERM_PERMS_INTERACT, DefaultPermissionLevel.OP, "Control interaction permissions");
+        perms.registerPermission(PERM_PERMS_CHEST, DefaultPermissionLevel.OP, "Control chest permissions");
 
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SET + ".*", true);
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_SELL, true);

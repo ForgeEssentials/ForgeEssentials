@@ -13,8 +13,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -55,9 +55,9 @@ public class CommandJump extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class CommandJump extends ForgeEssentialsCommandBase
         ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
         if (stack == null || stack.getItem() != Items.COMPASS)
             return;
-        if (!PermissionManager.checkPermission(event.getEntityPlayer(), TeleportModule.PERM_JUMP_TOOL))
+        if (!PermissionAPI.hasPermission(event.getEntityPlayer(), TeleportModule.PERM_JUMP_TOOL))
             return;
 
         try

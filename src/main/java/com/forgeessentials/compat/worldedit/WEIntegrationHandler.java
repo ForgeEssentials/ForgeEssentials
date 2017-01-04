@@ -1,7 +1,5 @@
 package com.forgeessentials.compat.worldedit;
 
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
@@ -11,6 +9,8 @@ import com.forgeessentials.util.selections.SelectionHandler;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 public class WEIntegrationHandler
 {
@@ -39,7 +39,7 @@ public class WEIntegrationHandler
     {
         cuiComms = new CUIComms();
         ForgeWorldEdit.inst.setPermissionsProvider(new PermissionsHandler());
-        PermissionManager.registerPermission("worldedit.*", PermissionLevel.OP);
+        PermissionAPI.registerNode("worldedit.*", DefaultPermissionLevel.OP, "WorldEdit");
     }
 
 }

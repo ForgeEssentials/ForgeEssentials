@@ -27,8 +27,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
@@ -165,9 +165,9 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -179,7 +179,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".edit", PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".edit", DefaultPermissionLevel.OP, "Edit rules");
     }
 
     @Override
@@ -226,7 +226,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             if (args[0].equalsIgnoreCase("help"))
             {
                 ChatOutputHandler.chatNotification(sender, " - /rules [#]");
-                if (PermissionManager.checkPermission(sender, getPermissionNode() + ".edit"))
+                if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".edit"))
                 {
                     ChatOutputHandler.chatNotification(sender, " - /rules &lt;#> [changedRule]");
                     ChatOutputHandler.chatNotification(sender, " - /rules add &lt;newRule>");
@@ -240,7 +240,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             return;
         }
 
-        if (!PermissionManager.checkPermission(sender, getPermissionNode() + ".edit"))
+        if (!PermissionAPI.hasPermission(sender, getPermissionNode() + ".edit"))
             throw new TranslatedCommandException(
                     "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
 

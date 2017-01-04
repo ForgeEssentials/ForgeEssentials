@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,9 +47,9 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        PermissionManager.registerPermission("fe.commands.doas.console", PermissionLevel.OP);
+        PermissionAPI.registerNode("fe.commands.doas.console", DefaultPermissionLevel.OP, "Use /doas as the console");
     }
 
     @Override
@@ -75,7 +75,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
         if ((sender instanceof EntityPlayerMP) && args[0].equalsIgnoreCase("[CONSOLE]"))
         {
             EntityPlayerMP player = (EntityPlayerMP) sender;
-            if (!PermissionManager.checkPermission(player, "fe.commands.doas.console"))
+            if (!PermissionAPI.hasPermission(player, "fe.commands.doas.console"))
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
             if (args.length < 2)

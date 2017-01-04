@@ -49,8 +49,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
@@ -181,98 +181,98 @@ public class ModuleProtection
     {
         // ----------------------------------------
         // Other
-        APIRegistry.perms.registerPermission(PERM_SLEEP, PermissionLevel.TRUE, "Allow players to sleep in beds");
-        APIRegistry.perms.registerPermission(PERM_NEEDSFOOD, PermissionLevel.TRUE, "If denied to a player, their hunger bar will not deplete.");
-        APIRegistry.perms.registerPermission(PERM_PVP, PermissionLevel.TRUE, "If denied for at least one of two fighting players, PvP will be disabled");
+        APIRegistry.perms.registerPermission(PERM_SLEEP, DefaultPermissionLevel.ALL, "Allow players to sleep in beds");
+        APIRegistry.perms.registerPermission(PERM_NEEDSFOOD, DefaultPermissionLevel.ALL, "If denied to a player, their hunger bar will not deplete.");
+        APIRegistry.perms.registerPermission(PERM_PVP, DefaultPermissionLevel.ALL, "If denied for at least one of two fighting players, PvP will be disabled");
         APIRegistry.perms.registerPermissionProperty(PERM_GAMEMODE, "-1", "Force gamemode (-1 = none / default, 0 = survival, 1 = creative, 2 = adventure)");
         APIRegistry.perms.registerPermissionProperty(PERM_INVENTORY_GROUP, "default",
                 "Inventory group property - can be set to any identifier to separate inventories for certain regions");
-        APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, PermissionLevel.TRUE, "Allow interacting with entities (villagers, dogs, horses)");
-        APIRegistry.perms.registerPermission(PERM_EXPLOSION, PermissionLevel.TRUE, "Allows explosions to occur");
-        APIRegistry.perms.registerPermission(PERM_PRESSUREPLATE, PermissionLevel.TRUE, "Prevent players from triggering pressure plates");
-        APIRegistry.perms.registerPermission(PERM_FIRE_DESTROY, PermissionLevel.TRUE, "Allow fire to destroy blocks");
-        APIRegistry.perms.registerPermission(PERM_FIRE_SPREAD, PermissionLevel.TRUE, "Allow fire to spread");
+        APIRegistry.perms.registerPermission(PERM_INTERACT_ENTITY, DefaultPermissionLevel.ALL, "Allow interacting with entities (villagers, dogs, horses)");
+        APIRegistry.perms.registerPermission(PERM_EXPLOSION, DefaultPermissionLevel.ALL, "Allows explosions to occur");
+        APIRegistry.perms.registerPermission(PERM_PRESSUREPLATE, DefaultPermissionLevel.ALL, "Prevent players from triggering pressure plates");
+        APIRegistry.perms.registerPermission(PERM_FIRE_DESTROY, DefaultPermissionLevel.ALL, "Allow fire to destroy blocks");
+        APIRegistry.perms.registerPermission(PERM_FIRE_SPREAD, DefaultPermissionLevel.ALL, "Allow fire to spread");
 
         // ----------------------------------------
         // Damage
 
-        APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow damaging entities");
-        APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow getting hurt by entities");
+        APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow damaging entities");
+        APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow getting hurt by entities");
         for (Class<?> entityClass : damageEntityClasses)
         {
-            APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + "." + entityClass.getSimpleName(), PermissionLevel.TRUE);
-            APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + entityClass.getSimpleName(), PermissionLevel.TRUE);
+            APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + "." + entityClass.getSimpleName(), DefaultPermissionLevel.ALL, "");
+            APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + entityClass.getSimpleName(), DefaultPermissionLevel.ALL, "");
         }
         for (DamageSource dmgType : damageByTypes)
         {
-            APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + dmgType.getDamageType(), PermissionLevel.TRUE);
+            APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + dmgType.getDamageType(), DefaultPermissionLevel.ALL, "");
         }
-        APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + ".explosion", PermissionLevel.TRUE);
+        APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + ".explosion", DefaultPermissionLevel.ALL, "");
 
         // ----------------------------------------
         // Register mobs
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN + Zone.ALL_PERMS, PermissionLevel.TRUE, "(global) Allow spawning of mobs");
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + Zone.ALL_PERMS, PermissionLevel.TRUE,
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "(global) Allow spawning of mobs");
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "(global) Allow natural spawning of mobs (random spawn)");
-        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, PermissionLevel.TRUE,
+        APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "(global) Allow forced spawning of mobs (mob-spawners)");
 
         for (Entry<String, Class<? extends Entity>> e : ( EntityList.NAME_TO_CLASS).entrySet())
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
             {
-                APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey(), PermissionLevel.TRUE);
-                APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + e.getKey(), PermissionLevel.TRUE);
+                APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey(), DefaultPermissionLevel.ALL, "");
+                APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + e.getKey(), DefaultPermissionLevel.ALL, "");
             }
         for (MobType mobType : MobType.values())
         {
-            APIRegistry.perms.registerPermission(mobType.getSpawnPermission(false), PermissionLevel.TRUE);
-            APIRegistry.perms.registerPermission(mobType.getSpawnPermission(true), PermissionLevel.TRUE);
-            APIRegistry.perms.registerPermission(mobType.getDamageByPermission(), PermissionLevel.TRUE);
-            APIRegistry.perms.registerPermission(mobType.getDamageToPermission(), PermissionLevel.TRUE);
+            APIRegistry.perms.registerPermission(mobType.getSpawnPermission(false), DefaultPermissionLevel.ALL, "");
+            APIRegistry.perms.registerPermission(mobType.getSpawnPermission(true), DefaultPermissionLevel.ALL, "");
+            APIRegistry.perms.registerPermission(mobType.getDamageByPermission(), DefaultPermissionLevel.ALL, "");
+            APIRegistry.perms.registerPermission(mobType.getDamageToPermission(), DefaultPermissionLevel.ALL, "");
         }
 
         // ----------------------------------------
         // Register items
-        APIRegistry.perms.registerPermission(PERM_USE + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow using items");
-        APIRegistry.perms.registerPermission(PERM_INVENTORY + Zone.ALL_PERMS, PermissionLevel.TRUE,
+        APIRegistry.perms.registerPermission(PERM_USE + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow using items");
+        APIRegistry.perms.registerPermission(PERM_INVENTORY + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "Allow having item in inventory. Item will be dropped if not allowed.");
-        APIRegistry.perms.registerPermission(PERM_EXIST + Zone.ALL_PERMS, PermissionLevel.TRUE,
+        APIRegistry.perms.registerPermission(PERM_EXIST + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "Allow having item in inventory. Item will be destroyed if not allowed.");
-        APIRegistry.perms.registerPermission(PERM_CRAFT + Zone.ALL_PERMS, PermissionLevel.TRUE,
+        APIRegistry.perms.registerPermission(PERM_CRAFT + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "Allow crafting of items. Not necessarily works with modded crafting tables");
         for (Item item : GameData.getItemRegistry().typeSafeIterable())
             if (!(item instanceof ItemBlock))
             {
                 String itemPerm = "." + ServerUtil.getItemPermission(item) + Zone.ALL_PERMS;
                 String itemName = getItemName(item);
-                APIRegistry.perms.registerPermission(PERM_USE + itemPerm, PermissionLevel.TRUE, "USE " + itemName);
-                APIRegistry.perms.registerPermission(PERM_CRAFT + itemPerm, PermissionLevel.TRUE, "CRAFT " + itemName);
-                APIRegistry.perms.registerPermission(PERM_EXIST + itemPerm, PermissionLevel.TRUE, "EXIST " + itemName);
-                APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, PermissionLevel.TRUE, "INVENTORY " + itemName);
+                APIRegistry.perms.registerPermission(PERM_USE + itemPerm, DefaultPermissionLevel.ALL, "USE " + itemName);
+                APIRegistry.perms.registerPermission(PERM_CRAFT + itemPerm, DefaultPermissionLevel.ALL, "CRAFT " + itemName);
+                APIRegistry.perms.registerPermission(PERM_EXIST + itemPerm, DefaultPermissionLevel.ALL, "EXIST " + itemName);
+                APIRegistry.perms.registerPermission(PERM_INVENTORY + itemPerm, DefaultPermissionLevel.ALL, "INVENTORY " + itemName);
             }
 
         // ----------------------------------------
         // Register blocks
-        APIRegistry.perms.registerPermission(PERM_BREAK + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow breaking blocks");
-        APIRegistry.perms.registerPermission(PERM_PLACE + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow placing blocks");
-        APIRegistry.perms.registerPermission(PERM_TRAMPLE + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow trampling on blocks");
-        APIRegistry.perms.registerPermission(PERM_EXPLODE + Zone.ALL_PERMS, PermissionLevel.TRUE, "(global) Allows blocks to explode");
-        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, PermissionLevel.TRUE, "Allow interacting with blocks (button, chest, workbench)");
+        APIRegistry.perms.registerPermission(PERM_BREAK + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow breaking blocks");
+        APIRegistry.perms.registerPermission(PERM_PLACE + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow placing blocks");
+        APIRegistry.perms.registerPermission(PERM_TRAMPLE + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow trampling on blocks");
+        APIRegistry.perms.registerPermission(PERM_EXPLODE + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "(global) Allows blocks to explode");
+        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow interacting with blocks (button, chest, workbench)");
         for (Block block : GameData.getBlockRegistry().typeSafeIterable())
         {
             String blockPerm = "." + ServerUtil.getBlockPermission(block) + Zone.ALL_PERMS;
             String blockName = block.getLocalizedName();
-            APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, PermissionLevel.TRUE, "BREAK " + blockName);
-            APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, PermissionLevel.TRUE, "PLACE " + blockName);
-            APIRegistry.perms.registerPermission(PERM_TRAMPLE + blockPerm, PermissionLevel.TRUE, "PLACE " + blockName);
-            APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, PermissionLevel.TRUE, "INTERACT " + blockName);
-            APIRegistry.perms.registerPermission(PERM_EXPLODE + blockPerm, PermissionLevel.TRUE, "EXPLODE " + blockName);
-        }
+            APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, DefaultPermissionLevel.ALL, "BREAK " + blockName);
+            APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, DefaultPermissionLevel.ALL, "PLACE " + blockName);
+            APIRegistry.perms.registerPermission(PERM_TRAMPLE + blockPerm, DefaultPermissionLevel.ALL, "PLACE " + blockName);
+            APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, DefaultPermissionLevel.ALL, "INTERACT " + blockName);
+            APIRegistry.perms.registerPermission(PERM_EXPLODE + blockPerm, DefaultPermissionLevel.ALL, "EXPLODE " + blockName);
+    }
 
         // ----------------------------------------
         // Register zone permissions
         APIRegistry.perms.registerPermissionDescription(ZONE, "Worldborder permissions");
-        APIRegistry.perms.registerPermission(ZONE_KNOCKBACK, PermissionLevel.FALSE, "Deny players from entering this area");
+        APIRegistry.perms.registerPermission(ZONE_KNOCKBACK, DefaultPermissionLevel.NONE, "Deny players from entering this area");
         APIRegistry.perms.registerPermissionProperty(ZONE_DAMAGE, null, "Apply this amount of damage to players, if they are in this area");
         APIRegistry.perms.registerPermissionProperty(ZONE_DAMAGE_INTERVAL, "1000",
                 "Time interval in milliseconds for applying damage-effect. Zero = once only.");
@@ -471,7 +471,7 @@ public class ModuleProtection
             return true;
         String permission = ModuleProtection.getCraftingPermission(result);
         debugPermission(player, permission);
-        return PermissionManager.checkPermission(player, permission);
+        return PermissionAPI.hasPermission(player, permission);
     }
 
 }

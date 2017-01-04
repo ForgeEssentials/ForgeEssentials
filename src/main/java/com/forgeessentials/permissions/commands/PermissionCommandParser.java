@@ -12,9 +12,10 @@ import java.util.TreeSet;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -1173,7 +1174,7 @@ public class PermissionCommandParser
 
     public static void listUserPermissions(ICommandSender sender, UserIdent ident, boolean showGroupPerms) throws CommandException
     {
-        if (!PermissionManager.checkPermission(sender, PERM_LIST_PERMS))
+        if (ident.isPlayer() && !PermissionAPI.hasPermission(ident.getPlayer(), PERM_LIST_PERMS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         ChatOutputHandler.chatNotification(sender, ident.getUsernameOrUuid() + " permissions:");
@@ -1277,7 +1278,7 @@ public class PermissionCommandParser
 
     public static void listGroups(ICommandSender sender) throws CommandException
     {
-        if (!PermissionManager.checkPermission(sender, PERM_LIST_GROUPS))
+        if (sender instanceof EntityPlayer && !PermissionAPI.hasPermission((EntityPlayer) sender, PERM_LIST_GROUPS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         ChatOutputHandler.chatNotification(sender, "Groups:");
@@ -1287,7 +1288,7 @@ public class PermissionCommandParser
 
     public static void listUsers(ICommandSender sender) throws CommandException
     {
-        if (!PermissionManager.checkPermission(sender, PERM_LIST_USERS))
+        if (sender instanceof EntityPlayer && !PermissionAPI.hasPermission((EntityPlayer) sender, PERM_LIST_USERS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         ChatOutputHandler.chatNotification(sender, "Known players:");

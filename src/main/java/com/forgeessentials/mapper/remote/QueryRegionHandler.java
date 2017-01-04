@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -29,7 +29,7 @@ public class QueryRegionHandler extends GenericRemoteHandler<Request>
     public QueryRegionHandler()
     {
         super(PERM, Request.class);
-        APIRegistry.perms.registerPermission(PERM, PermissionLevel.TRUE, "Allows querying region tiles");
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL, "Allows querying region tiles");
     }
 
     @Override

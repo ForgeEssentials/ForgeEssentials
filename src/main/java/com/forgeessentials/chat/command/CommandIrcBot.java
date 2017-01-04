@@ -2,7 +2,7 @@ package com.forgeessentials.chat.command;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -32,9 +32,9 @@ public class CommandIrcBot extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override

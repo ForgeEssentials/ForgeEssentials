@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -215,7 +215,7 @@ public class AuthEventHandler extends ServerEventHandler
             ChatOutputHandler.chatError(event.player, "Login required. Try /auth help.");
         }
 
-        if (!PermissionManager.checkPermission(event.player, "fe.auth.isVIP"))
+        if (!PermissionAPI.hasPermission(event.player, "fe.auth.isVIP"))
         {
             int onlinePlayers = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList().size();
             int availableSlots = FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers() - vipSlots - reservedSlots;

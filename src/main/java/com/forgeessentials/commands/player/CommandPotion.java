@@ -11,8 +11,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -74,9 +74,9 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Use potions on others");
     }
 
     @Override
@@ -118,7 +118,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
         {
             sender.addPotionEffect(eff);
         }
-        else if (PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
+        else if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 

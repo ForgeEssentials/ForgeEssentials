@@ -9,8 +9,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -54,9 +54,9 @@ public class CommandBurn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
                 sender.setFire(15);
                 ChatOutputHandler.chatError(sender, "Ouch! Hot!");
             }
-            else if (PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
+            else if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
             {
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
@@ -94,7 +94,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
                 sender.setFire(parseInt(args[1]));
                 ChatOutputHandler.chatError(sender, "Ouch! Hot!");
             }
-            else if (PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
+            else if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
             {
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
@@ -133,7 +133,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Apply burn effect on others");
     }
 
     @Override

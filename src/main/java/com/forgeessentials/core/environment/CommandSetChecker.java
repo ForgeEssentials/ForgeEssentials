@@ -7,8 +7,8 @@ import java.util.Set;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionManager;
 
+import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.HashMultimap;
 

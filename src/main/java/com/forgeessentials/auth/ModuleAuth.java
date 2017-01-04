@@ -8,7 +8,6 @@ import net.minecraft.command.CommandHelp;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -26,6 +25,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, defaultModule = false)
 public class ModuleAuth extends ConfigLoaderBase
@@ -76,9 +76,9 @@ public class ModuleAuth extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        APIRegistry.perms.registerPermission("fe.auth.admin", PermissionLevel.OP);
-        APIRegistry.perms.registerPermission("fe.auth", PermissionLevel.TRUE);
-        APIRegistry.perms.registerPermission("fe.auth.vip", null);
+        APIRegistry.perms.registerPermission("fe.auth.admin", DefaultPermissionLevel.OP, "Administer the auth module");
+        APIRegistry.perms.registerPermission("fe.auth", DefaultPermissionLevel.ALL, "Auth module command");
+        APIRegistry.perms.registerPermission("fe.auth.vip", null, "Player VIP status");
         if (isEnabled())
         {
             handler = new AuthEventHandler();

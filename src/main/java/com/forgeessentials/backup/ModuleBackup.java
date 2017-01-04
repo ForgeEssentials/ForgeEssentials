@@ -36,7 +36,7 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -122,7 +122,7 @@ public class ModuleBackup extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent e)
     {
-        APIRegistry.perms.registerPermission(PERM_NOTIFY, PermissionLevel.OP, "Backup notification permission");
+        APIRegistry.perms.registerPermission(PERM_NOTIFY, DefaultPermissionLevel.OP, "Backup notification permission");
         registerBackupTask();
         cleanBackups();
     }

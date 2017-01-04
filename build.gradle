@@ -76,7 +76,7 @@ targetCompatibility = 1.8
 
 // Set up forge options
 minecraft {
-	version = "1.10.2-12.18.1.2073"
+	version = "1.10.2-12.18.3.2185"
 	runDir = "rundir"
 	
 	mappings = "snapshot_20160518"
@@ -141,8 +141,8 @@ dependencies {
 	
 	// WorldEdit
     //buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-1.8.9", version: "6.1.1-SNAPSHOT", changing: true
-    buildDep "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
-    buildDep "com.sk89q.worldedit:worldedit-forge-mc1.9.4:6.1.4-SNAPSHOT:dev"
+    buildDep "com.sk89q.worldedit:worldedit-core:6.1.5-SNAPSHOT"
+    buildDep "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5-SNAPSHOT:dev"
 	//includeMod files('lib/worldedit-forge-mc1.8.9-6.1.1-SNAPSHOT-dist.jar')
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"

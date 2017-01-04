@@ -4,7 +4,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.PlayerInfo;
@@ -50,14 +50,12 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-
         return "//fedesel Deselects the selection";
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 }
