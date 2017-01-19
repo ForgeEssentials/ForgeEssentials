@@ -3,6 +3,8 @@ package com.forgeessentials.commons.selections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.util.math.AxisAlignedBB;
+
 public class AreaBase {
 
     protected Point high;
@@ -220,5 +222,10 @@ public class AreaBase {
     public Point getCenter()
     {
         return new Point((high.x + low.x) / 2, (high.y + low.y) / 2, (high.z + low.z) / 2);
+    }
+
+    public AxisAlignedBB toAxisAlignedBB()
+    {
+        return new AxisAlignedBB(low.x, low.y, low.z, high.x, high.y, high.z);
     }
 }

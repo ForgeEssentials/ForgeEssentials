@@ -24,6 +24,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -31,7 +33,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.permission.PermissionContext;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -751,7 +752,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     // ------------------------------------------------------------
 
     @Override
-    public boolean checkPermission(GameProfile player, String permissionNode, @Nullable IContext context)
+    public boolean hasPermission(GameProfile player, String permissionNode, @Nullable IContext context)
     {
         UserIdent ident = player == null ? null : UserIdent.get(player.getId());
         int dim = context.getWorld().provider.getDimension();
@@ -762,25 +763,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             if (context instanceof AreaContext)
             {
+                AxisAlignedBB areac = context.get(ContextKeys.AREA);
 
-                if (context.getTargetLocationStart() != null)
-                {
-                    if (context.getTargetLocationEnd() != null)
-                        area = new WorldArea(dim, new Point(context.getTargetLocationStart()), new Point(context.getTargetLocationEnd()));
-                    else
-                        loc = new WorldPoint(dim, context.getTargetLocationStart());
-                }
-                else if (context.getSourceLocationStart() != null)
-                {
-                    if (context.getSourceLocationEnd() != null)
-                        area = new WorldArea(dim, new Point(context.getSourceLocationStart()), new Point(context.getSourceLocationEnd()));
-                    else
-                        loc = new WorldPoint(dim, context.getSourceLocationStart());
-                }
+                area = new WorldArea(dim, new Point(areac.minX, areac.minY, areac.minZ), new Point(areac.maxX, areac.maxY, areac.maxZ));
             }
             else if (context instanceof BlockPosContext)
             {
-                loc = ((BlockPosContext) context).get(ContextKeys.POS);
+                BlockPos pos = context.get(ContextKeys.POS);
+                loc = new WorldPoint(dim, pos);
             }
         }
 

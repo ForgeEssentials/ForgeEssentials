@@ -2,7 +2,9 @@ package com.forgeessentials.permissions.commands;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.context.AreaContext;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.AreaZone;
@@ -223,8 +225,11 @@ public class CommandZone extends ParserCommandBase
         if (selection == null)
             throw new TranslatedCommandException("No selection available. Please select a region first.");
 
-        arguments.permissionContext.setTargetStart(selection.getLowPoint().toVec3()).setTargetEnd(selection.getHighPoint().toVec3());
-        arguments.checkPermission(PERM_DEFINE);
+        if (arguments.hasPlayer())
+        {
+            arguments.context = new AreaContext(arguments.senderPlayer, selection.toAxisAlignedBB());
+            arguments.checkPermission(PERM_DEFINE);
+        }
 
         if (redefine && area != null)
         {

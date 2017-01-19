@@ -141,9 +141,9 @@ dependencies {
 	
 	// WorldEdit
     //buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-1.8.9", version: "6.1.1-SNAPSHOT", changing: true
-    buildDep "com.sk89q.worldedit:worldedit-core:6.1.5-SNAPSHOT"
-    buildDep "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5-SNAPSHOT:dev"
-	//includeMod files('lib/worldedit-forge-mc1.8.9-6.1.1-SNAPSHOT-dist.jar')
+    buildDep "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
+    buildDep "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5:dev"
+	includeMod files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
 	buildDep 'org.spongepowered:spongeapi:4.1.0'

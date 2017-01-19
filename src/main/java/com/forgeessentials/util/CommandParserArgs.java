@@ -16,13 +16,14 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.permission.PermissionContext;
+import net.minecraftforge.server.permission.context.IContext;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -48,8 +49,8 @@ public class CommandParserArgs
     public final EntityPlayerMP senderPlayer;
     public final UserIdent ident;
     public final boolean isTabCompletion;
-    public final PermissionContext permissionContext;
     public final MinecraftServer server;
+    public IContext context;
 
     public List<String> tabCompletion;
 
@@ -64,7 +65,7 @@ public class CommandParserArgs
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
-        this.permissionContext = new PermissionContext(sender, command);
+        this.context = null;
         this.server = server;
     }
 
@@ -266,7 +267,9 @@ public class CommandParserArgs
 
     public boolean hasPermission(String perm)
     {
-        return APIRegistry.perms.checkPermission(permissionContext, perm);
+        if (sender instanceof EntityPlayer)
+        return APIRegistry.perms.checkPermission(senderPlayer, perm);
+        else return true;
     }
 
     public void tabComplete(String... completionList) throws CancelParsingException
