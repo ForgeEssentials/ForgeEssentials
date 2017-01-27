@@ -84,7 +84,7 @@ public interface IPermissionsHelper extends IPermissionHandler
      * 
      * @param permissionNode
      * @param level
-     *            Default level of the permission. This can be used to tell the underlying {@link IPermissionProvider}
+     *            Default level of the permission. This can be used to tell the underlying {@link IPermissionHandler}
      *            whether a player should be allowed to access this permission by default, or as operator only.
      * @param description
      *            Description for the permission.
