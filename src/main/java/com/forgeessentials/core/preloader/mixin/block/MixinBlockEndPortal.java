@@ -16,13 +16,12 @@ public class MixinBlockEndPortal
 {
 
     @Overwrite
-    public void onEntityCollidedWithBlock(World p_149670_1_, BlockPos pos, IBlockState state, Entity p_149670_5_)
+    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
     {
-        // TODO: get target coordinates somehow
-        if (p_149670_5_.getRidingEntity() == null && p_149670_5_.getPassengers().isEmpty() && !p_149670_1_.isRemote && p_149670_5_.isNonBoss()
-                && !MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(p_149670_5_, p_149670_1_, pos, 1, new BlockPos(0, 0, 0))))
+        if (!entityIn.isRiding() && !entityIn.isBeingRidden() && entityIn.isNonBoss() && !worldIn.isRemote && entityIn.getEntityBoundingBox().intersectsWith(state.getBoundingBox(worldIn, pos).offset(pos))
+                && !MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entityIn, worldIn, pos, 1, new BlockPos(0, 0, 0))))
         {
-            p_149670_5_.changeDimension(1);
+            entityIn.changeDimension(1);
         }
     }
 

@@ -31,11 +31,11 @@ public abstract class BuildInfo
 
     private static Properties buildTypes = new Properties();
 
-    public static final String MC_BASE_VERSION = "1.8";
+    public static final String MC_BASE_VERSION = "1.10.2";
 
-    public static final String BASE_VERSION = "1.8.5"; // update manually because gradle is a derp
+    public static final String BASE_VERSION = "10.1.0"; // update manually because gradle is a derp
 
-    public static final String DEPENDENCIES = "required-after:Forge@[10.13.4.1558,)";
+    public static final String DEPENDENCIES = "required-after:Forge";
 
     static
     {

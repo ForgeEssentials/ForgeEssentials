@@ -24,7 +24,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fe.DimensionManagerHelper;
 import net.minecraftforge.fe.event.world.WorldPreLoadEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -250,7 +249,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             worldsByDim.put(world.dimensionId, world);
 
         // Allow the world to unload
-        DimensionManagerHelper.keepLoaded.put(world.dimensionId, false);
+        DimensionManager.getProviderType(world.dimensionId).setLoadSpawn(false);
     }
 
     /**
@@ -504,7 +503,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     {
         try
         {
-            Field f_providers = DimensionManager.class.getDeclaredField("providers");
+            Field f_providers = DimensionManager.class.getDeclaredField("dimensions");
             f_providers.setAccessible(true);
             @SuppressWarnings("unchecked")
             Hashtable<Integer, Class<? extends WorldProvider>> loadedProviders = (Hashtable<Integer, Class<? extends WorldProvider>>) f_providers.get(null);
