@@ -4,13 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldType;
-
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.data.v2.DataManager;
@@ -18,24 +11,85 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.WorldUtil;
 import com.google.gson.annotations.Expose;
 
+import net.minecraft.command.CommandException;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.WorldType;
+
 /**
- * 
+ *
  * @author Olee
  */
 public class Multiworld
 {
 
+    public static void displayDepartMessage(EntityPlayerMP player)
+    {
+        // String msg = player.worldObj.provider.getDepartMessage();
+        // if (msg == null)
+        // msg = "Leaving the Overworld.";
+        // if (player.dimension > 1 || player.dimension < -1)
+        // msg += " (#" + player.dimension + ")";
+        // ChatOutputHandler.sendMessage(player, new ChatComponentText(msg));
+    }
+
+    public static void displayWelcomeMessage(EntityPlayerMP player)
+    {
+        // String msg = player.worldObj.provider.getWelcomeMessage();
+        // if (msg == null)
+        // msg = "Entering the Overworld.";
+        // if (player.dimension > 1 || player.dimension < -1)
+        // msg += " (#" + player.dimension + ")";
+        // ChatOutputHandler.sendMessage(player, new ChatComponentText(msg));
+    }
+
+    /**
+     * Teleport the player to the multiworld
+     *
+     * @throws CommandException
+     */
+    public static void teleport(EntityPlayerMP player, WorldServer world, boolean instant) throws CommandException
+    {
+        teleport(player, world, player.posX, player.posY, player.posZ, instant);
+    }
+
+    /**
+     * Teleport the player to the multiworld
+     *
+     * @throws CommandException
+     */
+    public static void teleport(EntityPlayerMP player, WorldServer world, double x, double y, double z, boolean instant)
+            throws CommandException
+    {
+        boolean worldChange = player.worldObj.provider.getDimensionId() != world.provider.getDimensionId();
+        if (worldChange)
+        {
+            displayDepartMessage(player);
+        }
+
+        y = WorldUtil.placeInWorld(world, (int) x, (int) y, (int) z);
+        WarpPoint target = new WarpPoint(world.provider.getDimensionId(), x, y, z, player.rotationPitch,
+                player.rotationYaw);
+        if (instant)
+        {
+            TeleportHelper.checkedTeleport(player, target);
+        }
+        else
+        {
+            TeleportHelper.teleport(player, target);
+        }
+
+        if (worldChange)
+        {
+            displayWelcomeMessage(player);
+        }
+    }
+
     protected String name;
 
     protected int dimensionId;
-
-    protected String provider;
-
-    protected String worldType;
-
-    protected List<String> biomes = new ArrayList<>();
-
-    protected long seed;
 
     // protected GameType gameType = GameType.CREATIVE;
     //
@@ -44,6 +98,14 @@ public class Multiworld
     // protected boolean allowHostileCreatures = true;
     //
     // protected boolean allowPeacefulCreatures = true;
+
+    protected String provider;
+
+    protected String worldType;
+
+    protected List<String> biomes = new ArrayList<>();
+
+    protected long seed;
 
     protected boolean mapFeaturesEnabled = true;
 
@@ -59,6 +121,11 @@ public class Multiworld
     @Expose(serialize = false)
     protected WorldType worldTypeObj;
 
+    public Multiworld(String name, String provider, String worldType)
+    {
+        this(name, provider, worldType, new Random().nextLong());
+    }
+
     public Multiworld(String name, String provider, String worldType, long seed)
     {
         this.name = name;
@@ -72,58 +139,9 @@ public class Multiworld
         // this.allowPeacefulCreatures = true;
     }
 
-    public Multiworld(String name, String provider, String worldType)
+    protected void delete()
     {
-        this(name, provider, worldType, new Random().nextLong());
-    }
-
-    public void removeAllPlayersFromWorld()
-    {
-        WorldServer overworld = MinecraftServer.getServer().worldServerForDimension(0);
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
-        {
-            if (player.dimension == dimensionId)
-            {
-                BlockPos playerPos = player.getPosition();
-                int y = WorldUtil.placeInWorld(player.worldObj, playerPos.getX(), playerPos.getY(), playerPos.getZ());
-                WarpPoint point = new WarpPoint(overworld, playerPos.getX(), y, playerPos.getZ(), 0, 0);
-                TeleportHelper.doTeleport(player, point);
-            }
-        }
-    }
-
-    public void updateWorldSettings()
-    {
-        if (!worldLoaded)
-            return;
-        // WorldServer worldServer = getWorldServer();
-        // worldServer.difficultySetting = difficulty;
-        // worldServer.setAllowedSpawnTypes(allowHostileCreatures, allowPeacefulCreatures);
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public WorldServer getWorldServer()
-    {
-        return MinecraftServer.getServer().worldServerForDimension(dimensionId);
-    }
-
-    public int getDimensionId()
-    {
-        return dimensionId;
-    }
-
-    public int getProviderId()
-    {
-        return providerId;
-    }
-
-    public String getProvider()
-    {
-        return provider;
+        DataManager.getInstance().delete(this.getClass(), name);
     }
 
     public List<String> getBiomes()
@@ -131,14 +149,24 @@ public class Multiworld
         return biomes;
     }
 
-    public boolean isError()
+    public int getDimensionId()
     {
-        return error;
+        return dimensionId;
     }
 
-    public boolean isLoaded()
+    public String getName()
     {
-        return worldLoaded;
+        return name;
+    }
+
+    public String getProvider()
+    {
+        return provider;
+    }
+
+    public int getProviderId()
+    {
+        return providerId;
     }
 
     public long getSeed()
@@ -189,75 +217,61 @@ public class Multiworld
     // updateWorldSettings();
     // }
 
-    protected void save()
+    public WorldServer getWorldServer()
     {
-        DataManager.getInstance().save(this, this.name);
+        return MinecraftServer.getServer().worldServerForDimension(dimensionId);
     }
 
-    protected void delete()
+    public boolean isError()
     {
-        DataManager.getInstance().delete(this.getClass(), name);
+        return error;
+    }
+
+    public boolean isLoaded()
+    {
+        return worldLoaded;
+    }
+
+    public void removeAllPlayersFromWorld()
+    {
+        WorldServer overworld = MinecraftServer.getServer().worldServerForDimension(0);
+        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        {
+            if (player.dimension == dimensionId)
+            {
+                BlockPos playerPos = player.getPosition();
+                int y = WorldUtil.placeInWorld(player.worldObj, playerPos.getX(), playerPos.getY(), playerPos.getZ());
+                WarpPoint point = new WarpPoint(overworld, playerPos.getX(), y, playerPos.getZ(), 0, 0);
+                TeleportHelper.doTeleport(player, point);
+            }
+        }
+    }
+
+    protected void save()
+    {
+        DataManager.getInstance().save(this, name);
     }
 
     /**
      * Teleport the player to the multiworld
-     * @throws CommandException 
+     *
+     * @throws CommandException
      */
     public void teleport(EntityPlayerMP player, boolean instant) throws CommandException
     {
         teleport(player, getWorldServer(), instant);
     }
 
-    /**
-     * Teleport the player to the multiworld
-     * 
-     * @throws CommandException
-     */
-    public static void teleport(EntityPlayerMP player, WorldServer world, boolean instant) throws CommandException
+    public void updateWorldSettings()
     {
-        teleport(player, world, player.posX, player.posY, player.posZ, instant);
-    }
-
-    /**
-     * Teleport the player to the multiworld
-     * 
-     * @throws CommandException
-     */
-    public static void teleport(EntityPlayerMP player, WorldServer world, double x, double y, double z, boolean instant) throws CommandException
-    {
-        boolean worldChange = player.worldObj.provider.getDimensionId() != world.provider.getDimensionId();
-        if (worldChange)
-            displayDepartMessage(player);
-
-        y = WorldUtil.placeInWorld(world, (int) x, (int) y, (int) z);
-        WarpPoint target = new WarpPoint(world.provider.getDimensionId(), x, y, z, player.rotationPitch, player.rotationYaw);
-        if (instant)
-            TeleportHelper.checkedTeleport(player, target);
-        else
-            TeleportHelper.teleport(player, target);
-
-        if (worldChange)
-            displayWelcomeMessage(player);
-    }
-
-    public static void displayDepartMessage(EntityPlayerMP player)
-    {
-        // String msg = player.worldObj.provider.getDepartMessage();
-        // if (msg == null)
-        // msg = "Leaving the Overworld.";
-        // if (player.dimension > 1 || player.dimension < -1)
-        // msg += " (#" + player.dimension + ")";
-        // ChatOutputHandler.sendMessage(player, new ChatComponentText(msg));
-    }
-
-    public static void displayWelcomeMessage(EntityPlayerMP player)
-    {
-        // String msg = player.worldObj.provider.getWelcomeMessage();
-        // if (msg == null)
-        // msg = "Entering the Overworld.";
-        // if (player.dimension > 1 || player.dimension < -1)
-        // msg += " (#" + player.dimension + ")";
-        // ChatOutputHandler.sendMessage(player, new ChatComponentText(msg));
+        if (!worldLoaded)
+        {
+            return;
+            // WorldServer worldServer = getWorldServer();
+            // worldServer.difficultySetting = difficulty;
+            // worldServer.setAllowedSpawnTypes(allowHostileCreatures,
+            // allowPeacefulCreatures);
+        }
     }
 
 }

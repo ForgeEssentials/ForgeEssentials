@@ -2,12 +2,6 @@ package com.forgeessentials.multiworld.command;
 
 import java.util.List;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.permission.PermissionLevel;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
@@ -19,8 +13,20 @@ import com.forgeessentials.multiworld.Multiworld;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.permission.PermissionLevel;
+
 public class CommandMultiworldTeleport extends ParserCommandBase
 {
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
 
     @Override
     public String getCommandName()
@@ -35,21 +41,15 @@ public class CommandMultiworldTeleport extends ParserCommandBase
     }
 
     @Override
-    public String getPermissionNode()
-    {
-        return ModuleMultiworld.PERM_TELEPORT;
-    }
-
-    @Override
     public PermissionLevel getPermissionLevel()
     {
         return PermissionLevel.OP;
     }
 
     @Override
-    public boolean canConsoleUseCommand()
+    public String getPermissionNode()
     {
-        return true;
+        return ModuleMultiworld.PERM_TELEPORT;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
         List<String> worldNames = APIRegistry.namedWorldHandler.getWorldNames();
         worldNames.add(0, "list");
         arguments.tabComplete(worldNames);
-        
+
         String worldName = arguments.remove();
 
         if (worldName.equalsIgnoreCase("list"))
@@ -75,7 +75,9 @@ public class CommandMultiworldTeleport extends ParserCommandBase
 
         EntityPlayerMP player = arguments.parsePlayer(true, true).getPlayerMP();
         if (player == null)
+        {
             throw new TranslatedCommandException("Missing player-name argument.");
+        }
 
         double x = Math.floor(player.posX) + 0.5;
         double y = Math.floor(player.posY);
@@ -83,20 +85,26 @@ public class CommandMultiworldTeleport extends ParserCommandBase
         if (!arguments.isEmpty())
         {
             if (arguments.size() < 3)
+            {
                 throw new TranslatedCommandException("Too few arguments for location.");
+            }
             x = arguments.parseDouble();
             y = arguments.parseDouble();
             z = arguments.parseDouble();
         }
 
         Multiworld multiworld = ModuleMultiworld.getMultiworldManager().getMultiworld(worldName);
-        WorldServer world = multiworld != null ? multiworld.getWorldServer() : APIRegistry.namedWorldHandler.getWorld(worldName);
+        WorldServer world = multiworld != null ? multiworld.getWorldServer()
+                : APIRegistry.namedWorldHandler.getWorld(worldName);
         if (world == null)
+        {
             throw new TranslatedCommandException("Could not find world " + worldName);
+        }
         int dimId = world.provider.getDimensionId();
 
         // if (dimId < 0 || dimId == 1)
-        // throw new TranslatedCommandException("You are not allowed to teleport to that dimension");
+        // throw new TranslatedCommandException("You are not allowed to teleport
+        // to that dimension");
 
         String msg = "Teleporting to ";
         if (multiworld == null)

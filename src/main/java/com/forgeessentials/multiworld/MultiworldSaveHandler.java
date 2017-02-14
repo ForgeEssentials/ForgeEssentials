@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.StartupQuery;
 
 /**
- * 
+ *
  * @author Olee
  */
 public class MultiworldSaveHandler implements ISaveHandler
@@ -31,9 +31,29 @@ public class MultiworldSaveHandler implements ISaveHandler
     public MultiworldSaveHandler(ISaveHandler parent, Multiworld world)
     {
         if (!(parent instanceof SaveHandler))
+        {
             throw new RuntimeException();
+        }
         this.parent = (SaveHandler) parent;
         this.world = world;
+    }
+
+    @Override
+    public void checkSessionLock() throws MinecraftException
+    {
+        parent.checkSessionLock();
+    }
+
+    @Override
+    public void flush()
+    {
+        parent.flush();
+    }
+
+    @Override
+    public IChunkLoader getChunkLoader(WorldProvider provider)
+    {
+        return new AnvilChunkLoader(getDimensionDirectory());
     }
 
     public File getDimensionDirectory()
@@ -42,9 +62,27 @@ public class MultiworldSaveHandler implements ISaveHandler
     }
 
     @Override
-    public IChunkLoader getChunkLoader(WorldProvider provider)
+    public File getMapFileFromName(String name)
     {
-        return new AnvilChunkLoader(getDimensionDirectory());
+        return parent.getMapFileFromName(name);
+    }
+
+    @Override
+    public IPlayerFileData getPlayerNBTManager()
+    {
+        return parent.getPlayerNBTManager();
+    }
+
+    @Override
+    public File getWorldDirectory()
+    {
+        return parent.getWorldDirectory();
+    }
+
+    @Override
+    public String getWorldDirectoryName()
+    {
+        return parent.getWorldDirectoryName();
     }
 
     @Override
@@ -94,9 +132,9 @@ public class MultiworldSaveHandler implements ISaveHandler
     }
 
     @Override
-    public void checkSessionLock() throws MinecraftException
+    public void saveWorldInfo(WorldInfo worldInfo)
     {
-        parent.checkSessionLock();
+        saveWorldInfoData(worldInfo, worldInfo.getNBTTagCompound());
     }
 
     public void saveWorldInfoData(WorldInfo p_75755_1_, NBTTagCompound data)
@@ -139,42 +177,6 @@ public class MultiworldSaveHandler implements ISaveHandler
     public void saveWorldInfoWithPlayer(WorldInfo worldInfo, NBTTagCompound playerInfo)
     {
         saveWorldInfoData(worldInfo, worldInfo.cloneNBTCompound(playerInfo));
-    }
-
-    @Override
-    public void saveWorldInfo(WorldInfo worldInfo)
-    {
-        saveWorldInfoData(worldInfo, worldInfo.getNBTTagCompound());
-    }
-
-    @Override
-    public IPlayerFileData getPlayerNBTManager()
-    {
-        return parent.getPlayerNBTManager();
-    }
-
-    @Override
-    public void flush()
-    {
-        parent.flush();
-    }
-
-    @Override
-    public File getWorldDirectory()
-    {
-        return parent.getWorldDirectory();
-    }
-
-    @Override
-    public File getMapFileFromName(String name)
-    {
-        return parent.getMapFileFromName(name);
-    }
-
-    @Override
-    public String getWorldDirectoryName()
-    {
-        return parent.getWorldDirectoryName();
     }
 
 }

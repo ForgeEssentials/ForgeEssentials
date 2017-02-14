@@ -2,12 +2,6 @@ package com.forgeessentials.multiworld.command;
 
 import java.util.Random;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.WorldType;
-import net.minecraftforge.permission.PermissionLevel;
-
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.ParserCommandBase;
@@ -18,78 +12,19 @@ import com.forgeessentials.multiworld.MultiworldException;
 import com.forgeessentials.multiworld.MultiworldManager;
 import com.forgeessentials.util.CommandParserArgs;
 
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.world.GameRules;
+import net.minecraft.world.WorldType;
+import net.minecraftforge.permission.PermissionLevel;
+
 public class CommandMultiworld extends ParserCommandBase
 {
 
-    @Override
-    public String getCommandName()
-    {
-        return "mw";
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender commandSender)
-    {
-        return "/mw: Multiworld management command";
-    }
-
-    @Override
-    public String getPermissionNode()
-    {
-        return ModuleMultiworld.PERM_BASE;
-    }
-
-    @Override
-    public PermissionLevel getPermissionLevel()
-    {
-        return PermissionLevel.OP;
-    }
-
-    @Override
-    public boolean canConsoleUseCommand()
-    {
-        return true;
-    }
-
-    @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
-    {
-        if (arguments.isEmpty())
-        {
-            arguments.confirm("Multiworld usage:");
-            arguments.confirm("/mw create: Create a new world");
-            arguments.confirm("/mw info <world>: Show world info");
-            arguments.confirm("/mw delete <world>: Delete a world");
-            arguments.confirm("/mw list [worlds|providers|worldtypes]");
-            return;
-        }
-        arguments.tabComplete("create", "info", "delete", "list", "gamerule");
-        String subCmd = arguments.remove().toLowerCase();
-        switch (subCmd)
-        {
-        case "create":
-            parseCreate(arguments);
-            break;
-        case "info":
-            parseInfo(arguments);
-            break;
-        case "delete":
-            parseDelete(arguments);
-            break;
-        case "list":
-            parseList(arguments);
-            break;
-        case "gamerule":
-            parseGamerule(arguments);
-            break;
-        default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
-        }
-    }
-
     /**
      * Create a new multiworld
-     * @throws CommandException 
+     *
+     * @throws CommandException
      */
     public static void parseCreate(CommandParserArgs arguments) throws CommandException
     {
@@ -105,25 +40,29 @@ public class CommandMultiworld extends ParserCommandBase
 
         // Get the provider
         String provider = MultiworldManager.PROVIDER_NORMAL;
-        if (arguments.isTabCompletion && arguments.size() == 1)
+        if (arguments.isTabCompletion && (arguments.size() == 1))
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
-                    .getWorldProviders().keySet());
+            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(),
+                    ModuleMultiworld.getMultiworldManager().getWorldProviders().keySet());
             return;
         }
         if (!arguments.isEmpty())
+        {
             provider = arguments.remove();
+        }
 
         // Get the World Type
         String worldType = WorldType.DEFAULT.getWorldTypeName();
-        if (arguments.isTabCompletion && arguments.size() == 1)
+        if (arguments.isTabCompletion && (arguments.size() == 1))
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
-                    .getWorldTypes().keySet());
+            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(),
+                    ModuleMultiworld.getMultiworldManager().getWorldTypes().keySet());
             return;
         }
         if (!arguments.isEmpty())
+        {
             worldType = arguments.remove();
+        }
 
         // Get the World Seed
         long seed = new Random().nextLong();
@@ -141,10 +80,14 @@ public class CommandMultiworld extends ParserCommandBase
         }
 
         if (!arguments.isEmpty())
+        {
             throw new TranslatedCommandException("Too many arguments");
+        }
 
         if (arguments.isTabCompletion)
+        {
             return;
+        }
 
         Multiworld world = new Multiworld(name, provider, worldType, seed);
         try
@@ -163,7 +106,8 @@ public class CommandMultiworld extends ParserCommandBase
 
     /**
      * Delete a multiworld
-     * @throws CommandException 
+     *
+     * @throws CommandException
      */
     public static void parseDelete(CommandParserArgs arguments) throws CommandException
     {
@@ -174,12 +118,59 @@ public class CommandMultiworld extends ParserCommandBase
         arguments.confirm("Deleted multiworld " + world.getName());
     }
 
+    public static void parseGamerule(CommandParserArgs arguments) throws CommandException
+    {
+        arguments.checkPermission(ModuleMultiworld.PERM_MANAGE);
+        Multiworld world = parseWorld(arguments);
+
+        GameRules rules = world.getWorldServer().getGameRules();
+        arguments.tabComplete(rules.getRules());
+
+        if (arguments.isEmpty())
+        {
+            // Check all gamerules
+            if (!arguments.isTabCompletion)
+            {
+                arguments.confirm("Game rules for %s:", world.getName());
+                for (String rule : rules.getRules())
+                {
+                    arguments.confirm(rule + " = " + rules.getString(rule));
+                }
+            }
+            return;
+        }
+
+        String rule = arguments.remove();
+        if (!rules.hasRule(rule))
+        {
+            throw new CommandException("commands.gamerule.norule", rule);
+        }
+
+        if (arguments.isEmpty())
+        {
+            // Check gamerule
+            arguments.confirm(rule + " = " + rules.getString(rule));
+            return;
+        }
+
+        // Set gamerule
+        if (arguments.isTabCompletion)
+        {
+            return;
+        }
+        String value = arguments.remove();
+        rules.setOrCreateGameRule(rule, value);
+        arguments.confirm("Set gamerule %s = %s for world %s", rule, value, world.getName());
+    }
+
     public static void parseInfo(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(ModuleMultiworld.PERM_MANAGE);
         Multiworld world = parseWorld(arguments);
         if (arguments.isTabCompletion)
+        {
             return;
+        }
 
         arguments.confirm("Multiworld %s:", world.getName());
         arguments.confirm("  DimID = %d", world.getDimensionId());
@@ -220,55 +211,86 @@ public class CommandMultiworld extends ParserCommandBase
         }
     }
 
-    public static void parseGamerule(CommandParserArgs arguments) throws CommandException
-    {
-        arguments.checkPermission(ModuleMultiworld.PERM_MANAGE);
-        Multiworld world = parseWorld(arguments);
-
-        GameRules rules = world.getWorldServer().getGameRules();
-        arguments.tabComplete(rules.getRules());
-
-        if (arguments.isEmpty())
-        {
-            // Check all gamerules
-            if (!arguments.isTabCompletion)
-            {
-                arguments.confirm("Game rules for %s:", world.getName());
-                for (String rule : rules.getRules())
-                    arguments.confirm(rule + " = " + rules.getString(rule));
-            }
-            return;
-        }
-
-        String rule = arguments.remove();
-        if (!rules.hasRule(rule))
-            throw new CommandException("commands.gamerule.norule", rule);
-
-        if (arguments.isEmpty())
-        {
-            // Check gamerule
-            arguments.confirm(rule + " = " + rules.getString(rule));
-            return;
-        }
-
-        // Set gamerule
-        if (arguments.isTabCompletion)
-            return;
-        String value = arguments.remove();
-        rules.setOrCreateGameRule(rule, value);
-        arguments.confirm("Set gamerule %s = %s for world %s", rule, value, world.getName());
-    }
-
     public static Multiworld parseWorld(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
+        {
             throw new TranslatedCommandException("Too few arguments!");
+        }
         arguments.tabComplete(ModuleMultiworld.getMultiworldManager().getWorldMap().keySet());
         String worldName = arguments.remove();
         Multiworld world = ModuleMultiworld.getMultiworldManager().getMultiworld(worldName);
         if (world == null)
+        {
             throw new TranslatedCommandException("Multiworld " + worldName + " does not exist!");
+        }
         return world;
+    }
+
+    @Override
+    public boolean canConsoleUseCommand()
+    {
+        return true;
+    }
+
+    @Override
+    public String getCommandName()
+    {
+        return "mw";
+    }
+
+    @Override
+    public String getCommandUsage(ICommandSender commandSender)
+    {
+        return "/mw: Multiworld management command";
+    }
+
+    @Override
+    public PermissionLevel getPermissionLevel()
+    {
+        return PermissionLevel.OP;
+    }
+
+    @Override
+    public String getPermissionNode()
+    {
+        return ModuleMultiworld.PERM_BASE;
+    }
+
+    @Override
+    public void parse(CommandParserArgs arguments) throws CommandException
+    {
+        if (arguments.isEmpty())
+        {
+            arguments.confirm("Multiworld usage:");
+            arguments.confirm("/mw create: Create a new world");
+            arguments.confirm("/mw info <world>: Show world info");
+            arguments.confirm("/mw delete <world>: Delete a world");
+            arguments.confirm("/mw list [worlds|providers|worldtypes]");
+            return;
+        }
+        arguments.tabComplete("create", "info", "delete", "list", "gamerule");
+        String subCmd = arguments.remove().toLowerCase();
+        switch (subCmd)
+        {
+        case "create":
+            parseCreate(arguments);
+            break;
+        case "info":
+            parseInfo(arguments);
+            break;
+        case "delete":
+            parseDelete(arguments);
+            break;
+        case "list":
+            parseList(arguments);
+            break;
+        case "gamerule":
+            parseGamerule(arguments);
+            break;
+        default:
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+        }
     }
 
 }

@@ -1,9 +1,5 @@
 package com.forgeessentials.multiworld;
 
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
-
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -14,10 +10,13 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.permission.PermissionManager;
 
 /**
- * 
+ *
  * @author Olee
  */
 @FEModule(name = "Multiworld", parentMod = ForgeEssentials.class, canDisable = true)
@@ -31,6 +30,20 @@ public class ModuleMultiworld extends ConfigLoaderBase
     public static final String PERM_TELEPORT = PERM_BASE + ".teleport";
 
     private static MultiworldManager multiworldManager = new MultiworldManager();
+
+    public static MultiworldManager getMultiworldManager()
+    {
+        return multiworldManager;
+    }
+
+    @Override
+    public void load(Configuration config, boolean isReload)
+    {
+        // persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend",
+        // "flatfile",
+        // "Choose a permission persistence backend (flatfile,
+        // sql)").getString();
+    }
 
     @SubscribeEvent
     public void postLoad(FEModulePostInitEvent e)
@@ -56,18 +69,6 @@ public class ModuleMultiworld extends ConfigLoaderBase
     public void serverStopped(FEModuleServerStoppedEvent e)
     {
         multiworldManager.serverStopped();
-    }
-
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
-        // persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "flatfile",
-        // "Choose a permission persistence backend (flatfile, sql)").getString();
-    }
-
-    public static MultiworldManager getMultiworldManager()
-    {
-        return multiworldManager;
     }
 
 }
