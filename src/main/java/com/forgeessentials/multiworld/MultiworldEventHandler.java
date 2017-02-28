@@ -39,7 +39,7 @@ public class MultiworldEventHandler extends ChannelInboundHandlerAdapter
             channel.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(event.dispatcher);
 
             for (Multiworld world : manager.getWorlds())
-                channel.writeOutbound(new DimensionRegisterMessage(world.dimensionId, world.getProvider()));
+                 channel.writeOutbound(new DimensionRegisterMessage(world.dimensionId, DimensionType.getById(DimensionManager.getProviderType(world.dimensionId)).toString());
         }
 
         ctx.fireUserEventTriggered(evt);
