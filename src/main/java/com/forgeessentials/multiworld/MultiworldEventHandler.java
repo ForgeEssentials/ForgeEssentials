@@ -1,5 +1,7 @@
 package com.forgeessentials.multiworld;
 
+import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.DimensionType;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
@@ -39,7 +41,8 @@ public class MultiworldEventHandler extends ChannelInboundHandlerAdapter
             channel.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(event.dispatcher);
 
             for (Multiworld world : manager.getWorlds())
-                channel.writeOutbound(new DimensionRegisterMessage(world.dimensionId, world.getProvider()));
+            channel.writeOutbound(new DimensionRegisterMessage(world.dimensionId, DimensionManager.getProviderType(world.dimensionId).toString()));
+                //channel.writeOutbound(new DimensionRegisterMessage(world.dimensionId, world.getProvider()));
         }
 
         ctx.fireUserEventTriggered(evt);
