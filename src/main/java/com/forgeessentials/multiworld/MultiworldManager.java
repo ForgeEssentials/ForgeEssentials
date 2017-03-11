@@ -18,8 +18,10 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.ServerWorldEventHandler;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
@@ -268,9 +270,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
 
-            // Create WorldServer with settings
-            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, overworld.getWorldInfo(), //
-                    world.dimensionId, overworld, mcServer.theProfiler, world);
+            WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), WorldType.parseWorldType(world.worldType));
+            WorldInfo info = new WorldInfo(settings, world.name);
+            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.theProfiler, world);
+            worldServer.init();
             // Overwrite dimensionId because WorldProviderEnd for example just hardcodes the dimId
             worldServer.provider.setDimension(world.dimensionId);
             worldServer.addEventListener(new ServerWorldEventHandler(mcServer, worldServer));
@@ -506,8 +509,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             Field f_providers = DimensionManager.class.getDeclaredField("dimensions");
             f_providers.setAccessible(true);
             @SuppressWarnings("unchecked")
-            Hashtable<Integer, Class<? extends WorldProvider>> loadedProviders = (Hashtable<Integer, Class<? extends WorldProvider>>) f_providers.get(null);
-            for (Entry<Integer, Class<? extends WorldProvider>> provider : loadedProviders.entrySet())
+            Hashtable<Integer, DimensionType> loadedProviders = (Hashtable<Integer, DimensionType>) f_providers.get(null);
+            for (Entry<Integer, DimensionType> provider : loadedProviders.entrySet())
             {
                 // skip the default providers as these are aliased as 'normal',
                 // 'nether' and 'end'
