@@ -145,6 +145,7 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
         that.setSelDim(dimension);
     }
 
+    //TODO: Expose InventoryGroups to Js
     /*public Map<String, List<JsItemStack>> getInventoryGroups()
     {
 
@@ -165,7 +166,7 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
         that.setInventoryGroup(name);
     }
 
-    /*public JsWarpPoint getLastTeleportOrigin()
+    public JsWarpPoint getLastTeleportOrigin()
     {
         return new JsWarpPoint(that.getLastTeleportOrigin());
     }
@@ -183,7 +184,7 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
     public void setLastDeathLocation(JsWarpPoint lastDeathLocation)
     {
         that.setLastDeathLocation(lastDeathLocation.getThat());
-    }*/
+    }
 
     public long getLastTeleportTime()
     {
@@ -195,7 +196,7 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
         that.setLastTeleportTime(currentTimeMillis);
     }
 
-    /*public JsWarpPoint getHome()
+    public JsWarpPoint getHome()
     {
         return new JsWarpPoint(that.getHome());
     }
@@ -203,7 +204,7 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
     public void setHome(JsWarpPoint home)
     {
         that.setHome(home.getThat());
-    }*/
+    }
 
     public boolean getHasFEClient()
     {
