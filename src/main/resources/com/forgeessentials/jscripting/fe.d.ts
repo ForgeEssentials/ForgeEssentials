@@ -191,6 +191,12 @@ declare namespace fe {
 		hashCode(): int;
 		checkPermission(permissionNode: string): boolean;
 		getPermissionProperty(permissionNode: string): string;
+		getPlayerInfo(): PlayerInfo;
+	}
+
+	class PlayerInfo extends Wrapper {
+        getUserIdent(): UserIdent;
+        removeTimeout(name: string): void;
 	}
 	
 	class WorldArea extends mc.AreaBase {
