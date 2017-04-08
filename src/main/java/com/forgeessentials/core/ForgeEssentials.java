@@ -97,7 +97,7 @@ import com.forgeessentials.util.selections.SelectionHandler;
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
-    public static final String MODID = "ForgeEssentials";
+    public static final String MODID = "forgeessentials";
 
     @Instance(value = MODID)
     public static ForgeEssentials instance;

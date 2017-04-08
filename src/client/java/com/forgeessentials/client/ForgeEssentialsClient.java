@@ -21,7 +21,7 @@ import com.forgeessentials.commons.BuildInfo;
 public class ForgeEssentialsClient
 {
     
-    public static final String MODID = "ForgeEssentialsClient";
+    public static final String MODID = "forgeessentialsclient";
 
     public static final Logger feclientlog = LogManager.getLogger("forgeessentials");
 
