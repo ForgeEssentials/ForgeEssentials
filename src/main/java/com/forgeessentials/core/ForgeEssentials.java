@@ -445,7 +445,7 @@ public class ForgeEssentials extends ConfigLoaderBase
             Translator.translations.clear();
         Translator.load();
         if (!config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
-            BuildInfo.cancelVersionCheck();
+            BuildInfo.checkVersion = false;
         configManager.setUseCanonicalConfig(
                 config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false, "For modules that support it, place their configs in this file.").getBoolean());
         debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean();
@@ -454,6 +454,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         HelpFixer.hideWorldEditCommands = config
                 .get(FEConfig.CONFIG_CAT, "hide_worldedit_help", true, "Hide WorldEdit commands from /help and only show them in //help command").getBoolean();
         logCommandsToConsole = config.get(FEConfig.CONFIG_CAT, "logCommands", false, "Log commands to console").getBoolean();
+        BuildInfo.startVersionChecks();
     }
 
     /* ------------------------------------------------------------ */

@@ -21,6 +21,8 @@ public abstract class BuildInfo
 
     private static String buildHash = "N/A";
 
+    public static boolean checkVersion;
+
     private static int buildNumber = 0;
 
     private static int buildNumberLatest = 0;
@@ -37,26 +39,31 @@ public abstract class BuildInfo
 
     public static final String DEPENDENCIES = "required-after:Forge";
 
-    static
+    public static void startVersionChecks()
     {
-        // Check for latest version asap
-        checkVersionThread = new Thread(new Runnable() {
-            @Override
-            public void run()
+        if (checkVersion)
+        {
+            // Check for latest version asap
+            checkVersionThread = new Thread(new Runnable()
             {
-                doCheckLatestVersion();
-            }
-        });
-        checkVersionThread.start();
+                @Override
+                public void run()
+                {
+                    doCheckLatestVersion();
+                }
+            });
+            checkVersionThread.start();
 
-        checkBuildTypesThread = new Thread(new Runnable() {
-            @Override
-            public void run()
+            checkBuildTypesThread = new Thread(new Runnable()
             {
-                doCheckBuildTypes();
-            }
-        });
-        checkBuildTypesThread.start();
+                @Override
+                public void run()
+                {
+                    doCheckBuildTypes();
+                }
+            });
+            checkBuildTypesThread.start();
+        }
     }
 
     public static void getBuildInfo(File jarFile)

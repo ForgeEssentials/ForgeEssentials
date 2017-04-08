@@ -135,6 +135,8 @@ public class ClientProxy extends CommonProxy
                 "Use shortcut buttons to answer questions. Defaults are F8 for yes and F9 for no, change in game options menu.").getBoolean(true);
         allowAuthAutoLogin = config.get(Configuration.CATEGORY_GENERAL, "allowAuthAutoLogin", true,
                 "Save tokens to automatically log in to servers using FE's Authentication Module.").getBoolean(true);
+        if (!config.get(Configuration.CATEGORY_GENERAL, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
+            BuildInfo.checkVersion = false;
 
         if (allowCUI)
             MinecraftForge.EVENT_BUS.register(cuiRenderer);
@@ -144,6 +146,7 @@ public class ClientProxy extends CommonProxy
             MinecraftForge.EVENT_BUS.register(permissionOverlay);
         if (allowQuestionerShortcuts)
             new QuestionerKeyHandler();
+        BuildInfo.startVersionChecks();
 
         config.save();
     }
