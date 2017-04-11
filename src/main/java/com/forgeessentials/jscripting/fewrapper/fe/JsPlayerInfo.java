@@ -60,9 +60,9 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
         that.setActive(delta);
     }
 
-    public void getInactiveTime()
+    public long getInactiveTime()
     {
-        that.getInactiveTime();
+        return that.getInactiveTime();
     }
 
     public void removeTimeout(String name)
@@ -154,7 +154,7 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
     public List<JsItemStack> getInventoryGroupItems(String name)
     {
 
-    }*/
+    }
 
     public String getInventoryGroup()
     {
@@ -164,7 +164,7 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
     public void setInventoryGroup(String name)
     {
         that.setInventoryGroup(name);
-    }
+    }*/
 
     public JsWarpPoint getLastTeleportOrigin()
     {
@@ -204,15 +204,5 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
     public void setHome(JsWarpPoint home)
     {
         that.setHome(home.getThat());
-    }
-
-    public boolean getHasFEClient()
-    {
-        return that.getHasFEClient();
-    }
-
-    public void setHasFEClient(boolean status)
-    {
-        that.setHasFEClient(status);
     }
 }
