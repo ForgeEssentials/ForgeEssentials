@@ -102,4 +102,8 @@ public class JsUserIdent extends JsWrapper<UserIdent>
         return that.getPermissionProperty(permissionNode);
     }
 
+    public JsPlayerInfo getPlayerInfo()
+    {
+        return new JsPlayerInfo(that.getUuid());
+    }
 }
