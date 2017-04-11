@@ -8,7 +8,8 @@ The code on this branch is for Minecraft 1.7.10.
 
 # Help
 For general help about ForgeEssentials and tutorials, please check the **[Wiki](https://github.com/ForgeEssentials/ForgeEssentials/wiki)** pages.
-If you need help or have suggestions, **please join us on our IRC channel** [*#forgeessentials*](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on [esper.net](http://esper.net).  
+If you need help or have suggestions, **please join us on our IRC channel** [*#forgeessentials*](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on [esper.net](http://esper.net).
+We also have a Discord channel: https://discord.gg/FNRQjmr
 There are many people there who can help you and it is the quickest way to reach us. Please try to not open issues for simple questions and directly contact us on IRC instead.
 
 # Reporting bugs
