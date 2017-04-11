@@ -1,14 +1,17 @@
 package com.forgeessentials.playerlogger.command;
 
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import javax.persistence.TypedQuery;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -23,6 +26,9 @@ import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.forgeessentials.commons.selections.WorldPoint;
+
+import scala.Int;
 
 public class CommandPlayerlogger extends ParserCommandBase
 {
@@ -97,130 +103,100 @@ public class CommandPlayerlogger extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm("/pl stats: Show playerlogger stats");
-            arguments.confirm("/pl picker: Picker Control");
-            arguments.confirm("/pl search: Area Search Function");
+            arguments.confirm("/pl filter: Sets the players FilterConfig");
+            arguments.confirm("/pl gfilter: Global /pl filter");
+            arguments.confirm("/pl lookup: Looks up playerlogger data");
+            arguments.confirm("/pl glookup: Global /pl lookup");
             arguments.confirm("/pl purge: Purge old playerData");
             return;
         }
-        arguments.tabComplete("stats");
+        arguments.tabComplete("stats", "gfilter", "filter", "glookup", "lookup", "purge");
+        FilterConfig fc = null;
         String subCmd = arguments.remove().toLowerCase();
+        boolean global = false;
         switch (subCmd)
         {
-        case "picker":
+        case "gfilter":
+            global = true;
+        case "filter":
             if (arguments.isEmpty())
             {
-                arguments.confirm("/pl picker range [int] : Set picker range");
-                arguments.confirm(
-                        "/pl picker filter [player | command | block | explosion | burn | all] [searchCriteria] : Filter displayed blocks based on a criteria");
+                arguments.confirm("/pl [gfilter | filter] [filterConfig] : Filter displayed blocks based on a criteria");
                 break;
             }
-            String subCmd2 = arguments.remove().toLowerCase();
-            switch (subCmd2)
-            {
-            case "range":
-                // Set the lookup range of the picker tool (Clock)
-                int oldRange = PlayerLoggerEventHandler.pickerRange;
-                PlayerLoggerEventHandler.pickerRange = arguments.parseInt();
-                ChatOutputHandler.sendMessage(arguments.sender,
-                        ChatOutputHandler.formatColors("Range changed from " + oldRange + " to " + PlayerLoggerEventHandler.pickerRange));
-                break;
-            case "filter":
-                FilterConfig fc = new FilterConfig();
-                fc.parse(arguments);
+            global = arguments.senderPlayer == null || global;
+            fc = global ? FilterConfig.globalConfig : new FilterConfig();
+            fc.parse(arguments);
+            if (!global) FilterConfig.perPlayerFilters.put(arguments.ident,fc);
 
-                ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors("Before: " + fc.before + "\nAfter: " + fc.after + "\nActions: " + fc.actions + "\nBlocks: " + fc.blocks + "\nWhitelist: " + fc.whitelist));
-
-                //TODO: Finish adding filterconfig to playerlogger functions
-                // filter event type shown (player, command, block, explosion)
-                /*PlayerLoggerEventHandler.eventType = arguments.isEmpty() ? 0b11111 : 0;
-                PlayerLoggerEventHandler.searchCriteria = "";
-                while (!arguments.isEmpty())
-                {
-                    String subCmd3 = arguments.remove().toLowerCase();
-                    switch (subCmd3)
-                    {
-                    case "player":
-                        PlayerLoggerEventHandler.eventType |= 0b10000;
-                        break;
-                    case "command":
-                        PlayerLoggerEventHandler.eventType |= 0b01000;
-                        break;
-                    case "block":
-                        PlayerLoggerEventHandler.eventType |= 0b00100;
-                        break;
-                    case "explosion":
-                        PlayerLoggerEventHandler.eventType |= 0b00010;
-                        break;
-                    case "burn":
-                        PlayerLoggerEventHandler.eventType |= 0b00001;
-                        break;
-                    case "all":
-                        PlayerLoggerEventHandler.eventType = 0b11111;
-                        break;
-                    default:
-                        if (arguments.isEmpty())
-                        {
-                            PlayerLoggerEventHandler.searchCriteria = subCmd3;
-                            if (PlayerLoggerEventHandler.eventType == 0)
-                                PlayerLoggerEventHandler.eventType = 0b11111;
-                        }
-                        else
-                            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
-                    }
-                }
-                ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors(outputFilterReadable(PlayerLoggerEventHandler.eventType)
-                        + (PlayerLoggerEventHandler.searchCriteria.equals("") ? "" : "with SearchCriteria " + PlayerLoggerEventHandler.searchCriteria)));*/
-
-                break;
-            default:
-                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd2);
-            }
+            ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors((global ? "Global": arguments.ident.getUsername() + "'s") + " Picker set: \n" + fc.toReadableString()));
 
             break;
-        case "search":
-            if (arguments.isEmpty())
+        case "glookup":
+            global = true;
+        case "lookup":
+            if (!arguments.isEmpty() && arguments.peek().toLowerCase().equals("help"))
             {
-                arguments.confirm("/pl search [time] [player | command | block | explosion | burn | all] [searchCriteria]");
+                arguments.confirm("/pl [glookup | lookup] [[[x] [y] [z] [dim]?] | [player]]?  [filterConfig]?");
                 break;
             }
-            long duration = arguments.parseTimeReadable();
-            // filter event type shown (player, command, block, explosion)
-            int eventType = 0;
-            String searchCriteria;
-            while (!arguments.isEmpty())
+            global = arguments.senderPlayer == null || global;
+            WorldPoint p = arguments.getSenderPoint();
+            String next = arguments.peek();
+            if (next != null)
             {
-                String subCmd3 = arguments.remove().toLowerCase();
-                switch (subCmd3)
+                if (!FilterConfig.keywords.contains(next))
                 {
-                case "player":
-                    eventType |= 0b10000;
-                    break;
-                case "command":
-                    eventType |= 0b01000;
-                    break;
-                case "block":
-                    eventType |= 0b00100;
-                    break;
-                case "explosion":
-                    eventType |= 0b00010;
-                    break;
-                case "burn":
-                    eventType |= 0b00001;
-                    break;
-                case "all":
-                    eventType = 0b11111;
-                    break;
-                default:
-                    if (arguments.isEmpty())
-                        searchCriteria = subCmd3;
-                    else
-                        throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd3);
+                    try
+                    {
+                        p.setX(arguments.parseInt());
+                        try
+                        {
+                            p.setY(arguments.parseInt());
+                            p.setZ(arguments.parseInt());
+
+                            try
+                            {
+                                next = arguments.peek();
+                                if (next != null)
+                                    p.setDimension(arguments.parseInt());
+                            }
+                            catch (TranslatedCommandException e)
+                            {
+                                arguments.args.addFirst(next);
+                            }
+                        }
+                        catch (NoSuchElementException | TranslatedCommandException e)
+                        {
+                            arguments.error("Point must be in the form [x] [y] [z] [dim]?");
+                            break;
+                        }
+                    }
+                    catch (TranslatedCommandException e)
+                    {
+                        arguments.args.addFirst(next);
+                        EntityPlayer pl = arguments.parsePlayer(true, true).getPlayer();
+                        p = new WorldPoint(pl.getEntityWorld(), pl.getPlayerCoordinates());
+                    }
                 }
             }
 
-            throw new TranslatedCommandException("Command %s is not implemented yet", getCommandName());
+            if (arguments.isEmpty())
+            {
+                if (!global && FilterConfig.perPlayerFilters.containsKey(arguments.ident))
+                    fc = FilterConfig.perPlayerFilters.get(arguments.ident);
+                else
+                    fc = FilterConfig.globalConfig;
+            }
+            else
+            {
+                fc = new FilterConfig();
+                fc.parse(arguments);
+            }
+            ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors("Looking up: \n" + fc.toReadableString()));
+            PlayerLoggerEventHandler.CheckBlock(p,fc);
 
-            // break;
+            break;
         case "stats":
             if (arguments.isTabCompletion)
                 return;
