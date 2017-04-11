@@ -55,6 +55,10 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
                 new Point(wp.getX() + radius, wp.getY() + radius, wp.getZ() + radius));
     }
 
+    public static void CheckBlock(WorldPoint point, FilterConfig fc)
+    {
+
+    }
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {

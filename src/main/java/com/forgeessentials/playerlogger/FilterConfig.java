@@ -35,13 +35,18 @@ public class FilterConfig
 
     public static ArrayList<String> actiontabs = new ArrayList<>();
 
-    public static Boolean whitelist = null;
+    public Boolean whitelist = null;
+
+    public int pickerRange = 0;
 
     static {
         keywords.add("action");
         keywords.add("blockid");
         keywords.add("before");
         keywords.add("after");
+        keywords.add("range");
+        keywords.add("whitelist");
+        keywords.add("blacklist");
 
         ActionEnum[] enums = ActionEnum.values();
 
@@ -75,6 +80,14 @@ public class FilterConfig
             case "after":
                 parseAfter(args);
                 break;
+            case "range":
+                parseRange(args);
+                break;
+            case "whitelist":
+                whitelist = true;
+                break;
+            case "blacklist":
+                whitelist = false;
             default:
                 throw new IllegalArgumentException("Expected Keyword here!");
 
@@ -101,6 +114,8 @@ public class FilterConfig
         blocks.addAll(c.blocks);
         before = c.before;
         after = c.after;
+        whitelist = c.whitelist;
+        pickerRange = c.pickerRange;
     }
     public FilterConfig()
     {
@@ -108,7 +123,7 @@ public class FilterConfig
 
     public void parseActions(CommandParserArgs args)
     {
-        while (!keywords.contains(args.peek()))
+        while (!args.isEmpty() && !keywords.contains(args.peek()))
         {
             String arg = args.remove();
 
@@ -128,7 +143,7 @@ public class FilterConfig
 
     public void parseBlock(CommandParserArgs args)
     {
-        while (!keywords.contains(args.peek()))
+        while (!args.isEmpty() && !keywords.contains(args.peek()))
         {
             if (args.peek().equals("reset") && !args.isTabCompletion)
             {
@@ -153,11 +168,7 @@ public class FilterConfig
         }
         else
         {
-            before = 0;
-            while (!keywords.contains(args.peek()))
-            {
-                before += args.parseTimeReadable();
-            }
+            before = args.parseTimeReadable();
         }
     }
     public void parseAfter(CommandParserArgs args)
@@ -169,12 +180,17 @@ public class FilterConfig
         }
         else
         {
-            after = 0;
-            while (!keywords.contains(args.peek()))
-            {
-                after += args.parseTimeReadable();
-            }
+            after =  args.parseTimeReadable();
         }
+    }
+
+    public void parseRange(CommandParserArgs args)
+    {
+        pickerRange = args.parseInt();
+    }
+    public String toReadableString()
+    {
+        return "Before: " + before + "\nAfter: " + after + "\nActions: " + actions + "\nBlocks: " + blocks + "\nWhitelist: " + whitelist;
     }
 
 }
