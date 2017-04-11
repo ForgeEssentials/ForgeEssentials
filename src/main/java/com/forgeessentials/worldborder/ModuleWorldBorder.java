@@ -95,12 +95,12 @@ public class ModuleWorldBorder extends ServerEventHandler
         if (border != null && border.isEnabled())
         {
             double minBorderDistance = Double.MAX_VALUE;
-            Point p1 = border.getArea().getLowPoint();
-            Point p2 = border.getArea().getHighPoint();
             switch (border.getShape())
             {
             case BOX:
             {
+                Point p1 = border.getArea().getLowPoint();
+                Point p2 = border.getArea().getHighPoint();
                 minBorderDistance = Math.min(minBorderDistance, event.after.getX() - p1.getX());
                 minBorderDistance = Math.min(minBorderDistance, event.after.getZ() - p1.getZ());
                 minBorderDistance = Math.min(minBorderDistance, p2.getX() - event.after.getX());
@@ -111,8 +111,19 @@ public class ModuleWorldBorder extends ServerEventHandler
             case CYLINDER:
             {
                 Point delta = event.after.toWorldPoint();
+                delta.setY(border.getCenter().getY());
                 delta.subtract(border.getCenter());
-                minBorderDistance = Math.sqrt(delta.getX() * delta.getX() + delta.getZ() * delta.getZ());
+                int x0 = delta.getX();
+                int z0 = delta.getZ();
+                if (x0 != 0 || z0 != 0)
+                {
+                    int a = border.getSize().getX();
+                    int b = border.getSize().getZ();
+                    double iM = a * b / Math.sqrt(a * a * z0 * z0 + b * b * x0 * x0);
+                    Point p1 = new Point(iM * x0, delta.getY(), iM * z0);
+
+                    minBorderDistance = Math.min(minBorderDistance, p1.length() - delta.length());
+                }
                 break;
             }
             default:
