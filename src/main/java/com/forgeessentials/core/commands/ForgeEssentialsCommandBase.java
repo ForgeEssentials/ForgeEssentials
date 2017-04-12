@@ -26,6 +26,7 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -138,6 +139,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         }
 
         ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).registerCommand(this);
+        PermissionManager.registerCommandPermission(this, this.getPermissionNode(), this.getPermissionLevel());
         registerExtraPermissions();
     }
 

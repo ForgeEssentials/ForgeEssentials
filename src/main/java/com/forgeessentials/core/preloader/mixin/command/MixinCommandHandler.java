@@ -82,4 +82,19 @@ public class MixinCommandHandler
         return PermissionAPI.hasPermission((EntityPlayer) sender, PermissionManager.getCommandPermission(command));
     }
 
+    @Redirect(
+            method = "executeCommand(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)I",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/command/ICommand;checkPermission(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;)Z"
+            ),
+            require = 1
+    )
+    private boolean hasPermission(ICommand command, MinecraftServer server, ICommandSender sender)
+    {
+        if (sender instanceof MinecraftServer || sender instanceof CommandBlockBaseLogic)
+            return true;
+        return PermissionAPI.hasPermission((EntityPlayer) sender, PermissionManager.getCommandPermission(command));
+    }
+
 }
