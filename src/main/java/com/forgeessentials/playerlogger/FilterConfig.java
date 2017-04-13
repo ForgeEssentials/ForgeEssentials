@@ -1,6 +1,7 @@
 package com.forgeessentials.playerlogger;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -14,20 +15,32 @@ public class FilterConfig
 
     public enum ActionEnum
     {
-        player,
+        blockPlace,
+        blockBreak,
+        blockDetonate,
+        blockUse_Left,
+        blockUse_Right,
+        blockBurn,
         command,
-        block,
-        blockbreak,
-        blockplace,
-        explode,
-        burn
+        playerLogin,
+        playerLogout,
+        playerRespawn,
+        playerChangeDim,
+        playerMove,
+        playerPosition,
+        other
     }
 
     public static HashMap<UserIdent,FilterConfig> perPlayerFilters = new HashMap<>();
 
     public static FilterConfig globalConfig = new FilterConfig();
 
-    public HashSet<ActionEnum> actions = new HashSet<>();
+    private HashSet<ActionEnum> actions = new HashSet<>();
+
+    public boolean hasAction(ActionEnum a)
+    {
+        return whitelist == actions.contains(a);
+    }
 
     public HashSet<Block> blocks = new HashSet<>();
 
@@ -55,46 +68,67 @@ public class FilterConfig
             actiontabs.add(ae.name());
         }
         actiontabs.add("reset");
+
+        globalConfig.parse(null);
+    }
+
+    public static FilterConfig getDefaultPlayerConfig(UserIdent ident)
+    {
+        if (perPlayerFilters.containsKey(ident))
+            return perPlayerFilters.get(ident);
+        return globalConfig;
     }
 
     public final static long default_after = 365L*24*60*60*1000;
     public long before = 0;
     public long after = default_after;
+
+    public Date After()
+    {
+        return new Date(System.currentTimeMillis() - after);
+    }
+
+    public Date Before()
+    {
+        return new Date(System.currentTimeMillis() - before);
+    }
     public void parse(CommandParserArgs args)
     {
-        while (!args.isEmpty())
+        if (args != null)
         {
-            args.tabComplete(keywords);
-            String next = args.remove();
-            switch (next)
+            while (!args.isEmpty())
             {
-            case "action":
-                parseActions(args);
-                break;
-            case "blockid":
-                parseBlock(args);
-                break;
-            case "before":
-                parseBefore(args);
-                break;
-            case "after":
-                parseAfter(args);
-                break;
-            case "range":
-                parseRange(args);
-                break;
-            case "whitelist":
-                whitelist = true;
-                break;
-            case "blacklist":
-                whitelist = false;
-            default:
-                throw new IllegalArgumentException("Expected Keyword here!");
+                args.tabComplete(keywords);
+                String next = args.remove();
+                switch (next)
+                {
+                case "action":
+                    parseActions(args);
+                    break;
+                case "blockid":
+                    parseBlock(args);
+                    break;
+                case "before":
+                    parseBefore(args);
+                    break;
+                case "after":
+                    parseAfter(args);
+                    break;
+                case "range":
+                    parseRange(args);
+                    break;
+                case "whitelist":
+                    whitelist = true;
+                    break;
+                case "blacklist":
+                    whitelist = false;
+                default:
+                    throw new IllegalArgumentException("Expected Keyword here!");
+
+                }
 
             }
-
         }
-
         //If the filter has not been set to a whitelist or a blacklist assume blacklist when the blocks field is empty and whitelist otherwise.
         if (whitelist == null)
         {
@@ -168,7 +202,9 @@ public class FilterConfig
         }
         else
         {
-            before = args.parseTimeReadable();
+            before = 0;
+            while (!args.isEmpty() && !keywords.contains(args.peek()))
+                before += args.parseTimeReadable();
         }
     }
     public void parseAfter(CommandParserArgs args)
@@ -180,7 +216,9 @@ public class FilterConfig
         }
         else
         {
-            after =  args.parseTimeReadable();
+            after = 0;
+            while (!args.isEmpty() && !keywords.contains(args.peek()))
+                after +=  args.parseTimeReadable();
         }
     }
 
