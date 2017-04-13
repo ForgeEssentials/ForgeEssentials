@@ -11,8 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.permission.PermissionLevel;
 
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -20,15 +20,12 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.playerlogger.FilterConfig;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLogger;
-import com.forgeessentials.playerlogger.PlayerLoggerEventHandler;
+import com.forgeessentials.playerlogger.PlayerLoggerChecker;
 import com.forgeessentials.playerlogger.entity.Action;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
-import com.forgeessentials.commons.selections.WorldPoint;
-
-import scala.Int;
 
 public class CommandPlayerlogger extends ParserCommandBase
 {
@@ -149,27 +146,38 @@ public class CommandPlayerlogger extends ParserCommandBase
                 {
                     try
                     {
-                        p.setX(arguments.parseInt());
+                        int tmp = arguments.parseInt();
+
                         try
                         {
+                            next = arguments.args.peek();
                             p.setY(arguments.parseInt());
-                            p.setZ(arguments.parseInt());
-
+                            p.setX(tmp);
                             try
                             {
-                                next = arguments.peek();
-                                if (next != null)
-                                    p.setDimension(arguments.parseInt());
+                                p.setZ(arguments.parseInt());
+
+                                try
+                                {
+                                    next = arguments.peek();
+                                    if (next != null)
+                                        p.setDimension(arguments.parseInt());
+                                }
+                                catch (TranslatedCommandException e)
+                                {
+                                    arguments.args.addFirst(next);
+                                }
                             }
-                            catch (TranslatedCommandException e)
+                            catch (NoSuchElementException | TranslatedCommandException e)
                             {
-                                arguments.args.addFirst(next);
+                                arguments.error("Point must be in the form [x] [y] [z] [dim]?");
+                                break;
                             }
                         }
                         catch (NoSuchElementException | TranslatedCommandException e)
                         {
-                            arguments.error("Point must be in the form [x] [y] [z] [dim]?");
-                            break;
+                            arguments.args.addFirst(next);
+                            arguments.args.addFirst(Integer.toString(tmp));
                         }
                     }
                     catch (TranslatedCommandException e)
@@ -181,10 +189,25 @@ public class CommandPlayerlogger extends ParserCommandBase
                 }
             }
 
+            int pageSize = 0;
+            boolean newCheck = true;
+            if (!arguments.isEmpty())
+            {
+                next = arguments.peek();
+                try
+                {
+                    pageSize = arguments.parseInt();
+                    newCheck = false;
+                }
+                catch (TranslatedCommandException e)
+                {
+                    arguments.args.addFirst(next);
+                }
+            }
             if (arguments.isEmpty())
             {
-                if (!global && FilterConfig.perPlayerFilters.containsKey(arguments.ident))
-                    fc = FilterConfig.perPlayerFilters.get(arguments.ident);
+                if (!global)
+                    fc = FilterConfig.getDefaultPlayerConfig(arguments.ident);
                 else
                     fc = FilterConfig.globalConfig;
             }
@@ -193,8 +216,8 @@ public class CommandPlayerlogger extends ParserCommandBase
                 fc = new FilterConfig();
                 fc.parse(arguments);
             }
-            ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors("Looking up: \n" + fc.toReadableString()));
-            PlayerLoggerEventHandler.CheckBlock(p,fc);
+            //ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors("Looking up: \n" + fc.toReadableString()));
+            PlayerLoggerChecker.instance.CheckBlock(p,fc, arguments.sender, pageSize, newCheck);
 
             break;
         case "stats":
