@@ -26,7 +26,6 @@ public class FilterConfig
         playerLogout,
         playerRespawn,
         playerChangeDim,
-        playerMove,
         playerPosition,
         other
     }
