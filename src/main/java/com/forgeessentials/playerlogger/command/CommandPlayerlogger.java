@@ -134,7 +134,7 @@ public class CommandPlayerlogger extends ParserCommandBase
         case "lookup":
             if (!arguments.isEmpty() && arguments.peek().toLowerCase().equals("help"))
             {
-                arguments.confirm("/pl [glookup | lookup] [[[x] [y] [z] [dim]?] | [player]]?  [filterConfig]?");
+                arguments.confirm("/pl [glookup | lookup] [[[x] [y] [z] [dim]?] | [player]]?  [pageSize]? [filterConfig]?");
                 break;
             }
             global = arguments.senderPlayer == null || global;
