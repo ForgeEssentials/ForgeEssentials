@@ -176,7 +176,7 @@ public class CommandPlayerlogger extends ParserCommandBase
                         }
                         catch (NoSuchElementException | TranslatedCommandException e)
                         {
-                            arguments.args.addFirst(next);
+                            if (next != null) arguments.args.addFirst(next);
                             arguments.args.addFirst(Integer.toString(tmp));
                         }
                     }
