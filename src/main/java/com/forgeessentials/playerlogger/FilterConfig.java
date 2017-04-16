@@ -225,35 +225,50 @@ public class FilterConfig
     public void parseBefore(CommandParserArgs args)
     {
         args.tabComplete("reset");
-        if (args.peek().equals("reset"))
+        if (!args.isEmpty())
         {
-            before = 0;
+            if (args.peek().equals("reset"))
+            {
+                before = 0;
+            }
+            else
+            {
+                before = 0;
+                while (!args.isEmpty() && !keywords.contains(args.peek()))
+                    before += args.parseTimeReadable();
+            }
         }
         else
-        {
-            before = 0;
-            while (!args.isEmpty() && !keywords.contains(args.peek()))
-                before += args.parseTimeReadable();
-        }
+            throw new TranslatedCommandException("A time must be specified here!");
     }
     public void parseAfter(CommandParserArgs args)
     {
         args.tabComplete("reset");
-        if (args.peek().equals("reset"))
+        if (!args.isEmpty())
         {
-            after = default_after;
+            if (args.peek().equals("reset"))
+            {
+                after = default_after;
+            }
+            else
+            {
+                after = 0;
+                while (!args.isEmpty() && !keywords.contains(args.peek()))
+                    after += args.parseTimeReadable();
+            }
         }
-        else
-        {
-            after = 0;
-            while (!args.isEmpty() && !keywords.contains(args.peek()))
-                after +=  args.parseTimeReadable();
-        }
+            else
+                throw new TranslatedCommandException("A time must be specified here!");
     }
 
     public void parseRange(CommandParserArgs args)
     {
-        pickerRange = args.parseInt();
+        if (!args.isEmpty())
+        {
+            pickerRange = args.parseInt();
+        }
+        else
+            throw new TranslatedCommandException("A integer must be specified here!");
     }
     public String toReadableString()
     {
