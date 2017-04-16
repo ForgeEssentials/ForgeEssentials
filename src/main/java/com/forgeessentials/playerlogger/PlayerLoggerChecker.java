@@ -11,6 +11,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.playerlogger.FilterConfig.ActionEnum;
 import com.forgeessentials.playerlogger.entity.Action;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action02Command;
@@ -120,21 +121,33 @@ public class PlayerLoggerChecker
                 switch (change2.type)
                 {
                 case PLACE:
+                    if (!fc.hasAction(ActionEnum.blockPlace))
+                        continue;
                     msg += String.format("PLACED %s", blockName);
                     break;
                 case BREAK:
+                    if (!fc.hasAction(ActionEnum.blockBreak))
+                        continue;
                     msg += String.format("BROKE %s", blockName);
                     break;
                 case DETONATE:
+                    if (!fc.hasAction(ActionEnum.blockDetonate))
+                        continue;
                     msg += String.format("EXPLODED %s", blockName);
                     break;
                 case USE_LEFT:
+                    if (!fc.hasAction(ActionEnum.blockUse_Left))
+                        continue;
                     msg += String.format("LEFT CLICK %s", blockName);
                     break;
                 case USE_RIGHT:
+                    if (!fc.hasAction(ActionEnum.blockUse_Right))
+                        continue;
                     msg += String.format("RIGHT CLICK %s", blockName);
                     break;
                 case BURN:
+                    if (!fc.hasAction(ActionEnum.blockBurn))
+                        continue;
                     msg += String.format("BURN %s", blockName);
                     break;
                 default:
@@ -143,6 +156,8 @@ public class PlayerLoggerChecker
             }
             else if (change instanceof Action02Command)
             {
+                if (!fc.hasAction(ActionEnum.command))
+                    continue;
                 Action02Command change2 = (Action02Command) change;
                 String command = change2.command;
                 String args = change2.arguments;
@@ -154,19 +169,29 @@ public class PlayerLoggerChecker
                 switch (change2.type)
                 {
                 case LOGIN:
+                    if (!fc.hasAction(ActionEnum.playerLogin))
+                        continue;
                     msg += String.format("Logged In at %d %d %d", change2.x, change2.y, change2.z);
                     break;
                 case LOGOUT:
+                    if (!fc.hasAction(ActionEnum.playerLogout))
+                        continue;
                     msg += String.format("Logged Out at %d %d %d", change2.x, change2.y, change2.z);
                     break;
                 case RESPAWN:
+                    if (!fc.hasAction(ActionEnum.playerRespawn))
+                        continue;
                     msg += String.format("Respawned at %d %d %d", change2.x, change2.y, change2.z);
                     break;
                 case CHANGEDIM:
+                    if (!fc.hasAction(ActionEnum.playerChangeDim))
+                        continue;
                     msg += String.format("Changed Dim at %d %d %d", change2.x, change2.y, change2.z);
                     break;
                 case MOVE:
-                    msg += String.format("Moved at %d %d %d", change2.x, change2.y, change2.z);
+                    if (!fc.hasAction(ActionEnum.playerPosition))
+                        continue;
+                    msg += String.format("Position at %d %d %d", change2.x, change2.y, change2.z);
                     break;
                 default:
                     continue;
@@ -174,6 +199,8 @@ public class PlayerLoggerChecker
             }
             else if (change instanceof Action04PlayerPosition)
             {
+                if (!fc.hasAction(ActionEnum.playerPosition))
+                    continue;
                 Action04PlayerPosition change2 = (Action04PlayerPosition) change;
                 msg += String.format("Position is %d %d %d", change2.x, change2.y, change2.z);
             }
