@@ -8,6 +8,7 @@ import java.util.HashSet;
 import net.minecraft.block.Block;
 
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class FilterConfig
@@ -58,6 +59,7 @@ public class FilterConfig
 
     static {
         keywords.add("action");
+        keywords.add("block");
         keywords.add("blockid");
         keywords.add("before");
         keywords.add("after");
@@ -109,6 +111,7 @@ public class FilterConfig
                 case "action":
                     parseActions(args);
                     break;
+                case "block":
                 case "blockid":
                     parseBlock(args);
                     break;
@@ -127,7 +130,7 @@ public class FilterConfig
                 case "blacklist":
                     parseWhitelist(args,false);
                 default:
-                    throw new IllegalArgumentException("Expected Keyword here!");
+                    throw new TranslatedCommandException("Expected Keyword here!");
 
                 }
 
@@ -178,17 +181,22 @@ public class FilterConfig
     {
         while (!args.isEmpty() && !keywords.contains(args.peek()))
         {
-            String arg = args.remove();
-
             args.tabComplete(actiontabs);
 
+            String arg = args.remove();
             if (arg.equals("reset"))
             {
                 actions.clear();
             }
             else
             {
-                actions.add(ActionEnum.valueOf(arg));
+                try
+                {
+                    actions.add(ActionEnum.valueOf(arg));
+                } catch (IllegalArgumentException e)
+                {
+                    throw new TranslatedCommandException("Invalid Action");
+                }
             }
 
         }
