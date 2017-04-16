@@ -92,6 +92,7 @@ public class PlayerLoggerChecker
                 ChatOutputHandler.chatNotification(sender, "Showing recent block changes (clicked block):");
         }
 
+        ChatOutputHandler.chatNotification(sender, "Loading logs from database!  This may take a while.");
         List<Action> changes = ModulePlayerLogger.getLogger().getLoggedActions(getAreaAround(point,fc.pickerRange),fc.After(),fc.Before(),info.checkStartId,pageSize);
 
         //List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getAreaAround(point, fc.pickerRange),fc.After(), fc.Before(), info.checkStartId, pageSize);
