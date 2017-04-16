@@ -47,8 +47,6 @@ public class FilterConfig
 
     public boolean hasBlock(Block b)
     {
-        if (b.equals(Blocks.air))   //Block lookup will return air if a block does not exist
-            return true;
         return Bwhitelist == blocks.contains(b);
     }
     public static HashSet<String> keywords = new HashSet<>();
@@ -132,6 +130,7 @@ public class FilterConfig
                     break;
                 case "blacklist":
                     parseWhitelist(args,false);
+                    break;
                 default:
                     throw new TranslatedCommandException("Expected Keyword here!");
 
@@ -156,11 +155,11 @@ public class FilterConfig
         while (!args.isEmpty() && !keywords.contains(args.peek()))
         {
             String name = args.remove();
-            if (name.equalsIgnoreCase("action"))
+            if (name.equalsIgnoreCase("actions"))
             {
                 Awhitelist = enabled;
             }
-            else if (name.equalsIgnoreCase("block"))
+            else if (name.equalsIgnoreCase("blocks"))
             {
                 Bwhitelist = enabled;
             }
