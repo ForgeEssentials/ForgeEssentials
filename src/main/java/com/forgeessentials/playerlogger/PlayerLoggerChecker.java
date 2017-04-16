@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 
@@ -116,12 +117,13 @@ public class PlayerLoggerChecker
             {
                 Action01Block change2 = (Action01Block) change;
                 String blockName = change2.block != null ? change2.block.name : "";
-                int blockId = change2.block != null ? change2.block.id : -1;
+                if (!fc.hasBlock((Block) Block.getBlockFromName(blockName)))
+                    continue;
+
                 if (blockName.contains(":"))
                     blockName = blockName.split(":", 2)[1];
 
-                if (!fc.hasBlock((Block) Block.blockRegistry.getObjectById(blockId)))
-                    continue;
+
 
                 switch (change2.type)
                 {

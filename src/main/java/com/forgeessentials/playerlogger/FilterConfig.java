@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -46,6 +47,8 @@ public class FilterConfig
 
     public boolean hasBlock(Block b)
     {
+        if (b.equals(Blocks.air))   //Block lookup will return air if a block does not exist
+            return true;
         return Bwhitelist == blocks.contains(b);
     }
     public static HashSet<String> keywords = new HashSet<>();
