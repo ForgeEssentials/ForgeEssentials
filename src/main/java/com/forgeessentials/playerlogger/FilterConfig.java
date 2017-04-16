@@ -39,16 +39,21 @@ public class FilterConfig
 
     public boolean hasAction(ActionEnum a)
     {
-        return whitelist == actions.contains(a);
+        return Awhitelist == actions.contains(a);
     }
 
-    public HashSet<Block> blocks = new HashSet<>();
+    private HashSet<Block> blocks = new HashSet<>();
 
+    public boolean hasBlock(Block b)
+    {
+        return Bwhitelist == blocks.contains(b);
+    }
     public static HashSet<String> keywords = new HashSet<>();
 
     public static ArrayList<String> actiontabs = new ArrayList<>();
 
-    public Boolean whitelist = null;
+    public Boolean Awhitelist = null;
+    public Boolean Bwhitelist = null;
 
     public int pickerRange = 0;
 
@@ -118,10 +123,10 @@ public class FilterConfig
                     parseRange(args);
                     break;
                 case "whitelist":
-                    whitelist = true;
+                    parseWhitelist(args,true);
                     break;
                 case "blacklist":
-                    whitelist = false;
+                    parseWhitelist(args,false);
                 default:
                     throw new IllegalArgumentException("Expected Keyword here!");
 
@@ -129,18 +134,33 @@ public class FilterConfig
 
             }
         }
-        //If the filter has not been set to a whitelist or a blacklist assume blacklist when the blocks field is empty and whitelist otherwise.
-        if (whitelist == null)
+        if (Awhitelist == null)
         {
-            if (blocks.isEmpty())
-                whitelist = false;
-            else
-                whitelist = true;
+            Awhitelist = !actions.isEmpty();
+        }
+        if (Bwhitelist == null)
+        {
+            Bwhitelist = !blocks.isEmpty();
         }
 
 
     }
 
+    public void parseWhitelist(CommandParserArgs args, boolean enabled)
+    {
+        while (!args.isEmpty() && !keywords.contains(args.peek()))
+        {
+            String name = args.remove();
+            if (name.equalsIgnoreCase("action"))
+            {
+                Awhitelist = enabled;
+            }
+            else if (name.equalsIgnoreCase("block"))
+            {
+                Bwhitelist = enabled;
+            }
+        }
+    }
     public FilterConfig(FilterConfig c)
     {
         this();
@@ -148,7 +168,7 @@ public class FilterConfig
         blocks.addAll(c.blocks);
         before = c.before;
         after = c.after;
-        whitelist = c.whitelist;
+        Awhitelist = c.Awhitelist;
         pickerRange = c.pickerRange;
     }
     public FilterConfig()
@@ -228,7 +248,7 @@ public class FilterConfig
     }
     public String toReadableString()
     {
-        return "Before: " + before + "\nAfter: " + after + "\nActions: " + actions + "\nBlocks: " + blocks + "\nWhitelist: " + whitelist;
+        return "Before: " + before + "\nAfter: " + after + "\nActions: " + actions + "\nBlocks: " + blocks + "\nWhitelist: " + Awhitelist;
     }
 
 }
