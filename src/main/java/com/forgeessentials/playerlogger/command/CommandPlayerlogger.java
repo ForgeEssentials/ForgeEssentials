@@ -185,7 +185,7 @@ public class CommandPlayerlogger extends ParserCommandBase
                     {
                         arguments.args.addFirst(next);
                         EntityPlayer pl = arguments.parsePlayer(true, true).getPlayer();
-                        p = new WorldPoint(pl.getEntityWorld(), pl.getPlayerCoordinates());
+                        p = new WorldPoint(pl.getEntityWorld(), pl.getPosition());
                     }
                 }
             }
