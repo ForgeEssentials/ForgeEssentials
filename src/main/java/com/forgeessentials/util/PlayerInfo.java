@@ -262,6 +262,14 @@ public class PlayerInfo implements Loadable
     /* Timeouts */
 
     /**
+     * Removes a timeout from the list
+     */
+    public void removeTimeout(String name)
+    {
+        namedTimeout.remove(name);
+    }
+
+    /**
      * Check, if a timeout passed
      *
      * @param name

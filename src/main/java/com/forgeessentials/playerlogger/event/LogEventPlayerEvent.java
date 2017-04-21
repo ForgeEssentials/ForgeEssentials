@@ -30,6 +30,7 @@ public class LogEventPlayerEvent extends PlayerLoggerEvent<PlayerEvent>
         action.x = (int) event.player.posX;
         action.y = (int) event.player.posY;
         action.z = (int) event.player.posZ;
+        em.persist(action);
     }
 
 }

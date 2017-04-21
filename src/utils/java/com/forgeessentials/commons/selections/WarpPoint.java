@@ -135,6 +135,16 @@ public class WarpPoint
         return yaw;
     }
 
+    public void set(int dim, double xd, double yd, double zd, float pitch, float yaw)
+    {
+        this.dim = dim;
+        this.xd = xd;
+        this.yd = yd;
+        this.zd = zd;
+        this.pitch = pitch;
+        this.yaw = yaw;
+    }
+
     public void setDimension(int dim)
     {
         this.dim = dim;
