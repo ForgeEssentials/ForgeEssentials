@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -27,25 +28,25 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
-        if (stack == null || stack.getItem() != Items.clock)
+        ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
+        if (stack == null || stack.getItem() != Items.CLOCK)
             return;
-        if (event.action == Action.RIGHT_CLICK_AIR)
+        if (event instanceof RightClickEmpty)
             return;
-        if (!APIRegistry.perms.checkPermission(event.entityPlayer, ModulePlayerLogger.PERM_WAND))
+        if (!APIRegistry.perms.checkPermission(event.getEntityPlayer(), ModulePlayerLogger.PERM_WAND))
             return;
         event.setCanceled(true);
 
         WorldPoint point;
-        if (event.action == Action.RIGHT_CLICK_BLOCK)
-            point = new WorldPoint(event.entityPlayer.dimension, //
-                    event.x + Facing.offsetsXForSide[event.face], //
-                    event.y + Facing.offsetsYForSide[event.face], //
-                    event.z + Facing.offsetsZForSide[event.face]);
+        if (event instanceof RightClickBlock)
+            point = new WorldPoint(event.getEntityPlayer().dimension, //
+                    event.getPos().getX() + event.getFace().getFrontOffsetX(), //
+                    event.getPos().getY() + event.getFace().getFrontOffsetY(), //
+                    event.getPos().getZ() + event.getFace().getFrontOffsetZ());
         else
-            point = new WorldPoint(event.entityPlayer.dimension, event.x, event.y, event.z);
+            point = new WorldPoint(event.getEntityPlayer().dimension, event.getPos());
 
-        PlayerLoggerChecker.instance.CheckBlock(point,FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.entityPlayer)),event.entityPlayer);
+        PlayerLoggerChecker.instance.CheckBlock(point,FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getEntityPlayer())),event.getEntityPlayer());
     }
 
 }
