@@ -30,6 +30,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -755,7 +756,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public boolean hasPermission(GameProfile player, String permissionNode, @Nullable IContext context)
     {
         UserIdent ident = player == null ? null : UserIdent.get(player.getId());
-        int dim = context.getWorld().provider.getDimension();
+        World w = context != null ? context.getWorld() : null;
+        int dim = w != null ? w.provider.getDimension() : 0;
         WorldPoint loc = null;
         WorldArea area = null;
 
@@ -765,7 +767,10 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             {
                 AxisAlignedBB areac = context.get(ContextKeys.AREA);
 
-                area = new WorldArea(dim, new Point(areac.minX, areac.minY, areac.minZ), new Point(areac.maxX, areac.maxY, areac.maxZ));
+                if (areac != null)
+                {
+                    area = new WorldArea(dim, new Point(areac.minX, areac.minY, areac.minZ), new Point(areac.maxX, areac.maxY, areac.maxZ));
+                }
             }
             else if (context instanceof BlockPosContext)
             {
