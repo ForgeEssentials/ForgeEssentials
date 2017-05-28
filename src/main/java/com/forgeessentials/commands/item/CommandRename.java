@@ -1,9 +1,11 @@
 package com.forgeessentials.commands.item;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -11,7 +13,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 
 public class CommandRename extends ForgeEssentialsCommandBase
 {
-    
+
     @Override
     public String getCommandName()
     {
@@ -37,9 +39,9 @@ public class CommandRename extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -49,7 +51,7 @@ public class CommandRename extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 0)
             throw new TranslatedCommandException(getCommandUsage(sender));

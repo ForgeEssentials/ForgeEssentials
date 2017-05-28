@@ -1,9 +1,12 @@
 package com.forgeessentials.teleport;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -39,9 +42,9 @@ public class CommandBack extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -51,11 +54,11 @@ public class CommandBack extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         PlayerInfo pi = PlayerInfo.get(sender.getPersistentID());
         WarpPoint point = null;
-        if (PermissionManager.checkPermission(sender, TeleportModule.PERM_BACK_ONDEATH))
+        if (PermissionAPI.hasPermission(sender, TeleportModule.PERM_BACK_ONDEATH))
             point = pi.getLastDeathLocation();
         if (point == null)
             point = pi.getLastTeleportOrigin();

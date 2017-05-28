@@ -45,10 +45,6 @@ public class FEMixinConfig implements IMixinConfigPlugin
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName)
     {
-        if (mixinClassName.contains("fml.common.eventhandler.MixinEventBus"))
-        {
-            return (!(ForgeVersion.buildVersion < 1517));
-        }
         return true;
     }
 

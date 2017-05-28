@@ -5,12 +5,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -78,9 +79,9 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -90,7 +91,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -152,10 +153,10 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             return;
         arguments.confirm("List of messages:");
         for (int i = 0; i < messages.size(); i++)
-            arguments.sendMessage(new ChatComponentTranslation(String.format("%d: %s", i, formatMessage(messages.get(i)))));
+            arguments.sendMessage(new TextComponentTranslation(String.format("%d: %s", i, formatMessage(messages.get(i)))));
     }
 
-    public void parseDelete(CommandParserArgs arguments)
+    public void parseDelete(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isTabCompletion)
             return;
@@ -172,7 +173,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
     }
 
-    public void parseSend(CommandParserArgs arguments)
+    public void parseSend(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isTabCompletion)
             return;
@@ -187,7 +188,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         broadcastMessage(index);
     }
 
-    public void parseInterval(CommandParserArgs arguments)
+    public void parseInterval(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isTabCompletion)
             return;
@@ -200,7 +201,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
     }
 
-    public void parseShuffle(CommandParserArgs arguments)
+    public void parseShuffle(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -268,12 +269,12 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             TaskRegistry.scheduleRepeated(this, interval * 1000);
     }
 
-    public static IChatComponent formatMessage(String message)
+    public static ITextComponent formatMessage(String message)
     {
         message = ModuleChat.processChatReplacements(null, message);
         try
         {
-            return IChatComponent.Serializer.func_150699_a(message);
+            return ITextComponent.Serializer.jsonToComponent(message);
         }
         catch (JsonParseException e)
         {
@@ -281,7 +282,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             {
                 LoggingHandler.felog.warn("Error in timedmessage format: " + ExceptionUtils.getRootCause(e).getMessage());
             }
-            return new ChatComponentText(message);
+            return new TextComponentString(message);
         }
     }
 

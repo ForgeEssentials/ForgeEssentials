@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -37,20 +39,9 @@ public class CommandTicket extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        doStuff(sender, args);
-    }
-
-    @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
-    {
-        doStuff(sender, args);
-    }
-
-    public void doStuff(ICommandSender sender, String[] args)
-    {
-        String c = EnumChatFormatting.DARK_AQUA.toString();
+        String c = TextFormatting.DARK_AQUA.toString();
         if (args.length == 0)
         {
             String usage = "list|new|view";
@@ -69,7 +60,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
         {
             if (args.length != 2)
                 throw new TranslatedCommandException("Usage: /ticket view <id>");
-            int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
+            int id = parseInt(args[1], 0, ModuleTickets.currentID + 1);
             Ticket t = ModuleTickets.getID(id);
             ChatOutputHandler.chatNotification(sender, c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
         }
@@ -80,7 +71,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             int pages = ModuleTickets.ticketList.size() / 7;
             if (args.length == 2)
             {
-                page = parseIntBounded(sender, args[1], 0, pages);
+                page = parseInt(args[1], 0, pages);
             }
 
             if (ModuleTickets.ticketList.size() == 0)
@@ -123,12 +114,12 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             ChatOutputHandler.chatNotification(sender, c + Translator.format("Your ticket with ID %d has been posted.", t.id));
 
             // notify any ticket-admins that are online
-            IChatComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", sender.getCommandSenderName()));
-                if (!MinecraftServer.getServer().isServerStopped())
-                    for (EntityPlayerMP player : ServerUtil.getPlayerList())
-                        if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
-                            ChatOutputHandler.sendMessage(player, messageComponent);
-                ChatOutputHandler.sendMessage(MinecraftServer.getServer(), messageComponent);
+            ITextComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", sender.getName()));
+            if (!server.isServerStopped())
+                for (EntityPlayerMP player : ServerUtil.getPlayerList())
+                    if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
+                        ChatOutputHandler.sendMessage(player, messageComponent);
+            ChatOutputHandler.sendMessage(server, messageComponent);
             return;
         }
 
@@ -136,7 +127,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
         {
             if (args.length != 2)
                 throw new TranslatedCommandException("Usage: /ticket tp <id>");
-            int id = parseIntBounded(sender, args[1], 0, ModuleTickets.currentID + 1);
+            int id = parseInt(args[1], 0, ModuleTickets.currentID + 1);
             TeleportHelper.teleport((EntityPlayerMP) sender, ModuleTickets.getID(id).point);
         }
 
@@ -170,7 +161,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
@@ -198,7 +189,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
     {
         if (sender instanceof EntityPlayer)
         {
-            return PermissionManager.checkPermission((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm);
+            return PermissionAPI.hasPermission((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm);
         }
         else
         {
@@ -222,9 +213,9 @@ public class CommandTicket extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
 
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 }

@@ -2,9 +2,10 @@ package com.forgeessentials.perftools;
 
 import java.text.DecimalFormat;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -21,7 +22,7 @@ public class CommandServerPerf extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         ChatOutputHandler.chatNotification(sender, "Memory usage:");
         ChatOutputHandler.chatNotification(sender, "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
@@ -30,7 +31,7 @@ public class CommandServerPerf extends ForgeEssentialsCommandBase
         long used = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         ChatOutputHandler.chatNotification(sender, "Used: " + (used / 1024 / 1024) + " MiB");
         ChatOutputHandler.chatNotification(sender,
-                "Average tick time: " + formatNumbers.format(this.func_120035_a(MinecraftServer.getServer().tickTimeArray) * 1.0E-6D) + " ms");
+                "Average tick time: " + formatNumbers.format(this.func_120035_a(server.tickTimeArray) * 1.0E-6D) + " ms");
         ChatOutputHandler.chatNotification(sender, "For TPS information, run /forge tps.");
     }
 
@@ -47,9 +48,9 @@ public class CommandServerPerf extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override

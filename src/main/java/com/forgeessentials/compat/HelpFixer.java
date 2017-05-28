@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHelp;
 import net.minecraft.command.CommandNotFoundException;
 import net.minecraft.command.ICommand;
@@ -18,11 +19,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.event.ClickEvent;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 
 public class HelpFixer extends CommandHelp
 {
@@ -31,9 +32,9 @@ public class HelpFixer extends CommandHelp
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ICommand> getSortedPossibleCommands(ICommandSender sender)
+    public List<ICommand> getSortedPossibleCommands(ICommandSender sender, MinecraftServer server)
     {
-        List<ICommand> list = MinecraftServer.getServer().getCommandManager().getPossibleCommands(sender);
+        List<ICommand> list = server.getCommandManager().getPossibleCommands(sender);
         if (hideWorldEditCommands)
         {
             for (Iterator<ICommand> it = list.iterator(); it.hasNext();)
@@ -58,23 +59,25 @@ public class HelpFixer extends CommandHelp
 
     /**
      * Fix for retard mods who think they can just return null in {@link ICommand#getCommandUsage(ICommandSender)}
+     * 
+     * @throws CommandException
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        List<ICommand> commands = getSortedPossibleCommands(sender);
+        List<ICommand> commands = getSortedPossibleCommands(sender, server);
         byte cmdsPerPage = 7;
         int i = (commands.size() - 1) / cmdsPerPage;
 
         int startPage;
         try
         {
-            startPage = args.length == 0 ? 0 : parseIntBounded(sender, args[0], 1, i + 1) - 1;
+            startPage = args.length == 0 ? 0 : parseInt(args[0], 1, i + 1) - 1;
         }
         catch (NumberInvalidException e)
         {
-            Map<String, ICommand> cmdMap = getCommands();
+            Map<String, ICommand> cmdMap = getCommandMap(server);
             ICommand cmd = cmdMap.get(args[0]);
             if (cmd != null)
             {
@@ -91,9 +94,9 @@ public class HelpFixer extends CommandHelp
         }
 
         int endIndex = Math.min((startPage + 1) * cmdsPerPage, commands.size());
-        ChatComponentTranslation msg = new ChatComponentTranslation("commands.help.header", new Object[] { Integer.valueOf(startPage + 1),
+        TextComponentTranslation msg = new TextComponentTranslation("commands.help.header", new Object[] { Integer.valueOf(startPage + 1),
                 Integer.valueOf(i + 1) });
-        msg.getChatStyle().setColor(EnumChatFormatting.DARK_GREEN);
+        msg.getStyle().setColor(TextFormatting.DARK_GREEN);
         sender.addChatMessage(msg);
 
         for (int index = startPage * cmdsPerPage; index < endIndex; ++index)
@@ -102,15 +105,15 @@ public class HelpFixer extends CommandHelp
             String usage = cmd.getCommandUsage(sender);
             if (usage == null)
                 usage = "/" + cmd.getCommandName();
-            ChatComponentTranslation msg2 = new ChatComponentTranslation(usage, new Object[0]);
-            msg2.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + cmd.getCommandName() + " "));
+            TextComponentTranslation msg2 = new TextComponentTranslation(usage, new Object[0]);
+            msg2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + cmd.getCommandName() + " "));
             sender.addChatMessage(msg2);
         }
 
         if (startPage == 0 && sender instanceof EntityPlayer)
         {
-            ChatComponentTranslation msg3 = new ChatComponentTranslation("commands.help.footer", new Object[0]);
-            msg3.getChatStyle().setColor(EnumChatFormatting.GREEN);
+            TextComponentTranslation msg3 = new TextComponentTranslation("commands.help.footer", new Object[0]);
+            msg3.getStyle().setColor(TextFormatting.GREEN);
             sender.addChatMessage(msg3);
         }
     }

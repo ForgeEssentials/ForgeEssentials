@@ -1,10 +1,12 @@
 package com.forgeessentials.commands.player;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagFloat;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -12,6 +14,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandSpeed extends ForgeEssentialsCommandBase
 {
+
     @Override
     public String getCommandName()
     {
@@ -37,9 +40,9 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -49,13 +52,8 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
     {
-        /*
-         * if (!PlayerInfo.get(player).getHasFEClient()) { ChatOutputHandler.chatError(player, "You need the FE client addon to use this command.");
-         * ChatOutputHandler.chatError(player, "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information."); return; }
-         */
-
         ChatOutputHandler.chatWarning(player, "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
         if (args.length >= 1)
         {
@@ -76,7 +74,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
 
             float speed = 0.05F;
 
-            int multiplier = parseInt(player, args[0]);
+            int multiplier = parseInt(args[0]);
 
             if (multiplier >= 10)
             {
@@ -95,4 +93,5 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
             // NetworkUtils.netHandler.sendTo(new Packet6Speed(speed), player);
         }
     }
+
 }

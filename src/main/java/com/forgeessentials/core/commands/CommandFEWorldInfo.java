@@ -3,19 +3,20 @@ package com.forgeessentials.core.commands;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandFEWorldInfo extends ParserCommandBase
 {
+    
     @Override
     public void parse(CommandParserArgs arguments)
     {
         arguments.notify("Showing all world provider names:");
         for (World world : DimensionManager.getWorlds())
         {
-            arguments.notify("%s - %s", world.provider.dimensionId, world.provider.getClass().getName());
+            arguments.notify("%s - %s", world.provider.getDimension(), world.provider.getClass().getName());
         }
     }
 
@@ -44,8 +45,8 @@ public class CommandFEWorldInfo extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 }

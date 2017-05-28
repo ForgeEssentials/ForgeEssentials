@@ -1,9 +1,10 @@
 package com.forgeessentials.util.selections;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -25,13 +26,13 @@ public class CommandExpandY extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
     {
         Selection sel = SelectionHandler.getSelection(player);
         if (sel == null)
             throw new TranslatedCommandException("Invalid selection.");
         SelectionHandler.setStart(player, sel.getStart().setY(0));
-        SelectionHandler.setEnd(player, sel.getEnd().setY(MinecraftServer.getServer().getBuildLimit()));
+        SelectionHandler.setEnd(player, sel.getEnd().setY(server.getBuildLimit()));
         ChatOutputHandler.chatConfirmation(player, "Selection expanded from bottom to top.");
     }
 
@@ -54,9 +55,9 @@ public class CommandExpandY extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
 }

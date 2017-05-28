@@ -12,7 +12,7 @@ public abstract class JsPlayerEvent<T extends PlayerEvent> extends JsLivingEvent
     @Override
     public JsEntityPlayer getPlayer()
     {
-        return JsEntityPlayer.get(_event.entityPlayer);
+        return JsEntityPlayer.get(_event.getEntityPlayer());
     }
 
     /**
@@ -21,7 +21,7 @@ public abstract class JsPlayerEvent<T extends PlayerEvent> extends JsLivingEvent
     @Override
     public ICommandSender _getSender()
     {
-        return _event.entityPlayer;
+        return _event.getEntityPlayer();
     }
 
 }

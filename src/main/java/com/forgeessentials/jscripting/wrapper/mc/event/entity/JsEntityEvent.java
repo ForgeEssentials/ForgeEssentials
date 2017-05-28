@@ -10,7 +10,7 @@ public abstract class JsEntityEvent<T extends EntityEvent> extends JsEvent<T>
 
     public JsEntity<?> getEntity()
     {
-        return JsEntity.get(_event.entity);
+        return JsEntity.get(_event.getEntity());
     }
 
 }

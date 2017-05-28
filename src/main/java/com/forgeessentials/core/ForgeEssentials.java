@@ -10,8 +10,28 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
@@ -41,6 +61,7 @@ import com.forgeessentials.core.mcstats.Metrics;
 import com.forgeessentials.core.mcstats.Metrics.Graph;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
@@ -67,29 +88,6 @@ import com.forgeessentials.util.selections.CommandPos;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
-import cpw.mods.fml.common.event.FMLServerStartedEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
-
 /**
  * Main mod class
  */
@@ -99,7 +97,7 @@ import cpw.mods.fml.relauncher.Side;
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
-    public static final String MODID = "ForgeEssentials";
+    public static final String MODID = "forgeessentials";
 
     @Instance(value = MODID)
     public static ForgeEssentials instance;
@@ -160,7 +158,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         LoggingHandler.init();
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
         Environment.check();
-        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -325,7 +322,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         // Do permission registration in first server tick.
         // TODO This can be removed if the Permission API gets accepted!
-        FMLCommonHandler.instance().bus().register(new CommandPermissionRegistrationHandler());
+        MinecraftForge.EVENT_BUS.register(new CommandPermissionRegistrationHandler());
     }
 
     public static final class CommandPermissionRegistrationHandler
@@ -334,7 +331,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         public void serverTickEvent(ServerTickEvent event)
         {
             PermissionManager.registerCommandPermissions();
-            FMLCommonHandler.instance().bus().unregister(this);
+            MinecraftForge.EVENT_BUS.unregister(this);
         }
     }
 
@@ -356,23 +353,23 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     protected void registerPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_VERSIONINFO, PermissionLevel.OP, "Shows notification to the player if FE version is outdated");
+        APIRegistry.perms.registerPermission(PERM_VERSIONINFO, DefaultPermissionLevel.OP, "Shows notification to the player if FE version is outdated");
 
-        APIRegistry.perms.registerPermission("mc.help", PermissionLevel.TRUE, "Help command");
+        APIRegistry.perms.registerPermission("mc.help", DefaultPermissionLevel.ALL, "Help command");
 
         // Teleport
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_COOLDOWN, "5", "Allow bypassing teleport cooldown");
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_WARMUP, "3", "Allow bypassing teleport warmup");
         APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_COOLDOWN, "0");
         APIRegistry.perms.registerPermissionPropertyOp(TeleportHelper.TELEPORT_WARMUP, "0");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_FROM, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally from a dimension");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_TO, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally to a dimension");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_PORTALFROM, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally from a dimension via a portal");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_PORTALTO, PermissionLevel.TRUE, "Allow teleporting cross-dimensionally to a dimension via a portal (target coordinates are origin for vanilla portals)");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, PermissionLevel.TRUE, "Allow being teleported from a certain location / dimension");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_TO, PermissionLevel.TRUE, "Allow being teleported to a certain location / dimension");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALFROM, PermissionLevel.TRUE, "Allow being teleported from a certain location / dimension via a portal");
-        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALTO, PermissionLevel.TRUE, "Allow being teleported to a certain location / dimension via a portal");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_FROM, DefaultPermissionLevel.ALL, "Allow teleporting cross-dimensionally from a dimension");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_TO, DefaultPermissionLevel.ALL, "Allow teleporting cross-dimensionally to a dimension");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_PORTALFROM, DefaultPermissionLevel.ALL, "Allow teleporting cross-dimensionally from a dimension via a portal");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_CROSSDIM_PORTALTO, DefaultPermissionLevel.ALL, "Allow teleporting cross-dimensionally to a dimension via a portal (target coordinates are origin for vanilla portals)");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_FROM, DefaultPermissionLevel.ALL, "Allow being teleported from a certain location / dimension");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_TO, DefaultPermissionLevel.ALL, "Allow being teleported to a certain location / dimension");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALFROM, DefaultPermissionLevel.ALL, "Allow being teleported from a certain location / dimension via a portal");
+        APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALTO, DefaultPermissionLevel.ALL, "Allow being teleported to a certain location / dimension via a portal");
 
         CommandFeSettings.addAlias("Teleport", "warmup", TeleportHelper.TELEPORT_WARMUP);
         CommandFeSettings.addAlias("Teleport", "cooldown", TeleportHelper.TELEPORT_COOLDOWN);
@@ -395,8 +392,8 @@ public class ForgeEssentials extends ConfigLoaderBase
                 Matcher matcher = pattern.matcher(player.getGameProfile().getName());
                 if (matcher.find())
                 {
-                    String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", player.getCommandSenderName());
-                    player.playerNetServerHandler.kickPlayerFromServer(msg);
+                    String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.player.getName());
+                    ((EntityPlayerMP) event.player).connection.kickPlayerFromServer(msg);
                 }
             }
 
@@ -434,8 +431,8 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         if (logCommandsToConsole)
         {
-            LoggingHandler.felog.info(String.format("Player \"%s\" used command \"/%s %s\"", event.sender.getCommandSenderName(),
-                    event.command.getCommandName(), StringUtils.join(event.parameters, " ")));
+            LoggingHandler.felog.info(String.format("Player \"%s\" used command \"/%s %s\"", event.getCommand().getCommandName(),
+                    event.getCommand().getCommandName(), StringUtils.join(event.getParameters(), " ")));
         }
     }
 
@@ -448,7 +445,7 @@ public class ForgeEssentials extends ConfigLoaderBase
             Translator.translations.clear();
         Translator.load();
         if (!config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
-            BuildInfo.cancelVersionCheck();
+            BuildInfo.checkVersion = false;
         configManager.setUseCanonicalConfig(
                 config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false, "For modules that support it, place their configs in this file.").getBoolean());
         debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean();
@@ -457,6 +454,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         HelpFixer.hideWorldEditCommands = config
                 .get(FEConfig.CONFIG_CAT, "hide_worldedit_help", true, "Hide WorldEdit commands from /help and only show them in //help command").getBoolean();
         logCommandsToConsole = config.get(FEConfig.CONFIG_CAT, "logCommands", false, "Log commands to console").getBoolean();
+        BuildInfo.startVersionChecks();
     }
 
     /* ------------------------------------------------------------ */

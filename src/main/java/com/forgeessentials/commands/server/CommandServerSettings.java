@@ -3,14 +3,18 @@ package com.forgeessentials.commands.server;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
-import net.minecraft.world.WorldSettings.GameType;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.GameType;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,10 +24,6 @@ import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class CommandServerSettings extends ParserCommandBase
 {
@@ -55,9 +55,9 @@ public class CommandServerSettings extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class CommandServerSettings extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             arguments.error("You can use this command only on dedicated servers");
@@ -95,7 +95,6 @@ public class CommandServerSettings extends ParserCommandBase
 
         arguments.tabComplete(options);
         String subCmd = arguments.remove().toLowerCase();
-
         switch (subCmd)
         {
         case "allowflight":
@@ -104,8 +103,6 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 boolean allowFlight = arguments.parseBoolean();
-                if (arguments.isTabCompletion)
-                    return;
                 server.setAllowFlight(allowFlight);
                 setProperty("allow-flight", allowFlight);
                 arguments.confirm("Set allow-flight to %s", Boolean.toString(allowFlight));
@@ -117,8 +114,6 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 boolean allowPvP = arguments.parseBoolean();
-                if (arguments.isTabCompletion)
-                    return;
                 server.setAllowPvp(allowPvP);
                 setProperty("pvp", allowPvP);
                 arguments.confirm("Set pvp to %s", Boolean.toString(allowPvP));
@@ -130,8 +125,6 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 int buildLimit = arguments.parseInt(0, Integer.MAX_VALUE);
-                if (arguments.isTabCompletion)
-                    return;
                 server.setBuildLimit(buildLimit);
                 setProperty("max-build-height", buildLimit);
                 arguments.confirm("Set max-build-height to %d", buildLimit);
@@ -143,9 +136,7 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 String motd = ScriptArguments.process(arguments.toString(), null);
-                if (arguments.isTabCompletion)
-                    return;
-                server.func_147134_at().func_151315_a(new ChatComponentText(ChatOutputHandler.formatColors(motd)));
+                server.getServerStatusResponse().setServerDescription(new TextComponentString(ChatOutputHandler.formatColors(motd)));
                 server.setMOTD(motd);
                 setProperty("motd", motd);
                 arguments.confirm("Set MotD to %s", motd);
@@ -157,8 +148,6 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 int spawnSize = arguments.parseInt(0, Integer.MAX_VALUE);
-                if (arguments.isTabCompletion)
-                    return;
                 setProperty("spawn-protection", spawnSize);
                 arguments.confirm("Set spawn-protection to %d", spawnSize);
             }
@@ -168,10 +157,7 @@ public class CommandServerSettings extends ParserCommandBase
                 arguments.confirm("Default gamemode set to %s", server.getGameType().getName());
             else
             {
-                int gameModeId = arguments.parseInt();
-                if (arguments.isTabCompletion)
-                    return;
-                GameType gamemode = WorldSettings.GameType.getByID(gameModeId);
+                GameType gamemode = GameType.getByID(arguments.parseInt());
                 server.setGameType(gamemode);
                 setProperty("gamemode", gamemode.ordinal());
                 arguments.confirm("Set default gamemode to %s", gamemode.getName());
@@ -179,14 +165,11 @@ public class CommandServerSettings extends ParserCommandBase
             break;
         case "difficulty":
             if (arguments.isEmpty())
-                arguments.confirm("Difficulty set to %s", server.func_147135_j());
+                arguments.confirm("Difficulty set to %s", server.getDifficulty());
             else
             {
-                int difficultyId = arguments.parseInt();
-                if (arguments.isTabCompletion)
-                    return;
-                EnumDifficulty difficulty = EnumDifficulty.getDifficultyEnum(difficultyId);
-                server.func_147139_a(difficulty);
+                EnumDifficulty difficulty = EnumDifficulty.getDifficultyEnum(arguments.parseInt());
+                server.setDifficultyForAllWorlds(difficulty);
                 setProperty("difficulty", difficulty.ordinal());
                 arguments.confirm("Set difficulty to %s", difficulty.name());
             }

@@ -1,9 +1,11 @@
 package com.forgeessentials.commands.item;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -38,9 +40,9 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -50,15 +52,15 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
     {
-        ItemStack stack = player.getCurrentEquippedItem();
+        ItemStack stack = player.getHeldItemMainhand();
         if (stack == null)
             throw new TranslatedCommandException("No item equipped");
 
         int stackSize = 0;
         if (args.length > 0)
-            stackSize = parseInt(player, args[0]);
+            stackSize = parseInt(args[0]);
 
         ItemStack newStack = stack.copy();
         if (stackSize > 0)

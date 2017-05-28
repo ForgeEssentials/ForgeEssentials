@@ -1,7 +1,9 @@
 package com.forgeessentials.worldborder.effect;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,8 +11,6 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 
@@ -58,7 +58,7 @@ public class EffectCommand extends WorldBorderEffect
     public void doEffect(EntityPlayerMP player)
     {
         String cmd = ScriptArguments.processSafe(command, player);
-        MinecraftServer.getServer().getCommandManager().executeCommand(MinecraftServer.getServer(), cmd);
+        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(FMLCommonHandler.instance().getMinecraftServerInstance(), cmd);
     }
 
     public String toString()

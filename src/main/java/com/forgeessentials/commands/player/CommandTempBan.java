@@ -5,20 +5,22 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandTempBan extends ForgeEssentialsCommandBase
+public class CommandTempBan extends ParserCommandBase
 {
 
     public static final String PERM_BAN_REASON = "tempban.reason";
@@ -48,9 +50,9 @@ public class CommandTempBan extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -59,29 +61,7 @@ public class CommandTempBan extends ForgeEssentialsCommandBase
         return ModuleCommands.PERM + ".tempban";
     }
 
-    @Override
-    public void processCommand(ICommandSender sender, String[] args)
-    {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender);
-        parse(arguments);
-    }
-
-    @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
-    {
-        CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true);
-        try
-        {
-            parse(arguments);
-        }
-        catch (CommandException e)
-        {
-            return arguments.tabCompletion;
-        }
-        return arguments.tabCompletion;
-    }
-
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
@@ -96,18 +76,18 @@ public class CommandTempBan extends ForgeEssentialsCommandBase
 
         String durationString = ChatOutputHandler.formatTimeDurationReadable(duration / 1000, true);
         if (player.hasPlayer())
-            player.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You have been banned for %s", durationString));
+            player.getPlayerMP().connection.kickPlayerFromServer(Translator.format("You have been banned for %s", durationString));
 
         if (!arguments.isEmpty())
         {
             String reason = arguments.toString();
-            ChatOutputHandler.sendMessage(MinecraftServer.getServer(),
+            ChatOutputHandler.sendMessage(arguments.server,
                     Translator.format("Player %s, has been temporarily banned for %s. Reason: %s", player.getUsername(), durationString, reason));
             APIRegistry.perms.setPlayerPermissionProperty(player, PERM_BAN_REASON, reason);
         }
         else
         {
-            ChatOutputHandler.sendMessage(MinecraftServer.getServer(),
+            ChatOutputHandler.sendMessage(arguments.server,
                     Translator.format("Player %s, has been temporarily banned for %s", player.getUsername(), durationString));
         }
     }

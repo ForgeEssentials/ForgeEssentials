@@ -5,12 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -48,9 +52,9 @@ public class CommandEnchant extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -60,18 +64,18 @@ public class CommandEnchant extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
-        ItemStack stack = arguments.senderPlayer.getCurrentEquippedItem();
+        ItemStack stack = arguments.senderPlayer.getHeldItemMainhand();
         if (stack == null)
             throw new TranslatedCommandException("You are not holding a valid item");
 
         List<String> validEnchantmentNames = new ArrayList<>();
         Map<String, Enchantment> validEnchantments = new HashMap<>();
-        for (Enchantment enchantment : Enchantment.enchantmentsList)
+        for (Enchantment enchantment : GameData.getEnchantmentRegistry().getValues())
             if (enchantment != null && enchantment.canApplyAtEnchantingTable(stack))
             {
-                String name = StatCollector.translateToLocal(enchantment.getName()).replaceAll(" ", "");
+                String name = I18n.translateToLocal(enchantment.getName()).replaceAll(" ", "");
                 validEnchantmentNames.add(name);
                 validEnchantments.put(name.toLowerCase(), enchantment);
             }
@@ -84,8 +88,7 @@ public class CommandEnchant extends ParserCommandBase
             return;
         }
 
-        @SuppressWarnings("unchecked")
-        Map<Integer, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
+        Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
         while (!arguments.isEmpty())
         {
             arguments.tabComplete(validEnchantmentNames);
@@ -96,10 +99,10 @@ public class CommandEnchant extends ParserCommandBase
 
             if (arguments.isEmpty())
             {
-                enchantments.put(enchantment.effectId, enchantment.getMaxLevel());
+                enchantments.put(enchantment, enchantment.getMaxLevel());
                 break;
             }
-            enchantments.put(enchantment.effectId, Math.min(enchantment.getMaxLevel(), arguments.parseInt()));
+            enchantments.put(enchantment, Math.min(enchantment.getMaxLevel(), arguments.parseInt()));
         }
         EnchantmentHelper.setEnchantments(enchantments, stack);
     }

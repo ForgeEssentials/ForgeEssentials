@@ -36,13 +36,13 @@ import javax.crypto.Cipher;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLLog;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.servervote.ConfigServerVote;
 import com.forgeessentials.servervote.VoteEvent;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.FMLLog;
 
 /**
  * Like 90% copied from Votifier github: https://github.com/vexsoftware/votifier I only changed the init code and the
@@ -188,7 +188,7 @@ public class VoteReceiver extends Thread
                 // Create the vote.
                 VoteEvent vote = new VoteEvent(username, serviceName, address, timeStamp);
 
-                EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(vote.player);
+                EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(vote.player);
                 if (player == null)
                 {
                     if (!ConfigServerVote.allowOfflineVotes)

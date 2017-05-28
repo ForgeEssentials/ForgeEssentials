@@ -2,11 +2,14 @@ package com.forgeessentials.teleport;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
@@ -52,9 +55,9 @@ public class CommandHome extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -64,7 +67,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -80,13 +83,13 @@ public class CommandHome extends ForgeEssentialsCommandBase
                 EntityPlayerMP player = sender;
                 if (args.length == 2)
                 {
-                    if (!PermissionManager.checkPermission(sender, TeleportModule.PERM_HOME_OTHER))
+                    if (!PermissionAPI.hasPermission(sender, TeleportModule.PERM_HOME_OTHER))
                         throw new TranslatedCommandException("You don't have the permission to access other players home.");
                     player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
                     if (player == null)
                         throw new TranslatedCommandException("Player %s not found.", args[1]);
                 }
-                else if (!PermissionManager.checkPermission(sender, TeleportModule.PERM_HOME_SET))
+                else if (!PermissionAPI.hasPermission(sender, TeleportModule.PERM_HOME_SET))
                     throw new TranslatedCommandException("You don't have the permission to set your home location.");
 
                 WarpPoint p = new WarpPoint(sender);
@@ -101,16 +104,13 @@ public class CommandHome extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
             return getListOfStringsMatchingLastWord(args, "here");
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
 }

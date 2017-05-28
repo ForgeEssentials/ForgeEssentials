@@ -21,6 +21,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import net.minecraft.util.math.BlockPos;
 
 /**
  *
@@ -68,5 +71,15 @@ public abstract class Action
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "player_id")
     public PlayerData player;
+
+    @Transient
+    private BlockPos blockPos;
+
+    public BlockPos getBlockPos()
+    {
+        if (blockPos == null)
+            blockPos = new BlockPos(x, y, z);
+        return blockPos;
+    }
 
 }

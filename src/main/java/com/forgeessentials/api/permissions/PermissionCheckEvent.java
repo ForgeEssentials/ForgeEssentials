@@ -3,9 +3,9 @@ package com.forgeessentials.api.permissions;
 import java.util.Collection;
 import java.util.List;
 
-import com.forgeessentials.api.UserIdent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
-import cpw.mods.fml.common.eventhandler.Event;
+import com.forgeessentials.api.UserIdent;
 
 public class PermissionCheckEvent extends Event
 {

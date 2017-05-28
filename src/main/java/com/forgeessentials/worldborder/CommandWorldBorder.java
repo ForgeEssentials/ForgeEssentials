@@ -1,7 +1,8 @@
 package com.forgeessentials.worldborder;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.AreaShape;
@@ -38,9 +39,9 @@ public class CommandWorldBorder extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -50,7 +51,7 @@ public class CommandWorldBorder extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
 
         if (arguments.isEmpty())
@@ -115,7 +116,7 @@ public class CommandWorldBorder extends ParserCommandBase
         }
     }
 
-    public static void parseCenter(CommandParserArgs arguments, WorldBorder border)
+    public static void parseCenter(CommandParserArgs arguments, WorldBorder border) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -144,7 +145,7 @@ public class CommandWorldBorder extends ParserCommandBase
         arguments.confirm("Worldborder center set to [%d, %d]", x, z);
     }
 
-    public static void parseRadius(CommandParserArgs arguments, WorldBorder border)
+    public static void parseRadius(CommandParserArgs arguments, WorldBorder border) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -169,7 +170,7 @@ public class CommandWorldBorder extends ParserCommandBase
         arguments.confirm("Worldborder size set to %d x %d", border.getSize().getX(), border.getSize().getZ());
     }
 
-    public static void parseShape(CommandParserArgs arguments, WorldBorder border)
+    public static void parseShape(CommandParserArgs arguments, WorldBorder border) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -200,7 +201,7 @@ public class CommandWorldBorder extends ParserCommandBase
         }
     }
 
-    public static void parseEffect(CommandParserArgs arguments, WorldBorder border)
+    public static void parseEffect(CommandParserArgs arguments, WorldBorder border) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -249,7 +250,7 @@ public class CommandWorldBorder extends ParserCommandBase
 
     }
 
-    public static void addEffect(WorldBorder border, CommandParserArgs arguments)
+    public static void addEffect(WorldBorder border, CommandParserArgs arguments) throws CommandException
     {
         // Get effect type argument
         if (arguments.isEmpty())

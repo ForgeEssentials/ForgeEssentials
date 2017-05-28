@@ -6,10 +6,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.persistence.TypedQuery;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -55,9 +56,9 @@ public class CommandPlayerlogger extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     private String outputFilterReadable(int filter)
@@ -95,7 +96,7 @@ public class CommandPlayerlogger extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -184,7 +185,7 @@ public class CommandPlayerlogger extends ParserCommandBase
                     {
                         arguments.args.addFirst(next);
                         EntityPlayer pl = arguments.parsePlayer(true, true).getPlayer();
-                        p = new WorldPoint(pl.getEntityWorld(), pl.getPlayerCoordinates());
+                        p = new WorldPoint(pl.getEntityWorld(), pl.getPosition());
                     }
                 }
             }

@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(Entity.class)
-public class MixinEntity
+public abstract class MixinEntity
 {
 
     @Overwrite

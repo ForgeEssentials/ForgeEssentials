@@ -1,6 +1,6 @@
 package com.forgeessentials.remote.handler.permission;
 
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
@@ -22,7 +22,7 @@ public class SetPermissionHandler extends GenericRemoteHandler<SetPermissionRequ
     public SetPermissionHandler()
     {
         super(PERM, SetPermissionRequest.class);
-        APIRegistry.perms.registerPermission(PERM, PermissionLevel.OP, "Allows to change permissions");
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows to change permissions");
     }
 
     @Override

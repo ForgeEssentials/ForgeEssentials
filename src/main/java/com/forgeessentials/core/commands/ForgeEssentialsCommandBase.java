@@ -8,25 +8,29 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.server.CommandBlockLogic;
+import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionManager;
-import net.minecraftforge.permission.PermissionObject;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
+import net.minecraft.tileentity.TileEntityCommandBlock;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.relauncher.ReflectionHelper;
-
-public abstract class ForgeEssentialsCommandBase extends CommandBase implements PermissionObject
+public abstract class ForgeEssentialsCommandBase extends CommandBase
 {
 
     public List<String> aliases = new ArrayList<>();
@@ -68,65 +72,46 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
     // Command processing
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (sender instanceof EntityPlayerMP)
         {
-            processCommandPlayer((EntityPlayerMP) sender, args);
+            processCommandPlayer(server, (EntityPlayerMP) sender, args);
         }
-        else if (sender instanceof CommandBlockLogic)
+        else if (sender instanceof CommandBlockBaseLogic)
         {
-            processCommandBlock((CommandBlockLogic) sender, args);
+            processCommandBlock(server, (CommandBlockBaseLogic) sender, args);
         }
         else
         {
-            processCommandConsole(sender, args);
+            processCommandConsole(server, sender, args);
         }
     }
 
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
-        throw new TranslatedCommandException("Command %s is not implemented for players", getCommandName());
+        throw new TranslatedCommandException("This command cannot be used as player");
     }
 
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        throw new TranslatedCommandException("Command %s is not implemented for console", getCommandName());
+        throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
 
-    public void processCommandBlock(CommandBlockLogic block, String[] args)
+    public void processCommandBlock(MinecraftServer server, CommandBlockBaseLogic block, String[] args) throws CommandException
     {
-        processCommandConsole(block, args);
+        processCommandConsole(server, block, args);
     }
 
     // ------------------------------------------------------------
     // Command usage
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender)
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
-        if (!(sender instanceof EntityPlayer) && !canConsoleUseCommand())
-            return canCommandSenderUseCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-        if (!checkCommandPermission(sender))
+        if (!canConsoleUseCommand() && !(sender instanceof EntityPlayer))
             return false;
         return true;
-    }
-
-    protected static boolean canCommandSenderUseCommandException(String msg)
-    {
-        // Find out if, if canCommandSenderUseCommand was called from within executeCommand method of CommandHandler.
-        // Only if it's called from there, it's safe to throw an exception.
-        final String className = CommandHandler.class.getName();
-        final String methodName = "executeCommand";
-        for (StackTraceElement s : Thread.currentThread().getStackTrace())
-            if (s.getClassName().equals(className))
-            {
-                if (s.getClassName().equals(methodName))
-                    throw new TranslatedCommandException(msg);
-                break;
-            }
-        // Just return false instead of an exception
-        return false;
     }
 
     public abstract boolean canConsoleUseCommand();
@@ -139,10 +124,10 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
      */
     public void register()
     {
-        if (MinecraftServer.getServer() == null)
+        if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
             return;
-        
-        Map<?, ?> commandMap = ((CommandHandler) MinecraftServer.getServer().getCommandManager()).getCommands();
+
+        Map<?, ?> commandMap = ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).getCommands();
         if (commandMap.containsKey(getCommandName()))
             LoggingHandler.felog.error(String.format("Command %s registered twice", getCommandName()));
 
@@ -153,16 +138,17 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
                     LoggingHandler.felog.error(String.format("Command alias %s of command %s registered twice", alias, getCommandName()));
         }
 
-        ((CommandHandler) MinecraftServer.getServer().getCommandManager()).registerCommand(this);
+        ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).registerCommand(this);
+        PermissionManager.registerCommandPermission(this, this.getPermissionNode(), this.getPermissionLevel());
         registerExtraPermissions();
     }
 
     @SuppressWarnings("unchecked")
     public void deregister()
     {
-        if (MinecraftServer.getServer() == null)
+        if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
             return;
-        CommandHandler cmdHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+        CommandHandler cmdHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
         Map<String, ICommand> commandMap = cmdHandler.getCommands();
         Set<ICommand> commandSet = (Set<ICommand>) ReflectionHelper.getPrivateValue(CommandHandler.class, cmdHandler, "field_71561_b", "commandSet");
 
@@ -195,7 +181,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
     {
         if (getPermissionNode() == null || getPermissionNode().isEmpty())
             return true;
-        return PermissionManager.checkPermission(sender, this, getPermissionNode());
+        if (sender instanceof MinecraftServer || sender instanceof CommandBlockBaseLogic)
+            return true;
+        return PermissionAPI.hasPermission(UserIdent.get(sender.getName()).getPlayer(), getPermissionNode());
     }
 
     // ------------------------------------------------------------
@@ -214,10 +202,10 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
         return arraylist;
     }
 
-    public static List<String> getListOfStringsMatchingLastWord(String[] args, Collection<String> possibleMatches)
+    /*public static List<String> getListOfStringsMatchingLastWord(String[] args, Collection<?> possibleMatches)
     {
         return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
-    }
+    }*/
 
     public static List<String> getListOfStringsMatchingLastWord(String arg, String... possibleMatches)
     {
@@ -234,11 +222,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
         return arraylist;
     }
 
-    public static List<String> getListOfStringsMatchingLastWord(String[] args, String... possibleMatches)
-    {
-        return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
-    }
-
     public static List<String> completePlayername(String arg)
     {
         List<String> arraylist = new ArrayList<>();
@@ -252,54 +235,52 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase implements 
         return arraylist;
     }
 
-    @Override
-    public int compareTo(Object o)
-    {
-        if (o instanceof ICommand)
-            return this.compareTo((ICommand) o);
-        return 0;
-    }
-
     /**
      * Parse int with support for relative int.
      *
-     * @param sender
      * @param string
      * @param relativeStart
      * @return
+     * @throws NumberInvalidException
      */
-    public static int parseInt(ICommandSender sender, String string, int relativeStart)
+    public static int parseInt(String string, int relativeStart) throws NumberInvalidException
     {
         if (string.startsWith("~"))
         {
             string = string.substring(1);
-            return relativeStart + parseInt(sender, string);
+            return relativeStart + parseInt(string);
         }
         else
         {
-            return parseInt(sender, string);
+            return parseInt(string);
         }
     }
 
     /**
      * Parse double with support for relative values.
      *
-     * @param sender
      * @param string
      * @param relativeStart
      * @return
      */
-    public static double parseDouble(ICommandSender sender, String string, double relativeStart)
+    public static double parseDouble(String string, double relativeStart) throws NumberInvalidException
     {
         if (string.startsWith("~"))
         {
             string = string.substring(1);
-            return relativeStart + parseInt(sender, string);
+            return relativeStart + parseInt(string);
         }
         else
         {
-            return parseInt(sender, string);
+            return parseInt(string);
         }
     }
+
+    /**
+     * formerly of PermissionObject
+     */
+    public abstract String getPermissionNode();
+
+    public abstract DefaultPermissionLevel getPermissionLevel();
 
 }

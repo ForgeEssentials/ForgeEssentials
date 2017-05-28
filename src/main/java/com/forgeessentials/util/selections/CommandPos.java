@@ -2,10 +2,12 @@ package com.forgeessentials.util.selections;
 
 //Depreciated
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -32,7 +34,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP player, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
     {
         int x, y, z;
 
@@ -94,14 +96,14 @@ public class CommandPos extends ForgeEssentialsCommandBase
             return;
         }
 
-        MovingObjectPosition mop = PlayerUtil.getPlayerLookingSpot(player);
+        RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(player);
 
         if (mop == null)
             throw new TranslatedCommandException("You must first look at the ground!");
 
-        x = mop.blockX;
-        y = mop.blockY;
-        z = mop.blockZ;
+        x = mop.getBlockPos().getX();
+        y = mop.getBlockPos().getY();
+        z = mop.getBlockPos().getZ();
 
         WorldPoint point = new WorldPoint(player.dimension, x, y, z);
         if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point, getPermissionNode()))
@@ -140,9 +142,9 @@ public class CommandPos extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
 }

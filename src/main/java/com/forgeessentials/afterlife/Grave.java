@@ -7,14 +7,18 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraft.network.play.server.SPacketOpenWindow;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -26,8 +30,6 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
-
-import cpw.mods.fml.common.registry.GameData;
 
 public class Grave implements Loadable
 {
@@ -48,7 +50,7 @@ public class Grave implements Loadable
 
     protected boolean isProtected = true;
 
-    protected Block block = Blocks.skull;
+    protected Block block = Blocks.SKULL;
 
     @Expose(serialize = false)
     private boolean opened;
@@ -56,9 +58,12 @@ public class Grave implements Loadable
     @Expose(serialize = false)
     private long lastTick;
 
+    @Expose(serialize = false)
+    private IBlockState blockState = block.getDefaultState();
+
     public static Grave createGrave(EntityPlayer player, List<EntityItem> drops)
     {
-        if (!PermissionManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST))
+        if (!PermissionAPI.hasPermission(player, ModuleAfterlife.PERM_DEATHCHEST))
             return null;
 
         int xp = 0;
@@ -83,7 +88,7 @@ public class Grave implements Loadable
     {
         this.xp = xp;
         this.owner = player.getPersistentID();
-        this.hasFencePost = PermissionManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_FENCE);
+        this.hasFencePost = PermissionAPI.hasPermission(player, ModuleAfterlife.PERM_DEATHCHEST_FENCE);
         this.lastTick = System.currentTimeMillis();
         this.protTime = ServerUtil.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_SAFETIME), 0);
         if (protTime <= 0)
@@ -95,23 +100,23 @@ public class Grave implements Loadable
         String blockName = APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_BLOCK);
         if (blockName != null && !blockName.isEmpty())
         {
-            Block b = GameData.getBlockRegistry().getObject(blockName);
+            Block b = GameData.getBlockRegistry().getObject(new ResourceLocation(blockName));
             if (b != null)
-                this.block = b;
+                this.blockState = b.getDefaultState();
         }
 
         point = new WorldPoint(player);
         point.setY(WorldUtil.placeInWorld(player.worldObj, point.getX(), point.getY(), point.getZ(), hasFencePost ? 2 : 1));
         if (hasFencePost)
         {
-            player.worldObj.setBlock(point.getX(), point.getY(), point.getZ(), Blocks.fence);
+            player.worldObj.setBlockState(point.getBlockPos(), Blocks.OAK_FENCE.getDefaultState());
             point.setY(point.getY() + 1);
         }
-        point.getWorld().setBlock(point.getX(), point.getY(), point.getZ(), block, 1, 1);
-        if (block == Blocks.skull)
+        point.getWorld().setBlockState(point.getBlockPos(), blockState);
+        if (blockState == block)
         {
             TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
-            point.getWorld().setTileEntity(point.getX(), point.getY(), point.getZ(), skull);
+            point.getWorld().setTileEntity(point.getBlockPos(), skull);
         }
     }
 
@@ -119,7 +124,7 @@ public class Grave implements Loadable
     public void afterLoad()
     {
         if (block == null)
-            block = Blocks.skull;
+            block = Blocks.SKULL;
     }
 
     public void updateBlocks()
@@ -139,20 +144,17 @@ public class Grave implements Loadable
                 isProtected = false;
         }
 
-        int x = point.getX();
-        int y = point.getY();
-        int z = point.getZ();
-        Block graveBlock = point.getWorld().getBlock(x, y, z);
-        if (graveBlock != block && graveBlock != Blocks.chest)
+        IBlockState graveBlock = point.getWorld().getBlockState(point.getBlockPos());
+        if (graveBlock != blockState && graveBlock != Blocks.CHEST)
         {
             // Grave is destroyed - repair if protection is still active
             if (isProtected)
             {
-                point.getWorld().setBlock(x, y, z, block, 1, 3);
-                if (block == Blocks.skull)
+                point.getWorld().setBlockState(point.getBlockPos(), blockState);
+                if (blockState == block)
                 {
                     TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
-                    point.getWorld().setTileEntity(x, y, z, skull);
+                    point.getWorld().setTileEntity(point.getBlockPos(), skull);
                 }
             }
             else
@@ -162,9 +164,9 @@ public class Grave implements Loadable
         }
         if (hasFencePost)
         {
-            Block fenceBlock = point.getWorld().getBlock(x, y - 1, z);
-            if (fenceBlock == Blocks.air)
-                point.getWorld().setBlock(x, y - 1, z, Blocks.fence);
+            BlockPos fencePos = new BlockPos(point.getX(), point.getY() - 1, point.getZ());
+            if (point.getWorld().getBlockState(fencePos) != Blocks.OAK_FENCE.getDefaultState())
+                point.getWorld().setBlockState(fencePos, Blocks.OAK_FENCE.getDefaultState());
         }
     }
 
@@ -176,7 +178,7 @@ public class Grave implements Loadable
             return true;
         if (player.getUniqueID().equals(owner))
             return true;
-        if (PermissionManager.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_BYPASS))
+        if (PermissionAPI.hasPermission(player, ModuleAfterlife.PERM_DEATHCHEST_BYPASS))
             return true;
         return false;
     }
@@ -215,11 +217,11 @@ public class Grave implements Loadable
         if (player.openContainer != player.inventoryContainer)
             player.closeScreen();
         player.getNextWindowId();
-        player.playerNetServerHandler
-                .sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 0, invGrave.getInventoryName(), invGrave.getSizeInventory(), true));
-        player.openContainer = new ContainerChest(player.inventory, invGrave);
+        player.connection.sendPacket(new SPacketOpenWindow(player.currentWindowId, "minecraft:chest", invGrave.getDisplayName(), invGrave
+                .getSizeInventory()));
+        player.openContainer = new ContainerChest(player.inventory, invGrave, player);
         player.openContainer.windowId = player.currentWindowId;
-        player.openContainer.addCraftingToCrafters(player);
+        player.openContainer.addListener(player);
     }
 
     protected void dropItems()
@@ -239,9 +241,13 @@ public class Grave implements Loadable
         if (dropItems)
             dropItems();
 
-        point.getWorld().setBlock(point.getX(), point.getY(), point.getZ(), Blocks.air);
-        if (hasFencePost && point.getWorld().getBlock(point.getX(), point.getY() - 1, point.getZ()) == Blocks.fence)
-            point.getWorld().setBlock(point.getX(), point.getY() - 1, point.getZ(), Blocks.air);
+        point.getWorld().setBlockToAir(point.getBlockPos());
+        if (hasFencePost)
+        {
+            BlockPos fencePos = new BlockPos(point.getX(), point.getY() - 1, point.getZ());
+            if (point.getWorld().getBlockState(fencePos) == Blocks.OAK_FENCE.getDefaultState())
+                point.getWorld().setBlockToAir(fencePos);
+        }
 
         DataManager.getInstance().delete(Grave.class, point.toString());
         graves.remove(point);

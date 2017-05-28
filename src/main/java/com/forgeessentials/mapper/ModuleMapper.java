@@ -26,12 +26,16 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -42,11 +46,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 
 @FEModule(name = "mapper", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleMapper extends ConfigLoaderBase
@@ -89,7 +88,6 @@ public class ModuleMapper extends ConfigLoaderBase
 
     public ModuleMapper()
     {
-        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -106,7 +104,7 @@ public class ModuleMapper extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void serverStarting(FEModuleServerInitEvent event)
     {
-        dataDirectory = new File(mapperDirectory, MinecraftServer.getServer().getFolderName());
+        dataDirectory = new File(mapperDirectory, FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
         dataDirectory.mkdirs();
         loadCache();
     }
@@ -135,13 +133,13 @@ public class ModuleMapper extends ConfigLoaderBase
     @SubscribeEvent
     public void chunkUnloadEvent(ChunkEvent.Unload event)
     {
-        if (event.world.isRemote)
+        if (event.getWorld().isRemote)
             return;
         Chunk chunk = event.getChunk();
-        if (chunk.isModified && !modifiedChunks.contains(chunk))
+        if (chunk.needsSaving(false) && !modifiedChunks.contains(chunk))
         {
             setChunkModified(chunk);
-            setRegionModified((WorldServer) chunk.worldObj, MapperUtil.chunkToRegion(chunk.xPosition), MapperUtil.chunkToRegion(chunk.zPosition));
+            setRegionModified((WorldServer) chunk.getWorld(), MapperUtil.chunkToRegion(chunk.xPosition), MapperUtil.chunkToRegion(chunk.zPosition));
         }
     }
 
@@ -152,9 +150,9 @@ public class ModuleMapper extends ConfigLoaderBase
         if (event.world.isRemote)
             return;
         WorldServer world = (WorldServer) event.world;
-        List<Chunk> chunks = new ArrayList<>(world.theChunkProviderServer.loadedChunks);
+        List<Chunk> chunks = new ArrayList<>(world.getChunkProvider().getLoadedChunks());
         for (Chunk chunk : chunks)
-            if (chunk != null && chunk.isModified && !modifiedChunks.contains(chunk))
+            if (chunk != null && chunk.needsSaving(false) && !modifiedChunks.contains(chunk))
             {
                 setChunkModified(chunk);
                 setRegionModified(world, MapperUtil.chunkToRegion(chunk.xPosition), MapperUtil.chunkToRegion(chunk.zPosition));
@@ -181,13 +179,13 @@ public class ModuleMapper extends ConfigLoaderBase
     public synchronized void setChunkModified(Chunk chunk)
     {
         modifiedChunks.add(chunk);
-        setChunkModified((WorldServer) chunk.worldObj, chunk.xPosition, chunk.zPosition);
+        setChunkModified((WorldServer) chunk.getWorld(), chunk.xPosition, chunk.zPosition);
     }
 
     public synchronized void unsetChunkModified(Chunk chunk)
     {
         modifiedChunks.remove(chunk);
-        unsetChunkModified((WorldServer) chunk.worldObj, chunk.xPosition, chunk.zPosition);
+        unsetChunkModified((WorldServer) chunk.getWorld(), chunk.xPosition, chunk.zPosition);
     }
 
     public synchronized void setChunkModified(WorldServer world, int chunkX, int chunkZ)
@@ -251,14 +249,14 @@ public class ModuleMapper extends ConfigLoaderBase
 
     public synchronized int[] getRegionCache(WorldServer world, int regionX, int regionZ)
     {
-        String regionId = String.format("%d-%d.%d", world.provider.dimensionId, regionX, regionZ);
+        String regionId = String.format("%d-%d.%d", world.provider.getDimension(), regionX, regionZ);
         NBTBase tag = cacheStorage.getTag(regionId);
-        if (!(tag instanceof NBTTagIntArray) || ((NBTTagIntArray) tag).func_150302_c().length != MapperUtil.REGION_CHUNK_COUNT + 1)
+        if (!(tag instanceof NBTTagIntArray) || ((NBTTagIntArray) tag).getIntArray().length != MapperUtil.REGION_CHUNK_COUNT + 1)
         {
             tag = new NBTTagIntArray(new int[MapperUtil.REGION_CHUNK_COUNT + 1]);
             cacheStorage.setTag(regionId, tag);
         }
-        return ((NBTTagIntArray) tag).func_150302_c();
+        return ((NBTTagIntArray) tag).getIntArray();
     }
 
     /* ------------------------------------------------------------ */
@@ -301,7 +299,7 @@ public class ModuleMapper extends ConfigLoaderBase
 
     public File getChunkCacheFile(final WorldServer world, final int chunkX, final int chunkZ)
     {
-        return new File(dataDirectory, String.format("%d.c.%d.%d.png", world.provider.dimensionId, chunkX, chunkZ));
+        return new File(dataDirectory, String.format("%d.c.%d.%d.png", world.provider.getDimension(), chunkX, chunkZ));
     }
 
     public BufferedImage renderChunk(final WorldServer world, final int chunkX, final int chunkZ)
@@ -344,7 +342,7 @@ public class ModuleMapper extends ConfigLoaderBase
 
     public synchronized Future<BufferedImage> getChunkImageAsync(final WorldServer world, final int chunkX, final int chunkZ)
     {
-        final long id = ChunkCoordIntPair.chunkXZ2Int(chunkX, chunkZ);
+        final long id = ChunkPos.chunkXZ2Int(chunkX, chunkZ);
         Future<BufferedImage> result = chunkRenderers.get(id);
         if (result != null)
             return result;
@@ -387,7 +385,7 @@ public class ModuleMapper extends ConfigLoaderBase
 
     public File getRegionCacheFile(final WorldServer world, final int regionX, final int regionZ)
     {
-        return new File(dataDirectory, String.format("%d.%d.%d.png", world.provider.dimensionId, regionX, regionZ));
+        return new File(dataDirectory, String.format("%d.%d.%d.png", world.provider.getDimension(), regionX, regionZ));
     }
 
     public BufferedImage renderRegion(WorldServer world, int regionX, int regionZ)
@@ -429,7 +427,7 @@ public class ModuleMapper extends ConfigLoaderBase
 
     public synchronized Future<BufferedImage> getRegionImageAsync(final WorldServer world, final int regionX, final int regionZ)
     {
-        final long id = ChunkCoordIntPair.chunkXZ2Int(regionX, regionZ);
+        final long id = ChunkPos.chunkXZ2Int(regionX, regionZ);
         Future<BufferedImage> result = regionRenderers.get(id);
         if (result != null)
             return result;

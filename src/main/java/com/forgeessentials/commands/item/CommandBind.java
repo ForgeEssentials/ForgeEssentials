@@ -1,17 +1,22 @@
 package com.forgeessentials.commands.item;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ParserCommandBase;
@@ -19,14 +24,12 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
 public class CommandBind extends ParserCommandBase
 {
 
     private static final String TAG_NAME = "FEbinding";
 
-    public static final String LORE_TEXT_TAG = EnumChatFormatting.RESET.toString() + EnumChatFormatting.AQUA;
+    public static final String LORE_TEXT_TAG = TextFormatting.RESET.toString() + TextFormatting.AQUA;
 
     public CommandBind()
     {
@@ -58,9 +61,9 @@ public class CommandBind extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -70,8 +73,7 @@ public class CommandBind extends ParserCommandBase
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -119,8 +121,8 @@ public class CommandBind extends ParserCommandBase
 
         if (arguments.isTabCompletion)
         {
-            arguments.tabCompletion = MinecraftServer.getServer().getPossibleCompletions(arguments.sender,
-                    arguments.toString().startsWith("/") ? arguments.toString() : "/" + arguments.toString());
+            arguments.tabCompletion = arguments.server.getTabCompletions(arguments.sender,
+                    arguments.toString().startsWith("/") ? arguments.toString() : "/" + arguments.toString(), arguments.sender.getPosition(), false);
             if ("none".startsWith(arguments.peek()))
                 arguments.tabCompletion.add(0, "none");
             return;
@@ -144,7 +146,7 @@ public class CommandBind extends ParserCommandBase
             {
                 if (lore.getStringTagAt(i).startsWith(loreStart))
                 {
-                    lore.func_150304_a(i, loreTag);
+                    lore.set(i, loreTag);
                     arguments.confirm("Bound command to item");
                     return;
                 }
@@ -159,18 +161,24 @@ public class CommandBind extends ParserCommandBase
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!(event.entityPlayer instanceof EntityPlayerMP))
+        if (!(event.getEntityPlayer() instanceof EntityPlayerMP))
             return;
-        ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
+        ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
         if (stack == null || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TAG_NAME))
             return;
         NBTTagCompound nbt = stack.getTagCompound().getCompoundTag(TAG_NAME);
 
-        String command = event.action == Action.LEFT_CLICK_BLOCK ? nbt.getString("left") : nbt.getString("right");
+        String command;
+        if (event instanceof LeftClickBlock || event instanceof LeftClickEmpty)
+            command = nbt.getString("left");
+        else if (event instanceof RightClickBlock || event instanceof RightClickEmpty)
+            command = nbt.getString("right");
+        else
+            return;
         if (command == null || command.isEmpty())
             return;
 
-        MinecraftServer.getServer().getCommandManager().executeCommand(event.entityPlayer, command);
+        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), command);
         event.setCanceled(true);
     }
 

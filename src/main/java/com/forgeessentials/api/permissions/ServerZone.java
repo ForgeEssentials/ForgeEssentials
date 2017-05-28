@@ -16,6 +16,7 @@ import java.util.TreeSet;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -166,7 +167,7 @@ public class ServerZone extends Zone implements Loadable
 
     public WorldZone getWorldZone(World world)
     {
-        return getWorldZone(world.provider.dimensionId);
+        return getWorldZone(world.provider.getDimension());
     }
 
     // ------------------------------------------------------------
@@ -323,7 +324,7 @@ public class ServerZone extends Zone implements Loadable
         if (ident != null)
         {
             // Include special groups
-            if (MinecraftServer.getServer().getConfigurationManager().func_152596_g(ident.getGameProfile()))
+            if (FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().canSendCommands(ident.getGameProfile()))
             {
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
             }
@@ -339,8 +340,8 @@ public class ServerZone extends Zone implements Loadable
                 result.add(new GroupEntry(GROUP_NPC, 1, 1));
 
             EntityPlayerMP player = ident.getPlayerMP();
-            if (player != null && player.theItemInWorldManager != null)
-                switch (player.theItemInWorldManager.getGameType())
+            if (player != null && player.interactionManager != null)
+                switch (player.interactionManager.getGameType())
                 {
                 case ADVENTURE:
                     result.add(new GroupEntry(this, GROUP_ADVENTURE));

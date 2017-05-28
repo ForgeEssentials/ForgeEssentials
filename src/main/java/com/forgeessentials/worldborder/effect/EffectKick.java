@@ -1,5 +1,6 @@
 package com.forgeessentials.worldborder.effect;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
@@ -9,7 +10,6 @@ import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 
@@ -32,7 +32,7 @@ public class EffectKick extends WorldBorderEffect
     @Override
     public void activate(WorldBorder border, EntityPlayerMP player)
     {
-        if (!MinecraftServer.getServer().isDedicatedServer())
+        if (!player.getServer().isDedicatedServer())
         {
             LoggingHandler.felog.warn("[WorldBorder] Kick effect is not supported on integrated servers!");
             return;
@@ -48,7 +48,7 @@ public class EffectKick extends WorldBorderEffect
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.playerNetServerHandler.kickPlayerFromServer("You left the world border");
+            player.connection.kickPlayerFromServer("You left the world border");
             // For safety restart the timeout
             pi.startTimeout(this.getClass().getName(), timeout);
         }

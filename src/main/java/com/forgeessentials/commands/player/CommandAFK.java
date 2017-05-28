@@ -1,8 +1,10 @@
 package com.forgeessentials.commands.player;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -58,9 +60,9 @@ public class CommandAFK extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -72,14 +74,14 @@ public class CommandAFK extends ForgeEssentialsCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_ANNOUNCE, PermissionLevel.TRUE);
+        APIRegistry.perms.registerPermission(PERM_ANNOUNCE, DefaultPermissionLevel.ALL, "Announce when a player goes AFK, or returns from AFK");
         APIRegistry.perms.registerPermissionProperty(PERM_WARMUP, "10", "Time a player needs to wait before he can go afk with /afk");
         APIRegistry.perms.registerPermissionProperty(PERM_AUTOTIME, "480", "Auto afk time in seconds. Set to 0 to disable.");
-        APIRegistry.perms.registerPermission(PERM_AUTOKICK, PermissionLevel.FALSE, "Automatically kick a player, when he is AFK");
+        APIRegistry.perms.registerPermission(PERM_AUTOKICK, DefaultPermissionLevel.NONE, "Automatically kick a player, when he is AFK");
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         UserIdent ident = UserIdent.get(sender);
 

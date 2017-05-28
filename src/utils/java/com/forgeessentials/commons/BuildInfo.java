@@ -21,6 +21,8 @@ public abstract class BuildInfo
 
     private static String buildHash = "N/A";
 
+    public static boolean checkVersion;
+
     private static int buildNumber = 0;
 
     private static int buildNumberLatest = 0;
@@ -31,32 +33,37 @@ public abstract class BuildInfo
 
     private static Properties buildTypes = new Properties();
 
-    public static final String MC_BASE_VERSION = "1.7.10";
+    public static final String MC_BASE_VERSION = "1.10.2";
 
-    public static final String BASE_VERSION = "1.4.5"; // update manually because gradle is a derp
+    public static final String BASE_VERSION = "10.1.0"; // update manually because gradle is a derp
 
-    public static final String DEPENDENCIES = "required-after:Forge@[10.13.4.1558,)";
+    public static final String DEPENDENCIES = "required-after:Forge";
 
-    static
+    public static void startVersionChecks()
     {
-        // Check for latest version asap
-        checkVersionThread = new Thread(new Runnable() {
-            @Override
-            public void run()
+        if (checkVersion)
+        {
+            // Check for latest version asap
+            checkVersionThread = new Thread(new Runnable()
             {
-                doCheckLatestVersion();
-            }
-        });
-        checkVersionThread.start();
+                @Override
+                public void run()
+                {
+                    doCheckLatestVersion();
+                }
+            });
+            checkVersionThread.start();
 
-        checkBuildTypesThread = new Thread(new Runnable() {
-            @Override
-            public void run()
+            checkBuildTypesThread = new Thread(new Runnable()
             {
-                doCheckBuildTypes();
-            }
-        });
-        checkBuildTypesThread.start();
+                @Override
+                public void run()
+                {
+                    doCheckBuildTypes();
+                }
+            });
+            checkBuildTypesThread.start();
+        }
     }
 
     public static void getBuildInfo(File jarFile)
@@ -94,7 +101,7 @@ public abstract class BuildInfo
     {
         try
         {
-            URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE/lastSuccessfulBuild/api/json");
+            URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE-1.8/lastSuccessfulBuild/api/json");
             URLConnection con = buildInfoUrl.openConnection();
             con.setConnectTimeout(6000);
             con.setReadTimeout(12000);

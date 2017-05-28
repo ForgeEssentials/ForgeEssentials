@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -85,7 +85,7 @@ public abstract class BookUtil
                 List<String> lines = new ArrayList<String>();
                 try
                 {
-                    lines.add(EnumChatFormatting.GREEN + "START" + EnumChatFormatting.BLACK);
+                    lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
                     lines.add("");
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
                     {
@@ -103,7 +103,7 @@ public abstract class BookUtil
                         reader.close();
                     }
                     lines.add("");
-                    lines.add(EnumChatFormatting.RED + "END" + EnumChatFormatting.BLACK);
+                    lines.add(TextFormatting.RED + "END" + TextFormatting.BLACK);
 
                 }
                 catch (Exception e)
@@ -126,8 +126,8 @@ public abstract class BookUtil
                         temp += lines.get(0) + "\n";
                         lines.remove(0);
                     }
-                    map.put(EnumChatFormatting.GOLD + " File: " + EnumChatFormatting.GRAY + filename + EnumChatFormatting.DARK_GRAY + "\nPart " + part + " of "
-                            + parts + EnumChatFormatting.BLACK + "\n\n", temp);
+                    map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename + TextFormatting.DARK_GRAY + "\nPart " + part + " of "
+                            + parts + TextFormatting.BLACK + "\n\n", temp);
                 }
             }
         }
@@ -142,7 +142,7 @@ public abstract class BookUtil
         tag.setString("title", file.getName().replace(".txt", ""));
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Items.written_book);
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }
@@ -160,7 +160,7 @@ public abstract class BookUtil
                 List<String> lines = new ArrayList<String>();
                 try
                 {
-                    lines.add(EnumChatFormatting.GREEN + "START" + EnumChatFormatting.BLACK);
+                    lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
                     lines.add("");
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
                     {
@@ -177,7 +177,7 @@ public abstract class BookUtil
                         }
                     }
                     lines.add("");
-                    lines.add(EnumChatFormatting.RED + "END" + EnumChatFormatting.BLACK);
+                    lines.add(TextFormatting.RED + "END" + TextFormatting.BLACK);
 
                 }
                 catch (Exception e)
@@ -200,8 +200,8 @@ public abstract class BookUtil
                         temp += lines.get(0) + "\n";
                         lines.remove(0);
                     }
-                    map.put(EnumChatFormatting.GOLD + " File: " + EnumChatFormatting.GRAY + filename + EnumChatFormatting.DARK_GRAY + "\nPart " + part + " of "
-                            + parts + EnumChatFormatting.BLACK + "\n\n", temp);
+                    map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename + TextFormatting.DARK_GRAY + "\nPart " + part + " of "
+                            + parts + TextFormatting.BLACK + "\n\n", temp);
                 }
             }
         }
@@ -216,7 +216,7 @@ public abstract class BookUtil
         tag.setString("title", title);
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Items.written_book);
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }
@@ -271,7 +271,7 @@ public abstract class BookUtil
         tag.setString("title", file.getName().replace(".txt", ""));
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Items.written_book);
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }
@@ -326,7 +326,7 @@ public abstract class BookUtil
         tag.setString("title", title);
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Items.written_book);
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }
@@ -349,7 +349,7 @@ public abstract class BookUtil
                     List<String> lines = new ArrayList<String>();
                     try
                     {
-                        lines.add(EnumChatFormatting.GREEN + "START" + EnumChatFormatting.BLACK);
+                        lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
                         lines.add("");
                         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
                         {
@@ -366,7 +366,7 @@ public abstract class BookUtil
                             }
                         }
                         lines.add("");
-                        lines.add(EnumChatFormatting.RED + "END" + EnumChatFormatting.BLACK);
+                        lines.add(TextFormatting.RED + "END" + TextFormatting.BLACK);
 
                     }
                     catch (Exception e)
@@ -389,8 +389,8 @@ public abstract class BookUtil
                             temp += lines.get(0) + "\n";
                             lines.remove(0);
                         }
-                        map.put(EnumChatFormatting.GOLD + " File: " + EnumChatFormatting.GRAY + filename + EnumChatFormatting.DARK_GRAY + "\nPart " + part
-                                + " of " + parts + EnumChatFormatting.BLACK + "\n\n", temp);
+                        map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename + TextFormatting.DARK_GRAY + "\nPart " + part
+                                + " of " + parts + TextFormatting.BLACK + "\n\n", temp);
                     }
                 }
             }
@@ -406,7 +406,7 @@ public abstract class BookUtil
         tag.setString("title", folder.getName());
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Items.written_book);
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }
@@ -429,7 +429,7 @@ public abstract class BookUtil
                     List<String> lines = new ArrayList<String>();
                     try
                     {
-                        lines.add(EnumChatFormatting.GREEN + "START" + EnumChatFormatting.BLACK);
+                        lines.add(TextFormatting.GREEN + "START" + TextFormatting.BLACK);
                         lines.add("");
                         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file))))
                         {
@@ -446,7 +446,7 @@ public abstract class BookUtil
                             }
                         }
                         lines.add("");
-                        lines.add(EnumChatFormatting.RED + "END" + EnumChatFormatting.BLACK);
+                        lines.add(TextFormatting.RED + "END" + TextFormatting.BLACK);
 
                     }
                     catch (Exception e)
@@ -469,8 +469,8 @@ public abstract class BookUtil
                             temp += lines.get(0) + "\n";
                             lines.remove(0);
                         }
-                        map.put(EnumChatFormatting.GOLD + " File: " + EnumChatFormatting.GRAY + filename + EnumChatFormatting.DARK_GRAY + "\nPart " + part
-                                + " of " + parts + EnumChatFormatting.BLACK + "\n\n", temp);
+                        map.put(TextFormatting.GOLD + " File: " + TextFormatting.GRAY + filename + TextFormatting.DARK_GRAY + "\nPart " + part
+                                + " of " + parts + TextFormatting.BLACK + "\n\n", temp);
                     }
                 }
             }
@@ -486,7 +486,7 @@ public abstract class BookUtil
         tag.setString("title", title);
         tag.setTag("pages", pages);
 
-        ItemStack is = new ItemStack(Items.written_book);
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
         is.setTagCompound(tag);
         player.inventory.addItemStackToInventory(is);
     }

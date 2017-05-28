@@ -26,8 +26,9 @@ import javax.script.Invocable;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -194,7 +195,7 @@ public class ScriptInstance
     /* ************************************************************ */
     /* Script invocation */
 
-    public Object callGlobal(String fn, Object... args) throws NoSuchMethodException, ScriptException
+    public Object callGlobal(String fn, Object... args) throws NoSuchMethodException, ScriptException, CommandException
     {
         try
         {
@@ -380,14 +381,6 @@ public class ScriptInstance
         return instance;
     }
 
-    /**
-     * This should be called every time a script is invoked by a user to send errors to the correct user
-     */
-    public void setLastSender(ICommandSender sender)
-    {
-        this.lastSender = new WeakReference<>(sender);
-    }
-
     /* ************************************************************ */
     /* Timeout & Promise handling */
 
@@ -524,11 +517,21 @@ public class ScriptInstance
 
     public void chatError(ICommandSender sender, String message)
     {
-        IChatComponent msg = ChatOutputHandler.error(message);
+        ITextComponent msg = ChatOutputHandler.error(message);
         if (sender == null)
             ChatOutputHandler.broadcast(msg); // TODO: Replace with broadcast to admins only
         else
             ChatOutputHandler.sendMessage(sender, msg);
+    }
+
+    /**
+     * This should be called every time a script is invoked by a user to send errors to the correct user
+     *
+     * @param sender
+     */
+    public void setLastSender(ICommandSender sender)
+    {
+        this.lastSender = new WeakReference<>(sender);
     }
 
 }

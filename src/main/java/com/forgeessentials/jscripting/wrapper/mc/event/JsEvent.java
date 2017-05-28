@@ -4,15 +4,14 @@ import javax.script.ScriptException;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.relauncher.Side;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.jscripting.ScriptInstance;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event;
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.relauncher.Side;
 
 @SuppressWarnings("unused")
 public abstract class JsEvent<T extends Event>
@@ -55,14 +54,12 @@ public abstract class JsEvent<T extends Event>
 
     public void _register()
     {
-        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.FE_EVENTBUS.register(this);
     }
 
     public void _unregister()
     {
-        FMLCommonHandler.instance().bus().unregister(this);
         MinecraftForge.EVENT_BUS.unregister(this);
         APIRegistry.FE_EVENTBUS.unregister(this);
     }

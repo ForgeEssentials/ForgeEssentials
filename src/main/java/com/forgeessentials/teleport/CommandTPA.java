@@ -1,8 +1,9 @@
 package com.forgeessentials.teleport;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -13,6 +14,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 
 public class CommandTPA extends ParserCommandBase
 {
@@ -39,9 +41,9 @@ public class CommandTPA extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -53,12 +55,12 @@ public class CommandTPA extends ParserCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_HERE, PermissionLevel.TRUE, "Allow teleporting other players to your own location (inversed TPA)");
-        APIRegistry.perms.registerPermission(PERM_LOCATION, PermissionLevel.OP, "Allow teleporting other players to any location");
+        APIRegistry.perms.registerPermission(PERM_HERE, DefaultPermissionLevel.ALL, "Allow teleporting other players to your own location (inversed TPA)");
+        APIRegistry.perms.registerPermission(PERM_LOCATION, DefaultPermissionLevel.OP, "Allow teleporting other players to any location");
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -72,21 +74,35 @@ public class CommandTPA extends ParserCommandBase
         {
             if (arguments.isTabCompletion)
                 return;
-            arguments.confirm("Waiting for response by %s", player.getUsernameOrUuid());
-            QuestionerCallback callback = new QuestionerCallback() {
-                @Override
-                public void respond(Boolean response)
-                {
-                    if (response == null)
-                        arguments.error("TPA request timed out");
-                    else if (response == false)
-                        arguments.error("TPA declined");
-                    else
-                        TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
-                }
-            };
-            Questioner.addChecked(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getCommandSenderName()),
-                    callback, 20);
+            try
+            {
+                arguments.confirm(Translator.format("Waiting for response by %s", player.getUsernameOrUuid()));
+                Questioner.addChecked(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getDisplayName().getUnformattedText()),
+                        new QuestionerCallback()
+                        {
+                            @Override
+                            public void respond(Boolean response)
+                            {
+                                if (response == null)
+                                    arguments.error("TPA request timed out");
+                                else if (response == false)
+                                    arguments.error("TPA declined");
+                                else
+                                try
+                                {
+                                    TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
+                                }
+                                catch (CommandException e)
+                                {
+                                    arguments.error(e.getMessage());
+                                }
+                            }
+                        }, 20);
+            }
+            catch (QuestionerStillActiveException.CommandException e)
+            {
+                throw new QuestionerStillActiveException.CommandException();
+            }
             return;
         }
 
@@ -98,7 +114,7 @@ public class CommandTPA extends ParserCommandBase
         {
             arguments.checkPermission(PERM_HERE);
             point = new WarpPoint(arguments.senderPlayer);
-            locationName = arguments.sender.getCommandSenderName();
+            locationName = arguments.sender.getName();
             arguments.remove();
         }
         else
@@ -112,18 +128,33 @@ public class CommandTPA extends ParserCommandBase
 
         if (arguments.isTabCompletion)
             return;
-        Questioner.addChecked(player.getPlayer(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback() {
-            @Override
-            public void respond(Boolean response)
+        try
+        {
+            Questioner.addChecked(player.getPlayer(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback()
             {
-                if (response == null)
-                    arguments.error("TPA request timed out");
-                else if (response == false)
-                    arguments.error("TPA declined");
-                else
-                    TeleportHelper.teleport(player.getPlayerMP(), point);
-            }
-        }, 20);
+                @Override
+                public void respond(Boolean response)
+                {
+                    if (response == null)
+                        arguments.error("TPA request timed out");
+                    else if (response == false)
+                        arguments.error("TPA declined");
+                    else
+                        try
+                        {
+                            TeleportHelper.teleport(player.getPlayerMP(), point);
+                        }
+                        catch (CommandException e)
+                        {
+                            arguments.error(e.getMessage());
+                        }
+                }
+            }, 20);
+        }
+        catch (QuestionerStillActiveException.CommandException e)
+        {
+            throw new QuestionerStillActiveException.CommandException();
+        }
     }
 
 }

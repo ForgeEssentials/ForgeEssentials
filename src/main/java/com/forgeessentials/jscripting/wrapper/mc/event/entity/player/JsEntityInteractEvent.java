@@ -1,14 +1,14 @@
 package com.forgeessentials.jscripting.wrapper.mc.event.entity.player;
 
-import net.minecraftforge.event.entity.player.EntityInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class JsEntityInteractEvent extends JsPlayerEvent<EntityInteractEvent>
+public class JsEntityInteractEvent extends JsPlayerEvent<PlayerInteractEvent.EntityInteract>
 {
 
     @SubscribeEvent
-    public final void _handle(EntityInteractEvent event)
+    public final void _handle(PlayerInteractEvent.EntityInteract event)
     {
         _callEvent(event);
     }

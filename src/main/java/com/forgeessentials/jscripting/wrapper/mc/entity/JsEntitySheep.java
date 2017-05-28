@@ -1,6 +1,7 @@
 package com.forgeessentials.jscripting.wrapper.mc.entity;
 
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.item.EnumDyeColor;
 
 public class JsEntitySheep<T extends EntitySheep> extends JsEntity<T>
 {
@@ -12,12 +13,12 @@ public class JsEntitySheep<T extends EntitySheep> extends JsEntity<T>
 
     public int getFleeceColor()
     {
-        return that.getFleeceColor();
+        return that.getFleeceColor().ordinal();
     }
 
     public void setFleeceColor(int color)
     {
-        that.setFleeceColor(color);
+        that.setFleeceColor(EnumDyeColor.byMetadata(color));
     }
 
     public boolean isSheared()

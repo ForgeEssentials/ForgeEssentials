@@ -1,13 +1,12 @@
 package com.forgeessentials.client.auth;
 
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.forgeessentials.client.core.ClientProxy;
 import com.forgeessentials.commons.network.Packet6AuthLogin;
-
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class ClientAuthNetHandler implements IMessageHandler<Packet6AuthLogin, IMessage>
 {
@@ -22,9 +21,9 @@ public class ClientAuthNetHandler implements IMessageHandler<Packet6AuthLogin, I
         switch (message.mode)
         {
         case 0:
-            return new Packet6AuthLogin(1, AuthAutoLogin.getKey(Minecraft.getMinecraft().func_147104_D().serverIP));
+            return new Packet6AuthLogin(1, AuthAutoLogin.getKey(Minecraft.getMinecraft().getCurrentServerData().serverIP));
         case 2:
-            AuthAutoLogin.setKey(Minecraft.getMinecraft().func_147104_D().serverIP, message.hash);
+            AuthAutoLogin.setKey(Minecraft.getMinecraft().getCurrentServerData().serverIP, message.hash);
             break;
         default:
             break;

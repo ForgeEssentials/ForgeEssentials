@@ -4,10 +4,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
@@ -19,9 +21,6 @@ import com.forgeessentials.remote.RemoteMessageID;
 import com.forgeessentials.remote.handler.chat.PushChatHandler.Request;
 import com.forgeessentials.remote.network.ChatResponse;
 import com.forgeessentials.util.output.ChatOutputHandler.ChatFormat;
-
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FERemoteHandler(id = RemoteMessageID.PUSH_CHAT)
 public class PushChatHandler extends GenericRemoteHandler<Request>
@@ -36,7 +35,7 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
     public PushChatHandler()
     {
         super(PERM, Request.class);
-        APIRegistry.perms.registerPermission(PERM, PermissionLevel.TRUE, "Allows requesting chat push messages");
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL, "Allows requesting chat push messages");
         MinecraftForge.EVENT_BUS.register(this);
         instance = this;
     }
@@ -58,12 +57,12 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public synchronized void chatEvent(ServerChatEvent event)
     {
-        IChatComponent message = event.component;
-        String username = event.username;
+        ITextComponent message = event.getComponent();
+        String username = event.getUsername();
         pushMessage(message, username);
     }
 
-    protected void pushMessage(IChatComponent message, String username)
+    protected void pushMessage(ITextComponent message, String username)
     {
         RemoteResponse<?>[] messages = new RemoteResponse<?>[ChatFormat.values().length];
         if (!pushSessions.isEmpty())
@@ -87,7 +86,7 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
         }
     }
 
-    public static void onMessage(IChatComponent message, String username)
+    public static void onMessage(ITextComponent message, String username)
     {
         instance.pushMessage(message, username);
     }

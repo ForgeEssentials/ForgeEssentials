@@ -7,8 +7,11 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,8 +22,6 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * Allows you to modify a bunch of interesting stuff...
@@ -65,9 +66,9 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -79,11 +80,11 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Apply capabilities to others");
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length > 3)
         {
@@ -100,7 +101,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                ChatOutputHandler.chatNotification(sender, Translator.format("Capabilities for %s:", player.getCommandSenderName()));
+                ChatOutputHandler.chatNotification(sender, Translator.format("Capabilities for %s:", player.getName()));
                 ChatOutputHandler.chatNotification(sender, names.get(0) + " = " + player.capabilities.disableDamage);
                 ChatOutputHandler.chatNotification(sender, names.get(1) + " = " + player.capabilities.isFlying);
                 ChatOutputHandler.chatNotification(sender, names.get(2) + " = " + player.capabilities.allowFlying);
@@ -114,7 +115,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
         }
         else if (args.length == 2)
         {
-            if (sender instanceof EntityPlayer && !PermissionManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
+            if (sender instanceof EntityPlayer && !PermissionAPI.hasPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
                 throw new TranslatedCommandException("You don't have permissions for that.");
 
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
@@ -122,25 +123,23 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))
                 {
-                    ChatOutputHandler
-                            .chatNotification(sender, player.getCommandSenderName() + " => " + names.get(0) + " = " + player.capabilities.disableDamage);
+                    ChatOutputHandler.chatNotification(sender, player.getName() + " => " + names.get(0) + " = " + player.capabilities.disableDamage);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(1)))
                 {
-                    ChatOutputHandler.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(1) + " = " + player.capabilities.isFlying);
+                    ChatOutputHandler.chatNotification(sender, player.getName() + " => " + names.get(1) + " = " + player.capabilities.isFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(2)))
                 {
-                    ChatOutputHandler.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(2) + " = " + player.capabilities.allowFlying);
+                    ChatOutputHandler.chatNotification(sender, player.getName() + " => " + names.get(2) + " = " + player.capabilities.allowFlying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(3)))
                 {
-                    ChatOutputHandler
-                            .chatNotification(sender, player.getCommandSenderName() + " => " + names.get(3) + " = " + player.capabilities.isCreativeMode);
+                    ChatOutputHandler.chatNotification(sender, player.getName() + " => " + names.get(3) + " = " + player.capabilities.isCreativeMode);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(4)))
                 {
-                    ChatOutputHandler.chatNotification(sender, player.getCommandSenderName() + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
+                    ChatOutputHandler.chatNotification(sender, player.getName() + " => " + names.get(4) + " = " + player.capabilities.allowEdit);
                 }
                 else
                     throw new CommandException("Capability '%s' unknown.", args[1]);
@@ -148,7 +147,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
         }
         else if (args.length == 3)
         {
-            if (sender instanceof EntityPlayer && !PermissionManager.checkPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
+            if (sender instanceof EntityPlayer && !PermissionAPI.hasPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
                 throw new TranslatedCommandException("You don't have permissions for that.");
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
@@ -191,7 +190,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

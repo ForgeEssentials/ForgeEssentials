@@ -615,7 +615,7 @@ public class TsdGenerator extends Doclet
                 "-external", Locale.class.getName(),
                 // "-external", Instant.class.getName(),
                 // "-external", Collection.class.getName(),
-                "-external", net.minecraft.world.WorldSettings.GameType.class.getName()
+                "-external", net.minecraft.world.GameType.class.getName()
         );
 
         FileUtils.copyFileToDirectory(feDtsFile, outDir);

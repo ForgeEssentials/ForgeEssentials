@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.SortedSet;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.permission.IPermissionProvider;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.IPermissionHandler;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -15,7 +15,7 @@ import com.forgeessentials.commons.selections.WorldPoint;
 /**
  * {@link IPermissionsHelper} is the primary access-point to the permissions-system.
  */
-public interface IPermissionsHelper extends IPermissionProvider
+public interface IPermissionsHelper extends IPermissionHandler
 {
 
     // ---------------------------------------------------------------------------
@@ -78,21 +78,18 @@ public interface IPermissionsHelper extends IPermissionProvider
      */
     String getPermissionDescription(String permissionNode);
 
-    @Override
-    public void registerPermission(String permission, PermissionLevel level);
-
     /**
      * This is where permissions are registered with their default value. This function also allows to register a
      * description.
      * 
      * @param permissionNode
      * @param level
-     *            Default level of the permission. This can be used to tell the underlying {@link IPermissionProvider}
+     *            Default level of the permission. This can be used to tell the underlying {@link IPermissionHandler}
      *            whether a player should be allowed to access this permission by default, or as operator only.
      * @param description
      *            Description for the permission.
      */
-    void registerPermission(String permissionNode, PermissionLevel level, String description);
+    void registerPermission(String permissionNode, DefaultPermissionLevel level, String description);
 
     /**
      * Registers a permission property

@@ -18,19 +18,22 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.server.CommandBlockLogic;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.rcon.RConConsoleSource;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.permission.PermissionContext;
-import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -58,12 +61,19 @@ import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.authlib.GameProfile;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.context.AreaContext;
+import net.minecraftforge.server.permission.context.BlockPosContext;
+import net.minecraftforge.server.permission.context.ContextKey;
+import net.minecraftforge.server.permission.context.ContextKeys;
+import net.minecraftforge.server.permission.context.IContext;
 
 /**
  * Main permission management class
@@ -418,36 +428,36 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 return;
         }
 
-        IChatComponent msg1 = new ChatComponentText(String.format("%s = %s", permissionNode, value));
-        msg1.getChatStyle().setColor(Zone.PERMISSION_FALSE.equals(value) ? EnumChatFormatting.RED : EnumChatFormatting.DARK_GREEN);
+        ITextComponent msg1 = new TextComponentString(String.format("%s = %s", permissionNode, value));
+        msg1.getStyle().setColor(Zone.PERMISSION_FALSE.equals(value) ? TextFormatting.RED : TextFormatting.DARK_GREEN);
 
-        IChatComponent msg2;
+        ITextComponent msg2;
         if (zone == null)
         {
-            msg2 = new ChatComponentText("  permission not set");
-            msg2.getChatStyle().setColor(EnumChatFormatting.YELLOW);
+            msg2 = new TextComponentString("  permission not set");
+            msg2.getStyle().setColor(TextFormatting.YELLOW);
         }
         else
         {
-            IChatComponent msgZone = new ChatComponentText(zone.getName());
-            msgZone.getChatStyle().setColor(EnumChatFormatting.LIGHT_PURPLE);
+            ITextComponent msgZone = new TextComponentString(zone.getName());
+            msgZone.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
 
-            IChatComponent msgUser = new ChatComponentText(ident == null ? APIRegistry.IDENT_SERVER.getUsername() : ident.getUsernameOrUuid());
-            msgUser.getChatStyle().setColor(EnumChatFormatting.GOLD);
+            ITextComponent msgUser = new TextComponentString(ident == null ? APIRegistry.IDENT_SERVER.getUsername() : ident.getUsernameOrUuid());
+            msgUser.getStyle().setColor(TextFormatting.GOLD);
 
             if (isGroupPermission)
             {
                 // String groupName = getServerZone().getGroupPermission(group, FEPermissions.GROUP_NAME);
                 // if (groupName == null)
                 // groupName = group;
-                IChatComponent msgGroup = new ChatComponentText(group);
-                msgGroup.getChatStyle().setColor(EnumChatFormatting.LIGHT_PURPLE);
+                ITextComponent msgGroup = new TextComponentString(group);
+                msgGroup.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
 
-                msg2 = new ChatComponentTranslation("  zone %s group %s for user %s", msgZone, msgGroup, msgUser);
+                msg2 = new TextComponentTranslation("  zone %s group %s for user %s", msgZone, msgGroup, msgUser);
             }
             else
             {
-                msg2 = new ChatComponentTranslation("  zone %s user %s", msgZone, msgUser);
+                msg2 = new TextComponentTranslation("  zone %s user %s", msgZone, msgUser);
             }
         }
         for (ICommandSender sender : permissionDebugUsers)
@@ -554,7 +564,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent
     public void worldLoad(WorldEvent.Load e)
     {
-        getServerZone().getWorldZone(e.world.provider.dimensionId);
+        getServerZone().getWorldZone(e.getWorld().provider.getDimension());
     }
 
     @SubscribeEvent
@@ -564,7 +574,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         Zone after = APIRegistry.perms.getServerZone().getZonesAt(e.after.toWorldPoint()).get(0);
         if (!before.equals(after))
         {
-            PlayerChangedZone event = new PlayerChangedZone(e.entityPlayer, before, after, e.before, e.after);
+            PlayerChangedZone event = new PlayerChangedZone(e.getEntityPlayer(), before, after, e.before, e.after);
             e.setCanceled(MinecraftForge.EVENT_BUS.post(event));
         }
     }
@@ -572,16 +582,16 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerChangedZoneEvent(PlayerChangedZone event)
     {
-        UserIdent ident = UserIdent.get(event.entityPlayer);
+        UserIdent ident = UserIdent.get(event.getEntityPlayer());
         String exitMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.beforeZone, FEPermissions.ZONE_EXIT_MESSAGE);
         if (exitMsg != null)
         {
-            ChatOutputHandler.sendMessage(event.entityPlayer, ChatOutputHandler.formatColors(exitMsg));
+            ChatOutputHandler.sendMessage(event.getEntityPlayer(), ChatOutputHandler.formatColors(exitMsg));
         }
         String entryMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, FEPermissions.ZONE_ENTRY_MESSAGE);
         if (entryMsg != null)
         {
-            ChatOutputHandler.sendMessage(event.entityPlayer, ChatOutputHandler.formatColors(entryMsg));
+            ChatOutputHandler.sendMessage(event.getEntityPlayer(), ChatOutputHandler.formatColors(entryMsg));
         }
     }
 
@@ -660,12 +670,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         rootZone.setGroupPermissionProperty(Zone.GROUP_OPERATORS, permissionNode, defaultValue);
     }
 
-    @Override
-    public void registerPermission(String permissionNode, PermissionLevel permLevel)
+    @Deprecated
+    public void registerPermission(String permissionNode, DefaultPermissionLevel permLevel)
     {
-        if (permLevel == PermissionLevel.FALSE)
+        if (permLevel == DefaultPermissionLevel.NONE)
             rootZone.setGroupPermission(Zone.GROUP_DEFAULT, permissionNode, false);
-        else if (permLevel == PermissionLevel.TRUE)
+        else if (permLevel == DefaultPermissionLevel.ALL)
             rootZone.setGroupPermission(Zone.GROUP_DEFAULT, permissionNode, true);
         else
         {
@@ -681,7 +691,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     }
 
     @Override
-    public void registerPermission(String permissionNode, PermissionLevel level, String description)
+    public void registerPermission(String permissionNode, DefaultPermissionLevel level, String description)
+    {
+        registerPermission(permissionNode, level);
+        registerPermissionDescription(permissionNode, description);
+    }
+
+    @Override
+    public void registerNode(String permissionNode, DefaultPermissionLevel level, String description)
     {
         registerPermission(permissionNode, level);
         registerPermissionDescription(permissionNode, description);
@@ -736,41 +753,47 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     // ------------------------------------------------------------
 
     @Override
-    public boolean checkPermission(PermissionContext context, String permissionNode)
+    public boolean hasPermission(GameProfile player, String permissionNode, @Nullable IContext context)
     {
-        if (context.isConsole())
-            return true;
-
-        EntityPlayer player = context.getPlayer();
-        UserIdent ident = player == null ? null : UserIdent.get(player);
-        int dim = context.getDimension();
+        UserIdent ident = player == null ? null : UserIdent.get(player.getId());
+        World w = context != null ? context.getWorld() : null;
+        int dim = w != null ? w.provider.getDimension() : 0;
         WorldPoint loc = null;
         WorldArea area = null;
 
-        if (context.getSender() instanceof DoAsCommandSender)
-            ident = ((DoAsCommandSender) context.getSender()).getUserIdent();
-        else if (context.getSender() instanceof CommandBlockLogic)
-            ident = APIRegistry.IDENT_CMDBLOCK;
-        else if (context.getSender() instanceof RConConsoleSource)
-            ident = APIRegistry.IDENT_RCON;
+        if (context != null)
+        {
+            if (context instanceof AreaContext)
+            {
+                AxisAlignedBB areac = context.get(ContextKeys.AREA);
 
-        if (context.getTargetLocationStart() != null)
-        {
-            if (context.getTargetLocationEnd() != null)
-                area = new WorldArea(dim, new Point(context.getTargetLocationStart()), new Point(context.getTargetLocationEnd()));
-            else
-                loc = new WorldPoint(dim, context.getTargetLocationStart());
+                if (areac != null)
+                {
+                    area = new WorldArea(dim, new Point(areac.minX, areac.minY, areac.minZ), new Point(areac.maxX, areac.maxY, areac.maxZ));
+                }
+            }
+            else if (context instanceof BlockPosContext)
+            {
+                BlockPos pos = context.get(ContextKeys.POS);
+                loc = new WorldPoint(dim, pos);
+            }
         }
-        else if (context.getSourceLocationStart() != null)
-        {
-            if (context.getSourceLocationEnd() != null)
-                area = new WorldArea(dim, new Point(context.getSourceLocationStart()), new Point(context.getSourceLocationEnd()));
-            else
-                loc = new WorldPoint(dim, context.getSourceLocationStart());
-        }
+
 
         SortedSet<GroupEntry> groups = getPlayerGroups(ident);
         return checkBooleanPermission(getPermission(ident, loc, area, GroupEntry.toList(groups), permissionNode, false));
+    }
+
+    @Override
+    public Collection<String> getRegisteredNodes()
+    {
+        return getRegisteredPermissions().toList();
+    }
+
+    @Override
+    public String getNodeDescription(String node)
+    {
+        return getPermissionDescription(node);
     }
 
     // ------------------------------------------------------------

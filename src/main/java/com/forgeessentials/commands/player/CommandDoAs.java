@@ -3,11 +3,14 @@ package com.forgeessentials.commands.player;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,10 +24,9 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 public class CommandDoAs extends ForgeEssentialsCommandBase
 {
+
     @Override
     public String getCommandName()
     {
@@ -45,9 +47,9 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -59,11 +61,11 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        PermissionManager.registerPermission("fe.commands.doas.console", PermissionLevel.OP);
+        PermissionAPI.registerNode("fe.commands.doas.console", DefaultPermissionLevel.OP, "Use /doas as the console");
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -73,7 +75,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
         if ((sender instanceof EntityPlayerMP) && args[0].equalsIgnoreCase("[CONSOLE]"))
         {
             EntityPlayerMP player = (EntityPlayerMP) sender;
-            if (!PermissionManager.checkPermission(player, "fe.commands.doas.console"))
+            if (!PermissionAPI.hasPermission(player, "fe.commands.doas.console"))
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
             if (args.length < 2)
@@ -81,7 +83,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
 
             args = Arrays.copyOfRange(args, 1, args.length);
             String cmd = StringUtils.join(args, " ");
-            MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), cmd);
+            server.getCommandManager().executeCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), cmd);
         }
 
         StringBuilder cmd = new StringBuilder(args.toString().length());
@@ -93,7 +95,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player != null)
         {
-            ChatOutputHandler.chatWarning(player, Translator.format("Player %s is attempting to issue a command as you.", sender.getCommandSenderName()));
+            ChatOutputHandler.chatWarning(player, Translator.format("Player %s is attempting to issue a command as you.", sender.getName()));
             FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(player, cmd.toString());
             ChatOutputHandler.chatConfirmation(sender, Translator.format("Successfully issued command as %s", args[0]));
         }
@@ -102,7 +104,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

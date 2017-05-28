@@ -7,16 +7,17 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ContainerCheatyWorkbench extends ContainerWorkbench
 {
     private World worldObj;
 
-    public ContainerCheatyWorkbench(InventoryPlayer par1InventoryPlayer, World par2World)
+    public ContainerCheatyWorkbench(InventoryPlayer playerInventory, World world)
     {
-        super(par1InventoryPlayer, par2World, 0, 0, 0);
-        worldObj = par2World;
+        super(playerInventory, world, BlockPos.ORIGIN);
+        worldObj = world;
     }
 
     /**
@@ -40,11 +41,11 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
         {
             for (int var2 = 0; var2 < 9; ++var2)
             {
-                ItemStack var3 = craftMatrix.getStackInSlotOnClosing(var2);
+                ItemStack var3 = craftMatrix.removeStackFromSlot(var2);
 
                 if (var3 != null)
                 {
-                    par1EntityPlayer.dropPlayerItemWithRandomChoice(var3, true);
+                    par1EntityPlayer.dropItem(var3, true);
                 }
             }
         }
@@ -63,7 +64,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
     {
         ItemStack var3 = null;
-        Slot var4 = (Slot) inventorySlots.get(par2);
+        Slot var4 = inventorySlots.get(par2);
 
         if (var4 != null && var4.getHasStack())
         {

@@ -1,10 +1,12 @@
 package com.forgeessentials.chat.command;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.IChatComponent;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -32,9 +34,9 @@ public class CommandIrc extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class CommandIrc extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (!IrcHandler.getInstance().isConnected())
             throw new TranslatedCommandException("Not connected to IRC!");
@@ -54,7 +56,7 @@ public class CommandIrc extends ForgeEssentialsCommandBase
         }
         else
         {
-            IChatComponent message = func_147176_a(sender, args, 0, !(sender instanceof EntityPlayer));
+            ITextComponent message = getChatComponentFromNthArg(sender, args, 0, !(sender instanceof EntityPlayer));
             IrcHandler.getInstance().sendPlayerMessage(sender, message);
         }
     }

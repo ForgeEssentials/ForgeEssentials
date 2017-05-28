@@ -1,17 +1,32 @@
 package com.forgeessentials.commands.item;
 
+import java.lang.ref.WeakReference;
+
+import net.minecraft.block.BlockWorkbench;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S2DPacketOpenWindow;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.commands.util.ContainerCheatyWorkbench;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 
 public class CommandCraft extends ForgeEssentialsCommandBase
 {
-    
+
+    protected WeakReference<EntityPlayer> lastPlayer = new WeakReference<>(null);
+
+    public CommandCraft()
+    {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
     @Override
     public String getCommandName()
     {
@@ -37,9 +52,9 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -48,20 +63,21 @@ public class CommandCraft extends ForgeEssentialsCommandBase
         return ModuleCommands.PERM + ".craft";
     }
 
-    @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    @SubscribeEvent
+    public void playerOpenContainerEvent(PlayerContainerEvent.Open event)
     {
-        EntityPlayerMP player = sender;
-        player.getNextWindowId();
-        player.playerNetServerHandler.sendPacket(new S2DPacketOpenWindow(player.currentWindowId, 1, "Crafting", 9, true));
-        player.openContainer = new ContainerCheatyWorkbench(player.inventory, player.worldObj);
-        player.openContainer.windowId = player.currentWindowId;
-        player.openContainer.addCraftingToCrafters(player);
+        if (event.getContainer().canInteractWith(event.getEntityPlayer()) == false && lastPlayer.get() == event.getEntityPlayer())
+        {
+            event.setResult(Result.ALLOW);
+        }
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
+        EntityPlayerMP player = sender;
+        player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.worldObj, player.getPosition()));
+        lastPlayer = new WeakReference<>(player);
     }
 
 }

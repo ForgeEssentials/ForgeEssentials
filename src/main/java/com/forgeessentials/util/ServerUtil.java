@@ -18,6 +18,7 @@ import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -27,17 +28,17 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Throwables;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.GameData;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public abstract class ServerUtil
 {
@@ -105,7 +106,7 @@ public abstract class ServerUtil
         }
     }
 
-    public static double parseYLocation(ICommandSender sender, double relative, String value)
+    public static double parseYLocation(ICommandSender sender, double relative, String value) throws CommandException
     {
         boolean isRelative = value.startsWith("~");
         if (isRelative && Double.isNaN(relative))
@@ -115,7 +116,7 @@ public abstract class ServerUtil
         {
             if (isRelative)
                 value = value.substring(1);
-            d1 += CommandBase.parseDouble(sender, value);
+            d1 += CommandBase.parseDouble(value);
         }
         return d1;
     }
@@ -240,9 +241,9 @@ public abstract class ServerUtil
     public static File getWorldPath()
     {
         if (Environment.isClient())
-            return new File(MinecraftServer.getServer().getFile("saves"), MinecraftServer.getServer().getFolderName());
+            return new File(FMLCommonHandler.instance().getMinecraftServerInstance().getFile("saves"), FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
         else
-            return MinecraftServer.getServer().getFile(MinecraftServer.getServer().getFolderName());
+            return FMLCommonHandler.instance().getMinecraftServerInstance().getFile(FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
     }
 
     /* ------------------------------------------------------------ */
@@ -255,8 +256,8 @@ public abstract class ServerUtil
     @SuppressWarnings("unchecked")
     public static List<EntityPlayerMP> getPlayerList()
     {
-        MinecraftServer mc = MinecraftServer.getServer();
-        return mc == null || mc.getConfigurationManager() == null ? new ArrayList<>() : mc.getConfigurationManager().playerEntityList;
+        MinecraftServer mc = FMLCommonHandler.instance().getMinecraftServerInstance();
+        return mc == null || mc.getPlayerList() == null ? new ArrayList<>() : mc.getPlayerList().getPlayerList();
     }
 
     /**
@@ -299,17 +300,17 @@ public abstract class ServerUtil
 
     public static WorldServer getOverworld()
     {
-        return MinecraftServer.getServer().worldServers[0];
+        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
     }
 
     public static long getOverworldTime()
     {
-        return MinecraftServer.getServer().worldServers[0].getWorldInfo().getWorldTime();
+        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].getWorldInfo().getWorldTime();
     }
 
     public static boolean isServerRunning()
     {
-        return MinecraftServer.getServer() != null && MinecraftServer.getServer().isServerRunning();
+        return FMLCommonHandler.instance().getMinecraftServerInstance() != null && FMLCommonHandler.instance().getMinecraftServerInstance().isServerRunning();
     }
     
     public static boolean isOnlineMode()
@@ -345,11 +346,11 @@ public abstract class ServerUtil
     public static void copyNbt(NBTTagCompound nbt, NBTTagCompound data)
     {
         // Clear old data
-        for (String key : new HashSet<String>(nbt.func_150296_c()))
+        for (String key : new HashSet<String>(nbt.getKeySet()))
             nbt.removeTag(key);
     
         // Write new data
-        for (String key : (Set<String>) data.func_150296_c())
+        for (String key : (Set<String>) data.getKeySet())
             nbt.setTag(key, data.getTag(key));
     }
 
@@ -362,17 +363,25 @@ public abstract class ServerUtil
 
     public static String getItemPermission(Item item)
     {
-        return GameData.getItemRegistry().getNameForObject(item).replace(':', '.').replace(' ', '_');
+        ResourceLocation loc = (ResourceLocation) GameData.getItemRegistry().getNameForObject(item);
+        return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
     }
 
     public static String getBlockName(Block block)
     {
-        return GameData.getBlockRegistry().getNameForObject(block);
+        Object o = GameData.getBlockRegistry().getNameForObject(block);
+        if(o instanceof ResourceLocation){
+            ResourceLocation rl = (ResourceLocation) o;
+            return rl.getResourcePath();
+        } else {
+            return (String) o;
+        }
     }
 
     public static String getBlockPermission(Block block)
     {
-        return GameData.getBlockRegistry().getNameForObject(block).replace(':', '.').replace(' ', '_');
+        ResourceLocation loc = (ResourceLocation) GameData.getBlockRegistry().getNameForObject(block);
+        return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
     }
 
     /* ------------------------------------------------------------ */
@@ -381,7 +390,7 @@ public abstract class ServerUtil
     {
         try
         {
-            CommandHandler commandHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+            CommandHandler commandHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
             Map<String, ICommand> commandMap = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, "commandMap", "a", "field_71562_a");
             Set<ICommand> commandSet = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, CommandSetChecker.FIELDNAME);
             for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();)
@@ -408,7 +417,7 @@ public abstract class ServerUtil
     {
         try
         {
-            CommandHandler commandHandler = (CommandHandler) MinecraftServer.getServer().getCommandManager();
+            CommandHandler commandHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
             Map<String, ICommand> commandMap = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, "commandMap", "a", "field_71562_a");
             Set<ICommand> commandSet = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, CommandSetChecker.FIELDNAME);
             for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();)
@@ -433,7 +442,7 @@ public abstract class ServerUtil
 
     public static void replaceCommand(String command, ICommand newCommand)
     {
-        ICommand oldCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(command);
+        ICommand oldCommand = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(command);
         if (oldCommand != null)
             replaceCommand(oldCommand, newCommand);
         else

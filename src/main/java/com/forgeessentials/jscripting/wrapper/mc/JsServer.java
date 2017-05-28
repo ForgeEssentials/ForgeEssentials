@@ -8,6 +8,8 @@ import javax.script.ScriptException;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.util.math.AxisAlignedBB;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,7 +35,7 @@ public class JsServer
 
     public JsICommandSender getServer()
     {
-        MinecraftServer srv = MinecraftServer.getServer();
+        MinecraftServer srv = FMLCommonHandler.instance().getMinecraftServerInstance();
         if (server == null || server.getThat() != srv)
             server = JsICommandSender.get(srv);
         return server;
@@ -64,7 +66,7 @@ public class JsServer
         if (sender == null)
             sender = server;
 
-        ICommand mcCommand = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(cmd);
+        ICommand mcCommand = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(cmd);
         if (mcCommand == null)
         {
             script.chatError("Command \"" + cmd + "\" not found");
@@ -81,7 +83,7 @@ public class JsServer
 
         try
         {
-            mcCommand.processCommand(sender.getThat(), strArgs);
+            mcCommand.execute(FMLCommonHandler.instance().getMinecraftServerInstance(), sender.getThat(), strArgs);
         }
         catch (CommandException e)
         {
@@ -162,7 +164,7 @@ public class JsServer
      */
     public int getCurrentPlayerCount()
     {
-        MinecraftServer server = MinecraftServer.getServer();
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         return server == null ? 0 : server.getCurrentPlayerCount();
     }
 

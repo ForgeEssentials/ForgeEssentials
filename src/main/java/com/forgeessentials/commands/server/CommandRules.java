@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,10 +23,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
@@ -162,9 +165,9 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -176,11 +179,11 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".edit", PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".edit", DefaultPermissionLevel.OP, "Edit rules");
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -199,7 +202,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
 
             for (int i = 0; i < rules.size(); i++)
             {
-                map.put(EnumChatFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n", EnumChatFormatting.RESET + ChatOutputHandler.formatColors(rules.get(i)));
+                map.put(TextFormatting.UNDERLINE + "Rule #" + (i + 1) + "\n\n", TextFormatting.RESET + ChatOutputHandler.formatColors(rules.get(i)));
             }
 
             SortedSet<String> keys = new TreeSet<>(map.keySet());
@@ -212,7 +215,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             tag.setString("title", "Rule Book");
             tag.setTag("pages", pages);
 
-            ItemStack is = new ItemStack(Items.written_book);
+            ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
             is.setTagCompound(tag);
             sender.inventory.addItemStackToInventory(is);
             return;
@@ -223,7 +226,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             if (args[0].equalsIgnoreCase("help"))
             {
                 ChatOutputHandler.chatNotification(sender, " - /rules [#]");
-                if (PermissionManager.checkPermission(sender, getPermissionNode() + ".edit"))
+                if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".edit"))
                 {
                     ChatOutputHandler.chatNotification(sender, " - /rules &lt;#> [changedRule]");
                     ChatOutputHandler.chatNotification(sender, " - /rules add &lt;newRule>");
@@ -233,11 +236,11 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
                 return;
             }
 
-            ChatOutputHandler.chatNotification(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            ChatOutputHandler.chatNotification(sender, rules.get(parseInt(args[0], 1, rules.size()) - 1));
             return;
         }
 
-        if (!PermissionManager.checkPermission(sender, getPermissionNode() + ".edit"))
+        if (!PermissionAPI.hasPermission(sender, getPermissionNode() + ".edit"))
             throw new TranslatedCommandException(
                     "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
 
@@ -245,7 +248,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
 
         if (args[0].equalsIgnoreCase("remove"))
         {
-            index = parseIntBounded(sender, args[1], 1, rules.size());
+            index = parseInt(args[1], 1, rules.size());
 
             rules.remove(index - 1);
             ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
@@ -263,12 +266,11 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         }
         else if (args[0].equalsIgnoreCase("move"))
         {
-            index = parseIntBounded(sender, args[1], 1, rules.size());
+            index = parseInt(args[1], 1, rules.size());
 
             String temp = rules.remove(index - 1);
 
-            index = parseIntWithMin(sender, args[2], 1);
-
+            index = parseInt(args[2], 1, Integer.MAX_VALUE);
             if (index < rules.size())
             {
                 rules.add(index - 1, temp);
@@ -282,7 +284,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         }
         else if (args[0].equalsIgnoreCase("change"))
         {
-            index = parseIntBounded(sender, args[1], 1, rules.size());
+            index = parseInt(args[1], 1, rules.size());
 
             String newRule = "";
             for (int i = 2; i < args.length; i++)
@@ -299,7 +301,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -321,7 +323,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
 
             }
 
-            ChatOutputHandler.sendMessage(sender, rules.get(parseIntBounded(sender, args[0], 1, rules.size()) - 1));
+            ChatOutputHandler.sendMessage(sender, rules.get(parseInt(args[0], 1, rules.size()) - 1));
             return;
         }
 
@@ -329,7 +331,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
 
         if (args[0].equalsIgnoreCase("remove"))
         {
-            index = parseIntBounded(sender, args[1], 1, rules.size());
+            index = parseInt(args[1], 1, rules.size());
 
             rules.remove(index - 1);
             ChatOutputHandler.chatConfirmation(sender, Translator.format("Rule # %s removed", args[1]));
@@ -347,12 +349,11 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         }
         else if (args[0].equalsIgnoreCase("move"))
         {
-            index = parseIntBounded(sender, args[1], 1, rules.size());
+            index = parseInt(args[1], 1, rules.size());
 
             String temp = rules.remove(index - 1);
 
-            index = parseIntWithMin(sender, args[2], 1);
-
+            index = parseInt(args[2], 1, Integer.MAX_VALUE);
             if (index < rules.size())
             {
                 rules.add(index - 1, temp);
@@ -366,7 +367,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         }
         else if (args[0].equalsIgnoreCase("change"))
         {
-            index = parseIntBounded(sender, args[1], 1, rules.size());
+            index = parseInt(args[1], 1, rules.size());
 
             String newRule = "";
             for (int i = 2; i < args.length; i++)
@@ -385,7 +386,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

@@ -5,16 +5,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Iterator;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 
 public class Questioner extends ServerEventHandler
 {
@@ -94,7 +94,7 @@ public class Questioner extends ServerEventHandler
         }
     }
 
-    public static synchronized void answer(ICommandSender target, Boolean answer)
+    public static synchronized void answer(ICommandSender target, Boolean answer) throws CommandException
     {
         QuestionData question = questions.remove(target);
         if (question != null)
@@ -110,22 +110,25 @@ public class Questioner extends ServerEventHandler
             Entry<ICommandSender, QuestionData> question = it.next();
             if (question.getValue().isTimeout()) {
 				it.remove();
-				question.getValue().doAnswer(null);
+				try{
+                    question.getValue().doAnswer(null);
+                } catch (CommandException e){}
+
             }
         }
     }
 
-    public static void cancel(ICommandSender target)
+    public static void cancel(ICommandSender target) throws CommandException
     {
         answer(target, null);
     }
 
-    public static void confirm(ICommandSender target)
+    public static void confirm(ICommandSender target) throws CommandException
     {
         answer(target, true);
     }
 
-    public static void deny(ICommandSender target)
+    public static void deny(ICommandSender target) throws CommandException
     {
         answer(target, false);
     }

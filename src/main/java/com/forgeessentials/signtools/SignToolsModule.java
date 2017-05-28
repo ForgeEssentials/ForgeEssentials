@@ -4,25 +4,23 @@ import net.minecraft.init.Items;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.fe.event.world.SignEditEvent;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
-
-import org.apache.commons.lang3.StringUtils;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "SignTools", parentMod = ForgeEssentials.class)
 public class SignToolsModule extends ConfigLoaderBase
@@ -42,7 +40,7 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void registerPerms(FEModuleServerInitEvent e)
     {
-        PermissionManager.registerPermission(COLORIZE_PERM, PermissionLevel.TRUE);
+        PermissionAPI.registerNode(COLORIZE_PERM, DefaultPermissionLevel.ALL, "Permission to colourize signs");
     }
 
     /**
@@ -53,7 +51,7 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void onSignEdit(SignEditEvent e)
     {
-        if (!PermissionManager.checkPermission(e.editor, COLORIZE_PERM))
+        if (!PermissionAPI.hasPermission(e.editor, COLORIZE_PERM))
         {
             return;
         }
@@ -63,12 +61,12 @@ public class SignToolsModule extends ConfigLoaderBase
             {
                 if (e.text[i].contains("&"))
                 {
-                    e.text[i] = ChatOutputHandler.formatColors(e.text[i]);
+                    TextComponentString text = new TextComponentString(ChatOutputHandler.formatColors(e.text[i]));
+                    ChatOutputHandler.applyFormatting(text.getStyle(), ChatOutputHandler.enumChatFormattings("0123456789AaBbCcDdEeFfKkLlMmNnOoRr"));
+                    e.formatted[i] = text;
                 }
             }
-
         }
-
     }
 
     /**
@@ -77,45 +75,45 @@ public class SignToolsModule extends ConfigLoaderBase
      */
 
     @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent e)
+    public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event)
     {
-        if (!allowSignCommands || !e.action.equals(Action.RIGHT_CLICK_BLOCK))
+        if (!allowSignCommands)
         {
             return;
         }
 
-        TileEntity te = e.entityPlayer.worldObj.getTileEntity(e.x, e.y, e.z);
+        TileEntity te = event.getEntityPlayer().worldObj.getTileEntity(event.getPos());
         if (te != null && te instanceof TileEntitySign)
         {
-            if (allowSignEdit && e.entityPlayer.isSneaking())
+            if (allowSignEdit && event.getEntityPlayer().isSneaking())
             {
-                if(e.entityPlayer.getCurrentEquippedItem()!= null)
+                if(event.getEntityPlayer().getHeldItemMainhand()!= null)
                 {
-                    if (e.entityPlayer.getCurrentEquippedItem().getItem().equals(Items.sign) &&
-                            PermissionManager.checkPermission(e.entityPlayer, "fe.protection.use.minecraft.sign"))
+                    if (event.getEntityPlayer().getHeldItemMainhand().getItem().equals(Items.SIGN) &&
+                            PermissionAPI.hasPermission(event.getEntityPlayer(), "fe.protection.use.minecraft.sign"))
                     {
-                        e.entityPlayer.func_146100_a(te);
-                        e.setCanceled(true);
+                        event.getEntityPlayer().openEditSign((TileEntitySign) te);
+                        event.setCanceled(true);
                     }
                 }
 
             }
 
-            String[] signText = ((TileEntitySign) te).signText;
-            if (!signText[0].equals("[command]"))
+            ITextComponent[] signText = ((TileEntitySign) te).signText;
+            if (!signText[0].getUnformattedText().equals("[command]"))
             {
                 return;
             }
 
-            else
-            {
-                String send = StringUtils.join(ServerUtil.dropFirst(signText), " ");
-                if (send != null)
+                else
                 {
-                    MinecraftServer.getServer().getCommandManager().executeCommand(e.entityPlayer, send);
-                    e.setCanceled(true);
+                    String send = signText[1].getUnformattedText() + " " + signText[2].getUnformattedText() + " " + signText[3].getUnformattedText();
+                    if (send != null && FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager() != null)
+                    {
+                        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), send);
+                        event.setCanceled(true);
+                    }
                 }
-            }
 
         }
 

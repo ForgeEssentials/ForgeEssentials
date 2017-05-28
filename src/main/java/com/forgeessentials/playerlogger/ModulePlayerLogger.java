@@ -3,7 +3,6 @@ package com.forgeessentials.playerlogger;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
@@ -21,7 +20,8 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class)
 public class ModulePlayerLogger
@@ -111,8 +111,8 @@ public class ModulePlayerLogger
 
     private void registerPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM, PermissionLevel.OP, "Player logger permisssions");
-        APIRegistry.perms.registerPermission(PERM_WAND, PermissionLevel.OP, "Allow usage of player loggger wand (clock)");
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Player logger permisssions");
+        APIRegistry.perms.registerPermission(PERM_WAND, DefaultPermissionLevel.OP, "Allow usage of player loggger wand (clock)");
     }
 
     @SubscribeEvent

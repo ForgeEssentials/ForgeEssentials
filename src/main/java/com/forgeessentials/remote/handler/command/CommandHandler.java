@@ -6,8 +6,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
@@ -15,6 +15,7 @@ import com.forgeessentials.api.remote.GenericRemoteHandler;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
+import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.remote.RemoteCommandSender;
 import com.forgeessentials.remote.RemoteMessageID;
@@ -28,7 +29,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
     public CommandHandler()
     {
         super(PERM, String.class);
-        APIRegistry.perms.registerPermission(PERM, PermissionLevel.TRUE, "Allows to run commands remotely");
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.ALL, "Allows to run commands remotely");
     }
 
     @Override
@@ -41,7 +42,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
         String commandName = cmdLine[0];
         final String[] args = Arrays.copyOfRange(cmdLine, 1, cmdLine.length);
 
-        final ICommand command = (ICommand) MinecraftServer.getServer().getCommandManager().getCommands().get(commandName);
+        final ICommand command = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(commandName);
         if (command == null)
             error(String.format("Command \"/%s\" not found", commandName));
 
@@ -58,7 +59,7 @@ public class CommandHandler extends GenericRemoteHandler<String>
                         sender = session.getUserIdent().getPlayer();
                     else
                         sender = RemoteCommandSender.get(session);
-                    command.processCommand(sender, args);
+                    command.execute(FMLCommonHandler.instance().getMinecraftServerInstance(), sender, args);
                     session.trySendMessage(RemoteResponse.success(request));
                 }
                 catch (CommandException e)

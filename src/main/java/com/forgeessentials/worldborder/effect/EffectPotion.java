@@ -1,13 +1,14 @@
 package com.forgeessentials.worldborder.effect;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 
@@ -64,7 +65,7 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
     public void activate(WorldBorder border, EntityPlayerMP player)
     {
         if (interval <= 0)
-            player.addPotionEffect(new PotionEffect(id, duration, modifier));
+            player.addPotionEffect(new PotionEffect(Potion.getPotionById(id), duration, modifier));
     }
 
     @Override
@@ -75,7 +76,7 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.addPotionEffect(new PotionEffect(id, duration, modifier));
+            player.addPotionEffect(new PotionEffect(Potion.getPotionById(id), duration, modifier));
             pi.startTimeout(this.getClass().getName(), interval * 1000);
         }
     }

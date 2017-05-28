@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import com.forgeessentials.api.APIRegistry;
@@ -19,8 +20,6 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class ItemPermissionManager extends ServerEventHandler implements ConfigLoader
 {

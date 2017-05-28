@@ -1,6 +1,6 @@
 package com.forgeessentials.jscripting.wrapper;
 
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 /**
  * tsd.static Color // not needed because this class is already registered on root level
@@ -9,27 +9,27 @@ public class JsFormat
 {
 
     public static String FORMAT_CHAR = "\u00a7";
-    public static String BLACK = EnumChatFormatting.BLACK.toString();
-    public static String DARK_BLUE = EnumChatFormatting.DARK_BLUE.toString();
-    public static String DARK_GREEN = EnumChatFormatting.DARK_GREEN.toString();
-    public static String DARK_AQUA = EnumChatFormatting.DARK_AQUA.toString();
-    public static String DARK_RED = EnumChatFormatting.DARK_RED.toString();
-    public static String DARK_PURPLE = EnumChatFormatting.DARK_PURPLE.toString();
-    public static String GOLD = EnumChatFormatting.GOLD.toString();
-    public static String GRAY = EnumChatFormatting.GRAY.toString();
-    public static String DARK_GRAY = EnumChatFormatting.DARK_GRAY.toString();
-    public static String BLUE = EnumChatFormatting.BLUE.toString();
-    public static String GREEN = EnumChatFormatting.GREEN.toString();
-    public static String AQUA = EnumChatFormatting.AQUA.toString();
-    public static String RED = EnumChatFormatting.RED.toString();
-    public static String LIGHT_PURPLE = EnumChatFormatting.LIGHT_PURPLE.toString();
-    public static String YELLOW = EnumChatFormatting.YELLOW.toString();
-    public static String WHITE = EnumChatFormatting.WHITE.toString();
-    public static String OBFUSCATED = EnumChatFormatting.OBFUSCATED.toString();
-    public static String BOLD = EnumChatFormatting.BOLD.toString();
-    public static String STRIKETHROUGH = EnumChatFormatting.STRIKETHROUGH.toString();
-    public static String UNDERLINE = EnumChatFormatting.UNDERLINE.toString();
-    public static String ITALIC = EnumChatFormatting.ITALIC.toString();
-    public static String RESET = EnumChatFormatting.RESET.toString();
+    public static String BLACK = TextFormatting.BLACK.toString();
+    public static String DARK_BLUE = TextFormatting.DARK_BLUE.toString();
+    public static String DARK_GREEN = TextFormatting.DARK_GREEN.toString();
+    public static String DARK_AQUA = TextFormatting.DARK_AQUA.toString();
+    public static String DARK_RED = TextFormatting.DARK_RED.toString();
+    public static String DARK_PURPLE = TextFormatting.DARK_PURPLE.toString();
+    public static String GOLD = TextFormatting.GOLD.toString();
+    public static String GRAY = TextFormatting.GRAY.toString();
+    public static String DARK_GRAY = TextFormatting.DARK_GRAY.toString();
+    public static String BLUE = TextFormatting.BLUE.toString();
+    public static String GREEN = TextFormatting.GREEN.toString();
+    public static String AQUA = TextFormatting.AQUA.toString();
+    public static String RED = TextFormatting.RED.toString();
+    public static String LIGHT_PURPLE = TextFormatting.LIGHT_PURPLE.toString();
+    public static String YELLOW = TextFormatting.YELLOW.toString();
+    public static String WHITE = TextFormatting.WHITE.toString();
+    public static String OBFUSCATED = TextFormatting.OBFUSCATED.toString();
+    public static String BOLD = TextFormatting.BOLD.toString();
+    public static String STRIKETHROUGH = TextFormatting.STRIKETHROUGH.toString();
+    public static String UNDERLINE = TextFormatting.UNDERLINE.toString();
+    public static String ITALIC = TextFormatting.ITALIC.toString();
+    public static String RESET = TextFormatting.RESET.toString();
 
 }

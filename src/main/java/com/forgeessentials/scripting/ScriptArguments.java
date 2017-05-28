@@ -16,7 +16,8 @@ import java.util.regex.Pattern;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -37,6 +38,8 @@ public final class ScriptArguments
 {
 
     private static Map<String, ScriptArgument> scriptArguments = new HashMap<>();
+
+    private static final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 
     public static void add(String name, ScriptArgument argument)
     {
@@ -154,7 +157,7 @@ public final class ScriptArguments
         {
             if (sender == null)
                 throw new MissingPlayerException();
-            return sender.getCommandSenderName();
+            return sender.getName();
         }
 
         @Override
@@ -170,7 +173,7 @@ public final class ScriptArguments
         {
             if (sender == null)
                 throw new MissingPlayerException();
-            return sender.getCommandSenderName();
+            return sender.getName();
         }
 
         @Override
@@ -314,9 +317,9 @@ public final class ScriptArguments
         {
             if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
-            if (((EntityPlayerMP) sender).theItemInWorldManager.getGameType().isCreative())
+            if (((EntityPlayerMP) sender).interactionManager.getGameType().isCreative())
                 return ChatConfig.gamemodeCreative;
-            if (((EntityPlayerMP) sender).theItemInWorldManager.getGameType().isAdventure())
+            if (((EntityPlayerMP) sender).interactionManager.getGameType().isAdventure())
                 return ChatConfig.gamemodeAdventure;
             return ChatConfig.gamemodeSurvival;
         }
@@ -352,10 +355,10 @@ public final class ScriptArguments
                 throw new MissingPlayerException();
             float health = ((EntityPlayerMP) sender).getHealth();
             if (health <= 6)
-                return EnumChatFormatting.RED.toString();
+                return TextFormatting.RED.toString();
             if (health < 16)
-                return EnumChatFormatting.YELLOW.toString();
-            return EnumChatFormatting.GREEN.toString();
+                return TextFormatting.YELLOW.toString();
+            return TextFormatting.GREEN.toString();
         }
 
         @Override
@@ -389,10 +392,10 @@ public final class ScriptArguments
                 throw new MissingPlayerException();
             float hunger = ((EntityPlayerMP) sender).getFoodStats().getFoodLevel();
             if (hunger <= 6)
-                return EnumChatFormatting.RED.toString();
+                return TextFormatting.RED.toString();
             if (hunger < 12)
-                return EnumChatFormatting.YELLOW.toString();
-            return EnumChatFormatting.GREEN.toString();
+                return TextFormatting.YELLOW.toString();
+            return TextFormatting.GREEN.toString();
         }
 
         @Override
@@ -426,10 +429,10 @@ public final class ScriptArguments
                 throw new MissingPlayerException();
             float hunger = ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel();
             if (hunger <= 0)
-                return EnumChatFormatting.RED.toString();
+                return TextFormatting.RED.toString();
             if (hunger <= 1.5)
-                return EnumChatFormatting.YELLOW.toString();
-            return EnumChatFormatting.GREEN.toString();
+                return TextFormatting.YELLOW.toString();
+            return TextFormatting.GREEN.toString();
         }
 
         @Override
@@ -619,7 +622,7 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            return new DecimalFormat("#").format(MinecraftServer.getServer().getEntityWorld().getWorldTime());
+            return new DecimalFormat("#").format(server.getEntityWorld().getWorldTime());
         }
 
         @Override
@@ -636,7 +639,7 @@ public final class ScriptArguments
             try
             {
                 FEConfig.FORMAT_TIME.setTimeZone(TimeZone.getTimeZone("US"));
-                long ticks = MinecraftServer.getServer().getEntityWorld().getWorldTime();
+                long ticks = server.getEntityWorld().getWorldTime();
                 Date time = new Date(ticks * 1000 * 60 * 60 * 24 / 24000 + 1000 * 60 * 60 * 6);
                 return FEConfig.FORMAT_TIME.format(time);
             }
@@ -657,7 +660,7 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            return new DecimalFormat("#").format(MinecraftServer.getServer().getEntityWorld().getTotalWorldTime());
+            return new DecimalFormat("#").format(server.getEntityWorld().getTotalWorldTime());
         }
 
         @Override
@@ -689,7 +692,7 @@ public final class ScriptArguments
             int online = 0;
             try
             {
-                online = MinecraftServer.getServer().getCurrentPlayerCount();
+                online = server.getCurrentPlayerCount();
             }
             catch (Exception e)
             {

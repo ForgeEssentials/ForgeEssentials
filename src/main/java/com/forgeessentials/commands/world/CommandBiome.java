@@ -1,8 +1,10 @@
 package com.forgeessentials.commands.world;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
@@ -38,9 +40,9 @@ public class CommandBiome extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -50,7 +52,7 @@ public class CommandBiome extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         int x = (int) Math.floor(arguments.senderPlayer.posX);
         int z = (int) Math.floor(arguments.senderPlayer.posZ);
@@ -58,8 +60,8 @@ public class CommandBiome extends ParserCommandBase
         {
             if (arguments.isTabCompletion)
                 return;
-            BiomeGenBase biome = arguments.senderPlayer.worldObj.getBiomeGenForCoords(x, z);
-            arguments.confirm("Current biome: " + biome.biomeName);
+            Biome biome = arguments.senderPlayer.worldObj.getBiomeGenForCoords(new BlockPos(x, 0, z));
+            arguments.confirm("Current biome: " + biome.getBiomeName());
             arguments.confirm("  " + biome.getClass().getName());
             arguments.notify("/febiome list: Show all registered biomes");
             return;
@@ -74,9 +76,9 @@ public class CommandBiome extends ParserCommandBase
                 return;
             arguments.confirm("Listing registered biomes:");
             boolean skip = false;
-            for (int i = 0; i < BiomeGenBase.getBiomeGenArray().length; i++)
+            while (Biome.REGISTRY.iterator().hasNext())
             {
-                BiomeGenBase biome = BiomeGenBase.getBiomeGenArray()[i];
+                Biome biome = Biome.REGISTRY.iterator().next();
                 if (biome == null)
                 {
                     skip = true;
@@ -87,7 +89,7 @@ public class CommandBiome extends ParserCommandBase
                     skip = false;
                     arguments.notify("----");
                 }
-                arguments.confirm(" #" + i + ": " + biome.biomeName);
+                arguments.confirm(" #" + Biome.REGISTRY.getIDForObject(biome) + ": " + biome.getBiomeName());
             }
             break;
         case "dict":

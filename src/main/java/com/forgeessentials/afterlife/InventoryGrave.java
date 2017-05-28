@@ -18,16 +18,16 @@ public class InventoryGrave extends InventoryBasic
     }
 
     @Override
-    public void openInventory()
+    public void openInventory(EntityPlayer player)
     {
         grave.setOpen(true);
         for (int i = 0; i < getSizeInventory(); i++)
             setInventorySlotContents(i, grave.inventory.size() > 0 ? grave.inventory.remove(0) : null);
-        super.openInventory();
+        super.openInventory(player);
     }
 
     @Override
-    public void closeInventory()
+    public void closeInventory(EntityPlayer player)
     {
         for (int i = 0; i < getSizeInventory(); i++)
         {
@@ -38,7 +38,7 @@ public class InventoryGrave extends InventoryBasic
         grave.setOpen(false);
         if (grave.inventory.isEmpty())
             grave.remove(false);
-        super.closeInventory();
+        super.closeInventory(player);
     }
 
     @Override

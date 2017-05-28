@@ -2,9 +2,13 @@ package com.forgeessentials.commands.player;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
@@ -14,11 +18,9 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 public class CommandLocate extends ForgeEssentialsCommandBase
 {
-    
+
     @Override
     public String getCommandName()
     {
@@ -38,9 +40,9 @@ public class CommandLocate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -56,7 +58,7 @@ public class CommandLocate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length != 1)
             throw new TranslatedCommandException(getCommandUsage(sender));
@@ -67,21 +69,18 @@ public class CommandLocate extends ForgeEssentialsCommandBase
 
         WorldPoint point = new WorldPoint(player);
         ChatOutputHandler.chatConfirmation(sender, Translator.format("%s is at %d, %d, %d in dim %d with gamemode %s", //
-                player.getCommandSenderName(), point.getX(), point.getY(), point.getZ(), point.getDimension(), //
-                player.theItemInWorldManager.getGameType().getName()));
+                player.getName(), point.getX(), point.getY(), point.getZ(), point.getDimension(), //
+                player.interactionManager.getGameType().getName()));
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
             return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
         }
-        else
-        {
-            throw new TranslatedCommandException(getCommandUsage(sender));
-        }
+        return null;
     }
 
 }

@@ -4,7 +4,7 @@ import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -55,9 +55,9 @@ public class CommandJScriptCommand extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return options.opOnly ? PermissionLevel.OP : PermissionLevel.TRUE;
+        return options.opOnly ? DefaultPermissionLevel.OP : DefaultPermissionLevel.ALL;
     }
 
     @Override

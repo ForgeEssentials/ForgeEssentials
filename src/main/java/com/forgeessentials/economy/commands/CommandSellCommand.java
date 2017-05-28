@@ -3,13 +3,14 @@ package com.forgeessentials.economy.commands;
 import java.util.Arrays;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,9 +45,9 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -65,7 +66,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
      * Expected structure: "/sellcommand <player> <item> <amount> <meta> <command...>"
      */
     @Override
-    public void processCommand(ICommandSender sender, String[] args)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 5)
             throw new InvalidSyntaxException(getCommandUsage(sender));
@@ -76,8 +77,8 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
             throw new PlayerNotFoundException();
 
         String itemName = args[1];
-        int amount = parseInt(sender, args[2]);
-        int meta = parseInt(sender, args[3]);
+        int amount = parseInt(args[2]);
+        int meta = parseInt(args[3]);
 
         Item item = CommandBase.getItemByText(ident.getPlayerMP(), itemName);
         ItemStack itemStack = new ItemStack(item, amount, meta);
@@ -101,7 +102,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
                 amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(UserIdent.get(player)).toString()));
 
         args = Arrays.copyOfRange(args, 4, args.length);
-        MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player), StringUtils.join(args, " "));
+        server.getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player), StringUtils.join(args, " "));
 
         for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
         {

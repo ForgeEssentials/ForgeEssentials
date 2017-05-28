@@ -45,7 +45,7 @@ public abstract class PlayerLoggerEvent<T>
 
     public PlayerData getPlayer(EntityPlayer player)
     {
-        return ModulePlayerLogger.getLogger().getPlayer(player.getPersistentID(), player.getCommandSenderName());
+        return ModulePlayerLogger.getLogger().getPlayer(player.getPersistentID(), player.getDisplayNameString());
     }
 
     public Blob getTileEntityBlob(TileEntity tileEntity)

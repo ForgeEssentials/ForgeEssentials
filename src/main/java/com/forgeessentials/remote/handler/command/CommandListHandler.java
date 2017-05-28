@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.GenericRemoteHandler;
@@ -30,7 +31,7 @@ public class CommandListHandler extends GenericRemoteHandler<String>
         List<String> commands = new ArrayList<String>();
 
         @SuppressWarnings("unchecked")
-        Set<String> cmds = MinecraftServer.getServer().getCommandManager().getCommands().keySet();
+        Set<String> cmds = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().keySet();
 
         for (String cmd : cmds)
         {

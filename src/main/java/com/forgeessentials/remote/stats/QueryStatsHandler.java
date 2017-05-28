@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.remote.FERemoteHandler;
@@ -32,7 +32,7 @@ public class QueryStatsHandler extends GenericRemoteHandler<Request>
     public QueryStatsHandler()
     {
         super(PERM, Request.class);
-        APIRegistry.perms.registerPermission(PERM, PermissionLevel.OP, "Allows querying server stats");
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows querying server stats");
 
     }
 

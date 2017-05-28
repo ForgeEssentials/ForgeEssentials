@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 
-import cpw.mods.fml.common.ICrashCallable;
+import net.minecraftforge.fml.common.ICrashCallable;
 
 /**
  * Adds FE debug info to crash reports

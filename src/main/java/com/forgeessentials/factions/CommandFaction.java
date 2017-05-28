@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -51,9 +52,9 @@ public class CommandFaction extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -69,7 +70,7 @@ public class CommandFaction extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -161,7 +162,7 @@ public class CommandFaction extends ParserCommandBase
         }
     }
 
-    public static void parseList(CommandParserArgs arguments)
+    public static void parseList(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(ModuleFactions.PERM_LIST);
         if (arguments.isTabCompletion)
@@ -171,7 +172,7 @@ public class CommandFaction extends ParserCommandBase
         throw new TranslatedCommandException("Not yet implemented");
     }
 
-    public static void parseCreate(CommandParserArgs arguments)
+    public static void parseCreate(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isTabCompletion)
             return;
@@ -197,7 +198,7 @@ public class CommandFaction extends ParserCommandBase
         arguments.confirm("Created faction [%s] \"%s\"", faction, name);
     }
 
-    public static void parseJoin(final CommandParserArgs arguments)
+    public static void parseJoin(final CommandParserArgs arguments) throws CommandException
     {
         arguments.needsPlayer();
         arguments.checkPermission(ModuleFactions.PERM_JOIN);
@@ -248,7 +249,7 @@ public class CommandFaction extends ParserCommandBase
                 try
                 {
                     Questioner.add(player, message, callback);
-                    arguments.confirm("Requested %s to accept your join request", player.getCommandSenderName());
+                    arguments.confirm("Requested %s to accept your join request", player.getDisplayNameString());
                     return;
                 }
                 catch (QuestionerStillActiveException e)
@@ -260,7 +261,7 @@ public class CommandFaction extends ParserCommandBase
         arguments.error("No player found to accept join request");
     }
 
-    public static void parseLeave(CommandParserArgs arguments, String faction)
+    public static void parseLeave(CommandParserArgs arguments, String faction) throws CommandException
     {
         if (arguments.isTabCompletion)
             return;
@@ -273,7 +274,7 @@ public class CommandFaction extends ParserCommandBase
         arguments.confirm(MSG_LEFT_FACTION, ModuleFactions.getFactionName(faction));
     }
 
-    public static void parseInvite(CommandParserArgs arguments, String faction)
+    public static void parseInvite(CommandParserArgs arguments, String faction) throws CommandException
     {
         if (faction == null)
             throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
@@ -288,7 +289,7 @@ public class CommandFaction extends ParserCommandBase
         throw new TranslatedCommandException("Not yet implemented");
     }
 
-    public static void parseAlly(CommandParserArgs arguments, String faction, boolean ally)
+    public static void parseAlly(CommandParserArgs arguments, String faction, boolean ally) throws CommandException
     {
         if (faction == null)
             throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
@@ -303,7 +304,7 @@ public class CommandFaction extends ParserCommandBase
         throw new TranslatedCommandException("Not yet implemented");
     }
 
-    public static void parseMembers(CommandParserArgs arguments, String faction)
+    public static void parseMembers(CommandParserArgs arguments, String faction) throws CommandException
     {
         if (faction == null)
             throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
@@ -323,7 +324,7 @@ public class CommandFaction extends ParserCommandBase
         throw new TranslatedCommandException("Not yet implemented");
     }
 
-    public static void parseFrindlyFire(CommandParserArgs arguments, String faction)
+    public static void parseFrindlyFire(CommandParserArgs arguments, String faction) throws CommandException
     {
         if (faction == null)
             throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
@@ -338,7 +339,7 @@ public class CommandFaction extends ParserCommandBase
         throw new TranslatedCommandException("Not yet implemented");
     }
 
-    public static void parseBonus(CommandParserArgs arguments, String faction)
+    public static void parseBonus(CommandParserArgs arguments, String faction) throws CommandException
     {
         if (faction == null)
             throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
@@ -353,7 +354,7 @@ public class CommandFaction extends ParserCommandBase
         throw new TranslatedCommandException("Not yet implemented");
     }
 
-    public static void parseDelete(final CommandParserArgs arguments, final String faction)
+    public static void parseDelete(final CommandParserArgs arguments, final String faction) throws CommandException
     {
         if (arguments.isTabCompletion)
             return;
@@ -398,7 +399,7 @@ public class CommandFaction extends ParserCommandBase
         }
     }
 
-    public static void subCommandHelp(CommandParserArgs arguments, String msg)
+    public static void subCommandHelp(CommandParserArgs arguments, String msg) throws CommandException
     {
         arguments.confirm("/faction " + msg);
         throw new CancelParsingException();

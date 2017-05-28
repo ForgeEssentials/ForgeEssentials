@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
@@ -77,12 +81,15 @@ public class Multiworld
 
     public void removeAllPlayersFromWorld()
     {
-        WorldServer overworld = MinecraftServer.getServer().worldServerForDimension(0);
+        WorldServer overworld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
         for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
             if (player.dimension == dimensionId)
             {
-                teleport(player, overworld, true);
+                BlockPos playerPos = player.getPosition();
+                int y = WorldUtil.placeInWorld(player.worldObj, playerPos.getX(), playerPos.getY(), playerPos.getZ());
+                WarpPoint point = new WarpPoint(overworld, playerPos.getX(), y, playerPos.getZ(), 0, 0);
+                TeleportHelper.doTeleport(player, point);
             }
         }
     }
@@ -103,7 +110,7 @@ public class Multiworld
 
     public WorldServer getWorldServer()
     {
-        return MinecraftServer.getServer().worldServerForDimension(dimensionId);
+        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimensionId);
     }
 
     public int getDimensionId()
@@ -196,31 +203,36 @@ public class Multiworld
 
     /**
      * Teleport the player to the multiworld
+     * @throws CommandException 
      */
-    public void teleport(EntityPlayerMP player, boolean instant)
+    public void teleport(EntityPlayerMP player, boolean instant) throws CommandException
     {
         teleport(player, getWorldServer(), instant);
     }
 
     /**
      * Teleport the player to the multiworld
+     * 
+     * @throws CommandException
      */
-    public static void teleport(EntityPlayerMP player, WorldServer world, boolean instant)
+    public static void teleport(EntityPlayerMP player, WorldServer world, boolean instant) throws CommandException
     {
         teleport(player, world, player.posX, player.posY, player.posZ, instant);
     }
 
     /**
      * Teleport the player to the multiworld
+     * 
+     * @throws CommandException
      */
-    public static void teleport(EntityPlayerMP player, WorldServer world, double x, double y, double z, boolean instant)
+    public static void teleport(EntityPlayerMP player, WorldServer world, double x, double y, double z, boolean instant) throws CommandException
     {
-        boolean worldChange = player.worldObj.provider.dimensionId != world.provider.dimensionId;
+        boolean worldChange = player.worldObj.provider.getDimension() != world.provider.getDimension();
         if (worldChange)
             displayDepartMessage(player);
 
         y = WorldUtil.placeInWorld(world, (int) x, (int) y, (int) z);
-        WarpPoint target = new WarpPoint(world.provider.dimensionId, x, y, z, player.rotationPitch, player.rotationYaw);
+        WarpPoint target = new WarpPoint(world.provider.getDimension(), x, y, z, player.rotationPitch, player.rotationYaw);
         if (instant)
             TeleportHelper.checkedTeleport(player, target);
         else

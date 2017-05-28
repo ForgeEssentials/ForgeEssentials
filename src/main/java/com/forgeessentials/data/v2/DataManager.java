@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 
 import org.apache.commons.io.FileUtils;
 
@@ -65,7 +65,7 @@ public class DataManager
         addDataType(new ItemStackType());
         addDataType(new NBTTagCompoundType());
         addDataType(new BlockType());
-        addDataType(IChatComponent.class, new IChatComponent.Serializer());
+        addDataType(ITextComponent.class, new ITextComponent.Serializer());
     }
 
     public DataManager(File basePath)

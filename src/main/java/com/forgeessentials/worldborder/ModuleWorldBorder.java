@@ -10,8 +10,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.Point;
@@ -27,9 +25,11 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.forgeessentials.worldborder.effect.EffectBlock;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 @FEModule(name = "WorldBorder", parentMod = ForgeEssentials.class)
 public class ModuleWorldBorder extends ServerEventHandler
@@ -67,7 +67,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     public void serverStartingEvent(FEModuleServerInitEvent event)
     {
         APIRegistry.perms.registerPermissionDescription(PERM, "Worldborder permissions");
-        APIRegistry.perms.registerPermission(PERM_BYPASS, PermissionLevel.FALSE, "Ignore worldborders if granted");
+        APIRegistry.perms.registerPermission(PERM_BYPASS, DefaultPermissionLevel.NONE, "Ignore worldborders if granted");
     }
 
     @SubscribeEvent
@@ -75,8 +75,8 @@ public class ModuleWorldBorder extends ServerEventHandler
     {
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
             return;
-        borders.put((WorldServer) event.world, WorldBorder.load(event.world));
-        getBorder(event.world);
+        borders.put((WorldServer) event.getWorld(), WorldBorder.load(event.getWorld()));
+        getBorder(event.getWorld());
     }
 
     @SubscribeEvent
@@ -84,7 +84,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     {
         if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
             return;
-        borders.remove(event.world);
+        borders.remove(event.getWorld());
     }
 
     @SubscribeEvent
@@ -127,14 +127,14 @@ public class ModuleWorldBorder extends ServerEventHandler
                 break;
             }
             default:
-                LoggingHandler.felog.error("Unsupported world border shape. Disabling worldborder on world " + event.after.getWorld().provider.dimensionId);
+                LoggingHandler.felog.error("Unsupported world border shape. Disabling worldborder on world " + event.after.getWorld().provider.getDimension());
                 borders.remove(event.after.getWorld());
                 return;
             }
 
             // Check which effects are active
             Set<WorldBorderEffect> newActiveEffects = new HashSet<>();
-            if (!PermissionManager.checkPermission(player, PERM_BYPASS))
+            if (!PermissionAPI.hasPermission(player, PERM_BYPASS))
             {
                 if (minBorderDistance <= 0)
                     new EffectBlock().playerMove(border, event);
@@ -198,7 +198,7 @@ public class ModuleWorldBorder extends ServerEventHandler
         WorldBorder border = borders.get(world);
         if (border == null)
         {
-            border = new WorldBorder(new Point(0, 0, 0), DEFAULT_SIZE, DEFAULT_SIZE, world.provider.dimensionId);
+            border = new WorldBorder(new Point(0, 0, 0), DEFAULT_SIZE, DEFAULT_SIZE, world.provider.getDimension());
             borders.put((WorldServer) world, border);
         }
         return border;

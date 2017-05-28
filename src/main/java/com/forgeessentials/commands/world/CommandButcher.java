@@ -5,14 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.server.CommandBlockLogic;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
@@ -50,9 +52,9 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -62,7 +64,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender par1ICommandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
@@ -72,14 +74,11 @@ public class CommandButcher extends ForgeEssentialsCommandBase
         {
             return getListOfStringsMatchingLastWord(args, typeList);
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         int radius = -1;
         double x = sender.posX;
@@ -95,7 +94,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
             if (radiusValue.equalsIgnoreCase("world"))
                 radius = -1;
             else
-                radius = parseIntWithMin(sender, radiusValue, -1);
+                radius = parseInt(radiusValue, -1, Integer.MAX_VALUE);
         }
 
         if (!argsStack.isEmpty())
@@ -104,25 +103,25 @@ public class CommandButcher extends ForgeEssentialsCommandBase
         if (!argsStack.isEmpty())
         {
             if (argsStack.size() < 3)
-                throw new TranslatedCommandException("Improper syntax: <radius> [type] [x y z] [world]");
-            x = parseDouble(sender, argsStack.remove(), sender.posX);
-            y = parseDouble(sender, argsStack.remove(), sender.posY);
-            z = parseDouble(sender, argsStack.remove(), sender.posZ);
+                throw new TranslatedCommandException("Improper syntax: <radius> [type] [x y z] [world]", Integer.MAX_VALUE);
+            x = parseDouble(argsStack.remove(), sender.posX);
+            y = parseDouble(argsStack.remove(), sender.posY);
+            z = parseDouble(argsStack.remove(), sender.posZ);
         }
 
         if (!argsStack.isEmpty())
         {
-            world = DimensionManager.getWorld(parseInt(sender, argsStack.remove()));
+            world = DimensionManager.getWorld(parseInt(argsStack.remove()));
             if (world == null)
                 throw new TranslatedCommandException("The specified dimension does not exist");
         }
 
-        AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
+        AxisAlignedBB pool = new AxisAlignedBB(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
         CommandButcherTickTask.schedule(sender, world, mobType, pool, radius);
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         int radius = -1;
         double x = 0;
@@ -139,7 +138,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
             if (radiusValue.equalsIgnoreCase("world"))
                 radius = -1;
             else
-                radius = parseIntWithMin(sender, radiusValue, 0);
+                radius = parseInt(radiusValue, 0, Integer.MAX_VALUE);
         }
 
         if (!argsStack.isEmpty())
@@ -148,21 +147,21 @@ public class CommandButcher extends ForgeEssentialsCommandBase
         if (!argsStack.isEmpty())
         {
             if (argsStack.size() < 3)
-                throw new TranslatedCommandException(getCommandUsage(sender));
-            x = parseInt(sender, argsStack.remove());
-            y = parseInt(sender, argsStack.remove());
-            z = parseInt(sender, argsStack.remove());
+                throw new TranslatedCommandException(getCommandUsage(sender), Integer.MAX_VALUE);
+            x = parseInt(argsStack.remove());
+            y = parseInt(argsStack.remove());
+            z = parseInt(argsStack.remove());
         }
         else
         {
-            if (sender instanceof CommandBlockLogic)
+            if (sender instanceof CommandBlockBaseLogic)
             {
-                CommandBlockLogic cb = (CommandBlockLogic) sender;
+                CommandBlockBaseLogic cb = (CommandBlockBaseLogic) sender;
                 world = cb.getEntityWorld();
-                ChunkCoordinates coords = cb.getPlayerCoordinates();
-                x = coords.posX;
-                y = coords.posY;
-                z = coords.posZ;
+                BlockPos coords = cb.getPosition();
+                x = coords.getX();
+                y = coords.getY();
+                z = coords.getZ();
             }
             else
                 throw new TranslatedCommandException(getCommandUsage(sender));
@@ -170,11 +169,11 @@ public class CommandButcher extends ForgeEssentialsCommandBase
 
         if (!argsStack.isEmpty())
         {
-            world = DimensionManager.getWorld(parseInt(sender, argsStack.remove()));
+            world = DimensionManager.getWorld(parseInt(argsStack.remove()));
             if (world == null)
                 throw new TranslatedCommandException("This dimension does not exist");
         }
-        AxisAlignedBB pool = AxisAlignedBB.getBoundingBox(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
+        AxisAlignedBB pool = new AxisAlignedBB(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
         CommandButcherTickTask.schedule(sender, world, mobType, pool, radius);
     }
 

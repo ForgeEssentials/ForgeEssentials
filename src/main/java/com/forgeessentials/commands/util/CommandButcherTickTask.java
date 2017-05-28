@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -19,8 +20,8 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import org.apache.commons.lang3.StringUtils;
@@ -84,7 +85,7 @@ public class CommandButcherTickTask implements TickTask
         this(sender, world, CommandButcherTickTask.ButcherMobType.valueOf(mobType.toUpperCase()), aabb, radius);
     }
 
-    public static void schedule(ICommandSender sender, World world, String mobType, AxisAlignedBB aabb, int radius)
+    public static void schedule(ICommandSender sender, World world, String mobType, AxisAlignedBB aabb, int radius) throws CommandException
     {
         try
         {
@@ -118,9 +119,9 @@ public class CommandButcherTickTask implements TickTask
         {
             for (int chunkX = minChunkX; chunkX <= maxChunkX; ++chunkX)
                 for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; ++chunkZ)
-                    if (world.getChunkProvider().chunkExists(chunkX, chunkZ))
+                    if (world.getChunkProvider().getLoadedChunk(chunkX, chunkZ) != null)
                     {
-                        List<EntityLiving> list = new LinkedList<EntityLiving>();
+                        List<EntityLiving> list = new LinkedList<>();
                         world.getChunkFromChunkCoords(chunkX, chunkZ).getEntitiesOfTypeWithinAAAB(EntityLiving.class, aabb, list, null);
                         for (EntityLiving entity : list)
                         {

@@ -1,5 +1,10 @@
 package com.forgeessentials.util;
 
+import com.forgeessentials.util.output.LoggingHandler;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+
+import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,24 +21,18 @@ import com.google.gson.stream.JsonToken;
 public class UserIdentUtils
 {
 
-    public static UUID hexStringToUUID(String s)
+    public static String reformatUUID(String s)
     {
         if (s.length() != 32)
             throw new IllegalArgumentException();
-        byte[] data = new byte[32];
-        for (int i = 0; i < 32; i++)
-        {
-            data[i] = (byte) s.charAt(i);
-        }
-        return UUID.nameUUIDFromBytes(data);
+        return s.substring(0,8) + "-" + s.substring(8,12) + "-" + s.substring(12,16) + "-" + s.substring(16,20) + "-" + s.substring(20,32);
     }
 
     public static UUID stringToUUID(String s)
     {
         if (s.length() == 32)
-            return hexStringToUUID(s);
-        else
-            return UUID.fromString(s);
+            s = reformatUUID(s);
+        return UUID.fromString(s);
 
     }
 
@@ -64,20 +63,27 @@ public class UserIdentUtils
             {
                 if (is.available() > 0 && jr.hasNext())
                 {
-                    jr.beginObject();
-                    String name = null;
+                    if (jr.peek() == JsonToken.BEGIN_ARRAY)
+                        jr.beginArray();
+                    JsonToken t = jr.peek();
+                    while (t != JsonToken.END_ARRAY && t != JsonToken.END_DOCUMENT)
+                    {
+                        jr.beginObject();
+                        String name = null;
 
-                    while (jr.hasNext())
-                        if (jr.peek() == JsonToken.NAME)
-                            name = jr.nextName();
-                        else
-                        {
-                            if (jr.peek() == JsonToken.STRING)
-                                if (name.equals(id))
-                                    return jr.nextString();
-                            name = null;
-                        }
-                    jr.endObject();
+                        while (jr.hasNext())
+                            if (jr.peek() == JsonToken.NAME)
+                                name = jr.nextName();
+                            else
+                            {
+                                if (jr.peek() == JsonToken.STRING)
+                                    if (name.equals(id))
+                                        return jr.nextString();     //This should return before the array finishes
+                                name = null;
+                            }
+                        jr.endObject();
+                    }
+                    jr.endArray();
                 }
             }
             return null;

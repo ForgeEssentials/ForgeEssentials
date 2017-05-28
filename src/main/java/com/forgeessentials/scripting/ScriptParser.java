@@ -1,5 +1,6 @@
 package com.forgeessentials.scripting;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 
 public class ScriptParser
@@ -8,7 +9,7 @@ public class ScriptParser
     public static interface ScriptMethod
     {
 
-        public boolean process(ICommandSender sender, String[] args);
+        public boolean process(ICommandSender sender, String[] args) throws CommandException;
 
         public String getHelp();
 

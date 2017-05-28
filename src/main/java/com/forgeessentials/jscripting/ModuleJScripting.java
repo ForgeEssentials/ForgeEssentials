@@ -14,6 +14,8 @@ import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.io.FileUtils;
@@ -39,7 +41,6 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false)
 public class ModuleJScripting extends ServerEventHandler implements ScriptHandler
@@ -121,7 +122,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public void serverStarting(FEModuleServerInitEvent event)
     {
         JsLocalStorage.load();
-        loadScripts(MinecraftServer.getServer());
+        loadScripts(FMLCommonHandler.instance().getMinecraftServerInstance());
     }
 
     @SubscribeEvent
@@ -141,7 +142,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void reload(ConfigReloadEvent event)
     {
-        reloadScripts(MinecraftServer.getServer());
+        reloadScripts(FMLCommonHandler.instance().getMinecraftServerInstance());
     }
 
     public void reloadScripts(ICommandSender sender)
@@ -193,7 +194,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         return (Compilable) getEngine();
     }
 
-    public static synchronized ScriptInstance getScript(File file) throws IOException, ScriptException
+    public static synchronized ScriptInstance getScript(File file) throws IOException, ScriptException, CommandException
     {
         ScriptInstance result = scripts.get(file);
         if (result == null)
@@ -218,7 +219,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         return result;
     }
 
-    public static ScriptInstance getScript(String uri) throws IOException, ScriptException
+    public static ScriptInstance getScript(String uri) throws IOException, ScriptException, CommandException
     {
         File f = new File(moduleDir, uri);
         if (!f.exists())

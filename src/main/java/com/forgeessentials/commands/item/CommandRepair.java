@@ -2,20 +2,22 @@ package com.forgeessentials.commands.item;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandRepair extends ForgeEssentialsCommandBase
 {
@@ -53,9 +55,9 @@ public class CommandRepair extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -67,26 +69,26 @@ public class CommandRepair extends ForgeEssentialsCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Allows repairing items held by another player");
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
-            ItemStack item = sender.getHeldItem();
+            ItemStack item = sender.getHeldItemMainhand();
             if (item == null)
                 throw new TranslatedCommandException("You are not holding a reparable item.");
             item.setItemDamage(0);
         }
-        else if (args.length == 1 && PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
+        else if (args.length == 1 && PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player == null)
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 
-            ItemStack item = player.getHeldItem();
+            ItemStack item = player.getHeldItemMainhand();
             if (item != null)
                 item.setItemDamage(0);
         }
@@ -97,7 +99,7 @@ public class CommandRepair extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -106,7 +108,7 @@ public class CommandRepair extends ForgeEssentialsCommandBase
             if (player != null)
             {
 
-                ItemStack item = player.getHeldItem();
+                ItemStack item = player.getHeldItemMainhand();
 
                 if (item != null)
                 {
@@ -122,7 +124,7 @@ public class CommandRepair extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

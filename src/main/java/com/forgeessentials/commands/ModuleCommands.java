@@ -1,5 +1,8 @@
 package com.forgeessentials.commands;
 
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.item.CommandBind;
 import com.forgeessentials.commands.item.CommandCraft;
@@ -54,9 +57,6 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Commands", parentMod = ForgeEssentials.class)
 public class ModuleCommands

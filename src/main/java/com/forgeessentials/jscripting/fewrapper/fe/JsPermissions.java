@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
@@ -53,12 +53,7 @@ public class JsPermissions
         return APIRegistry.perms.getPermissionDescription(permissionNode);
     }
 
-    public static void registerPermission(String permission, PermissionLevel level)
-    {
-        APIRegistry.perms.registerPermission(permission, level);
-    }
-
-    public static void registerPermission(String permissionNode, PermissionLevel level, String description)
+    public static void registerPermission(String permissionNode, DefaultPermissionLevel level, String description)
     {
         APIRegistry.perms.registerPermission(permissionNode, level, description);
     }

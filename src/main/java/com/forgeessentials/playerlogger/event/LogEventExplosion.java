@@ -6,7 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.world.ChunkPosition;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.world.ExplosionEvent;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
@@ -22,17 +22,17 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
     public LogEventExplosion(ExplosionEvent.Detonate event)
     {
         super(event);
-        for (ChunkPosition blockPos : event.getAffectedBlocks())
-            blocks.add(new CachedBlockData(event.world, blockPos.chunkPosX, blockPos.chunkPosY, blockPos.chunkPosZ));
+        for (BlockPos blockPos : event.getAffectedBlocks())
+            blocks.add(new CachedBlockData(event.getWorld(), blockPos));
     }
 
     @Override
     public void process(EntityManager em)
     {
-        WorldData worldData = getWorld(event.world.provider.dimensionId);
+        WorldData worldData = getWorld(event.getWorld().provider.getDimension());
         for (CachedBlockData blockData : blocks)
         {
-            if (!blockData.block.getMaterial().equals(Material.air))
+            if (blockData.block.getMaterial(blockData.block.getDefaultState()) != Material.AIR)
             {
                 Action01Block action = new Action01Block();
                 action.time = date;
@@ -41,9 +41,9 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
                 action.metadata = blockData.metadata;
                 action.entity = blockData.tileEntityBlob;
                 action.type = ActionBlockType.DETONATE;
-                action.x = blockData.x;
-                action.y = blockData.y;
-                action.z = blockData.z;
+                action.x = blockData.pos.getX();
+                action.y = blockData.pos.getY();
+                action.z = blockData.pos.getZ();
                 em.persist(action);
             }
         }

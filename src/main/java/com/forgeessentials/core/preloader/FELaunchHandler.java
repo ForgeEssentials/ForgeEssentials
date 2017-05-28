@@ -24,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
+import org.spongepowered.asm.mixin.MixinEnvironment.CompatibilityLevel;
 import org.spongepowered.asm.mixin.MixinEnvironment.Phase;
 
 public class FELaunchHandler implements ITweaker
@@ -70,7 +71,7 @@ public class FELaunchHandler implements ITweaker
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "deprecation" })
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile)
     {
         // initialize mixin, if someone hasn't already done it for us
@@ -79,8 +80,9 @@ public class FELaunchHandler implements ITweaker
         {
             tweaks.add("org.spongepowered.asm.launch.MixinTweaker");
         }
-        
+
         MixinBootstrap.init();
+        MixinEnvironment.setCompatibilityLevel(CompatibilityLevel.JAVA_8);
         // Fix CoFH compatibility. Fixes #1903
         MixinEnvironment.getEnvironment(Phase.PREINIT).addTransformerExclusion("cofh.asm.CoFHAccessTransformer");
 

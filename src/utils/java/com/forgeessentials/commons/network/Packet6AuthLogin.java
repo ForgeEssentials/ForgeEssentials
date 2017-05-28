@@ -1,7 +1,9 @@
 package com.forgeessentials.commons.network;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
+
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+
 import io.netty.buffer.ByteBuf;
 
 public class Packet6AuthLogin implements IMessage

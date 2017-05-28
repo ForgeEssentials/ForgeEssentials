@@ -9,10 +9,12 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -75,8 +77,8 @@ public class ShopData
         item = null;
 
         // if (!ItemUtil.isSign(signPosition.getBlock())) return;
-        String[] text = ItemUtil.getSignText(pos);
-        if (text == null || text.length < 2 || !ShopManager.shopTags.contains(text[0]))
+        ITextComponent[] text = ItemUtil.getSignText(pos);
+        if (text == null || text.length < 2 || !ShopManager.shopTags.contains(text[0].getUnformattedText()))
         {
             error = Translator.translate("Sign header missing");
             return;
@@ -101,7 +103,7 @@ public class ShopData
         amount = 1;
         for (int i = 1; i < text.length; i++)
         {
-            Matcher matcher = PATTERN_BUY.matcher(text[i]);
+            Matcher matcher = PATTERN_BUY.matcher(text[i].getUnformattedText());
             if (matcher.matches())
             {
                 if (buyPrice != -1)
@@ -112,7 +114,7 @@ public class ShopData
                 buyPrice = ServerUtil.parseIntDefault(matcher.group(1), -1);
                 continue;
             }
-            matcher = PATTERN_SELL.matcher(text[i]);
+            matcher = PATTERN_SELL.matcher(text[i].getUnformattedText());
             if (matcher.matches())
             {
                 if (sellPrice != -1)
@@ -123,7 +125,7 @@ public class ShopData
                 sellPrice = ServerUtil.parseIntDefault(matcher.group(1), -1);
                 continue;
             }
-            matcher = PATTERN_AMOUNT.matcher(text[i]);
+            matcher = PATTERN_AMOUNT.matcher(text[i].getUnformattedText());
             if (matcher.matches())
             {
                 if (amount != 1)
@@ -197,13 +199,13 @@ public class ShopData
         if (entities.size() == 1)
             return entities.get(0);
 
-        final Vec3 offset = Vec3.createVectorHelper(p.getX(), p.getY() + 0.5, p.getZ());
+        final Vec3d offset = new Vec3d(p.getX(), p.getY() + 0.5, p.getZ());
         Collections.sort(entities, new Comparator<EntityItemFrame>() {
             @Override
             public int compare(EntityItemFrame o1, EntityItemFrame o2)
             {
-                Vec3 v1 = Vec3.createVectorHelper(o1.posX, o1.posY, o1.posZ);
-                Vec3 v2 = Vec3.createVectorHelper(o2.posX, o2.posY, o2.posZ);
+                Vec3d v1 = new Vec3d(o1.posX, o1.posY, o1.posZ);
+                Vec3d v2 = new Vec3d(o2.posX, o2.posY, o2.posZ);
                 return (int) Math.signum(offset.distanceTo(v1) - offset.distanceTo(v2));
             }
         });
@@ -219,7 +221,7 @@ public class ShopData
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> List<T> getEntitiesWithinAABB(World world, Class<? extends T> clazz, AxisAlignedBB aabb)
+    public static <T extends Entity> List<T> getEntitiesWithinAABB(World world, Class<? extends T> clazz, AxisAlignedBB aabb)
     {
         return world.getEntitiesWithinAABB(clazz, aabb);
     }
@@ -230,7 +232,7 @@ public class ShopData
         double y = p.getY() + 0.5;
         double z = p.getZ();
         double D = 1.4;
-        AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(x - D, y - D, z - D, x + D, y + D, z + D);
+        AxisAlignedBB aabb = new AxisAlignedBB(x - D, y - D, z - D, x + D, y + D, z + D);
         return aabb;
     }
 

@@ -8,6 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
@@ -56,7 +58,7 @@ public class PlayerLoggerChecker
 
     public void CheckBlock(WorldPoint point, FilterConfig fc)
     {
-        CheckBlock(point, fc, MinecraftServer.getServer());
+        CheckBlock(point, fc, FMLCommonHandler.instance().getMinecraftServerInstance());
     }
     public void CheckBlock(WorldPoint point, FilterConfig fc, ICommandSender sender)
     {
@@ -72,7 +74,7 @@ public class PlayerLoggerChecker
     {
         CheckBlock(point, fc, sender, pageSize,newCheck, null);
     }
-    public void CheckBlock(WorldPoint point, FilterConfig fc, ICommandSender sender, int pageSize, boolean newCheck, net.minecraftforge.event.entity.player.PlayerInteractEvent.Action action)
+    public void CheckBlock(WorldPoint point, FilterConfig fc, ICommandSender sender, int pageSize, boolean newCheck, net.minecraftforge.event.entity.player.PlayerInteractEvent action)
     {
         LoggerCheckInfo info = playerInfo.get(sender);
         if (info == null)
@@ -86,7 +88,7 @@ public class PlayerLoggerChecker
         {
             info.checkPoint = point;
             info.checkStartId = 0;
-            if (action == net.minecraftforge.event.entity.player.PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+            if (action instanceof RightClickBlock)
                 ChatOutputHandler.chatNotification(sender, "Showing recent block changes (clicked side):");
             else
                 ChatOutputHandler.chatNotification(sender, "Showing recent block changes (clicked block):");

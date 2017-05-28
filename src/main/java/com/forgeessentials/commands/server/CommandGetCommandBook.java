@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,14 +15,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.PermissionManager;
 
 public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 {
@@ -70,9 +72,9 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -82,10 +84,10 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
 
-        if (sender.inventory.hasItemStack(new ItemStack(Items.written_book)))
+        if (sender.inventory.hasItemStack(new ItemStack(Items.WRITTEN_BOOK)))
         {
             for (int i = 0; i < sender.inventory.mainInventory.length; i++)
             {
@@ -99,10 +101,10 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
         }
 
         Set<String> pages = new TreeSet<>();
-        for (Object cmdObj : MinecraftServer.getServer().getCommandManager().getCommands().values())
+        for (Object cmdObj : server.getCommandManager().getCommands().values())
         {
             ICommand cmd = (ICommand) cmdObj;
-            if (!PermissionManager.checkPermission(sender, cmd))
+            if (!PermissionAPI.hasPermission(sender, PermissionManager.getCommandPermission(cmd)))
                 continue;
 
             Set<String> commands = new HashSet<>();
@@ -117,8 +119,8 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
             }
 
             String perm = PermissionManager.getCommandPermission(cmd);
-            String text = EnumChatFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
-                    (perm != null ? EnumChatFormatting.DARK_RED + perm + "\n\n" : '\n') + EnumChatFormatting.BLACK + cmd.getCommandUsage(sender);
+            String text = TextFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
+                    (perm != null ? TextFormatting.DARK_RED + perm + "\n\n" : '\n') + TextFormatting.BLACK + cmd.getCommandUsage(sender);
             pages.add(text);
         }
 
@@ -131,7 +133,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
         tag.setString("title", "CommandBook");
         tag.setTag("pages", pagesNbt);
 
-        ItemStack is = new ItemStack(Items.written_book);
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
         is.setTagCompound(tag);
         sender.inventory.addItemStackToInventory(is);
     }

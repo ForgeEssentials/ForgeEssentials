@@ -3,19 +3,21 @@ package com.forgeessentials.commands.world;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-
-import cpw.mods.fml.common.registry.GameData;
 
 public class CommandFindblock extends ForgeEssentialsCommandBase implements ConfigurableCommand
 {
@@ -61,9 +63,9 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -73,29 +75,28 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length < 1)
         {
             throw new TranslatedCommandException(getCommandUsage(sender));
         }
         String id = args[0];
-        // int meta = parseInt(sender, args[1]);
-        int meta = (args.length < 2) ? 0 : parseIntWithMin(sender, args[1], 0);
-        int range = (args.length < 3) ? defaultRange : parseIntWithMin(sender, args[2], 1);
-        int amount = (args.length < 4) ? defaultCount : parseIntWithMin(sender, args[3], 1);
-        int speed = (args.length < 5) ? defaultSpeed : parseIntWithMin(sender, args[4], 1);
+        int meta = (args.length < 2) ? 0 : parseInt(args[1]);
+        int range = (args.length < 3) ? defaultRange : parseInt(args[2], 1, Integer.MAX_VALUE);
+        int amount = (args.length < 4) ? defaultCount : parseInt(args[3], 1, Integer.MAX_VALUE);
+        int speed = (args.length < 5) ? defaultSpeed : parseInt(args[4], 1, Integer.MAX_VALUE);
 
         new TickTaskBlockFinder(sender, id, meta, range, amount, speed);
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
             List<String> names = new ArrayList<>();
-            for (Item i : GameData.getItemRegistry().typeSafeIterable())
+            for (Item i : GameRegistry.findRegistry(Item.class))
             {
                 names.add(i.getUnlocalizedName());
             }
@@ -113,10 +114,7 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
         {
             return getListOfStringsMatchingLastWord(args, defaultSpeed + "");
         }
-        else
-        {
-            throw new TranslatedCommandException(getCommandUsage(sender));
-        }
+        return null;
     }
 
 }

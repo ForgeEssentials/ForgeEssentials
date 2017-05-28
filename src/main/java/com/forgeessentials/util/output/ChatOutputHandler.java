@@ -11,12 +11,13 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -29,7 +30,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     public static final String CONFIG_CAT = "Core.Output";
 
-    public static EnumChatFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
+    public static TextFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
 
     /* ------------------------------------------------------------ */
 
@@ -44,7 +45,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void sendMessage(ICommandSender recipient, String message)
     {
-        sendMessage(recipient, new ChatComponentText(message));
+        sendMessage(recipient, new TextComponentString(message));
     }
 
     /**
@@ -53,10 +54,10 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param recipient
      * @param message
      */
-    public static void sendMessage(ICommandSender recipient, IChatComponent message)
+    public static void sendMessage(ICommandSender recipient, ITextComponent message)
     {
-        if (recipient instanceof FakePlayer && ((EntityPlayerMP) recipient).playerNetServerHandler == null)
-            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getCommandSenderName(), message.getUnformattedText()));
+        if (recipient instanceof FakePlayer && ((EntityPlayerMP) recipient).connection == null)
+            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getName(), message.getUnformattedText()));
         else
             recipient.addChatMessage(message);
     }
@@ -71,13 +72,13 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param color
      *            Color of text to format
      */
-    public static void sendMessage(ICommandSender recipient, String message, EnumChatFormatting color)
+    public static void sendMessage(ICommandSender recipient, String message, TextFormatting color)
     {
         message = formatColors(message);
         if (recipient instanceof EntityPlayer)
         {
-            ChatComponentText component = new ChatComponentText(message);
-            component.getChatStyle().setColor(color);
+            TextComponentString component = new TextComponentString(message);
+            component.getStyle().setColor(color);
             sendMessage(recipient, component);
         }
         else
@@ -92,7 +93,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void broadcast(String message)
     {
-        broadcast(new ChatComponentText(message));;
+        broadcast(new TextComponentString(message));;
     }
 
     /**
@@ -101,31 +102,31 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param message
      *            The message to send
      */
-    public static void broadcast(IChatComponent message)
+    public static void broadcast(ITextComponent message)
     {
-        MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
+        FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendChatMsg(message);
     }
 
     /* ------------------------------------------------------------ */
 
-    public static IChatComponent confirmation(String message)
+    public static ITextComponent confirmation(String message)
     {
-        return setChatColor(new ChatComponentText(formatColors(message)), chatConfirmationColor);
+        return setChatColor(new TextComponentString(formatColors(message)), chatConfirmationColor);
     }
 
-    public static IChatComponent notification(String message)
+    public static ITextComponent notification(String message)
     {
-        return setChatColor(new ChatComponentText(formatColors(message)), chatNotificationColor);
+        return setChatColor(new TextComponentString(formatColors(message)), chatNotificationColor);
     }
 
-    public static IChatComponent warning(String message)
+    public static ITextComponent warning(String message)
     {
-        return setChatColor(new ChatComponentText(formatColors(message)), chatWarningColor);
+        return setChatColor(new TextComponentString(formatColors(message)), chatWarningColor);
     }
 
-    public static IChatComponent error(String message)
+    public static ITextComponent error(String message)
     {
-        return setChatColor(new ChatComponentText(formatColors(message)), chatErrorColor);
+        return setChatColor(new TextComponentString(formatColors(message)), chatErrorColor);
     }
 
     /**
@@ -135,9 +136,9 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param color
      * @return message
      */
-    public static IChatComponent setChatColor(IChatComponent message, EnumChatFormatting color)
+    public static ITextComponent setChatColor(ITextComponent message, TextFormatting color)
     {
-        message.getChatStyle().setColor(color);
+        message.getStyle().setColor(color);
         return message;
     }
 
@@ -219,12 +220,13 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     public static final Pattern FORMAT_CODE_PATTERN;
 
+    public static final char FORMAT_CHARACTERS[] = new char[TextFormatting.values().length];
+
     static
     {
-        String codes = "";
-        for (EnumChatFormatting code : EnumChatFormatting.values())
-            codes += code.getFormattingCode();
-        FORMAT_CODE_PATTERN = Pattern.compile(COLOR_FORMAT_CHARACTER + "([" + codes + "])");
+        for (TextFormatting code : TextFormatting.values())
+            FORMAT_CHARACTERS[code.ordinal()] = code.toString().charAt(1);
+        FORMAT_CODE_PATTERN = Pattern.compile(COLOR_FORMAT_CHARACTER + "([" + new String(FORMAT_CHARACTERS) + "])");
     }
 
     /**
@@ -244,9 +246,9 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param chatStyle
      * @param formattings
      */
-    public static void applyFormatting(ChatStyle chatStyle, Collection<EnumChatFormatting> formattings)
+    public static void applyFormatting(Style chatStyle, Collection<TextFormatting> formattings)
     {
-        for (EnumChatFormatting format : formattings)
+        for (TextFormatting format : formattings)
             applyFormatting(chatStyle, format);
     }
 
@@ -256,7 +258,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param chatStyle
      * @param formatting
      */
-    public static void applyFormatting(ChatStyle chatStyle, EnumChatFormatting formatting)
+    public static void applyFormatting(Style chatStyle, TextFormatting formatting)
     {
         switch (formatting)
         {
@@ -289,14 +291,14 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param textFormats
      * @return
      */
-    public static Collection<EnumChatFormatting> enumChatFormattings(String textFormats)
+    public static Collection<TextFormatting> enumChatFormattings(String textFormats)
     {
-        List<EnumChatFormatting> result = new ArrayList<EnumChatFormatting>();
+        List<TextFormatting> result = new ArrayList<TextFormatting>();
         for (int i = 0; i < textFormats.length(); i++)
         {
             char formatChar = textFormats.charAt(i);
-            for (EnumChatFormatting format : EnumChatFormatting.values())
-                if (format.getFormattingCode() == formatChar)
+            for (TextFormatting format : TextFormatting.values())
+                if (FORMAT_CHARACTERS[format.ordinal()] == formatChar)
                 {
                     result.add(format);
                     break;
@@ -307,71 +309,71 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
 
-    public static String getUnformattedMessage(IChatComponent message)
+    public static String getUnformattedMessage(ITextComponent message)
     {
         StringBuilder sb = new StringBuilder();
         for (Object msg : message)
-            sb.append(((IChatComponent) msg).getUnformattedTextForChat());
+            sb.append(((ITextComponent) msg).getUnformattedComponentText());
         return sb.toString();
     }
 
-    public static String getFormattedMessage(IChatComponent message)
+    public static String getFormattedMessage(ITextComponent message)
     {
         StringBuilder sb = new StringBuilder();
         for (Object msg : message)
-            sb.append(((IChatComponent) msg).getFormattedText());
+            sb.append(((ITextComponent) msg).getFormattedText());
         return sb.toString();
     }
 
-    public static String formatHtml(IChatComponent message)
+    public static String formatHtml(ITextComponent message)
     {
         // TODO: HTML formatting function
         StringBuilder sb = new StringBuilder();
         for (Object msgObj : message)
         {
-            IChatComponent msg = (IChatComponent) msgObj;
-            ChatStyle style = msg.getChatStyle();
+            ITextComponent msg = (ITextComponent) msgObj;
+            Style style = msg.getStyle();
             if (!isStyleEmpty(style))
             {
                 sb.append("<span class=\"");
-                EnumChatFormatting color = style.getColor();
+                TextFormatting color = style.getColor();
                 if (color != null)
                 {
                     sb.append(" mcf");
-                    sb.append(color.getFormattingCode());
+                    sb.append(FORMAT_CHARACTERS[color.ordinal()]);
                 }
                 if (style.getBold())
                 {
                     sb.append(" mcf");
-                    sb.append(EnumChatFormatting.BOLD.getFormattingCode());
+                    sb.append(FORMAT_CHARACTERS[TextFormatting.BOLD.ordinal()]);
                 }
                 if (style.getItalic())
                 {
                     sb.append(" mcf");
-                    sb.append(EnumChatFormatting.ITALIC.getFormattingCode());
+                    sb.append(FORMAT_CHARACTERS[TextFormatting.ITALIC.ordinal()]);
                 }
                 if (style.getUnderlined())
                 {
                     sb.append(" mcf");
-                    sb.append(EnumChatFormatting.UNDERLINE.getFormattingCode());
+                    sb.append(FORMAT_CHARACTERS[TextFormatting.UNDERLINE.ordinal()]);
                 }
                 if (style.getObfuscated())
                 {
                     sb.append(" mcf");
-                    sb.append(EnumChatFormatting.OBFUSCATED.getFormattingCode());
+                    sb.append(FORMAT_CHARACTERS[TextFormatting.OBFUSCATED.ordinal()]);
                 }
                 if (style.getStrikethrough())
                 {
                     sb.append(" mcf");
-                    sb.append(EnumChatFormatting.STRIKETHROUGH.getFormattingCode());
+                    sb.append(FORMAT_CHARACTERS[TextFormatting.STRIKETHROUGH.ordinal()]);
                 }
                 sb.append("\">");
-                sb.append(formatHtml(msg.getUnformattedTextForChat()));
+                sb.append(formatHtml(msg.getUnformattedComponentText()));
                 sb.append("</span>");
             }
             else
             {
-                sb.append(formatHtml(msg.getUnformattedTextForChat()));
+                sb.append(formatHtml(msg.getUnformattedComponentText()));
             }
         }
         return sb.toString();
@@ -388,9 +390,9 @@ public final class ChatOutputHandler extends ConfigLoaderBase
             sb.append(StringEscapeUtils.escapeHtml4(message.substring(pos, matcher.start())));
             pos = matcher.end();
             char formatChar = matcher.group(1).charAt(0);
-            for (EnumChatFormatting format : EnumChatFormatting.values())
+            for (TextFormatting format : TextFormatting.values())
             {
-                if (format.getFormattingCode() == formatChar)
+                if (FORMAT_CHARACTERS[format.ordinal()] == formatChar)
                 {
                     sb.append("<span class=\"mcf");
                     sb.append(formatChar);
@@ -408,7 +410,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         return sb.toString();
     }
 
-    public static boolean isStyleEmpty(ChatStyle style)
+    public static boolean isStyleEmpty(Style style)
     {
         return !style.getBold() && !style.getItalic() && !style.getObfuscated() && !style.getStrikethrough() && !style.getUnderlined()
                 && style.getColor() == null;
@@ -419,7 +421,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
         PLAINTEXT, HTML, MINECRAFT, DETAIL;
 
-        public Object format(IChatComponent message)
+        public Object format(ITextComponent message)
         {
             switch (this)
             {
@@ -515,30 +517,30 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     public static void setConfirmationColor(String color)
     {
-        chatConfirmationColor = EnumChatFormatting.getValueByName(color);
+        chatConfirmationColor = TextFormatting.getValueByName(color);
         if (chatConfirmationColor == null)
-            chatConfirmationColor = EnumChatFormatting.GREEN;
+            chatConfirmationColor = TextFormatting.GREEN;
     }
 
     public static void setErrorColor(String color)
     {
-        chatErrorColor = EnumChatFormatting.getValueByName(color);
+        chatErrorColor = TextFormatting.getValueByName(color);
         if (chatErrorColor == null)
-            chatErrorColor = EnumChatFormatting.RED;
+            chatErrorColor = TextFormatting.RED;
     }
 
     public static void setNotificationColor(String color)
     {
-        chatNotificationColor = EnumChatFormatting.getValueByName(color);
+        chatNotificationColor = TextFormatting.getValueByName(color);
         if (chatNotificationColor == null)
-            chatNotificationColor = EnumChatFormatting.AQUA;
+            chatNotificationColor = TextFormatting.AQUA;
     }
 
     public static void setWarningColor(String color)
     {
-        chatWarningColor = EnumChatFormatting.getValueByName(color);
+        chatWarningColor = TextFormatting.getValueByName(color);
         if (chatWarningColor == null)
-            chatWarningColor = EnumChatFormatting.YELLOW;
+            chatWarningColor = TextFormatting.YELLOW;
     }
 
     @Override

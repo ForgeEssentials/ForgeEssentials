@@ -1,10 +1,14 @@
 package com.forgeessentials.util;
 
+import net.minecraft.command.CommandResultStats.Type;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -21,13 +25,13 @@ public class DoAsCommandSender implements ICommandSender
     public DoAsCommandSender()
     {
         this.ident = APIRegistry.IDENT_SERVER;
-        this.sender = MinecraftServer.getServer();
+        this.sender = getServer();
     }
 
     public DoAsCommandSender(UserIdent ident)
     {
         this.ident = ident;
-        this.sender = MinecraftServer.getServer();
+        this.sender = getServer();
     }
 
     public DoAsCommandSender(UserIdent ident, ICommandSender sender)
@@ -47,19 +51,19 @@ public class DoAsCommandSender implements ICommandSender
     }
 
     @Override
-    public String getCommandSenderName()
+    public String getName()
     {
-        return sender.getCommandSenderName();
+        return sender.getName();
     }
 
     @Override
-    public IChatComponent func_145748_c_()
+    public ITextComponent getDisplayName()
     {
-        return sender.func_145748_c_();
+        return sender.getDisplayName();
     }
 
     @Override
-    public void addChatMessage(IChatComponent message)
+    public void addChatMessage(ITextComponent message)
     {
         if (!hideChatMessages)
             sender.addChatMessage(message);
@@ -72,15 +76,45 @@ public class DoAsCommandSender implements ICommandSender
     }
 
     @Override
-    public ChunkCoordinates getPlayerCoordinates()
-    {
-        return sender.getPlayerCoordinates();
-    }
-
-    @Override
     public World getEntityWorld()
     {
         return sender.getEntityWorld();
+    }
+
+    @Override
+    public BlockPos getPosition()
+    {
+        return sender.getPosition();
+    }
+
+    @Override
+    public Vec3d getPositionVector()
+    {
+        return sender.getPositionVector();
+    }
+
+    @Override
+    public Entity getCommandSenderEntity()
+    {
+        return sender.getCommandSenderEntity();
+    }
+
+    @Override
+    public boolean sendCommandFeedback()
+    {
+        return sender.sendCommandFeedback();
+    }
+
+    @Override
+    public void setCommandStat(Type p_174794_1_, int p_174794_2_)
+    {
+        sender.setCommandStat(p_174794_1_, p_174794_2_);
+    }
+
+    @Override
+    public MinecraftServer getServer()
+    {
+        return FMLCommonHandler.instance().getMinecraftServerInstance();
     }
 
     public UserIdent getIdent()

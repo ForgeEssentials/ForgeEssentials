@@ -8,22 +8,21 @@ import javax.imageio.ImageIO;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
 import com.forgeessentials.commons.network.Packet7Remote;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(value = Side.CLIENT)
 public class QRRenderer implements IMessageHandler<Packet7Remote, IMessage>
@@ -65,8 +64,8 @@ public class QRRenderer implements IMessageHandler<Packet7Remote, IMessage>
         }
         catch (IOException e)
         {
-            ChatComponentText cmsg = new ChatComponentText("Could not load QR Code. " + e.getMessage());
-            cmsg.getChatStyle().setColor(EnumChatFormatting.RED);
+            TextComponentString cmsg = new TextComponentString("Could not load QR Code. " + e.getMessage());
+            cmsg.getStyle().setColor(TextFormatting.RED);
             FMLClientHandler.instance().getClientPlayerEntity().addChatMessage(cmsg);
             e.printStackTrace();
         }

@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -106,7 +107,7 @@ public class Session implements Runnable, RemoteSession
             }
 
             // Check if user was banned
-            if (ident != null && MinecraftServer.getServer().getConfigurationManager().func_152608_h().func_152702_a(ident.getGameProfile()))
+            if (ident != null && FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getBannedPlayers().isBanned(ident.getGameProfile()))
             {
                 close("banned", request);
                 return;

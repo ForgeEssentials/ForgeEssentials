@@ -18,7 +18,7 @@ public class LogEventBurn extends PlayerLoggerEvent<FireEvent.Destroy>
     public LogEventBurn(FireEvent.Destroy event)
     {
         super(event);
-        tileEntityBlob = getTileEntityBlob(event.world.getTileEntity(event.x, event.y, event.z));
+        tileEntityBlob = getTileEntityBlob(event.getWorld().getTileEntity(event.getPos()));
     }
 
     @Override
@@ -26,14 +26,14 @@ public class LogEventBurn extends PlayerLoggerEvent<FireEvent.Destroy>
     {
         Action01Block action = new Action01Block();
         action.time = date;
-        action.world = getWorld(event.world.provider.dimensionId);
-        action.block = getBlock(event.block);
-        action.metadata = event.blockMetadata;
+        action.world = getWorld(event.getWorld().provider.getDimension());
+        action.block = getBlock(event.getState().getBlock());
+        action.metadata = event.getState().getBlock().getMetaFromState(event.getState());
         action.entity = tileEntityBlob;
         action.type = ActionBlockType.BURN;
-        action.x = event.x;
-        action.y = event.y;
-        action.z = event.z;
+        action.x = event.getPos().getX();
+        action.y = event.getPos().getY();
+        action.z = event.getPos().getZ();
         em.persist(action);
     }
 

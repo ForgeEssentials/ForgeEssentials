@@ -8,21 +8,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import javax.imageio.ImageIO;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
-
-import com.forgeessentials.core.preloader.api.ServerBlock;
-import com.forgeessentials.util.output.LoggingHandler;
-
-import cpw.mods.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameData;
 
 public final class MapperUtil
 {
@@ -48,14 +42,13 @@ public final class MapperUtil
         {
             for (int iz = 0; iz < 16; iz++)
             {
-                int iy = chunk.getHeightValue(ix, iz);
+                int iy = chunk.getHeight(new BlockPos(ix, 0, iz));
                 for (; iy >= 0; iy--)
                 {
-                    Block block = chunk.getBlock(ix, iy, iz);
-                    int meta = chunk.getBlockMetadata(ix, iy, iz);
-                    if (block == Blocks.air)
+                    Block block = chunk.getBlockState(ix, iy, iz).getBlock();
+                    if (block == Blocks.AIR)
                         continue;
-                    image.setRGB(offsetX + ix, offsetY + iz, getBlockColor(block, meta).getRGB());
+                    image.setRGB(offsetX + ix, offsetY + iz, getBlockColor(block, block.getMetaFromState(chunk.getBlockState(ix, iy, iz))).getRGB());
                     break;
                 }
                 if (iy < 0)
@@ -96,12 +89,12 @@ public final class MapperUtil
 
     public static Chunk loadChunk(WorldServer world, int cx, int cz)
     {
-        Chunk chunk = (Chunk) world.theChunkProviderServer.loadedChunkHashMap.getValueByKey(ChunkCoordIntPair.chunkXZ2Int(cx, cz));
+        Chunk chunk = (Chunk) world.getChunkProvider().id2ChunkMap.get(ChunkPos.chunkXZ2Int(cx, cz));
         if (chunk != null)
             return chunk;
         try
         {
-            AnvilChunkLoader loader = (AnvilChunkLoader) world.theChunkProviderServer.currentChunkLoader;
+            AnvilChunkLoader loader = (AnvilChunkLoader) world.getChunkProvider().chunkLoader;
             Object[] data = loader.loadChunk__Async(world, cx, cz);
             return (Chunk) data[0];
         }
@@ -133,10 +126,7 @@ public final class MapperUtil
         // if (icon == null) continue;
 
         Color color;
-        BufferedImage image = getBlockImage(block);
-        if (image != null)
-            color = getAverageColor(image);
-        else if (colors[id] != null && colors[id].length > 0 && colors[id][0] != null)
+        if (colors[id] != null && colors[id].length > 0 && colors[id][0] != null)
             color = colors[id][0];
         else
             color = Color.BLACK;
@@ -178,38 +168,6 @@ public final class MapperUtil
     }
 
     /* ------------------------------------------------------------ */
-
-    public static BufferedImage getBlockImage(Block block)
-    {
-        try
-        {
-            String textureName = ((ServerBlock) block).getTextureNameServer();
-            ResourceLocation relLoc = new ResourceLocation(textureName);
-            String resourceName = "/assets/" + relLoc.getResourceDomain() + "/textures/blocks/" + relLoc.getResourcePath();
-
-            String[] endings = { "_top", "" };
-            for (String ending : endings)
-            {
-                InputStream is = Object.class.getResourceAsStream(resourceName + ending + ".png");
-                if (is != null)
-                    return ImageIO.read(is);
-            }
-            // Pattern resourcePattern = Pattern.compile(Pattern.quote(resourceName) + ".*\\.png");
-            // List<String> resources = ResourceList.getResources(resourcePattern);
-            // if (resources.isEmpty())
-            // return null;
-            // resourceName = resources.get(0);
-            // InputStream is = Object.class.getResourceAsStream(resourceName);
-            // if (is == null)
-            // return null;
-            // return ImageIO.read(is);
-        }
-        catch (IOException e)
-        {
-            LoggingHandler.felog.warn(String.format("Unable to get texture for block %s", GameData.getBlockRegistry().getNameForObject(block)));
-        }
-        return null;
-    }
 
     public static Color getAverageColor(BufferedImage image)
     {

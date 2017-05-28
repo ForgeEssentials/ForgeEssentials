@@ -16,12 +16,14 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.permission.PermissionContext;
+import net.minecraftforge.server.permission.context.IContext;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,8 +37,6 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.registry.GameData;
-
 /**
  *
  */
@@ -49,11 +49,12 @@ public class CommandParserArgs
     public final EntityPlayerMP senderPlayer;
     public final UserIdent ident;
     public final boolean isTabCompletion;
-    public final PermissionContext permissionContext;
+    public final MinecraftServer server;
+    public IContext context;
 
     public List<String> tabCompletion;
 
-    public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, boolean isTabCompletion)
+    public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, boolean isTabCompletion, MinecraftServer server)
     {
         this.command = command;
         this.args = new LinkedList<>(Arrays.asList(args));
@@ -64,12 +65,13 @@ public class CommandParserArgs
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
-        this.permissionContext = new PermissionContext(sender, command);
+        this.context = null;
+        this.server = server;
     }
 
-    public CommandParserArgs(ICommand command, String[] args, ICommandSender sender)
+    public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, MinecraftServer server)
     {
-        this(command, args, sender, false);
+        this(command, args, sender, false, server);
     }
 
     public void sendMessage(String message)
@@ -78,7 +80,7 @@ public class CommandParserArgs
             ChatOutputHandler.sendMessage(sender, message);
     }
 
-    public void sendMessage(IChatComponent message)
+    public void sendMessage(ITextComponent message)
     {
         if (!isTabCompletion)
             ChatOutputHandler.sendMessage(sender, message);
@@ -139,18 +141,18 @@ public class CommandParserArgs
     }
 
     @Deprecated
-    public UserIdent parsePlayer()
+    public UserIdent parsePlayer() throws CommandException
     {
         return parsePlayer(true, false);
     }
 
     @Deprecated
-    public UserIdent parsePlayer(boolean mustExist)
+    public UserIdent parsePlayer(boolean mustExist) throws CommandException
     {
         return parsePlayer(mustExist, false);
     }
 
-    public UserIdent parsePlayer(boolean mustExist, boolean mustBeOnline)
+    public UserIdent parsePlayer(boolean mustExist, boolean mustBeOnline) throws CommandException
     {
         if (isTabCompletion && size() == 1)
         {
@@ -195,13 +197,13 @@ public class CommandParserArgs
         }
         for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
-            if (CommandBase.doesStringStartWith(arg, player.getCommandSenderName()))
-                result.add(player.getCommandSenderName());
+            if (CommandBase.doesStringStartWith(arg, player.getName()))
+                result.add(player.getName());
         }
         return new ArrayList<>(result);
     }
 
-    public Item parseItem()
+    public Item parseItem() throws CommandException
     {
         if (isTabCompletion && size() == 1)
         {
@@ -220,7 +222,7 @@ public class CommandParserArgs
         return item;
     }
 
-    public Block parseBlock()
+    public Block parseBlock() throws CommandException
     {
         if (isTabCompletion && size() == 1)
         {
@@ -236,7 +238,7 @@ public class CommandParserArgs
         return CommandBase.getBlockByText(sender, itemName);
     }
 
-    public String parsePermission()
+    public String parsePermission() throws CommandException
     {
         if (isTabCompletion && size() == 1)
         {
@@ -257,7 +259,7 @@ public class CommandParserArgs
         return remove();
     }
 
-    public void checkPermission(String perm)
+    public void checkPermission(String perm) throws CommandException
     {
         if (!isTabCompletion && sender != null && !hasPermission(perm))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
@@ -265,10 +267,12 @@ public class CommandParserArgs
 
     public boolean hasPermission(String perm)
     {
-        return APIRegistry.perms.checkPermission(permissionContext, perm);
+        if (sender instanceof EntityPlayer)
+        return APIRegistry.perms.checkPermission(senderPlayer, perm);
+        else return true;
     }
 
-    public void tabComplete(String... completionList)
+    public void tabComplete(String... completionList) throws CancelParsingException
     {
         if (!isTabCompletion || args.size() != 1)
             return;
@@ -276,7 +280,7 @@ public class CommandParserArgs
         throw new CancelParsingException();
     }
 
-    public void tabComplete(Collection<String> completionList)
+    public void tabComplete(Collection<String> completionList) throws CancelParsingException
     {
         if (!isTabCompletion || args.size() != 1)
             return;
@@ -292,7 +296,7 @@ public class CommandParserArgs
             tabCompletion.add(completion);
     }
 
-    public WorldServer parseWorld()
+    public WorldServer parseWorld() throws CommandException
     {
         if (isTabCompletion && size() == 1)
         {
@@ -322,7 +326,7 @@ public class CommandParserArgs
         }
     }
 
-    public int parseInt()
+    public int parseInt() throws CommandException
     {
         checkTabCompletion();
         String value = remove();
@@ -355,7 +359,7 @@ public class CommandParserArgs
         }
     }
 
-    public long parseLong()
+    public long parseLong() throws CommandException
     {
         checkTabCompletion();
         String value = remove();
@@ -369,13 +373,13 @@ public class CommandParserArgs
         }
     }
 
-    public double parseDouble()
+    public double parseDouble() throws CommandException
     {
         checkTabCompletion();
-        return CommandBase.parseDouble(sender, remove());
+        return CommandBase.parseDouble(remove());
     }
 
-    public boolean parseBoolean()
+    public boolean parseBoolean() throws CommandException
     {
         checkTabCompletion();
         String value = remove().toLowerCase();
@@ -398,7 +402,7 @@ public class CommandParserArgs
 
     public static final Pattern timeFormatPattern = Pattern.compile("(\\d+)(\\D+)?");
 
-    public long parseTimeReadable()
+    public long parseTimeReadable() throws CommandException
     {
         checkTabCompletion();
         String value = remove();
@@ -460,7 +464,7 @@ public class CommandParserArgs
         return result;
     }
 
-    public void checkTabCompletion()
+    public void checkTabCompletion() throws CommandException
     {
         if (isTabCompletion && size() == 1)
             throw new CancelParsingException();
@@ -476,7 +480,7 @@ public class CommandParserArgs
 
     }
 
-    public void requirePlayer()
+    public void requirePlayer() throws CommandException
     {
         if (senderPlayer == null)
             throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
@@ -495,18 +499,18 @@ public class CommandParserArgs
 
     public WorldPoint getSenderPoint()
     {
-        ICommandSender s = sender != null ? sender : MinecraftServer.getServer();
-        return new WorldPoint(s.getEntityWorld(), s.getPlayerCoordinates());
+        ICommandSender s = sender != null ? sender : server;
+        return new WorldPoint(s.getEntityWorld(), s.getPosition());
     }
 
-    public WorldZone getWorldZone()
+    public WorldZone getWorldZone() throws CommandException
     {
         if (senderPlayer == null)
             throw new TranslatedCommandException("Player needed");
         return APIRegistry.perms.getServerZone().getWorldZone(senderPlayer.dimension);
     }
 
-    public void needsPlayer()
+    public void needsPlayer() throws CommandException
     {
         if (senderPlayer == null)
             throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);

@@ -153,7 +153,7 @@ public class PlayerInfo implements Loadable
 
     public static PlayerInfo get(EntityPlayer player)
     {
-        return get(player.getPersistentID(), player.getCommandSenderName());
+        return get(player.getPersistentID(), player.getName());
     }
 
     public static PlayerInfo get(UserIdent ident)

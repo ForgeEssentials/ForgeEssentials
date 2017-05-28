@@ -4,11 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,11 +26,6 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-
 public class CommandWeather extends ParserCommandBase implements ConfigurableCommand
 {
 
@@ -33,7 +33,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     {
         RAIN, THUNDER;
 
-        public static WeatherType fromString(String name)
+        public static WeatherType fromString(String name) throws CommandException
         {
             name = name.toLowerCase();
             switch (name)
@@ -54,7 +54,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     {
         FORCE, ENABLED, DISABLED, START, STOP;
 
-        public static WeatherState fromString(String name)
+        public static WeatherState fromString(String name) throws CommandException
         {
             name = name.toLowerCase();
             switch (name)
@@ -90,7 +90,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
 
     public CommandWeather()
     {
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -118,9 +118,9 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -142,7 +142,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -156,7 +156,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
         }
 
         World world = arguments.senderPlayer.worldObj;
-        int dim = world.provider.dimensionId;
+        int dim = world.provider.getDimension();
 
         arguments.tabComplete("rain", "thunder");
         WeatherType type = WeatherType.fromString(arguments.remove());
@@ -224,7 +224,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
 
     public static void updateWorld(World world)
     {
-        int dim = world.provider.dimensionId;
+        int dim = world.provider.getDimension();
         Map<WeatherType, WeatherState> worldData = weatherStates.get(dim);
         if (worldData == null)
             return;

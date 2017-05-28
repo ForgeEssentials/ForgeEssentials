@@ -6,8 +6,11 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -16,10 +19,9 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
 public class CommandBurn extends ForgeEssentialsCommandBase
 {
+
     @Override
     public String getCommandName()
     {
@@ -52,9 +54,9 @@ public class CommandBurn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -64,7 +66,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -73,7 +75,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
                 sender.setFire(15);
                 ChatOutputHandler.chatError(sender, "Ouch! Hot!");
             }
-            else if (PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
+            else if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
             {
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
@@ -89,15 +91,15 @@ public class CommandBurn extends ForgeEssentialsCommandBase
         {
             if (args[0].toLowerCase().equals("me"))
             {
-                sender.setFire(parseInt(sender, args[1]));
+                sender.setFire(parseInt(args[1]));
                 ChatOutputHandler.chatError(sender, "Ouch! Hot!");
             }
-            else if (PermissionManager.checkPermission(sender, getPermissionNode() + ".others"))
+            else if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
             {
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
-                    player.setFire(parseIntWithMin(sender, args[1], 0));
+                    player.setFire(parseInt(args[1], 0, Integer.MAX_VALUE));
                     ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
                 }
                 else
@@ -111,12 +113,12 @@ public class CommandBurn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         int time = 15;
         if (args.length == 2)
         {
-            time = parseIntWithMin(sender, args[1], 0);
+            time = parseInt(args[1], 0, Integer.MAX_VALUE);
         }
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player != null)
@@ -131,11 +133,11 @@ public class CommandBurn extends ForgeEssentialsCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Apply burn effect on others");
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
@@ -146,4 +148,5 @@ public class CommandBurn extends ForgeEssentialsCommandBase
             return null;
         }
     }
+
 }

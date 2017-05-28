@@ -34,7 +34,8 @@ import net.minecraft.item.ItemRedstone;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.WorldSettings.GameType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameType;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -43,6 +44,13 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.relauncher.Side;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -68,17 +76,10 @@ import com.forgeessentials.playerlogger.event.LogEventPlayerEvent;
 import com.forgeessentials.playerlogger.event.LogEventPlayerPositions;
 import com.forgeessentials.playerlogger.event.LogEventPostInteract;
 import com.forgeessentials.playerlogger.event.LogEventWorldLoad;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.registry.GameData;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -141,6 +142,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         switch (PlayerLoggerConfig.databaseType)
         {
         case "h2":
+            if (!PlayerLoggerConfig.databaseUrl.startsWith("./"))
+                PlayerLoggerConfig.databaseUrl = "./" + PlayerLoggerConfig.databaseUrl;
+
             properties.setProperty("hibernate.connection.url", "jdbc:h2:" + PlayerLoggerConfig.databaseUrl);
             break;
         case "mysql":
@@ -273,7 +277,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /**
      * <b>NEVER</b> call this and do write operations with this entity manager unless you do it in a synchronized block with this object.
      * <p>
-     * 
+     *
      * <pre>
      * <code>synchronized (playerLogger) {
      *      playerLogger.getEntityManager().doShit();
@@ -388,7 +392,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         Integer id = blockTypeCache.get(block);
         if (id != null)
             return em.getReference(BlockData.class, id);
-        BlockData data = getBlock(GameData.getBlockRegistry().getNameForObject(block));
+        BlockData data = getBlock(ServerUtil.getBlockName(block));
         blockTypeCache.put(block, data.id);
         return data;
     }
@@ -658,11 +662,11 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         if (event instanceof BlockEvent.MultiPlaceEvent)
         {
             // Get only last state of all changes
-            Map<Point, BlockSnapshot> changes = new HashMap<>();
+            Map<BlockPos, BlockSnapshot> changes = new HashMap<>();
             for (BlockSnapshot snapshot : ((BlockEvent.MultiPlaceEvent) event).getReplacedBlockSnapshots())
-                changes.put(new Point(snapshot.x, snapshot.y, snapshot.z), snapshot);
+                changes.put(snapshot.getPos(), snapshot);
             for (BlockSnapshot snapshot : changes.values())
-                eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, event.player)));
+                eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, event.getPlayer())));
             startThread();
         }
         else
@@ -684,12 +688,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerInteractEvent(PlayerInteractEvent event)
+    public void playerInteractEvent(PlayerInteractEvent.LeftClickBlock event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.useBlock == Result.DENY && event.useItem == Result.DENY))
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
             return;
-        GameType gameType = ((EntityPlayerMP) event.entityPlayer).theItemInWorldManager.getGameType();
-        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && gameType != GameType.CREATIVE)
+        GameType gameType = ((EntityPlayerMP) event.getEntityPlayer()).interactionManager.getGameType();
+        if (gameType != GameType.CREATIVE)
         {
             logEvent(new LogEventInteract(event));
         }

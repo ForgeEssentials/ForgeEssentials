@@ -50,12 +50,13 @@ import java.util.UUID;
 import java.util.zip.GZIPOutputStream;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class Metrics {
 
@@ -177,7 +178,7 @@ public class Metrics {
         if (isOptOut()) {
             return false;
         }
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
         return true;
     }
 
@@ -219,7 +220,7 @@ public class Metrics {
      * Stop processing
      */
     public void stop() {
-        FMLCommonHandler.instance().bus().unregister(this);
+        MinecraftForge.EVENT_BUS.unregister(this);
     }
 
     /**
@@ -280,15 +281,15 @@ public class Metrics {
     private void postPlugin(final boolean isPing) throws IOException {
         // Server software specific section
         String pluginName = modName;
-        boolean onlineMode = MinecraftServer.getServer().isServerInOnlineMode();
+        boolean onlineMode = FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode();
         String pluginVersion = modVersion;
         String serverVersion;
-        if (MinecraftServer.getServer().isDedicatedServer()) {
-            serverVersion = "MinecraftForge (MC: " + MinecraftServer.getServer().getMinecraftVersion() + ")";
+        if (FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer()) {
+            serverVersion = "MinecraftForge (MC: " + FMLCommonHandler.instance().getMinecraftServerInstance().getMinecraftVersion() + ")";
         } else {
-            serverVersion = "MinecraftForgeSSP (MC: " + MinecraftServer.getServer().getMinecraftVersion() + ")";
+            serverVersion = "MinecraftForgeSSP (MC: " + FMLCommonHandler.instance().getMinecraftServerInstance().getMinecraftVersion() + ")";
         }
-        int playersOnline = MinecraftServer.getServer().getCurrentPlayerCount();
+        int playersOnline = FMLCommonHandler.instance().getMinecraftServerInstance().getCurrentPlayerCount();
 
         // END server software specific section -- all code below does not use any code outside of this class / Java
 

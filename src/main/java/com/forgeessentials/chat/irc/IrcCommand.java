@@ -2,7 +2,9 @@ package com.forgeessentials.chat.irc;
 
 import java.util.Collection;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
@@ -21,7 +23,7 @@ public interface IrcCommand
 
     public boolean isAdminCommand();
 
-    public void processCommand(ICommandSender sender, String[] args);
+    public void processCommand(ICommandSender sender, String[] args) throws CommandException;
 
     public static abstract class IrcCommandParser implements IrcCommand
     {
@@ -33,7 +35,7 @@ public interface IrcCommand
 
             public IrcCommandParserArgs(IrcCommand command, String[] args, ICommandSender sender)
             {
-                super(null, args, sender);
+                super(null, args, sender, FMLCommonHandler.instance().getMinecraftServerInstance());
                 ircCommand = command;
             }
 
@@ -59,13 +61,13 @@ public interface IrcCommand
         public abstract boolean isAdminCommand();
 
         @Override
-        public void processCommand(ICommandSender sender, String[] args)
+        public void processCommand(ICommandSender sender, String[] args) throws CommandException
         {
             CommandParserArgs arguments = new IrcCommandParserArgs(null, args, sender);
             parse(arguments);
         }
 
-        public abstract void parse(CommandParserArgs arguments);
+        public abstract void parse(CommandParserArgs arguments) throws CommandException;
 
     }
 

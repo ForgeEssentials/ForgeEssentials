@@ -2,8 +2,10 @@ package com.forgeessentials.jscripting.wrapper.mc.entity;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.world.WorldSettings.GameType;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameType;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.jscripting.fewrapper.fe.JsPoint;
@@ -50,7 +52,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
         that.posX = x;
         that.posY = y;
         that.posZ = z;
-        ((EntityPlayerMP) that).playerNetServerHandler.setPlayerLocation(x, y, z, that.cameraYaw, that.cameraPitch);
+        ((EntityPlayerMP) that).connection.setPlayerLocation(x, y, z, that.cameraYaw, that.cameraPitch);
     }
 
     public void setPosition(double x, double y, double z, float yaw, float pitch)
@@ -58,7 +60,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
         that.posX = x;
         that.posY = y;
         that.posZ = z;
-        ((EntityPlayerMP) that).playerNetServerHandler.setPlayerLocation(x, y, z, yaw, pitch);
+        ((EntityPlayerMP) that).connection.setPlayerLocation(x, y, z, yaw, pitch);
     }
 
     public JsICommandSender asCommandSender()
@@ -77,15 +79,15 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 
     public JsPoint<?> getBedLocation(int dimension)
     {
-        ChunkCoordinates coord = EntityPlayer.verifyRespawnCoordinates(that.worldObj, that.getBedLocation(dimension), false);
-        return coord != null ? new JsWorldPoint<>(new WorldPoint(coord.posX, coord.posY, coord.posZ, dimension)) : null;
+        BlockPos coord = EntityPlayer.getBedSpawnLocation(that.worldObj, that.getBedLocation(dimension), false);
+        return coord != null ? new JsWorldPoint<>(new WorldPoint(dimension, coord)) : null;
     }
 
     public GameType getGameType()
     {
         if (that instanceof EntityPlayerMP)
         {
-            return ((EntityPlayerMP) that).theItemInWorldManager.getGameType();
+            return ((EntityPlayerMP) that).interactionManager.getGameType();
         }
         return GameType.NOT_SET;
     }
@@ -105,7 +107,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public boolean isUsingItem()
     {
-        return that.isUsingItem();
+        return that.isHandActive();
     }
 
     /**
@@ -113,7 +115,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public boolean isBlocking()
     {
-        return that.isBlocking();
+        return that.isActiveItemStackBlocking();
     }
 
     public int getScore()
@@ -142,7 +144,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public float getBreakSpeed(JsBlock block, boolean cannotHarvestBlock, int meta, int x, int y, int z)
     {
-        return that.getBreakSpeed(block.getThat(), cannotHarvestBlock, meta, x, y, z);
+        return that.getDigSpeed(block.getThat().getStateFromMeta(meta), new BlockPos(x, y, z));
     }
 
     /**
@@ -150,7 +152,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public boolean canHarvestBlock(JsBlock block)
     {
-        return that.canHarvestBlock(block.getThat());
+        return that.canHarvestBlock(block.getThat().getDefaultState());
     }
 
     public float getEyeHeight()
@@ -182,7 +184,15 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 
     public boolean interactWith(JsEntity<?> entity)
     {
-        return that.interactWith(entity.getThat());
+        switch(that.interact(entity.getThat(), null, EnumHand.MAIN_HAND)){
+        case SUCCESS:
+        case PASS:
+            return true;
+        case FAIL:
+            return false;
+        }
+
+        return false;
     }
 
     /**
@@ -190,7 +200,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public JsItemStack getCurrentEquippedItem()
     {
-        return JsItemStack.get(that.getCurrentEquippedItem());
+        return JsItemStack.get(that.getActiveItemStack());
     }
 
     /**
@@ -198,7 +208,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public void destroyCurrentEquippedItem()
     {
-        that.destroyCurrentEquippedItem();
+        that.resetActiveHand();
     }
 
     /**
@@ -228,7 +238,23 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 
     public JsItemStack getCurrentArmor(int slot)
     {
-        return JsItemStack.get(that.getCurrentArmor(slot));
+        EntityEquipmentSlot eeslot = EntityEquipmentSlot.MAINHAND;
+        switch (slot){
+        case 0:
+            eeslot = EntityEquipmentSlot.FEET;
+            break;
+        case 1:
+            eeslot = EntityEquipmentSlot.LEGS;
+            break;
+        case 2:
+            eeslot = EntityEquipmentSlot.CHEST;
+            break;
+        case 3:
+            eeslot = EntityEquipmentSlot.HEAD;
+            break;
+
+        }
+        return JsItemStack.get(that.getItemStackFromSlot(eeslot));
     }
 
     /**

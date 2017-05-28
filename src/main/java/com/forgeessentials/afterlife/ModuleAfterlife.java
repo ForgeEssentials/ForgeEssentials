@@ -7,9 +7,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -25,11 +29,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 
 /**
  * Module to handle death-chest and respawn debuffs.
@@ -70,9 +69,9 @@ public class ModuleAfterlife extends ServerEventHandler
         APIRegistry.perms.registerPermissionDescription(PERM_HP, "Respawn HP");
         APIRegistry.perms.registerPermissionDescription(PERM_FOOD, "Respawn food");
 
-        APIRegistry.perms.registerPermission(PERM_DEATHCHEST, PermissionLevel.TRUE, "Allow creation of deathchests");
-        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_FENCE, PermissionLevel.TRUE, "Put the skull on a spike");
-        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_BYPASS, PermissionLevel.OP, "Bypass grave protection");
+        APIRegistry.perms.registerPermission(PERM_DEATHCHEST, DefaultPermissionLevel.ALL, "Allow creation of deathchests");
+        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_FENCE, DefaultPermissionLevel.ALL, "Put the skull on a spike");
+        APIRegistry.perms.registerPermission(PERM_DEATHCHEST_BYPASS, DefaultPermissionLevel.OP, "Bypass grave protection");
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_BLOCK, "", "If set, use this block ID for graves");
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_XP, "0.25",
                 "Ratio of XP that you want to allow someone to keep in a grave. 1 keeps all XP, 0 disables XP recovery.");
@@ -117,7 +116,7 @@ public class ModuleAfterlife extends ServerEventHandler
     @SubscribeEvent
     public void playerDeathDropEvent(PlayerDropsEvent event)
     {
-        Grave grave = Grave.createGrave(event.entityPlayer, event.drops);
+        Grave grave = Grave.createGrave(event.getEntityPlayer(), event.getDrops());
         if (grave != null)
             event.setCanceled(true);
     }
@@ -127,7 +126,7 @@ public class ModuleAfterlife extends ServerEventHandler
     {
         if (event.phase == Phase.END)
             return;
-        if (MinecraftServer.getServer().getEntityWorld().getWorldInfo().getWorldTotalTime() % 20 == 0)
+        if (FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld().getWorldInfo().getWorldTotalTime() % 20 == 0)
         {
             for (Grave grave : new ArrayList<Grave>(Grave.graves.values()))
                 grave.updateBlocks();
@@ -135,34 +134,32 @@ public class ModuleAfterlife extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void playerInteractEvent(PlayerInteractEvent event)
+    public void playerInteractEvent(PlayerInteractEvent.RightClickBlock event)
     {
-        if (event.entity.worldObj.isRemote)
-            return;
-        if (event.action == Action.RIGHT_CLICK_AIR || event.action == Action.LEFT_CLICK_BLOCK)
+        if (event.getEntity().worldObj.isRemote)
             return;
 
-        WorldPoint point = new WorldPoint(event.entity.worldObj, event.x, event.y, event.z);
+        WorldPoint point = new WorldPoint(event.getEntity().worldObj, event.getPos());
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
 
-        grave.interact((EntityPlayerMP) event.entityPlayer);
+        grave.interact((EntityPlayerMP) event.getEntityPlayer());
         event.setCanceled(true);
     }
 
     @SubscribeEvent
     public void blockBreakEvent(BreakEvent event)
     {
-        if (event.world.isRemote)
+        if (event.getWorld().isRemote)
             return;
 
-        WorldPoint point = new WorldPoint(event.world, event.x, event.y, event.z);
+        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
         Grave grave = Grave.graves.get(point);
         if (grave == null)
         {
             // Check for fence post
-            point.setY(event.y + 1);
+            point.setY(point.getY() + 1);
             grave = Grave.graves.get(point);
             if (grave == null || !grave.hasFencePost)
                 return;

@@ -42,7 +42,7 @@ declare abstract class JavaList<T> extends Array<T> {
     remove(element: T): boolean;
 }
 
-declare namespace cpw.mods.fml.common.eventhandler.Event {
+declare namespace net.minecraftforge.fml.common.eventhandler.Event {
     enum Result {
         DENY,
         DEFAULT,
@@ -50,7 +50,7 @@ declare namespace cpw.mods.fml.common.eventhandler.Event {
     }
 }
 
-declare namespace cpw.mods.fml.common.eventhandler {
+declare namespace net.minecraftforge.fml.common.eventhandler {
     enum EventPriority {
         HIGHEST, // First to execute
         HIGH,
@@ -371,10 +371,10 @@ declare namespace mc.event {
 		isCanceled(): boolean;
 		setCanceled(cancel: boolean): void;
 		hasResult(): boolean;
-		getResult(): cpw.mods.fml.common.eventhandler.Event.Result;
-		setResult(value: cpw.mods.fml.common.eventhandler.Event.Result): void;
-		getPhase(): cpw.mods.fml.common.eventhandler.EventPriority;
-		setPhase(value: cpw.mods.fml.common.eventhandler.EventPriority): void;
+		getResult(): net.minecraftforge.fml.common.eventhandler.Event.Result;
+		setResult(value: net.minecraftforge.fml.common.eventhandler.Event.Result): void;
+		getPhase(): net.minecraftforge.fml.common.eventhandler.EventPriority;
+		setPhase(value: net.minecraftforge.fml.common.eventhandler.EventPriority): void;
 		toString(): string;
 	}
 	

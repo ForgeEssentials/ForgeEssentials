@@ -5,6 +5,17 @@ import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.auth.ClientAuthNetHandler;
@@ -23,19 +34,6 @@ import com.forgeessentials.commons.network.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.Packet5Noclip;
 import com.forgeessentials.commons.network.Packet6AuthLogin;
 import com.forgeessentials.commons.network.Packet7Remote;
-
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy
 {
@@ -70,7 +68,7 @@ public class ClientProxy extends CommonProxy
 
     public ClientProxy()
     {
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -119,7 +117,7 @@ public class ClientProxy extends CommonProxy
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
     {
-        if (event.modID.equals(ForgeEssentialsClient.MODID))
+        if (event.getModID().equals(ForgeEssentialsClient.MODID))
             loadConfig();
     }
 
@@ -137,6 +135,8 @@ public class ClientProxy extends CommonProxy
                 "Use shortcut buttons to answer questions. Defaults are F8 for yes and F9 for no, change in game options menu.").getBoolean(true);
         allowAuthAutoLogin = config.get(Configuration.CATEGORY_GENERAL, "allowAuthAutoLogin", true,
                 "Save tokens to automatically log in to servers using FE's Authentication Module.").getBoolean(true);
+        if (!config.get(Configuration.CATEGORY_GENERAL, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
+            BuildInfo.checkVersion = false;
 
         if (allowCUI)
             MinecraftForge.EVENT_BUS.register(cuiRenderer);
@@ -146,6 +146,7 @@ public class ClientProxy extends CommonProxy
             MinecraftForge.EVENT_BUS.register(permissionOverlay);
         if (allowQuestionerShortcuts)
             new QuestionerKeyHandler();
+        BuildInfo.startVersionChecks();
 
         config.save();
     }

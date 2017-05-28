@@ -1,7 +1,8 @@
 package com.forgeessentials.commands.player;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -39,9 +40,9 @@ public class CommandReach extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -51,7 +52,7 @@ public class CommandReach extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -70,7 +71,7 @@ public class CommandReach extends ParserCommandBase
             distance = 5;
 
         NetworkUtils.netHandler.sendTo(new Packet2Reach(distance), arguments.senderPlayer);
-        arguments.senderPlayer.theItemInWorldManager.setBlockReachDistance(distance);
+        arguments.senderPlayer.interactionManager.setBlockReachDistance(distance);
         arguments.confirm(Translator.format("Set reach distance to %d", (int) distance));
     }
 

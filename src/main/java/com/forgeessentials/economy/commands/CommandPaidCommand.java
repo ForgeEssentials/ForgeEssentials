@@ -2,10 +2,11 @@ package com.forgeessentials.economy.commands;
 
 import java.util.Arrays;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,9 +41,9 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.FALSE;
+        return DefaultPermissionLevel.NONE;
     }
 
     @Override
@@ -61,7 +62,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
      * Expected structure: "/paidcommand <player> <amount> <command...>"
      */
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 3)
             throw new InvalidSyntaxException(getCommandUsage(sender));
@@ -70,7 +71,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
         if (!ident.hasPlayer())
             throw new PlayerNotFoundException();
 
-        int amount = parseIntWithMin(sender, args[1], 0);
+        int amount = parseInt(args[1], 0, Integer.MAX_VALUE);
         Wallet wallet = APIRegistry.economy.getWallet(ident);
         if (!wallet.withdraw(amount))
         {
@@ -79,7 +80,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
         }
 
         args = Arrays.copyOfRange(args, 2, args.length);
-        MinecraftServer.getServer().getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, ident.getPlayerMP()), StringUtils.join(args, " "));
+        server.getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, ident.getPlayerMP()), StringUtils.join(args, " "));
 
         ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("That cost you %s", APIRegistry.economy.toString(amount)));
         ModuleEconomy.confirmNewWalletAmount(ident, wallet);

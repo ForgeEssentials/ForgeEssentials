@@ -3,8 +3,8 @@ package com.forgeessentials.core.environment;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 
 public class Environment
 {
@@ -14,6 +14,9 @@ public class Environment
     private static boolean isClient = false;
 
     protected static boolean hasCauldron = false;
+
+    protected static boolean hasSponge = false;
+
     public static void check()
     {
         FMLCommonHandler.instance().registerCrashCallable(new FECrashCallable());
@@ -37,7 +40,7 @@ public class Environment
             }
             catch (ClassNotFoundException cnfe)
             {
-                LoggingHandler.felog.warn("Found WorldEdit, but not FE WorldEdit-module. You cannot use WorldEdit for FE without it.");
+                LoggingHandler.felog.warn("Found WorldEdit Forge, but not FE WorldEdit-module. You cannot use WorldEdit for FE without it.");
             }
         }
 
@@ -77,6 +80,18 @@ public class Environment
     public static boolean hasWorldEdit()
     {
         return hasWorldEdit;
+    }
+
+    public static boolean hasSponge()
+    {
+        return hasSponge;
+    }
+
+    public static void registerSpongeCompatPlugin(boolean isWESpongePresent)
+    {
+        LoggingHandler.felog.info("Sponge environment plugin found, enabling Sponge compat.");
+        hasSponge = true;
+        hasWorldEdit = isWESpongePresent;
     }
 
 }

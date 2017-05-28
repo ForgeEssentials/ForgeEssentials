@@ -17,7 +17,7 @@ public class FEPlayerEvent extends PlayerEvent
 
     public EntityPlayerMP getPlayer()
     {
-        return (EntityPlayerMP) entityPlayer;
+        return (EntityPlayerMP) getEntityPlayer();
     }
 
     /**

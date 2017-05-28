@@ -2,15 +2,18 @@ package com.forgeessentials.teleport;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
@@ -18,8 +21,6 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandBed extends ForgeEssentialsCommandBase
 {
@@ -55,9 +56,9 @@ public class CommandBed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -67,9 +68,9 @@ public class CommandBed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
-        if (args.length >= 1 && PermissionManager.checkPermission(sender, TeleportModule.PERM_BED_OTHERS))
+        if (args.length >= 1 && PermissionAPI.hasPermission(sender, TeleportModule.PERM_BED_OTHERS))
         {
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
@@ -85,32 +86,32 @@ public class CommandBed extends ForgeEssentialsCommandBase
         }
     }
 
-    private void tp(EntityPlayerMP player)
+    private void tp(EntityPlayerMP player) throws CommandException
     {
         World world = player.worldObj;
         if (!world.provider.canRespawnHere())
             world = DimensionManager.getWorld(0);
 
-        ChunkCoordinates spawn = player.getBedLocation(world.provider.dimensionId);
-        if (spawn == null && world.provider.dimensionId != 0)
+        BlockPos spawn = player.getBedLocation(world.provider.getDimension());
+        if (spawn == null && world.provider.getDimension() != 0)
         {
             world = DimensionManager.getWorld(0);
-            spawn = player.getBedLocation(world.provider.dimensionId);
+            spawn = player.getBedLocation(world.provider.getDimension());
         }
         if (spawn == null)
             throw new TranslatedCommandException("No bed found.");
 
-        spawn = EntityPlayer.verifyRespawnCoordinates(player.worldObj, spawn, true);
+        spawn = EntityPlayer.getBedSpawnLocation(player.worldObj, spawn, true);
         if (spawn == null)
             throw new TranslatedCommandException("Your bed has been obstructed.");
 
         PlayerInfo.get(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-        WarpPoint spawnPoint = new WarpPoint(world.provider.dimensionId, spawn, player.rotationPitch, player.rotationYaw);
+        WarpPoint spawnPoint = new WarpPoint(world.provider.getDimension(), spawn, player.rotationPitch, player.rotationYaw);
         TeleportHelper.teleport(player, spawnPoint);
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
@@ -125,7 +126,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

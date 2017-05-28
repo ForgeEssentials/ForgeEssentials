@@ -5,23 +5,25 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.HashMultimap;
-
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
 
 public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
 {
@@ -38,7 +40,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         String key = "*";
         if (args.length != 0)
@@ -50,7 +52,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
             }
             target = target.substring(1).trim();
 
-            List<String> allUsernames = Arrays.asList(MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat());
+            List<String> allUsernames = Arrays.asList(server.getPlayerList().getAvailablePlayerDat());
             for (String username : allUsernames)
             {
                 if (username.equalsIgnoreCase(target))
@@ -76,7 +78,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         list(sender, "*");
     }
@@ -115,10 +117,10 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
 
         if (!key.equals("*"))
         {
-            ChatOutputHandler.chatNotification(sender, EnumChatFormatting.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
+            ChatOutputHandler.chatNotification(sender, TextFormatting.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
         }
 
-        ChatOutputHandler.chatNotification(sender, "Dim " + world.provider.getDimensionName() + ":");
+        ChatOutputHandler.chatNotification(sender, "Dim " + world.provider.getDimensionType().getName() + ":");
 
         if (key.startsWith("p:") || key.equals("*"))
         {
@@ -131,17 +133,17 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
                         ChatOutputHandler.chatNotification(sender, username);
                     }
 
-                    HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
+                    HashSet<ChunkPos> chunks = new HashSet<ChunkPos>();
 
                     for (Ticket ticket : playerTickets.get(username))
                     {
                         for (Object obj : ticket.getChunkList())
                         {
-                            chunks.add((ChunkCoordIntPair) obj);
+                            chunks.add((ChunkPos) obj);
                         }
                     }
 
-                    for (ChunkCoordIntPair coords : chunks)
+                    for (ChunkPos coords : chunks)
                     {
                         ChatOutputHandler.chatNotification(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
                     }
@@ -157,17 +159,17 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
                 {
                     ChatOutputHandler.chatNotification(sender, modID);
                 }
-                HashSet<ChunkCoordIntPair> chunks = new HashSet<ChunkCoordIntPair>();
+                HashSet<ChunkPos> chunks = new HashSet<ChunkPos>();
 
                 for (Ticket ticket : playerTickets.get(modID))
                 {
                     for (Object obj : ticket.getChunkList())
                     {
-                        chunks.add((ChunkCoordIntPair) obj);
+                        chunks.add((ChunkPos) obj);
                     }
                 }
 
-                for (ChunkCoordIntPair coords : chunks)
+                for (ChunkPos coords : chunks)
                 {
                     ChatOutputHandler.chatNotification(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
                 }
@@ -182,12 +184,12 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
             ArrayList<String> options = new ArrayList<String>();
-            for (String s : MinecraftServer.getServer().getConfigurationManager().getAvailablePlayerDat())
+            for (String s : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getAvailablePlayerDat())
             {
                 options.add(s);
             }
@@ -202,9 +204,9 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override

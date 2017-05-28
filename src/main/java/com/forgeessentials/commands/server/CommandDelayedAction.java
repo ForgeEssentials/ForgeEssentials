@@ -2,9 +2,10 @@ package com.forgeessentials.commands.server;
 
 import java.util.TimerTask;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,9 +37,9 @@ public class CommandDelayedAction extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -48,7 +49,7 @@ public class CommandDelayedAction extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
         long time = arguments.parseTimeReadable();
         final String execute = StringUtils.join(arguments.args.iterator(), " ");
@@ -58,10 +59,11 @@ public class CommandDelayedAction extends ParserCommandBase
             @Override
             public void run()
             {
-                MinecraftServer.getServer().getCommandManager().executeCommand(arguments.sender, execute);
+                arguments.server.getCommandManager().executeCommand(arguments.sender, execute);
             }
         }, time);
         arguments.notify("Timer set to run command '%s' in %s", execute, ChatOutputHandler.formatTimeDurationReadableMilli(time, true));
+
     }
 
 }

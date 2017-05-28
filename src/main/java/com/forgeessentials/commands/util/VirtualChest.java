@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.util;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
@@ -23,17 +24,17 @@ public class VirtualChest extends InventoryBasic
     }
 
     @Override
-    public void openInventory()
+    public void openInventory(EntityPlayer player)
     {
         loadInventoryFromNBT(PlayerUtil.getPersistedTag(owner, false).getTagList(VIRTUALCHEST_TAG, 10));
-        super.openInventory();
+        super.openInventory(player);
     }
 
     @Override
-    public void closeInventory()
+    public void closeInventory(EntityPlayer player)
     {
         PlayerUtil.getPersistedTag(owner, true).setTag(VIRTUALCHEST_TAG, saveInventoryToNBT());
-        super.closeInventory();
+        super.closeInventory(player);
     }
 
     @Override

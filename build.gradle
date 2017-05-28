@@ -9,6 +9,10 @@ buildscript {
 			name = "sonatype"
 			url = "https://oss.sonatype.org/content/repositories/releases/"
 		}
+        maven {
+            name = "sponge"
+            url = "http://repo.spongepowered.org/maven/"
+        }
 		mavenCentral()
 		mavenLocal()
 		maven {
@@ -19,11 +23,16 @@ buildscript {
 
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT"
+		classpath "net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
+        classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
 	}
 
+}
+
+plugins {
+    id 'org.spongepowered.plugin' version '0.6'
 }
 
 // Set up FE required repositories
@@ -38,7 +47,8 @@ repositories {
 	}
 }
 
-apply plugin: "forge"
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
 
 /************************************************************
  * General configuration
@@ -57,7 +67,7 @@ def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
-ext.baseVersion = "1.4.6"
+ext.baseVersion = "10.1"
 version = baseVersion + "." + buildNumber
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
@@ -66,9 +76,11 @@ targetCompatibility = 1.8
 
 // Set up forge options
 minecraft {
-	version = "1.7.10-10.13.4.1558-1.7.10"
+	version = "1.10.2-12.18.3.2185"
 	runDir = "rundir"
 	
+	mappings = "snapshot_20160518"
+
 	replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
 	replace "_VERSION_", project.version
 }
@@ -128,13 +140,22 @@ dependencies {
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
-	buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-mc1.7.10", version: "6.1.1-SNAPSHOT", classifier: "dev", changing: true
-	includeMod files("lib/worldedit-forge-mc1.7.10-6.1.1-SNAPSHOT-dist.jar")
+    //buildDep group: "com.sk89q.worldedit", name: "worldedit-forge-1.8.9", version: "6.1.1-SNAPSHOT", changing: true
+    buildDep "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
+    buildDep "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5:dev"
+	includeMod files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
+
+	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
+	buildDep 'org.spongepowered:spongeapi:4.1.0'
 
 	// Shade Mixin library
-	shade group: "org.spongepowered", name: "mixin", version: "0.5.10-SNAPSHOT", changing: true
-	shadeClient group: "org.spongepowered", name: "mixin", version: "0.5.10-SNAPSHOT", changing: true
-	
+	shade (group: "org.spongepowered", name: "mixin", version: "0.6.8-SNAPSHOT", changing: true) {
+		exclude group: 'org.ow2.asm', module: 'asm-tree'
+	}
+	shadeClient (group: "org.spongepowered", name: "mixin", version: "0.6.8-SNAPSHOT", changing: true) {
+		exclude group: 'org.ow2.asm', module: 'asm-tree'
+	}
+
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
     compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
@@ -145,14 +166,24 @@ dependencies {
  */
 
 sourceSets {
+    def deps = [
+		configurations.forgeGradleMcDeps,
+		configurations.forgeGradleMc,
+		configurations.provided
+	]
 	utils {
 		compileClasspath = files(configurations.compile, sourceSets.api.output)
+		compileClasspath += files deps
 	}
 	main {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+		compileClasspath += files deps
+        refMap = "mixins.forgeessentials.refmap.json"
 	}
 	client {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+		compileClasspath += files deps
+        refMap = "mixins.forgeessentials.client.refmap.json"
 	}
 }
 
@@ -211,9 +242,6 @@ jar.doLast {
 	delete (serverLibArchive.archivePath)
 }
 
-def serverRefMap = "${tasks.compileJava.temporaryDir}" + File.separator + "mixins.forgeessentials.refmap.json"
-def clientRefMap = "${tasks.compileClientJava.temporaryDir}" + File.separator + "mixins.forgeessentials.client.refmap.json"
-
 // Configure server jar (default)
 jar {
 	dependsOn "serverLibArchive"
@@ -227,7 +255,6 @@ jar {
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 	}
-    from serverRefMap
 
 	manifest {
 		from serverManifest
@@ -244,7 +271,6 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 	
 	from sourceSets.client.output
 	from sourceSets.utils.output
-    from clientRefMap
 	configurations.shadeClient.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 	}
@@ -261,7 +287,7 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 /************************************************************
  * Deobfuscated server jar
  * Dependency name for maven = com.forgeessentials:forgeessentials:<version>:
- */
+ * */
 
 task deobfJar(dependsOn: "classes", type: Jar) {
 	classifier = "dev"
@@ -278,11 +304,7 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 		from serverManifest
 	}
 }
-
-/************************************************************
- * Configure Mixin tweaks 
- */
-
+/*
 task sourceJar(type: Jar) {
 	classifier = "sources"
 	appendix = minecraft.version
@@ -293,6 +315,7 @@ task sourceJar(type: Jar) {
 		from serverManifest
 	}
 }
+
 
 /************************************************************
  * Configure API javadoc
@@ -313,23 +336,10 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 	manifest { from sharedManifest }
 }
 
-/************************************************************
- * Configure reobfuscation
- */
-
-def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
-def mixinClientSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixinsClient.srg"
-afterEvaluate {
-	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}", "-AoutRefMapFile=${serverRefMap}"]
-	tasks.compileClientJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinClientSrg}", "-AoutRefMapFile=${clientRefMap}"]
-}
-
 reobf {
-	addExtraSrgFile mixinSrg
-	addExtraSrgFile mixinClientSrg
-	reobf (clientJar) { reobfSpec ->
-		reobfSpec.classpath = sourceSets.main.compileClasspath
-	}
+    clientJar {
+        classpath = sourceSets.main.compileClasspath
+    }
 }
 
 /************************************************************
@@ -338,7 +348,7 @@ reobf {
 
 // Add default artifacts for task "build"
 artifacts {
-	archives deobfJar
+	//archives deobfJar
 	archives clientJar
 }
 
@@ -353,7 +363,7 @@ task wrapper(type: Wrapper) {
 apply plugin: "maven-publish"
 
 publishing {
-	tasks.publish.dependsOn "deobfJar"
+	//tasks.publish.dependsOn "deobfJar"
 
 	publications {
 		mavenJava (MavenPublication) {
@@ -364,7 +374,7 @@ publishing {
 				version baseVersion
 
 			artifact deobfJar
-			artifact sourceJar
+			//artifact sourceJar
 			artifact javadocJar
 
 			pom.withXml {

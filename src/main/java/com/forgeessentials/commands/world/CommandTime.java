@@ -4,12 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
@@ -19,11 +24,6 @@ import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 
 public class CommandTime extends ParserCommandBase implements ConfigurableCommand
 {
@@ -55,7 +55,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
 
     public CommandTime()
     {
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -77,9 +77,9 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -116,7 +116,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
         }
     }
 
-    public static void parseFreeze(CommandParserArgs arguments)
+    public static void parseFreeze(CommandParserArgs arguments) throws CommandException
     {
         World world = arguments.isEmpty() ? null : arguments.parseWorld();
         if (arguments.isTabCompletion)
@@ -127,7 +127,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
             boolean freeze = getTimeData(0).frozenTime == null;
             for (World w : DimensionManager.getWorlds())
             {
-                TimeData td = getTimeData(w.provider.dimensionId);
+                TimeData td = getTimeData(w.provider.getDimension());
                 td.frozenTime = freeze ? w.getWorldInfo().getWorldTime() : null;
             }
             if (freeze)
@@ -137,7 +137,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
         }
         else
         {
-            TimeData td = getTimeData(world.provider.dimensionId);
+            TimeData td = getTimeData(world.provider.getDimension());
             td.frozenTime = (td.frozenTime == null) ? world.getWorldInfo().getWorldTime() : null;
             if (td.frozenTime != null)
                 arguments.confirm("Froze time");
@@ -147,7 +147,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
         save();
     }
 
-    public static void parseTime(CommandParserArgs arguments, boolean addTime)
+    public static void parseTime(CommandParserArgs arguments, boolean addTime) throws CommandException
     {
         long time;
         if (!addTime)
@@ -172,13 +172,13 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
                 time = 18 * 1000;
                 break;
             default:
-                time = parseInt(arguments.sender, timeStr);
+                time = parseInt(timeStr);
                 break;
             }
         }
         else
         {
-            time = parseInt(arguments.sender, arguments.remove());
+            time = parseInt(arguments.remove());
         }
 
         World world = arguments.isEmpty() ? null : arguments.parseWorld();
@@ -193,7 +193,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
                     w.getWorldInfo().setWorldTime(w.getWorldInfo().getWorldTime() + time);
                 else
                     w.getWorldInfo().setWorldTime(time);
-                TimeData td = getTimeData(w.provider.dimensionId);
+                TimeData td = getTimeData(w.provider.getDimension());
                 if (td.frozenTime != null)
                     td.frozenTime = w.getWorldInfo().getWorldTime();
             }
@@ -205,7 +205,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
                 world.getWorldInfo().setWorldTime(world.getWorldInfo().getWorldTime() + time);
             else
                 world.getWorldInfo().setWorldTime(time);
-            TimeData td = getTimeData(world.provider.dimensionId);
+            TimeData td = getTimeData(world.provider.getDimension());
             if (td.frozenTime != null)
                 td.frozenTime = world.getWorldInfo().getWorldTime();
             arguments.confirm("Set time to %s", time);
@@ -227,7 +227,7 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
 
     public static void updateWorld(World world)
     {
-        TimeData td = getTimeData(world.provider.dimensionId);
+        TimeData td = getTimeData(world.provider.getDimension());
         if (td.frozenTime != null)
             world.getWorldInfo().setWorldTime(td.frozenTime);
     }

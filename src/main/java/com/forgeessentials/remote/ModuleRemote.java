@@ -16,7 +16,12 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.codec.binary.Hex;
 
@@ -40,12 +45,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
-
-import cpw.mods.fml.common.discovery.ASMDataTable;
-import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
@@ -144,8 +143,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     public void load(FEModuleInitEvent event)
     {
         APIRegistry.remoteManager = this;
-        APIRegistry.perms.registerPermission(PERM, PermissionLevel.OP, "Allows login to remote module");
-        APIRegistry.perms.registerPermission(PERM_CONTROL, PermissionLevel.OP,
+        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows login to remote module");
+        APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP,
                 "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
 
         FECommandManager.registerCommand(new CommandRemote());
@@ -265,7 +264,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         handlers.put(id, handler);
         String perm = handler.getPermission();
         if (perm != null && APIRegistry.perms.getServerZone().getRootZone().getGroupPermission(Zone.GROUP_DEFAULT, perm) == null)
-            APIRegistry.perms.registerPermission(perm, PermissionLevel.OP);
+            APIRegistry.perms.registerPermission(perm, DefaultPermissionLevel.OP, perm);
     }
 
     /*

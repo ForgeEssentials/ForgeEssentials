@@ -1,9 +1,10 @@
 package com.forgeessentials.economy.commands;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.economy.Wallet;
@@ -31,9 +32,9 @@ public class CommandSell extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -51,11 +52,11 @@ public class CommandSell extends ParserCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(getPermissionNode() + ".noconfirm", PermissionLevel.FALSE, "Do not confirm selling items to the server.");
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".noconfirm", DefaultPermissionLevel.NONE, "Do not confirm selling items to the server.");
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
         final boolean holdingItem;
         final ItemStack itemStack;
@@ -64,7 +65,7 @@ public class CommandSell extends ParserCommandBase
         if (arguments.isEmpty() || arguments.peek().equalsIgnoreCase("yes") || arguments.peek().equalsIgnoreCase("y"))
         {
             holdingItem = true;
-            itemStack = arguments.senderPlayer.getCurrentEquippedItem();
+            itemStack = arguments.senderPlayer.getHeldItemMainhand();
             if (itemStack == null)
                 throw new TranslatedCommandException("You need to hold an item first!");
             amount = itemStack.stackSize;
@@ -131,7 +132,7 @@ public class CommandSell extends ParserCommandBase
                 int removedAmount = 0;
                 if (holdingItem)
                 {
-                    ItemStack currentItemStack = arguments.senderPlayer.getCurrentEquippedItem();
+                    ItemStack currentItemStack = arguments.senderPlayer.getHeldItemMainhand();
                     if (currentItemStack.isItemEqual(itemStack))
                     {
                         removedAmount = Math.min(currentItemStack.stackSize, amount);

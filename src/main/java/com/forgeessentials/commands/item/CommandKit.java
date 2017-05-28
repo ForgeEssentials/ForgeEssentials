@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,8 +27,6 @@ import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Kit command with cooldown. Should also put armor in armor slots.
@@ -73,9 +73,9 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -87,8 +87,8 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_ADMIN, PermissionLevel.OP);
-        APIRegistry.perms.registerPermission(PERM_BYPASS_COOLDOWN, PermissionLevel.OP);
+        APIRegistry.perms.registerPermission(PERM_ADMIN, DefaultPermissionLevel.OP, "Administer kits");
+        APIRegistry.perms.registerPermission(PERM_BYPASS_COOLDOWN, DefaultPermissionLevel.OP, "Bypass kit cooldown");
     }
 
     public List<String> getAvailableKits(CommandParserArgs arguments)
@@ -101,7 +101,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments)
+    public void parse(final CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {
@@ -141,7 +141,14 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
                         return;
                     int cooldown = -1;
                     if (!arguments.isEmpty())
-                        cooldown = arguments.parseInt();
+                        try
+                        {
+                            cooldown = arguments.parseInt();
+                        }
+                        catch (CommandException e)
+                        {
+                            arguments.error(e.getMessage());
+                        }
                     addKit(new Kit(arguments.senderPlayer, kitName, cooldown));
                     if (cooldown < 0)
                         arguments.confirm("Kit %s saved for one-time-use", kitName);
@@ -169,7 +176,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     {
         Kit kit = kits.get(kitForNewPlayers);
         if (kit != null)
-            kit.giveKit(event.entityPlayer);
+            kit.giveKit(event.getEntityPlayer());
     }
 
     @Override

@@ -2,12 +2,13 @@ package com.forgeessentials.permissions.commands;
 
 import static com.forgeessentials.permissions.core.ItemPermissionManager.TAG_MODE;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -40,9 +41,9 @@ public class CommandItemPermission extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -52,9 +53,9 @@ public class CommandItemPermission extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
-        ItemStack stack = arguments.senderPlayer.getCurrentEquippedItem();
+        ItemStack stack = arguments.senderPlayer.getHeldItemMainhand();
         if (stack == null)
             throw new TranslatedCommandException("No item equipped!");
 
@@ -91,7 +92,7 @@ public class CommandItemPermission extends ParserCommandBase
         }
     }
 
-    public static void parseMode(CommandParserArgs arguments, ItemStack stack)
+    public static void parseMode(CommandParserArgs arguments, ItemStack stack) throws CommandException
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
@@ -116,7 +117,7 @@ public class CommandItemPermission extends ParserCommandBase
         }
     }
 
-    public static void parsePermission(CommandParserArgs arguments, ItemStack stack)
+    public static void parsePermission(CommandParserArgs arguments, ItemStack stack) throws CommandException
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
@@ -133,7 +134,7 @@ public class CommandItemPermission extends ParserCommandBase
         arguments.confirm("Set permission %s=%s for item", permission, value);
     }
 
-    public static void parseGroup(CommandParserArgs arguments, ItemStack stack)
+    public static void parseGroup(CommandParserArgs arguments, ItemStack stack) throws CommandException
     {
         if (arguments.isEmpty())
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);

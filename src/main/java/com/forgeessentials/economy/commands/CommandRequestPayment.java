@@ -2,9 +2,13 @@ package com.forgeessentials.economy.commands;
 
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -12,8 +16,6 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandRequestPayment extends ForgeEssentialsCommandBase
 {
@@ -25,7 +27,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length != 2)
             throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amountRequested>");
@@ -36,16 +38,16 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
         }
         else
         {
-            int amount = parseIntWithMin(sender, args[1], 0);
+            int amount = parseInt(args[1], 0, Integer.MAX_VALUE);
             ChatOutputHandler.chatConfirmation(sender,
-                    Translator.format("You requested %s to pay %s", player.getCommandSenderName(), APIRegistry.economy.toString(amount)));
+                    Translator.format("You requested %s to pay %s", player.getName(), APIRegistry.economy.toString(amount)));
             ChatOutputHandler.chatConfirmation(player,
-                    Translator.format("You have been requested to pay %s by %s", APIRegistry.economy.toString(amount), sender.getCommandSenderName()));
+                    Translator.format("You have been requested to pay %s by %s", APIRegistry.economy.toString(amount), sender.getName()));
         }
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length != 2)
             throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amountRequested>");
@@ -57,9 +59,9 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
         }
         else
         {
-            int amount = parseIntWithMin(sender, args[1], 0);
+            int amount = parseInt(args[1], 0, Integer.MAX_VALUE);
             ChatOutputHandler.chatConfirmation(sender,
-                    Translator.format("You requested %s to pay %s", player.getCommandSenderName(), APIRegistry.economy.toString(amount)));
+                    Translator.format("You requested %s to pay %s", player.getName(), APIRegistry.economy.toString(amount)));
             ChatOutputHandler
                     .chatConfirmation(player, Translator.format("You have been requested to pay %s by the server", APIRegistry.economy.toString(amount)));
         }
@@ -78,7 +80,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
@@ -98,9 +100,9 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
 
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 }

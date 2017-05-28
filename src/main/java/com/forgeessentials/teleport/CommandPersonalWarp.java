@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -57,9 +58,9 @@ public class CommandPersonalWarp extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.OP;
+        return DefaultPermissionLevel.OP;
     }
 
     @Override
@@ -71,8 +72,8 @@ public class CommandPersonalWarp extends ParserCommandBase
     @Override
     public void registerExtraPermissions()
     {
-        APIRegistry.perms.registerPermission(PERM_SET, PermissionLevel.OP, "Allow setting personal warps");
-        APIRegistry.perms.registerPermission(PERM_DELETE, PermissionLevel.OP, "Allow deleting personal warps");
+        APIRegistry.perms.registerPermission(PERM_SET, DefaultPermissionLevel.OP, "Allow setting personal warps");
+        APIRegistry.perms.registerPermission(PERM_DELETE, DefaultPermissionLevel.OP, "Allow deleting personal warps");
         APIRegistry.perms.registerPermissionProperty(PERM_LIMIT, "10", "Maximal personal warp count");
         APIRegistry.perms.registerPermissionPropertyOp(PERM_LIMIT, "false");
     }
@@ -86,7 +87,7 @@ public class CommandPersonalWarp extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
         {

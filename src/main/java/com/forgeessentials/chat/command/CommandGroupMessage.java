@@ -1,10 +1,11 @@
 package com.forgeessentials.chat.command;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.IChatComponent;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.ModuleChat;
@@ -36,9 +37,9 @@ public class CommandGroupMessage extends ParserCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
     @Override
@@ -48,12 +49,10 @@ public class CommandGroupMessage extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public void parse(CommandParserArgs arguments) throws CommandException
     {
         if (arguments.isEmpty())
-        {
             throw new WrongUsageException(getCommandUsage(null));
-        }
 
         arguments.tabComplete(APIRegistry.perms.getServerZone().getGroups());
         String group = arguments.remove().toLowerCase();
@@ -61,7 +60,7 @@ public class CommandGroupMessage extends ParserCommandBase
         if (arguments.isEmpty())
             throw new TranslatedCommandException("Missing chat message");
 
-        IChatComponent msgComponent = func_147176_a(arguments.sender, arguments.toArray(), 0, !(arguments.sender instanceof EntityPlayer));
+        ITextComponent msgComponent = getChatComponentFromNthArg(arguments.sender, arguments.toArray(), 0, !(arguments.sender instanceof EntityPlayer));
         ModuleChat.tellGroup(arguments.sender, msgComponent.getUnformattedText(), group);
     }
 

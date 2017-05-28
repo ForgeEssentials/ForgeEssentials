@@ -20,7 +20,11 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -54,11 +58,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.registry.GameData;
 
 /**
  * Economy module.
@@ -130,8 +129,8 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         APIRegistry.perms.registerPermissionDescription(PERM_PRICE, "Default prices for items in economy");
 
         APIRegistry.perms.registerPermissionDescription(PERM_BOUNTY, "Bounty for killing entities (ex.: fe.economy.bounty.Skeleton = 5)");
-        APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, PermissionLevel.TRUE, "Whether to show a message if a bounty is given");
-        for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.stringToClassMapping).entrySet())
+        APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, DefaultPermissionLevel.ALL, "Whether to show a message if a bounty is given");
+        for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.NAME_TO_CLASS).entrySet())
             if (EntityLiving.class.isAssignableFrom(e.getValue()))
                 APIRegistry.perms.registerPermissionProperty(PERM_BOUNTY + "." + e.getKey(), "0");
 
@@ -227,23 +226,23 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     public void onXPPickup(PlayerPickupXpEvent e)
     {
-        if (e.entityPlayer instanceof EntityPlayerMP)
+        if (e.getEntityPlayer() instanceof EntityPlayerMP)
         {
-            UserIdent ident = UserIdent.get(e.entityPlayer);
+            UserIdent ident = UserIdent.get(e.getEntityPlayer());
             double xpMultiplier = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
             if (xpMultiplier <= 0)
                 return;
             PlayerWallet wallet = getWallet(ident);
-            wallet.add(xpMultiplier * e.orb.xpValue);
+            wallet.add(xpMultiplier * e.getOrb().xpValue);
         }
     }
 
     @SubscribeEvent
     public void onDeath(LivingDeathEvent e)
     {
-        if (e.entity instanceof EntityPlayerMP)
+        if (e.getEntity() instanceof EntityPlayerMP)
         {
-            UserIdent ident = UserIdent.get((EntityPlayerMP) e.entity);
+            UserIdent ident = UserIdent.get((EntityPlayerMP) e.getEntity());
             Long deathtoll = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
             if (deathtoll == null || deathtoll <= 0)
                 return;
@@ -259,13 +258,13 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             if (loss <= 0)
                 return;
             wallet.set(newAmount);
-            ChatOutputHandler.chatNotification((ICommandSender) e.entity, Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
+            ChatOutputHandler.chatNotification((ICommandSender) e.getEntity(), Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
         }
 
-        if (e.source.getEntity() instanceof EntityPlayerMP)
+        if (e.getSource().getEntity() instanceof EntityPlayerMP)
         {
-            UserIdent killer = UserIdent.get((EntityPlayerMP) e.source.getEntity());
-            String permission = PERM_BOUNTY + "." + ProtectionEventHandler.getEntityName(e.entityLiving);
+            UserIdent killer = UserIdent.get((EntityPlayerMP) e.getSource().getEntity());
+            String permission = PERM_BOUNTY + "." + ProtectionEventHandler.getEntityName(e.getEntityLiving());
             double bounty = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(killer, permission), 0);
             if (bounty > 0)
             {
@@ -281,14 +280,14 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void commandEvent(CommandEvent event)
     {
-        if (!(event.sender instanceof EntityPlayerMP))
+        if (!(event.getSender() instanceof EntityPlayerMP))
             return;
-        UserIdent ident = UserIdent.get((EntityPlayerMP) event.sender);
+        UserIdent ident = UserIdent.get((EntityPlayerMP) event.getSender());
 
-        for (int i = event.parameters.length; i >= 0; i--)
+        for (int i = event.getParameters().length; i >= 0; i--)
         {
-            String permission = PERM_COMMANDPRICE + '.' + event.command.getCommandName() + //
-                    (i == 0 ? "" : ('.' + StringUtils.join(Arrays.copyOf(event.parameters, i), '.')));
+            String permission = PERM_COMMANDPRICE + '.' + event.getCommand().getCommandName() + //
+                    (i == 0 ? "" : ('.' + StringUtils.join(Arrays.copyOf(event.getParameters(), i), '.')));
             Long price = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, permission));
             if (price == null)
                 continue;
@@ -358,7 +357,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
                 for (Item item : GameData.getItemRegistry().typeSafeIterable())
                     if (entry.getKey().equals(item.getUnlocalizedName()))
                     {
-                        String id = GameData.getItemRegistry().getNameForObject(item);
+                        String id = ServerUtil.getItemName(item);
                         config.get(CATEGORY_ITEM, id, DEFAULT_ITEM_PRICE).set(entry.getValue().getInt(DEFAULT_ITEM_PRICE));
                         break;
                     }

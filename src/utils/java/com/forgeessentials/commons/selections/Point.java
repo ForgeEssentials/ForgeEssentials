@@ -4,49 +4,47 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
-public class Point {
+public class Point
+{
 
-	protected int x;
+    protected BlockPos blockPos;
 
-	protected int y;
+    protected int x;
 
-	protected int z;
+    protected int y;
+
+    protected int z;
 
     // ------------------------------------------------------------
 
-	public Point(int x, int y, int z)
-	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-
-	public Point (double x, double y, double z)
-	{
-		this.x = ((int) x);
-		this.y = ((int) y);
-		this.z = ((int) z);
-	}
-
-	public Point(Entity entity)
-	{
-		x = (int) Math.floor(entity.posX);
-		y = (int) Math.floor(entity.posY);
-		z = (int) Math.floor(entity.posZ);
-	}
-
-    public Point(ChunkCoordinates location)
+    public Point(int x, int y, int z)
     {
-        this(location.posX, location.posY, location.posZ);
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-	public Point(Vec3 vector)
-	{
-		this((int) vector.xCoord, (int) vector.yCoord, (int) vector.zCoord);
-	}
+    public Point(double x, double y, double z)
+    {
+        this.x = ((int) x);
+        this.y = ((int) y);
+        this.z = ((int) z);
+    }
+
+    public Point(Entity entity)
+    {
+        x = (int) Math.floor(entity.posX);
+        y = (int) Math.floor(entity.posY);
+        z = (int) Math.floor(entity.posZ);
+    }
+
+    public Point(Vec3d vector)
+    {
+        this((int) vector.xCoord, (int) vector.yCoord, (int) vector.zCoord);
+    }
 
     public Point(Point other)
     {
@@ -55,38 +53,48 @@ public class Point {
 
     // ------------------------------------------------------------
 
-	public int getX()
-	{
-		return x;
-	}
+    public BlockPos getBlockPos()
+    {
+        if (blockPos == null)
+            blockPos = new BlockPos(x, y, z);
+        return blockPos;
+    }
 
-	public int getY()
-	{
-		return y;
-	}
+    public int getX()
+    {
+        return x;
+    }
 
-	public int getZ()
-	{
-		return z;
-	}
+    public int getY()
+    {
+        return y;
+    }
 
-	public Point setX(int x)
-	{
-		this.x = x;
+    public int getZ()
+    {
+        return z;
+    }
+
+    public Point setX(int x)
+    {
+        this.x = x;
+        blockPos = null;
         return this;
-	}
+    }
 
-	public Point setY(int y)
-	{
-		this.y = y;
+    public Point setY(int y)
+    {
+        this.y = y;
+        blockPos = null;
         return this;
-	}
+    }
 
-	public Point setZ(int z)
-	{
-		this.z = z;
-		return this;
-	}
+    public Point setZ(int z)
+    {
+        this.z = z;
+        blockPos = null;
+        return this;
+    }
 
     // ------------------------------------------------------------
 
@@ -111,6 +119,7 @@ public class Point {
         x += v.x;
         y += v.y;
         z += v.z;
+        blockPos = null;
     }
 
     public void subtract(Point v)
@@ -118,42 +127,44 @@ public class Point {
         x -= v.x;
         y -= v.y;
         z -= v.z;
+        blockPos = null;
     }
 
-	/**
-	 * Checks if two points are on the same plane (have the same coordinate on at least one axis)
-	 */
-	public boolean alignsWith(Point point)
-	{
-		return x == point.x || y == point.y || z == point.z;
-	}
+    /**
+     * Checks if two points are on the same plane (have the same coordinate on at least one axis)
+     */
+    public boolean alignsWith(Point point)
+    {
+        return x == point.x || y == point.y || z == point.z;
+    }
 
-	/**
-	 * Checks if this point has greater or equal coordinates than another point on all axes
-	 */
-	public boolean isGreaterEqualThan(Point p)
-	{
-		return x >= p.x && y >= p.y && z >= p.z;
-	}
+    /**
+     * Checks if this point has greater or equal coordinates than another point on all axes
+     */
+    public boolean isGreaterEqualThan(Point p)
+    {
+        return x >= p.x && y >= p.y && z >= p.z;
+    }
 
     /**
      * Checks if this point has less or equal coordinates than another point on all axes
      */
-	public boolean isLessEqualThan(Point p)
-	{
-		return x <= p.x && y <= p.y && z <= p.z;
-	}
+    public boolean isLessEqualThan(Point p)
+    {
+        return x <= p.x && y <= p.y && z <= p.z;
+    }
 
-	public void validatePositiveY()
-	{
-		if (y < 0)
-			y = 0;
-	}
+    public void validatePositiveY()
+    {
+        if (y < 0)
+            y = 0;
+        blockPos = null;
+    }
 
-	public Vec3 toVec3()
-	{
-		return Vec3.createVectorHelper(x, y, z);
-	}
+    public Vec3d toVec3()
+    {
+        return new Vec3d(x, y, z);
+    }
 
     // ------------------------------------------------------------
 
@@ -185,7 +196,8 @@ public class Point {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int h = 1 + x;
         h = h * 31 + y;
         h = h * 31 + z;

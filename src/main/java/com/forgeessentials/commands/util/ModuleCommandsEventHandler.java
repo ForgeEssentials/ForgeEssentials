@@ -5,10 +5,14 @@ import java.util.Set;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -21,11 +25,6 @@ import com.forgeessentials.util.events.FEPlayerEvent.PlayerAFKEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class ModuleCommandsEventHandler extends ServerEventHandler implements Runnable
 {
@@ -65,7 +64,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
 
         if (player.checkPermission(CommandAFK.PERM_AUTOKICK))
         {
-            player.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.translate("You have been kicked for being AFK"));
+            player.getPlayerMP().connection.kickPlayerFromServer(Translator.translate("You have been kicked for being AFK"));
             return;
         }
 
@@ -88,7 +87,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         PlayerAFKEvent event = new PlayerAFKEvent(player.getPlayerMP(), false);
         APIRegistry.getFEEventBus().post(event);
 
-        switch (player.getPlayerMP().theItemInWorldManager.getGameType())
+        switch (player.getPlayerMP().interactionManager.getGameType())
         {
         case NOT_SET:
         case SURVIVAL:
@@ -114,7 +113,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         clearAfk(pi.ident);
     }
 
-    public static void checkAfkMessage(ICommandSender target, IChatComponent message)
+    public static void checkAfkMessage(ICommandSender target, ITextComponent message)
     {
         if (!(target instanceof EntityPlayerMP))
             return;
@@ -137,7 +136,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        playerActive((EntityPlayerMP) event.entityPlayer);
+        playerActive((EntityPlayerMP) event.getEntityPlayer());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -145,14 +144,14 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        playerActive((EntityPlayerMP) event.entityPlayer);
+        playerActive((EntityPlayerMP) event.getEntityPlayer());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void chatEvent(ServerChatEvent event)
     {
-        playerActive(event.player);
-        String msg = event.component.getUnformattedText().toLowerCase();
+        playerActive(event.getPlayer());
+        String msg = event.getComponent().getUnformattedText().toLowerCase();
         for (UserIdent player : afkPlayers)
             if (msg.contains(player.getUsernameOrUuid().toLowerCase()))
                 ChatOutputHandler.notification(Translator.format("Player %s is currently AFK", player.getUsernameOrUuid()));
@@ -161,10 +160,10 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void commandEvent(CommandEvent event)
     {
-        if (event.command instanceof CommandAFK)
+        if (event.getCommand() instanceof CommandAFK)
             return;
-        if (event.sender instanceof EntityPlayerMP)
-            playerActive((EntityPlayerMP) event.sender);
+        if (event.getSender() instanceof EntityPlayerMP)
+            playerActive((EntityPlayerMP) event.getSender());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -175,7 +174,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         PlayerInfo pi = PlayerInfo.get(event.player);
         if (!pi.checkTimeout("tempban"))
         {
-            pi.ident.getPlayerMP().playerNetServerHandler.kickPlayerFromServer(Translator.format("You are still banned for %s",
+            pi.ident.getPlayerMP().connection.kickPlayerFromServer(Translator.format("You are still banned for %s",
                     ChatOutputHandler.formatTimeDurationReadable(pi.getRemainingTimeout("tempban") / 1000, true)));
         }
     }

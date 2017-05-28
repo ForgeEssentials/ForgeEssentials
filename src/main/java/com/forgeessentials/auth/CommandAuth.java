@@ -3,12 +3,16 @@ package com.forgeessentials.auth;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.permission.PermissionLevel;
-import net.minecraftforge.permission.PermissionManager;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -19,8 +23,6 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
 import com.forgeessentials.util.output.ChatOutputHandler;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CommandAuth extends ForgeEssentialsCommandBase
 {
@@ -34,7 +36,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(EntityPlayerMP sender, String[] args)
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -63,7 +65,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException("command.auth.usage");
         }
 
-        boolean hasAdmin = PermissionManager.checkPermission(sender, getPermissionNode() + ".admin");
+        boolean hasAdmin = PermissionAPI.hasPermission(sender, getPermissionNode() + ".admin");
 
         // one arg? must be help.
         if (args.length == 1)
@@ -158,7 +160,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 {
                     ModuleAuth.deauthenticate(player.getPersistentID());
                     ChatOutputHandler.chatConfirmation(sender,
-                            Translator.format("Player %s was logged out from the authentication service.", player.getCommandSenderName()));
+                            Translator.format("Player %s was logged out from the authentication service.", player.getName()));
                     ChatOutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
                     return;
                 }
@@ -181,11 +183,11 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                     throw new PermissionDeniedException();
 
                 if (!ModuleAuth.isRegistered(player.getPersistentID()))
-                    throw new TranslatedCommandException("Player %s is not registered!", player.getCommandSenderName());
+                    throw new TranslatedCommandException("Player %s is not registered!", player.getName());
 
                 PasswordManager.setPassword(player.getPersistentID(), null);
                 ChatOutputHandler.chatConfirmation(sender,
-                        Translator.format("Player %s has been removed from the authentication service.", player.getCommandSenderName()));
+                        Translator.format("Player %s has been removed from the authentication service.", player.getName()));
                 return;
             }
 
@@ -211,7 +213,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 }
 
                 if (!ModuleAuth.isRegistered(sender.getPersistentID()))
-                    throw new TranslatedCommandException("Player %s is not registered!", sender.getCommandSenderName());
+                    throw new TranslatedCommandException("Player %s is not registered!", sender.getName());
 
                 if (!PasswordManager.checkPassword(sender.getPersistentID(), args[1]))
                 {
@@ -238,13 +240,13 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 if (!hasAdmin)
                     throw new PermissionDeniedException();
                 PasswordManager.setPassword(player.getPersistentID(), args[2]);
-                ChatOutputHandler.chatConfirmation(sender, Translator.format("Password set for %s", player.getCommandSenderName()));
+                ChatOutputHandler.chatConfirmation(sender, Translator.format("Password set for %s", player.getName()));
             }
         }
     }
 
     @Override
-    public void processCommandConsole(ICommandSender sender, String[] args)
+    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -291,7 +293,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 {
                     ModuleAuth.deauthenticate(player.getPersistentID());
                     ChatOutputHandler.chatConfirmation(sender,
-                            Translator.format("Player %s was logged out from the authentication service.", player.getCommandSenderName()));
+                            Translator.format("Player %s was logged out from the authentication service.", player.getName()));
                     ChatOutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
                     return;
                 }
@@ -322,7 +324,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             if (args[0].equalsIgnoreCase("setPass"))
             {
                 PasswordManager.setPassword(player.getPersistentID(), args[2]);
-                ChatOutputHandler.chatConfirmation(sender, Translator.format("Password set for %s", player.getCommandSenderName()));
+                ChatOutputHandler.chatConfirmation(sender, Translator.format("Password set for %s", player.getName()));
             }
         }
     }
@@ -334,7 +336,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args)
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         ArrayList<String> list = new ArrayList<String>();
         switch (args.length)
@@ -380,9 +382,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public PermissionLevel getPermissionLevel()
+    public DefaultPermissionLevel getPermissionLevel()
     {
-        return PermissionLevel.TRUE;
+        return DefaultPermissionLevel.ALL;
     }
 
 }

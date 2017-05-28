@@ -8,7 +8,8 @@ import java.util.SortedSet;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.permission.PermissionLevel;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -22,9 +23,6 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 @FEModule(name = "factions", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleFactions extends ConfigLoaderBase
@@ -70,7 +68,6 @@ public class ModuleFactions extends ConfigLoaderBase
 
     public ModuleFactions()
     {
-        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.FE_EVENTBUS.register(this);
     }
@@ -82,20 +79,20 @@ public class ModuleFactions extends ConfigLoaderBase
 
         APIRegistry.perms.registerPermissionDescription(PERM_DATA_NAME,
                 "Faction name (if this permission is set and the group name starts with \"faction_\", a group is considered a faction)");
-        APIRegistry.perms.registerPermission(PERM_DATA_LOCKED, PermissionLevel.FALSE, "Locks a faction so players can only join on invitation");
+        APIRegistry.perms.registerPermission(PERM_DATA_LOCKED, DefaultPermissionLevel.NONE, "Locks a faction so players can only join on invitation");
 
         APIRegistry.perms.registerPermissionDescription(PERM, "Faction permissions");
-        APIRegistry.perms.registerPermission(PERM_LIST, PermissionLevel.TRUE, "List existing factions");
-        APIRegistry.perms.registerPermission(PERM_CREATE, PermissionLevel.TRUE, "Allows creating factions");
-        APIRegistry.perms.registerPermission(PERM_DELETE, PermissionLevel.OP, "Allows to delete a faction");
-        APIRegistry.perms.registerPermission(PERM_JOIN, PermissionLevel.TRUE, "Allows joining factions");
-        APIRegistry.perms.registerPermission(PERM_JOIN_ANY, PermissionLevel.OP, "Allows joining even locked factions");
-        APIRegistry.perms.registerPermission(PERM_LEAVE, PermissionLevel.TRUE, "Allows to leave factions");
-        APIRegistry.perms.registerPermission(PERM_INVITE, PermissionLevel.TRUE, "Allows inviting other players to a faction");
-        APIRegistry.perms.registerPermission(PERM_ALLY, PermissionLevel.OP, "Allows controlling faction allies");
-        APIRegistry.perms.registerPermission(PERM_MEMBERS + ".*", PermissionLevel.OP, "Control members");
-        APIRegistry.perms.registerPermission(PERM_FF, PermissionLevel.OP, "Allows controlling friendly fire setting");
-        APIRegistry.perms.registerPermission(PERM_BONUS, PermissionLevel.OP, "Allows controlling faction bonuses");
+        APIRegistry.perms.registerPermission(PERM_LIST, DefaultPermissionLevel.ALL, "List existing factions");
+        APIRegistry.perms.registerPermission(PERM_CREATE, DefaultPermissionLevel.ALL, "Allows creating factions");
+        APIRegistry.perms.registerPermission(PERM_DELETE, DefaultPermissionLevel.OP, "Allows to delete a faction");
+        APIRegistry.perms.registerPermission(PERM_JOIN, DefaultPermissionLevel.ALL, "Allows joining factions");
+        APIRegistry.perms.registerPermission(PERM_JOIN_ANY, DefaultPermissionLevel.OP, "Allows joining even locked factions");
+        APIRegistry.perms.registerPermission(PERM_LEAVE, DefaultPermissionLevel.ALL, "Allows to leave factions");
+        APIRegistry.perms.registerPermission(PERM_INVITE, DefaultPermissionLevel.ALL, "Allows inviting other players to a faction");
+        APIRegistry.perms.registerPermission(PERM_ALLY, DefaultPermissionLevel.OP, "Allows controlling faction allies");
+        APIRegistry.perms.registerPermission(PERM_MEMBERS + ".*", DefaultPermissionLevel.OP, "Control members");
+        APIRegistry.perms.registerPermission(PERM_FF, DefaultPermissionLevel.OP, "Allows controlling friendly fire setting");
+        APIRegistry.perms.registerPermission(PERM_BONUS, DefaultPermissionLevel.OP, "Allows controlling faction bonuses");
 
         APIRegistry.perms.setGroupPermission(GROUP_OWNER, PERM_DELETE, true);
         APIRegistry.perms.setGroupPermission(GROUP_OWNER, PERM_LEAVE, false);

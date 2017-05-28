@@ -14,19 +14,26 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.WorldManager;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.ServerWorldEventHandler;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
-import net.minecraft.world.WorldSettings.GameType;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fe.DimensionManagerHelper;
 import net.minecraftforge.fe.event.world.WorldPreLoadEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
+import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
+import net.minecraftforge.fml.common.network.FMLOutboundHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 import org.apache.commons.io.FileUtils;
 
@@ -42,13 +49,6 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
-import cpw.mods.fml.common.network.FMLEmbeddedChannel;
-import cpw.mods.fml.common.network.FMLOutboundHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 /**
  * 
@@ -246,12 +246,12 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         APIRegistry.perms.getServerZone().getWorldZone(world.dimensionId)
                 .setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD, world.getName());
 
-        // Register the dimension
-        DimensionManager.registerDimension(world.dimensionId, world.providerId);
-        worldsByDim.put(world.dimensionId, world);
+            // Register the dimension
+            DimensionManager.registerDimension(world.dimensionId, DimensionType.OVERWORLD);
+            worldsByDim.put(world.dimensionId, world);
 
         // Allow the world to unload
-        DimensionManagerHelper.keepLoaded.put(world.dimensionId, false);
+        DimensionManager.getProviderType(world.dimensionId).setLoadSpawn(false);
     }
 
     /**
@@ -264,23 +264,24 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         try
         {
             // Initialize world settings
-            MinecraftServer mcServer = MinecraftServer.getServer();
+            MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
             WorldServer overworld = DimensionManager.getWorld(0);
             if (overworld == null)
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
-            WorldSettings worldSettings = new WorldSettings(world.seed, GameType.SURVIVAL, world.mapFeaturesEnabled, false, world.worldTypeObj);
 
-            // Create WorldServer with settings
-            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, //
-                    overworld.getWorldInfo().getWorldName(), world.dimensionId, worldSettings, //
-                    overworld, mcServer.theProfiler, world);
+            WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), WorldType.parseWorldType(world.worldType));
+            WorldInfo info = new WorldInfo(settings, world.name);
+            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.theProfiler, world);
+            worldServer.init();
             // Overwrite dimensionId because WorldProviderEnd for example just hardcodes the dimId
-            worldServer.provider.dimensionId = world.dimensionId;
-            worldServer.addWorldAccess(new WorldManager(mcServer, worldServer));
+            worldServer.provider.setDimension(world.dimensionId);
+            worldServer.addEventListener(new ServerWorldEventHandler(mcServer, worldServer));
+
+            mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
             if (!mcServer.isSinglePlayer())
                 worldServer.getWorldInfo().setGameType(mcServer.getGameType());
-            mcServer.func_147139_a(mcServer.func_147135_j());
+
             world.updateWorldSettings();
             world.worldLoaded = true;
             world.error = false;
@@ -290,7 +291,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 
             // Tell everyone about the new dim
             FMLEmbeddedChannel channel = NetworkRegistry.INSTANCE.getChannel("FORGE", Side.SERVER);
-            DimensionRegisterMessage msg = new DimensionRegisterMessage(world.dimensionId, world.providerId);
+            DimensionRegisterMessage msg = new DimensionRegisterMessage(world.dimensionId, world.getProvider());
             channel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
             channel.writeOutbound(msg);
         }
@@ -441,7 +442,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     @SubscribeEvent
     public void worldUnloadEvent(WorldEvent.Unload event)
     {
-        Multiworld mw = getMultiworld(event.world.provider.dimensionId);
+        Multiworld mw = getMultiworld(event.getWorld().provider.getDimension());
         if (mw != null)
             mw.worldLoaded = false;
     }
@@ -455,10 +456,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         {
             WorldServer world = it.next();
             // Check with DimensionManager, whether the world is still loaded
-            if (DimensionManager.getWorld(world.provider.dimensionId) == null)
+            if (DimensionManager.getWorld(world.provider.getDimension()) == null)
             {
-                if (DimensionManager.isDimensionRegistered(world.provider.dimensionId))
-                    DimensionManager.unregisterDimension(world.provider.dimensionId);
+                if (DimensionManager.isDimensionRegistered(world.provider.getDimension()))
+                    DimensionManager.unregisterDimension(world.provider.getDimension());
                 it.remove();
             }
         }
@@ -473,12 +474,12 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         {
             WorldServer world = it.next();
             // Check with DimensionManager, whether the world is still loaded
-            if (DimensionManager.getWorld(world.provider.dimensionId) == null)
+            if (DimensionManager.getWorld(world.provider.getDimension()) == null)
             {
                 try
                 {
-                    if (DimensionManager.isDimensionRegistered(world.provider.dimensionId))
-                        DimensionManager.unregisterDimension(world.provider.dimensionId);
+                    if (DimensionManager.isDimensionRegistered(world.provider.getDimension()))
+                        DimensionManager.unregisterDimension(world.provider.getDimension());
 
                     File path = world.getChunkSaveLocation(); // new
                                                               // File(world.getSaveHandler().getWorldDirectory(),
@@ -505,11 +506,11 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     {
         try
         {
-            Field f_providers = DimensionManager.class.getDeclaredField("providers");
+            Field f_providers = DimensionManager.class.getDeclaredField("dimensions");
             f_providers.setAccessible(true);
             @SuppressWarnings("unchecked")
-            Hashtable<Integer, Class<? extends WorldProvider>> loadedProviders = (Hashtable<Integer, Class<? extends WorldProvider>>) f_providers.get(null);
-            for (Entry<Integer, Class<? extends WorldProvider>> provider : loadedProviders.entrySet())
+            Hashtable<Integer, DimensionType> loadedProviders = (Hashtable<Integer, DimensionType>) f_providers.get(null);
+            for (Entry<Integer, DimensionType> provider : loadedProviders.entrySet())
             {
                 // skip the default providers as these are aliased as 'normal',
                 // 'nether' and 'end'
@@ -557,9 +558,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      */
     public void loadWorldTypes()
     {
-        for (int i = 0; i < WorldType.worldTypes.length; ++i)
+        for (int i = 0; i < WorldType.WORLD_TYPES.length; ++i)
         {
-            WorldType type = WorldType.worldTypes[i];
+            WorldType type = WorldType.WORLD_TYPES[i];
             if (type == null)
                 continue;
 
