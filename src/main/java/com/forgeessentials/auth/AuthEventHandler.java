@@ -62,7 +62,7 @@ public class AuthEventHandler extends ServerEventHandler
 
     public static boolean isPlayer(Object player)
     {
-        return player != null && player.getClass().equals(EntityPlayerMP.class);
+        return player != null && player instanceof EntityPlayerMP;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
