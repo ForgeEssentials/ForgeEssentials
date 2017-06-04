@@ -48,7 +48,7 @@ public class FEConfig extends ConfigLoaderBase
                 "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.").getString();
 
         majoritySleep = config.get(CONFIG_CAT_MISC, "MajoritySleepThreshold", 50, //
-                "Once this percent of player sleeps, allow the night to pass").getInt(50) / 100.0f;
+                "Once this percent of player sleeps, allow the night to pass. Set to 100 to disable.").getInt(50) / 100.0f;
         checkSpacesInNames = config.get(CONFIG_CAT_MISC, "CheckSpacesInNames", true, //
                 "Check if a player's name contains spaces (can gum up some things in FE)").getBoolean();
     }
