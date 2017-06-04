@@ -463,7 +463,6 @@ public class ProtectionEventHandler extends ServerEventHandler
             ModuleProtection.debugPermission(event.getEntityPlayer(), permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             // event.useItem = allow ? ALLOW : DENY;
-            System.out.println("THIS IS NOT IMPLEMENTED YET!!!!!!!!!!!!!!");
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
             {
                 int itemId = ((FMLControlledNamespacedRegistry<Item>) GameRegistry.findRegistry(Item.class)).getId(stack.getItem());
