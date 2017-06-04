@@ -106,10 +106,10 @@ public class CommandMultiworldTeleport extends ParserCommandBase
             case 0:
                 msg += "the overworld";
                 break;
-            case 1:
+            case -1:
                 msg += "the nether";
                 break;
-            case -1:
+            case 1:
                 msg += "the end";
                 break;
             default:
