@@ -18,11 +18,12 @@ public class MixinBlockPortal
     @Overwrite
     public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
     {
-        if (entityIn.getRidingEntity() == null && entityIn.getLowestRidingEntity() == null)
+        if (!entityIn.isRiding() && !entityIn.isBeingRidden() && entityIn.isNonBoss())
         { // TODO: get target coordinates somehow
-            if (!worldIn.isRemote && MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entityIn, worldIn, pos, entityIn.dimension == -1 ? 0 : -1, new BlockPos(0, 0, 0))))
-                return;
-            entityIn.setPortal(pos);
+            if (!MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entityIn, worldIn, pos, entityIn.dimension == -1 ? 0 : -1, new BlockPos(0, 0, 0))))
+            {
+                entityIn.setPortal(pos);
+            }
         }
     }
 
