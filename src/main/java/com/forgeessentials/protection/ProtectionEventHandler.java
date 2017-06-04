@@ -443,7 +443,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             point = new WorldPoint(event.getEntityPlayer().dimension, event.getPos());
 
         // Check for block interaction
-        if (event instanceof LeftClickBlock || event instanceof RightClickBlock)
+        if (event instanceof LeftClickBlock || event instanceof RightClickBlock && !event.getEntityPlayer().isSneaking())
         {
             IBlockState blockState = event.getWorld().getBlockState(event.getPos());
             String permission = ModuleProtection.getBlockInteractPermission(blockState);
