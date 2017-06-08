@@ -94,7 +94,7 @@ public abstract class BuildInfo
     {
         try
         {
-            URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE/lastSuccessfulBuild/api/json");
+            URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE-1.7.10/lastSuccessfulBuild/api/json");
             URLConnection con = buildInfoUrl.openConnection();
             con.setConnectTimeout(6000);
             con.setReadTimeout(12000);
