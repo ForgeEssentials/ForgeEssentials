@@ -33,9 +33,9 @@ public abstract class BuildInfo
 
     private static Properties buildTypes = new Properties();
 
-    public static final String MC_BASE_VERSION = "1.10.2";
+    public static final String MC_BASE_VERSION = "_MCVERSION_";
 
-    public static final String BASE_VERSION = "10.1.0"; // update manually because gradle is a derp
+    public static final String BASE_VERSION = "_BASEVERSION_";
 
     public static final String DEPENDENCIES = "required-after:Forge";
 
