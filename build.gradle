@@ -33,6 +33,17 @@ buildscript {
 
 plugins {
     id 'org.spongepowered.plugin' version '0.6'
+    id 'org.sonarqube' version '2.5'
+}
+
+apply plugin: 'jacoco'
+
+sonarqube {
+    properties {
+        properties['sonar.projectKey'] = "com.forgeessentials:forgeessentials"
+        properties['sonar.projectName'] = project.name
+        properties['sonar.projectVersion'] = project.version
+    }
 }
 
 // Set up FE required repositories
