@@ -89,7 +89,7 @@ public final class MapperUtil
 
     public static Chunk loadChunk(WorldServer world, int cx, int cz)
     {
-        Chunk chunk = (Chunk) world.getChunkProvider().id2ChunkMap.get(ChunkPos.chunkXZ2Int(cx, cz));
+        Chunk chunk = (Chunk) world.getChunkProvider().id2ChunkMap.get(ChunkPos.asLong(cx, cz));
         if (chunk != null)
             return chunk;
         try

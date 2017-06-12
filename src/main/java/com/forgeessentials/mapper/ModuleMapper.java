@@ -342,7 +342,7 @@ public class ModuleMapper extends ConfigLoaderBase
 
     public synchronized Future<BufferedImage> getChunkImageAsync(final WorldServer world, final int chunkX, final int chunkZ)
     {
-        final long id = ChunkPos.chunkXZ2Int(chunkX, chunkZ);
+        final long id = ChunkPos.asLong(chunkX, chunkZ);
         Future<BufferedImage> result = chunkRenderers.get(id);
         if (result != null)
             return result;
@@ -427,7 +427,7 @@ public class ModuleMapper extends ConfigLoaderBase
 
     public synchronized Future<BufferedImage> getRegionImageAsync(final WorldServer world, final int regionX, final int regionZ)
     {
-        final long id = ChunkPos.chunkXZ2Int(regionX, regionZ);
+        final long id = ChunkPos.asLong(regionX, regionZ);
         Future<BufferedImage> result = regionRenderers.get(id);
         if (result != null)
             return result;

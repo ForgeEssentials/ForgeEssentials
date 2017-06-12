@@ -60,7 +60,7 @@ public class CommandBiome extends ParserCommandBase
         {
             if (arguments.isTabCompletion)
                 return;
-            Biome biome = arguments.senderPlayer.worldObj.getBiomeGenForCoords(new BlockPos(x, 0, z));
+            Biome biome = arguments.senderPlayer.worldObj.getBiome(new BlockPos(x, 0, z));
             arguments.confirm("Current biome: " + biome.getBiomeName());
             arguments.confirm("  " + biome.getClass().getName());
             arguments.notify("/febiome list: Show all registered biomes");

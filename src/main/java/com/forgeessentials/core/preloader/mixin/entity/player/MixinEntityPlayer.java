@@ -15,7 +15,7 @@ public abstract class MixinEntityPlayer
     public PlayerCapabilities capabilities;
 
     @Overwrite
-    public boolean func_189808_dh()
+    public boolean canUseCommandBlock()
     {
         return this.capabilities.isCreativeMode && PermissionAPI.hasPermission((EntityPlayer)(Object)this, "mc.commandblock");
     }
