@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.google.gson.annotations.Expose;
 
@@ -153,7 +154,7 @@ public class WarpPoint
     public WorldServer getWorld()
     {
         if (world == null || world.provider.getDimension() != dim)
-            world = DimensionManager.getWorld(dim);
+            world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
         return world;
     }
 
