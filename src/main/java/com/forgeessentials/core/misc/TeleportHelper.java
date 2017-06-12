@@ -18,14 +18,17 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -198,11 +201,15 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         PlayerInfo pi = PlayerInfo.get(player);
-        pi.setLastTeleportOrigin(new WarpPoint(player));
+        WarpPoint old = new WarpPoint(player);
+        pi.setLastTeleportOrigin(old);
         pi.setLastTeleportTime(System.currentTimeMillis());
         pi.setLastDeathLocation(null);
 
         doTeleport(player, point);
+        Zone before = APIRegistry.perms.getServerZone().getZonesAt(old.toWorldPoint()).get(0);
+        Zone after = APIRegistry.perms.getServerZone().getZonesAt(point.toWorldPoint()).get(0);
+        MinecraftForge.EVENT_BUS.post(new PlayerChangedZone(player, before, after, old, point));
     }
 
     public static void doTeleport(EntityPlayerMP player, WarpPoint point)
