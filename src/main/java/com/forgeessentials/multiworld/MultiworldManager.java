@@ -64,8 +64,6 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     public static final String PROVIDER_HELL = "nether";
     public static final String PROVIDER_END = "end";
 
-    public static final WorldTypeMultiworld WORLD_TYPE_MULTIWORLD = new WorldTypeMultiworld();
-
     // ============================================================
 
     /**
@@ -270,7 +268,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
 
-            WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), WorldType.parseWorldType(world.worldType));
+            WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), new WorldTypeMultiworld(WorldType.parseWorldType(world.worldType)));
             WorldInfo info = new WorldInfo(settings, world.name);
             WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.theProfiler, world);
             worldServer.init();
@@ -372,8 +370,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     public void deleteWorld(Multiworld world)
     {
         unloadWorld(world);
+        worldsToDelete.add(world.getWorldServer());
         world.delete();
-        worldsToDelete.add(DimensionManager.getWorld(world.getDimensionId()));
     }
 
     /**
@@ -485,7 +483,6 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 
                     File path = world.getChunkSaveLocation(); // new
                                                               // File(world.getSaveHandler().getWorldDirectory(),
-                                                              // world.provider.getSaveFolder());
                     FileUtils.deleteDirectory(path);
 
                     it.remove();

@@ -8,12 +8,14 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.IChunkLoader;
 import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.minecraft.world.storage.IPlayerFileData;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.StartupQuery;
 
@@ -38,13 +40,13 @@ public class MultiworldSaveHandler implements ISaveHandler
 
     public File getDimensionDirectory()
     {
-        return new File(getWorldDirectory(), "FEMultiworld/" + world.getName());
+        return new File(DimensionManager.getCurrentSaveRootDirectory(), "FEMultiworld/" + world.getName());
     }
 
     @Override
     public IChunkLoader getChunkLoader(WorldProvider provider)
     {
-        return parent.getChunkLoader(provider);
+        return new AnvilChunkLoader(getDimensionDirectory(), FMLCommonHandler.instance().getMinecraftServerInstance().getDataFixer());
     }
 
     @Override
@@ -163,7 +165,7 @@ public class MultiworldSaveHandler implements ISaveHandler
     @Override
     public File getWorldDirectory()
     {
-        return parent.getWorldDirectory();
+        return getDimensionDirectory();
     }
 
     @Override
