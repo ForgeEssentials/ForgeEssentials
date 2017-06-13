@@ -8,7 +8,6 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.IChunkLoader;
 import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.minecraft.world.storage.IPlayerFileData;
@@ -45,7 +44,7 @@ public class MultiworldSaveHandler implements ISaveHandler
     @Override
     public IChunkLoader getChunkLoader(WorldProvider provider)
     {
-        return null;
+        return parent.getChunkLoader(provider);
     }
 
     @Override

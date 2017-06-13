@@ -37,4 +37,10 @@ public class WorldServerMultiworld extends WorldServer
         this.saveHandler.saveWorldInfo(this.worldInfo);
     }
 
+    @Override
+    public java.io.File getChunkSaveLocation()
+    {
+        return this.saveHandler.getWorldDirectory();
+    }
+
 }

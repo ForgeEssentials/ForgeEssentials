@@ -291,7 +291,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 
             // Tell everyone about the new dim
             FMLEmbeddedChannel channel = NetworkRegistry.INSTANCE.getChannel("FORGE", Side.SERVER);
-            DimensionRegisterMessage msg = new DimensionRegisterMessage(world.dimensionId, world.getProvider());
+            DimensionRegisterMessage msg = new DimensionRegisterMessage(world.dimensionId, DimensionManager.getProviderType(world.dimensionId).name());
             channel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
             channel.writeOutbound(msg);
         }

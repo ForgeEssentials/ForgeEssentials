@@ -47,6 +47,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -240,7 +241,7 @@ public class ModuleProtection
                 "Allow having item in inventory. Item will be destroyed if not allowed.");
         APIRegistry.perms.registerPermission(PERM_CRAFT + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "Allow crafting of items. Not necessarily works with modded crafting tables");
-        for (Item item : GameData.getItemRegistry().typeSafeIterable())
+        for (Item item : ForgeRegistries.ITEMS.getValues())
             if (!(item instanceof ItemBlock))
             {
                 String itemPerm = "." + ServerUtil.getItemPermission(item) + Zone.ALL_PERMS;
@@ -258,7 +259,7 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_TRAMPLE + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow trampling on blocks");
         APIRegistry.perms.registerPermission(PERM_EXPLODE + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "(global) Allows blocks to explode");
         APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow interacting with blocks (button, chest, workbench)");
-        for (Block block : GameData.getBlockRegistry().typeSafeIterable())
+        for (Block block : ForgeRegistries.BLOCKS.getValues())
         {
             String blockPerm = "." + ServerUtil.getBlockPermission(block) + Zone.ALL_PERMS;
             String blockName = block.getLocalizedName();
