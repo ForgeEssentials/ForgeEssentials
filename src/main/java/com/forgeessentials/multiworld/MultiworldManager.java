@@ -276,6 +276,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             worldServer.init();
             // Overwrite dimensionId because WorldProviderEnd for example just hardcodes the dimId
             worldServer.provider.setDimension(world.dimensionId);
+            worldServer.provider.getDimensionType().setLoadSpawn(false);
+            FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0).provider.getDimensionType().setLoadSpawn(true);
             worldServer.addEventListener(new ServerWorldEventHandler(mcServer, worldServer));
 
             mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
