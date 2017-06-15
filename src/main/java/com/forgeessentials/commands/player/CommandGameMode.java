@@ -13,6 +13,8 @@ import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
@@ -141,21 +143,13 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
     private GameType getGameTypeFromString(String string)
     {
-        if (string.equalsIgnoreCase(GameType.SURVIVAL.getName()) || string.equalsIgnoreCase("s") || string.equals("0"))
+        if(StringUtils.isNumeric(string))
         {
-            return GameType.SURVIVAL;
-        }
-        else if (string.equalsIgnoreCase(GameType.CREATIVE.getName()) || string.equalsIgnoreCase("c") || string.equals("1"))
-        {
-            return GameType.CREATIVE;
-        }
-        else if (string.equalsIgnoreCase(GameType.ADVENTURE.getName()) || string.equalsIgnoreCase("a") || string.equals("2"))
-        {
-            return GameType.ADVENTURE;
+            return GameType.getByID(Integer.parseInt(string));
         }
         else
         {
-            return null;
+            return GameType.parseGameTypeWithDefault(string, GameType.SURVIVAL);
         }
     }
 
@@ -170,7 +164,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, new String[] { "survival", "creative", "adventure" });
+            return getListOfStringsMatchingLastWord(args, new String[] { "survival", "creative", "adventure", "spectator" });
         }
         else
         {
