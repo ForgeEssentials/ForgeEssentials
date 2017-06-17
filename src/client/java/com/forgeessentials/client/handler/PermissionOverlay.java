@@ -9,9 +9,9 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -53,7 +53,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             permissions.placeIds.addAll(message.placeIds);
             permissions.breakIds.addAll(message.breakIds);
 
-            EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayerSP player = Minecraft.getMinecraft().player;
             ItemStack stack = player.getHeldItemMainhand();
             if (stack != null)
             {
@@ -85,9 +85,8 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
 
             for (int i = 0; i < 9; ++i)
             {
-                ItemStack stack = Minecraft.getMinecraft().thePlayer.inventory.mainInventory[i];
-                if (stack == null)
-                    continue;
+                ItemStack stack = Minecraft.getMinecraft().player.inventory.mainInventory.get(0);
+
                 int id = GameData.getItemRegistry().getId(stack.getItem());
                 if (!permissions.placeIds.contains(id))
                     continue;
@@ -105,7 +104,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             RayTraceResult mop = Minecraft.getMinecraft().objectMouseOver;
             if (mop != null && mop.typeOfHit == Type.BLOCK)
             {
-                IBlockState block = Minecraft.getMinecraft().theWorld.getBlockState(mop.getBlockPos());
+                IBlockState block = Minecraft.getMinecraft().player.world.getBlockState(mop.getBlockPos());
                 int blockId = GameData.getBlockRegistry().getId(block.getBlock());
                 if (permissions.breakIds.contains(blockId))
                 {

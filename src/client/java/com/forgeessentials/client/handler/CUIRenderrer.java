@@ -33,11 +33,11 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
     @SubscribeEvent
     public void render(RenderWorldLastEvent event)
     {
-        EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
+        EntityPlayer player = FMLClientHandler.instance().getClient().player;
         if (player == null)
             return;
 
-        if (selection == null || selection.getDimension() != FMLClientHandler.instance().getClient().thePlayer.dimension)
+        if (selection == null || selection.getDimension() != FMLClientHandler.instance().getClient().player.dimension)
             return;
 
         double renderPosX = TileEntityRendererDispatcher.staticPlayerX;

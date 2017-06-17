@@ -5,6 +5,8 @@ import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class FEGUIFactory implements IModGuiFactory
 {
@@ -12,6 +14,17 @@ public class FEGUIFactory implements IModGuiFactory
     public void initialize(Minecraft minecraftInstance)
     {
         /* do nothing */
+    }
+
+    @Override public boolean hasConfigGui()
+    {
+        return true;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override public GuiScreen createConfigGui(GuiScreen guiScreen)
+    {
+        return new FEConfigGUI(guiScreen);
     }
 
     @Override

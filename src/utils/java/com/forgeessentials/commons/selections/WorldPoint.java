@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -55,7 +55,7 @@ public class WorldPoint extends Point
     {
         super(entity);
         this.dim = entity.dimension;
-        this.world = entity.worldObj;
+        this.world = entity.world;
     }
 
     public WorldPoint(int dim, Vec3d vector)

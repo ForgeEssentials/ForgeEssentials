@@ -19,7 +19,7 @@ import com.forgeessentials.protection.ModuleProtection;
 public abstract class MixinCraftingManager
 {
     @Shadow
-    private List<IRecipe> recipes;
+    private List<IRecipe> field_77597_b;
 
     /**
      * Try to find a crafting result that the player is able to craft.
@@ -28,10 +28,10 @@ public abstract class MixinCraftingManager
      * @param world the world
      */
     @Overwrite
-    public ItemStack findMatchingRecipe(InventoryCrafting inventory, World world)
+    public ItemStack findMatchingResult(InventoryCrafting inventory, World world)
     {
         EntityPlayer player = ModuleProtection.getCraftingPlayer(inventory);
-        for (IRecipe irecipe : this.recipes)
+        for (IRecipe irecipe : this.field_77597_b)
         {
             if (irecipe.matches(inventory, world))
             {

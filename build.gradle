@@ -89,10 +89,10 @@ minecraft {
 	version = "$project.minecraftVersion-$project.forgeVersion"
 	runDir = "rundir"
 	
-	mappings = "snapshot_20161111"
+	mappings = "snapshot_20170616"
 
 	replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
-	replace (["_BASEVERSION_":baseVersion,"_MCVERSION_":project.minecraftVersion])
+	replace (["_BASEVERSION_":project.baseVersion,"_MCVERSION_":project.minecraftVersion])
 }
 
 // Configure shared manifest

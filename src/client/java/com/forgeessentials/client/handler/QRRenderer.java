@@ -8,9 +8,9 @@ import javax.imageio.ImageIO;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -33,7 +33,7 @@ public class QRRenderer implements IMessageHandler<Packet7Remote, IMessage>
     @SubscribeEvent
     public void render(RenderWorldLastEvent event)
     {
-        EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
+        EntityPlayer player = FMLClientHandler.instance().getClient().player;
         if (player == null)
             return;
         Minecraft mc = Minecraft.getMinecraft();
@@ -66,7 +66,7 @@ public class QRRenderer implements IMessageHandler<Packet7Remote, IMessage>
         {
             TextComponentString cmsg = new TextComponentString("Could not load QR Code. " + e.getMessage());
             cmsg.getStyle().setColor(TextFormatting.RED);
-            FMLClientHandler.instance().getClientPlayerEntity().addChatMessage(cmsg);
+            FMLClientHandler.instance().getClientPlayerEntity().sendMessage(cmsg);
             e.printStackTrace();
         }
         return null;

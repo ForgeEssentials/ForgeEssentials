@@ -43,7 +43,7 @@ public class Point
 
     public Point(Vec3d vector)
     {
-        this((int) vector.xCoord, (int) vector.yCoord, (int) vector.zCoord);
+        this((int) vector.x, (int) vector.y, (int) vector.z);
     }
 
     public Point(Point other)

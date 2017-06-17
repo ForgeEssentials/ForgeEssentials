@@ -363,9 +363,9 @@ public class ProtectionEventHandler extends ServerEventHandler
             ident = APIRegistry.IDENT_NPC;
 
         Vec3d center = event.getExplosion().getPosition();
-        int cx = (int) Math.floor(center.xCoord);
-        int cy = (int) Math.floor(center.yCoord);
-        int cz = (int) Math.floor(center.zCoord);
+        int cx = (int) Math.floor(center.x);
+        int cy = (int) Math.floor(center.y);
+        int cz = (int) Math.floor(center.z);
         float size = ReflectionHelper.getPrivateValue(Explosion.class, event.getExplosion(), "field_77280_f", "explosionSize");
         int s = (int) Math.ceil(size);
 
@@ -802,11 +802,11 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (event.afterZone instanceof AreaZone)
             {
                 center = ((AreaZone) event.afterZone).getArea().getCenter().toVec3();
-                center = new Vec3d(center.xCoord, event.beforePoint.getY(), center.zCoord);
+                center = new Vec3d(center.x, event.beforePoint.getY(), center.z);
             }
             Vec3d delta = event.beforePoint.toVec3().subtract(center).normalize();
-            WarpPoint target = new WarpPoint(event.beforePoint.getDimension(), event.beforePoint.getX() - delta.xCoord, event.beforePoint.getY() - delta.yCoord,
-                    event.beforePoint.getZ() - delta.zCoord, event.afterPoint.getPitch(), event.afterPoint.getYaw());
+            WarpPoint target = new WarpPoint(event.beforePoint.getDimension(), event.beforePoint.getX() - delta.x, event.beforePoint.getY() - delta.y,
+                    event.beforePoint.getZ() - delta.z, event.afterPoint.getPitch(), event.afterPoint.getYaw());
 
             TeleportHelper.doTeleport((EntityPlayerMP) event.getEntityPlayer(), target);
             event.setCanceled(true);

@@ -7,7 +7,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.google.gson.annotations.Expose;
@@ -75,7 +74,7 @@ public class WarpPoint
 
     public WarpPoint(Entity entity)
     {
-        this(entity.worldObj instanceof WorldServer ? (WorldServer) entity.worldObj : null, entity.posX, entity.posY, entity.posZ, entity.rotationPitch,
+        this(entity.world instanceof WorldServer ? (WorldServer) entity.world : null, entity.posX, entity.posY, entity.posZ, entity.rotationPitch,
                 entity.rotationYaw);
     }
 
@@ -154,7 +153,7 @@ public class WarpPoint
     public WorldServer getWorld()
     {
         if (world == null || world.provider.getDimension() != dim)
-            world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
+            world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
         return world;
     }
 
