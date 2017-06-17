@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
@@ -15,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
@@ -407,9 +407,9 @@ public class ScriptInstance
 
     private int registerTimeout(TimerTask task)
     {
-        int id = (int) Math.round(Math.random() * Integer.MAX_VALUE);
+        int id = new Random().nextInt();
         while (tasks.containsKey(id))
-            id = (int) Math.round(Math.random() * Integer.MAX_VALUE);
+            id = new Random().nextInt();
         tasks.put(id, task);
         return id;
     }

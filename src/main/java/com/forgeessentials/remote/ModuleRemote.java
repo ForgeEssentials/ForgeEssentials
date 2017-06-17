@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -303,12 +304,18 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     public String generatePasskey()
     {
         StringBuilder passkey = new StringBuilder();
-        Random rnd = new Random();
+        Random rnd;
+        try {
+            rnd = SecureRandom.getInstanceStrong();
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            rnd = new SecureRandom();
+        }
         for (int i = 0; i < passkeyLength; i++)
             passkey.append(PASSKEY_CHARS[rnd.nextInt(PASSKEY_CHARS.length)]);
         return passkey.toString();
     }
-
     /**
      * Get stored passkey for user or generate a new one and save it
      * 
