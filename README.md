@@ -1,7 +1,7 @@
 ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentials.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentials)
 ===================
 
-The code on this branch is for Minecraft 1.8.9.
+The code on this branch is for Minecraft 1.10.2.
 **We are looking for developers. Please contact us on IRC if you are interested in contributing!**
 
 ## We are few developers with not soo much time at hand - we will try to handle important bugs fast
@@ -10,7 +10,7 @@ The code on this branch is for Minecraft 1.8.9.
 For general help about ForgeEssentials and tutorials, please check the **[Wiki](https://github.com/ForgeEssentials/ForgeEssentials/wiki)** pages.
 If you need help or have suggestions, **please join us on our [Discord](https://discord.gg/FNRQjmr) channel**. 
 There are many people there who can help you and it is the quickest way to reach us. Please try to not open issues for simple questions and directly contact us on Discord instead.
-We also still maintains an IRC channel [*#forgeessentials*](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on [esper.net](http://esper.net).
+We also still maintain an IRC channel [*#forgeessentials*](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on [esper.net](http://esper.net).
 
 # Reporting bugs
 Please follow these rules when reporting bugs:
