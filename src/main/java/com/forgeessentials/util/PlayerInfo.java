@@ -423,7 +423,9 @@ public class PlayerInfo implements Loadable
         if (!activeInventoryGroup.equals(name))
         {
             // Get the new inventory
-            Map<String, List<ItemStack>> newInventory = modInventoryGroups.getOrDefault(name, new HashMap<>());
+            Map<String, List<ItemStack>> newInventory = modInventoryGroups.get(name);
+            if (newInventory == null)
+                newInventory = new HashMap<>();
 
             // ChatOutputHandler.felog.info(String.format("Changing inventory group for %s from %s to %s",
             // ident.getUsernameOrUUID(), activeInventoryGroup, name));
