@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public interface NamedWorldHandler
 {
@@ -30,16 +31,16 @@ public interface NamedWorldHandler
             switch (name)
             {
             case WORLD_NAME_SURFACE:
-                return DimensionManager.getWorld(0);
+                return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
             case WORLD_NAME_NETHER:
-                return DimensionManager.getWorld(-1);
+                return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(-1);
             case WORLD_NAME_END:
-                return DimensionManager.getWorld(1);
+                return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(1);
             default:
             {
                 try
                 {
-                    return DimensionManager.getWorld(Integer.parseInt(name));
+                    return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(Integer.parseInt(name));
                 }
                 catch (NumberFormatException e)
                 {
