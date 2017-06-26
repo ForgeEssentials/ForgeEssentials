@@ -17,7 +17,6 @@ import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +71,10 @@ public class PlayerInfo implements Loadable
     /* ------------------------------------------------------------ */
     /* Inventory groups */
 
-    private Map<String, Map<String, List<ItemStack>>> inventoryGroups = new HashMap<>();
+    private Map<String, List<ItemStack>> inventoryGroups = new HashMap<>();
+
+    // New inventory groups, with support for modded custom inventories
+    private Map<String, Map<String, List<ItemStack>>> modInventoryGroups = new HashMap<>();
 
     private String activeInventoryGroup = "default";
 
@@ -110,6 +112,25 @@ public class PlayerInfo implements Loadable
         lastActivity = System.currentTimeMillis();
         if (activeInventoryGroup == null || activeInventoryGroup.isEmpty())
             activeInventoryGroup = "default";
+
+        if (!inventoryGroups.isEmpty())
+        {
+            // See if we have an inventory to por
+            for (String name : inventoryGroups.keySet())
+            {
+                List<ItemStack> portInv = inventoryGroups.get(name);
+                if (portInv != null)
+                {
+                    Map ig = modInventoryGroups.getOrDefault(name, new HashMap<>());
+                    if (ig.get("vanilla") == null)
+                    {
+                        ig.put("vanilla", portInv);
+                        inventoryGroups.remove(name);
+                    }
+                }
+            }
+        }
+
     }
 
     /**
@@ -382,14 +403,14 @@ public class PlayerInfo implements Loadable
     /* ------------------------------------------------------------ */
     /* Inventory groups */
 
-    public Map<String, Map<String, List<ItemStack>>> getInventoryGroups()
+    public Map<String, Map<String, List<ItemStack>>> getModInventoryGroups()
     {
-        return inventoryGroups;
+        return modInventoryGroups;
     }
 
     public List<ItemStack> getInventoryGroupItems(String name, String mod)
     {
-        return inventoryGroups.get(name).get(mod);
+        return modInventoryGroups.get(name).get(mod);
     }
 
     public String getInventoryGroup()
@@ -402,10 +423,7 @@ public class PlayerInfo implements Loadable
         if (!activeInventoryGroup.equals(name))
         {
             // Get the new inventory
-            Map<String, List<ItemStack>> newInventory = inventoryGroups.getOrDefault(name, new HashMap<>());
-            // Create empty inventory if it did not exist yet
-            if (newInventory == null)
-                newInventory = new HashMap<>();
+            Map<String, List<ItemStack>> newInventory = modInventoryGroups.getOrDefault(name, new HashMap<>());
 
             // ChatOutputHandler.felog.info(String.format("Changing inventory group for %s from %s to %s",
             // ident.getUsernameOrUUID(), activeInventoryGroup, name));
@@ -421,9 +439,9 @@ public class PlayerInfo implements Loadable
             // Swap player inventory and store the old one
             newInventory.put("vanilla", PlayerUtil.swapInventory(this.ident.getPlayerMP(), newInventory.getOrDefault("vanilla", new ArrayList<>())));
             MinecraftForge.EVENT_BUS.post(new InventoryGroupChange(ident.getPlayer(), name, newInventory));
-            inventoryGroups.put(activeInventoryGroup, newInventory);
+            modInventoryGroups.put(activeInventoryGroup, newInventory);
             // Clear the inventory-group that was assigned to the player (optional)
-            inventoryGroups.put(name, null);
+            modInventoryGroups.put(name, null);
             // Save the new active inventory-group
             activeInventoryGroup = name;
             this.save();
