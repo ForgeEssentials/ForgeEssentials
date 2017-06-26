@@ -113,6 +113,9 @@ public class PlayerInfo implements Loadable
         if (activeInventoryGroup == null || activeInventoryGroup.isEmpty())
             activeInventoryGroup = "default";
 
+        if (modInventoryGroups == null)
+            modInventoryGroups = new HashMap<>();
+
         if (!inventoryGroups.isEmpty())
         {
             // See if we have an inventory to por
@@ -126,9 +129,11 @@ public class PlayerInfo implements Loadable
                     {
                         ig.put("vanilla", portInv);
                         inventoryGroups.remove(name);
+                        modInventoryGroups.put(name, ig);
                     }
                 }
             }
+            this.save();
         }
 
     }
