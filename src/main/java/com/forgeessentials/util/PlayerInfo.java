@@ -7,14 +7,17 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
+import com.forgeessentials.util.events.FEPlayerEvent.InventoryGroupChange;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.google.gson.annotations.Expose;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -69,7 +72,7 @@ public class PlayerInfo implements Loadable
     /* ------------------------------------------------------------ */
     /* Inventory groups */
 
-    private Map<String, List<ItemStack>> inventoryGroups = new HashMap<>();
+    private Map<String, Map<String, List<ItemStack>>> inventoryGroups = new HashMap<>();
 
     private String activeInventoryGroup = "default";
 
@@ -379,14 +382,14 @@ public class PlayerInfo implements Loadable
     /* ------------------------------------------------------------ */
     /* Inventory groups */
 
-    public Map<String, List<ItemStack>> getInventoryGroups()
+    public Map<String, Map<String, List<ItemStack>>> getInventoryGroups()
     {
         return inventoryGroups;
     }
 
-    public List<ItemStack> getInventoryGroupItems(String name)
+    public List<ItemStack> getInventoryGroupItems(String name, String mod)
     {
-        return inventoryGroups.get(name);
+        return inventoryGroups.get(name).get(mod);
     }
 
     public String getInventoryGroup()
@@ -399,10 +402,10 @@ public class PlayerInfo implements Loadable
         if (!activeInventoryGroup.equals(name))
         {
             // Get the new inventory
-            List<ItemStack> newInventory = inventoryGroups.get(name);
+            Map<String, List<ItemStack>> newInventory = inventoryGroups.getOrDefault(name, new HashMap<>());
             // Create empty inventory if it did not exist yet
             if (newInventory == null)
-                newInventory = new ArrayList<>();
+                newInventory = new HashMap<>();
 
             // ChatOutputHandler.felog.info(String.format("Changing inventory group for %s from %s to %s",
             // ident.getUsernameOrUUID(), activeInventoryGroup, name));
@@ -416,7 +419,9 @@ public class PlayerInfo implements Loadable
              */
 
             // Swap player inventory and store the old one
-            inventoryGroups.put(activeInventoryGroup, PlayerUtil.swapInventory(this.ident.getPlayerMP(), newInventory));
+            newInventory.put("vanilla", PlayerUtil.swapInventory(this.ident.getPlayerMP(), newInventory.getOrDefault("vanilla", new ArrayList<>())));
+            MinecraftForge.EVENT_BUS.post(new InventoryGroupChange(ident.getPlayer(), name, newInventory));
+            inventoryGroups.put(activeInventoryGroup, newInventory);
             // Clear the inventory-group that was assigned to the player (optional)
             inventoryGroups.put(name, null);
             // Save the new active inventory-group
