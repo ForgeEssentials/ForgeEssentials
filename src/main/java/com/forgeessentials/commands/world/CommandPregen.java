@@ -115,6 +115,9 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             {
                 arguments.confirm("No pregen running");
                 arguments.notify("/pregen start [full-pregen] [dim]");
+                arguments.notify("/pregen status");
+                arguments.notify("/pregen stop");
+                arguments.notify("/pregen flush");
             }
             return;
         }
@@ -131,6 +134,9 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             break;
         case "flush":
             flush(arguments);
+            break;
+        case "status":
+            parseStatus(arguments);
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
@@ -199,6 +205,18 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         arguments.confirm("Queued all chunks for unloading");
     }
 
+    private void parseStatus(CommandParserArgs arguments)
+    {
+        if (!running)
+        {
+            arguments.error("No pregen running");
+            return;
+        }
+        ChunkProviderServer providerServer = (ChunkProviderServer) world.getChunkProvider();
+        arguments.confirm(String.format("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ * 4,
+                ServerUtil.getTPS(), providerServer.getLoadedChunkCount()));
+    }
+
     @Override
     public boolean tick()
     {
@@ -207,11 +225,12 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             notifyPlayers("Pregen stopped");
             return true;
         }
-        totalTicks++;
-
-        ChunkProviderServer providerServer = (ChunkProviderServer) world.getChunkProvider();
-
         double tps = ServerUtil.getTPS();
+        if (tps < 5) { //Throttle pregen if TPS drops too low
+            return false;
+        }
+        totalTicks++;
+        ChunkProviderServer providerServer = (ChunkProviderServer) world.getChunkProvider();
         if (totalTicks % 80 == 0)
             notifyPlayers(String.format("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ * 4, tps,
                     providerServer.getLoadedChunkCount()));
