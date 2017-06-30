@@ -116,11 +116,14 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             {
                 arguments.confirm("No pregen running");
                 arguments.notify("/pregen start [full-pregen] [dim]");
+                arguments.notify("/pregen status");
+                arguments.notify("/pregen stop");
+                arguments.notify("/pregen flush");
             }
             return;
         }
 
-        arguments.tabComplete("start", "stop");
+        arguments.tabComplete("start", "stop", "status", "flush");
         String subCmd = arguments.remove().toLowerCase();
         switch (subCmd)
         {
@@ -132,6 +135,9 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             break;
         case "flush":
             flush(arguments);
+            break;
+        case "status":
+            parseStatus(arguments);
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
@@ -200,6 +206,17 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         arguments.confirm("Queued all chunks for unloading");
     }
 
+    private void parseStatus(CommandParserArgs arguments)
+    {
+        if (!running)
+        {
+            arguments.error("No pregen running");
+            return;
+        }
+        ChunkProviderServer providerServer = (ChunkProviderServer) world.getChunkProvider();
+        arguments.confirm("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ * 4, ServerUtil.getTPS(), providerServer.getLoadedChunkCount());
+    }
+
     @Override
     public boolean tick()
     {
@@ -207,6 +224,10 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         {
             notifyPlayers("Pregen stopped");
             return true;
+        }
+        if (ServerUtil.getTPS() < 5)
+        {
+            return false;
         }
         totalTicks++;
 
