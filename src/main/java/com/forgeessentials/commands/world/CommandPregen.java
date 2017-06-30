@@ -225,15 +225,17 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             notifyPlayers("Pregen stopped");
             return true;
         }
-        if (ServerUtil.getTPS() < 5)
+
+        double tps = ServerUtil.getTPS();
+        if (tps < 5)
         {
             return false;
         }
+
         totalTicks++;
 
         ChunkProviderServer providerServer = world.getChunkProvider();
 
-        double tps = ServerUtil.getTPS();
         if (totalTicks % 80 == 0)
             notifyPlayers(String.format("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ * 4, tps,
                     providerServer.getLoadedChunkCount()));
