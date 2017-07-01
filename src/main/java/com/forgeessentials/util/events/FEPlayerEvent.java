@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 /**
  * All events on this class are fired on the FE internal EventBus and are not cancellable.
@@ -76,7 +77,7 @@ public class FEPlayerEvent extends PlayerEvent
             this.newInvGroupName = newInvGroupName;
         }
 
-        public IItemHandler swapInventory(String modname, IItemHandler toSwap)
+        public IItemHandlerModifiable swapInventory(String modname, IItemHandlerModifiable toSwap)
         {
             List<ItemStack> oldItems = new ArrayList<>();
             List<ItemStack> newItems = newInvGroup.getOrDefault(modname, new ArrayList<>());
@@ -84,9 +85,13 @@ public class FEPlayerEvent extends PlayerEvent
             {
                 oldItems.add(toSwap.getStackInSlot(slotIdx));
                 if (newItems != null && slotIdx < newItems.size())
-                    toSwap.insertItem(slotIdx, newItems.get(slotIdx), false);
+                {
+                    toSwap.setStackInSlot(slotIdx, newItems.get(slotIdx));
+                }
                 else
-                    toSwap.insertItem(slotIdx, null, false);
+                {
+                    toSwap.setStackInSlot(slotIdx, null);
+                }
             }
             newInvGroup.put(modname, oldItems);
             return toSwap;

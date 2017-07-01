@@ -2,7 +2,7 @@ package com.forgeessentials.compat;
 
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import com.forgeessentials.util.events.FEPlayerEvent.InventoryGroupChange;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -15,7 +15,7 @@ public class BaublesCompat extends ServerEventHandler
     @SubscribeEvent
     public void updateInventory(InventoryGroupChange e)
     {
-        IItemHandler inventory = BaublesApi.getBaublesHandler(e.getPlayer());
+        IItemHandlerModifiable inventory = BaublesApi.getBaublesHandler(e.getPlayer());
         e.swapInventory("baubles", inventory);
     }
 }
