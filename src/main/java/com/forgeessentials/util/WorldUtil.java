@@ -22,13 +22,14 @@ public abstract class WorldUtil
      */
     public static boolean isFree(World world, int x, int y, int z, int h)
     {
+        int testedH = 0;
         for (int i = 0; i < h; i++)
         {
             Block block = world.getBlockState(new BlockPos(x, y + i, z)).getBlock();
             if (block.isPassable(world, new BlockPos(x, y + i, z)))
-                return false;
+                testedH++;
         }
-        return true;
+        return testedH == h;
     }
 
     /**
