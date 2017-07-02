@@ -1,10 +1,14 @@
 package com.forgeessentials.core.environment;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class Environment
 {
@@ -16,6 +20,8 @@ public class Environment
     protected static boolean hasCauldron = false;
 
     protected static boolean hasSponge = false;
+
+    private static boolean hasFTBU = false;
 
     public static void check()
     {
@@ -42,6 +48,14 @@ public class Environment
             {
                 LoggingHandler.felog.warn("Found WorldEdit Forge, but not FE WorldEdit-module. You cannot use WorldEdit for FE without it.");
             }
+        }
+
+        if (Loader.isModLoaded("ftbu"))
+        {
+            LoggingHandler.felog.warn("FTB Utilities is installed. Forge Essentials may not work as expected.");
+            LoggingHandler.felog.warn("Please uninstall FTB Utilities to regain full FE functionality.");
+            hasFTBU = true;
+            MinecraftForge.EVENT_BUS.register(new FTBUNagHandler());
         }
 
         if (Boolean.parseBoolean(System.getProperty("forgeessentials.developermode.we")))
@@ -92,6 +106,19 @@ public class Environment
         LoggingHandler.felog.info("Sponge environment plugin found, enabling Sponge compat.");
         hasSponge = true;
         hasWorldEdit = isWESpongePresent;
+    }
+    public static class FTBUNagHandler
+    {
+
+        @SubscribeEvent
+        public void playerLogIn(PlayerLoggedInEvent e)
+        {
+            if (FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().canSendCommands(e.player.getGameProfile()))
+            {
+                ChatOutputHandler.chatWarning(e.player, "FTB Utilities is installed. Forge Essentials may not work as expected.");
+                ChatOutputHandler.chatWarning(e.player, "Please uninstall FTB Utilities to regain full FE functionality.");
+            }
+        }
     }
 
 }
