@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class PlayerInfo implements Loadable
@@ -118,7 +120,8 @@ public class PlayerInfo implements Loadable
 
         if (!inventoryGroups.isEmpty())
         {
-            // See if we have an inventory to por
+            // See if we have an inventory to port
+            Set<String> groupsToRemove = new HashSet<>();
             for (String name : inventoryGroups.keySet())
             {
                 List<ItemStack> portInv = inventoryGroups.get(name);
@@ -128,10 +131,14 @@ public class PlayerInfo implements Loadable
                     if (ig.get("vanilla") == null)
                     {
                         ig.put("vanilla", portInv);
-                        inventoryGroups.remove(name);
+                        groupsToRemove.add(name);
                         modInventoryGroups.put(name, ig);
                     }
                 }
+            }
+            for (String name : groupsToRemove) {
+
+                inventoryGroups.remove(name);
             }
             this.save();
         }
