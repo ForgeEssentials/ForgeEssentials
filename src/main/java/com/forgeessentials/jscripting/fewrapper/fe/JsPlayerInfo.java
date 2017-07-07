@@ -146,7 +146,7 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
     }
 
     //TODO: Expose InventoryGroups to Js
-    /*public Map<String, List<JsItemStack>> getInventoryGroups()
+    /*public Map<String, List<JsItemStack>> getModInventoryGroups()
     {
 
     }

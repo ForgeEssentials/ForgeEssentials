@@ -7,11 +7,13 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
+import com.forgeessentials.util.events.FEPlayerEvent.InventoryGroupChange;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.google.gson.annotations.Expose;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,6 +73,9 @@ public class PlayerInfo implements Loadable
 
     private Map<String, List<ItemStack>> inventoryGroups = new HashMap<>();
 
+    // New inventory groups, with support for modded custom inventories
+    private Map<String, Map<String, List<ItemStack>>> modInventoryGroups = new HashMap<>();
+
     private String activeInventoryGroup = "default";
 
     /* ------------------------------------------------------------ */
@@ -107,6 +112,30 @@ public class PlayerInfo implements Loadable
         lastActivity = System.currentTimeMillis();
         if (activeInventoryGroup == null || activeInventoryGroup.isEmpty())
             activeInventoryGroup = "default";
+
+        if (modInventoryGroups == null)
+            modInventoryGroups = new HashMap<>();
+
+        if (!inventoryGroups.isEmpty())
+        {
+            // See if we have an inventory to por
+            for (String name : inventoryGroups.keySet())
+            {
+                List<ItemStack> portInv = inventoryGroups.get(name);
+                if (portInv != null)
+                {
+                    Map ig = modInventoryGroups.getOrDefault(name, new HashMap<>());
+                    if (ig.get("vanilla") == null)
+                    {
+                        ig.put("vanilla", portInv);
+                        inventoryGroups.remove(name);
+                        modInventoryGroups.put(name, ig);
+                    }
+                }
+            }
+            this.save();
+        }
+
     }
 
     /**
@@ -379,14 +408,14 @@ public class PlayerInfo implements Loadable
     /* ------------------------------------------------------------ */
     /* Inventory groups */
 
-    public Map<String, List<ItemStack>> getInventoryGroups()
+    public Map<String, Map<String, List<ItemStack>>> getModInventoryGroups()
     {
-        return inventoryGroups;
+        return modInventoryGroups;
     }
 
-    public List<ItemStack> getInventoryGroupItems(String name)
+    public List<ItemStack> getInventoryGroupItems(String name, String mod)
     {
-        return inventoryGroups.get(name);
+        return modInventoryGroups.get(name).get(mod);
     }
 
     public String getInventoryGroup()
@@ -399,10 +428,9 @@ public class PlayerInfo implements Loadable
         if (!activeInventoryGroup.equals(name))
         {
             // Get the new inventory
-            List<ItemStack> newInventory = inventoryGroups.get(name);
-            // Create empty inventory if it did not exist yet
+            Map<String, List<ItemStack>> newInventory = modInventoryGroups.get(name);
             if (newInventory == null)
-                newInventory = new ArrayList<>();
+                newInventory = new HashMap<>();
 
             // ChatOutputHandler.felog.info(String.format("Changing inventory group for %s from %s to %s",
             // ident.getUsernameOrUUID(), activeInventoryGroup, name));
@@ -416,9 +444,11 @@ public class PlayerInfo implements Loadable
              */
 
             // Swap player inventory and store the old one
-            inventoryGroups.put(activeInventoryGroup, PlayerUtil.swapInventory(this.ident.getPlayerMP(), newInventory));
+            newInventory.put("vanilla", PlayerUtil.swapInventory(this.ident.getPlayerMP(), newInventory.getOrDefault("vanilla", new ArrayList<>())));
+            MinecraftForge.EVENT_BUS.post(new InventoryGroupChange(ident.getPlayer(), name, newInventory));
+            modInventoryGroups.put(activeInventoryGroup, newInventory);
             // Clear the inventory-group that was assigned to the player (optional)
-            inventoryGroups.put(name, null);
+            modInventoryGroups.put(name, null);
             // Save the new active inventory-group
             activeInventoryGroup = name;
             this.save();

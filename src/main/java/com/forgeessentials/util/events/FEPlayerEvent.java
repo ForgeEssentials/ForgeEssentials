@@ -1,8 +1,15 @@
 package com.forgeessentials.util.events;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 /**
  * All events on this class are fired on the FE internal EventBus and are not cancellable.
@@ -52,6 +59,42 @@ public class FEPlayerEvent extends PlayerEvent
         public ClientHandshakeEstablished(EntityPlayer player)
         {
             super(player);
+        }
+    }
+
+    /**
+     * Fired when an inventory group is changed. For custom inventory support.
+     */
+    public static class InventoryGroupChange extends FEPlayerEvent
+    {
+        String newInvGroupName;
+        Map<String, List<ItemStack>> newInvGroup;
+
+        public InventoryGroupChange(EntityPlayer player, String newInvGroupName, Map newInvGroup)
+        {
+            super(player);
+            this.newInvGroup = newInvGroup;
+            this.newInvGroupName = newInvGroupName;
+        }
+
+        public IItemHandlerModifiable swapInventory(String modname, IItemHandlerModifiable toSwap)
+        {
+            List<ItemStack> oldItems = new ArrayList<>();
+            List<ItemStack> newItems = newInvGroup.getOrDefault(modname, new ArrayList<>());
+            for (int slotIdx = 0; slotIdx < toSwap.getSlots(); slotIdx++)
+            {
+                oldItems.add(toSwap.getStackInSlot(slotIdx));
+                if (newItems != null && slotIdx < newItems.size())
+                {
+                    toSwap.setStackInSlot(slotIdx, newItems.get(slotIdx));
+                }
+                else
+                {
+                    toSwap.setStackInSlot(slotIdx, null);
+                }
+            }
+            newInvGroup.put(modname, oldItems);
+            return toSwap;
         }
     }
 }
