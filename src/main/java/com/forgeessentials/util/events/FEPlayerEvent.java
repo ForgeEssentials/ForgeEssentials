@@ -1,7 +1,13 @@
 package com.forgeessentials.util.events;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 /**
@@ -52,6 +58,42 @@ public class FEPlayerEvent extends PlayerEvent
         public ClientHandshakeEstablished(EntityPlayer player)
         {
             super(player);
+        }
+    }
+
+    /**
+     * Fired when an inventory group is changed. For custom inventory support.
+     */
+    public static class InventoryGroupChange extends FEPlayerEvent
+    {
+        String newInvGroupName;
+        Map<String, List<ItemStack>> newInvGroup;
+
+        public InventoryGroupChange(EntityPlayer player, String newInvGroupName, Map newInvGroup)
+        {
+            super(player);
+            this.newInvGroup = newInvGroup;
+            this.newInvGroupName = newInvGroupName;
+        }
+
+        public IInventory swapInventory(String modname, IInventory toSwap)
+        {
+            List<ItemStack> oldItems = new ArrayList<>();
+            List<ItemStack> newItems = newInvGroup.getOrDefault(modname, new ArrayList<>());
+            for (int slotIdx = 0; slotIdx < toSwap.getSizeInventory(); slotIdx++)
+            {
+                oldItems.add(toSwap.getStackInSlot(slotIdx));
+                if (newItems != null && slotIdx < newItems.size())
+                {
+                    toSwap.setInventorySlotContents(slotIdx, newItems.get(slotIdx));
+                }
+                else
+                {
+                    toSwap.setInventorySlotContents(slotIdx, null);
+                }
+            }
+            newInvGroup.put(modname, oldItems);
+            return toSwap;
         }
     }
 }

@@ -28,6 +28,7 @@ import com.forgeessentials.commons.network.Packet2Reach;
 import com.forgeessentials.commons.network.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.Packet5Noclip;
 import com.forgeessentials.commons.network.Packet7Remote;
+import com.forgeessentials.compat.BaublesCompat;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.CommandFEInfo;
@@ -297,6 +298,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
         APIRegistry.getFEEventBus().post(new FEModuleServerPreInitEvent(e));
+        new BaublesCompat();
     }
 
     @EventHandler
