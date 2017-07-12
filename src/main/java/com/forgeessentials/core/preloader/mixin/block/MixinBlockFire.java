@@ -65,6 +65,21 @@ public class MixinBlockFire
     }
 
     @Inject(
+            method = "tryCatchFire(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;ILjava/util/Random;ILnet/minecraft/util/EnumFacing;)V",
+            at = @At(
+                    value = "HEAD"),
+            cancellable = true,
+            remap = false)
+    public void handleTryCatchFireHead(World world, BlockPos pos, int chance, Random random, int argValue1, EnumFacing face, CallbackInfo ci)
+    {
+        System.out.println("Mixin : Fire attempted to destroy block");
+        if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))
+        {
+            ci.cancel();
+        }
+    }
+
+    @Inject(
             method = "Lnet/minecraft/block/BlockFire;updateTick(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Ljava/util/Random;)V",
             at = @At(
                     ordinal = 1,

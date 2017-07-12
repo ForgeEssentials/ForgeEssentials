@@ -252,7 +252,8 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                     return true;
                 }
 
-                if (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F))
+                if (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F)
+                        || (providerServer.chunkExists(x, z)))
                 {
                     skippedChunks++;
                     if (skippedChunks > 16 * 16)
@@ -260,11 +261,13 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                     else
                         continue;
                 }
-                Chunk chunk = providerServer.provideChunk(x, z);
-                saveChunk(providerServer, chunk);
 
                 if (providerServer.getLoadedChunkCount() > 256)
-                    providerServer.unload(chunk);
+                {
+                    providerServer.saveChunks(true);
+                    providerServer.unloadAllChunks();
+                }
+                providerServer.provideChunk(x, z);
 
                 break;
             }
