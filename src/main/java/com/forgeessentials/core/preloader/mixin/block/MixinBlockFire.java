@@ -72,7 +72,7 @@ public class MixinBlockFire
             remap = false)
     public void handleTryCatchFireHead(World world, BlockPos pos, int chance, Random random, int argValue1, EnumFacing face, CallbackInfo ci)
     {
-        System.out.println("Mixin : Fire attempted to destroy block");
+        //System.out.println("Mixin : Fire attempted to destroy block");
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))
         {
             ci.cancel();
