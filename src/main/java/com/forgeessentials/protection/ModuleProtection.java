@@ -447,16 +447,17 @@ public class ModuleProtection
 
     public static EntityPlayer getCraftingPlayer(InventoryCrafting inventory)
     {
-        Container abstractContainer = ReflectionHelper.getPrivateValue(InventoryCrafting.class, inventory, "field_70465_c", "eventHandler");
+
+        Container abstractContainer = inventory.eventHandler;
         if (abstractContainer instanceof ContainerPlayer)
         {
             ContainerPlayer container = (ContainerPlayer) abstractContainer;
-            return ReflectionHelper.getPrivateValue(ContainerPlayer.class, container, "field_82862_h", "thePlayer");
+            return container.player;
         }
         else if (abstractContainer instanceof ContainerWorkbench)
         {
             SlotCrafting slot = (SlotCrafting) abstractContainer.getSlot(0);
-            return ReflectionHelper.getPrivateValue(SlotCrafting.class, slot, "field_75238_b", "thePlayer");
+            return slot.player;
         }
         return null;
     }
