@@ -20,13 +20,13 @@ public class CommandMapper extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "mapper";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/mapper: Manage mapper settings";
     }
@@ -54,7 +54,7 @@ public class CommandMapper extends ParserCommandBase
     {
         int x = (int) Math.floor(arguments.senderPlayer.posX);
         int z = (int) Math.floor(arguments.senderPlayer.posZ);
-        WorldServer world = (WorldServer) arguments.senderPlayer.worldObj;
+        WorldServer world = (WorldServer) arguments.senderPlayer.world;
         BufferedImage img = ModuleMapper.getInstance().getRegionImage(world, MapperUtil.worldToRegion(x), MapperUtil.worldToRegion(z));
         try
         {

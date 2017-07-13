@@ -563,7 +563,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             if (type == null)
                 continue;
 
-            String name = type.getWorldTypeName().toUpperCase();
+            String name = type.getName().toUpperCase();
 
             /*
              * MC does not allow creation of this worldType, so we should not either

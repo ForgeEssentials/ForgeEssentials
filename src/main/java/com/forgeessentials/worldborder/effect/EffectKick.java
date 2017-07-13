@@ -48,7 +48,7 @@ public class EffectKick extends WorldBorderEffect
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.connection.kickPlayerFromServer("You left the world border");
+            player.connection.disconnect("You left the world border");
             // For safety restart the timeout
             pi.startTimeout(this.getClass().getName(), timeout);
         }

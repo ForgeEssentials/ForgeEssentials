@@ -19,7 +19,7 @@ public class CommandListPlayers extends IrcCommandParser
     }
 
     @Override
-    public String getCommandUsage()
+    public String getUsage()
     {
         return "";
     }
@@ -40,7 +40,7 @@ public class CommandListPlayers extends IrcCommandParser
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         arguments.confirm("List of players:");
-        for (String username : arguments.server.getPlayerList().getAllUsernames())
+        for (String username : arguments.server.getPlayerList().getOnlinePlayerNames())
             arguments.confirm(" - " + username);
     }
 

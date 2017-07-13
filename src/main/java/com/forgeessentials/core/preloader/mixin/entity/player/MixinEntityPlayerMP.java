@@ -9,7 +9,7 @@ public class MixinEntityPlayerMP
 {
 
     @Overwrite
-    public boolean canCommandSenderUseCommand(int level, String command)
+    public boolean canUseCommand(int level, String command)
     {
         return true;
     }

@@ -106,10 +106,10 @@ public class Grave implements Loadable
         }
 
         point = new WorldPoint(player);
-        point.setY(WorldUtil.placeInWorld(player.worldObj, point.getX(), point.getY(), point.getZ(), hasFencePost ? 2 : 1));
+        point.setY(WorldUtil.placeInWorld(player.world, point.getX(), point.getY(), point.getZ(), hasFencePost ? 2 : 1));
         if (hasFencePost)
         {
-            player.worldObj.setBlockState(point.getBlockPos(), Blocks.OAK_FENCE.getDefaultState());
+            player.world.setBlockState(point.getBlockPos(), Blocks.OAK_FENCE.getDefaultState());
             point.setY(point.getY() + 1);
         }
         point.getWorld().setBlockState(point.getBlockPos(), blockState);
@@ -231,7 +231,7 @@ public class Grave implements Loadable
             if (is == null || is.getItem() == null)
                 continue;
             EntityItem entity = new EntityItem(point.getWorld(), point.getX(), point.getY(), point.getZ(), is);
-            point.getWorld().spawnEntityInWorld(entity);
+            point.getWorld().spawnEntity(entity);
         }
         inventory.clear();
     }

@@ -16,7 +16,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 public class CommandEnderchest extends ForgeEssentialsCommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "enderchest";
     }
@@ -61,7 +61,7 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/enderchest Opens your enderchest.";
     }

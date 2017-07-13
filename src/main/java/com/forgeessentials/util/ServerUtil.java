@@ -257,7 +257,7 @@ public abstract class ServerUtil
     public static List<EntityPlayerMP> getPlayerList()
     {
         MinecraftServer mc = FMLCommonHandler.instance().getMinecraftServerInstance();
-        return mc == null || mc.getPlayerList() == null ? new ArrayList<>() : mc.getPlayerList().getPlayerList();
+        return mc == null || mc.getPlayerList() == null ? new ArrayList<>() : mc.getPlayerList().getPlayers();
     }
 
     /**
@@ -300,12 +300,12 @@ public abstract class ServerUtil
 
     public static WorldServer getOverworld()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
+        return FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0];
     }
 
     public static long getOverworldTime()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].getWorldInfo().getWorldTime();
+        return FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0].getWorldInfo().getWorldTime();
     }
 
     public static boolean isServerRunning()
@@ -433,7 +433,7 @@ public abstract class ServerUtil
         }
         catch (Exception e)
         {
-            LoggingHandler.felog.error(String.format("Error replacing command /%s", oldCommand.getCommandName()));
+            LoggingHandler.felog.error(String.format("Error replacing command /%s", oldCommand.getName()));
             e.printStackTrace();
         }
         if (newCommand instanceof ForgeEssentialsCommandBase)

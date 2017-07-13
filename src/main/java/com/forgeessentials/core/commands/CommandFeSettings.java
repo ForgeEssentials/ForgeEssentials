@@ -51,7 +51,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fesettings";
     }
@@ -63,7 +63,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
+    public String getUsage(ICommandSender p_71518_1_)
     {
         return "/fesettings [id] [value]: Change FE settings";
     }

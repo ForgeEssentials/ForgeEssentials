@@ -23,13 +23,13 @@ public class CommandItemPermission extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "permitem";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/permitem mode|perm|group|reset: Manage permission-items";
     }

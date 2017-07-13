@@ -24,7 +24,7 @@ public class CommandTrade extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "trade";
     }
@@ -42,7 +42,7 @@ public class CommandTrade extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
+    public String getUsage(ICommandSender p_71518_1_)
     {
         return "/trade <player> <price>: Trade item in hand for money";
     }

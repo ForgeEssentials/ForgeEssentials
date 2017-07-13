@@ -40,7 +40,7 @@ public class HelpFixer extends CommandHelp
             for (Iterator<ICommand> it = list.iterator(); it.hasNext();)
             {
                 ICommand command = it.next();
-                if (command.getClass().getName().startsWith("com.sk89q.worldedit") && !command.getCommandName().equals("/help"))
+                if (command.getClass().getName().startsWith("com.sk89q.worldedit") && !command.getName().equals("/help"))
                     it.remove();
             }
         }
@@ -51,14 +51,14 @@ public class HelpFixer extends CommandHelp
             @Override
             public int compare(ICommand o1, ICommand o2)
             {
-                return o1.getCommandName().compareTo(o2.getCommandName());
+                return o1.getName().compareTo(o2.getName());
             }
         });
         return list;
     }
 
     /**
-     * Fix for retard mods who think they can just return null in {@link ICommand#getCommandUsage(ICommandSender)}
+     * Fix for retard mods who think they can just return null in {@link ICommand#getUsage(ICommandSender)}
      * 
      * @throws CommandException
      */
@@ -81,12 +81,12 @@ public class HelpFixer extends CommandHelp
             ICommand cmd = cmdMap.get(args[0]);
             if (cmd != null)
             {
-                String usage = cmd.getCommandUsage(sender);
+                String usage = cmd.getUsage(sender);
                 if (usage == null)
-                    usage = "/" + cmd.getCommandName();
+                    usage = "/" + cmd.getName();
                 throw new WrongUsageException(usage, new Object[0]);
             }
-            else if (MathHelper.parseIntWithDefault(args[0], -1) != -1)
+            else if (MathHelper.getInt(args[0], -1) != -1)
             {
                 throw e;
             }
@@ -97,24 +97,24 @@ public class HelpFixer extends CommandHelp
         TextComponentTranslation msg = new TextComponentTranslation("commands.help.header", new Object[] { Integer.valueOf(startPage + 1),
                 Integer.valueOf(i + 1) });
         msg.getStyle().setColor(TextFormatting.DARK_GREEN);
-        sender.addChatMessage(msg);
+        sender.sendMessage(msg);
 
         for (int index = startPage * cmdsPerPage; index < endIndex; ++index)
         {
             ICommand cmd = commands.get(index);
-            String usage = cmd.getCommandUsage(sender);
+            String usage = cmd.getUsage(sender);
             if (usage == null)
-                usage = "/" + cmd.getCommandName();
+                usage = "/" + cmd.getName();
             TextComponentTranslation msg2 = new TextComponentTranslation(usage, new Object[0]);
-            msg2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + cmd.getCommandName() + " "));
-            sender.addChatMessage(msg2);
+            msg2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + cmd.getName() + " "));
+            sender.sendMessage(msg2);
         }
 
         if (startPage == 0 && sender instanceof EntityPlayer)
         {
             TextComponentTranslation msg3 = new TextComponentTranslation("commands.help.footer", new Object[0]);
             msg3.getStyle().setColor(TextFormatting.GREEN);
-            sender.addChatMessage(msg3);
+            sender.sendMessage(msg3);
         }
     }
 

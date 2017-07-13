@@ -17,7 +17,7 @@ public interface IrcCommand
 
     public Collection<String> getCommandNames();
 
-    public String getCommandUsage();
+    public String getUsage();
 
     public String getCommandHelp();
 
@@ -52,7 +52,7 @@ public interface IrcCommand
         public abstract Collection<String> getCommandNames();
 
         @Override
-        public abstract String getCommandUsage();
+        public abstract String getUsage();
 
         @Override
         public abstract String getCommandHelp();

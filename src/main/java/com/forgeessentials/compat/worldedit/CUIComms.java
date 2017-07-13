@@ -37,7 +37,7 @@ public class CUIComms
     {
         if (e.getSender() instanceof EntityPlayerMP)
         {
-            String cmd = e.getCommand().getCommandName();
+            String cmd = e.getCommand().getName();
             for (String weCmd : worldEditSelectionCommands)
             {
                 if (cmd.equals(weCmd) && !(e.getSender() instanceof FakePlayer))

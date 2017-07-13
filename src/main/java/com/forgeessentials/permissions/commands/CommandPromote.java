@@ -24,13 +24,13 @@ public class CommandPromote extends ParserCommandBase
     public static final String PERM_NODE = "fe.perm.promote";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "promote";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/promote <player> <group>: Promote a user to another group";
     }

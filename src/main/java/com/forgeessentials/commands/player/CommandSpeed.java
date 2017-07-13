@@ -16,7 +16,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fespeed";
     }
@@ -28,7 +28,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
+    public String getUsage(ICommandSender p_71518_1_)
     {
         return "/speed <speed> Set or change the player's speed.";
     }

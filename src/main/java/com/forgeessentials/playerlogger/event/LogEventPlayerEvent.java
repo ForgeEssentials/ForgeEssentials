@@ -26,7 +26,7 @@ public class LogEventPlayerEvent extends PlayerLoggerEvent<PlayerEvent>
         action.type = type;
         action.time = date;
         action.player = getPlayer(event.player);
-        action.world = getWorld(event.player.worldObj.provider.getDimension());
+        action.world = getWorld(event.player.world.provider.getDimension());
         action.x = (int) event.player.posX;
         action.y = (int) event.player.posY;
         action.z = (int) event.player.posZ;

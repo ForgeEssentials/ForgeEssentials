@@ -55,9 +55,9 @@ public class TeleportHelper extends ServerEventHandler
         @Override
         public void placeInPortal(Entity entity, float yaw)
         {
-            int i = MathHelper.floor_double(entity.posX);
-            int j = MathHelper.floor_double(entity.posY) - 1;
-            int k = MathHelper.floor_double(entity.posZ);
+            int i = MathHelper.floor(entity.posX);
+            int j = MathHelper.floor(entity.posY) - 1;
+            int k = MathHelper.floor(entity.posZ);
             entity.setLocationAndAngles(i, j, k, entity.rotationYaw, 0.0F);
         }
 
@@ -335,13 +335,13 @@ public class TeleportHelper extends ServerEventHandler
         double d4 = entity.posY;
         double d5 = entity.posZ;
         float f = entity.rotationYaw;
-        d0 = MathHelper.clamp_int((int) d0, -29999872, 29999872);
-        d1 = MathHelper.clamp_int((int) d1, -29999872, 29999872);
+        d0 = MathHelper.clamp((int) d0, -29999872, 29999872);
+        d1 = MathHelper.clamp((int) d1, -29999872, 29999872);
         if (entity.isEntityAlive())
         {
             entity.setLocationAndAngles(d0, entity.posY, d1, entity.rotationYaw, entity.rotationPitch);
             teleporter.placeInPortal(entity, f);
-            newWorld.spawnEntityInWorld(entity);
+            newWorld.spawnEntity(entity);
             newWorld.updateEntityWithOptionalForce(entity, false);
         }
         entity.setWorld(newWorld);

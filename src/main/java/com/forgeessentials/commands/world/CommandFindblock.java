@@ -39,7 +39,7 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "findblock";
     }
@@ -51,7 +51,7 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/fb <block> [meta] [max distance] [amount of blocks] [speed] Finds a block.";
     }
@@ -79,7 +79,7 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     {
         if (args.length < 1)
         {
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
         }
         String id = args[0];
         int meta = (args.length < 2) ? 0 : parseInt(args[1]);
@@ -91,7 +91,7 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

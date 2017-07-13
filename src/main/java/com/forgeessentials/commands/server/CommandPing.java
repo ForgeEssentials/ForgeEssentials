@@ -17,7 +17,7 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     public String response = "Pong! %time";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "feping";
     }
@@ -29,7 +29,7 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/ping Ping the server.";
     }

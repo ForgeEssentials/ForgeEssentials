@@ -39,10 +39,10 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
     // Command alias
 
     @Override
-    public abstract String getCommandUsage(ICommandSender sender);
+    public abstract String getUsage(ICommandSender sender);
 
     @Override
-    public List<String> getCommandAliases()
+    public List<String> getAliases()
     {
         return aliases;
     }
@@ -128,14 +128,14 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
             return;
 
         Map<?, ?> commandMap = ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).getCommands();
-        if (commandMap.containsKey(getCommandName()))
-            LoggingHandler.felog.error(String.format("Command %s registered twice", getCommandName()));
+        if (commandMap.containsKey(getName()))
+            LoggingHandler.felog.error(String.format("Command %s registered twice", getName()));
 
-        if (getCommandAliases() != null && !getCommandAliases().isEmpty())
+        if (getAliases() != null && !getAliases().isEmpty())
         {
-            for (String alias : getCommandAliases())
+            for (String alias : getAliases())
                 if (alias != null && commandMap.containsKey(alias))
-                    LoggingHandler.felog.error(String.format("Command alias %s of command %s registered twice", alias, getCommandName()));
+                    LoggingHandler.felog.error(String.format("Command alias %s of command %s registered twice", alias, getName()));
         }
 
         ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).registerCommand(this);
@@ -152,8 +152,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         Map<String, ICommand> commandMap = cmdHandler.getCommands();
         Set<ICommand> commandSet = (Set<ICommand>) ReflectionHelper.getPrivateValue(CommandHandler.class, cmdHandler, "field_71561_b", "commandSet");
 
-        String commandName = getCommandName();
-        List<String> commandAliases = getCommandAliases();
+        String commandName = getName();
+        List<String> commandAliases = getAliases();
         commandSet.remove(this);
         if (commandName != null)
             commandMap.remove(commandName);
@@ -282,5 +282,10 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
     public abstract String getPermissionNode();
 
     public abstract DefaultPermissionLevel getPermissionLevel();
+
+    public List<String> matchToPlayers(String[] args)
+    {
+        return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getOnlinePlayerNames());
+    }
 
 }

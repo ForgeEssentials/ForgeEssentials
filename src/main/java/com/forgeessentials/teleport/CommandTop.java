@@ -22,7 +22,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fetop";
     }
@@ -34,7 +34,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/top <player> Teleport you or another player to the top of the world.";
     }
@@ -98,8 +98,8 @@ public class CommandTop extends ForgeEssentialsCommandBase
     public void top(EntityPlayerMP player) throws CommandException
     {
         WarpPoint point = new WarpPoint(player);
-        point.setY(player.worldObj.getActualHeight());
-        while (player.worldObj.getBlockState(point.getBlockPos()).getBlock() == Blocks.AIR)
+        point.setY(player.world.getActualHeight());
+        while (player.world.getBlockState(point.getBlockPos()).getBlock() == Blocks.AIR)
         {
             point.setY(point.getY() - 1);
         }
@@ -108,11 +108,11 @@ public class CommandTop extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return matchToPlayers(args);
         }
         else
         {

@@ -64,7 +64,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
 
         if (player.checkPermission(CommandAFK.PERM_AUTOKICK))
         {
-            player.getPlayerMP().connection.kickPlayerFromServer(Translator.translate("You have been kicked for being AFK"));
+            player.getPlayerMP().connection.disconnect(Translator.translate("You have been kicked for being AFK"));
             return;
         }
 
@@ -174,7 +174,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         PlayerInfo pi = PlayerInfo.get(event.player);
         if (!pi.checkTimeout("tempban"))
         {
-            pi.ident.getPlayerMP().connection.kickPlayerFromServer(Translator.format("You are still banned for %s",
+            pi.ident.getPlayerMP().connection.disconnect(Translator.format("You are still banned for %s",
                     ChatOutputHandler.formatTimeDurationReadable(pi.getRemainingTimeout("tempban") / 1000, true)));
         }
     }

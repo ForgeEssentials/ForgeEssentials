@@ -79,7 +79,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 
     public JsPoint<?> getBedLocation(int dimension)
     {
-        BlockPos coord = EntityPlayer.getBedSpawnLocation(that.worldObj, that.getBedLocation(dimension), false);
+        BlockPos coord = EntityPlayer.getBedSpawnLocation(that.world, that.getBedLocation(dimension), false);
         return coord != null ? new JsWorldPoint<>(new WorldPoint(dimension, coord)) : null;
     }
 

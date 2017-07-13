@@ -28,7 +28,7 @@ public class ForgeEssentialsEventFactory extends ServerEventHandler
         WarpPoint before = lastPlayerPosition.get(player.getPersistentID());
         WarpPoint current = new WarpPoint(e.player);
 
-        if (before != null && !player.isDead && player.worldObj != null && !before.equals(current))
+        if (before != null && !player.isDead && player.world != null && !before.equals(current))
         {
             PlayerMoveEvent event = new PlayerMoveEvent(player, before, current);
             MinecraftForge.EVENT_BUS.post(event);

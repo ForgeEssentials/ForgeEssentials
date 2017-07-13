@@ -11,7 +11,7 @@ public class CommandPermissions extends ParserCommandBase
 {
 
     @Override
-    public final String getCommandName()
+    public final String getName()
     {
         return "feperm";
     }
@@ -35,7 +35,7 @@ public class CommandPermissions extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/feperm Configure FE permissions.";
     }

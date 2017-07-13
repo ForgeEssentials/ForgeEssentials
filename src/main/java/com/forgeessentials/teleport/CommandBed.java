@@ -31,7 +31,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "febed";
     }
@@ -43,7 +43,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
 
         return "/bed [player]: Teleport you or another player to the bed last used.";
@@ -88,7 +88,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
 
     private void tp(EntityPlayerMP player) throws CommandException
     {
-        World world = player.worldObj;
+        World world = player.world;
         if (!world.provider.canRespawnHere())
             world = DimensionManager.getWorld(0);
 
@@ -101,7 +101,7 @@ public class CommandBed extends ForgeEssentialsCommandBase
         if (spawn == null)
             throw new TranslatedCommandException("No bed found.");
 
-        spawn = EntityPlayer.getBedSpawnLocation(player.worldObj, spawn, true);
+        spawn = EntityPlayer.getBedSpawnLocation(player.world, spawn, true);
         if (spawn == null)
             throw new TranslatedCommandException("Your bed has been obstructed.");
 
@@ -126,11 +126,11 @@ public class CommandBed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return matchToPlayers(args);
         }
         else
         {

@@ -24,7 +24,7 @@ public class TileEntitySkullGrave extends TileEntitySkull
     public void invalidate()
     {
         super.invalidate();
-        WorldPoint point = new WorldPoint(worldObj, pos.getX(), pos.getY(), pos.getZ());
+        WorldPoint point = new WorldPoint(world, pos.getX(), pos.getY(), pos.getZ());
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
@@ -34,8 +34,8 @@ public class TileEntitySkullGrave extends TileEntitySkull
             UserIdent owner = UserIdent.get(grave.owner);
             if (owner.hasPlayer())
             {
-                // createPlayerSkull(owner.getPlayer(), worldObj, point.getX(), point.getY(), point.getZ());
-                worldObj.setBlockState(pos, Blocks.CHEST.getDefaultState());
+                // createPlayerSkull(owner.getPlayer(), world, point.getX(), point.getY(), point.getZ());
+                world.setBlockState(pos, Blocks.CHEST.getDefaultState());
             }
         }
         else

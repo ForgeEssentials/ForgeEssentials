@@ -23,7 +23,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "feheal";
     }
@@ -35,7 +35,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         if (sender instanceof EntityPlayer)
         {
@@ -92,7 +92,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
         }
         else
         {
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
         }
     }
 
@@ -110,7 +110,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
     }
 
     public void heal(EntityPlayer target)
@@ -123,11 +123,11 @@ public class CommandHeal extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return matchToPlayers(args);
         }
         else
         {

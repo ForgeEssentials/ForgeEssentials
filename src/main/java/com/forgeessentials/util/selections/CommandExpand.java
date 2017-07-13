@@ -23,7 +23,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "/expand";
     }
@@ -202,7 +202,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
         }
         else
         {
-            throw new TranslatedCommandException(getCommandUsage(player));
+            throw new TranslatedCommandException(getUsage(player));
         }
     }
 
@@ -219,7 +219,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "//expand [direction] <number of blocks to expand> Expands the currently selected area.";
     }

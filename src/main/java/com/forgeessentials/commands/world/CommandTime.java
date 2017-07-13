@@ -59,13 +59,13 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "time";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/time freeze|set|add [day|night|<t>]: Manipulate time.";
     }

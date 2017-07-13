@@ -37,7 +37,7 @@ public class CommandBind extends ParserCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "febind";
     }
@@ -49,7 +49,7 @@ public class CommandBind extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/bind <left|right>: Bind a command to an item";
     }

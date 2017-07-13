@@ -16,7 +16,7 @@ public class CommandServerPerf extends ForgeEssentialsCommandBase
     private static final DecimalFormat formatNumbers = new DecimalFormat("########0.000");
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "perfstats";
     }
@@ -54,7 +54,7 @@ public class CommandServerPerf extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
 
         return "/perfstats Displays server performance stats (memory usage, average tick time).";

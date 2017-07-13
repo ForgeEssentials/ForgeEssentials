@@ -16,13 +16,13 @@ public class CommandIrc extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "irc";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/irc <message...>: Send a message to a client on IRC.";
     }

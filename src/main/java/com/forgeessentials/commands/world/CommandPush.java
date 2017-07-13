@@ -28,7 +28,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fepush";
     }
@@ -40,7 +40,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender par1ICommandSender)
+    public String getUsage(ICommandSender par1ICommandSender)
     {
         return "/push <X> <Y> <Z>: Push a button or pressureplate somewhere";
     }
@@ -68,7 +68,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
     {
         if (args.length != 3)
         {
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
         }
         else
         {
@@ -89,7 +89,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
                 x = (int) this.func_82368_a(sender, ((EntityPlayerMP) sender).posX, args[0]);
                 y = (int) this.func_82367_a(sender, ((EntityPlayerMP) sender).posY, args[1], 0, 0);
                 z = (int) this.func_82368_a(sender, ((EntityPlayerMP) sender).posZ, args[2]);
-                world = ((EntityPlayerMP) sender).worldObj;
+                world = ((EntityPlayerMP) sender).world;
             }
             else if (sender instanceof DedicatedServer)
             {
@@ -132,7 +132,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
             x = (int) this.func_82368_a(playermp, playermp.posX, args[0]);
             y = (int) this.func_82367_a(playermp, playermp.posY, args[1], 0, 0);
             z = (int) this.func_82368_a(playermp, playermp.posZ, args[2]);
-            world = playermp.worldObj;
+            world = playermp.world;
             BlockPos pos = new BlockPos(x, y, z);
             IBlockState state = world.getBlockState(pos);
             

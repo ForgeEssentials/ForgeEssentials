@@ -48,7 +48,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fecommandbook";
     }
@@ -60,7 +60,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/commandbook: Get a command book listing all commands.";
     }
@@ -108,10 +108,10 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
                 continue;
 
             Set<String> commands = new HashSet<>();
-            commands.add("/" + cmd.getCommandName());
+            commands.add("/" + cmd.getName());
 
             // Add aliases
-            List<?> aliases = cmd.getCommandAliases();
+            List<?> aliases = cmd.getAliases();
             if (aliases != null && aliases.size() > 0)
             {
                 for (Object alias : aliases)
@@ -120,7 +120,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 
             String perm = PermissionManager.getCommandPermission(cmd);
             String text = TextFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //
-                    (perm != null ? TextFormatting.DARK_RED + perm + "\n\n" : '\n') + TextFormatting.BLACK + cmd.getCommandUsage(sender);
+                    (perm != null ? TextFormatting.DARK_RED + perm + "\n\n" : '\n') + TextFormatting.BLACK + cmd.getUsage(sender);
             pages.add(text);
         }
 

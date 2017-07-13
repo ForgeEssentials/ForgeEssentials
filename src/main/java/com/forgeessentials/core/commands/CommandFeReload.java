@@ -13,7 +13,7 @@ public class CommandFeReload extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fereload";
     }
@@ -25,7 +25,7 @@ public class CommandFeReload extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/fereload: Reload FE configuration";
     }

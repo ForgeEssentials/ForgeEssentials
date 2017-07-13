@@ -68,7 +68,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     private int totalChunks;
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fepregen";
     }
@@ -80,7 +80,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pregen start [dim]";
     }
@@ -326,7 +326,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         AnvilChunkLoader loader = (AnvilChunkLoader) provider.chunkLoader;
         try
         {
-            loader.saveChunk(provider.worldObj, chunk);
+            loader.saveChunk(provider.world, chunk);
         }
         catch (Exception exception)
         {

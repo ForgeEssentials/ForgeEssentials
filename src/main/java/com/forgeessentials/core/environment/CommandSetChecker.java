@@ -38,12 +38,12 @@ public class CommandSetChecker
                 ICommand keep;
                 for (ICommand cmd : cmdList)
                 {
-                    keep = initials.put(cmd.getCommandName(), cmd);
+                    keep = initials.put(cmd.getName(), cmd);
                     if (keep != null)
                     {
-                        LoggingHandler.felog.debug("Duplicate command found! Name:" + keep.getCommandName());
-                        duplicates.put(cmd.getCommandName(), cmd);
-                        duplicates.put(cmd.getCommandName(), keep);
+                        LoggingHandler.felog.debug("Duplicate command found! Name:" + keep.getName());
+                        duplicates.put(cmd.getName(), cmd);
+                        duplicates.put(cmd.getName(), keep);
                         continue;
                     }
                     PermissionManager.registerCommandPermission(cmd);
@@ -85,13 +85,13 @@ public class CommandSetChecker
                         {
                             toRemove.add(cmd);
                             cmdClass = cmd.getClass();
-                            LoggingHandler.felog.debug("Removing command '" + cmd.getCommandName() + "' from class: " + cmdClass.getName());
+                            LoggingHandler.felog.debug("Removing command '" + cmd.getName() + "' from class: " + cmdClass.getName());
                         }
                         else
                         {
                             toRemove.add(keep);
                             cmdClass = keep.getClass();
-                            LoggingHandler.felog.debug("Removing command '" + keep.getCommandName() + "' from class: " + cmdClass.getName());
+                            LoggingHandler.felog.debug("Removing command '" + keep.getName() + "' from class: " + cmdClass.getName());
 
                             keep = cmd;
                             kept = other;
@@ -129,7 +129,7 @@ public class CommandSetChecker
         }
         catch (Exception e)
         {
-            LoggingHandler.felog.debug("Can't remove " + cmd.getCommandName());
+            LoggingHandler.felog.debug("Can't remove " + cmd.getName());
             LoggingHandler.felog.debug("" + e.getLocalizedMessage());
             e.printStackTrace();
             return -1;

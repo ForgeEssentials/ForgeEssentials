@@ -21,13 +21,13 @@ public class CommandIrcPm extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "ircpm";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/ircpm <name> <message...>: Send a message to a client on IRC.";
     }
@@ -82,7 +82,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBase
      * Adds the strings available in this command to the given list of tab completion options.
      */
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length != 1)
             return null;

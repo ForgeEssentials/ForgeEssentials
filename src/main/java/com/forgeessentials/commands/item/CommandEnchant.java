@@ -28,7 +28,7 @@ public class CommandEnchant extends ParserCommandBase
     private static final String PERM = ModuleCommands.PERM + ".enchant";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "feenchant";
     }
@@ -40,7 +40,7 @@ public class CommandEnchant extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/enchant (<name> [lvl])*: Enchants the current item";
     }

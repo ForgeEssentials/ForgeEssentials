@@ -14,7 +14,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "/fedesel";
     }
@@ -48,7 +48,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "//fedesel Deselects the selection";
     }

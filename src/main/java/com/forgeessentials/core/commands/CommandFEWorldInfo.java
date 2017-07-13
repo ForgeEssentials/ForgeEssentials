@@ -21,13 +21,13 @@ public class CommandFEWorldInfo extends ParserCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "feworldinfo";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/feworldinfo Display the names of all world providers";
     }

@@ -217,11 +217,11 @@ public class AuthEventHandler extends ServerEventHandler
 
         if (!PermissionAPI.hasPermission(event.player, "fe.auth.isVIP"))
         {
-            int onlinePlayers = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList().size();
+            int onlinePlayers = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getCurrentPlayerCount();
             int availableSlots = FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers() - vipSlots - reservedSlots;
             if (onlinePlayers >= availableSlots)
             {
-                ((EntityPlayerMP) event.player).connection.kickPlayerFromServer(nonVipKickMessage);
+                ((EntityPlayerMP) event.player).connection.disconnect(nonVipKickMessage);
             }
         }
     }

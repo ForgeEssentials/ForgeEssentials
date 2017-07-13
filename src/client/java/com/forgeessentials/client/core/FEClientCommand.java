@@ -15,13 +15,13 @@ public class FEClientCommand extends CommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "feclient";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
+    public String getUsage(ICommandSender p_71518_1_)
     {
         return "/feclient [info|reinit]: ForgeEssentials client helper";
     }
@@ -31,24 +31,24 @@ public class FEClientCommand extends CommandBase
     {
         if (args.length == 0)
         {
-            sender.addChatMessage(new TextComponentString("/feclient info: Get FE client info"));
-            sender.addChatMessage(new TextComponentString("/feclient reinit: Redo server handshake"));
+            sender.sendMessage(new TextComponentString("/feclient info: Get FE client info"));
+            sender.sendMessage(new TextComponentString("/feclient reinit: Redo server handshake"));
         }
         else if (args[0].equalsIgnoreCase("reinit"))
         {
             ClientProxy.resendHandshake();
-            sender.addChatMessage(new TextComponentString("Resent handshake packet to server."));
+            sender.sendMessage(new TextComponentString("Resent handshake packet to server."));
         }
         else if (args[0].equalsIgnoreCase("info"))
         {
-            sender.addChatMessage(new TextComponentString(String.format("Running ForgeEssentials client %s (%s)", //
+            sender.sendMessage(new TextComponentString(String.format("Running ForgeEssentials client %s (%s)", //
                     BuildInfo.getFullVersion(), BuildInfo.getBuildHash())));
-            sender.addChatMessage(new TextComponentString(
+            sender.sendMessage(new TextComponentString(
                     "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers."));
         }
         else
         {
-            sender.addChatMessage(new TextComponentTranslation("Unknown argument %s", args[0]));
+            sender.sendMessage(new TextComponentTranslation("Unknown argument %s", args[0]));
         }
     }
 

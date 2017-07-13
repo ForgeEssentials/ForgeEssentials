@@ -43,13 +43,13 @@ public class CommandPm extends ParserCommandBase
     /* ------------------------------------------------------------ */
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pm";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
+    public String getUsage(ICommandSender p_71518_1_)
     {
         return "/pm <player>: Sticky private message mode";
     }

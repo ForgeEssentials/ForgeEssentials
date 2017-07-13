@@ -26,7 +26,7 @@ public class CommandTempBan extends ParserCommandBase
     public static final String PERM_BAN_REASON = "tempban.reason";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fetempban";
     }
@@ -38,7 +38,7 @@ public class CommandTempBan extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/tempban <player> <duration>[s|m|h|d|w|months]: Tempban a player";
     }
@@ -76,7 +76,7 @@ public class CommandTempBan extends ParserCommandBase
 
         String durationString = ChatOutputHandler.formatTimeDurationReadable(duration / 1000, true);
         if (player.hasPlayer())
-            player.getPlayerMP().connection.kickPlayerFromServer(Translator.format("You have been banned for %s", durationString));
+            player.getPlayerMP().connection.disconnect(Translator.format("You have been banned for %s", durationString));
 
         if (!arguments.isEmpty())
         {

@@ -22,7 +22,7 @@ public class CommandLocate extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "felocate";
     }
@@ -46,7 +46,7 @@ public class CommandLocate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/locate <player> Locates a player.";
     }
@@ -61,7 +61,7 @@ public class CommandLocate extends ForgeEssentialsCommandBase
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length != 1)
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
 
         EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
@@ -74,11 +74,11 @@ public class CommandLocate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return matchToPlayers(args);
         }
         return null;
     }

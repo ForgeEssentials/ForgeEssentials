@@ -20,13 +20,13 @@ public class CommandSetSpawn extends ParserCommandBase
     public static final String PERM_SETSPAWN = "fe.perm.setspawn";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "setspawn";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/setspawn (here|x y z) | (bed enable|disable)";
     }
@@ -56,7 +56,7 @@ public class CommandSetSpawn extends ParserCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true, server);
         try

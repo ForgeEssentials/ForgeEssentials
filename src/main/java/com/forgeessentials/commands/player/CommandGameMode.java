@@ -25,7 +25,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandGameMode extends ForgeEssentialsCommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "gamemode";
     }
@@ -160,7 +160,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
@@ -168,7 +168,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
         }
         else
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return matchToPlayers(args);
         }
 
     }
@@ -186,7 +186,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         if (sender instanceof EntityPlayer)
         {
@@ -201,6 +201,6 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     @Override
     public String getPermissionNode()
     {
-        return ModuleCommands.PERM + "." + getCommandName();
+        return ModuleCommands.PERM + "." + getName();
     }
 }

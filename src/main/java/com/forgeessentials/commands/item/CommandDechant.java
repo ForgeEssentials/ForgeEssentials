@@ -25,7 +25,7 @@ public class CommandDechant extends ParserCommandBase
     private static final String PERM = ModuleCommands.PERM + ".dechant";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fedechant";
     }
@@ -37,7 +37,7 @@ public class CommandDechant extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/dechant <name>: Removes an enchantment from the current item";
     }

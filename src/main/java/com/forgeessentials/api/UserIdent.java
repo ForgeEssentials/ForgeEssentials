@@ -443,7 +443,7 @@ public class UserIdent
         EntityPlayerMP player = getPlayerMP();
         if (player != null)
             return player;
-        return FakePlayerFactory.get(FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0], getGameProfile());
+        return FakePlayerFactory.get(ServerUtil.getOverworld(), getGameProfile());
     }
 
     public EntityPlayerMP getFakePlayer(WorldServer world)

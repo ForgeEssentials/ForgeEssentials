@@ -683,7 +683,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             // 3) If creative mode is set for any group at the location where the block was destroyed, prevent drops
             if (getGamemode(event.getPlayer()) == GameType.CREATIVE || anyCreativeModeAtPoint(event.getPlayer(), new WorldPoint(event.getEntity())))
             {
-                // event.entity.worldObj.removeEntity(event.getTarget());
+                // event.entity.world.removeEntity(event.getTarget());
                 event.getEntity().setDead();
                 return;
             }

@@ -31,7 +31,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fedrop";
     }
@@ -43,7 +43,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender par1ICommandSender)
+    public String getUsage(ICommandSender par1ICommandSender)
     {
         return "/drop <X> <Y> <Z> <ItemID> <Meta> <Qty>";
     }
@@ -71,7 +71,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
     {
         if (args.length != 6)
         {
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
         }
         World world = null;
         int x = (int) this.func_82368_a(sender, 0.0D, args[0]);
@@ -84,7 +84,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
         }
         else if (sender instanceof EntityPlayerMP)
         {
-            world = ((Entity) sender).worldObj;
+            world = ((Entity) sender).world;
             x = (int) this.func_82368_a(sender, ((Entity) sender).posX, args[0]);
             y = (int) this.func_82367_a(sender, ((Entity) sender).posY, args[1], 0, 0);
             z = (int) this.func_82368_a(sender, ((Entity) sender).posZ, args[2]);

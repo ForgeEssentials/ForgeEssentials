@@ -49,7 +49,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fekit";
     }
@@ -61,7 +61,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/kit [name] [set|del] [cooldown]: Use and modify item kits";
     }

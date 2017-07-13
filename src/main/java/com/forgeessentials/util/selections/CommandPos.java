@@ -28,7 +28,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "/fepos" + type;
     }
@@ -61,7 +61,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
             }
             else
             {
-                throw new TranslatedCommandException(getCommandUsage(player));
+                throw new TranslatedCommandException(getUsage(player));
             }
         }
 
@@ -69,7 +69,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
         {
             if (args.length < 3)
             {
-                throw new TranslatedCommandException(getCommandUsage(player));
+                throw new TranslatedCommandException(getUsage(player));
             }
 
             try
@@ -80,7 +80,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
             }
             catch (NumberFormatException e)
             {
-                throw new TranslatedCommandException(getCommandUsage(player));
+                throw new TranslatedCommandException(getUsage(player));
             }
 
             if (type == 1)
@@ -135,10 +135,10 @@ public class CommandPos extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
 
-        return "/" + getCommandName() + " [<x> <y> <z] or [here] Sets selection positions";
+        return "/" + getName() + " [<x> <y> <z] or [here] Sets selection positions";
     }
 
     @Override

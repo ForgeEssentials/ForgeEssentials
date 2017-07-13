@@ -133,7 +133,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "ferules";
     }
@@ -145,7 +145,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         // Needs elaboration.
         if (sender instanceof EntityPlayer)
@@ -296,7 +296,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             ChatOutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
         }
         else
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
         saveRules();
     }
 
@@ -380,13 +380,13 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         }
         else
         {
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
         }
         saveRules();
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {

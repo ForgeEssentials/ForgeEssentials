@@ -920,7 +920,7 @@ public class PermissionCommandParser
         arguments.checkPermission(PERM_GROUP_SPAWN);
         if (arguments.args.isEmpty())
         {
-            if (arguments.command.getCommandName().equalsIgnoreCase("setspawn"))
+            if (arguments.command.getName().equalsIgnoreCase("setspawn"))
             {
                 arguments.confirm("/setspawn here|clear|<x> <y> <z> <dim>: Set spawn location");
                 arguments.confirm("/setspawn bed (enable|disable): Enable/disable spawning at bed");

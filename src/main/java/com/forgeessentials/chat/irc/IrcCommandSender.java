@@ -43,14 +43,14 @@ public class IrcCommandSender implements ICommandSender
     }
 
     @Override
-    public void addChatMessage(ITextComponent chatComponent)
+    public void sendMessage(ITextComponent chatComponent)
     {
         if (user.getBot().isConnected())
             user.send().message(ChatOutputHandler.stripFormatting(chatComponent.getUnformattedText()));
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(int p_70003_1_, String p_70003_2_)
+    public boolean canUseCommand(int p_70003_1_, String p_70003_2_)
     {
         return true;
     }

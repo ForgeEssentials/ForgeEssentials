@@ -31,7 +31,7 @@ public class CommandJump extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fejump";
     }
@@ -43,7 +43,7 @@ public class CommandJump extends ForgeEssentialsCommandBase
     }
     
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/jump Teleport to the location you are looking at";
     }
@@ -103,7 +103,7 @@ public class CommandJump extends ForgeEssentialsCommandBase
         {
             TextComponentTranslation msg = new TextComponentTranslation(ce.getMessage(), ce.getErrorObjects());
             msg.getStyle().setColor(TextFormatting.RED);
-            event.getEntityPlayer().addChatMessage(msg);
+            event.getEntityPlayer().sendMessage(msg);
         }
     }
 

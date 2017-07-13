@@ -20,13 +20,13 @@ public class CommandMail extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "mail";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/mail send|read: Send or read mails";
     }

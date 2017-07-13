@@ -20,13 +20,13 @@ public class CommandItemPermission extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "itemperm";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/itemperm [break|place|inventory|exist] [allow|deny|clear]: Show / control item permissions";
     }

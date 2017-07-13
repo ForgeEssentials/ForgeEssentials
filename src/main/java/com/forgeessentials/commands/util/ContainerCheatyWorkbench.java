@@ -12,12 +12,12 @@ import net.minecraft.world.World;
 
 public class ContainerCheatyWorkbench extends ContainerWorkbench
 {
-    private World worldObj;
+    private World world;
 
     public ContainerCheatyWorkbench(InventoryPlayer playerInventory, World world)
     {
         super(playerInventory, world, BlockPos.ORIGIN);
-        worldObj = world;
+        world = world;
     }
 
     /**
@@ -26,7 +26,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
     @Override
     public void onCraftMatrixChanged(IInventory par1IInventory)
     {
-        craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, worldObj));
+        craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, world));
     }
 
     /**
@@ -37,7 +37,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
     {
         super.onContainerClosed(par1EntityPlayer);
 
-        if (!worldObj.isRemote)
+        if (!world.isRemote)
         {
             for (int var2 = 0; var2 < 9; ++var2)
             {

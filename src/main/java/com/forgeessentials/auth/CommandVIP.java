@@ -13,7 +13,7 @@ public class CommandVIP extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "vip";
     }
@@ -44,7 +44,7 @@ public class CommandVIP extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
 
         return "/vip [add|remove} <player> Adds or removes a player from the VIP list";

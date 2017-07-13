@@ -23,7 +23,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     public static final String PERM_OTHERS = PERM + ".others";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "nickname";
     }
@@ -35,7 +35,7 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/nick <username> [nickname|del> Edit a player's nickname.";
     }

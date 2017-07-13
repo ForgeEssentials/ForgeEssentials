@@ -22,7 +22,7 @@ public class CommandMessage extends IrcCommandParser
     }
 
     @Override
-    public String getCommandUsage()
+    public String getUsage()
     {
         return "<player> <message...>";
     }

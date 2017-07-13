@@ -30,7 +30,7 @@ public class CommandTestPlayerlogger extends ParserCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "testpl";
     }
@@ -48,7 +48,7 @@ public class CommandTestPlayerlogger extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/testpl";
     }
@@ -79,9 +79,9 @@ public class CommandTestPlayerlogger extends ParserCommandBase
             BlockPos pos = new BlockPos(x, y, z);
             for (int i = 0; i < 300; i++)
                 if (place)
-                    ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(player.worldObj, pos, Blocks.AIR.getDefaultState()), EnumFacing.DOWN);
+                    ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(player.world, pos, Blocks.AIR.getDefaultState()), EnumFacing.DOWN);
                 else
-                    MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(player.worldObj, pos, Blocks.DIRT.getDefaultState(), player));
+                    MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(player.world, pos, Blocks.DIRT.getDefaultState(), player));
             place = !place;
         }
     }

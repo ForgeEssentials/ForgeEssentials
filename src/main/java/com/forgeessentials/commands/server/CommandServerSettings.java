@@ -31,7 +31,7 @@ public class CommandServerSettings extends ParserCommandBase
     public static List<String> options = Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MotD", "spawnProtection", "gamemode");
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "serversettings";
     }
@@ -43,7 +43,7 @@ public class CommandServerSettings extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/serversettings [option] [value]: View or change server settings (server.properties)";
     }

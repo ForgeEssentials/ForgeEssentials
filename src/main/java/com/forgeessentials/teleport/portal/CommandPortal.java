@@ -21,7 +21,7 @@ public class CommandPortal extends ParserCommandBase
     public static final String PERM = "fe.teleport.portal";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "feportal";
     }
@@ -33,7 +33,7 @@ public class CommandPortal extends ParserCommandBase
     }
     
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
+    public String getUsage(ICommandSender p_71518_1_)
     {
         return "/portal delete|create|recreate|list|target [name] [x y z] [dim] Manage portals.";
     }
@@ -61,7 +61,7 @@ public class CommandPortal extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm(getCommandUsage(arguments.sender));
+            arguments.confirm(getUsage(arguments.sender));
             return;
         }
 

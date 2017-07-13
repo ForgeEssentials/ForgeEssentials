@@ -50,7 +50,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fepotion";
     }
@@ -62,7 +62,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/potion <player> <effect> <duration> [ampl] Give the specified player a potion effect.";
     }
@@ -104,7 +104,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
         }
         else if (args.length != 3)
         {
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
         }
 
         if (!names.containsKey(args[1]))
@@ -143,7 +143,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
             ampl = parseInt(args[3], 0, Integer.MAX_VALUE);
         }
         else if (args.length != 3)
-            throw new TranslatedCommandException(getCommandUsage(sender), Integer.MAX_VALUE);
+            throw new TranslatedCommandException(getUsage(sender), Integer.MAX_VALUE);
 
         dur = parseInt(args[2], 0, Integer.MAX_VALUE) * 20;
         PotionEffect eff = new PotionEffect(Potion.getPotionById(ID), dur, ampl);
@@ -159,11 +159,11 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return matchToPlayers(args);
         }
         else if (args.length == 2)
         {

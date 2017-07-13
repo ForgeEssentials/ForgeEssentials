@@ -19,7 +19,7 @@ public class CommandPay extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pay";
     }
@@ -37,7 +37,7 @@ public class CommandPay extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pay <player> <amount>: Pay another player from your wallet";
     }

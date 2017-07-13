@@ -28,13 +28,13 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "doas";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
 
         return "/doas <player> <command> Run a command as another player.";
@@ -69,7 +69,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
     {
         if (args.length == 0)
         {
-            ChatOutputHandler.chatError(sender, getCommandUsage(sender));
+            ChatOutputHandler.chatError(sender, getUsage(sender));
             return;
         }
         if ((sender instanceof EntityPlayerMP) && args[0].equalsIgnoreCase("[CONSOLE]"))
@@ -104,11 +104,11 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return matchToPlayers(args);
         }
         else
         {

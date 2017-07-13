@@ -36,7 +36,7 @@ public class CommandAFK extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "feafk";
     }
@@ -48,7 +48,7 @@ public class CommandAFK extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/afk: Mark yourself as away.";
     }
