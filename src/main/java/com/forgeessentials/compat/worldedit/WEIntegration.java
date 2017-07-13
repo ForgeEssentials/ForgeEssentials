@@ -1,14 +1,20 @@
 package com.forgeessentials.compat.worldedit;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.selections.SelectionHandler;
+import com.sk89q.worldedit.forge.ForgeWorldEdit;
 
+import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 // separate class from the main WEIntegration stuff so as to avoid nasty errors
 @FEModule(name = "WEIntegrationTools", parentMod = ForgeEssentials.class)
@@ -16,6 +22,7 @@ public class WEIntegration
 {
 
     protected static boolean disable;
+    private CUIComms cuiComms;
 
     private static boolean getDevOverride()
     {
@@ -64,9 +71,29 @@ public class WEIntegration
         return true;
     }
 
+    @Method(modid = "worldedit")
     @SubscribeEvent
-    public void preLoad(FEModulePreInitEvent e)
+    public void postLoad(FEModulePostInitEvent e)
     {
-        APIRegistry.getFEEventBus().register(new WEIntegrationHandler());
+        if (WEIntegration.disable)
+        {
+            LoggingHandler.felog.error("Requested to force-disable WorldEdit.");
+            // if (Loader.isModLoaded("WorldEdit"))
+            // MinecraftForge.EVENT_BUS.unregister(ForgeWorldEdit.inst); //forces worldedit forge NOT to load
+            ModuleLauncher.instance.unregister("WEIntegrationTools");
+        }
+        else
+        {
+            SelectionHandler.selectionProvider = new WESelectionHandler();
+        }
+    }
+
+    @Method(modid = "worldedit")
+    @SubscribeEvent
+    public void serverStart(FEModuleServerInitEvent e)
+    {
+        cuiComms = new CUIComms();
+        ForgeWorldEdit.inst.setPermissionsProvider(new PermissionsHandler());
+        PermissionAPI.registerNode("worldedit.*", DefaultPermissionLevel.OP, "WorldEdit");
     }
 }

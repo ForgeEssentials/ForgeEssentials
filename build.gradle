@@ -127,6 +127,7 @@ configurations {
 	shadeClient
 	serverLib
 	compile.extendsFrom shade, shadeClient, serverLib
+    mavenDeps
 }
 
 // def jdkHome = System.getenv("JAVA_HOME")
@@ -153,18 +154,19 @@ dependencies {
 	serverLib group: 'com.h2database', 	name: 'h2', 					version: '1.3.175'
 	serverLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
 	serverLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
-	provided  group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
+	compile  group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
-    provided "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
-    deobfProvided "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5"
-    provided files('lib/Baubles-1.10.2-1.3.11-deobf.jar')
+    compile "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
+    deobfCompile "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5"
+    compile files('lib/Baubles-1.10.2-1.3.11-deobf.jar')
 	includeMod files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
+    mavenDeps "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
-	provided 'org.spongepowered:spongeapi:4.1.0'
+	provided 'org.spongepowered:spongeapi:6.0.0'
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
@@ -389,7 +391,7 @@ publishing {
 
 			pom.withXml {
 				def dependenciesNode = asNode().appendNode("dependencies")
-				def allDeps = configurations.buildDep.allDependencies + 
+				def allDeps = configurations.mavenDeps.allDependencies +
 					configurations.serverLib.allDependencies + 
 					configurations.shade.allDependencies
 				allDeps.each {
