@@ -27,7 +27,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "sellcommand";
     }
@@ -51,7 +51,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/sellcommand <player> <item> <amount> <meta> <command...>";
     }
@@ -69,7 +69,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 5)
-            throw new InvalidSyntaxException(getCommandUsage(sender));
+            throw new InvalidSyntaxException(getUsage(sender));
 
         UserIdent ident = UserIdent.get(args[0], sender);
         EntityPlayerMP player = ident.getPlayerMP();

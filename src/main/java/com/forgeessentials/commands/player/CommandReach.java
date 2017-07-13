@@ -16,7 +16,7 @@ public class CommandReach extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fereach";
     }
@@ -28,7 +28,7 @@ public class CommandReach extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/reach <distance>: Set block reach distance";
     }

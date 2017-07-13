@@ -23,7 +23,7 @@ public class CommandReply implements IrcCommand
     }
 
     @Override
-    public String getCommandUsage()
+    public String getUsage()
     {
         return "<message...>";
     }

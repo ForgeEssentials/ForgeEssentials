@@ -39,7 +39,7 @@ public class CommandWarp extends ParserCommandBase
     private static final String PERM_WARP = PERM + ".warp";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fewarp";
     }
@@ -51,7 +51,7 @@ public class CommandWarp extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/warp <name> [set|delete]: Set/delete/teleport to a warp point";
     }
@@ -94,7 +94,7 @@ public class CommandWarp extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm("/warp list: List warps");
-            arguments.confirm(getCommandUsage(arguments.sender));
+            arguments.confirm(getUsage(arguments.sender));
             return;
         }
 

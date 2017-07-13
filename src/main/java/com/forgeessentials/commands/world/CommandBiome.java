@@ -16,7 +16,7 @@ public class CommandBiome extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "febiome";
     }
@@ -28,7 +28,7 @@ public class CommandBiome extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/febiome: Biome info tool";
     }
@@ -60,7 +60,7 @@ public class CommandBiome extends ParserCommandBase
         {
             if (arguments.isTabCompletion)
                 return;
-            Biome biome = arguments.senderPlayer.worldObj.getBiome(new BlockPos(x, 0, z));
+            Biome biome = arguments.senderPlayer.world.getBiome(new BlockPos(x, 0, z));
             arguments.confirm("Current biome: " + biome.getBiomeName());
             arguments.confirm("  " + biome.getClass().getName());
             arguments.notify("/febiome list: Show all registered biomes");

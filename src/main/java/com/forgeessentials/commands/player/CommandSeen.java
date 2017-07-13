@@ -24,7 +24,7 @@ public class CommandSeen extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "feseen";
     }
@@ -36,7 +36,7 @@ public class CommandSeen extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/seen <player>: Check when a player has been last seen online";
     }

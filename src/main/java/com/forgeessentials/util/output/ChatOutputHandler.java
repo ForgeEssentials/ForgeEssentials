@@ -59,7 +59,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         if (recipient instanceof FakePlayer && ((EntityPlayerMP) recipient).connection == null)
             LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getName(), message.getUnformattedText()));
         else
-            recipient.addChatMessage(message);
+            recipient.sendMessage(message);
     }
 
     /**

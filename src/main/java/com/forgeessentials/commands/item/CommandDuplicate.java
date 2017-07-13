@@ -16,7 +16,7 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "feduplicate";
     }
@@ -28,7 +28,7 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender par1ICommandSender)
+    public String getUsage(ICommandSender par1ICommandSender)
     {
         return "/duplicate [amount]: Duplicates your current item";
     }
@@ -48,7 +48,7 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
     @Override
     public String getPermissionNode()
     {
-        return ModuleCommands.PERM + "." + getCommandName();
+        return ModuleCommands.PERM + "." + getName();
     }
 
     @Override

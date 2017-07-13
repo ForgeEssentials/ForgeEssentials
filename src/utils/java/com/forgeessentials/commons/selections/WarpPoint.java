@@ -75,7 +75,7 @@ public class WarpPoint
 
     public WarpPoint(Entity entity)
     {
-        this(entity.worldObj instanceof WorldServer ? (WorldServer) entity.worldObj : null, entity.posX, entity.posY, entity.posZ, entity.rotationPitch,
+        this(entity.world instanceof WorldServer ? (WorldServer) entity.world : null, entity.posX, entity.posY, entity.posZ, entity.rotationPitch,
                 entity.rotationYaw);
     }
 

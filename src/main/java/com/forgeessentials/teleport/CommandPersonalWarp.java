@@ -34,7 +34,7 @@ public class CommandPersonalWarp extends ParserCommandBase
     private static final String PERM_LIMIT = PERM + ".max";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pwarp";
     }
@@ -46,7 +46,7 @@ public class CommandPersonalWarp extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pwarp <name> [set|delete]: Set/delete/teleport to pers. warps";
     }
@@ -92,7 +92,7 @@ public class CommandPersonalWarp extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm("/pwarp list: List personal warps");
-            arguments.confirm(getCommandUsage(arguments.sender));
+            arguments.confirm(getUsage(arguments.sender));
             return;
         }
 

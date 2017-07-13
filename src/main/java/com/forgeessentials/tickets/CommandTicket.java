@@ -27,7 +27,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandTicket extends ForgeEssentialsCommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "ticket";
     }
@@ -161,7 +161,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
@@ -198,7 +198,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         String usage = "list|new|view";
         if (permcheck(sender, "tp"))

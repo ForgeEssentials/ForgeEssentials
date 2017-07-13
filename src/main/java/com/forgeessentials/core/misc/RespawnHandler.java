@@ -54,7 +54,7 @@ public class RespawnHandler
         if (doDefaultSpawn)
             return null;
         else
-            return new WarpPoint(0, player.worldObj.getSpawnPoint(), player.cameraYaw, player.cameraPitch);
+            return new WarpPoint(0, player.world.getSpawnPoint(), player.cameraYaw, player.cameraPitch);
     }
 
     public static WarpPoint getSpawn(EntityPlayer player, WarpPoint location)
@@ -71,7 +71,7 @@ public class RespawnHandler
         {
             BlockPos spawn = player.getBedLocation(player.dimension);
             if (spawn != null)
-                spawn = EntityPlayer.getBedSpawnLocation(player.worldObj, spawn, true);
+                spawn = EntityPlayer.getBedSpawnLocation(player.world, spawn, true);
             if (spawn != null)
             {
                 // Bed seems OK, so just return null to let default MC code handle respawn

@@ -94,7 +94,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "feweather";
     }
@@ -106,7 +106,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/weather rain|storm [enable|disable|force]: Weather manipulation";
     }
@@ -155,7 +155,7 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
             return;
         }
 
-        World world = arguments.senderPlayer.worldObj;
+        World world = arguments.senderPlayer.world;
         int dim = world.provider.getDimension();
 
         arguments.tabComplete("rain", "thunder");

@@ -48,7 +48,7 @@ public class EffectSmite extends WorldBorderEffect
 
     public void doEffect(EntityPlayerMP player)
     {
-        player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ, false));
+        player.world.addWeatherEffect(new EntityLightningBolt(player.world, player.posX, player.posY, player.posZ, false));
     }
 
     public String toString()

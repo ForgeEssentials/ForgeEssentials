@@ -53,7 +53,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             permissions.placeIds.addAll(message.placeIds);
             permissions.breakIds.addAll(message.breakIds);
 
-            EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayerSP player = Minecraft.getMinecraft().player;
             ItemStack stack = player.getHeldItemMainhand();
             if (stack != null)
             {
@@ -85,7 +85,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
 
             for (int i = 0; i < 9; ++i)
             {
-                ItemStack stack = Minecraft.getMinecraft().thePlayer.inventory.mainInventory[i];
+                ItemStack stack = Minecraft.getMinecraft().player.inventory.mainInventory[i];
                 if (stack == null)
                     continue;
                 int id = GameData.getItemRegistry().getId(stack.getItem());
@@ -105,7 +105,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             RayTraceResult mop = Minecraft.getMinecraft().objectMouseOver;
             if (mop != null && mop.typeOfHit == Type.BLOCK)
             {
-                IBlockState block = Minecraft.getMinecraft().theWorld.getBlockState(mop.getBlockPos());
+                IBlockState block = Minecraft.getMinecraft().world.getBlockState(mop.getBlockPos());
                 int blockId = GameData.getBlockRegistry().getId(block.getBlock());
                 if (permissions.breakIds.contains(blockId))
                 {

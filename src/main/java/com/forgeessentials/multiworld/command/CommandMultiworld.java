@@ -22,13 +22,13 @@ public class CommandMultiworld extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "mw";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public String getUsage(ICommandSender commandSender)
     {
         return "/mw: Multiworld management command";
     }
@@ -115,7 +115,7 @@ public class CommandMultiworld extends ParserCommandBase
             provider = arguments.remove();
 
         // Get the World Type
-        String worldType = WorldType.DEFAULT.getWorldTypeName();
+        String worldType = WorldType.DEFAULT.getName();
         if (arguments.isTabCompletion && arguments.size() == 1)
         {
             arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
@@ -170,7 +170,7 @@ public class CommandMultiworld extends ParserCommandBase
         arguments.checkPermission(ModuleMultiworld.PERM_DELETE);
         Multiworld world = parseWorld(arguments);
 
-        if (world.getWorldServer().getWorldType().getWorldTypeName() != "multiworld")
+        if (world.getWorldServer().getWorldType().getName() != "multiworld")
         {
             arguments.error("World " + world.getName() + " is not a FE multiworld and cannot be deleted!");
             return;

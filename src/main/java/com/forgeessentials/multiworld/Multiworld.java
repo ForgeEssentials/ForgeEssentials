@@ -87,7 +87,7 @@ public class Multiworld
             if (player.dimension == dimensionId)
             {
                 BlockPos playerPos = player.getPosition();
-                int y = WorldUtil.placeInWorld(player.worldObj, playerPos.getX(), playerPos.getY(), playerPos.getZ());
+                int y = WorldUtil.placeInWorld(player.world, playerPos.getX(), playerPos.getY(), playerPos.getZ());
                 WarpPoint point = new WarpPoint(overworld, playerPos.getX(), y, playerPos.getZ(), 0, 0);
                 TeleportHelper.doTeleport(player, point);
             }
@@ -227,7 +227,7 @@ public class Multiworld
      */
     public static void teleport(EntityPlayerMP player, WorldServer world, double x, double y, double z, boolean instant) throws CommandException
     {
-        boolean worldChange = player.worldObj.provider.getDimension() != world.provider.getDimension();
+        boolean worldChange = player.world.provider.getDimension() != world.provider.getDimension();
         if (worldChange)
             displayDepartMessage(player);
 
@@ -244,7 +244,7 @@ public class Multiworld
 
     public static void displayDepartMessage(EntityPlayerMP player)
     {
-        // String msg = player.worldObj.provider.getDepartMessage();
+        // String msg = player.world.provider.getDepartMessage();
         // if (msg == null)
         // msg = "Leaving the Overworld.";
         // if (player.dimension > 1 || player.dimension < -1)
@@ -254,7 +254,7 @@ public class Multiworld
 
     public static void displayWelcomeMessage(EntityPlayerMP player)
     {
-        // String msg = player.worldObj.provider.getWelcomeMessage();
+        // String msg = player.world.provider.getWelcomeMessage();
         // if (msg == null)
         // msg = "Entering the Overworld.";
         // if (player.dimension > 1 || player.dimension < -1)

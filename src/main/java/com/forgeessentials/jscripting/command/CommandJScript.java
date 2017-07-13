@@ -18,7 +18,7 @@ public class CommandJScript extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fescript";
     }
@@ -30,7 +30,7 @@ public class CommandJScript extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/fescript [list|reload]: Manage FE scripting";
     }
@@ -58,7 +58,7 @@ public class CommandJScript extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm(getCommandUsage(null));
+            arguments.confirm(getUsage(null));
             return;
         }
 
@@ -113,7 +113,7 @@ public class CommandJScript extends ParserCommandBase
             {
                 arguments.confirm("  Registered commands:");
                 for (CommandJScriptCommand command : commands)
-                    arguments.sendMessage("    /" + command.getCommandName());
+                    arguments.sendMessage("    /" + command.getName());
             }
         }
     }

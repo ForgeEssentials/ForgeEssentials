@@ -148,7 +148,7 @@ public class ScriptInstance
         tasks.clear();
 
         for (ParserCommandBase command : commands)
-            FECommandManager.deegisterCommand(command.getCommandName());
+            FECommandManager.deegisterCommand(command.getName());
         commands.clear();
 
         for (JsEvent<?> eventHandler : eventHandlers.values())

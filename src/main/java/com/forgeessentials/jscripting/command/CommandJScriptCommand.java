@@ -37,13 +37,13 @@ public class CommandJScriptCommand extends ParserCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return options.name;
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return options.usage;
     }

@@ -30,7 +30,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     private static String[] serverCommands = new String[] { "help", "kick", "setpass", "unregister" };
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "auth";
     }
@@ -336,7 +336,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         ArrayList<String> list = new ArrayList<String>();
         switch (args.length)
@@ -354,7 +354,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
         case 2:
             if (args[0].equalsIgnoreCase("kick") || args[0].equalsIgnoreCase("setpass") || args[0].equalsIgnoreCase("unregister"))
             {
-                list.addAll(getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()));
+                list.addAll(matchToPlayers(args));
             }
         }
         return list;
@@ -367,7 +367,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         String s = "/auth help";
         if (sender instanceof EntityPlayer)

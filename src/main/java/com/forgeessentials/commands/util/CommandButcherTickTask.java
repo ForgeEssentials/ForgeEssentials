@@ -73,10 +73,10 @@ public class CommandButcherTickTask implements TickTask
         if (radius > -1)
         {
             this.aabb = aabb;
-            minChunkX = MathHelper.floor_double((aabb.minX - World.MAX_ENTITY_RADIUS) / 16.0D);
-            maxChunkX = MathHelper.floor_double((aabb.maxX + World.MAX_ENTITY_RADIUS) / 16.0D);
-            minChunkZ = MathHelper.floor_double((aabb.minZ - World.MAX_ENTITY_RADIUS) / 16.0D);
-            maxChunkZ = MathHelper.floor_double((aabb.maxZ + World.MAX_ENTITY_RADIUS) / 16.0D);
+            minChunkX = MathHelper.floor((aabb.minX - World.MAX_ENTITY_RADIUS) / 16.0D);
+            maxChunkX = MathHelper.floor((aabb.maxX + World.MAX_ENTITY_RADIUS) / 16.0D);
+            minChunkZ = MathHelper.floor((aabb.minZ - World.MAX_ENTITY_RADIUS) / 16.0D);
+            maxChunkZ = MathHelper.floor((aabb.maxZ + World.MAX_ENTITY_RADIUS) / 16.0D);
         }
     }
 

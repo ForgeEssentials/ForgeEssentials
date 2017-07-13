@@ -306,7 +306,7 @@ public class CommandParserArgs
         if (isEmpty())
         {
             if (senderPlayer != null)
-                return (WorldServer) senderPlayer.worldObj;
+                return (WorldServer) senderPlayer.world;
             else
                 throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
         }
@@ -317,7 +317,7 @@ public class CommandParserArgs
             {
                 if (senderPlayer == null)
                     throw new TranslatedCommandException("\"here\" cannot be used in console.");
-                return (WorldServer) senderPlayer.worldObj;
+                return (WorldServer) senderPlayer.world;
             }
             else
             {

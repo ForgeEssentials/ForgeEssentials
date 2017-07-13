@@ -21,7 +21,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "requestpayment";
     }
@@ -76,15 +76,15 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
     @Override
     public String getPermissionNode()
     {
-        return "fe.economy." + getCommandName();
+        return "fe.economy." + getName();
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return matchToPlayers(args);
         }
         else
         {
@@ -93,7 +93,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
 
         return "/requestpayment <player> <amountRequested> Request a player to pay you a specified amount.";

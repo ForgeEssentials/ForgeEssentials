@@ -82,7 +82,7 @@ public class SignToolsModule extends ConfigLoaderBase
             return;
         }
 
-        TileEntity te = event.getEntityPlayer().worldObj.getTileEntity(event.getPos());
+        TileEntity te = event.getEntityPlayer().world.getTileEntity(event.getPos());
         if (te != null && te instanceof TileEntitySign)
         {
             if (allowSignEdit && event.getEntityPlayer().isSneaking())

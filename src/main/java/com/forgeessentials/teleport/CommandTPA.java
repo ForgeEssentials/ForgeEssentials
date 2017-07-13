@@ -23,13 +23,13 @@ public class CommandTPA extends ParserCommandBase
     public static final String PERM_LOCATION = TeleportModule.PERM_TPA + ".loc";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "tpa";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/tpa [player] <player|<x> <y> <z>|accept|decline> Request to teleport yourself or another player.";
     }
@@ -120,7 +120,7 @@ public class CommandTPA extends ParserCommandBase
         else
         {
             arguments.checkPermission(PERM_LOCATION);
-            point = new WarpPoint((WorldServer) arguments.senderPlayer.worldObj, //
+            point = new WarpPoint((WorldServer) arguments.senderPlayer.world, //
                     arguments.parseDouble(), arguments.parseDouble(), arguments.parseDouble(), //
                     player.getPlayer().rotationPitch, player.getPlayer().rotationYaw);
             locationName = point.toReadableString();

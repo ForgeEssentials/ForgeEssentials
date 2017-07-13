@@ -13,7 +13,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandFly extends ForgeEssentialsCommandBase
 {
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fefly";
     }
@@ -25,7 +25,7 @@ public class CommandFly extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
+    public String getUsage(ICommandSender p_71518_1_)
     {
         return "/fly [true|false] Toggle flight mode.";
     }

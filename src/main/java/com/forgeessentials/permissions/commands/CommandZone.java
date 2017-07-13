@@ -32,13 +32,13 @@ public class CommandZone extends ParserCommandBase
     public static final String PERM_SETTINGS = PERM_NODE + ".settings";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "area";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/area: Manage permission areas";
     }

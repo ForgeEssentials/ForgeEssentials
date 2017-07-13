@@ -11,11 +11,14 @@ import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
+@SideOnly(Side.CLIENT)
 @Mixin(EntityRenderer.class)
 public abstract class MixinEntityRenderer implements IResourceManagerReloadListener
 {
@@ -33,7 +36,7 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
 
         if (entity != null)
         {
-            if (this.mc.theWorld != null)
+            if (this.mc.world != null)
             {
                 this.mc.mcProfiler.startSection("pick");
                 this.mc.pointedEntity = null;
@@ -67,7 +70,7 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
                 this.pointedEntity = null;
                 Vec3d vec33 = null;
                 float f1 = 1.0F;
-                List<?> list = this.mc.theWorld.getEntitiesWithinAABBExcludingEntity(entity,
+                List<?> list = this.mc.world.getEntitiesWithinAABBExcludingEntity(entity,
                         entity.getEntityBoundingBox().addCoord(vec31.xCoord * maxReach, vec31.yCoord * maxReach, vec31.zCoord * maxReach).expand(f1, f1, f1));
                 double d2 = blockDistance;
 

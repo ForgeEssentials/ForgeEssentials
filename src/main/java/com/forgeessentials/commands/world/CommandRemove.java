@@ -23,7 +23,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "feremove";
     }
@@ -35,7 +35,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         if (sender instanceof EntityPlayer)
         {
@@ -89,10 +89,10 @@ public class CommandRemove extends ForgeEssentialsCommandBase
         }
         else
         {
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
         }
 
-        List<EntityItem> entityList = sender.worldObj.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(centerX - radius, centerY - radius, centerZ
+        List<EntityItem> entityList = sender.world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(centerX - radius, centerY - radius, centerZ
                 - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1));
 
         int counter = 0;
@@ -123,7 +123,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
             }
         }
         else
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
 
         List<EntityItem> entityList = DimensionManager.getWorld(center.getDimension()).getEntitiesWithinAABB(
                 EntityItem.class,

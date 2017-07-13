@@ -435,11 +435,11 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void handleSay(CommandEvent event)
     {
-        if (event.getCommand().getCommandName().equals("say"))
+        if (event.getCommand().getName().equals("say"))
         {
             sendMessage(Translator.format(mcSayHeader, event.getSender().getName(), StringUtils.join(event.getParameters(), " ")));
         }
-        else if (event.getCommand().getCommandName().equals("me"))
+        else if (event.getCommand().getName().equals("me"))
         {
             sendMessage(Translator.format("* %s %s", event.getSender().getName(), StringUtils.join(event.getParameters(), " ")));
         }

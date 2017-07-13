@@ -140,7 +140,7 @@ public abstract class PlayerUtil
         Vec3d playerPos = new Vec3d(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
         Vec3d pos1 = playerPos.addVector(0, player.getEyeHeight(), 0);
         Vec3d pos2 = pos1.addVector(lookAt.xCoord * maxDistance, lookAt.yCoord * maxDistance, lookAt.zCoord * maxDistance);
-        return player.worldObj.rayTraceBlocks(pos1, pos2);
+        return player.world.rayTraceBlocks(pos1, pos2);
     }
 
 }

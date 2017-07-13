@@ -21,7 +21,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     public static String name = "Vault 13";
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "virtualchest";
     }
@@ -33,7 +33,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/vchest Open a virtual chest";
     }

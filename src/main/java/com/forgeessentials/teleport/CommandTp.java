@@ -59,7 +59,7 @@ public class CommandTp extends CommandTeleport implements PermissionObject
                 {
                     throw new WrongUsageException("commands.tp.usage", new Object[0]);
                 }
-                else if (entity.worldObj != null)
+                else if (entity.world != null)
                 {
                     int i = b0 + 1;
                     CommandBase.CoordinateArg argX = parseCoordinate(entity.posX, args[b0], true);
@@ -83,7 +83,7 @@ public class CommandTp extends CommandTeleport implements PermissionObject
                             pitch = MathHelper.wrapDegrees(pitch + 180.0F);
                         }
 
-                        WarpPoint pos = new WarpPoint(entity.worldObj.provider.getDimension(), argX.getAmount(), argY.getAmount(),
+                        WarpPoint pos = new WarpPoint(entity.world.provider.getDimension(), argX.getAmount(), argY.getAmount(),
                                 argZ.getAmount(), pitch, yaw);
                         if (argX.isRelative())
                             pos.setX(pos.getX() + entity.posX);
@@ -121,11 +121,11 @@ public class CommandTp extends CommandTeleport implements PermissionObject
                 Entity targetEntity = getEntity(FMLCommonHandler.instance().getMinecraftServerInstance(), sender, args[args.length - 1]);
                 if (targetEntity instanceof EntityPlayerMP)
                 {
-                    WarpPoint pos = new WarpPoint(targetEntity.worldObj.provider.getDimension(), targetEntity.posX, targetEntity.posY, targetEntity.posZ,
+                    WarpPoint pos = new WarpPoint(targetEntity.world.provider.getDimension(), targetEntity.posX, targetEntity.posY, targetEntity.posZ,
                             targetEntity.rotationPitch, targetEntity.rotationYaw);
                     TeleportHelper.teleport((EntityPlayerMP) entity, pos);
                 }
-                else if (targetEntity.worldObj != entity.worldObj)
+                else if (targetEntity.world != entity.world)
                 {
                     throw new CommandException("commands.tp.notSameDimension", new Object[0]);
                 }

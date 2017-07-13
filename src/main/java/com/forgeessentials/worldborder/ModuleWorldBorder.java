@@ -178,7 +178,7 @@ public class ModuleWorldBorder extends ServerEventHandler
         // Tick effects
         for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
-            WorldBorder border = getBorder(player.worldObj);
+            WorldBorder border = getBorder(player.world);
             if (border != null && border.isEnabled())
             {
                 Set<WorldBorderEffect> effects = border.getActiveEffects(player);

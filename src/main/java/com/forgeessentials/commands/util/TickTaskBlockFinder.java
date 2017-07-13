@@ -53,7 +53,7 @@ public class TickTaskBlockFinder implements TickTask
         this.speed = speed;
         this.centerX = (int) player.posX;
         this.centerZ = (int) player.posZ;
-        world = player.worldObj;
+        world = player.world;
 
         block = GameData.getBlockRegistry().getObject(new ResourceLocation(id));
         if (block == null)

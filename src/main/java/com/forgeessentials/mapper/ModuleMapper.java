@@ -167,7 +167,7 @@ public class ModuleMapper extends ConfigLoaderBase
     // EntityPlayerMP player = ServerUtil.getPlayerList().get(0);
     // int x = (int) Math.floor(player.posX);
     // int z = (int) Math.floor(player.posZ);
-    // WorldServer world = (WorldServer) player.worldObj;
+    // WorldServer world = (WorldServer) player.world;
     // getRegionImageAsync(world, MapperUtil.worldToRegion(x), MapperUtil.worldToRegion(z));
     // getChunkImageAsync(world, MapperUtil.worldToChunk(x), MapperUtil.worldToChunk(z));
     // }

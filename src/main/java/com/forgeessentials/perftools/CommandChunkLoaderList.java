@@ -34,7 +34,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "chunkloaderlist";
     }
@@ -145,7 +145,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
 
                     for (ChunkPos coords : chunks)
                     {
-                        ChatOutputHandler.chatNotification(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
+                        ChatOutputHandler.chatNotification(sender, coords.getXCenter() + " : " + coords.getZCenter());
                     }
                 }
             }
@@ -171,7 +171,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
 
                 for (ChunkPos coords : chunks)
                 {
-                    ChatOutputHandler.chatNotification(sender, coords.getCenterXPos() + " : " + coords.getCenterZPosition());
+                    ChatOutputHandler.chatNotification(sender, coords.getXCenter() + " : " + coords.getZCenter());
                 }
             }
         }
@@ -184,7 +184,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
@@ -210,7 +210,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/chunkloaderlist Lists all active chunk loaders.";
     }

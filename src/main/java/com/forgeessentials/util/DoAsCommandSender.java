@@ -63,14 +63,14 @@ public class DoAsCommandSender implements ICommandSender
     }
 
     @Override
-    public void addChatMessage(ITextComponent message)
+    public void sendMessage(ITextComponent message)
     {
         if (!hideChatMessages)
-            sender.addChatMessage(message);
+            sender.sendMessage(message);
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(int level, String command)
+    public boolean canUseCommand(int level, String command)
     {
         return true;
     }

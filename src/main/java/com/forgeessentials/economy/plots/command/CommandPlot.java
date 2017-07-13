@@ -78,7 +78,7 @@ public class CommandPlot extends ParserCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "plot";
     }
@@ -96,7 +96,7 @@ public class CommandPlot extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
+    public String getUsage(ICommandSender p_71518_1_)
     {
         return "/plot Manage plots.";
     }

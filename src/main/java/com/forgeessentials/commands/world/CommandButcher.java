@@ -28,7 +28,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     public static List<String> typeList = ButcherMobType.getNames();
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "febutcher";
     }
@@ -40,7 +40,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/butcher [radius|-1|world] [type] [x, y, z] Kills the type of mobs within the specified radius around the specified point in the specified world.";
     }
@@ -64,7 +64,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender par1ICommandSender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender par1ICommandSender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
@@ -84,7 +84,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
         double x = sender.posX;
         double y = sender.posY;
         double z = sender.posZ;
-        World world = sender.worldObj;
+        World world = sender.world;
         String mobType = ButcherMobType.HOSTILE.toString();
 
         Queue<String> argsStack = new LinkedList<>(Arrays.asList(args));
@@ -147,7 +147,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
         if (!argsStack.isEmpty())
         {
             if (argsStack.size() < 3)
-                throw new TranslatedCommandException(getCommandUsage(sender), Integer.MAX_VALUE);
+                throw new TranslatedCommandException(getUsage(sender), Integer.MAX_VALUE);
             x = parseInt(argsStack.remove());
             y = parseInt(argsStack.remove());
             z = parseInt(argsStack.remove());
@@ -164,7 +164,7 @@ public class CommandButcher extends ForgeEssentialsCommandBase
                 z = coords.getZ();
             }
             else
-                throw new TranslatedCommandException(getCommandUsage(sender));
+                throw new TranslatedCommandException(getUsage(sender));
         }
 
         if (!argsStack.isEmpty())

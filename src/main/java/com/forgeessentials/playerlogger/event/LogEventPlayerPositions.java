@@ -25,7 +25,7 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
     public void process(EntityManager em)
     {
         @SuppressWarnings("unchecked")
-        List<EntityPlayerMP> players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList();
+        List<EntityPlayerMP> players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers();
         date = new Date();
         
         for (Iterator<EntityPlayerMP> it = players.iterator(); it.hasNext();)
@@ -37,7 +37,7 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
             Action04PlayerPosition action = new Action04PlayerPosition();
             action.time = date;
             action.player = getPlayer(player);
-            action.world = getWorld(player.worldObj.provider.getDimension());
+            action.world = getWorld(player.world.provider.getDimension());
             action.x = (int) player.posX;
             action.y = (int) player.posY;
             action.z = (int) player.posZ;

@@ -17,7 +17,7 @@ public class CommandQuestioner extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         if (type)
             return "yes";
@@ -47,7 +47,7 @@ public class CommandQuestioner extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
+    public String getUsage(ICommandSender p_71518_1_)
     {
         if (type)
             return "/yes Reply yes to a question.";

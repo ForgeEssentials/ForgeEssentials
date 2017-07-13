@@ -97,7 +97,7 @@ public class ModuleAfterlife extends ServerEventHandler
     @SubscribeEvent
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent e)
     {
-        if (e.player.worldObj.isRemote)
+        if (e.player.world.isRemote)
             return;
 
         String potionEffects = APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.player), ModuleAfterlife.PERM_DEBUFFS);
@@ -136,10 +136,10 @@ public class ModuleAfterlife extends ServerEventHandler
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent.RightClickBlock event)
     {
-        if (event.getEntity().worldObj.isRemote)
+        if (event.getEntity().world.isRemote)
             return;
 
-        WorldPoint point = new WorldPoint(event.getEntity().worldObj, event.getPos());
+        WorldPoint point = new WorldPoint(event.getEntity().world, event.getPos());
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;

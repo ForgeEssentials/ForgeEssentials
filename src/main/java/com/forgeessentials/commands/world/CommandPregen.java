@@ -68,7 +68,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     private int totalChunks;
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fepregen";
     }
@@ -80,7 +80,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pregen start [dim]";
     }
@@ -366,8 +366,8 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             NBTTagCompound chunkTag = new NBTTagCompound();
             NBTTagCompound levelTag = new NBTTagCompound();
             chunkTag.setTag("Level", levelTag);
-            writeChunkToNBT(provider.worldObj, loader, chunk, levelTag);
-            writeChunkData(provider.worldObj, loader, chunk, chunkTag);
+            writeChunkToNBT(provider.world, loader, chunk, levelTag);
+            writeChunkData(provider.world, loader, chunk, chunkTag);
         }
         catch (Exception exception)
         {

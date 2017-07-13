@@ -15,7 +15,7 @@ public class CommandRename extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "ferename";
     }
@@ -27,7 +27,7 @@ public class CommandRename extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/rename <new name> Renames the item you are currently holding.";
     }
@@ -54,7 +54,7 @@ public class CommandRename extends ForgeEssentialsCommandBase
     public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         if (args.length == 0)
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
 
         ItemStack is = sender.inventory.getCurrentItem();
         if (is == null)

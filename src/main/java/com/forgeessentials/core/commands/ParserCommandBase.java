@@ -28,7 +28,7 @@ public abstract class ParserCommandBase extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         CommandParserArgs arguments = new CommandParserArgs(this, args, sender, true, server);
         try

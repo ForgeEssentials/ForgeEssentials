@@ -21,7 +21,7 @@ public class CommandHelp extends IrcCommandParser
     }
 
     @Override
-    public String getCommandUsage()
+    public String getUsage()
     {
         return "";
     }
@@ -44,7 +44,7 @@ public class CommandHelp extends IrcCommandParser
         arguments.confirm("List of commands:");
         for (Entry<String, IrcCommand> command : IrcHandler.getInstance().commands.entrySet())
         {
-            arguments.confirm(COMMAND_CHAR + command.getKey() + " " + command.getValue().getCommandUsage() + ": " + command.getValue().getCommandHelp());
+            arguments.confirm(COMMAND_CHAR + command.getKey() + " " + command.getValue().getUsage() + ": " + command.getValue().getCommandHelp());
         }
     }
 

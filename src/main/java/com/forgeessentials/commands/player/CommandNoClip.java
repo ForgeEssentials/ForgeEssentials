@@ -20,7 +20,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fenoclip";
     }
@@ -32,7 +32,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
+    public String getUsage(ICommandSender p_71518_1_)
     {
         return "/noclip [true/false]";
     }
@@ -94,7 +94,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
             {
                 player.noClip = false;
                 WorldUtil.placeInWorld(player);
-                if (!player.worldObj.isRemote)
+                if (!player.world.isRemote)
                 {
                     NetworkUtils.netHandler.sendTo(new Packet5Noclip(player.noClip), (EntityPlayerMP) player);
                     ChatOutputHandler.chatNotification(player, "NoClip auto-disabled: the targeted player is not flying");

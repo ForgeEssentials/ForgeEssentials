@@ -303,7 +303,7 @@ public class ModuleChat
         EntityPlayerMP player = (EntityPlayerMP) event.getSender();
         if (!PlayerUtil.getPersistedTag(player, false).getBoolean("mute"))
             return;
-        if (!ChatConfig.mutedCommands.contains(event.getCommand().getCommandName()))
+        if (!ChatConfig.mutedCommands.contains(event.getCommand().getName()))
             return;
         ChatOutputHandler.chatWarning(event.getSender(), "You are currently muted.");
         event.setCanceled(true);

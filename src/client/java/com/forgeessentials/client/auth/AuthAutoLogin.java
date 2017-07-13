@@ -27,7 +27,7 @@ public class AuthAutoLogin
 
         try
         {
-            KEYSTORE_FILE = new File(KEYSTORE_DIR, FMLClientHandler.instance().getClient().thePlayer.getDisplayNameString() + ".dat");
+            KEYSTORE_FILE = new File(KEYSTORE_DIR, FMLClientHandler.instance().getClient().player.getDisplayNameString() + ".dat");
             if (!KEYSTORE_FILE.exists())
             {
                 KEYSTORE_FILE.createNewFile();
@@ -52,7 +52,7 @@ public class AuthAutoLogin
         KEYSTORE.setTag(serverIP, new NBTTagString(key));
         try
         {
-            KEYSTORE_FILE = new File (KEYSTORE_DIR, FMLClientHandler.instance().getClient().thePlayer.getDisplayNameString() + ".dat");
+            KEYSTORE_FILE = new File (KEYSTORE_DIR, FMLClientHandler.instance().getClient().player.getDisplayNameString() + ".dat");
             CompressedStreamTools.safeWrite(KEYSTORE, KEYSTORE_FILE);
         }
         catch (IOException e)

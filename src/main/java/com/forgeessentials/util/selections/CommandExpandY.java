@@ -20,7 +20,7 @@ public class CommandExpandY extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "/expandY";
     }
@@ -49,7 +49,7 @@ public class CommandExpandY extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "//expandY: Expands the currently selected area from the top to the bottom of the world.";
     }

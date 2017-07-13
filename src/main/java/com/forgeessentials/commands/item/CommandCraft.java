@@ -28,7 +28,7 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fecraft";
     }
@@ -40,7 +40,7 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/craft Open a crafting window.";
     }
@@ -76,7 +76,7 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
         EntityPlayerMP player = sender;
-        player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.worldObj, player.getPosition()));
+        player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.world, player.getPosition()));
         lastPlayer = new WeakReference<>(player);
     }
 

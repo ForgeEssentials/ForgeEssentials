@@ -36,7 +36,7 @@ public class CommandRollback extends ParserCommandBase
     private Timer playbackTimer = new Timer();
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "rollback";
     }
@@ -48,7 +48,7 @@ public class CommandRollback extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/rb: Rollback changes in the world with playerlogger";
     }

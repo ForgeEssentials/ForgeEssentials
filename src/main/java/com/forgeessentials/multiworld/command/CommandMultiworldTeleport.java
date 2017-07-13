@@ -23,13 +23,13 @@ public class CommandMultiworldTeleport extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "mwtp";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public String getUsage(ICommandSender commandSender)
     {
         return "/mwtp <world> [player] [x y z]";
     }

@@ -19,13 +19,13 @@ public class CommandDelayedAction extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "delayedaction";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/delayedaction [time] [command] Run a command after a specified timeout.";
     }

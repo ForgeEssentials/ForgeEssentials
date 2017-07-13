@@ -76,7 +76,7 @@ public class RemoteCommandSender extends DoAsCommandSender
     }
 
     @Override
-    public void addChatMessage(ITextComponent chatComponent)
+    public void sendMessage(ITextComponent chatComponent)
     {
         // TODO: Instead of directly sending the messages to the client, cache them and send them all after the running
         // command finished (only if enabled)
@@ -104,9 +104,9 @@ public class RemoteCommandSender extends DoAsCommandSender
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(int level, String cmd)
+    public boolean canUseCommand(int level, String cmd)
     {
-        return sender.canCommandSenderUseCommand(level, cmd);
+        return sender.canUseCommand(level, cmd);
     }
 
 }

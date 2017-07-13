@@ -43,7 +43,7 @@ public class CommandCompleteHandler extends GenericRemoteHandler<String>
             error("Command not found");
 
         RemoteCommandSender sender = RemoteCommandSender.get(session);
-        return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, command.getTabCompletionOptions(server, sender, args, sender.getPosition()));
+        return new RemoteResponse<List<?>>(RemoteMessageID.COMMAND_COMPLETE, command.getTabCompletions(server, sender, args, sender.getPosition()));
     }
 
 }

@@ -29,7 +29,7 @@ public class CommandVanish extends ParserCommandBase
     private static Set<UserIdent> vanishedPlayers = new HashSet<>();
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fevanish";
     }
@@ -41,7 +41,7 @@ public class CommandVanish extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/vanish: Become invisible";
     }
@@ -111,7 +111,7 @@ public class CommandVanish extends ParserCommandBase
     public static void vanish(UserIdent ident, boolean vanish)
     {
         EntityPlayerMP player = ident.getPlayerMP();
-        WorldServer world = (WorldServer) player.worldObj;
+        WorldServer world = (WorldServer) player.world;
         List<EntityPlayer> players = world.playerEntities;
         if (vanish)
         {

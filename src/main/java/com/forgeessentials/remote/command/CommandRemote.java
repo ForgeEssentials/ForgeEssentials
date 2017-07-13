@@ -27,7 +27,7 @@ public class CommandRemote extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "remote";
     }
@@ -210,7 +210,7 @@ public class CommandRemote extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/remoteqr: Prints a link remote access QR code";
     }

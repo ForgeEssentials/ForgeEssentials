@@ -15,7 +15,7 @@ public class CommandWorldBorder extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "worldborder";
     }
@@ -27,7 +27,7 @@ public class CommandWorldBorder extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_)
+    public String getUsage(ICommandSender p_71518_1_)
     {
         return "/wb: Configure worldborder";
     }
@@ -60,7 +60,7 @@ public class CommandWorldBorder extends ParserCommandBase
             arguments.confirm("/wb center here: Set worldborder center");
             arguments.confirm("/wb size <xz> [z]: Set worldborder size");
             arguments.confirm("/wb shape box|ellipse: Set worldborder center");
-            WorldBorder border = ModuleWorldBorder.getInstance().getBorder(arguments.senderPlayer.worldObj);
+            WorldBorder border = ModuleWorldBorder.getInstance().getBorder(arguments.senderPlayer.world);
             if (border == null)
             {
                 arguments.error("No worldborder set for this world");
@@ -79,7 +79,7 @@ public class CommandWorldBorder extends ParserCommandBase
             return;
         }
 
-        WorldBorder border = ModuleWorldBorder.getInstance().getBorder(arguments.senderPlayer.worldObj);
+        WorldBorder border = ModuleWorldBorder.getInstance().getBorder(arguments.senderPlayer.world);
 
         arguments.tabComplete("center", "disable", "enable", "shape", "size", "effect");
         String subCommand = arguments.remove().toLowerCase();

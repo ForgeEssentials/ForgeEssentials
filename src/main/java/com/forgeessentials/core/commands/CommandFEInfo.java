@@ -18,13 +18,13 @@ public class CommandFEInfo extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "feinfo";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/feinfo: Show info about and mange FE";
     }

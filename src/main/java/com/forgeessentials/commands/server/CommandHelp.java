@@ -47,7 +47,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "help";
     }
@@ -59,7 +59,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/help <page|text>: List or search for commands";
     }
@@ -105,7 +105,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
             {
                 if (arguments.isTabCompletion)
                 {
-                    arguments.tabCompletion = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getTabCompletionOptions(arguments.sender, name, BlockPos.ORIGIN);
+                    arguments.tabCompletion = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getTabCompletions(arguments.sender, name, BlockPos.ORIGIN);
                     return;
                 }
 
@@ -115,13 +115,13 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
                     @Override
                     public int compare(ICommand a, ICommand b)
                     {
-                        return a.getCommandName().compareTo(b.getCommandName());
+                        return a.getName().compareTo(b.getName());
                     }
                 });
                 Set<Map.Entry<String, ICommand>> commands = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().entrySet();
                 for (Entry<String, ICommand> cmd : commands)
                 {
-                    String usage = cmd.getValue().getCommandUsage(arguments.sender);
+                    String usage = cmd.getValue().getUsage(arguments.sender);
                     if (cmd.getKey().toLowerCase().contains(name) || (usage != null && usage.contains(name)))
                         results.add(cmd.getValue());
                 }
@@ -153,9 +153,9 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
 
     public void sendCommandUsageMessage(ICommandSender sender, ICommand command, TextFormatting color)
     {
-        ITextComponent chatMsg = new TextComponentTranslation(command.getCommandUsage(sender));
+        ITextComponent chatMsg = new TextComponentTranslation(command.getUsage(sender));
         chatMsg.getStyle().setColor(color);
-        chatMsg.getStyle().setClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getCommandName() + " "));
+        chatMsg.getStyle().setClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getName() + " "));
         ChatOutputHandler.sendMessage(sender, chatMsg);
     }
 

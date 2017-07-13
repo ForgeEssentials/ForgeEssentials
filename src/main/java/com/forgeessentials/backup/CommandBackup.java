@@ -11,7 +11,7 @@ public class CommandBackup extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "febackup";
     }
@@ -23,7 +23,7 @@ public class CommandBackup extends ParserCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/febackup [dim]: Do a backup now";
     }

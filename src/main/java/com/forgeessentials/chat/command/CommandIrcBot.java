@@ -14,13 +14,13 @@ public class CommandIrcBot extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "ircbot";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/ircbot [reconnect|disconnect] Connect or disconnect the IRC server bot.";
     }

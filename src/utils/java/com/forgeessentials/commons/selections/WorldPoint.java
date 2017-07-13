@@ -55,7 +55,7 @@ public class WorldPoint extends Point
     {
         super(entity);
         this.dim = entity.dimension;
-        this.world = entity.worldObj;
+        this.world = entity.world;
     }
 
     public WorldPoint(int dim, Vec3d vector)

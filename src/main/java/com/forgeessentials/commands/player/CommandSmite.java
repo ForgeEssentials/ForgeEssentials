@@ -24,7 +24,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "fesmite";
     }
@@ -36,7 +36,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         if (sender instanceof EntityPlayer)
         {
@@ -73,7 +73,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
         {
             if (args[0].toLowerCase().equals("me"))
             {
-                sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, sender.posX, sender.posY, sender.posZ, false));
+                sender.world.addWeatherEffect(new EntityLightningBolt(sender.world, sender.posX, sender.posY, sender.posZ, false));
                 ChatOutputHandler.chatConfirmation(sender, "Was that really a good idea?");
             }
             else
@@ -81,7 +81,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
-                    player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ, false));
+                    player.world.addWeatherEffect(new EntityLightningBolt(player.world, player.posX, player.posY, player.posZ, false));
                     ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
                 }
                 else
@@ -97,7 +97,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             int x = Integer.valueOf(args[0]);
             int y = Integer.valueOf(args[1]);
             int z = Integer.valueOf(args[2]);
-            sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, x, y, z, false));
+            sender.world.addWeatherEffect(new EntityLightningBolt(sender.world, x, y, z, false));
             ChatOutputHandler.chatConfirmation(sender, "I hope that didn't start a fire.");
         }
         else
@@ -110,7 +110,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             else
             {
                 BlockPos pos = mop.getBlockPos();
-                sender.worldObj.addWeatherEffect(new EntityLightningBolt(sender.worldObj, pos.getX(), pos.getY(), pos.getZ(), false));
+                sender.world.addWeatherEffect(new EntityLightningBolt(sender.world, pos.getX(), pos.getY(), pos.getZ(), false));
                 ChatOutputHandler.chatConfirmation(sender, "I hope that didn't start a fire.");
             }
         }
@@ -124,22 +124,22 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                player.worldObj.addWeatherEffect(new EntityLightningBolt(player.worldObj, player.posX, player.posY, player.posZ, false));
+                player.world.addWeatherEffect(new EntityLightningBolt(player.world, player.posX, player.posY, player.posZ, false));
                 ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
             }
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-            throw new TranslatedCommandException(getCommandUsage(sender));
+            throw new TranslatedCommandException(getUsage(sender));
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         if (args.length == 1)
         {
-            return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames());
+            return matchToPlayers(args);
         }
         else
         {

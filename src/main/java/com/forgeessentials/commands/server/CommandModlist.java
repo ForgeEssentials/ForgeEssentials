@@ -15,7 +15,7 @@ public class CommandModlist extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "femodlist";
     }
@@ -39,7 +39,7 @@ public class CommandModlist extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/modlist: Get a list of all mods running on this server.";
     }

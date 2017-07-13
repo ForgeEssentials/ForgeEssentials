@@ -15,13 +15,13 @@ public class CommandProtectionDebug extends ParserCommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "protectdebug";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/protectdebug: Toggles protection-module debug-mode";
     }
