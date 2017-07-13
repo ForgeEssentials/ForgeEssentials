@@ -3,6 +3,7 @@ package com.forgeessentials.core.preloader.mixin.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFire;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -77,7 +78,14 @@ public class MixinBlockFire
     public void updateTick(World world, BlockPos source, IBlockState state, Random rnd, CallbackInfo ci,
             Block block, boolean isFireSource, int age, boolean isHighHumidity, int something, int x, int z, int y, int something2, BlockPos pos, int neighborEncouragement, int difficultyScaling, int ageIncrement)
     {
-        //System.out.println(String.format("Mixin : Fire spreading to other block from [%d,%d,%d] to [%d,%d,%d]", source.getX(), source.getY(), source.getZ(), pos.getX(), pos.getY(), pos.getZ()));
+        //System.out.println(String.format("Mixin : Fire spreading to other block from " + source + " to " + pos));
+        if (block == Blocks.FIRE && state.getBlock() == Blocks.FIRE)
+        {
+            if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))
+            {
+                ci.cancel();
+            }
+        }
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Spread(world, pos, source)))
         {
             ci.cancel();
