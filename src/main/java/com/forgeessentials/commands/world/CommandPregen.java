@@ -252,7 +252,8 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                     return true;
                 }
 
-                if (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F))
+                if (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F)
+                        || (providerServer.chunkExists(x, z)))
                 {
                     skippedChunks++;
                     if (skippedChunks > 16 * 16)
@@ -261,27 +262,12 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                         continue;
                 }
 
-                if (fullPregen)
+                if (providerServer.getLoadedChunkCount() > 256)
                 {
-                    providerServer.provideChunk(x, z);
+                    providerServer.saveChunks(true);
+                    providerServer.unloadAllChunks();
                 }
-                else
-                {
-                    try
-                    {
-                        Chunk chunk = providerServer.chunkLoader.loadChunk(world, x, z);
-                        chunk.populateChunk(providerServer, providerServer.chunkGenerator);
-                        saveChunk(providerServer, chunk);
-                    }
-                    catch (Exception exception)
-                    {
-                        // logger.error("Couldn\'t load chunk", exception);
-                    }
-                }
-
-                // TODO 1.8 check
-                // if (providerServer.getLoadedChunkCount() > 256)
-                // providerServer.unloadChunksIfNotNearSpawn(x, z);
+                providerServer.provideChunk(x, z);
 
                 break;
             }
@@ -335,69 +321,16 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     /* ------------------------------------------------------------ */
 
-    private static Method writeChunkToNBT;
-
-    static
-    {
-        Class<?>[] cArg = new Class[] { Chunk.class, World.class, NBTTagCompound.class };
-        try
-        {
-            writeChunkToNBT = AnvilChunkLoader.class.getDeclaredMethod("func_75820_a", cArg); // writeChunkToNBT
-        }
-        catch (NoSuchMethodException e)
-        {
-            try
-            {
-                writeChunkToNBT = AnvilChunkLoader.class.getDeclaredMethod("writeChunkToNBT", cArg);
-            }
-            catch (NoSuchMethodException e1)
-            {
-                throw new RuntimeException("Pregen: Unable to obtain access to private method AnvilChunkLoader.writeChunkToNBT");
-            }
-        }
-        writeChunkToNBT.setAccessible(true);
-    }
-
     private static void saveChunk(ChunkProviderServer provider, Chunk chunk)
     {
         AnvilChunkLoader loader = (AnvilChunkLoader) provider.chunkLoader;
         try
         {
-            NBTTagCompound chunkTag = new NBTTagCompound();
-            NBTTagCompound levelTag = new NBTTagCompound();
-            chunkTag.setTag("Level", levelTag);
-            writeChunkToNBT(provider.world, loader, chunk, levelTag);
-            writeChunkData(provider.world, loader, chunk, chunkTag);
+            loader.saveChunk(provider.world, chunk);
         }
         catch (Exception exception)
         {
             exception.printStackTrace();
-        }
-    }
-
-    /* wrapper for AnvilChunkLoader.writeChunkToNBT */
-    private static void writeChunkToNBT(WorldServer world, AnvilChunkLoader loader, Chunk chunk, NBTTagCompound tag)
-    {
-        Object[] args = new Object[] { chunk, world, tag };
-        try
-        {
-            writeChunkToNBT.invoke(loader, args);
-        }
-        catch (IllegalAccessException | IllegalArgumentException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InvocationTargetException e)
-        {
-            e.getCause().printStackTrace();
-        }
-    }
-
-    private static void writeChunkData(WorldServer world, AnvilChunkLoader loader, Chunk chunk, NBTTagCompound tag) throws IOException
-    {
-        try (DataOutputStream dataoutputstream = RegionFileCache.getChunkOutputStream(world.getChunkSaveLocation(), chunk.xPosition, chunk.zPosition))
-        {
-            CompressedStreamTools.write(tag, dataoutputstream);
         }
     }
 
