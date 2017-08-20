@@ -61,6 +61,7 @@ public class CommandMultiworld extends ParserCommandBase
             arguments.confirm("/mw info <world>: Show world info");
             arguments.confirm("/mw delete <world>: Delete a world");
             arguments.confirm("/mw list [worlds|providers|worldtypes]");
+            arguments.confirm("/mw gamerule <world>: Get and set world gamerules");
             return;
         }
         arguments.tabComplete("create", "info", "delete", "list", "gamerule");
