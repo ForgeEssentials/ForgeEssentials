@@ -23,7 +23,7 @@ buildscript {
 
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT"
+		classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
         classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
@@ -423,4 +423,41 @@ publishing {
 
 task publishAndClean(type: Delete, dependsOn: "publish") {
     delete javadocJar, sourceJar
+}
+
+compileJava {
+    excludes = [
+            'com/forgeessentials/afterlife/**/*',
+            'com/forgeessentials/api/**/*',
+            'com/forgeessentials/auth/**/*',
+            'com/forgeessentials/backup/**/*',
+            'com/forgeessentials/chat/**/*',
+            'com/forgeessentials/commands/**/*',
+            'com/forgeessentials/compat/**/*',
+            'com/forgeessentials/core/**/*',
+            'com/forgeessentials/data/**/*',
+            'com/forgeessentials/economy/**/*',
+            'com/forgeessentials/factions/**/*',
+            'com/forgeessentials/jscripting/**/*',
+            'com/forgeessentials/mapper/**/*',
+            'com/forgeessentials/multiworld/**/*',
+            'com/forgeessentials/perftools/**/*',
+            'com/forgeessentials/permissions/**/*',
+            'com/forgeessentials/playerlogger/**/*',
+            'com/forgeessentials/protection/**/*',
+            'com/forgeessentials/remote/**/*',
+            'com/forgeessentials/scripting/**/*',
+            'com/forgeessentials/servervote/**/*',
+            'com/forgeessentials/signtools/**/*',
+            'com/forgeessentials/teleport/**/*',
+            'com/forgeessentials/tickets/**/*',
+            'com/forgeessentials/util/**/*',
+            'com/forgeessentials/worldborder/**/*'
+    ]
+}
+
+compileClientJava {
+    excludes = [
+            '**/*'
+    ]
 }
