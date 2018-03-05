@@ -89,7 +89,7 @@ minecraft {
 	version = "$project.minecraftVersion-$project.forgeVersion"
 	runDir = "rundir"
 	
-	mappings = "stable_29"
+	mappings = "snapshot_20180304"
 
 	replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
 	replace (["_BASEVERSION_":baseVersion,"_MCVERSION_":project.minecraftVersion])
@@ -457,6 +457,12 @@ compileJava {
 }
 
 compileClientJava {
+    excludes = [
+            '**/*'
+    ]
+}
+
+compileUtilsJava {
     excludes = [
             '**/*'
     ]
