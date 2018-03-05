@@ -451,7 +451,6 @@ compileJava {
             'com/forgeessentials/signtools/**/*',
             'com/forgeessentials/teleport/**/*',
             'com/forgeessentials/tickets/**/*',
-            'com/forgeessentials/util/**/*',
             'com/forgeessentials/worldborder/**/*'
     ]
 }

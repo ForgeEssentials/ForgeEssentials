@@ -4,12 +4,12 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -35,7 +35,7 @@ public final class ItemUtil
 
     public static String getItemIdentifier(ItemStack itemStack)
     {
-        String id = GameData.getItemRegistry().getNameForObject(itemStack.getItem()).toString();
+        String id = Item.REGISTRY.getNameForObject(itemStack.getItem()).toString();
         int itemDamage = getItemDamage(itemStack);
         if (itemDamage == 0 || itemDamage == 32767)
             return id;

@@ -21,7 +21,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.server.permission.context.IContext;
 
@@ -207,10 +206,10 @@ public class CommandParserArgs
     {
         if (isTabCompletion && size() == 1)
         {
-            for (Object item : GameData.getItemRegistry().getKeys())
+            for (Object item : Item.REGISTRY.getKeys())
                 if (item.toString().startsWith(peek()))
                     tabCompletion.add(item.toString());
-            for (Object item : GameData.getItemRegistry().getKeys())
+            for (Object item : Item.REGISTRY.getKeys())
                 if (item.toString().startsWith("minecraft:" + peek()))
                     tabCompletion.add(item.toString().substring(10));
             throw new CancelParsingException();
@@ -226,10 +225,10 @@ public class CommandParserArgs
     {
         if (isTabCompletion && size() == 1)
         {
-            for (Object block : GameData.getBlockRegistry().getKeys())
+            for (Object block : Block.REGISTRY.getKeys())
                 if (block.toString().startsWith(peek()))
                     tabCompletion.add(block.toString());
-            for (Object block : GameData.getBlockRegistry().getKeys())
+            for (Object block : Block.REGISTRY.getKeys())
                 if (block.toString().startsWith("minecraft:" + peek()))
                     tabCompletion.add(block.toString().substring(10));
             throw new CancelParsingException();

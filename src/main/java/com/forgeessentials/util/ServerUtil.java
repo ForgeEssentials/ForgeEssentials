@@ -31,7 +31,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -358,18 +357,18 @@ public abstract class ServerUtil
 
     public static String getItemName(Item item)
     {
-        return GameData.getItemRegistry().getNameForObject(item).toString();
+        return Item.REGISTRY.getNameForObject(item).toString();
     }
 
     public static String getItemPermission(Item item)
     {
-        ResourceLocation loc = (ResourceLocation) GameData.getItemRegistry().getNameForObject(item);
+        ResourceLocation loc = (ResourceLocation) Item.REGISTRY.getNameForObject(item);
         return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
     }
 
     public static String getBlockName(Block block)
     {
-        Object o = GameData.getBlockRegistry().getNameForObject(block);
+        Object o = Block.REGISTRY.getNameForObject(block);
         if(o instanceof ResourceLocation){
             ResourceLocation rl = (ResourceLocation) o;
             return rl.getResourcePath();
@@ -380,7 +379,7 @@ public abstract class ServerUtil
 
     public static String getBlockPermission(Block block)
     {
-        ResourceLocation loc = (ResourceLocation) GameData.getBlockRegistry().getNameForObject(block);
+        ResourceLocation loc = (ResourceLocation) Block.REGISTRY.getNameForObject(block);
         return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
     }
 
