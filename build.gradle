@@ -160,8 +160,8 @@ dependencies {
 	// WorldEdit
     compile "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
     deobfCompile "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5"
-    compile files('lib/Baubles-1.10.2-1.3.11-deobf.jar')
-	includeMod files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
+    compile files('lib/Baubles-1.12.2-1.5.2-deobf.jar')
+	includeMod files('lib/worldedit-forge-mc1.12-6.1.8-dist.jar')
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
     mavenDeps "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
 
