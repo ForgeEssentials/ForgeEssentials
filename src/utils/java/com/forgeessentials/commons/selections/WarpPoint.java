@@ -154,7 +154,7 @@ public class WarpPoint
     public WorldServer getWorld()
     {
         if (world == null || world.provider.getDimension() != dim)
-            world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
+            world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
         return world;
     }
 

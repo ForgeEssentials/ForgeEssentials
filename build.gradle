@@ -461,9 +461,3 @@ compileClientJava {
             '**/*'
     ]
 }
-
-compileUtilsJava {
-    excludes = [
-            '**/*'
-    ]
-}
