@@ -1,7 +1,7 @@
 ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentials.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentials)
 ===================
 
-The code on this branch is for Minecraft 1.10.2.
+The code on this branch is for Minecraft 1.12.2.
 **We are looking for developers. Please contact us on IRC if you are interested in contributing!**
 
 ## We are few developers with not soo much time at hand - we will try to handle important bugs fast
