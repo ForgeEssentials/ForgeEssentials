@@ -157,7 +157,7 @@ public class ShopData
         if (!isValid)
             return null;
         ItemStack itemStackCopy = item.copy();
-        item.stackSize = amount;
+        item.setCount(amount);
         return itemStackCopy;
     }
 

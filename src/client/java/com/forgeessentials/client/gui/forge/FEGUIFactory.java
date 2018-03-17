@@ -6,29 +6,25 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
 
-public class FEGUIFactory implements IModGuiFactory
-{
+public class FEGUIFactory implements IModGuiFactory {
+
     @Override
-    public void initialize(Minecraft minecraftInstance)
-    {
-        /* do nothing */
+    public void initialize(Minecraft minecraftInstance) {
+
     }
 
     @Override
-    public Class<? extends GuiScreen> mainConfigGuiClass()
-    {
-        return FEConfigGUI.class;
+    public boolean hasConfigGui() {
+        return false;
     }
 
     @Override
-    public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
-    {
-        return null;
+    public GuiScreen createConfigGui(GuiScreen parentScreen) {
+        return new FEConfigGUI(parentScreen);
     }
 
     @Override
-    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
-    {
+    public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
         return null;
     }
 }

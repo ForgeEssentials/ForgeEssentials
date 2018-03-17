@@ -1,13 +1,15 @@
 package com.forgeessentials.client.handler;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
@@ -18,7 +20,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.common.registry.GameData;
 
 import org.lwjgl.opengl.GL11;
 
@@ -55,9 +56,9 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
 
             EntityPlayerSP player = Minecraft.getMinecraft().player;
             ItemStack stack = player.getHeldItemMainhand();
-            if (stack != null)
+            if (stack != ItemStack.EMPTY)
             {
-                int itemId = GameData.getItemRegistry().getId(stack.getItem());
+                int itemId = Item.REGISTRY.getIDForObject(stack.getItem());
                 for (int id : message.placeIds)
                     if (itemId == id)
                     {
@@ -85,10 +86,10 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
 
             for (int i = 0; i < 9; ++i)
             {
-                ItemStack stack = Minecraft.getMinecraft().player.inventory.mainInventory[i];
-                if (stack == null)
+                ItemStack stack = Minecraft.getMinecraft().player.inventory.mainInventory.get(i);
+                if (stack == ItemStack.EMPTY)
                     continue;
-                int id = GameData.getItemRegistry().getId(stack.getItem());
+                int id = Item.REGISTRY.getIDForObject(stack.getItem());
                 if (!permissions.placeIds.contains(id))
                     continue;
                 int x = width / 2 - 90 + i * 20 + 2;
@@ -106,7 +107,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             if (mop != null && mop.typeOfHit == Type.BLOCK)
             {
                 IBlockState block = Minecraft.getMinecraft().world.getBlockState(mop.getBlockPos());
-                int blockId = GameData.getBlockRegistry().getId(block.getBlock());
+                int blockId = Block.REGISTRY.getIDForObject(block.getBlock());
                 if (permissions.breakIds.contains(blockId))
                 {
                     Minecraft.getMinecraft().renderEngine.bindTexture(deniedBreakTexture);
@@ -119,7 +120,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
 
     public void drawTexturedRect(double xPos, double yPos, double width, double height)
     {
-        VertexBuffer wr = Tessellator.getInstance().getBuffer();
+        BufferBuilder wr = Tessellator.getInstance().getBuffer();
         wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         wr.pos(xPos, yPos + height, zLevel).tex(0, 1).endVertex();
         wr.pos(xPos + width, yPos + height, zLevel).tex(1, 1).endVertex();

@@ -6,19 +6,15 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.tileentity.TileEntityDispenser;
-import net.minecraft.tileentity.TileEntityDropper;
-import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -80,7 +76,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
 
         if (sender instanceof DedicatedServer)
         {
-            world = ((DedicatedServer) sender).worldServerForDimension(0);
+            world = ((DedicatedServer) sender).getWorld(0);
         }
         else if (sender instanceof EntityPlayerMP)
         {
@@ -101,113 +97,34 @@ public class CommandDrop extends ForgeEssentialsCommandBase
         String var7 = args[3];
         Item item = CommandBase.getItemByText(sender, var7);
         int var8 = parseInt(args[4], 0, Integer.MAX_VALUE);
-        int var9 = parseInt(args[5], 1, GameData.getItemRegistry().getObject(new ResourceLocation(var7)).getItemStackLimit());
+        int var9 = parseInt(args[5], 1, Item.REGISTRY.getObject(new ResourceLocation(var7)).getItemStackLimit());
         ItemStack tmpStack;
 
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityChest)
+        if (tileEntity != null && tileEntity instanceof IInventory)
         {
-            TileEntityChest var10 = (TileEntityChest) tileEntity;
+            IInventory var10 = (IInventory) tileEntity;
 
             for (int slot = 0; slot < var10.getSizeInventory(); ++slot)
             {
-                if (var10.getStackInSlot(slot) == null)
+                final ItemStack itemStack = var10.getStackInSlot(slot);
+                if (itemStack == ItemStack.EMPTY)
                 {
                     var10.setInventorySlotContents(slot, new ItemStack(item, var9, var8));
                     break;
                 }
 
-                if (var10.getStackInSlot(slot).getUnlocalizedName() == var7 && var10.getStackInSlot(slot).getItemDamage() == var8)
+                if (itemStack.getUnlocalizedName().equals(var7) && itemStack.getItemDamage() == var8)
                 {
-                    if (var10.getStackInSlot(slot).getMaxStackSize() - var10.getStackInSlot(slot).stackSize >= var9)
+                    if (itemStack.getMaxStackSize() - itemStack.getCount() >= var9)
                     {
-                        tmpStack = var10.getStackInSlot(slot);
-                        tmpStack.stackSize += var9;
+                        tmpStack = itemStack;
+                        tmpStack.setCount(tmpStack.getCount() + var9);
                         break;
                     }
 
-                    var9 -= var10.getStackInSlot(slot).getMaxStackSize() - var10.getStackInSlot(slot).stackSize;
-                    var10.getStackInSlot(slot).stackSize = var10.getStackInSlot(slot).getMaxStackSize();
-                }
-            }
-        }
-        else if (tileEntity instanceof TileEntityDropper)
-        {
-            TileEntityDropper var13 = (TileEntityDropper) tileEntity;
-
-            for (int slot = 0; slot < var13.getSizeInventory(); ++slot)
-            {
-                if (var13.getStackInSlot(slot) == null)
-                {
-                    var13.setInventorySlotContents(slot, new ItemStack(item, var9, var8));
-                    break;
-                }
-
-                if (var13.getStackInSlot(slot).getUnlocalizedName() == var7 && var13.getStackInSlot(slot).getItemDamage() == var8)
-                {
-                    if (var13.getStackInSlot(slot).getMaxStackSize() - var13.getStackInSlot(slot).stackSize >= var9)
-                    {
-                        tmpStack = var13.getStackInSlot(slot);
-                        tmpStack.stackSize += var9;
-                        break;
-                    }
-
-                    var9 -= var13.getStackInSlot(slot).getMaxStackSize() - var13.getStackInSlot(slot).stackSize;
-                    var13.getStackInSlot(slot).stackSize = var13.getStackInSlot(slot).getMaxStackSize();
-                }
-            }
-        }
-        else if (tileEntity instanceof TileEntityDispenser)
-        {
-            TileEntityDispenser var14 = (TileEntityDispenser) tileEntity;
-
-            for (int slot = 0; slot < var14.getSizeInventory(); ++slot)
-            {
-                if (var14.getStackInSlot(slot) == null)
-                {
-                    var14.setInventorySlotContents(slot, new ItemStack(item, var9, var8));
-                    break;
-                }
-
-                if (var14.getStackInSlot(slot).getUnlocalizedName() == var7 && var14.getStackInSlot(slot).getItemDamage() == var8)
-                {
-                    if (var14.getStackInSlot(slot).getMaxStackSize() - var14.getStackInSlot(slot).stackSize >= var9)
-                    {
-                        tmpStack = var14.getStackInSlot(slot);
-                        tmpStack.stackSize += var9;
-                        break;
-                    }
-
-                    var9 -= var14.getStackInSlot(slot).getMaxStackSize() - var14.getStackInSlot(slot).stackSize;
-                    var14.getStackInSlot(slot).stackSize = var14.getStackInSlot(slot).getMaxStackSize();
-                }
-            }
-        }
-        else if (tileEntity instanceof TileEntityHopper)
-        {
-            TileEntityHopper var12 = (TileEntityHopper) tileEntity;
-
-            for (int slot = 0; slot < var12.getSizeInventory(); ++slot)
-            {
-                if (var12.getStackInSlot(slot) == null)
-                {
-                    var12.setInventorySlotContents(slot, new ItemStack(item, var9, var8));
-                    var9 = 0;
-                    break;
-                }
-
-                if (var12.getStackInSlot(slot).getUnlocalizedName() == var7 && var12.getStackInSlot(slot).getItemDamage() == var8)
-                {
-                    if (var12.getStackInSlot(slot).getMaxStackSize() - var12.getStackInSlot(slot).stackSize >= var9)
-                    {
-                        tmpStack = var12.getStackInSlot(slot);
-                        tmpStack.stackSize += var9;
-                        var9 = 0;
-                        break;
-                    }
-
-                    var9 -= var12.getStackInSlot(slot).getMaxStackSize() - var12.getStackInSlot(slot).stackSize;
-                    var12.getStackInSlot(slot).stackSize = var12.getStackInSlot(slot).getMaxStackSize();
+                    var9 -= itemStack.getMaxStackSize() - itemStack.getCount();
+                    itemStack.setCount(itemStack.getMaxStackSize());
                 }
             }
         }

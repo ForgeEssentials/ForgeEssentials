@@ -69,7 +69,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
 
         UserIdent ident = UserIdent.get(args[0], sender);
         if (!ident.hasPlayer())
-            throw new PlayerNotFoundException();
+            throw new PlayerNotFoundException("Player %s is not found", ident.getUsername());
 
         int amount = parseInt(args[1], 0, Integer.MAX_VALUE);
         Wallet wallet = APIRegistry.economy.getWallet(ident);

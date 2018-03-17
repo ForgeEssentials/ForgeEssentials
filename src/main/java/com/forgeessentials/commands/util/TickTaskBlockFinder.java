@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -55,13 +54,13 @@ public class TickTaskBlockFinder implements TickTask
         this.centerZ = (int) player.posZ;
         world = player.world;
 
-        block = GameData.getBlockRegistry().getObject(new ResourceLocation(id));
+        block = Block.REGISTRY.getObject(new ResourceLocation(id));
         if (block == null)
         {
             try
             {
                 int intId = Integer.parseInt(id);
-                block = GameData.getBlockRegistry().getRaw(intId);
+                block = Block.REGISTRY.getObjectById(intId);
             }
             catch (NumberFormatException e)
             {

@@ -2,6 +2,7 @@ package com.forgeessentials.util.selections;
 
 //Depreciated
 
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -19,7 +20,6 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 
     public CommandExpand()
     {
-        return;
     }
 
     @Override
@@ -37,9 +37,9 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 
         if (args.length == 1)
         {
-            int x = Math.round((float) player.getLookVec().xCoord);
-            int y = Math.round((float) player.getLookVec().yCoord);
-            int z = Math.round((float) player.getLookVec().zCoord);
+            int x = Math.round((float) player.getLookVec().x);
+            int y = Math.round((float) player.getLookVec().y);
+            int z = Math.round((float) player.getLookVec().z);
             int expandby = Integer.decode(args[0]);
 
             if (x == -1)
@@ -109,11 +109,10 @@ public class CommandExpand extends ForgeEssentialsCommandBase
                 }
             }
             ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
-            return;
         }
         else if (args.length == 2)
         {
-            int expandby = 0;
+            int expandby;
             try
             {
                 expandby = Integer.decode(args[0]);
@@ -198,7 +197,6 @@ public class CommandExpand extends ForgeEssentialsCommandBase
             else
                 throw new TranslatedCommandException("Invalid Direction");
             ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
-            return;
         }
         else
         {

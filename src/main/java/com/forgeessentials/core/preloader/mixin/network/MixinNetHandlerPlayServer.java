@@ -2,7 +2,6 @@ package com.forgeessentials.core.preloader.mixin.network;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.CPacketUpdateSign;
 import net.minecraft.tileentity.TileEntity;
@@ -10,16 +9,13 @@ import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldSettings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.world.SignEditEvent;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -28,7 +24,7 @@ public class MixinNetHandlerPlayServer
 {
 
     @Shadow
-    public EntityPlayerMP playerEntity;
+    public EntityPlayerMP player;
 
     /**
      * Post {@link SignEditEvent} to the event bus.
@@ -47,7 +43,7 @@ public class MixinNetHandlerPlayServer
     )
     private void getLines(CPacketUpdateSign packetIn, CallbackInfo ci, WorldServer worldserver, BlockPos blockpos, IBlockState iblockstate, TileEntity tileentity, TileEntitySign tileentitysign)
     {
-        SignEditEvent event = new SignEditEvent(packetIn.getPosition(), packetIn.getLines(), this.playerEntity);
+        SignEditEvent event = new SignEditEvent(packetIn.getPosition(), packetIn.getLines(), this.player);
         if (!MinecraftForge.EVENT_BUS.post(event))
         {
             for (int i = 0; i < event.text.length; ++i)

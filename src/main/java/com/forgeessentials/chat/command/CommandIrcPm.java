@@ -64,7 +64,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBase
             ICommandSender target = IrcHandler.getInstance().getIrcUser(args[0]);
             if (target == null)
             {
-                throw new PlayerNotFoundException();
+                throw new PlayerNotFoundException("Player not found");
             }
             else if (target == sender)
             {

@@ -55,7 +55,7 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
     public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
     {
         ItemStack stack = player.getHeldItemMainhand();
-        if (stack == null)
+        if (stack == ItemStack.EMPTY)
             throw new TranslatedCommandException("No item equipped");
 
         int stackSize = 0;
@@ -64,7 +64,7 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
 
         ItemStack newStack = stack.copy();
         if (stackSize > 0)
-            newStack.stackSize = stackSize;
+            newStack.setCount(stackSize);
 
         PlayerUtil.give(player, newStack);
     }

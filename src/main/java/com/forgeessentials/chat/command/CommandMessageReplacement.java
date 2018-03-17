@@ -26,11 +26,7 @@ public class CommandMessageReplacement extends CommandMessage
         {
             EntityPlayerMP target = getPlayer(server, sender, args[0]);
 
-            if (target == null)
-            {
-                throw new PlayerNotFoundException();
-            }
-            else if (target == sender)
+            if (target == sender)
             {
                 throw new PlayerNotFoundException("commands.message.sameTarget");
             }

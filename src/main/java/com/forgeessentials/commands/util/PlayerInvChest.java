@@ -12,7 +12,7 @@ public class PlayerInvChest extends InventoryBasic
 
     public PlayerInvChest(EntityPlayerMP owner, EntityPlayerMP vieuwer)
     {
-        super(owner.getName() + "'s inventory", false, owner.inventory.mainInventory.length);
+        super(owner.getName() + "'s inventory", false, owner.inventory.mainInventory.size());
         this.owner = owner;
         this.vieuwer = vieuwer;
     }
@@ -22,9 +22,9 @@ public class PlayerInvChest extends InventoryBasic
     {
         CommandsEventHandler.register(this);
         allowUpdate = false;
-        for (int id = 0; id < owner.inventory.mainInventory.length; ++id)
+        for (int id = 0; id < owner.inventory.mainInventory.size(); ++id)
         {
-            setInventorySlotContents(id, owner.inventory.mainInventory[id]);
+            setInventorySlotContents(id, owner.inventory.mainInventory.get(id));
         }
         allowUpdate = true;
         super.openInventory(player);
@@ -36,9 +36,9 @@ public class PlayerInvChest extends InventoryBasic
         CommandsEventHandler.remove(this);
         if (allowUpdate)
         {
-            for (int id = 0; id < owner.inventory.mainInventory.length; ++id)
+            for (int id = 0; id < owner.inventory.mainInventory.size(); ++id)
             {
-                owner.inventory.mainInventory[id] = getStackInSlot(id);
+                owner.inventory.mainInventory.set(id, getStackInSlot(id));
             }
         }
         markDirty();
@@ -51,9 +51,9 @@ public class PlayerInvChest extends InventoryBasic
         super.markDirty();
         if (allowUpdate)
         {
-            for (int id = 0; id < owner.inventory.mainInventory.length; ++id)
+            for (int id = 0; id < owner.inventory.mainInventory.size(); ++id)
             {
-                owner.inventory.mainInventory[id] = getStackInSlot(id);
+                owner.inventory.mainInventory.set(id, getStackInSlot(id));
             }
         }
     }
@@ -61,9 +61,9 @@ public class PlayerInvChest extends InventoryBasic
     public void update()
     {
         allowUpdate = false;
-        for (int id = 0; id < owner.inventory.mainInventory.length; ++id)
+        for (int id = 0; id < owner.inventory.mainInventory.size(); ++id)
         {
-            setInventorySlotContents(id, owner.inventory.mainInventory[id]);
+            setInventorySlotContents(id, owner.inventory.mainInventory.get(id));
         }
         allowUpdate = true;
         markDirty();

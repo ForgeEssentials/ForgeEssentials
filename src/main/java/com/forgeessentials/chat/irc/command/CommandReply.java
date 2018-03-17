@@ -44,14 +44,14 @@ public class CommandReply implements IrcCommand
     public void processCommand(ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 1)
-            throw new WrongUsageException("commands.message.usage", new Object[0]);
+            throw new WrongUsageException("commands.message.usage");
 
         ICommandSender target = com.forgeessentials.chat.command.CommandReply.getReplyTarget(sender);
         if (target == null)
-            throw new PlayerNotFoundException();
+            throw new PlayerNotFoundException("Player not found");
 
         if (target == sender)
-            throw new PlayerNotFoundException("commands.message.sameTarget", new Object[0]);
+            throw new PlayerNotFoundException("commands.message.sameTarget");
 
         ModuleChat.tell(sender, CommandBase.getChatComponentFromNthArg(sender, args, 0, !(sender instanceof EntityPlayer)), target);
     }

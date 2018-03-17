@@ -7,6 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -17,7 +18,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
     public ContainerCheatyWorkbench(InventoryPlayer playerInventory, World world)
     {
         super(playerInventory, world, BlockPos.ORIGIN);
-        world = world;
+        this.world = world;
     }
 
     /**
@@ -26,7 +27,8 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
     @Override
     public void onCraftMatrixChanged(IInventory par1IInventory)
     {
-        craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, world));
+        final IRecipe recipe = CraftingManager.findMatchingRecipe(craftMatrix, world);
+        craftResult.setInventorySlotContents(0, recipe != null ? recipe.getRecipeOutput() : ItemStack.EMPTY);
     }
 
     /**
@@ -43,7 +45,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
             {
                 ItemStack var3 = craftMatrix.removeStackFromSlot(var2);
 
-                if (var3 != null)
+                if (var3 != ItemStack.EMPTY)
                 {
                     par1EntityPlayer.dropItem(var3, true);
                 }
@@ -99,21 +101,21 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
                 return null;
             }
 
-            if (var5.stackSize == 0)
+            if (var5.isEmpty())
             {
-                var4.putStack((ItemStack) null);
+                var4.putStack(ItemStack.EMPTY);
             }
             else
             {
                 var4.onSlotChanged();
             }
 
-            if (var5.stackSize == var3.stackSize)
+            if (var5.getCount() == var3.getCount())
             {
                 return null;
             }
 
-            var4.onPickupFromSlot(par1EntityPlayer, var5);
+            var4.onTake(par1EntityPlayer, var5);
         }
 
         return var3;

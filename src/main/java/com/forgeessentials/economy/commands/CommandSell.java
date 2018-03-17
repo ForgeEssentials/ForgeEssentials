@@ -68,7 +68,7 @@ public class CommandSell extends ParserCommandBase
             itemStack = arguments.senderPlayer.getHeldItemMainhand();
             if (itemStack == null)
                 throw new TranslatedCommandException("You need to hold an item first!");
-            amount = itemStack.stackSize;
+            amount = itemStack.getCount();
             meta = itemStack.getItemDamage();
         }
         else
@@ -135,10 +135,10 @@ public class CommandSell extends ParserCommandBase
                     ItemStack currentItemStack = arguments.senderPlayer.getHeldItemMainhand();
                     if (currentItemStack.isItemEqual(itemStack))
                     {
-                        removedAmount = Math.min(currentItemStack.stackSize, amount);
-                        currentItemStack.stackSize -= removedAmount;
-                        if (currentItemStack.stackSize <= 0)
-                            arguments.senderPlayer.inventory.mainInventory[arguments.senderPlayer.inventory.currentItem] = null;
+                        removedAmount = Math.min(currentItemStack.getCount(), amount);
+                        currentItemStack.setCount(currentItemStack.getCount() - removedAmount);
+                        if (currentItemStack.getCount() <= 0)
+                            arguments.senderPlayer.inventory.mainInventory.set(arguments.senderPlayer.inventory.currentItem, ItemStack.EMPTY);
                     }
                 }
                 if (removedAmount < amount)

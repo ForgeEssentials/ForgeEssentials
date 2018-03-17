@@ -69,9 +69,9 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
         for (int slotIdx = 0; slotIdx < inventory.getSizeInventory(); slotIdx++)
         {
             ItemStack stack = inventory.getStackInSlot(slotIdx);
-            if (stack == null)
+            if (stack == ItemStack.EMPTY)
                 continue;
-            boolean isEquipped = slotIdx == inventory.currentItem || slotIdx > inventory.mainInventory.length;
+            boolean isEquipped = slotIdx == inventory.currentItem || slotIdx > inventory.mainInventory.size();
             check(event, stack, isEquipped);
         }
     }
@@ -85,9 +85,9 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
         for (int slotIdx = 0; slotIdx < inventory.getSizeInventory(); slotIdx++)
         {
             ItemStack stack = inventory.getStackInSlot(slotIdx);
-            if (stack == null)
+            if (stack == ItemStack.EMPTY)
                 continue;
-            boolean isEquipped = slotIdx == inventory.currentItem || slotIdx > inventory.mainInventory.length;
+            boolean isEquipped = slotIdx == inventory.currentItem || slotIdx > inventory.mainInventory.size();
 
             NBTTagCompound tag = getPermissionTag(stack);
             if (tag == null)
@@ -136,8 +136,7 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
 
     public static NBTTagList getSettingsTag(NBTTagCompound tag)
     {
-        NBTTagList settings = tag.getTagList(TAG_SETTINGS, NBT.TAG_STRING);
-        return settings;
+        return tag.getTagList(TAG_SETTINGS, NBT.TAG_STRING);
     }
 
     public static void check(PermissionCheckEvent event, ItemStack stack, boolean isEquipped)

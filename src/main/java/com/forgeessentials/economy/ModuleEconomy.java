@@ -2,13 +2,10 @@ package com.forgeessentials.economy;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,7 +20,8 @@ import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -130,9 +128,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
         APIRegistry.perms.registerPermissionDescription(PERM_BOUNTY, "Bounty for killing entities (ex.: fe.economy.bounty.Skeleton = 5)");
         APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, DefaultPermissionLevel.ALL, "Whether to show a message if a bounty is given");
-        for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.NAME_TO_CLASS).entrySet())
-            if (EntityLiving.class.isAssignableFrom(e.getValue()))
-                APIRegistry.perms.registerPermissionProperty(PERM_BOUNTY + "." + e.getKey(), "0");
+        for (EntityEntry e : ForgeRegistries.ENTITIES)
+            if (EntityLiving.class.isAssignableFrom(e.getEntityClass()))
+                APIRegistry.perms.registerPermissionProperty(PERM_BOUNTY + "." + e.getName(), "0");
 
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHTOLL, "",
                 "Penalty for players to pay when they die. If set to lesser than 1, value is taken as a factor of the player's wallet balance.");
@@ -176,22 +174,17 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     public static int tryRemoveItems(EntityPlayer player, ItemStack itemStack, int amount)
     {
-        int foundStacks = 0;
+        int foundStacks = countInventoryItems(player, itemStack);
         int itemDamage = ItemUtil.getItemDamage(itemStack);
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
-        {
-            ItemStack stack = player.inventory.mainInventory[slot];
-            if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
-                foundStacks += stack.stackSize;
-        }
+
         foundStacks = amount = Math.min(foundStacks, amount);
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
-        {
-            ItemStack stack = player.inventory.mainInventory[slot];
-            if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+        for (ItemStack stack : player.inventory.mainInventory) {
+            if (foundStacks == 0)
+                break;
+            if (stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
             {
-                int removeCount = Math.min(stack.stackSize, foundStacks);
-                player.inventory.decrStackSize(slot, removeCount);
+                int removeCount = Math.min(stack.getCount(), foundStacks);
+                stack.setCount(stack.getCount() - removeCount);
                 foundStacks -= removeCount;
             }
         }
@@ -202,11 +195,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         int foundStacks = 0;
         int itemDamage = ItemUtil.getItemDamage(itemType);
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
-        {
-            ItemStack stack = player.inventory.mainInventory[slot];
-            if (stack != null && stack.getItem() == itemType.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
-                foundStacks += stack.stackSize;
+        for (ItemStack stack : player.inventory.mainInventory) {
+            if (stack.getItem() == itemType.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+                foundStacks += stack.getCount();
         }
         return foundStacks;
     }
@@ -261,9 +252,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             ChatOutputHandler.chatNotification((ICommandSender) e.getEntity(), Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
         }
 
-        if (e.getSource().getEntity() instanceof EntityPlayerMP)
+        if (e.getSource().getTrueSource() instanceof EntityPlayerMP)
         {
-            UserIdent killer = UserIdent.get((EntityPlayerMP) e.getSource().getEntity());
+            UserIdent killer = UserIdent.get((EntityPlayerMP) e.getSource().getTrueSource());
             String permission = PERM_BOUNTY + "." + ProtectionEventHandler.getEntityName(e.getEntityLiving());
             double bounty = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(killer, permission), 0);
             if (bounty > 0)
@@ -354,7 +345,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             ConfigCategory category = config.getCategory("ItemTables");
             for (Entry<String, Property> entry : category.entrySet())
             {
-                for (Item item : GameData.getItemRegistry().typeSafeIterable())
+                for (Item item : Item.REGISTRY)
                     if (entry.getKey().equals(item.getUnlocalizedName()))
                     {
                         String id = ServerUtil.getItemName(item);

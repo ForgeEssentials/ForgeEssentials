@@ -285,14 +285,14 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
 
         ItemStack transactionStack = shop.getItemStack();
         boolean sameItem = transactionStack.getItem() == equippedItem;
-        transactionStack.stackSize = shop.amount;
+        transactionStack.setCount(shop.amount);
         ITextComponent itemName = transactionStack.getTextComponent();
 
         Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((EntityPlayerMP) event.getEntityPlayer()));
 
         if (shop.sellPrice >= 0 && (shop.buyPrice < 0 || sameItem))
         {
-            if (ModuleEconomy.countInventoryItems(event.getEntityPlayer(), transactionStack) < transactionStack.stackSize)
+            if (ModuleEconomy.countInventoryItems(event.getEntityPlayer(), transactionStack) < transactionStack.getCount())
             {
                 TextComponentTranslation msg = new TextComponentTranslation("You do not have enough %s", itemName);
                 msg.getStyle().setColor(ChatOutputHandler.chatConfirmationColor);
@@ -302,13 +302,13 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             int removedAmount = 0;
             if (sameItem)
             {
-                removedAmount = Math.min(equippedStack.stackSize, transactionStack.stackSize);
-                equippedStack.stackSize -= removedAmount;
-                if (equippedStack.stackSize <= 0)
-                    event.getEntityPlayer().inventory.mainInventory[event.getEntityPlayer().inventory.currentItem] = null;
+                removedAmount = Math.min(equippedStack.getCount(), transactionStack.getCount());
+                equippedStack.setCount(equippedStack.getCount() - removedAmount);
+                if (equippedStack.getCount() <= 0)
+                    event.getEntityPlayer().inventory.mainInventory.set(event.getEntityPlayer().inventory.currentItem, ItemStack.EMPTY);
             }
-            if (removedAmount < transactionStack.stackSize)
-                removedAmount += ModuleEconomy.tryRemoveItems(event.getEntityPlayer(), transactionStack, transactionStack.stackSize - removedAmount);
+            if (removedAmount < transactionStack.getCount())
+                removedAmount += ModuleEconomy.tryRemoveItems(event.getEntityPlayer(), transactionStack, transactionStack.getCount() - removedAmount);
             wallet.add(shop.sellPrice);
             shop.setStock(shop.getStock() + 1);
 

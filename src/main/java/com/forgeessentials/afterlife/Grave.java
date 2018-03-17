@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
@@ -94,13 +93,13 @@ public class Grave implements Loadable
         if (protTime <= 0)
             isProtected = false;
         for (int i = 0; i < drops.size(); i++)
-            inventory.add(drops.get(i).getEntityItem().copy());
+            inventory.add(drops.get(i).getItem().copy());
 
         // Get grave block
         String blockName = APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_BLOCK);
         if (blockName != null && !blockName.isEmpty())
         {
-            Block b = GameData.getBlockRegistry().getObject(new ResourceLocation(blockName));
+            Block b = Block.REGISTRY.getObject(new ResourceLocation(blockName));
             if (b != null)
                 this.blockState = b.getDefaultState();
         }

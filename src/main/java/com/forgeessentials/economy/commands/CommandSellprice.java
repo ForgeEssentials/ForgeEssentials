@@ -31,7 +31,6 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -149,11 +148,8 @@ public class CommandSellprice extends ParserCommandBase
         {
             try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
             {
-                @SuppressWarnings("unchecked")
-                List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
-                for (Iterator<IRecipe> iterator = recipes.iterator(); iterator.hasNext();)
+                for (IRecipe recipe : CraftingManager.REGISTRY)
                 {
-                    IRecipe recipe = iterator.next();
                     if (recipe.getRecipeOutput() == null)
                         continue;
                     List<?> recipeItems = getRecipeItems(recipe);
@@ -197,32 +193,28 @@ public class CommandSellprice extends ParserCommandBase
 
                 @SuppressWarnings("unchecked")
                 Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.instance().getSmeltingList());
-                @SuppressWarnings("unchecked")
-                List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
 
                 boolean changedPrice;
                 do
                 {
                     changedPrice = false;
-                    for (Iterator<IRecipe> iterator = recipes.iterator(); iterator.hasNext();)
+                    for (IRecipe recipe : CraftingManager.REGISTRY)
                     {
-                        IRecipe recipe = iterator.next();
                         if (recipe.getRecipeOutput() == null)
                             continue;
 
                         double price = getRecipePrice(recipe, priceMap, priceMapFull);
                         if (price > 0)
                         {
-                            iterator.remove();
-                            price /= recipe.getRecipeOutput().stackSize;
+                            price /= recipe.getRecipeOutput().getCount();
                             Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getRecipeOutput()));
                             if (resultPrice == null || price < resultPrice)
                             {
                                 priceMap.put(ItemUtil.getItemIdentifier(recipe.getRecipeOutput()), price);
                                 changedPrice = true;
 
-                                String msg = String.format("%s:%d = %.0f -> %s", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
-                                        ItemUtil.getItemDamage(recipe.getRecipeOutput()), resultPrice == null ? 0 : resultPrice, (int) price);
+                                StringBuilder msg = new StringBuilder(String.format("%s:%d = %.0f -> %s", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
+                                        ItemUtil.getItemDamage(recipe.getRecipeOutput()), resultPrice == null ? 0 : resultPrice, (int) price));
                                 for (Object stacks : getRecipeItems(recipe))
                                     if (stacks != null)
                                     {
@@ -235,8 +227,8 @@ public class CommandSellprice extends ParserCommandBase
                                         else
                                             stack = (ItemStack) stacks;
                                         if (stack != null)
-                                            msg += String.format("\n  %.0f - %s:%d", priceMap.get(ItemUtil.getItemIdentifier(stack)),
-                                                    ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack));
+                                            msg.append(String.format("\n  %.0f - %s:%d", priceMap.get(ItemUtil.getItemIdentifier(stack)),
+                                                    ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack)));
                                     }
                                 writer.write(msg + "\n");
                             }
@@ -250,7 +242,7 @@ public class CommandSellprice extends ParserCommandBase
                         if (inPrice != null)
                         {
                             iterator.remove();
-                            double outPrice = inPrice * recipe.getKey().stackSize / recipe.getValue().stackSize;
+                            double outPrice = inPrice * recipe.getKey().getCount() / recipe.getValue().getCount();
                             Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getValue()));
                             if (resultPrice == null || outPrice < resultPrice)
                             {
@@ -274,7 +266,7 @@ public class CommandSellprice extends ParserCommandBase
 
         writeMap(priceMap, priceFile);
 
-        for (Item item : GameData.getItemRegistry().typeSafeIterable())
+        for (Item item : Item.REGISTRY)
         {
             String id = ServerUtil.getItemName(item);
             if (!priceMapFull.containsKey(id))
@@ -450,11 +442,9 @@ public class CommandSellprice extends ParserCommandBase
         if (recipe instanceof ShapelessRecipes)
             return ((ShapelessRecipes) recipe).recipeItems;
         else if (recipe instanceof ShapedRecipes)
-            return Arrays.asList(((ShapedRecipes) recipe).recipeItems);
-        else if (recipe instanceof ShapedOreRecipe)
-            return Arrays.asList(((ShapedOreRecipe) recipe).getInput());
-        else if (recipe instanceof ShapelessOreRecipe)
-            return ((ShapelessOreRecipe) recipe).getInput();
+            return ((ShapedRecipes) recipe).recipeItems;
+        else if (recipe instanceof ShapedOreRecipe || recipe instanceof ShapelessOreRecipe)
+            return recipe.getIngredients();
         else
             return null;
     }

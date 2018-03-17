@@ -6,6 +6,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -76,7 +77,7 @@ public class CommandTempBan extends ParserCommandBase
 
         String durationString = ChatOutputHandler.formatTimeDurationReadable(duration / 1000, true);
         if (player.hasPlayer())
-            player.getPlayerMP().connection.disconnect(Translator.format("You have been banned for %s", durationString));
+            player.getPlayerMP().connection.disconnect(new TextComponentTranslation("You have been banned for %s", durationString));
 
         if (!arguments.isEmpty())
         {

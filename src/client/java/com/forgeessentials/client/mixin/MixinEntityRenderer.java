@@ -66,12 +66,12 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
                 }
 
                 Vec3d vec31 = entity.getLook(partialTime);
-                Vec3d vec32 = vec3.addVector(vec31.xCoord * maxReach, vec31.yCoord * maxReach, vec31.zCoord * maxReach);
+                Vec3d vec32 = vec3.addVector(vec31.x * maxReach, vec31.y * maxReach, vec31.z * maxReach);
                 this.pointedEntity = null;
                 Vec3d vec33 = null;
                 float f1 = 1.0F;
                 List<?> list = this.mc.world.getEntitiesWithinAABBExcludingEntity(entity,
-                        entity.getEntityBoundingBox().addCoord(vec31.xCoord * maxReach, vec31.yCoord * maxReach, vec31.zCoord * maxReach).expand(f1, f1, f1));
+                        entity.getEntityBoundingBox().expand(vec31.x * maxReach, vec31.y * maxReach, vec31.z * maxReach).expand(f1, f1, f1));
                 double d2 = blockDistance;
 
                 for (int i = 0; i < list.size(); ++i)
@@ -84,7 +84,7 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
                         AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand(f2, f2, f2);
                         RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
 
-                        if (axisalignedbb.isVecInside(vec3))
+                        if (axisalignedbb.contains(vec3))
                         {
                             if (0.0D < d2 || d2 == 0.0D)
                             {
@@ -118,7 +118,7 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
                     }
                 }
 
-                if (this.pointedEntity != null && (d2 < blockDistance || this.mc.objectMouseOver == null))
+                if (this.pointedEntity != null && vec33 != null && (d2 < blockDistance || this.mc.objectMouseOver == null))
                 {
                     this.mc.objectMouseOver = new RayTraceResult(this.pointedEntity, vec33);
 

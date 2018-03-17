@@ -41,19 +41,19 @@ public class SendChatHandler extends GenericRemoteHandler<String>
         if (ident != null)
         {
             EntityPlayerMP player = ident.getFakePlayer();
-            TextComponentTranslation message = new TextComponentTranslation("chat.type.text", new Object[] { player.getDisplayName(),
-                    ForgeHooks.newChatWithLinks(request.data) });
+            TextComponentTranslation message = new TextComponentTranslation("chat.type.text", player.getDisplayName(),
+                    ForgeHooks.newChatWithLinks(request.data));
             ServerChatEvent event = new ServerChatEvent(player, request.data, message);
             if (MinecraftForge.EVENT_BUS.post(event))
                 return null;
             if (event.getComponent() != null)
-                FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendChatMsgImpl(event.getComponent(), false);
+                FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(event.getComponent(), false);
         }
         else
         {
-            TextComponentTranslation message = new TextComponentTranslation("chat.type.text", new Object[] { "anonymous",
-                    ForgeHooks.newChatWithLinks(request.data) });
-            FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendChatMsgImpl(message, false);
+            TextComponentTranslation message = new TextComponentTranslation("chat.type.text", "anonymous",
+                    ForgeHooks.newChatWithLinks(request.data));
+            FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(message, false);
             QueryChatHandler.onMessage(message);
             PushChatHandler.onMessage(message, "anonymous");
         }

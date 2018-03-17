@@ -5,7 +5,6 @@ import java.util.Map;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
@@ -19,7 +18,7 @@ public class JsItem extends JsWrapper<Item>
 
     public static JsItem get(String name)
     {
-        Item item = GameData.getItemRegistry().getObject(new ResourceLocation(name));
+        Item item = Item.REGISTRY.getObject(new ResourceLocation(name));
         return item == null ? null : JsItem.get(item);
     }
 
@@ -40,7 +39,8 @@ public class JsItem extends JsWrapper<Item>
 
     public String getName()
     {
-        return GameData.getItemRegistry().getNameForObject(that).toString();
+        final ResourceLocation name = Item.REGISTRY.getNameForObject(that);
+        return name != null ? name.toString() : "unknown";
     }
 
 }

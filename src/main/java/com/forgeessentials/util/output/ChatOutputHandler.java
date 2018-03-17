@@ -104,7 +104,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void broadcast(ITextComponent message)
     {
-        FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendChatMsg(message);
+        FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(message);
     }
 
     /* ------------------------------------------------------------ */
@@ -130,7 +130,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     }
 
     /**
-     * Utility method to set {@link IChatComponent} color
+     * Utility method to set {@link ITextComponent} color
      *
      * @param message
      * @param color
@@ -241,7 +241,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     }
 
     /**
-     * Apply a set of {@link EnumChatFormatting} to a {@link ChatStyle}
+     * Apply a set of {@link TextFormatting} to a {@link Style}
      * 
      * @param chatStyle
      * @param formattings
@@ -253,7 +253,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     }
 
     /**
-     * Apply an {@link EnumChatFormatting} to a {@link ChatStyle}
+     * Apply an {@link TextFormatting} to a {@link Style}
      * 
      * @param chatStyle
      * @param formatting
@@ -286,7 +286,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     }
 
     /**
-     * Take a string of chat format codes (without \u00a7) and return them as {@link EnumChatFormatting} collection
+     * Take a string of chat format codes (without \u00a7) and return them as {@link TextFormatting} collection
      * 
      * @param textFormats
      * @return

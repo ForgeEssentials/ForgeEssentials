@@ -5,6 +5,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
 
 import com.forgeessentials.multiworld.WorldServerMultiworld;
+import net.minecraft.world.gen.ChunkGeneratorSettings;
 
 public class WorldTypeMultiworld extends WorldType
 {
@@ -23,7 +24,7 @@ public class WorldTypeMultiworld extends WorldType
      */
     public int getGeneratorVersion()
     {
-        return world.getGeneratorVersion();
+        return world.getVersion();
     }
 
     public WorldType getWorldTypeForGeneratorVersion(int version)
@@ -41,7 +42,7 @@ public class WorldTypeMultiworld extends WorldType
 
     public int getWorldTypeID()
     {
-        return world.getWorldTypeID();
+        return world.getWorldTypeForGeneratorVersion(world.getVersion()).getId();
     }
 
     public net.minecraft.world.biome.BiomeProvider getBiomeProvider(World world)
@@ -49,7 +50,7 @@ public class WorldTypeMultiworld extends WorldType
         return this.world.getBiomeProvider(world);
     }
 
-    public net.minecraft.world.chunk.IChunkGenerator getChunkGenerator(World world, String generatorOptions)
+    public net.minecraft.world.gen.IChunkGenerator getChunkGenerator(World world, String generatorOptions)
     {
         return this.world.getChunkGenerator(world, generatorOptions);
     }
@@ -120,7 +121,7 @@ public class WorldTypeMultiworld extends WorldType
      */
     public net.minecraft.world.gen.layer.GenLayer getBiomeLayer(long worldSeed, net.minecraft.world.gen.layer.GenLayer parentLayer, String chunkProviderSettingsJson)
     {
-        return this.world.getBiomeLayer(worldSeed, parentLayer, chunkProviderSettingsJson);
+        return this.world.getBiomeLayer(worldSeed, parentLayer, ChunkGeneratorSettings.Factory.jsonToFactory(chunkProviderSettingsJson).build());
     }
 
 }

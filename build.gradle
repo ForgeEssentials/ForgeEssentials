@@ -89,7 +89,7 @@ minecraft {
 	version = "$project.minecraftVersion-$project.forgeVersion"
 	runDir = "rundir"
 	
-	mappings = "snapshot_20180304"
+	mappings = "snapshot_20171003"
 
 	replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
 	replace (["_BASEVERSION_":baseVersion,"_MCVERSION_":project.minecraftVersion])
@@ -160,7 +160,7 @@ dependencies {
 	// WorldEdit
     compile "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
     deobfCompile "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5"
-    compile files('lib/Baubles-1.12.2-1.5.2-deobf.jar')
+    compile files('lib/Baubles-1.12-1.5.2-deobf.jar')
 	includeMod files('lib/worldedit-forge-mc1.12-6.1.8-dist.jar')
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
     mavenDeps "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
@@ -423,40 +423,4 @@ publishing {
 
 task publishAndClean(type: Delete, dependsOn: "publish") {
     delete javadocJar, sourceJar
-}
-
-compileJava {
-    excludes = [
-            'com/forgeessentials/afterlife/**/*',
-            'com/forgeessentials/api/**/*',
-            'com/forgeessentials/auth/**/*',
-            'com/forgeessentials/backup/**/*',
-            'com/forgeessentials/chat/**/*',
-            'com/forgeessentials/commands/**/*',
-            'com/forgeessentials/compat/**/*',
-            'com/forgeessentials/core/**/*',
-            'com/forgeessentials/data/**/*',
-            'com/forgeessentials/economy/**/*',
-            'com/forgeessentials/factions/**/*',
-            'com/forgeessentials/jscripting/**/*',
-            'com/forgeessentials/mapper/**/*',
-            'com/forgeessentials/multiworld/**/*',
-            'com/forgeessentials/perftools/**/*',
-            'com/forgeessentials/permissions/**/*',
-            'com/forgeessentials/playerlogger/**/*',
-            'com/forgeessentials/protection/**/*',
-            'com/forgeessentials/remote/**/*',
-            'com/forgeessentials/scripting/**/*',
-            'com/forgeessentials/servervote/**/*',
-            'com/forgeessentials/signtools/**/*',
-            'com/forgeessentials/teleport/**/*',
-            'com/forgeessentials/tickets/**/*',
-            'com/forgeessentials/worldborder/**/*'
-    ]
-}
-
-compileClientJava {
-    excludes = [
-            '**/*'
-    ]
 }

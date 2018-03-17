@@ -53,12 +53,12 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 
     public int getStackSize()
     {
-        return that.stackSize;
+        return that.getCount();
     }
 
     public void setStackSize(int size)
     {
-        that.stackSize = size;
+        that.setCount(size);
     }
 
     public int getMaxStackSize()
@@ -132,7 +132,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
     @Override
     public boolean equals(Object obj)
     {
-        return obj instanceof JsItemStack ? that.isItemEqual(((JsItemStack) obj).getThat()) : false;
+        return obj instanceof JsItemStack && that.isItemEqual(((JsItemStack) obj).getThat());
     }
 
     /**

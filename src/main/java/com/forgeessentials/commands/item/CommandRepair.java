@@ -78,7 +78,7 @@ public class CommandRepair extends ForgeEssentialsCommandBase
         if (args.length == 0)
         {
             ItemStack item = sender.getHeldItemMainhand();
-            if (item == null)
+            if (item == ItemStack.EMPTY)
                 throw new TranslatedCommandException("You are not holding a reparable item.");
             item.setItemDamage(0);
         }
@@ -89,7 +89,7 @@ public class CommandRepair extends ForgeEssentialsCommandBase
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 
             ItemStack item = player.getHeldItemMainhand();
-            if (item != null)
+            if (item != ItemStack.EMPTY)
                 item.setItemDamage(0);
         }
         else
@@ -107,10 +107,8 @@ public class CommandRepair extends ForgeEssentialsCommandBase
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-
                 ItemStack item = player.getHeldItemMainhand();
-
-                if (item != null)
+                if (item != ItemStack.EMPTY)
                 {
                     item.setItemDamage(0);
                 }

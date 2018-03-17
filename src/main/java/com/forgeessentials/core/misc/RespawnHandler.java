@@ -132,7 +132,7 @@ public class RespawnHandler
     public void doRespawn(PlayerRespawnEvent event)
     {
         EntityPlayerMP player = (EntityPlayerMP) event.player;
-        player.connection.playerEntity = player;
+        player.connection.player = player;
 
         WarpPoint lastDeathLocation = PlayerInfo.get(player.getPersistentID()).getLastDeathLocation();
         if (lastDeathLocation == null)

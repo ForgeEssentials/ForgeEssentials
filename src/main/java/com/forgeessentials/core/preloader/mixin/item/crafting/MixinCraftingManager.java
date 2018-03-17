@@ -1,12 +1,12 @@
 package com.forgeessentials.core.preloader.mixin.item.crafting;
 
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraft.world.World;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,30 +15,52 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import com.forgeessentials.protection.ModuleProtection;
 
+import javax.annotation.Nullable;
+
 @Mixin(CraftingManager.class)
 public abstract class MixinCraftingManager
 {
     @Shadow
-    private List<IRecipe> recipes;
+    public static RegistryNamespaced<ResourceLocation, IRecipe> REGISTRY;
 
     /**
      * Try to find a crafting result that the player is able to craft.
      *
-     * @param inventory the crafting inventory
-     * @param world the world
+     * @param craftMatrix the crafting inventory
+     * @param worldIn the world
      */
     @Overwrite
-    public ItemStack findMatchingRecipe(InventoryCrafting inventory, World world)
+    public static ItemStack findMatchingResult(InventoryCrafting craftMatrix, World worldIn)
     {
-        EntityPlayer player = ModuleProtection.getCraftingPlayer(inventory);
-        for (IRecipe irecipe : this.recipes)
+        EntityPlayer player = ModuleProtection.getCraftingPlayer(craftMatrix);
+        for (IRecipe irecipe : REGISTRY)
         {
-            if (irecipe.matches(inventory, world))
+            if (irecipe.matches(craftMatrix, worldIn))
             {
-                ItemStack result = irecipe.getCraftingResult(inventory);
+                ItemStack result = irecipe.getCraftingResult(craftMatrix);
                 if (ModuleProtection.canCraft(player, result))
                 {
-                    return irecipe.getCraftingResult(inventory);
+                    return irecipe.getCraftingResult(craftMatrix);
+                }
+            }
+        }
+
+        return ItemStack.EMPTY;
+    }
+
+    @Overwrite
+    @Nullable
+    public static IRecipe findMatchingRecipe(InventoryCrafting craftMatrix, World worldIn)
+    {
+        EntityPlayer player = ModuleProtection.getCraftingPlayer(craftMatrix);
+        for (IRecipe irecipe : REGISTRY)
+        {
+            if (irecipe.matches(craftMatrix, worldIn))
+            {
+                ItemStack result = irecipe.getCraftingResult(craftMatrix);
+                if (ModuleProtection.canCraft(player, result))
+                {
+                    return irecipe;
                 }
             }
         }

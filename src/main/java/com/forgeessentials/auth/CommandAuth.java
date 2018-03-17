@@ -154,7 +154,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 }
                 else if (!isLogged)
                 {
-                    throw new PlayerNotFoundException();
+                    throw new PlayerNotFoundException("Player is not online.");
                 }
                 else
                 {

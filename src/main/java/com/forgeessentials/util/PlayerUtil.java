@@ -86,7 +86,7 @@ public abstract class PlayerUtil
                         LoggingHandler.felog.warn("Invalid potion ID %d", potionID);
                         continue;
                     }
-                    player.addPotionEffect(new net.minecraft.potion.PotionEffect(Potion.getPotionById(potionID), effectDuration * 20, amplifier));
+                    player.addPotionEffect(new net.minecraft.potion.PotionEffect(Potion.REGISTRY.getObjectById(potionID), effectDuration * 20, amplifier));
                 }
                 catch (NumberFormatException e)
                 {
@@ -139,7 +139,7 @@ public abstract class PlayerUtil
         Vec3d lookAt = player.getLook(1);
         Vec3d playerPos = new Vec3d(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
         Vec3d pos1 = playerPos.addVector(0, player.getEyeHeight(), 0);
-        Vec3d pos2 = pos1.addVector(lookAt.xCoord * maxDistance, lookAt.yCoord * maxDistance, lookAt.zCoord * maxDistance);
+        Vec3d pos2 = pos1.addVector(lookAt.x * maxDistance, lookAt.y * maxDistance, lookAt.z * maxDistance);
         return player.world.rayTraceBlocks(pos1, pos2);
     }
 

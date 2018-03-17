@@ -202,7 +202,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             return;
         }
         ChunkProviderServer providerServer = world.getChunkProvider();
-        providerServer.unloadAllChunks();
+        providerServer.queueUnloadAll();
         arguments.confirm("Queued all chunks for unloading");
     }
 
@@ -265,7 +265,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                 if (providerServer.getLoadedChunkCount() > 256)
                 {
                     providerServer.saveChunks(true);
-                    providerServer.unloadAllChunks();
+                    providerServer.queueUnloadAll();
                 }
                 providerServer.provideChunk(x, z);
 

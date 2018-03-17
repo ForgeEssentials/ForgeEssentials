@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -150,7 +151,7 @@ public class AuthEventHandler extends ServerEventHandler
         {
             ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
             // add the item back to the inventory
-            ItemStack stack = event.getEntityItem().getEntityItem();
+            ItemStack stack = event.getEntityItem().getItem();
             event.getPlayer().inventory.addItemStackToInventory(stack);
             event.setCanceled(true);
         }
@@ -221,7 +222,7 @@ public class AuthEventHandler extends ServerEventHandler
             int availableSlots = FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers() - vipSlots - reservedSlots;
             if (onlinePlayers >= availableSlots)
             {
-                ((EntityPlayerMP) event.player).connection.disconnect(nonVipKickMessage);
+                ((EntityPlayerMP) event.player).connection.disconnect(new TextComponentString(nonVipKickMessage));
             }
         }
     }

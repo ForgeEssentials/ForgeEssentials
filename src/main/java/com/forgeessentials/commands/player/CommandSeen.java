@@ -74,7 +74,7 @@ public class CommandSeen extends ParserCommandBase
         }
 
         if (!player.hasUuid() || !PlayerInfo.exists(player.getUuid()))
-            throw new PlayerNotFoundException();
+            throw new PlayerNotFoundException("Player not found");
 
         PlayerInfo pi = PlayerInfo.get(player.getUuid());
         long t = (System.currentTimeMillis() - pi.getLastLogout().getTime()) / 1000;

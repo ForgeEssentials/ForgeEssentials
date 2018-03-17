@@ -139,7 +139,7 @@ public class ModuleMapper extends ConfigLoaderBase
         if (chunk.needsSaving(false) && !modifiedChunks.contains(chunk))
         {
             setChunkModified(chunk);
-            setRegionModified((WorldServer) chunk.getWorld(), MapperUtil.chunkToRegion(chunk.xPosition), MapperUtil.chunkToRegion(chunk.zPosition));
+            setRegionModified((WorldServer) chunk.getWorld(), MapperUtil.chunkToRegion(chunk.x), MapperUtil.chunkToRegion(chunk.z));
         }
     }
 
@@ -155,7 +155,7 @@ public class ModuleMapper extends ConfigLoaderBase
             if (chunk != null && chunk.needsSaving(false) && !modifiedChunks.contains(chunk))
             {
                 setChunkModified(chunk);
-                setRegionModified(world, MapperUtil.chunkToRegion(chunk.xPosition), MapperUtil.chunkToRegion(chunk.zPosition));
+                setRegionModified(world, MapperUtil.chunkToRegion(chunk.x), MapperUtil.chunkToRegion(chunk.z));
             }
     }
 
@@ -179,13 +179,13 @@ public class ModuleMapper extends ConfigLoaderBase
     public synchronized void setChunkModified(Chunk chunk)
     {
         modifiedChunks.add(chunk);
-        setChunkModified((WorldServer) chunk.getWorld(), chunk.xPosition, chunk.zPosition);
+        setChunkModified((WorldServer) chunk.getWorld(), chunk.x, chunk.z);
     }
 
     public synchronized void unsetChunkModified(Chunk chunk)
     {
         modifiedChunks.remove(chunk);
-        unsetChunkModified((WorldServer) chunk.getWorld(), chunk.xPosition, chunk.zPosition);
+        unsetChunkModified((WorldServer) chunk.getWorld(), chunk.x, chunk.z);
     }
 
     public synchronized void setChunkModified(WorldServer world, int chunkX, int chunkZ)

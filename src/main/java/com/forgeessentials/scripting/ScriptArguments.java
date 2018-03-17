@@ -17,6 +17,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.APIRegistry;
@@ -319,7 +320,7 @@ public final class ScriptArguments
                 throw new MissingPlayerException();
             if (((EntityPlayerMP) sender).interactionManager.getGameType().isCreative())
                 return ChatConfig.gamemodeCreative;
-            if (((EntityPlayerMP) sender).interactionManager.getGameType().isAdventure())
+            if (((EntityPlayerMP) sender).interactionManager.getGameType() == GameType.ADVENTURE)
                 return ChatConfig.gamemodeAdventure;
             return ChatConfig.gamemodeSurvival;
         }

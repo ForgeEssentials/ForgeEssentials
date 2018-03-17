@@ -89,13 +89,11 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
 
         if (sender.inventory.hasItemStack(new ItemStack(Items.WRITTEN_BOOK)))
         {
-            for (int i = 0; i < sender.inventory.mainInventory.length; i++)
-            {
-                ItemStack e = sender.inventory.mainInventory[i];
-                if (e != null && e.hasTagCompound() && e.getTagCompound().hasKey("title") && e.getTagCompound().hasKey("author")
+            for (ItemStack e : sender.inventory.mainInventory) {
+                if (e != ItemStack.EMPTY && e.hasTagCompound() && e.getTagCompound().hasKey("title") && e.getTagCompound().hasKey("author")
                         && e.getTagCompound().getString("title").equals("CommandBook") && e.getTagCompound().getString("author").equals("ForgeEssentials"))
                 {
-                    sender.inventory.setInventorySlotContents(i, null);
+                    e.setCount(0);
                 }
             }
         }
@@ -108,15 +106,10 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
                 continue;
 
             Set<String> commands = new HashSet<>();
-            commands.add("/" + cmd.getName());
+//            commands.add("/" + cmd.getName());
 
-            // Add aliases
-            List<?> aliases = cmd.getAliases();
-            if (aliases != null && aliases.size() > 0)
-            {
-                for (Object alias : aliases)
-                    commands.add("/" + alias);
-            }
+            for (Object alias : cmd.getAliases())
+                commands.add("/" + alias);
 
             String perm = PermissionManager.getCommandPermission(cmd);
             String text = TextFormatting.GOLD + StringUtils.join(commands, ' ') + '\n' + //

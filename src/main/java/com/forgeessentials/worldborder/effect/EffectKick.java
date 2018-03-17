@@ -12,6 +12,7 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
+import net.minecraft.util.text.TextComponentString;
 
 /**
  * Expected syntax: <interval> (in seconds)
@@ -48,7 +49,7 @@ public class EffectKick extends WorldBorderEffect
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.connection.disconnect("You left the world border");
+            player.connection.disconnect(new TextComponentString("You left the world border"));
             // For safety restart the timeout
             pi.startTimeout(this.getClass().getName(), timeout);
         }
