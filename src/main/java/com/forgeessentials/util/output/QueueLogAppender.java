@@ -28,7 +28,7 @@ public class QueueLogAppender extends AbstractAppender
 
     public QueueLogAppender(String string, int maxCapacity)
     {
-        this(string, null, PatternLayout.createLayout(null, null, null, null, null), false, maxCapacity);
+        this(string, null, PatternLayout.createDefaultLayout(), false, maxCapacity);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class QueueLogAppender extends AbstractAppender
         if (target == null)
             target = name;
         if (layout == null)
-            layout = PatternLayout.createLayout(null, null, null, null, null);
+            layout = PatternLayout.createDefaultLayout();
         return new QueueLogAppender(name, filter, layout, ignoreExceptions, capacity);
     }
 
