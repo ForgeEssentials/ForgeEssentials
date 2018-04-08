@@ -82,12 +82,9 @@ public class FELaunchHandler implements ITweaker
         }
 
         MixinBootstrap.init();
-
-        MixinEnvironment.getDefaultEnvironment().addConfiguration("mixins.mymod.json");
-
+        MixinEnvironment.setCompatibilityLevel(CompatibilityLevel.JAVA_8);
         // Fix CoFH compatibility. Fixes #1903
         MixinEnvironment.getEnvironment(Phase.PREINIT).addTransformerExclusion("cofh.asm.CoFHAccessTransformer");
-
 
         // Enable FastCraft compatibility mode
         System.setProperty("fastcraft.asm.permissive", "true");

@@ -1,15 +1,34 @@
+// Build repositories
 buildscript {
     repositories {
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/releases/"
+        }
+        maven {
+            name = "sponge"
+            url = "http://repo.spongepowered.org/maven/"
+        }
+        mavenCentral()
+        mavenLocal()
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
         jcenter()
-        maven { url = 'http://files.minecraftforge.net/maven' }
-        maven { url = 'http://repo.spongepowered.org/maven/' }
+
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1'
-        classpath 'org.ajoberstar:gradle-git:0.12.0'
-        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
+        classpath "org.ajoberstar:gradle-git:0.12.0"
+        classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
     }
+
 }
 
 plugins {
@@ -17,9 +36,30 @@ plugins {
     id 'org.sonarqube' version '2.5'
 }
 
+apply plugin: 'jacoco'
+
+sonarqube {
+    properties {
+        properties['sonar.projectKey'] = "com.forgeessentials:forgeessentials"
+        properties['sonar.projectName'] = project.name
+        properties['sonar.projectVersion'] = project.version
+    }
+}
+
+// Set up FE required repositories
+repositories {
+    maven {
+        name = "sk89q"
+        url = "http://maven.sk89q.com/repo/"
+    }
+    maven {
+        name = "sponge"
+        url = "http://repo.spongepowered.org/maven/"
+    }
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'jacoco'
 
 /************************************************************
  * General configuration
@@ -29,11 +69,11 @@ apply plugin: 'jacoco'
 ext.buildNumber = "0"
 if (System.getenv("BUILD_NUMBER") != null) {
     buildNumber = System.getenv("BUILD_NUMBER")
+
 }
 
 // Get commit hash
 import org.ajoberstar.grgit.Grgit
-
 def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
@@ -52,12 +92,12 @@ minecraft {
     mappings = "snapshot_20180304"
 
     replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
-    replace(["_BASEVERSION_": baseVersion, "_MCVERSION_": project.minecraftVersion])
+    replace (["_BASEVERSION_":baseVersion,"_MCVERSION_":project.minecraftVersion])
 }
 
 // Configure shared manifest
 ext.sharedManifest = manifest {
-    attributes(
+    attributes (
             "BuildID": gitCommitHash,
             "BuildNumber": buildNumber,
             "FMLCorePluginContainsFMLMod": "true",
@@ -68,7 +108,7 @@ ext.sharedManifest = manifest {
 
 ext.serverManifest = manifest {
     from sharedManifest
-    attributes(
+    attributes (
             "TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
             "TweakOrder": "0",
             "MixinConfigs": "mixins.forgeessentials.json",
@@ -80,44 +120,68 @@ ext.serverManifest = manifest {
  * Dependency configuration
  */
 
+// Create dependency configurations
 configurations {
-    shade
-    serverLib
     includeMod
-    compile.extendsFrom shade, serverLib, includeMod
+    shade
+    shadeClient
+    serverLib
+    compile.extendsFrom shade, shadeClient, serverLib
+    mavenDeps
 }
 
-repositories {
-    maven { url = "http://maven.sk89q.com/repo/" }
-}
+// def jdkHome = System.getenv("JAVA_HOME")
 
+// Configure dependencies (build-only, shaded and packed libraries)
 dependencies {
+    // IRC
     serverLib("org.pircbotx:pircbotx:2.0.1") {
+        // these are all packaged with the minecraft server jar
         exclude module: 'guava'
         exclude module: 'commons-lang3'
         exclude module: 'commons-codec'
     }
 
-    shade(group: 'org.spongepowered', name: 'mixin', version: '0.6.15-SNAPSHOT', changing: true) {
-        exclude module: 'guava'
-        exclude module: 'gson'
-        exclude module: 'commons-io'
+    // Shade Mixin library
+    shade ('org.spongepowered:mixin:0.7.5-SNAPSHOT') {
+        exclude module: 'asm-commons'
+        exclude module: 'asm-tree'
         exclude module: 'launchwrapper'
+        exclude module: 'guava'
+        exclude module: 'log4j-core'
     }
-    provided 'org.spongepowered:spongeapi:6.0.0'
-
-    includeMod files('lib/worldedit-forge-mc1.12-6.1.8-dist.jar')
-    compile files('lib/Baubles-1.12-1.5.2-deobf.jar')
+    shadeClient ('org.spongepowered:mixin:0.7.5-SNAPSHOT') {
+        exclude module: 'asm-commons'
+        exclude module: 'asm-tree'
+        exclude module: 'launchwrapper'
+        exclude module: 'guava'
+        exclude module: 'log4j-core'
+    }
 
     // Database libraries
-    serverLib 'com.h2database:h2:1.3.175'
-    serverLib 'mysql:mysql-connector-java:5.1.22'
-    serverLib 'org.hibernate:hibernate-core:5.2.2.Final'
-    compile 'org.hibernate:hibernate-jpamodelgen:5.2.2.Final'
+    serverLib group: 'com.h2database', 	name: 'h2', 					version: '1.3.175'
+    serverLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
+    serverLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
+    compile  group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
+    /* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
+
+    // WorldEdit
+    compile("com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT") {
+        exclude module: 'guava'
+        exclude module: 'gson'
+    }
+    deobfCompile "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5"
+    compile files('lib/Baubles-1.12-1.5.2-deobf.jar')
+    includeMod files('lib/worldedit-forge-mc1.12-6.1.8-dist.jar')
+    //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
+    mavenDeps "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
+
+    //buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
+    provided 'org.spongepowered:spongeapi:6.0.0'
 
     // TOOLS.jar from jdk for javadoc support
-    provided files("c:/Program Files/Java/jdk1.8.0_152/lib/tools.jar")
-    provided files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
+    // compile files("$jdkHome/lib/tools.jar")
+    compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
 }
 
 /************************************************************
@@ -125,34 +189,43 @@ dependencies {
  */
 
 sourceSets {
+    def deps = [
+            configurations.forgeGradleMcDeps,
+            configurations.forgeGradleMc,
+            configurations.provided
+    ]
     utils {
-        compileClasspath += sourceSets.main.compileClasspath
-    }
-    client {
-        compileClasspath += sourceSets.main.compileClasspath
-        compileClasspath += sourceSets.utils.output
-        ext.refMap = "mixins.forgeessentials.client.refmap.json"
+        compileClasspath = files(configurations.compile, sourceSets.api.output)
+        compileClasspath += files deps
     }
     main {
-        compileClasspath += sourceSets.utils.output
-        ext.refMap = "mixins.forgeessentials.refmap.json"
+        compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+        compileClasspath += files deps
+        refMap = "mixins.forgeessentials.refmap.json"
+    }
+    client {
+        compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+        compileClasspath += files deps
+        refMap = "mixins.forgeessentials.client.refmap.json"
     }
 }
 
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
+// Configure server resource processing
+project.processResources {
+    from (sourceSets.main.resources.srcDirs) {
         include "mcmod.info"
-        expand(
+        expand (
                 "version": project.version,
                 "mcversion": project.minecraft.version,
         )
     }
 }
 
-processClientResources {
-    from(sourceSets.client.resources.srcDirs) {
+// Configure client resource processing
+project.processClientResources {
+    from (sourceSets.client.resources.srcDirs) {
         include "mcmod.info"
-        expand(
+        expand (
                 "version": project.version,
                 "mcversion": project.minecraft.version,
         )
@@ -163,17 +236,33 @@ processClientResources {
  * Configure server jar (default)
  */
 
+// Javadoc task for generating tsd - does not work yet
+task tsd(type: Javadoc) {
+    dependsOn "classes"
+    source = fileTree(dir: 'src/main/java/com/forgeessentials/jscripting/fewrapper', include: 'ScriptExtensionRoot.java')
+    classpath = project.sourceSets.main.compileClasspath
+
+    options.doclet = "com.forgeessentials.jscripting.TsdGenerator"
+    options.docletpath = [ file("build/classes/main") ]
+    options.addStringOption("sourcepath", "src/main/java")
+    options.addStringOption("subpackages", "com.forgeessentials.jscripting.fewrapper")
+    options.addStringOption("out", "jscripting/fe.d.ts")
+    options.addStringOption("header", "src/main/resources/com/forgeessentials/jscripting/fe_header.d.ts")
+    options.addStringOption("interface", "com.forgeessentials.jscripting.fewrapper.fe.JsFEServer")
+    options.addStringOption("static", "com.forgeessentials.jscripting.fewrapper.fe.JsPermissions")
+}
+
 // Pack libraries as zip file to include them in the jar file
 task serverLibArchive(type: Zip) {
     archiveName = "libraries.zip"
     destinationDir = jar.destinationDir
 
-    from(configurations.serverLib.copyRecursive()) { into("ForgeEssentials/lib") }
-    from(configurations.includeMod) { into("mods") }
+    from (configurations.serverLib.copyRecursive()) { into("ForgeEssentials/lib") }
+    from (configurations.includeMod) { into("mods") }
 }
 
 jar.doLast {
-    delete(serverLibArchive.archivePath)
+    delete (serverLibArchive.archivePath)
 }
 
 // Configure server jar (default)
@@ -186,45 +275,40 @@ jar {
     from sourceSets.utils.output
     exclude('com/forgeessentials/client/**')
     from fileTree(serverLibArchive.archivePath)
-
     configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
-        from(zipTree(artifact))
+        from (zipTree(artifact))
     }
-
-    // Remove signatures (spongepowered.mixin)
-    exclude '**/META-INF/*.RSA'
-    exclude '**/META-INF/*.SF'
 
     manifest {
         from serverManifest
     }
+
+    exclude 'META-INF/*.RSA'
 }
 
 /************************************************************
  * Configure client jar
  */
 
-task clientJar(dependsOn: "clientClasses", type: Jar) {
+task clientJar (dependsOn: "clientClasses", type: Jar) {
     classifier = "client"
     appendix = minecraft.version
 
     from sourceSets.client.output
     from sourceSets.utils.output
-    configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
-        from(zipTree(artifact))
+    configurations.shadeClient.copyRecursive().setTransitive(false).each { artifact ->
+        from (zipTree(artifact))
     }
-
-    // Remove signatures (spongepowered.mixin)
-    exclude '**/META-INF/*.RSA'
-    exclude '**/META-INF/*.SF'
 
     manifest {
         from sharedManifest
-        attributes(
+        attributes (
                 "MixinConfigs": "mixins.forgeessentials.client.json",
                 "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
         )
     }
+
+    exclude 'META-INF/*.RSA'
 }
 
 /************************************************************
@@ -239,8 +323,8 @@ task deobfJar(dependsOn: "classes", type: Jar) {
     from sourceSets.main.output
     from sourceSets.utils.output
 
-    from(sourceSets.main.java) {
-        into("src/")
+    from (sourceSets.main.java) {
+        into ("src/")
     }
 
     manifest {
@@ -251,9 +335,9 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 task sourceJar(type: Jar) {
 	classifier = "sources"
 	appendix = minecraft.version
-	
+
 	from sourceSets.main.allSource
-	
+
 	manifest {
 		from serverManifest
 	}
@@ -279,22 +363,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     manifest { from sharedManifest }
 }
 
-// Javadoc task for generating tsd - does not work yet
-task tsd(type: Javadoc) {
-    dependsOn "classes"
-    source = fileTree(dir: 'src/main/java/com/forgeessentials/jscripting/fewrapper', include: 'ScriptExtensionRoot.java')
-    classpath = project.sourceSets.main.compileClasspath
-
-    options.doclet = "com.forgeessentials.jscripting.TsdGenerator"
-    options.docletpath = [file("build/classes/main")]
-    options.addStringOption("sourcepath", "src/main/java")
-    options.addStringOption("subpackages", "com.forgeessentials.jscripting.fewrapper")
-    options.addStringOption("out", "jscripting/fe.d.ts")
-    options.addStringOption("header", "src/main/resources/com/forgeessentials/jscripting/fe_header.d.ts")
-    options.addStringOption("interface", "com.forgeessentials.jscripting.fewrapper.fe.JsFEServer")
-    options.addStringOption("static", "com.forgeessentials.jscripting.fewrapper.fe.JsPermissions")
-}
-
 reobf {
     clientJar {
         classpath = sourceSets.main.compileClasspath
@@ -304,14 +372,6 @@ reobf {
 /************************************************************
  * Others
  */
-
-sonarqube {
-    properties {
-        properties['sonar.projectKey'] = "com.forgeessentials:forgeessentials"
-        properties['sonar.projectName'] = project.name
-        properties['sonar.projectVersion'] = project.version
-    }
-}
 
 // Add default artifacts for task "build"
 artifacts {
@@ -333,7 +393,7 @@ publishing {
     //tasks.publish.dependsOn "deobfJar"
 
     publications {
-        mavenJava(MavenPublication) {
+        mavenJava (MavenPublication) {
             groupId "com.forgeessentials"
             artifactId "forgeessentials"
             version baseVersion + "-SNAPSHOT"
@@ -346,7 +406,8 @@ publishing {
 
             pom.withXml {
                 def dependenciesNode = asNode().appendNode("dependencies")
-                def allDeps = configurations.serverLib.allDependencies +
+                def allDeps = configurations.mavenDeps.allDependencies +
+                        configurations.serverLib.allDependencies +
                         configurations.shade.allDependencies
                 allDeps.each {
                     def dependencyNode = dependenciesNode.appendNode("dependency")
@@ -377,4 +438,10 @@ publishing {
 
 task publishAndClean(type: Delete, dependsOn: "publish") {
     delete javadocJar, sourceJar
+}
+
+compileJava {
+    excludes = [
+            'com/forgeessentials/jscripting/TsdGenerator.java'
+    ]
 }

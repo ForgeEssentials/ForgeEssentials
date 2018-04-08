@@ -106,7 +106,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandWeather());
         FECommandManager.registerCommand(new CommandBind());
         FECommandManager.registerCommand(new CommandRename());
-        FECommandManager.registerCommand(new CommandVanish());
+        // FECommandManager.registerCommand(new CommandVanish());
         FECommandManager.registerCommand(new CommandPush());
         FECommandManager.registerCommand(new CommandDrop());
         FECommandManager.registerCommand(new CommandFindblock());
