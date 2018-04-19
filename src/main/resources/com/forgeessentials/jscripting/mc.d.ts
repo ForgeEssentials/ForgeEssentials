@@ -530,6 +530,7 @@ declare namespace mc.world {
 		getEntitiesWithinAABB(axisAlignedBB: mc.util.AxisAlignedBB): mc.entity.EntityList;
 		blockExists(x: int, y: int, z: int): boolean;
 		getBlock(x: int, y: int, z: int): Block;
+		getBlockMetadata(x: int, y: int, z: int): int;
 		setBlock(x: int, y: int, z: int, block: Block): void;
 		setBlock(x: int, y: int, z: int, block: Block, meta: int): void;
 		getTileEntity(x: int, y: int, z: int): TileEntity;

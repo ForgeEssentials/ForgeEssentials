@@ -2,6 +2,7 @@ package com.forgeessentials.jscripting.fewrapper.fe;
 
 import java.util.UUID;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
@@ -105,5 +106,14 @@ public class JsUserIdent extends JsWrapper<UserIdent>
     public JsPlayerInfo getPlayerInfo()
     {
         return new JsPlayerInfo(that.getUuid());
+    }
+
+    public JsWallet getWallet() {
+        if (APIRegistry.economy != null)
+        {
+            return new JsWallet(APIRegistry.economy.getWallet(that));
+        } else {
+            return null;
+        }
     }
 }
