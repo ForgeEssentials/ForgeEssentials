@@ -1,42 +1,26 @@
-
-# Tell Travis this is a Java project.
-language: java
-
-jdk:
-  - oraclejdk8
-
-# Tell Travis we don't need sudo,
-# so Travis uses containers.
-sudo: false
-
-# Tell Travis to shut up.
-notifications:
-  email: false
-branches:
-  except:
-    - master
-
-# Make the gradle wrapper executable.
-before_install:
-  - chmod +x gradlew
-
-# Setup the workspace.
-install:
-  - ./gradlew setupCIWorkspace -S
-
-# Tell Travis to build the project.
-script:
-  - ./gradlew build -S
-
-# So the cache doesn't get repacked every time.
-before_cache:
-  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-
-# Cache libs, as to improve speed.
-cache:
-  directories:
-    # The libs is up to debate...
-    #- ./libs
-    - $HOME/.gradle/caches
-    # But gradle is not.
-    - $HOME/.gradle/wrapper
+{
+  "language": "java",
+  "jdk": "oraclejdk8",
+  "sudo": false,
+  "before_install": [
+    "chmod +x gradlew"
+  ],
+  "install": [
+    "./gradlew setupCIWorkspace -S"
+  ],
+  "script": [
+    "./gradlew build -S"
+  ],
+  "before_cache": [
+    "rm -f $HOME/.gradle/caches/modules-2/modules-2.lock"
+  ],
+  "cache": {
+    "directories": [
+      "$HOME/.gradle/caches",
+      "$HOME/.gradle/wrapper"
+    ]
+  },
+  "os": "linux",
+  "group": "stable",
+  "dist": "trusty"
+}
