@@ -47,6 +47,7 @@ declare namespace fe {
 		remove(): string;
 		peek(): string;
 		get(index: int): string;
+		getAllArgs(): string;
 		isEmpty(): boolean;
 		hasPlayer(): boolean;
 		parsePlayer(): UserIdent;

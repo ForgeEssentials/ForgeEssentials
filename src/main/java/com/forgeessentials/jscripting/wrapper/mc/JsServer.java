@@ -2,21 +2,31 @@ package com.forgeessentials.jscripting.wrapper.mc;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
+import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.google.gson.JsonParseException;
 
 /**
  * @tsd.interface Server
@@ -167,6 +177,18 @@ public class JsServer
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         return server == null ? 0 : server.getCurrentPlayerCount();
     }
+    /**
+     * Returns an array of players online
+     */
+    public String[] getOnlinePlayers()
+    {
+        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        if (server == null) {
+        	return new String[] {};
+        } else {
+        	return server.getOnlinePlayerNames();
+        }
+    }
 
     /**
      * Returns the total number of unique players that have connected to this server
@@ -174,6 +196,29 @@ public class JsServer
     public int getUniquePlayerCount()
     {
         return APIRegistry.perms.getServerZone().getKnownPlayers().size();
+    }
+    public List<String> getAllPlayers()
+    {
+    	List<String> x = new ArrayList<String>();
+    	for (UserIdent j : APIRegistry.perms.getServerZone().getKnownPlayers()) {
+    		x.add(j.getUsername()); 
+    	}
+    	return x;
+    }
+    public void serverLog(String msg) {
+    	if (msg != null) this.getServer().chat(msg);
+    }
+    public void tellraw(String msg) {
+    	MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        try
+        {    
+        	ITextComponent component = ITextComponent.Serializer.jsonToComponent(msg);
+            if (component != null) server.getPlayerList().sendChatMsg(component);    
+        }
+        catch (JsonParseException jsonparseexception)
+        {
+            this.chatError("There is an error in your JSON: "+jsonparseexception.getMessage());
+        } 
     }
 
 }
