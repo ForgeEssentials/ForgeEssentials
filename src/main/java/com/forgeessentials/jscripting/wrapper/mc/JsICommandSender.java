@@ -90,16 +90,20 @@ public class JsICommandSender extends JsWrapper<ICommandSender>
     {
         ChatOutputHandler.chatWarning(that, message);
     }
-    public void tellraw(String msg)
+    public void tellRaw(String msg)
     { 
-    	if (msg.isEmpty()) return;
-        ICommandSender context = this.that; 
+    	if (msg.isEmpty())
+    	{
+    	    return;
+        }
         try
         {
-            ITextComponent itextcomponent = ITextComponent.Serializer.jsonToComponent(msg);
-            if (itextcomponent != null) 
-            	context.sendMessage(TextComponentUtils.processComponent(this.that, itextcomponent, (Entity) this.that.getCommandSenderEntity()));
-            
+            Entity senderEntity = this.that.getCommandSenderEntity();
+            if (senderEntity != null)
+            {
+                ITextComponent itextcomponent = ITextComponent.Serializer.jsonToComponent(msg);
+                this.that.sendMessage(TextComponentUtils.processComponent(this.that, itextcomponent, senderEntity));
+            }
         }
         catch (JsonParseException jsonparseexception)
         {

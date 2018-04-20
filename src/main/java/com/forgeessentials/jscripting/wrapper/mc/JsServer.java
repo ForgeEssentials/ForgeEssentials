@@ -183,7 +183,8 @@ public class JsServer
     public String[] getOnlinePlayers()
     {
         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        if (server == null) {
+        if (server == null)
+        {
         	return new String[] {};
         } else {
         	return server.getOnlinePlayerNames();
@@ -199,21 +200,25 @@ public class JsServer
     }
     public List<String> getAllPlayers()
     {
-    	List<String> x = new ArrayList<String>();
-    	for (UserIdent j : APIRegistry.perms.getServerZone().getKnownPlayers()) {
+    	List<String> x = new ArrayList<>();
+    	for (UserIdent j : APIRegistry.perms.getServerZone().getKnownPlayers())
+    	{
     		x.add(j.getUsername()); 
     	}
     	return x;
     }
     public void serverLog(String msg) {
-    	if (msg != null) this.getServer().chat(msg);
+    	if (msg != null)
+        {
+            this.getServer().chat(msg);
+        }
     }
-    public void tellraw(String msg) {
+    public void tellRaw(String msg) {
     	MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
         try
         {    
         	ITextComponent component = ITextComponent.Serializer.jsonToComponent(msg);
-            if (component != null) server.getPlayerList().sendChatMsg(component);    
+            server.getPlayerList().sendChatMsg(component);
         }
         catch (JsonParseException jsonparseexception)
         {

@@ -92,11 +92,15 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
     
     public String getAllArgs()
     {
-    	if (that.args.isEmpty()) return "";
+    	if (that.args.isEmpty())
+    	{
+    	    return "";
+        }
     	String x = "";
-    	for (int j = 0; j < that.args.size(); j++) 
-    		x = x.concat(that.args.get(j) + " ");
-    	
+    	for (int j = 0; j < that.args.size(); j++)
+        {
+            x = x.concat(that.args.get(j) + " ");
+        }
         return x.trim();
     }
     public boolean isEmpty()

@@ -1,4 +1,4 @@
-/// <reference path="./fe.d.ts" />
+
 declare type char = string;
 declare type byte = number;
 declare type int = number;
@@ -18,7 +18,7 @@ declare function createAxisAlignedBB(minX: double, minY: double, minZ: double, m
 
 /**
  * Constants that tell getNbt and setNbt the types of entries. Use nbt[NBT_INT + 'myVar'] for access
- */
+ */ 
 declare const NBT_BYTE: string;
 declare const NBT_SHORT: string;
 declare const NBT_INT: string;
@@ -29,7 +29,6 @@ declare const NBT_BYTE_ARRAY: string;
 declare const NBT_STRING: string;
 declare const NBT_COMPOUND: string;
 declare const NBT_INT_ARRAY: string;
-declare const NBT_STRING_ARRAY: string;
 
 declare abstract class JavaList<T> extends Array<T> {
     size(): int;
@@ -138,10 +137,10 @@ declare namespace net.minecraft.entity.player {
 }
 
 declare namespace mc {
-
+	
 	class AreaBase extends Wrapper {
 	}
-
+	
 	class ICommandSender extends Wrapper {
 		getName(): string;
 		getPlayer(): entity.EntityPlayer;
@@ -151,22 +150,15 @@ declare namespace mc {
 		chatNotification(message: string): void;
 		chatError(message: string): void;
 		chatWarning(message: string): void;
-		/**
-		 * Equivalient to the tellraw command
-		 * As the server there is no target selector, however you can add it
-		 * to the json string.
-		 * https://minecraft.gamepedia.com/Commands#Raw_JSON_text
-		 * tellraw(<json string>)
-		 */
-		tellraw(msg: string): void;
+		tellRaw(msg: string): void;
 	}
-
+	
 	interface Server {
 		getServer(): ICommandSender;
 		/**
 		 * Runs a Minecraft command.
 		 * Be sure to separate each argument of the command as a single argument to this function.
-		 *
+		 * 
 		 * Right: runCommand(sender, 'give', player.getName(), 'minecraft:dirt', 1);
 		 * Wrong: runCommand(sender, 'give ' + player.getName() + ' minecraft:dirt 1');
 		 */
@@ -212,31 +204,22 @@ declare namespace mc {
 		 */
 		getCurrentPlayerCount(): int;
 		/**
-		 * Returns a list of players online.
+		 * Returns an array of players online
 		 */
 		getOnlinePlayers(): string[];
 		/**
 		 * Returns the total number of unique players that have connected to this server
 		 */
 		getUniquePlayerCount(): int;
-		/**
-		 * Returns a list of players that have ever connected.
-		 */
-		getAllPlayers(): string[];
-		/**
-		 * Equivalient to the tellraw command
-		 * As the server there is no target selector, however you can add it
-		 * to the json string.
-		 * https://minecraft.gamepedia.com/Commands#Raw_JSON_text
-		 * tellraw(<json string>)
-		 */
-		tellraw(msg: string): void;
+		getAllPlayers(): java.util.List;
+		serverLog(msg: string): void;
+		tellRaw(msg: string): void;
 	}
-
+	
 }
 
 declare namespace mc.entity {
-
+	
 	class Entity extends Wrapper {
 		getName(): string;
 		getId(): string;
@@ -257,14 +240,14 @@ declare namespace mc.entity {
 		getStepHeight(): float;
 		isOnGround(): boolean;
 		getRidingEntity(): Entity;
-		getRiddenByEntity(): Entity;
+		getRiddenByEntity(): EntityList;
 		getWorld(): mc.world.World;
 		getEntityType(): string;
 	}
-
+	
 	class EntityList extends JavaList<Entity> {
 	}
-
+	
 	class EntityLivingBase extends Entity {
 		getHealth(): float;
 		setHealth(value: float): void;
@@ -272,18 +255,18 @@ declare namespace mc.entity {
 		getTotalArmorValue(): int;
 		canEntityBeSeen(other: Entity): boolean;
 	}
-
+	
 	class EntityPlayer extends EntityLivingBase {
 		setPosition(x: double, y: double, z: double): void;
 		setPosition(x: double, y: double, z: double, yaw: float, pitch: float): void;
 		asCommandSender(): mc.ICommandSender;
 		getInventory(): mc.item.InventoryPlayer;
 		getBedLocation(dimension: int): fe.Point;
-		getGameType(): net.minecraft.world.WorldSettings.GameType;
+		getGameType(): net.minecraft.world.GameType;
 		/**
 		 * Sets the player's game mode and sends it to them.
 		 */
-		setGameType(gameType: net.minecraft.world.WorldSettings.GameType): void;
+		setGameType(gameType: net.minecraft.world.GameType): void;
 		/**
 		 * Whether the player is currently using an item (by holding down use button)
 		 */
@@ -374,21 +357,21 @@ declare namespace mc.entity {
 		 */
 		getInventoryEnderChest(): mc.item.Inventory;
 	}
-
+	
 	class EntityPlayerList extends JavaList<EntityPlayer> {
 	}
-
+	
 	class EntitySheep extends Entity {
 		getFleeceColor(): int;
 		setFleeceColor(color: int): void;
 		isSheared(): boolean;
 		setSheared(sheared: boolean): void;
 	}
-
+	
 }
 
 declare namespace mc.event {
-
+	
 	class Event {
 		constructor();
 		getEventType(): string;
@@ -402,85 +385,85 @@ declare namespace mc.event {
 		setPhase(value: net.minecraftforge.fml.common.eventhandler.EventPriority): void;
 		toString(): string;
 	}
-
+	
 }
 
 declare namespace mc.event.entity {
-
+	
 	class EntityEvent extends mc.event.Event {
 		constructor();
 		getEntity(): mc.entity.Entity;
 	}
-
+	
 	class LivingEvent extends EntityEvent {
 		constructor();
 		getPlayer(): mc.entity.EntityLivingBase;
 	}
-
+	
 }
 
 declare namespace mc.event.entity.player {
-
+	
 	class AchievementEvent extends PlayerEvent {
 		constructor();
 	}
-
+	
 	class AnvilRepairEvent extends PlayerEvent {
 		constructor();
 	}
-
+	
 	class ArrowLooseEvent extends PlayerEvent {
 		constructor();
 	}
-
+	
 	class ArrowNockEvent extends PlayerEvent {
 		constructor();
 	}
-
+	
 	class AttackEntityEvent extends PlayerEvent {
 		constructor();
 	}
-
+	
 	class BonemealEvent extends PlayerEvent {
 		constructor();
 	}
-
+	
 	class EntityInteractEvent extends PlayerEvent {
 		constructor();
 	}
-
+	
 	class EntityItemPickupEvent extends PlayerEvent {
 		constructor();
 	}
-
+	
 	class PlayerBreakSpeedEvent extends PlayerEvent {
 		constructor();
 	}
-
+	
 	class PlayerEvent extends mc.event.entity.LivingEvent {
 		constructor();
 		getPlayer(): mc.entity.EntityPlayer;
 	}
-
+	
 	class PlayerInteractEvent extends PlayerEvent {
 		constructor();
 	}
-
+	
 	class PlayerWakeUpEvent extends PlayerEvent {
 		constructor();
 	}
-
+	
 	class UseHoeEvent extends PlayerEvent {
 		constructor();
 	}
-
+	
 }
 
 declare namespace mc.item {
-
+	
 	class Enchantment extends Wrapper {
 	}
-
+	
 	class Inventory extends Wrapper {
 		getStackInSlot(slot: int): ItemStack;
 		setStackInSlot(slot: int, stack: ItemStack): void;
@@ -490,18 +473,18 @@ declare namespace mc.item {
 		getName(): string;
 		hasCustomName(): boolean;
 	}
-
+	
 	class InventoryPlayer extends Inventory {
 		getCurrentItem(): ItemStack;
 		getCurrentItemIndex(): int;
 		setCurrentItemIndex(index: int): void;
 	}
-
+	
 	class Item extends Wrapper {
 		static get(name: string): Item;
 		getName(): string;
 	}
-
+	
 	class ItemStack extends Wrapper {
 		constructor(block: mc.world.Block, stackSize: int);
 		constructor(block: mc.world.Block, stackSize: int, damage: int);
@@ -524,29 +507,29 @@ declare namespace mc.item {
 		getRepairCost(): int;
 		setRepairCost(cost: int): void;
 	}
-
+	
 }
 
 declare namespace mc.util {
-
+	
 	class AxisAlignedBB extends Wrapper {
 		constructor(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double);
 		setBounds(minX: double, minY: double, minZ: double, maxX: double, maxY: double, maxZ: double): AxisAlignedBB;
 	}
-
+	
 }
 
 declare namespace mc.world {
-
+	
 	class Block extends Wrapper {
 		static get(name: string): Block;
 		getName(): string;
 	}
-
+	
 	class TileEntity extends Wrapper {
 		getInventory(): mc.item.Inventory;
 	}
-
+	
 	class World extends Wrapper {
 		static get(dim: int): WorldServer;
 		getDimension(): int;
@@ -658,11 +641,11 @@ declare namespace mc.world {
 		 */
 		getSeed(): long;
 	}
-
+	
 	class WorldServer extends World {
 		static get(dim: int): WorldServer;
 	}
-
+	
 }
 
 /**
@@ -754,7 +737,7 @@ declare class Wrapper {
 	isInstanceOf(type: string): boolean;
 }
 
-declare namespace java.util {
+declare namespace java.util { 
 	class UUID {
 		static randomUUID(): UUID;
 		static nameUUIDFromBytes(arg0: byte[]): UUID;
@@ -772,9 +755,9 @@ declare namespace java.util {
 		equals(arg0: any): boolean;
 		compareTo(arg0: UUID): int;
 	}
-
+	
 }
-declare namespace java.util {
+declare namespace java.util { 
 	class Date {
 		static UTC(arg0: int, arg1: int, arg2: int, arg3: int, arg4: int, arg5: int): long;
 		static parse(arg0: string): long;
@@ -812,9 +795,9 @@ declare namespace java.util {
 		getTimezoneOffset(): int;
 		toInstant(): java.time.Instant;
 	}
-
+	
 }
-declare namespace java.util {
+declare namespace java.util { 
 	class Calendar {
 		static ERA: int;
 		static YEAR: int;
@@ -917,9 +900,9 @@ declare namespace java.util {
 		toString(): string;
 		toInstant(): java.time.Instant;
 	}
-
+	
 }
-declare namespace java.util {
+declare namespace java.util { 
 	class TimeZone {
 		static SHORT: int;
 		static LONG: int;
@@ -948,9 +931,9 @@ declare namespace java.util {
 		hasSameRules(arg0: TimeZone): boolean;
 		clone(): any;
 	}
-
+	
 }
-declare namespace java.util {
+declare namespace java.util { 
 	class Locale {
 		static ENGLISH: Locale;
 		static FRENCH: Locale;
@@ -1022,14 +1005,16 @@ declare namespace java.util {
 		hashCode(): int;
 		equals(arg0: any): boolean;
 	}
-
+	
 }
-declare namespace net.minecraft.world.WorldSettings {
+declare namespace net.minecraft.world { 
 	class GameType extends java.lang.Enum {
 		static values(): GameType[];
 		static valueOf(arg0: string): GameType;
 		static getByID(arg0: int): GameType;
+		static parseGameTypeWithDefault(arg0: int, arg1: GameType): GameType;
 		static getByName(arg0: string): GameType;
+		static parseGameTypeWithDefault(arg0: string, arg1: GameType): GameType;
 		getID(): int;
 		getName(): string;
 		configurePlayerCapabilities(arg0: net.minecraft.entity.player.PlayerCapabilities): void;
@@ -1037,7 +1022,7 @@ declare namespace net.minecraft.world.WorldSettings {
 		isCreative(): boolean;
 		isSurvivalOrAdventure(): boolean;
 	}
-
+	
 }
 
 declare var Server: mc.Server;
@@ -1046,4 +1031,4 @@ declare var window: Window;
 declare var World: typeof mc.world.World;
 declare var Item: typeof mc.item.Item;
 declare var Block: typeof mc.world.Block;
-declare var localStorage: LocalStorage;
+declare var localStorage: typeof LocalStorage;
