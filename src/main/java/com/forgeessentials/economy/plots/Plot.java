@@ -188,20 +188,12 @@ public class Plot
      */
     public long getAccountedSize()
     {
-        AreaBase area = zone.getArea();
-        boolean columnMode = APIRegistry.perms.checkGroupPermission(GROUP_ALL, zone, PERM_PRICE);
-        return columnMode ? area.getXLength() * area.getZLength() : area.getXLength() * area.getYLength() * area.getZLength();
+        return Plot.getAccountedSize(getZone().getWorldArea());
     }
 
     public long getCalculatedPrice()
     {
-        String priceStr = APIRegistry.perms.getGroupPermissionProperty(GROUP_ALL, getPlotCenter(), PERM_PRICE);
-        if (priceStr == null)
-            return 0;
-        double pricePerUnit = ServerUtil.parseDoubleDefault(priceStr, 0);
-        if (pricePerUnit == 0)
-            return 0;
-        return (long) (getAccountedSize() * pricePerUnit);
+        return Plot.getCalculatedPrice(getZone().getWorldArea());
     }
 
     public long getPrice()
