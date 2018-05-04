@@ -207,7 +207,10 @@ public class CommandPlot extends ParserCommandBase
         if (plot.getOwner() == UserIdent.get(arguments.senderPlayer) || arguments.hasPermission(Plot.PERM_DELETE))
         {
             arguments.confirm("Plot \"%s\" has been deleted.", plot.getNameNotNull());
+            long cost = plot.getCalculatedPrice();
             Plot.deletePlot(plot);
+            Wallet wallet = APIRegistry.economy.getWallet(plot.getOwner());
+            wallet.add(cost);
         }
         else
             throw new TranslatedCommandException("You are not the owner of this plot, you can't delete it!");
