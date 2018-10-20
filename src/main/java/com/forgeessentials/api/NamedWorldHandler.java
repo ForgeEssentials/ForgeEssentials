@@ -30,16 +30,16 @@ public interface NamedWorldHandler
             switch (name)
             {
             case WORLD_NAME_SURFACE:
-                return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
+                return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0);
             case WORLD_NAME_NETHER:
-                return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(-1);
+                return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(-1);
             case WORLD_NAME_END:
-                return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(1);
+                return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(1);
             default:
             {
                 try
                 {
-                    return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(Integer.parseInt(name));
+                    return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(Integer.parseInt(name));
                 }
                 catch (NumberFormatException e)
                 {

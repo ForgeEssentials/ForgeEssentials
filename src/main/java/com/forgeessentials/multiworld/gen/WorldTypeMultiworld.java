@@ -5,6 +5,9 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
 
 import com.forgeessentials.multiworld.WorldServerMultiworld;
+import net.minecraft.world.gen.ChunkGeneratorSettings;
+import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraft.world.gen.layer.GenLayer;
 
 public class WorldTypeMultiworld extends WorldType
 {
@@ -18,12 +21,8 @@ public class WorldTypeMultiworld extends WorldType
         this.world = world;
     }
 
-    /**
-     * Returns generatorVersion.
-     */
-    public int getGeneratorVersion()
-    {
-        return world.getGeneratorVersion();
+    public int getVersion() {
+        return world.getVersion();
     }
 
     public WorldType getWorldTypeForGeneratorVersion(int version)
@@ -39,9 +38,8 @@ public class WorldTypeMultiworld extends WorldType
         return world.isVersioned();
     }
 
-    public int getWorldTypeID()
-    {
-        return world.getWorldTypeID();
+    public int getId() {
+        return world.getId();
     }
 
     public net.minecraft.world.biome.BiomeProvider getBiomeProvider(World world)
@@ -49,7 +47,7 @@ public class WorldTypeMultiworld extends WorldType
         return this.world.getBiomeProvider(world);
     }
 
-    public net.minecraft.world.chunk.IChunkGenerator getChunkGenerator(World world, String generatorOptions)
+    public IChunkGenerator getChunkGenerator(World world, String generatorOptions)
     {
         return this.world.getChunkGenerator(world, generatorOptions);
     }
@@ -118,9 +116,14 @@ public class WorldTypeMultiworld extends WorldType
      * @param chunkProviderSettingsJson The JSON string to use when initializing ChunkProviderSettings.Factory
      * @return A GenLayer that will return ints representing the Biomes to be generated, see GenLayerBiome
      */
-    public net.minecraft.world.gen.layer.GenLayer getBiomeLayer(long worldSeed, net.minecraft.world.gen.layer.GenLayer parentLayer, String chunkProviderSettingsJson)
+    public GenLayer getBiomeLayer(long worldSeed, GenLayer parentLayer, String chunkProviderSettingsJson)
     {
-        return this.world.getBiomeLayer(worldSeed, parentLayer, chunkProviderSettingsJson);
+        return getBiomeLayer(worldSeed, parentLayer, ChunkGeneratorSettings.Factory.jsonToFactory(chunkProviderSettingsJson).build());
+    }
+
+    public GenLayer getBiomeLayer(long worldSeed, GenLayer parentLayer, ChunkGeneratorSettings chunkProviderSettings)
+    {
+        return this.world.getBiomeLayer(worldSeed, parentLayer, chunkProviderSettings);
     }
 
 }

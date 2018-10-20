@@ -4,7 +4,6 @@ import java.lang.reflect.Type;
 
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.data.v2.DataManager.DataType;
 import com.forgeessentials.util.ServerUtil;
@@ -25,7 +24,7 @@ public class BlockType implements DataType<Block>
     @Override
     public Block deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
     {
-        return GameData.getBlockRegistry().getObject(new ResourceLocation(json.getAsString()));
+        return Block.REGISTRY.getObject(new ResourceLocation(json.getAsString()));
     }
 
     @Override

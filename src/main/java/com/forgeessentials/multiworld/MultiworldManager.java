@@ -270,12 +270,12 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 
             WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), new WorldTypeMultiworld(WorldType.parseWorldType(world.worldType)));
             WorldInfo info = new WorldInfo(settings, world.name);
-            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.theProfiler, world);
+            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.profiler, world);
             worldServer.init();
             // Overwrite dimensionId because WorldProviderEnd for example just hardcodes the dimId
             worldServer.provider.setDimension(world.dimensionId);
             worldServer.provider.getDimensionType().setLoadSpawn(false);
-            FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0).provider.getDimensionType().setLoadSpawn(true);
+            FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).provider.getDimensionType().setLoadSpawn(true);
             worldServer.addEventListener(new ServerWorldEventHandler(mcServer, worldServer));
 
             mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());

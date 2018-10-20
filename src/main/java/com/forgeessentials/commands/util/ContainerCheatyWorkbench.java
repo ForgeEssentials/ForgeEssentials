@@ -26,7 +26,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
     @Override
     public void onCraftMatrixChanged(IInventory par1IInventory)
     {
-        craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(craftMatrix, world));
+        craftResult.setInventorySlotContents(0, CraftingManager.findMatchingRecipe(craftMatrix, world).getRecipeOutput());
     }
 
     /**
@@ -99,7 +99,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
                 return null;
             }
 
-            if (var5.stackSize == 0)
+            if (var5.getCount() == 0)
             {
                 var4.putStack((ItemStack) null);
             }
@@ -108,12 +108,12 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
                 var4.onSlotChanged();
             }
 
-            if (var5.stackSize == var3.stackSize)
+            if (var5.getCount() == var3.getCount())
             {
                 return null;
             }
 
-            var4.onPickupFromSlot(par1EntityPlayer, var5);
+            var4.onSlotChanged();
         }
 
         return var3;

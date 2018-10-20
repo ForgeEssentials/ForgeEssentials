@@ -184,7 +184,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 
     public boolean interactWith(JsEntity<?> entity)
     {
-        switch(that.interact(entity.getThat(), null, EnumHand.MAIN_HAND)){
+        switch(that.interactOn(entity.getThat(), EnumHand.MAIN_HAND)){
         case SUCCESS:
         case PASS:
             return true;

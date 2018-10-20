@@ -4,6 +4,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
@@ -79,7 +80,7 @@ public class CommandTestPlayerlogger extends ParserCommandBase
             BlockPos pos = new BlockPos(x, y, z);
             for (int i = 0; i < 300; i++)
                 if (place)
-                    ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(player.world, pos, Blocks.AIR.getDefaultState()), EnumFacing.DOWN);
+                    ForgeEventFactory.onPlayerBlockPlace(player, new BlockSnapshot(player.world, pos, Blocks.AIR.getDefaultState()), EnumFacing.DOWN, EnumHand.MAIN_HAND);
                 else
                     MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(player.world, pos, Blocks.DIRT.getDefaultState(), player));
             place = !place;

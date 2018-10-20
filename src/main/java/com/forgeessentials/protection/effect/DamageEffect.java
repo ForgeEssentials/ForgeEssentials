@@ -17,7 +17,7 @@ public class DamageEffect extends ZoneEffect
     @Override
     public void execute()
     {
-        player.attackEntityFrom(DamageSource.generic, damage);
+        player.attackEntityFrom(DamageSource.GENERIC, damage);
     }
 
 }

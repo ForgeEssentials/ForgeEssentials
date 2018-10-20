@@ -31,7 +31,6 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -136,7 +135,7 @@ public class CommandSellprice extends ParserCommandBase
          * Map<Item, Double> priceMap = new TreeMap<>(new Comparator<Item>() {
          * 
          * @Override public int compare(Item a, Item b) { try { String aId =
-         * GameData.getItemRegistry().getNameForObject(a); String bId = GameData.getItemRegistry().getNameForObject(b);
+         * Item.REGISTRY.getNameForObject(a); String bId = Item.REGISTRY.getNameForObject(b);
          * return aId.compareTo(bId); } catch (Exception e) { return 0; } } });
          */
         Map<String, Double> priceMap = loadPriceList(arguments);
@@ -149,12 +148,10 @@ public class CommandSellprice extends ParserCommandBase
         {
             try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
             {
-                @SuppressWarnings("unchecked")
-                List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
-                for (Iterator<IRecipe> iterator = recipes.iterator(); iterator.hasNext();)
+                for (Iterator<IRecipe> iterator = CraftingManager.REGISTRY.iterator(); iterator.hasNext();)
                 {
                     IRecipe recipe = iterator.next();
-                    if (recipe.getRecipeOutput() == null)
+                    if (recipe.getRecipeOutput() == ItemStack.EMPTY)
                         continue;
                     List<?> recipeItems = getRecipeItems(recipe);
                     if (recipeItems == null)
@@ -197,14 +194,12 @@ public class CommandSellprice extends ParserCommandBase
 
                 @SuppressWarnings("unchecked")
                 Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.instance().getSmeltingList());
-                @SuppressWarnings("unchecked")
-                List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
 
                 boolean changedPrice;
                 do
                 {
                     changedPrice = false;
-                    for (Iterator<IRecipe> iterator = recipes.iterator(); iterator.hasNext();)
+                    for (Iterator<IRecipe> iterator = CraftingManager.REGISTRY.iterator(); iterator.hasNext();)
                     {
                         IRecipe recipe = iterator.next();
                         if (recipe.getRecipeOutput() == null)
@@ -214,7 +209,7 @@ public class CommandSellprice extends ParserCommandBase
                         if (price > 0)
                         {
                             iterator.remove();
-                            price /= recipe.getRecipeOutput().stackSize;
+                            price /= recipe.getRecipeOutput().getCount();
                             Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getRecipeOutput()));
                             if (resultPrice == null || price < resultPrice)
                             {
@@ -250,7 +245,7 @@ public class CommandSellprice extends ParserCommandBase
                         if (inPrice != null)
                         {
                             iterator.remove();
-                            double outPrice = inPrice * recipe.getKey().stackSize / recipe.getValue().stackSize;
+                            double outPrice = inPrice * recipe.getKey().getCount() / recipe.getValue().getCount();
                             Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getValue()));
                             if (resultPrice == null || outPrice < resultPrice)
                             {
@@ -274,7 +269,7 @@ public class CommandSellprice extends ParserCommandBase
 
         writeMap(priceMap, priceFile);
 
-        for (Item item : GameData.getItemRegistry().typeSafeIterable())
+        for (Item item : Item.REGISTRY)
         {
             String id = ServerUtil.getItemName(item);
             if (!priceMapFull.containsKey(id))
@@ -447,16 +442,7 @@ public class CommandSellprice extends ParserCommandBase
 
     public static List<?> getRecipeItems(IRecipe recipe)
     {
-        if (recipe instanceof ShapelessRecipes)
-            return ((ShapelessRecipes) recipe).recipeItems;
-        else if (recipe instanceof ShapedRecipes)
-            return Arrays.asList(((ShapedRecipes) recipe).recipeItems);
-        else if (recipe instanceof ShapedOreRecipe)
-            return Arrays.asList(((ShapedOreRecipe) recipe).getInput());
-        else if (recipe instanceof ShapelessOreRecipe)
-            return ((ShapelessOreRecipe) recipe).getInput();
-        else
-            return null;
+        return recipe.getIngredients();
     }
 
     public static double getRecipePrice(IRecipe recipe, Map<String, Double> priceMap, Map<String, Double> priceMapFull)

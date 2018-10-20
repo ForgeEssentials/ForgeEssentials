@@ -81,7 +81,7 @@ public class Multiworld
 
     public void removeAllPlayersFromWorld()
     {
-        WorldServer overworld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
+        WorldServer overworld = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0);
         for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
             if (player.dimension == dimensionId)
@@ -110,7 +110,7 @@ public class Multiworld
 
     public WorldServer getWorldServer()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimensionId);
+        return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dimensionId);
     }
 
     public int getDimensionId()

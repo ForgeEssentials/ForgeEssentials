@@ -104,7 +104,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void broadcast(ITextComponent message)
     {
-        FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendChatMsg(message);
+        FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(message);
     }
 
     /* ------------------------------------------------------------ */

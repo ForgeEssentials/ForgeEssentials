@@ -35,6 +35,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
@@ -47,8 +48,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
@@ -132,20 +133,20 @@ public class ModuleProtection
     };
 
     private static final DamageSource[] damageByTypes = new DamageSource[] {
-        DamageSource.anvil,
-        DamageSource.cactus,
-        DamageSource.drown,
-        DamageSource.fall,
-        DamageSource.fallingBlock,
-        DamageSource.generic,
-        DamageSource.inFire,
-        DamageSource.inWall,
-        DamageSource.lava,
-        DamageSource.magic,
-        DamageSource.onFire,
-        DamageSource.outOfWorld,
-        DamageSource.starve,
-        DamageSource.wither,
+        DamageSource.ANVIL,
+        DamageSource.CACTUS,
+        DamageSource.DROWN,
+        DamageSource.FALL,
+        DamageSource.FALLING_BLOCK,
+        DamageSource.GENERIC,
+        DamageSource.IN_FIRE,
+        DamageSource.IN_WALL,
+        DamageSource.LAVA,
+        DamageSource.MAGIC,
+        DamageSource.ON_FIRE,
+        DamageSource.OUT_OF_WORLD,
+        DamageSource.STARVE,
+        DamageSource.WITHER,
     };
 
     public static Map<UUID, String> debugModePlayers = new HashMap<>();
@@ -218,8 +219,8 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "(global) Allow forced spawning of mobs (mob-spawners)");
 
-        for (Entry<String, Class<? extends Entity>> e : ( EntityList.NAME_TO_CLASS).entrySet())
-            if (EntityLiving.class.isAssignableFrom(e.getValue()))
+        for (Entry<ResourceLocation, EntityEntry> e : ForgeRegistries.ENTITIES.getEntries())
+            if (EntityLiving.class.isAssignableFrom(e.getValue().getEntityClass()))
             {
                 APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey(), DefaultPermissionLevel.ALL, "");
                 APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + e.getKey(), DefaultPermissionLevel.ALL, "");

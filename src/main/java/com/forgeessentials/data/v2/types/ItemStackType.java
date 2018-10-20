@@ -6,7 +6,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.data.v2.DataManager.DataType;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -43,7 +42,7 @@ public class ItemStackType implements DataType<ItemStack>
     public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context)
     {
         JsonObject result = new JsonObject();
-        result.add(ITEM_ID, new JsonPrimitive(GameData.getItemRegistry().getNameForObject(src.getItem()).toString()));
+        result.add(ITEM_ID, new JsonPrimitive(Item.REGISTRY.getNameForObject(src.getItem()).toString()));
         result.add(STACK_SIZE, new JsonPrimitive(src.stackSize));
         result.add(DAMAGE, new JsonPrimitive(src.getItemDamage()));
         if (src.getTagCompound() != null)
@@ -63,7 +62,7 @@ public class ItemStackType implements DataType<ItemStack>
             int damage = getSafeJsonInt(obj.get(DAMAGE), 0);
 
             // Get and check item
-            Item item = GameData.getItemRegistry().getObject(new ResourceLocation(itemID));
+            Item item = Item.REGISTRY.getObject(new ResourceLocation(itemID));
             if (item == null)
                 return null;
 

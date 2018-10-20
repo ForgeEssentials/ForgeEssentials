@@ -23,7 +23,6 @@ import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -354,7 +353,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             ConfigCategory category = config.getCategory("ItemTables");
             for (Entry<String, Property> entry : category.entrySet())
             {
-                for (Item item : GameData.getItemRegistry().typeSafeIterable())
+                for (Item item : Item.REGISTRY.typeSafeIterable())
                     if (entry.getKey().equals(item.getUnlocalizedName()))
                     {
                         String id = ServerUtil.getItemName(item);

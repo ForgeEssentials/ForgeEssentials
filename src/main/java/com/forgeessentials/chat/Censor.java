@@ -95,7 +95,7 @@ public class Censor extends ConfigLoaderBase
                     filter.blank = Strings.repeat(censorSymbol, m.end() - m.start());
                 message = m.replaceAll(filter.blank);
                 if (player != null && censorSlap != 0)
-                    player.attackEntityFrom(DamageSource.generic, censorSlap);
+                    player.attackEntityFrom(DamageSource.GENERIC, censorSlap);
             }
         }
         return message;
