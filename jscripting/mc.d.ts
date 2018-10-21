@@ -150,6 +150,7 @@ declare namespace mc {
 		chatNotification(message: string): void;
 		chatError(message: string): void;
 		chatWarning(message: string): void;
+		tellRaw(msg: string): void;
 	}
 	
 	interface Server {
@@ -203,9 +204,16 @@ declare namespace mc {
 		 */
 		getCurrentPlayerCount(): int;
 		/**
+		 * Returns an array of players online
+		 */
+		getOnlinePlayers(): string[];
+		/**
 		 * Returns the total number of unique players that have connected to this server
 		 */
 		getUniquePlayerCount(): int;
+		getAllPlayers(): java.util.List;
+		serverLog(msg: string): void;
+		tellRaw(msg: string): void;
 	}
 	
 }
@@ -232,7 +240,7 @@ declare namespace mc.entity {
 		getStepHeight(): float;
 		isOnGround(): boolean;
 		getRidingEntity(): Entity;
-		getRiddenByEntity(): Entity;
+		getRiddenByEntity(): EntityList;
 		getWorld(): mc.world.World;
 		getEntityType(): string;
 	}
@@ -254,11 +262,11 @@ declare namespace mc.entity {
 		asCommandSender(): mc.ICommandSender;
 		getInventory(): mc.item.InventoryPlayer;
 		getBedLocation(dimension: int): fe.Point;
-		getGameType(): net.minecraft.world.WorldSettings.GameType;
+		getGameType(): net.minecraft.world.GameType;
 		/**
 		 * Sets the player's game mode and sends it to them.
 		 */
-		setGameType(gameType: net.minecraft.world.WorldSettings.GameType): void;
+		setGameType(gameType: net.minecraft.world.GameType): void;
 		/**
 		 * Whether the player is currently using an item (by holding down use button)
 		 */
@@ -999,12 +1007,14 @@ declare namespace java.util {
 	}
 	
 }
-declare namespace net.minecraft.world.WorldSettings { 
+declare namespace net.minecraft.world { 
 	class GameType extends java.lang.Enum {
 		static values(): GameType[];
 		static valueOf(arg0: string): GameType;
 		static getByID(arg0: int): GameType;
+		static parseGameTypeWithDefault(arg0: int, arg1: GameType): GameType;
 		static getByName(arg0: string): GameType;
+		static parseGameTypeWithDefault(arg0: string, arg1: GameType): GameType;
 		getID(): int;
 		getName(): string;
 		configurePlayerCapabilities(arg0: net.minecraft.entity.player.PlayerCapabilities): void;
