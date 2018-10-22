@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -247,7 +248,7 @@ public class ForgeEssentials extends ConfigLoaderBase
             @Override
             public IMessage onMessage(Packet0Handshake message, MessageContext ctx)
             {
-                PlayerInfo.get(ctx.getServerHandler().playerEntity).setHasFEClient(true);
+                PlayerInfo.get(ctx.getServerHandler().player).setHasFEClient(true);
                 return null;
             }
         }, Packet0Handshake.class, 0, Side.SERVER);
@@ -395,7 +396,7 @@ public class ForgeEssentials extends ConfigLoaderBase
                 if (matcher.find())
                 {
                     String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.player.getName());
-                    ((EntityPlayerMP) event.player).connection.disconnect(msg);
+                    ((EntityPlayerMP) event.player).connection.disconnect(new TextComponentTranslation(msg));
                 }
             }
 

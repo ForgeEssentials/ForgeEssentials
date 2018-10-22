@@ -74,7 +74,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
         UserIdent ident = UserIdent.get(args[0], sender);
         EntityPlayerMP player = ident.getPlayerMP();
         if (player == null)
-            throw new PlayerNotFoundException();
+            throw new PlayerNotFoundException("commands.generic.player.notFound");
 
         String itemName = args[1];
         int amount = parseInt(args[2]);
@@ -84,12 +84,12 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
         ItemStack itemStack = new ItemStack(item, amount, meta);
 
         int foundStacks = 0;
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
+        for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
         {
-            ItemStack stack = player.inventory.mainInventory[slot];
+            ItemStack stack = player.inventory.mainInventory.get(slot);
             if (stack != null && stack.getItem() == itemStack.getItem()
                     && (itemStack.getItemDamage() == -1 || stack.getItemDamage() == itemStack.getItemDamage()))
-                foundStacks += stack.stackSize;
+                foundStacks += stack.getCount();
         }
 
         if (foundStacks < amount)
@@ -104,13 +104,13 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
         args = Arrays.copyOfRange(args, 4, args.length);
         server.getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player), StringUtils.join(args, " "));
 
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
+        for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
         {
-            ItemStack stack = player.inventory.mainInventory[slot];
+            ItemStack stack = player.inventory.mainInventory.get(slot);
             if (stack != null && stack.getItem() == itemStack.getItem()
                     && (itemStack.getItemDamage() == -1 || stack.getItemDamage() == itemStack.getItemDamage()))
             {
-                int removeCount = Math.min(stack.stackSize, amount);
+                int removeCount = Math.min(stack.getCount(), amount);
                 player.inventory.decrStackSize(slot, removeCount);
                 foundStacks -= removeCount;
                 amount -= removeCount;

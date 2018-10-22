@@ -43,7 +43,7 @@ public class ItemStackType implements DataType<ItemStack>
     {
         JsonObject result = new JsonObject();
         result.add(ITEM_ID, new JsonPrimitive(Item.REGISTRY.getNameForObject(src.getItem()).toString()));
-        result.add(STACK_SIZE, new JsonPrimitive(src.stackSize));
+        result.add(STACK_SIZE, new JsonPrimitive(src.getCount()));
         result.add(DAMAGE, new JsonPrimitive(src.getItemDamage()));
         if (src.getTagCompound() != null)
             result.add("compound", context.serialize(src.getTagCompound()));
