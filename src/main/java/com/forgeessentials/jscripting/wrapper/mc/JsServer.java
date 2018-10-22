@@ -218,7 +218,7 @@ public class JsServer
         try
         {    
         	ITextComponent component = ITextComponent.Serializer.jsonToComponent(msg);
-            server.getPlayerList().sendChatMsg(component);
+            server.getPlayerList().sendMessage(component);
         }
         catch (JsonParseException jsonparseexception)
         {
