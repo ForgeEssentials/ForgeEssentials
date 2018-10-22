@@ -64,7 +64,7 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
 
         ItemStack newStack = stack.copy();
         if (stackSize > 0)
-            newStack.stackSize = stackSize;
+            newStack.setCount(stackSize);
 
         PlayerUtil.give(player, newStack);
     }

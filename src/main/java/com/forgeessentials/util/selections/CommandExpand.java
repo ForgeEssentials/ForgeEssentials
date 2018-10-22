@@ -37,9 +37,9 @@ public class CommandExpand extends ForgeEssentialsCommandBase
 
         if (args.length == 1)
         {
-            int x = Math.round((float) player.getLookVec().xCoord);
-            int y = Math.round((float) player.getLookVec().yCoord);
-            int z = Math.round((float) player.getLookVec().zCoord);
+            int x = Math.round((float) player.getLookVec().x);
+            int y = Math.round((float) player.getLookVec().y);
+            int z = Math.round((float) player.getLookVec().z);
             int expandby = Integer.decode(args[0]);
 
             if (x == -1)

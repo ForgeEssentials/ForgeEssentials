@@ -48,7 +48,7 @@ public class CommandReply implements IrcCommand
 
         ICommandSender target = com.forgeessentials.chat.command.CommandReply.getReplyTarget(sender);
         if (target == null)
-            throw new PlayerNotFoundException();
+            throw new PlayerNotFoundException("commands.generic.player.notFound");
 
         if (target == sender)
             throw new PlayerNotFoundException("commands.message.sameTarget", new Object[0]);
