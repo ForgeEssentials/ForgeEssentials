@@ -15,19 +15,17 @@ public class FEGUIFactory implements IModGuiFactory
     }
 
     @Override
-    public Class<? extends GuiScreen> mainConfigGuiClass()
-    {
-        return FEConfigGUI.class;
+    public boolean hasConfigGui() {
+        return true;
+    }
+
+    @Override
+    public GuiScreen createConfigGui(GuiScreen guiScreen) {
+        return new FEConfigGUI(guiScreen);
     }
 
     @Override
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
-    {
-        return null;
-    }
-
-    @Override
-    public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
     {
         return null;
     }

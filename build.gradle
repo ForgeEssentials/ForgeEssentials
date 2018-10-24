@@ -430,9 +430,3 @@ compileJava {
 	        '**/com/forgeessentials/multiworld/**',
 	]
 }
-
-compileClientJava {
-    excludes = [
-            '**/*'
-    ]
-}
