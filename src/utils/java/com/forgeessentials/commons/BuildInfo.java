@@ -37,7 +37,7 @@ public abstract class BuildInfo
 
     public static final String BASE_VERSION = "_BASEVERSION_";
 
-    public static final String DEPENDENCIES = "required-after:Forge";
+    public static final String DEPENDENCIES = "required-after:forge";
 
     public static void startVersionChecks()
     {
