@@ -290,7 +290,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         if (!isConnected())
             return;
         // ignore messages to jtv
-        if (twitchMode && user.getNick() == "jtv")
+        if (twitchMode && user.getNick().equals("jtv"))
             return;
         user.send().message(message);
     }
@@ -472,7 +472,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         }
         else
         {
-            if (twitchMode && (event.getUser().getNick() == "jtv"))
+            if (twitchMode && (event.getUser().getNick().equals("jtv")))
                 return;
             sendMessage(event.getUser(), String.format("Hello %s, use %%help for commands", event.getUser().getNick()));
         }
@@ -511,7 +511,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         }
         else
         {
-            LoggingHandler.felog.warn(String.format("The IRC bot was kicked from %s by %s: ", event.getChannel().getName(), event.getUser().getNick(),
+            LoggingHandler.felog.warn(String.format("The IRC bot was kicked from %s by %s: %s", event.getChannel().getName(), event.getUser().getNick(),
                     event.getReason()));
         }
     }
@@ -521,7 +521,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     {
         if (!showEvents || event.getUser() == bot.getUserBot())
             return;
-        mcSendMessage(String.format("%s left the channel %s: %s", event.getUser().getNick(), event.getReason()));
+        mcSendMessage(String.format("%s left the channel: %s", event.getUser().getNick(), event.getReason()));
     }
 
     @Override

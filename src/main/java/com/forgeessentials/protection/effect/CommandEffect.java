@@ -42,7 +42,7 @@ public class CommandEffect extends ZoneEffect
             ICommand mcCommand = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(cmdName);
             if (mcCommand == null)
             {
-                LoggingHandler.felog.error(String.format("Could not find command for WorldBorder effect: ", command));
+                LoggingHandler.felog.error(String.format("Could not find command for WorldBorder effect: %s", command));
                 return;
             }
             mcCommand.execute(FMLCommonHandler.instance().getMinecraftServerInstance(), new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), args);

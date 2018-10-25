@@ -43,6 +43,7 @@ public class ModuleWorldBorder extends ServerEventHandler
 
     private static ModuleWorldBorder instance;
 
+    //TODO: Consider changing the key type to World so the code is not tightly coupled to internal Minecraft logic
     private Map<WorldServer, WorldBorder> borders = new HashMap<>();
 
     public ModuleWorldBorder()

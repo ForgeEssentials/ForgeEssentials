@@ -117,7 +117,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
                     break;
                 }
 
-                if (var10.getStackInSlot(slot).getUnlocalizedName() == var7 && var10.getStackInSlot(slot).getItemDamage() == var8)
+                if (var10.getStackInSlot(slot).getUnlocalizedName().equals(var7) && var10.getStackInSlot(slot).getItemDamage() == var8)
                 {
                     if (var10.getStackInSlot(slot).getMaxStackSize() - var10.getStackInSlot(slot).stackSize >= var9)
                     {
@@ -143,7 +143,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
                     break;
                 }
 
-                if (var13.getStackInSlot(slot).getUnlocalizedName() == var7 && var13.getStackInSlot(slot).getItemDamage() == var8)
+                if (var13.getStackInSlot(slot).getUnlocalizedName().equals(var7) && var13.getStackInSlot(slot).getItemDamage() == var8)
                 {
                     if (var13.getStackInSlot(slot).getMaxStackSize() - var13.getStackInSlot(slot).stackSize >= var9)
                     {
@@ -169,7 +169,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
                     break;
                 }
 
-                if (var14.getStackInSlot(slot).getUnlocalizedName() == var7 && var14.getStackInSlot(slot).getItemDamage() == var8)
+                if (var14.getStackInSlot(slot).getUnlocalizedName().equals(var7) && var14.getStackInSlot(slot).getItemDamage() == var8)
                 {
                     if (var14.getStackInSlot(slot).getMaxStackSize() - var14.getStackInSlot(slot).stackSize >= var9)
                     {
@@ -196,7 +196,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
                     break;
                 }
 
-                if (var12.getStackInSlot(slot).getUnlocalizedName() == var7 && var12.getStackInSlot(slot).getItemDamage() == var8)
+                if (var12.getStackInSlot(slot).getUnlocalizedName().equals(var7) && var12.getStackInSlot(slot).getItemDamage() == var8)
                 {
                     if (var12.getStackInSlot(slot).getMaxStackSize() - var12.getStackInSlot(slot).stackSize >= var9)
                     {

@@ -171,7 +171,7 @@ public class CommandMultiworld extends ParserCommandBase
         arguments.checkPermission(ModuleMultiworld.PERM_DELETE);
         Multiworld world = parseWorld(arguments);
 
-        if (world.getWorldServer().getWorldType().getName() != "multiworld")
+        if (!world.getWorldServer().getWorldType().getName().equals("multiworld"))
         {
             arguments.error("World " + world.getName() + " is not a FE multiworld and cannot be deleted!");
             return;

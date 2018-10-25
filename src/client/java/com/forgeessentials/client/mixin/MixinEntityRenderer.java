@@ -14,6 +14,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,7 +24,7 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class MixinEntityRenderer implements IResourceManagerReloadListener
 {
 
-    @Shadow
+    @Final
     private Minecraft mc;
 
     @Shadow

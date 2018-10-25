@@ -23,7 +23,7 @@ public class AuthNetHandler implements IMessageHandler<Packet6AuthLogin, IMessag
         switch(message.mode)
         {
         case 1:
-            if (message.hash != "")
+            if (!message.hash.isEmpty())
             {
                 if (PasswordManager.hasSession(UserIdent.get(ctx.getServerHandler().playerEntity).getUuid(), UUID.fromString(message.hash)))
                 {
