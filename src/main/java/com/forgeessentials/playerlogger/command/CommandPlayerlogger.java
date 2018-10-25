@@ -270,8 +270,8 @@ public class CommandPlayerlogger extends ParserCommandBase
 
     public static void showStats(ICommandSender sender)
     {
-        PlayerLogger logger = ModulePlayerLogger.getLogger();
-        synchronized (logger)
+        PlayerLogger logger;
+        synchronized (logger = ModulePlayerLogger.getLogger())
         {
             TypedQuery<Long> qActionCount = logger.buildCountQuery(Action.class, null, null);
             long actionCount = qActionCount.getSingleResult();

@@ -334,7 +334,7 @@ public class ModuleMapper extends ConfigLoaderBase
             }
             catch (IOException e)
             {
-                LoggingHandler.felog.warn(String.format("Error reading mapper cache file %s"));
+                LoggingHandler.felog.warn(String.format("Error reading mapper cache file %s", cacheFile));
             }
         }
         return renderChunk(world, chunkX, chunkZ);

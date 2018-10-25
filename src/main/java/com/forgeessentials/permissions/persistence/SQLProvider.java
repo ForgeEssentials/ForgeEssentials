@@ -31,6 +31,7 @@ import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Throwables;
 
+//FIXME: This class should be modified to use PreparedStatements instead of dynamic sql
 public class SQLProvider extends ZonePersistenceProvider
 {
 

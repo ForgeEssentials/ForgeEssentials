@@ -79,7 +79,7 @@ public class JsWarpPoint extends JsWrapper<WarpPoint>
 
     public void setDimension(int dim)
     {
-        this.setDimension(dim);
+        that.setDimension(dim);
     }
 
     public void setX(double value)

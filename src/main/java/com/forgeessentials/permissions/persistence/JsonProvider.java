@@ -136,7 +136,7 @@ public class JsonProvider extends ZonePersistenceProvider
             }
             catch (IOException e)
             {
-                LoggingHandler.felog.error(String.format("Failed to load world file &s: &s", file.getName(), e.getMessage()));
+                LoggingHandler.felog.error(String.format("Failed to load world file %s: %s", file.getName(), e.getMessage()));
                 return;
             }
             WorldZone wz = new WorldZone(serverZone, wzd.dimId, wzd.id);
