@@ -179,7 +179,14 @@ public class ClientProxy extends CommonProxy
     public void sendClientHandshake()
     {
         if (ForgeEssentialsClient.serverHasFE())
+        {
+            ForgeEssentialsClient.feclientlog.info("Sending Handshake Packet to FE Server");
             NetworkUtils.netHandler.sendToServer(new Packet0Handshake());
+        }
+        else
+        {
+            ForgeEssentialsClient.feclientlog.warn("Server Does not have FE, can't send initialization Packet");
+        }
     }
 
     public static void resendHandshake()
