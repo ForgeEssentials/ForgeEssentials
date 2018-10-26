@@ -40,7 +40,7 @@ public class ForgeEssentialsClient
     {
         if (side.equals(Side.SERVER))
         {
-            if (map.containsKey("ForgeEssentials"))
+            if (map.containsKey("forgeessentials"))
             {
                 serverHasFE = true;
                 feclientlog.info("The server is running ForgeEssentials.");
