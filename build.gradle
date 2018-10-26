@@ -56,6 +56,11 @@ repositories {
 		name = "sponge"
 		url = "http://repo.spongepowered.org/maven/"
 	}
+
+	maven {
+		name = "CurseForge"
+		url = "https://minecraft.curseforge.com/api/maven/"
+	}
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -160,8 +165,8 @@ dependencies {
 	// WorldEdit
     compile "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
     deobfCompile "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5"
-    compile files('lib/Baubles-1.12-1.5.2-deobf.jar')
-	includeMod files('lib/worldedit-forge-mc1.12-6.1.8-dist.jar')
+    compile "baubles:Baubles:1.12:1.5.2"
+	includeMod "worldedit:worldedit-forge-mc1.12:6.1.8:dist"
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
     mavenDeps "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
 
