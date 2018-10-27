@@ -157,16 +157,19 @@ public class MethodInjector implements Comparable<MethodInjector>
                 }
                 for (AbstractInsnNode point : points)
                 {
-                    log.info(String.format("Injecting %s.%s into %s.%s at %s",
-                            ASMUtil.substringAfterLast(ASMUtil.javaName(injectorClass.name), "."), injector.name,
-                            ASMUtil.substringAfterLast(ASMUtil.javaName(targetClass.name), "."), target.name, injectionPoint.toString()));
-                    modified |= inject(target, point);
+                    if (point != null) {
+                        log.info(String.format("Injecting %s.%s into %s.%s at %s",
+                                ASMUtil.substringAfterLast(ASMUtil.javaName(injectorClass.name), "."), injector.name,
+                                ASMUtil.substringAfterLast(ASMUtil.javaName(targetClass.name), "."), target.name, injectionPoint.toString()));
+                        modified |= inject(target, point);
+                    }
                 }
             }
             return modified;
         }
         catch (RuntimeException e)
         {
+            log.error("RuntimeException Encountered During Injection", e);
             throw new MethodInjectionError(this, e);
         }
     }
