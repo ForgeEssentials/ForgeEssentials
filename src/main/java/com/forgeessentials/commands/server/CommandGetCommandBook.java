@@ -92,10 +92,12 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
             for (int i = 0; i < sender.inventory.mainInventory.size(); i++)
             {
                 ItemStack e = sender.inventory.mainInventory.get(i);
-                if (e != null && e.hasTagCompound() && e.getTagCompound().hasKey("title") && e.getTagCompound().hasKey("author")
-                        && e.getTagCompound().getString("title").equals("CommandBook") && e.getTagCompound().getString("author").equals("ForgeEssentials"))
+                if (e != ItemStack.EMPTY && e.hasTagCompound() && e.getTagCompound().hasKey("title")
+                        && e.getTagCompound().hasKey("author")
+                        && e.getTagCompound().getString("title").equals("CommandBook")
+                        && e.getTagCompound().getString("author").equals("ForgeEssentials"))
                 {
-                    sender.inventory.setInventorySlotContents(i, null);
+                    sender.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
                 }
             }
         }

@@ -73,11 +73,10 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
     {
-        EntityPlayerMP player = sender;
-        player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.world, player.getPosition()));
         lastPlayer = new WeakReference<>(player);
+        player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.world, player.getPosition()));
     }
 
 }
