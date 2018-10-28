@@ -73,8 +73,7 @@ public class CommandDechant extends ParserCommandBase
         while (Enchantment.REGISTRY.iterator().hasNext())
         {
             Enchantment enchantment = Enchantment.REGISTRY.iterator().next();
-            //FIXME: enchantments.containsKey(Integer) will always return false since the key is of type Enchantment
-            if (enchantment != null && enchantments.containsKey(Enchantment.REGISTRY.getIDForObject(enchantment)))
+            if (enchantment != null && enchantments.containsKey(enchantment))
             {
                 String name = I18n.translateToLocal(enchantment.getName()).replaceAll(" ", "");
                 validEnchantmentNames.add(name);
@@ -97,8 +96,7 @@ public class CommandDechant extends ParserCommandBase
             Enchantment enchantment = validEnchantments.get(name.toLowerCase());
             if (enchantment == null)
                 throw new TranslatedCommandException("Invalid enchantment name %s!", name);
-            //FIXME: enchantments will never contain a key of type Integer
-            enchantments.remove(Enchantment.REGISTRY.getIDForObject(enchantment));
+            enchantments.remove(enchantment);
         }
         EnchantmentHelper.setEnchantments(enchantments, stack);
     }
