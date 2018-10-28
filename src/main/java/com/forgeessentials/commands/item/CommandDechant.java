@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -70,9 +71,10 @@ public class CommandDechant extends ParserCommandBase
 
         List<String> validEnchantmentNames = new ArrayList<>();
         Map<String, Enchantment> validEnchantments = new HashMap<>();
-        while (Enchantment.REGISTRY.iterator().hasNext())
+        Iterator<Enchantment> itor = Enchantment.REGISTRY.iterator();
+        while (itor.hasNext())
         {
-            Enchantment enchantment = Enchantment.REGISTRY.iterator().next();
+            Enchantment enchantment = itor.next();
             if (enchantment != null && enchantments.containsKey(enchantment))
             {
                 String name = I18n.translateToLocal(enchantment.getName()).replaceAll(" ", "");
