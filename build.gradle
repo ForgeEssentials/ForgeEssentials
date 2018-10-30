@@ -429,9 +429,3 @@ publishing {
 task publishAndClean(type: Delete, dependsOn: "publish") {
     delete javadocJar, sourceJar
 }
-
-compileJava {
-	excludes = [
-	        '**/com/forgeessentials/multiworld/**',
-	]
-}

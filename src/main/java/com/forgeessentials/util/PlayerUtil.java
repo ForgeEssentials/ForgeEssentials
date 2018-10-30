@@ -33,7 +33,7 @@ public abstract class PlayerUtil
             if (newItems != null && slotIdx < newItems.size())
                 player.inventory.setInventorySlotContents(slotIdx, newItems.get(slotIdx));
             else
-                player.inventory.setInventorySlotContents(slotIdx, null);
+                player.inventory.setInventorySlotContents(slotIdx, ItemStack.EMPTY);
         }
         return oldItems;
     }

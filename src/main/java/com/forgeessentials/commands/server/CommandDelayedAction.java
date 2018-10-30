@@ -21,7 +21,12 @@ public class CommandDelayedAction extends ParserCommandBase
     @Override
     public String getName()
     {
-        return "delayedaction";
+        return "fedelayedaction";
+    }
+
+    @Override
+    public String[] getDefaultAliases() {
+        return new String[]{"delayedaction"};
     }
 
     @Override
