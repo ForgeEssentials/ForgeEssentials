@@ -35,7 +35,7 @@ public abstract class MixinCraftingManager
         IRecipe irecipe;
         do {
             if (!var2.hasNext()) {
-                return null;
+                return ItemStack.EMPTY;
             }
 
             irecipe = (IRecipe)var2.next();
@@ -46,6 +46,6 @@ public abstract class MixinCraftingManager
             return result;
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 }
