@@ -16,6 +16,7 @@ import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
 import com.forgeessentials.multiworld.MultiworldException;
 import com.forgeessentials.multiworld.MultiworldManager;
+import com.forgeessentials.multiworld.WorldServerMultiworld;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandMultiworld extends ParserCommandBase
@@ -171,7 +172,7 @@ public class CommandMultiworld extends ParserCommandBase
         arguments.checkPermission(ModuleMultiworld.PERM_DELETE);
         Multiworld world = parseWorld(arguments);
 
-        if (!world.getWorldServer().getWorldType().getName().equals("multiworld"))
+        if (!(world.getWorldServer() instanceof WorldServerMultiworld))
         {
             arguments.error("World " + world.getName() + " is not a FE multiworld and cannot be deleted!");
             return;

@@ -44,7 +44,6 @@ import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.multiworld.MultiworldException.Type;
-import com.forgeessentials.multiworld.gen.WorldTypeMultiworld;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Throwables;
@@ -268,7 +267,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
 
-            WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), new WorldTypeMultiworld(WorldType.parseWorldType(world.worldType)));
+            WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), WorldType.parseWorldType(world.worldType));
             WorldInfo info = new WorldInfo(settings, world.name);
             WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.theProfiler, world);
             worldServer.init();
