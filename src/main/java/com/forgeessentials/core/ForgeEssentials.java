@@ -434,7 +434,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         if (logCommandsToConsole)
         {
-            LoggingHandler.felog.info(String.format("Player \"%s\" used command \"/%s %s\"", event.getCommand().getName(),
+            LoggingHandler.felog.info(String.format("Player \"%s\" used command \"/%s %s\"", event.getSender().getName(),
                     event.getCommand().getName(), StringUtils.join(event.getParameters(), " ")));
         }
     }
