@@ -28,6 +28,7 @@ import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.annotations.Expose;
 
 public class Grave implements Loadable
@@ -100,8 +101,7 @@ public class Grave implements Loadable
         if (blockName != null && !blockName.isEmpty())
         {
             Block b = Block.REGISTRY.getObject(new ResourceLocation(blockName));
-            if (b != null)
-                this.blockState = b.getDefaultState();
+            this.blockState = b.getDefaultState();
         }
 
         point = new WorldPoint(player);
@@ -109,13 +109,15 @@ public class Grave implements Loadable
         if (hasFencePost)
         {
             player.world.setBlockState(point.getBlockPos(), Blocks.OAK_FENCE.getDefaultState());
+            LoggingHandler.felog.debug(String.format("Placing graveFence for player %s at %s", player.getName(), point.getBlockPos()));
             point.setY(point.getY() + 1);
         }
-        point.getWorld().setBlockState(point.getBlockPos(), blockState);
-        if (blockState == block)
+        player.world.setBlockState(point.getBlockPos(), blockState);
+        if (blockState.getBlock() == block)
         {
             TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
-            point.getWorld().setTileEntity(point.getBlockPos(), skull);
+            player.world.setTileEntity(point.getBlockPos(), skull);
+            LoggingHandler.felog.debug(String.format("Placing playerHead for player %s at %s", player.getName(), point.getBlockPos()));
         }
     }
 
@@ -144,13 +146,13 @@ public class Grave implements Loadable
         }
 
         IBlockState graveBlock = point.getWorld().getBlockState(point.getBlockPos());
-        if (graveBlock != blockState && graveBlock != Blocks.CHEST)
+        if (graveBlock != blockState && graveBlock.getBlock() != Blocks.CHEST)
         {
             // Grave is destroyed - repair if protection is still active
             if (isProtected)
             {
                 point.getWorld().setBlockState(point.getBlockPos(), blockState);
-                if (blockState == block)
+                if (blockState.getBlock() == block)
                 {
                     TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
                     point.getWorld().setTileEntity(point.getBlockPos(), skull);
@@ -227,7 +229,7 @@ public class Grave implements Loadable
     {
         for (ItemStack is : inventory)
         {
-            if (is == null || is.getItem() == null)
+            if (is == ItemStack.EMPTY)
                 continue;
             EntityItem entity = new EntityItem(point.getWorld(), point.getX(), point.getY(), point.getZ(), is);
             point.getWorld().spawnEntity(entity);
