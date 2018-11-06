@@ -18,11 +18,12 @@
         "suppressImplicitAnyIndexErrors": true,
         "outDir": "./"
     },
-    "filesGlob": [
-        "mc.d.ts",
-        "**/*.d.ts",
-        "**/*.ts"
+    "include": [
+      "mc.d.ts",
+      "**/*.d.ts",
+      "**/*.ts"
     ],
+    "exclude": [],
     "compileOnSave": true,
     "buildOnSave": false,
     "atom": {
