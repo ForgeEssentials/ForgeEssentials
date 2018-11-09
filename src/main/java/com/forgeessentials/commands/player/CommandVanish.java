@@ -9,7 +9,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketEntityStatus;
+import net.minecraft.network.play.server.SPacketSpawnPlayer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -116,22 +116,18 @@ public class CommandVanish extends ParserCommandBase
         if (vanish)
         {
             vanishedPlayers.add(ident);
-            SPacketEntityStatus packet = new SPacketEntityStatus(player, (byte) 3);
-            for (EntityPlayer otherPlayer : players)
-                if (otherPlayer != player)
-                    ((EntityPlayerMP)otherPlayer).connection.sendPacket(packet);
+            EntityTrackerEntry tracker = world.getEntityTracker().trackedEntityHashTable.lookup(player.getEntityId());
+
+            Set<EntityPlayerMP> tracked = new HashSet<>(tracker.trackingPlayers);
+            world.getEntityTracker().untrack(player);
+            tracked.forEach(tP -> {
+                player.connection.sendPacket(new SPacketSpawnPlayer(tP));
+            });
         }
         else
         {
             vanishedPlayers.remove(ident);
-            EntityTrackerEntry tracker = world.getEntityTracker().trackedEntityHashTable.lookup(player.getEntityId());
-            // ((EntityTrackerHelper) world.getEntityTracker()).getEntityTrackerEntry(player);
-            for (EntityPlayer otherPlayer : players)
-                if (otherPlayer != player)
-                {
-                    tracker.trackingPlayers.remove(otherPlayer);
-                    tracker.updatePlayerEntity((EntityPlayerMP) otherPlayer);
-                }
+            world.getEntityTracker().track(player);
         }
     }
 
