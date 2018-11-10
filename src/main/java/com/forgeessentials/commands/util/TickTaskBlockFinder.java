@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
@@ -54,28 +55,32 @@ public class TickTaskBlockFinder implements TickTask
         this.centerZ = (int) player.posZ;
         world = player.world;
 
-        block = Block.REGISTRY.getObject(new ResourceLocation(id));
-        if (block == null)
+        if (id.equalsIgnoreCase("air")) {
+            block = Blocks.AIR;
+        }
+        else
         {
+            int intId = -1;
             try
             {
-                int intId = Integer.parseInt(id);
+                intId = Integer.parseInt(id);
                 block = Block.REGISTRY.getObjectById(intId);
             }
             catch (NumberFormatException e)
             {
-                /* ignore */
+                block = Block.REGISTRY.getObject(new ResourceLocation(id));
             }
-        }
-        if (block == null)
-        {
-            msg("Error: " + id + ":" + meta + " unkown.");
-            return;
+
+            if (block == Blocks.AIR && intId != 0)
+            {
+                msg("Error: " + id + ":" + meta + " unkown.");
+                return;
+            }
         }
         blockState = block.getStateFromMeta(meta);
 
         stack = new ItemStack(block, 1, meta);
-        blockName = stack.getItem() != null ? stack.getDisplayName() : ServerUtil.getBlockName(block);
+        blockName = !stack.isEmpty() ? stack.getDisplayName() : ServerUtil.getBlockName(block);
 
         msg("Start the hunt for " + blockName);
         TaskRegistry.schedule(this);
@@ -90,7 +95,7 @@ public class TickTaskBlockFinder implements TickTask
             speedcounter++;
 
             int y = world.getActualHeight();
-            while (results.size() >= targetAmount && y >= 0)
+            while (results.size() < targetAmount && y >= 0)
             {
                 BlockPos pos = new BlockPos(centerX + i, y, centerZ + j);
                 IBlockState b = world.getBlockState(pos);
@@ -134,8 +139,9 @@ public class TickTaskBlockFinder implements TickTask
             }
             else
             {
-                msg("Stoped looking for " + blockName);
+                msg("Stopped looking for " + blockName);
             }
+            return true;
         }
         return false;
     }
