@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -55,13 +55,13 @@ public class TickTaskBlockFinder implements TickTask
         this.centerZ = (int) player.posZ;
         world = player.world;
 
-        block = GameData.getBlockRegistry().getObject(new ResourceLocation(id));
+        block = Block.REGISTRY.getObject(new ResourceLocation(id));
         if (block == null)
         {
             try
             {
                 int intId = Integer.parseInt(id);
-                block = GameData.getBlockRegistry().getRaw(intId);
+                block = Block.REGISTRY.getObjectById(intId);
             }
             catch (NumberFormatException e)
             {
@@ -91,7 +91,7 @@ public class TickTaskBlockFinder implements TickTask
             speedcounter++;
 
             int y = world.getActualHeight();
-            while (results.size() >= targetAmount && y >= 0)
+            while (results.size() < targetAmount && y >= 0)
             {
                 BlockPos pos = new BlockPos(centerX + i, y, centerZ + j);
                 IBlockState b = world.getBlockState(pos);
@@ -135,8 +135,9 @@ public class TickTaskBlockFinder implements TickTask
             }
             else
             {
-                msg("Stoped looking for " + blockName);
+                msg("Stopped looking for " + blockName);
             }
+            return true;
         }
         return false;
     }
