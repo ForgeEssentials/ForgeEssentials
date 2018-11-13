@@ -1,5 +1,7 @@
 package com.forgeessentials.multiworld;
 
+import net.minecraft.crash.CrashReport;
+import net.minecraft.util.ReportedException;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.core.ForgeEssentials;
@@ -11,6 +13,7 @@ import com.forgeessentials.multiworld.command.CommandMultiworldTeleport;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -35,11 +38,18 @@ public class ModuleMultiworld extends ConfigLoaderBase
     @SubscribeEvent
     public void postLoad(FEModulePostInitEvent e)
     {
-        multiworldManager.loadWorldProviders();
-        multiworldManager.loadWorldTypes();
+        try
+        {
+            multiworldManager.loadWorldProviders();
+            multiworldManager.loadWorldTypes();
 
-        FECommandManager.registerCommand(new CommandMultiworld());
-        FECommandManager.registerCommand(new CommandMultiworldTeleport());
+            FECommandManager.registerCommand(new CommandMultiworld());
+            FECommandManager.registerCommand(new CommandMultiworldTeleport());
+        } catch (java.lang.NoSuchMethodError noSuchMethodError) {
+            CrashReport report = CrashReport.makeCrashReport(noSuchMethodError,"MultiWorld Unable to Load, please update Forge or Disable MultiWorld in the main.cfg!");
+            report.makeCategory("MultiWorld");
+            throw new ReportedException(report);
+        }
     }
 
     @SubscribeEvent
