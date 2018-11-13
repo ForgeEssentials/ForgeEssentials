@@ -1,9 +1,12 @@
 package com.forgeessentials.teleport;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer.SleepResult;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -17,6 +20,7 @@ import com.forgeessentials.teleport.portal.CommandPortal;
 import com.forgeessentials.teleport.portal.PortalManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 @FEModule(name = "Teleport", parentMod = ForgeEssentials.class)
 public class TeleportModule extends ConfigLoaderBase
@@ -106,6 +110,16 @@ public class TeleportModule extends ConfigLoaderBase
         APIRegistry.perms.registerPermission(PERM_WARP_ADMIN, DefaultPermissionLevel.OP, "Administer warps");
 
         APIRegistry.perms.registerPermission(PERM_JUMP_TOOL, DefaultPermissionLevel.OP, "Allow jumping with a tool (default compass)");
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void playerSleepInBed(PlayerSleepInBedEvent e) {
+        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(e.getEntityPlayer(), e.getPos()) || e.getEntityPlayer().isSneaking())
+        {
+            e.getEntityPlayer().setSpawnPoint(e.getPos(), false);
+            ChatOutputHandler.chatConfirmation(e.getEntityPlayer(), "Bed Position Set!");
+            e.setResult(SleepResult.OTHER_PROBLEM);
+        }
     }
 
     @Override
