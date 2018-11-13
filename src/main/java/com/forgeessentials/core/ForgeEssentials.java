@@ -347,10 +347,15 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverStopped(FMLServerStoppedEvent e)
     {
-        mcStats.stop();
-        APIRegistry.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
-        FECommandManager.clearRegisteredCommands();
-        Translator.save();
+        try
+        {
+            mcStats.stop();
+            APIRegistry.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
+            FECommandManager.clearRegisteredCommands();
+            Translator.save();
+        } catch (RuntimeException ex) {
+            LoggingHandler.felog.fatal("Caught Runtime Exception During Server Stop event! Suppressing Fire!", ex);
+        }
     }
 
     protected void registerPermissions()
