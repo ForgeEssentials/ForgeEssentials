@@ -1,4 +1,9 @@
-ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentials.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentials)
+# This is an unsupported Version of FE designed to work with older versions of Forge.  This a build it yourself release!
+
+**No support will be provided for issues encountered on this release and it is only provided**
+**so people who can't update forge for some reason or another can still use FE**
+
+# ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentials.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentials)
 ===================
 
 The code on this branch is for Minecraft 1.12.2.

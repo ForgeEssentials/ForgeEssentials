@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.ServerWorldEventHandler;
@@ -49,8 +48,6 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
-
-import static net.minecraftforge.common.DimensionManager.getRegisteredDimensions;
 
 /**
  * 
@@ -247,7 +244,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 .setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD, world.getName());
 
             // Register the dimension
-            DimensionManager.registerDimension(world.dimensionId, DimensionManager.getProviderType(world.providerId));
+            DimensionManager.registerDimension(world.dimensionId, DimensionType.OVERWORLD);
             worldsByDim.put(world.dimensionId, world);
 
         // Allow the world to unload
@@ -507,21 +504,24 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     {
         try
         {
-            Map<DimensionType, IntSortedSet> loadedProviders = getRegisteredDimensions();
-            for (DimensionType provider : loadedProviders.keySet())
+            Field f_providers = DimensionManager.class.getDeclaredField("dimensions");
+            f_providers.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            Hashtable<Integer, DimensionType> loadedProviders = (Hashtable<Integer, DimensionType>) f_providers.get(null);
+            for (Entry<Integer, DimensionType> provider : loadedProviders.entrySet())
             {
                 // skip the default providers as these are aliased as 'normal',
                 // 'nether' and 'end'
-                if (provider.getId() >= -1 && provider.getId() <= 1)
+                if (provider.getKey() >= -1 && provider.getKey() <= 1)
                     continue;
 
-                worldProviderClasses.put(provider.getName(), provider.getId());
+                worldProviderClasses.put(provider.getValue().getName(), provider.getKey());
             }
             worldProviderClasses.put(PROVIDER_NORMAL, 0);
             worldProviderClasses.put(PROVIDER_HELL, 1);
             worldProviderClasses.put(PROVIDER_END, -1);
         }
-        catch (SecurityException | IllegalArgumentException e)
+        catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
         {
             e.printStackTrace();
         }
