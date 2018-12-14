@@ -124,6 +124,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         Map<String, Multiworld> loadedWorlds = DataManager.getInstance().loadAll(Multiworld.class);
         for (Multiworld world : loadedWorlds.values())
         {
+            if (world.generatorOptions == null) {
+                world.generatorOptions = "";
+            }
+
             worlds.put(world.getName(), world);
             try
             {
