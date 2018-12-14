@@ -271,6 +271,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
 
             WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), WorldType.parseWorldType(world.worldType));
+            settings.setGeneratorOptions(world.generatorOptions);
             WorldInfo info = new WorldInfo(settings, world.name);
             WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.profiler, world);
             worldServer.init();
