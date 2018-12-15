@@ -12,7 +12,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.UserIdent.NpcUserIdent;
 import com.forgeessentials.core.misc.PermissionManager;
+import com.forgeessentials.util.DoAsCommandSender;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 @Mixin(CommandHandler.class)
@@ -92,9 +95,29 @@ public class MixinCommandHandler
     )
     private boolean hasPermission(ICommand command, MinecraftServer server, ICommandSender sender)
     {
+        String node = PermissionManager.getCommandPermission(command);
+        if (sender instanceof DoAsCommandSender) {
+            if (!((DoAsCommandSender) sender).getIdent().isPlayer()) {
+                if (((DoAsCommandSender) sender).getIdent().isNpc()) {
+                    return PermissionAPI.hasPermission(((DoAsCommandSender) sender).getIdent().getGameProfile(), node, null);
+                }
+                else
+                {
+                    return true;
+                }
+            } else {
+                return PermissionAPI.hasPermission(((DoAsCommandSender) sender).getIdent().getPlayer(), node);
+            }
+        }
         if (sender instanceof MinecraftServer || sender instanceof CommandBlockBaseLogic)
             return true;
-        return PermissionAPI.hasPermission((EntityPlayer) sender, PermissionManager.getCommandPermission(command));
+        if (sender instanceof EntityPlayer)
+        {
+            return PermissionAPI.hasPermission((EntityPlayer) sender, node);
+        } else {
+            NpcUserIdent ident = UserIdent.getNpc(sender.getName());
+            return PermissionAPI.hasPermission(ident.getGameProfile(), node, null);
+        }
     }
 
 }

@@ -124,6 +124,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         Map<String, Multiworld> loadedWorlds = DataManager.getInstance().loadAll(Multiworld.class);
         for (Multiworld world : loadedWorlds.values())
         {
+            if (world.generatorOptions == null) {
+                world.generatorOptions = "";
+            }
+
             worlds.put(world.getName(), world);
             try
             {
@@ -268,6 +272,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
 
             WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), WorldType.parseWorldType(world.worldType));
+            settings.setGeneratorOptions(world.generatorOptions);
             WorldInfo info = new WorldInfo(settings, world.name);
             WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.profiler, world);
             worldServer.init();
