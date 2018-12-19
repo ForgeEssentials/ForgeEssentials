@@ -45,6 +45,9 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     private int minZ;
 
+    private int minY;
+    private int maxY;
+
     private int maxX;
 
     private int maxZ;
@@ -113,7 +116,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             else
             {
                 arguments.confirm("No pregen running");
-                arguments.notify("/pregen start [dim]");
+                arguments.notify("/pregen start [dim]" + (ModuleCommands.isCubicChunksInstalled ? " [minY] [maxY]" : ""));
                 arguments.notify("/pregen status");
                 arguments.notify("/pregen stop");
                 arguments.notify("/pregen flush");
@@ -164,8 +167,27 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         sizeX = border.getSize().getX() / 16;
         sizeZ = border.getSize().getZ() / 16;
         minX = border.getArea().getLowPoint().getX() / 16;
-        minZ = border.getArea().getLowPoint().getZ() / 16;
-        maxX = border.getArea().getHighPoint().getX() / 16;
+        if (ModuleCommands.isCubicChunksInstalled)
+        {
+            try
+            {
+                minY = arguments.parseInt();
+            }
+            catch (TranslatedCommandException e)
+            {
+                minY = -8;
+            }
+            minZ = border.getArea().getLowPoint().getZ() / 16;
+            maxX = border.getArea().getHighPoint().getX() / 16;
+            try
+            {
+                maxY = arguments.parseInt();
+            }
+            catch (TranslatedCommandException e)
+            {
+                maxY = 8;
+            }
+        }
         maxZ = border.getArea().getHighPoint().getZ() / 16;
         shape = border.getShape();
 
@@ -268,21 +290,19 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                 }
                 else
                 {
-                    boolean inLoop = true;
-                    for (int y = -8; y <= 8; y++)
+                    boolean fullyGenerated = true;
+                    for (int y = minY; y <= maxY; y++)
                     {
-                        if (!CCPregenCompat.genCube(world, providerServer, x, y, z))
-                        {
-                            skippedChunks++;
-                            if (skippedChunks > 16 * 16)
-                                inLoop = false;
-                            break;
-                        }
+                        fullyGenerated &= CCPregenCompat.genCube(world, providerServer, x, y, z);
                     }
 
-                    if (inLoop)
+                    if (fullyGenerated)
                     {
-                        continue;
+                        skippedChunks++;
+                        if (skippedChunks > 16 * 16)
+                            break;
+                        else
+                            continue;
                     }
                 }
 
