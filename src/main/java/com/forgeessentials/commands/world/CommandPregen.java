@@ -254,7 +254,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         ChunkProviderServer providerServer = world.getChunkProvider();
 
         if (totalTicks % 80 == 0)
-            notifyPlayers(String.format("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ * 4, tps,
+            notifyPlayers(String.format("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ, tps,
                     providerServer.getLoadedChunkCount()));
         for (int i = 0; i < 1; i++)
         {
@@ -290,13 +290,13 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                 }
                 else
                 {
-                    boolean fullyGenerated = true;
+                    boolean fullySkipped = true;
                     for (int y = minY; y <= maxY; y++)
                     {
-                        fullyGenerated &= CCPregenCompat.genCube(world, providerServer, x, y, z);
+                        fullySkipped &= !CCPregenCompat.genCube(world, providerServer, x, y, z);
                     }
 
-                    if (fullyGenerated)
+                    if (fullySkipped)
                     {
                         skippedChunks++;
                         if (skippedChunks > 16 * 16)
