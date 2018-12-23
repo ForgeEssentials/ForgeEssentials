@@ -248,7 +248,6 @@ public class CommandSellprice extends ParserCommandBase
                         Double inPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getKey()));
                         if (inPrice != null)
                         {
-                            iterator.remove();
                             double outPrice = inPrice * recipe.getKey().stackSize / recipe.getValue().stackSize;
                             Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getValue()));
                             if (resultPrice == null || outPrice < resultPrice)
