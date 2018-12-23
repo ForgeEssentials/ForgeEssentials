@@ -31,7 +31,6 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -136,7 +135,7 @@ public class CommandSellprice extends ParserCommandBase
          * Map<Item, Double> priceMap = new TreeMap<>(new Comparator<Item>() {
          * 
          * @Override public int compare(Item a, Item b) { try { String aId =
-         * GameData.getItemRegistry().getNameForObject(a); String bId = GameData.getItemRegistry().getNameForObject(b);
+         * Item.REGISTRY.getNameForObject(a); String bId = Item.REGISTRY.getNameForObject(b);
          * return aId.compareTo(bId); } catch (Exception e) { return 0; } } });
          */
         Map<String, Double> priceMap = loadPriceList(arguments);
@@ -274,7 +273,7 @@ public class CommandSellprice extends ParserCommandBase
 
         writeMap(priceMap, priceFile);
 
-        for (Item item : GameData.getItemRegistry().typeSafeIterable())
+        for (Item item : Item.REGISTRY)
         {
             String id = ServerUtil.getItemName(item);
             if (!priceMapFull.containsKey(id))
