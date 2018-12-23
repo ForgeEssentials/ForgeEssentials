@@ -203,13 +203,14 @@ public class CommandSellprice extends ParserCommandBase
                     for (Iterator<IRecipe> iterator = CraftingManager.REGISTRY.iterator(); iterator.hasNext();)
                     {
                         IRecipe recipe = iterator.next();
-                        if (recipe.getRecipeOutput() == null)
+                        if (recipe.getRecipeOutput() == ItemStack.EMPTY)
+                        {
                             continue;
+                        }
 
                         double price = getRecipePrice(recipe, priceMap, priceMapFull);
                         if (price > 0)
                         {
-                            iterator.remove();
                             price /= recipe.getRecipeOutput().getCount();
                             Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getRecipeOutput()));
                             if (resultPrice == null || price < resultPrice)
@@ -244,7 +245,6 @@ public class CommandSellprice extends ParserCommandBase
                         Double inPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getKey()));
                         if (inPrice != null)
                         {
-                            iterator.remove();
                             double outPrice = inPrice * recipe.getKey().getCount() / recipe.getValue().getCount();
                             Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getValue()));
                             if (resultPrice == null || outPrice < resultPrice)
