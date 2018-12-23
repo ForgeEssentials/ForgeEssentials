@@ -146,26 +146,33 @@ public class CommandSellprice extends ParserCommandBase
                 {
                     IRecipe recipe = iterator.next();
                     if (recipe.getRecipeOutput() == ItemStack.EMPTY)
+                    {
                         continue;
-                    List<?> recipeItems = getRecipeItems(recipe);
-                    if (recipeItems == null)
+                    }
+                    List<Ingredient> recipeItems = getRecipeItems(recipe);
+                    if (recipeItems.isEmpty())
+                    {
                         continue;
+                    }
                     craftRecipes
                             .write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()), ItemUtil.getItemDamage(recipe.getRecipeOutput())));
-                    for (Object stacks : recipeItems)
-                        if (stacks != null)
+                    for (Ingredient ingredient : recipeItems)
+                    {
+                        if (ingredient != null)
                         {
                             ItemStack stack = null;
-                            if (stacks instanceof List<?>)
+                            ItemStack[] stacks = ingredient.getMatchingStacks();
+                            if (stacks != null && stacks.length > 0)
                             {
-                                if (!((List<?>) stacks).isEmpty())
-                                    stack = (ItemStack) ((List<?>) stacks).get(0);
+                                stack = stacks[0];
                             }
-                            else
-                                stack = (ItemStack) stacks;
+
                             if (stack != null)
+                            {
                                 craftRecipes.write(String.format("  %s:%d\n", ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack)));
+                            }
                         }
+                    }
                 }
             }
 
@@ -212,17 +219,16 @@ public class CommandSellprice extends ParserCommandBase
 
                                 String msg = String.format("%s:%d = %.0f -> %s", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
                                         ItemUtil.getItemDamage(recipe.getRecipeOutput()), resultPrice == null ? 0 : resultPrice, (int) price);
-                                for (Object stacks : getRecipeItems(recipe))
-                                    if (stacks != null)
+                                for (Ingredient ingredient : getRecipeItems(recipe))
+                                    if (ingredient != null)
                                     {
                                         ItemStack stack = null;
-                                        if (stacks instanceof List<?>)
+                                        ItemStack[] stacks = ingredient.getMatchingStacks();
+                                        if (stacks != null && stacks.length > 0)
                                         {
-                                            if (!((List<?>) stacks).isEmpty())
-                                                stack = (ItemStack) ((List<?>) stacks).get(0);
+                                            stack = stacks[0];
                                         }
-                                        else
-                                            stack = (ItemStack) stacks;
+
                                         if (stack != null)
                                             msg += String.format("\n  %.0f - %s:%d", priceMap.get(ItemUtil.getItemIdentifier(stack)),
                                                     ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack));
@@ -456,7 +462,7 @@ public class CommandSellprice extends ParserCommandBase
                     if (stack == ItemStack.EMPTY) {
                         continue;
                     }
-                    String id = ItemUtil.getItemIdentifier((ItemStack) stack);
+                    String id = ItemUtil.getItemIdentifier(stack);
                     priceMapFull.put(id, 0.0);
                     Double p = priceMap.get(id);
                     if (p != null && (itemPrice == null || p < itemPrice))
