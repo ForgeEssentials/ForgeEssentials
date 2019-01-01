@@ -10,11 +10,10 @@ The code on this branch is for Minecraft 1.7.10.
 For general help about ForgeEssentials and tutorials, please check the **[Wiki](https://github.com/ForgeEssentials/ForgeEssentials/wiki)** pages.
 If you need help or have suggestions, **please join us on our [Discord](https://discord.gg/FNRQjmr) channel**. 
 There are many people there who can help you and it is the quickest way to reach us. Please try to not open issues for simple questions and directly contact us on Discord instead.
-We also still maintain an IRC channel [*#forgeessentials*](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on [esper.net](http://esper.net).
 
 # Reporting bugs
 Please follow these rules when reporting bugs:
-- Update to the latest build from [Jenkins](http://ci.forgeessentials.com/job/FE) before reporting a bug.
+- Update to the latest build from [Jenkins](http://ci.forgeessentials.com/job/FE-1.7.10) before reporting a bug.
 - Check, if the bug was not already reported by using the search.
 - Always attach logs to your reports if you encountered crashes.  
    If the client crashed, please also attach the client log if possible.

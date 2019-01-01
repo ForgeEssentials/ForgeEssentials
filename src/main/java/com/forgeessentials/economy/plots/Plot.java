@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 
 import net.minecraft.command.ICommandSender;
@@ -22,6 +23,7 @@ import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.AreaBase;
+import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.CommandFeSettings;
@@ -356,6 +358,14 @@ public class Plot
     public static Collection<Plot> getPlots()
     {
         return plots.values();
+    }
+
+    public static boolean hasPlots(Selection selection) {
+        return plots.values().stream().anyMatch(isPartOfZone(selection));
+    }
+
+    public static Predicate<Plot> isPartOfZone(Selection selection) {
+        return plot -> plot.getZone().isPartOfZone(selection);
     }
 
     /* ------------------------------------------------------------ */

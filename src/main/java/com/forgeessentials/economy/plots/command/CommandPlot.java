@@ -188,8 +188,11 @@ public class CommandPlot extends ParserCommandBase
 
         try
         {
-            Plot.define(selection, arguments.ident);
-            arguments.confirm("Plot created!");
+            if (!Plot.hasPlots(selection))
+            {
+                Plot.define(selection, arguments.ident);
+                arguments.confirm("Plot created!");
+            }
         }
         catch (PlotRedefinedException e)
         {
