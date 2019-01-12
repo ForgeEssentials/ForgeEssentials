@@ -9,7 +9,6 @@
         "command.MixinCommandHandler",
         "entity.MixinEntity",
         "entity.player.MixinEntityPlayer",
-		"entity.player.MixinEntityPlayerMP",
         "item.crafting.MixinCraftingManager",
         "network.MixinNetHandlerPlayServer",
         "MixinDimensionManager"

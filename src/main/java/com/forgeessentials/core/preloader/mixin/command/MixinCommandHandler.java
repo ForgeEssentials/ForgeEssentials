@@ -23,45 +23,24 @@ public class MixinCommandHandler
 {
 
     /**
-     * TODO do we still need this
      * Check if the sender has permission for the command.
      *
      * @param command the command
      * @param sender the sender
      * @return {@code true} if the sender has permission
-     *
+     */
     @Redirect(
-            method = "getPossibleCommands(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)Ljava/util/List;",
+            method = "getTabCompletions(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;Lnet/minecraft/util/math/BlockPos;)Ljava/util/List;",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/command/ICommand;canCommandSenderUseCommand(Lnet/minecraft/command/ICommandSender;)Z"
+                    target = "Lnet/minecraft/command/ICommand;checkPermission(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;)Z"
             ),
             require = 1
     )
-    private boolean hasPermissionBeginWith(ICommand command, ICommandSender sender)
+    private boolean tabComplete(ICommand command, MinecraftServer server, ICommandSender sender)
     {
-        return PermissionAPI.hasPermission(sender, command);
+        return checkPerms(command, sender);
     }
-    */
-
-    /**
-     * Drop the first element from the command arguments array.
-     *
-     * @param args the command arguments
-     * @return the command arguments with the first element dropped
-    @Redirect(
-            method = "getPossibleCommands(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)Ljava/util/List;",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/command/CommandHandler;dropFirstString([Ljava/lang/String;)[Ljava/lang/String;"
-            ),
-            require = 1
-    )
-    private String[] dropFirstArg(String[] args)
-    {
-        return ServerUtil.dropFirst(args);
-    }
-    */
 
     /**
      * Check if the sender has permission for the command.
@@ -80,9 +59,7 @@ public class MixinCommandHandler
     )
     private boolean hasPermissionAll(ICommand command, MinecraftServer server, ICommandSender sender)
     {
-        if (sender instanceof MinecraftServer || sender instanceof CommandBlockBaseLogic)
-            return true;
-        return PermissionAPI.hasPermission((EntityPlayer) sender, PermissionManager.getCommandPermission(command));
+        return checkPerms(command, sender);
     }
 
     @Redirect(
@@ -95,6 +72,10 @@ public class MixinCommandHandler
     )
     private boolean hasPermission(ICommand command, MinecraftServer server, ICommandSender sender)
     {
+        return true;
+    }
+
+    public boolean checkPerms(ICommand command, ICommandSender sender) {
         String node = PermissionManager.getCommandPermission(command);
         if (sender instanceof DoAsCommandSender) {
             if (!((DoAsCommandSender) sender).getIdent().isPlayer()) {
@@ -119,5 +100,4 @@ public class MixinCommandHandler
             return PermissionAPI.hasPermission(ident.getGameProfile(), node, null);
         }
     }
-
 }
