@@ -15,6 +15,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -296,7 +298,12 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
             Wallet wallet = APIRegistry.economy.getWallet(ident);
             if (!wallet.withdraw(price))
+            {
                 event.setCanceled(true);
+                TextComponentTranslation textcomponenttranslation2 = new TextComponentTranslation("You do not have enough money to use this command.", new Object[0]);
+                textcomponenttranslation2.getStyle().setColor(TextFormatting.RED);
+                event.getSender().sendMessage(textcomponenttranslation2);
+            }
             break;
         }
     }
