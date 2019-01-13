@@ -66,6 +66,16 @@ repositories {
         name "Sonatype (Cubic Chunks)"
         url "https://oss.sonatype.org/content/repositories/public/"
     }
+
+    maven {
+        name = "LatMod"
+        url "https://maven.latmod.com/"
+    }
+
+    maven {
+        name = "JEI"
+        url "http://dvs1.progwml6.com/files/maven"
+    }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -178,6 +188,7 @@ dependencies {
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
 	provided 'org.spongepowered:spongeapi:6.0.0'
     provided "io.github.opencubicchunks:cubicchunks:1.12.2-0.0-SNAPSHOT"
+    provided "com.feed_the_beast.mods:FTBLib:5.4.1.75"
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
