@@ -71,6 +71,7 @@ public class ModulePermissions extends ConfigLoaderBase
 
         try {
             Class.forName("com.feed_the_beast.ftblib.lib.config.IRankConfigHandler");
+            Class.forName("com.feed_the_beast.ftbutilities.ranks.Ranks");
             MinecraftForge.EVENT_BUS.register(FTBURankConfigHandler.class);
         } catch (ClassNotFoundException e) {}
     }

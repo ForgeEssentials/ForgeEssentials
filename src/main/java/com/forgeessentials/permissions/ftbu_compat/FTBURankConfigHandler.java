@@ -15,6 +15,7 @@ import com.feed_the_beast.ftblib.lib.config.DefaultRankConfigHandler;
 import com.feed_the_beast.ftblib.lib.config.IRankConfigHandler;
 import com.feed_the_beast.ftblib.lib.config.RankConfigValueInfo;
 import com.feed_the_beast.ftblib.lib.util.misc.Node;
+import com.feed_the_beast.ftbutilities.ranks.Ranks;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -28,7 +29,10 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
     @SubscribeEvent
     public static void registerRankConfigHandler(RegisterRankConfigHandlerEvent event)
     {
-        event.setHandler(INSTANCE);
+        if (!Ranks.isActive())
+        {
+            event.setHandler(INSTANCE);
+        }
     }
 
     @Override public void registerRankConfig(RankConfigValueInfo info)
