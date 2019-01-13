@@ -63,14 +63,11 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
             if (context != null && context.getPlayer() != null) {
                 point = WorldPoint.create(context.getPlayer());
             }
-            LoggingHandler.felog.info(value.getString());
-            String permValue = APIRegistry.perms.getUserPermissionProperty(ident, node.toString());
-            LoggingHandler.felog.info(permValue);
-            if (!value.setValueFromString(null, permValue, false)) {
+            if (!value.setValueFromString(null, APIRegistry.perms.getUserPermissionProperty(ident, node.toString()), false)) {
                 LoggingHandler.felog.info("Failed to set value");
                 return ConfigNull.INSTANCE;
             }
-            LoggingHandler.felog.info(value.getString());
+            LoggingHandler.felog.info(node.toString() + " set to " + value.getString());
         }
 
         return value;
