@@ -21,7 +21,7 @@ Please follow these rules when reporting bugs:
 
 # Downloads
 **If you just want the latest stable releases, please get them from [Curse](http://minecraft.curseforge.com/mc-mods/74735)**  
-Nightly builds with the latest features and bugfixes can be found on our [Jenkins build server](http://ci.forgeessentials.com/job/FE/).
+Nightly builds with the latest features and bugfixes can be found on our [Jenkins build server](http://ci.forgeessentials.com/job/FE-1.12.2/).
 
 # About
 The ForgeEssentials project consists many server features,  
