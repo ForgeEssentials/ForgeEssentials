@@ -512,6 +512,23 @@ public class ServerZone extends Zone implements Loadable
         List<AreaZone> zones = getAreaZonesAt(worldPoint);
         return zones.isEmpty() ? null : zones.get(0);
     }
+    
+    public AreaZone getAreaZone(int zoneId)
+    {
+        for (Map.Entry<Integer, WorldZone> worldEntry : getServerZone().getWorldZones().entrySet())
+        {
+            WorldZone wZone = worldEntry.getValue();
+            if (wZone != null)
+            {
+                AreaZone aZone = wZone.getAreaZone(zoneId);
+                if (aZone != null)
+                {
+                    return aZone;
+                }
+            }
+        }
+        return null;
+    }
 
     // ------------------------------------------------------------
 

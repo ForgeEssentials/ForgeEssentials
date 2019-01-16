@@ -250,7 +250,8 @@ public class ProtectionEventHandler extends ServerEventHandler
         IBlockState blockState = event.getWorld().getBlockState(event.getPos());
         String permission = ModuleProtection.getBlockBreakPermission(blockState);
         ModuleProtection.debugPermission(event.getPlayer(), permission);
-        if (!APIRegistry.perms.checkUserPermission(ident, permission))
+        WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.getPos());
+        if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
             TileEntity te = event.getWorld().getTileEntity(event.getPos());
@@ -463,6 +464,18 @@ public class ProtectionEventHandler extends ServerEventHandler
             ModuleProtection.debugPermission(event.getEntityPlayer(), permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             // event.useItem = allow ? ALLOW : DENY;
+            if (event instanceof LeftClickBlock)
+            {
+                ((LeftClickBlock) event).setUseItem(allow ? ALLOW : DENY);
+            }
+            else if (event instanceof RightClickBlock)
+            {
+                ((RightClickBlock) event).setUseItem(allow ? ALLOW : DENY);
+            }
+            else if (!allow && !event.isCanceled() && event.isCancelable())
+            {
+                event.setCanceled(true);
+            }
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
             {
                 int itemId = Item.REGISTRY.getIDForObject(stack.getItem());

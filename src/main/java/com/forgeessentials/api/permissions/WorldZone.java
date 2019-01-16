@@ -51,6 +51,29 @@ public class WorldZone extends Zone implements Loadable
             zone.worldZone = this;
     }
     
+    public AreaZone getAreaZone(int id)
+    {
+        for (AreaZone zone : getAreaZones())
+        {
+            if (zone.getId() == id)
+            {
+                return zone;
+            }
+        }
+        return null;
+    }
+
+    public int nextAreaZoneId()
+    {
+        int desiredID = getServerZone().getMaxZoneID() + 1;
+        while (desiredID < 5 || getServerZone().getAreaZone(desiredID) != null)
+        {
+            getServerZone().nextZoneID();
+            desiredID = getServerZone().getMaxZoneID() + 1;
+        }
+        return desiredID;
+    }
+    
     @Override
     public boolean isPlayerInZone(EntityPlayer player)
     {
