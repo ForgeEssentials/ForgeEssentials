@@ -23,6 +23,8 @@ public class WorldZone extends Zone implements Loadable
     protected ServerZone serverZone;
 
     private int dimensionID;
+    
+    private static final int RESERVED_ID_COUNT = 5;
 
     private List<AreaZone> areaZones = new ArrayList<AreaZone>();
 
@@ -66,7 +68,7 @@ public class WorldZone extends Zone implements Loadable
     public int nextAreaZoneId()
     {
         int desiredID = getServerZone().getMaxZoneID() + 1;
-        while (desiredID < 5 || getServerZone().getAreaZone(desiredID) != null)
+        while (desiredID < RESERVED_ID_COUNT || getServerZone().getAreaZone(desiredID) != null)
         {
             getServerZone().nextZoneID();
             desiredID = getServerZone().getMaxZoneID() + 1;
