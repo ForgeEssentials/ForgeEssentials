@@ -17,6 +17,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.APIRegistry;
@@ -33,6 +34,7 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.ImmutableMap;
+import org.pircbotx.dcc.Chat;
 
 public final class ScriptArguments
 {
@@ -317,11 +319,16 @@ public final class ScriptArguments
         {
             if (!(sender instanceof EntityPlayerMP))
                 throw new MissingPlayerException();
-            if (((EntityPlayerMP) sender).interactionManager.getGameType().isCreative())
-                return ChatConfig.gamemodeCreative;
-            if (((EntityPlayerMP) sender).interactionManager.getGameType().isAdventure())
-                return ChatConfig.gamemodeAdventure;
-            return ChatConfig.gamemodeSurvival;
+            GameType type = ((EntityPlayerMP) sender).interactionManager.getGameType();
+            switch (type) {
+                case CREATIVE:
+                    return ChatConfig.gamemodeCreative;
+                case ADVENTURE:
+                case SPECTATOR:                         //To Preserve the old logic of isAdventure on 1.10
+                    return ChatConfig.gamemodeAdventure;
+                default:
+                    return ChatConfig.gamemodeSurvival;
+            }
         }
 
         @Override

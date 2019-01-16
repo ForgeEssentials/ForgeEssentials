@@ -22,7 +22,7 @@ public class InventoryGrave extends InventoryBasic
     {
         grave.setOpen(true);
         for (int i = 0; i < getSizeInventory(); i++)
-            setInventorySlotContents(i, grave.inventory.size() > 0 ? grave.inventory.remove(0) : null);
+            setInventorySlotContents(i, grave.inventory.size() > 0 ? grave.inventory.remove(0) : ItemStack.EMPTY);
         super.openInventory(player);
     }
 
@@ -32,7 +32,7 @@ public class InventoryGrave extends InventoryBasic
         for (int i = 0; i < getSizeInventory(); i++)
         {
             ItemStack is = getStackInSlot(i);
-            if (is != null)
+            if (is != ItemStack.EMPTY)
                 grave.inventory.add(is);
         }
         grave.setOpen(false);

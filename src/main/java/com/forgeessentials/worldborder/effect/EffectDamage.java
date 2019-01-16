@@ -40,7 +40,7 @@ public class EffectDamage extends WorldBorderEffect
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.attackEntityFrom(DamageSource.outOfWorld, damage);
+            player.attackEntityFrom(DamageSource.OUT_OF_WORLD, damage);
             pi.startTimeout(this.getClass().getName(), interval *  1000);
         }
     }

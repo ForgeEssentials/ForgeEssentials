@@ -68,6 +68,8 @@ public class ModuleCommands
 
     public static ModuleCommandsEventHandler eventHandler = new ModuleCommandsEventHandler();
 
+    public static boolean isCubicChunksInstalled = false;
+
     @SubscribeEvent
     public void preLoad(FEModulePreInitEvent e)
     {
@@ -125,6 +127,12 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandDelayedAction());
 
         APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
+
+        try
+        {
+            Class.forName("io.github.opencubicchunks.cubicchunks.core.server");
+            isCubicChunksInstalled = true;
+        } catch (ClassNotFoundException e) {}
     }
 
 }

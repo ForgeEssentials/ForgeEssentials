@@ -18,7 +18,7 @@ public class MixinBlockEndPortal
     @Overwrite
     public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
     {
-        if (!entityIn.isRiding() && !entityIn.isBeingRidden() && entityIn.isNonBoss() && !worldIn.isRemote && entityIn.getEntityBoundingBox().intersectsWith(state.getBoundingBox(worldIn, pos).offset(pos))
+        if (!entityIn.isRiding() && !entityIn.isBeingRidden() && entityIn.isNonBoss() && !worldIn.isRemote && entityIn.getEntityBoundingBox().intersects(state.getBoundingBox(worldIn, pos).offset(pos))
                 && !MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entityIn, worldIn, pos, 1, new BlockPos(0, 0, 0))))
         {
             entityIn.changeDimension(1);

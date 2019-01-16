@@ -12,7 +12,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -72,7 +71,7 @@ public class CommandEnchant extends ParserCommandBase
 
         List<String> validEnchantmentNames = new ArrayList<>();
         Map<String, Enchantment> validEnchantments = new HashMap<>();
-        for (Enchantment enchantment : GameData.getEnchantmentRegistry().getValues())
+        for (Enchantment enchantment : Enchantment.REGISTRY)
             if (enchantment != null && enchantment.canApplyAtEnchantingTable(stack))
             {
                 String name = I18n.translateToLocal(enchantment.getName()).replaceAll(" ", "");

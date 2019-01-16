@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.ServerWorldEventHandler;
@@ -44,11 +45,12 @@ import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.multiworld.MultiworldException.Type;
-import com.forgeessentials.multiworld.gen.WorldTypeMultiworld;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
+
+import static net.minecraftforge.common.DimensionManager.getRegisteredDimensions;
 
 /**
  * 
@@ -125,6 +127,10 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         Map<String, Multiworld> loadedWorlds = DataManager.getInstance().loadAll(Multiworld.class);
         for (Multiworld world : loadedWorlds.values())
         {
+            if (world.generatorOptions == null) {
+                world.generatorOptions = "";
+            }
+
             worlds.put(world.getName(), world);
             try
             {
@@ -245,7 +251,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 .setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD, world.getName());
 
             // Register the dimension
-            DimensionManager.registerDimension(world.dimensionId, DimensionType.OVERWORLD);
+            DimensionManager.registerDimension(world.dimensionId, DimensionManager.getProviderType(world.providerId));
             worldsByDim.put(world.dimensionId, world);
 
         // Allow the world to unload
@@ -268,14 +274,15 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
 
-            WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), new WorldTypeMultiworld(WorldType.parseWorldType(world.worldType)));
+            WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), WorldType.parseWorldType(world.worldType));
+            settings.setGeneratorOptions(world.generatorOptions);
             WorldInfo info = new WorldInfo(settings, world.name);
-            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.theProfiler, world);
+            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.profiler, world);
             worldServer.init();
             // Overwrite dimensionId because WorldProviderEnd for example just hardcodes the dimId
             worldServer.provider.setDimension(world.dimensionId);
             worldServer.provider.getDimensionType().setLoadSpawn(false);
-            FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0).provider.getDimensionType().setLoadSpawn(true);
+            FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).provider.getDimensionType().setLoadSpawn(true);
             worldServer.addEventListener(new ServerWorldEventHandler(mcServer, worldServer));
 
             mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
@@ -505,24 +512,21 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     {
         try
         {
-            Field f_providers = DimensionManager.class.getDeclaredField("dimensions");
-            f_providers.setAccessible(true);
-            @SuppressWarnings("unchecked")
-            Hashtable<Integer, DimensionType> loadedProviders = (Hashtable<Integer, DimensionType>) f_providers.get(null);
-            for (Entry<Integer, DimensionType> provider : loadedProviders.entrySet())
+            Map<DimensionType, IntSortedSet> loadedProviders = getRegisteredDimensions();
+            for (DimensionType provider : loadedProviders.keySet())
             {
                 // skip the default providers as these are aliased as 'normal',
                 // 'nether' and 'end'
-                if (provider.getKey() >= -1 && provider.getKey() <= 1)
+                if (provider.getId() >= -1 && provider.getId() <= 1)
                     continue;
 
-                worldProviderClasses.put(provider.getValue().getName(), provider.getKey());
+                worldProviderClasses.put(provider.getName(), provider.getId());
             }
             worldProviderClasses.put(PROVIDER_NORMAL, 0);
             worldProviderClasses.put(PROVIDER_HELL, 1);
             worldProviderClasses.put(PROVIDER_END, -1);
         }
-        catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
+        catch (SecurityException | IllegalArgumentException e)
         {
             e.printStackTrace();
         }

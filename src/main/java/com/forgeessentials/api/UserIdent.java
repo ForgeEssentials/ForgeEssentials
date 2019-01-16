@@ -11,6 +11,7 @@ import com.forgeessentials.util.UserIdentUtils;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -609,10 +610,14 @@ public class UserIdent
 
     public static EntityPlayerMP getPlayerByMatchOrUsername(ICommandSender sender, String match)
     {
-        EntityPlayerMP player = EntitySelector.matchOnePlayer(sender, match);
-        if (player != null)
-            return player;
-        return getPlayerByUsername(match);
+        try {
+            EntityPlayerMP player = EntitySelector.matchOnePlayer(sender, match);
+            if (player != null)
+                return player;
+            return getPlayerByUsername(match);
+        } catch (CommandException e) {
+            return null;
+        }
     }
 
     public static EntityPlayerMP getPlayerByUuid(UUID uuid)

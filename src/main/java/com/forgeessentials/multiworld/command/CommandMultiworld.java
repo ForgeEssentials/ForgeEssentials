@@ -16,6 +16,7 @@ import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
 import com.forgeessentials.multiworld.MultiworldException;
 import com.forgeessentials.multiworld.MultiworldManager;
+import com.forgeessentials.multiworld.WorldServerMultiworld;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandMultiworld extends ParserCommandBase
@@ -98,7 +99,7 @@ public class CommandMultiworld extends ParserCommandBase
 
         if (arguments.isEmpty())
         {
-            arguments.confirm("Usage: /mw create (name) [provider] [worldType] [seed]");
+            arguments.confirm("Usage: /mw create (name) [provider] [worldType] [generatorOptions] [seed]");
             return;
         }
         // Get the world name
@@ -126,6 +127,12 @@ public class CommandMultiworld extends ParserCommandBase
         if (!arguments.isEmpty())
             worldType = arguments.remove();
 
+        String generatorOptions = "";
+        if (!arguments.isEmpty())
+        {
+            generatorOptions = arguments.remove();
+        }
+
         // Get the World Seed
         long seed = new Random().nextLong();
         if (!arguments.isEmpty())
@@ -147,7 +154,8 @@ public class CommandMultiworld extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        Multiworld world = new Multiworld(name, provider, worldType, seed);
+        arguments.confirm("Creating a Multiworld named \"%s\", provided by \"%s\", with a world type of \"%s\", generator options set to \"%s\" and the seed set to \"%s\"", name, provider, worldType, generatorOptions, seed);
+        Multiworld world = new Multiworld(name, provider, worldType, seed, generatorOptions);
         try
         {
             ModuleMultiworld.getMultiworldManager().addWorld(world);
@@ -171,7 +179,7 @@ public class CommandMultiworld extends ParserCommandBase
         arguments.checkPermission(ModuleMultiworld.PERM_DELETE);
         Multiworld world = parseWorld(arguments);
 
-        if (world.getWorldServer().getWorldType().getName() != "multiworld")
+        if (!(world.getWorldServer() instanceof WorldServerMultiworld))
         {
             arguments.error("World " + world.getName() + " is not a FE multiworld and cannot be deleted!");
             return;

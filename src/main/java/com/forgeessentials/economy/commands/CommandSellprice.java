@@ -6,9 +6,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,15 +22,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.config.Property.Type;
-import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -136,7 +129,7 @@ public class CommandSellprice extends ParserCommandBase
          * Map<Item, Double> priceMap = new TreeMap<>(new Comparator<Item>() {
          * 
          * @Override public int compare(Item a, Item b) { try { String aId =
-         * GameData.getItemRegistry().getNameForObject(a); String bId = GameData.getItemRegistry().getNameForObject(b);
+         * Item.REGISTRY.getNameForObject(a); String bId = Item.REGISTRY.getNameForObject(b);
          * return aId.compareTo(bId); } catch (Exception e) { return 0; } } });
          */
         Map<String, Double> priceMap = loadPriceList(arguments);
@@ -149,32 +142,37 @@ public class CommandSellprice extends ParserCommandBase
         {
             try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
             {
-                @SuppressWarnings("unchecked")
-                List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
-                for (Iterator<IRecipe> iterator = recipes.iterator(); iterator.hasNext();)
+                for (Iterator<IRecipe> iterator = CraftingManager.REGISTRY.iterator(); iterator.hasNext();)
                 {
                     IRecipe recipe = iterator.next();
-                    if (recipe.getRecipeOutput() == null)
+                    if (recipe.getRecipeOutput() == ItemStack.EMPTY)
+                    {
                         continue;
-                    List<?> recipeItems = getRecipeItems(recipe);
-                    if (recipeItems == null)
+                    }
+                    List<Ingredient> recipeItems = getRecipeItems(recipe);
+                    if (recipeItems.isEmpty())
+                    {
                         continue;
+                    }
                     craftRecipes
                             .write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()), ItemUtil.getItemDamage(recipe.getRecipeOutput())));
-                    for (Object stacks : recipeItems)
-                        if (stacks != null)
+                    for (Ingredient ingredient : recipeItems)
+                    {
+                        if (ingredient != null)
                         {
                             ItemStack stack = null;
-                            if (stacks instanceof List<?>)
+                            ItemStack[] stacks = ingredient.getMatchingStacks();
+                            if (stacks != null && stacks.length > 0)
                             {
-                                if (!((List<?>) stacks).isEmpty())
-                                    stack = (ItemStack) ((List<?>) stacks).get(0);
+                                stack = stacks[0];
                             }
-                            else
-                                stack = (ItemStack) stacks;
+
                             if (stack != null)
+                            {
                                 craftRecipes.write(String.format("  %s:%d\n", ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack)));
+                            }
                         }
+                    }
                 }
             }
 
@@ -197,24 +195,23 @@ public class CommandSellprice extends ParserCommandBase
 
                 @SuppressWarnings("unchecked")
                 Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.instance().getSmeltingList());
-                @SuppressWarnings("unchecked")
-                List<IRecipe> recipes = new ArrayList<>(CraftingManager.getInstance().getRecipeList());
 
                 boolean changedPrice;
                 do
                 {
                     changedPrice = false;
-                    for (Iterator<IRecipe> iterator = recipes.iterator(); iterator.hasNext();)
+                    for (Iterator<IRecipe> iterator = CraftingManager.REGISTRY.iterator(); iterator.hasNext();)
                     {
                         IRecipe recipe = iterator.next();
-                        if (recipe.getRecipeOutput() == null)
+                        if (recipe.getRecipeOutput() == ItemStack.EMPTY)
+                        {
                             continue;
+                        }
 
                         double price = getRecipePrice(recipe, priceMap, priceMapFull);
                         if (price > 0)
                         {
-                            iterator.remove();
-                            price /= recipe.getRecipeOutput().stackSize;
+                            price /= recipe.getRecipeOutput().getCount();
                             Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getRecipeOutput()));
                             if (resultPrice == null || price < resultPrice)
                             {
@@ -223,17 +220,16 @@ public class CommandSellprice extends ParserCommandBase
 
                                 String msg = String.format("%s:%d = %.0f -> %s", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
                                         ItemUtil.getItemDamage(recipe.getRecipeOutput()), resultPrice == null ? 0 : resultPrice, (int) price);
-                                for (Object stacks : getRecipeItems(recipe))
-                                    if (stacks != null)
+                                for (Ingredient ingredient : getRecipeItems(recipe))
+                                    if (ingredient != null)
                                     {
                                         ItemStack stack = null;
-                                        if (stacks instanceof List<?>)
+                                        ItemStack[] stacks = ingredient.getMatchingStacks();
+                                        if (stacks != null && stacks.length > 0)
                                         {
-                                            if (!((List<?>) stacks).isEmpty())
-                                                stack = (ItemStack) ((List<?>) stacks).get(0);
+                                            stack = stacks[0];
                                         }
-                                        else
-                                            stack = (ItemStack) stacks;
+
                                         if (stack != null)
                                             msg += String.format("\n  %.0f - %s:%d", priceMap.get(ItemUtil.getItemIdentifier(stack)),
                                                     ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack));
@@ -249,8 +245,7 @@ public class CommandSellprice extends ParserCommandBase
                         Double inPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getKey()));
                         if (inPrice != null)
                         {
-                            iterator.remove();
-                            double outPrice = inPrice * recipe.getKey().stackSize / recipe.getValue().stackSize;
+                            double outPrice = inPrice * recipe.getKey().getCount() / recipe.getValue().getCount();
                             Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getValue()));
                             if (resultPrice == null || outPrice < resultPrice)
                             {
@@ -274,7 +269,7 @@ public class CommandSellprice extends ParserCommandBase
 
         writeMap(priceMap, priceFile);
 
-        for (Item item : GameData.getItemRegistry().typeSafeIterable())
+        for (Item item : Item.REGISTRY)
         {
             String id = ServerUtil.getItemName(item);
             if (!priceMapFull.containsKey(id))
@@ -445,52 +440,33 @@ public class CommandSellprice extends ParserCommandBase
         }
     }
 
-    public static List<?> getRecipeItems(IRecipe recipe)
+    public static List<Ingredient> getRecipeItems(IRecipe recipe)
     {
-        if (recipe instanceof ShapelessRecipes)
-            return ((ShapelessRecipes) recipe).recipeItems;
-        else if (recipe instanceof ShapedRecipes)
-            return Arrays.asList(((ShapedRecipes) recipe).recipeItems);
-        else if (recipe instanceof ShapedOreRecipe)
-            return Arrays.asList(((ShapedOreRecipe) recipe).getInput());
-        else if (recipe instanceof ShapelessOreRecipe)
-            return ((ShapelessOreRecipe) recipe).getInput();
-        else
-            return null;
+        return recipe.getIngredients();
     }
 
     public static double getRecipePrice(IRecipe recipe, Map<String, Double> priceMap, Map<String, Double> priceMapFull)
     {
         double price = 0;
-        List<?> stackList = getRecipeItems(recipe);
-        if (stackList == null)
+        List<Ingredient> stackList = getRecipeItems(recipe);
+        if (stackList.isEmpty())
+        {
             return 0;
-        for (Object stacks : stackList)
-            if (stacks != null)
+        }
+        for (Ingredient ingredient : stackList)
+            if (ingredient != null)
             {
                 Double itemPrice = null;
-                if (stacks instanceof Collection<?>)
-                {
-                    for (Object stack : (Collection<?>) stacks)
-                    {
-                        if (stack == null)
-                            continue;
-                        String id = ItemUtil.getItemIdentifier((ItemStack) stack);
-                        priceMapFull.put(id, 0.0);
-                        Double p = priceMap.get(id);
-                        if (p != null && (itemPrice == null || p < itemPrice))
-                            itemPrice = p;
+                ItemStack[] stacks = ingredient.getMatchingStacks();
+                for (ItemStack stack : stacks) {
+                    if (stack == ItemStack.EMPTY) {
+                        continue;
                     }
-                }
-                else
-                {
-                    ItemStack stack = (ItemStack) stacks;
                     String id = ItemUtil.getItemIdentifier(stack);
-                    if (id != null)
-                    {
-                        priceMapFull.put(id, 0.0);
-                        itemPrice = priceMap.get(id);
-                    }
+                    priceMapFull.put(id, 0.0);
+                    Double p = priceMap.get(id);
+                    if (p != null && (itemPrice == null || p < itemPrice))
+                        itemPrice = p;
                 }
                 if (itemPrice == null)
                     return -1;

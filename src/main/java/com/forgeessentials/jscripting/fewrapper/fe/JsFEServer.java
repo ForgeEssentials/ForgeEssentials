@@ -1,11 +1,13 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.script.ScriptException;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
@@ -45,7 +47,13 @@ public class JsFEServer
     {
         return APIRegistry.perms.getServerZone().getKnownPlayers().size();
     }
-
+    /**
+     * Returns the list of players who have ever connected.
+     */
+    public Set<UserIdent> getAllPlayers()
+    {
+        return APIRegistry.perms.getServerZone().getKnownPlayers();
+    }
     /**
      * Returns the amount of time this player was active on the server in seconds
      */

@@ -37,7 +37,7 @@ public abstract class BuildInfo
 
     public static final String BASE_VERSION = "_BASEVERSION_";
 
-    public static final String DEPENDENCIES = "required-after:Forge";
+    public static final String DEPENDENCIES = "required-after:forge";
 
     public static void startVersionChecks()
     {
@@ -101,7 +101,7 @@ public abstract class BuildInfo
     {
         try
         {
-            URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE/lastSuccessfulBuild/api/json");
+            URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE-1.12.2/lastSuccessfulBuild/api/json");
             URLConnection con = buildInfoUrl.openConnection();
             con.setConnectTimeout(6000);
             con.setReadTimeout(12000);

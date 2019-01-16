@@ -145,7 +145,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
 
                     for (ChunkPos coords : chunks)
                     {
-                        ChatOutputHandler.chatNotification(sender, coords.getXCenter() + " : " + coords.getZCenter());
+                        ChatOutputHandler.chatNotification(sender, coords.x + " : " + coords.z);
                     }
                 }
             }
@@ -171,7 +171,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
 
                 for (ChunkPos coords : chunks)
                 {
-                    ChatOutputHandler.chatNotification(sender, coords.getXCenter() + " : " + coords.getZCenter());
+                    ChatOutputHandler.chatNotification(sender, coords.x + " : " + coords.z);
                 }
             }
         }

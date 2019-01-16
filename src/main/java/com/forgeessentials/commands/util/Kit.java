@@ -31,15 +31,15 @@ public class Kit
         this.name = name;
 
         List<ItemStack> collapsedInventory = new ArrayList<ItemStack>();
-        for (int i = 0; i < player.inventory.mainInventory.length; i++)
-            if (player.inventory.mainInventory[i] != null)
-                collapsedInventory.add(player.inventory.mainInventory[i]);
+        for (int i = 0; i < player.inventory.mainInventory.size(); i++)
+            if (player.inventory.mainInventory.get(i) != ItemStack.EMPTY)
+                collapsedInventory.add(player.inventory.mainInventory.get(i));
         items = collapsedInventory.toArray(new ItemStack[collapsedInventory.size()]);
 
-        armor = new ItemStack[player.inventory.armorInventory.length];
+        armor = new ItemStack[player.inventory.armorInventory.size()];
         for (int i = 0; i < 4; i++)
-            if (player.inventory.armorInventory[i] != null)
-                armor[i] = player.inventory.armorInventory[i].copy();
+            if (player.inventory.armorInventory.get(i) != ItemStack.EMPTY)
+                armor[i] = player.inventory.armorInventory.get(i).copy();
     }
 
     public String getName()
@@ -80,14 +80,14 @@ public class Kit
         boolean couldNotGiveItems = false;
 
         for (ItemStack stack : items)
-            couldNotGiveItems |= !player.inventory.addItemStackToInventory(ItemStack.copyItemStack(stack));
+            couldNotGiveItems |= !player.inventory.addItemStackToInventory(stack.copy());
 
         for (int i = 0; i < 4; i++)
             if (armor[i] != null)
-                if (player.inventory.armorInventory[i] == null)
-                    player.inventory.armorInventory[i] = armor[i];
+                if (player.inventory.armorInventory.get(i) == ItemStack.EMPTY)
+                    player.inventory.armorInventory.set(i, armor[i]);
                 else
-                    couldNotGiveItems |= !player.inventory.addItemStackToInventory(ItemStack.copyItemStack(armor[i]));
+                    couldNotGiveItems |= !player.inventory.addItemStackToInventory(armor[i].copy());
 
         if (couldNotGiveItems)
             ChatOutputHandler.chatError(player, Translator.translate("Could not give some kit items."));

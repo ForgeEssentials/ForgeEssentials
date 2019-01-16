@@ -98,7 +98,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
     public void top(EntityPlayerMP player) throws CommandException
     {
         WarpPoint point = new WarpPoint(player);
-        point.setY(player.world.getActualHeight());
+        point.setY(player.world.getPrecipitationHeight(player.getPosition()).getY());
         while (player.world.getBlockState(point.getBlockPos()).getBlock() == Blocks.AIR)
         {
             point.setY(point.getY() - 1);

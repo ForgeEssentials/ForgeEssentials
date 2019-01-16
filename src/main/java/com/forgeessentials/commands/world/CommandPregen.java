@@ -39,13 +39,14 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     private WorldServer world;
 
-    private boolean fullPregen;
-
     private AreaShape shape;
 
     private int minX;
 
     private int minZ;
+
+    private int minY;
+    private int maxY;
 
     private int maxX;
 
@@ -115,7 +116,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             else
             {
                 arguments.confirm("No pregen running");
-                arguments.notify("/pregen start [full-pregen] [dim]");
+                arguments.notify("/pregen start [dim]" + (ModuleCommands.isCubicChunksInstalled ? " [minY] [maxY]" : ""));
                 arguments.notify("/pregen status");
                 arguments.notify("/pregen stop");
                 arguments.notify("/pregen flush");
@@ -155,9 +156,6 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         }
 
         world = null;
-        fullPregen = true;
-        if (!arguments.isEmpty())
-            fullPregen = arguments.parseBoolean();
         world = arguments.parseWorld();
 
         WorldBorder border = ModuleWorldBorder.getInstance().getBorder(world);
@@ -169,8 +167,27 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         sizeX = border.getSize().getX() / 16;
         sizeZ = border.getSize().getZ() / 16;
         minX = border.getArea().getLowPoint().getX() / 16;
-        minZ = border.getArea().getLowPoint().getZ() / 16;
-        maxX = border.getArea().getHighPoint().getX() / 16;
+        if (ModuleCommands.isCubicChunksInstalled)
+        {
+            try
+            {
+                minY = arguments.parseInt();
+            }
+            catch (TranslatedCommandException e)
+            {
+                minY = -8;
+            }
+            minZ = border.getArea().getLowPoint().getZ() / 16;
+            maxX = border.getArea().getHighPoint().getX() / 16;
+            try
+            {
+                maxY = arguments.parseInt();
+            }
+            catch (TranslatedCommandException e)
+            {
+                maxY = 8;
+            }
+        }
         maxZ = border.getArea().getHighPoint().getZ() / 16;
         shape = border.getShape();
 
@@ -202,7 +219,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             return;
         }
         ChunkProviderServer providerServer = world.getChunkProvider();
-        providerServer.unloadAllChunks();
+        providerServer.queueUnloadAll();
         arguments.confirm("Queued all chunks for unloading");
     }
 
@@ -237,7 +254,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         ChunkProviderServer providerServer = world.getChunkProvider();
 
         if (totalTicks % 80 == 0)
-            notifyPlayers(String.format("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ * 4, tps,
+            notifyPlayers(String.format("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ, tps,
                     providerServer.getLoadedChunkCount()));
         for (int i = 0; i < 1; i++)
         {
@@ -252,22 +269,42 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                     return true;
                 }
 
-                if (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F)
-                        || (providerServer.chunkExists(x, z)))
+                if (!ModuleCommands.isCubicChunksInstalled || !CCPregenCompat.isCCWorld(world))
                 {
-                    skippedChunks++;
-                    if (skippedChunks > 16 * 16)
-                        break;
-                    else
-                        continue;
-                }
+                    if (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F)
+                            || (providerServer.chunkExists(x, z)))
+                    {
+                        skippedChunks++;
+                        if (skippedChunks > 16 * 16)
+                            break;
+                        else
+                            continue;
+                    }
 
-                if (providerServer.getLoadedChunkCount() > 256)
-                {
-                    providerServer.saveChunks(true);
-                    providerServer.unloadAllChunks();
+                    if (providerServer.getLoadedChunkCount() > 256)
+                    {
+                        providerServer.saveChunks(true);
+                        providerServer.queueUnloadAll();
+                    }
+                    providerServer.provideChunk(x, z);
                 }
-                providerServer.provideChunk(x, z);
+                else
+                {
+                    boolean fullySkipped = true;
+                    for (int y = minY; y <= maxY; y++)
+                    {
+                        fullySkipped &= !CCPregenCompat.genCube(world, providerServer, x, y, z);
+                    }
+
+                    if (fullySkipped)
+                    {
+                        skippedChunks++;
+                        if (skippedChunks > 16 * 16)
+                            break;
+                        else
+                            continue;
+                    }
+                }
 
                 break;
             }

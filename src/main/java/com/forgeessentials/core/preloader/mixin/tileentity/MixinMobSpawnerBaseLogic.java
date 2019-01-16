@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public abstract class MixinMobSpawnerBaseLogic
 {
     @Shadow
-    abstract World getSpawnerWorld();
+    public abstract World getSpawnerWorld();
 
     @Inject(
         method = "updateSpawner",

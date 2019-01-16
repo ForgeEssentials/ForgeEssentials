@@ -53,7 +53,7 @@ public class VirtualChest extends InventoryBasic
             NBTTagCompound tagSlot = tag.getCompoundTagAt(tagIndex);
             int var4 = tagSlot.getByte("Slot") & 255;
             if (var4 >= 0 && var4 < getSizeInventory())
-                setInventorySlotContents(var4, ItemStack.loadItemStackFromNBT(tagSlot));
+                setInventorySlotContents(var4, new ItemStack(tagSlot));
         }
     }
 

@@ -10,11 +10,10 @@ The code on this branch is for Minecraft 1.12.2.
 For general help about ForgeEssentials and tutorials, please check the **[Wiki](https://github.com/ForgeEssentials/ForgeEssentials/wiki)** pages.
 If you need help or have suggestions, **please join us on our [Discord](https://discord.gg/FNRQjmr) channel**. 
 There are many people there who can help you and it is the quickest way to reach us. Please try to not open issues for simple questions and directly contact us on Discord instead.
-We also still maintain an IRC channel [*#forgeessentials*](http://webchat.esper.net/?channels=forgeessentials&prompt=1) on [esper.net](http://esper.net).
 
 # Reporting bugs
 Please follow these rules when reporting bugs:
-- Update to the latest build from [Jenkins](http://ci.forgeessentials.com/job/FE) before reporting a bug.
+- Update to the latest build from [Jenkins](http://ci.forgeessentials.com/job/FE-1.12.2) before reporting a bug.
 - Check, if the bug was not already reported by using the search.
 - Always attach logs to your reports if you encountered crashes.  
    If the client crashed, please also attach the client log if possible.
@@ -22,7 +21,7 @@ Please follow these rules when reporting bugs:
 
 # Downloads
 **If you just want the latest stable releases, please get them from [Curse](http://minecraft.curseforge.com/mc-mods/74735)**  
-Nightly builds with the latest features and bugfixes can be found on our [Jenkins build server](http://ci.forgeessentials.com/job/FE/).
+Nightly builds with the latest features and bugfixes can be found on our [Jenkins build server](http://ci.forgeessentials.com/job/FE-1.12.2/).
 
 # About
 The ForgeEssentials project consists many server features,  

@@ -96,7 +96,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
                 x = (int) this.func_82368_a(sender, 0.0D, args[0]);
                 y = (int) this.func_82367_a(sender, 0.0D, args[1], 0, 0);
                 z = (int) this.func_82368_a(sender, 0.0D, args[2]);
-                world = ((DedicatedServer) sender).worldServerForDimension(0);
+                world = ((DedicatedServer) sender).getWorld(0);
             }
             BlockPos pos = new BlockPos(x, y, z);
             IBlockState state = world.getBlockState(pos);
@@ -108,7 +108,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
             }
             else
             {
-                state.getBlock().onBlockActivated(world, pos, state, (EntityPlayer) null, EnumHand.MAIN_HAND, null, EnumFacing.DOWN, 0.0F, 0.0F, 0.0F);
+                state.getBlock().onBlockActivated(world, pos, state, (EntityPlayer) null, EnumHand.MAIN_HAND, null, EnumFacing.DOWN.getIndex(), 0.0F, 0.0F);
                 ChatOutputHandler.chatConfirmation(sender, "Button/Lever Pushed");
             }
         }
@@ -143,7 +143,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
             }
             else
             {
-                state.getBlock().onBlockActivated(world, pos, state, (EntityPlayer) null, EnumHand.MAIN_HAND, null, EnumFacing.DOWN, 0.0F, 0.0F, 0.0F);
+                state.getBlock().onBlockActivated(world, pos, state, (EntityPlayer) null, EnumHand.MAIN_HAND, null, EnumFacing.DOWN.getIndex(), 0.0F, 0.0F);
                 ChatOutputHandler.chatConfirmation(sender, "Button/Lever Pushed");
             }
         }

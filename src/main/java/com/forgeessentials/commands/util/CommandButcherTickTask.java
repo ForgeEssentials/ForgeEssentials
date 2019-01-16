@@ -8,8 +8,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityGolem;
@@ -122,7 +122,7 @@ public class CommandButcherTickTask implements TickTask
                     if (world.getChunkProvider().getLoadedChunk(chunkX, chunkZ) != null)
                     {
                         List<EntityLiving> list = new LinkedList<>();
-                        world.getChunkFromChunkCoords(chunkX, chunkZ).getEntitiesOfTypeWithinAAAB(EntityLiving.class, aabb, list, null);
+                        world.getChunkFromChunkCoords(chunkX, chunkZ).getEntitiesOfTypeWithinAABB(EntityLiving.class, aabb, list, null);
                         for (EntityLiving entity : list)
                         {
                             checkEntity(entity);
@@ -206,7 +206,7 @@ public class CommandButcherTickTask implements TickTask
     {
         if (entity instanceof EntityDragon)
         {
-            for (EntityDragonPart part : ((EntityDragon) entity).dragonPartArray)
+            for (MultiPartEntityPart part : ((EntityDragon) entity).dragonPartArray)
                 part.setDead();
         }
         entity.setDead();

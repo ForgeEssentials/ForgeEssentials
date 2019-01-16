@@ -5,11 +5,19 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -32,6 +40,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
@@ -39,6 +48,7 @@ import org.apache.logging.log4j.core.Logger;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.UserIdent.NpcUserIdent;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
@@ -72,6 +82,7 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
@@ -94,7 +105,7 @@ import com.forgeessentials.util.selections.SelectionHandler;
  */
 
 @Mod(modid = ForgeEssentials.MODID, name = "Forge Essentials", version = BuildInfo.BASE_VERSION, acceptableRemoteVersions = "*",
-        dependencies = BuildInfo.DEPENDENCIES + ";after:WorldEdit")
+        dependencies = BuildInfo.DEPENDENCIES + ";after:worldedit")
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
@@ -247,7 +258,7 @@ public class ForgeEssentials extends ConfigLoaderBase
             @Override
             public IMessage onMessage(Packet0Handshake message, MessageContext ctx)
             {
-                PlayerInfo.get(ctx.getServerHandler().playerEntity).setHasFEClient(true);
+                PlayerInfo.get(ctx.getServerHandler().player).setHasFEClient(true);
                 return null;
             }
         }, Packet0Handshake.class, 0, Side.SERVER);
@@ -347,10 +358,15 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverStopped(FMLServerStoppedEvent e)
     {
-        mcStats.stop();
-        APIRegistry.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
-        FECommandManager.clearRegisteredCommands();
-        Translator.save();
+        try
+        {
+            mcStats.stop();
+            APIRegistry.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
+            FECommandManager.clearRegisteredCommands();
+            Translator.save();
+        } catch (RuntimeException ex) {
+            LoggingHandler.felog.fatal("Caught Runtime Exception During Server Stop event! Suppressing Fire!", ex);
+        }
     }
 
     protected void registerPermissions()
@@ -395,7 +411,7 @@ public class ForgeEssentials extends ConfigLoaderBase
                 if (matcher.find())
                 {
                     String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.player.getName());
-                    ((EntityPlayerMP) event.player).connection.disconnect(msg);
+                    ((EntityPlayerMP) event.player).connection.disconnect(new TextComponentTranslation(msg));
                 }
             }
 
@@ -431,10 +447,45 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void commandEvent(CommandEvent event)
     {
+        boolean perm = checkPerms(event.getCommand(), event.getSender());
+
         if (logCommandsToConsole)
         {
-            LoggingHandler.felog.info(String.format("Player \"%s\" used command \"/%s %s\"", event.getCommand().getName(),
-                    event.getCommand().getName(), StringUtils.join(event.getParameters(), " ")));
+            LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"/%s %s\"", event.getSender().getName(),
+                    perm ? "used" : "tried to use", event.getCommand().getName(), StringUtils.join(event.getParameters(), " ")));
+        }
+
+        if (!perm) {
+            event.setCanceled(true);
+            TextComponentTranslation textcomponenttranslation2 = new TextComponentTranslation("commands.generic.permission", new Object[0]);
+            textcomponenttranslation2.getStyle().setColor(TextFormatting.RED);
+            event.getSender().sendMessage(textcomponenttranslation2);
+        }
+    }
+
+    public boolean checkPerms(ICommand command, ICommandSender sender) {
+        String node = PermissionManager.getCommandPermission(command);
+        if (sender instanceof DoAsCommandSender) {
+            if (!((DoAsCommandSender) sender).getIdent().isPlayer()) {
+                if (((DoAsCommandSender) sender).getIdent().isNpc()) {
+                    return PermissionAPI.hasPermission(((DoAsCommandSender) sender).getIdent().getGameProfile(), node, null);
+                }
+                else
+                {
+                    return true;
+                }
+            } else {
+                return PermissionAPI.hasPermission(((DoAsCommandSender) sender).getIdent().getPlayer(), node);
+            }
+        }
+        if (sender instanceof MinecraftServer || sender instanceof CommandBlockBaseLogic)
+            return true;
+        if (sender instanceof EntityPlayer)
+        {
+            return PermissionAPI.hasPermission((EntityPlayer) sender, node);
+        } else {
+            NpcUserIdent ident = UserIdent.getNpc(sender.getName());
+            return PermissionAPI.hasPermission(ident.getGameProfile(), node, null);
         }
     }
 

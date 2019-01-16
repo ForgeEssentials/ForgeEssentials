@@ -133,7 +133,7 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (point.getWorld() == null)
         {
-            FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(point.getDimension());
+            FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(point.getDimension());
             if (point.getWorld() == null)
             {
                 ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target dimension does not exist"));
@@ -299,9 +299,9 @@ public class TeleportHelper extends ServerEventHandler
         int oldDim = player.dimension;
         MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
 
-        WorldServer oldWorld = mcServer.worldServerForDimension(player.dimension);
+        WorldServer oldWorld = mcServer.getWorld(player.dimension);
         player.dimension = dimension;
-        WorldServer newWorld = mcServer.worldServerForDimension(player.dimension);
+        WorldServer newWorld = mcServer.getWorld(player.dimension);
         player.connection.sendPacket(new SPacketRespawn(player.dimension, newWorld.getDifficulty(),
                 newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType())); // Forge: Use new dimensions information
         oldWorld.removeEntityDangerously(player);

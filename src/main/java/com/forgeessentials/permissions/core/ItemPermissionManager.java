@@ -71,7 +71,7 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
             ItemStack stack = inventory.getStackInSlot(slotIdx);
             if (stack == null)
                 continue;
-            boolean isEquipped = slotIdx == inventory.currentItem || slotIdx > inventory.mainInventory.length;
+            boolean isEquipped = slotIdx == inventory.currentItem || slotIdx > inventory.mainInventory.size();
             check(event, stack, isEquipped);
         }
     }
@@ -87,7 +87,7 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
             ItemStack stack = inventory.getStackInSlot(slotIdx);
             if (stack == null)
                 continue;
-            boolean isEquipped = slotIdx == inventory.currentItem || slotIdx > inventory.mainInventory.length;
+            boolean isEquipped = slotIdx == inventory.currentItem || slotIdx > inventory.mainInventory.size();
 
             NBTTagCompound tag = getPermissionTag(stack);
             if (tag == null)

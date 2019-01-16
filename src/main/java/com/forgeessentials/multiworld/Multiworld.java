@@ -39,6 +39,8 @@ public class Multiworld
 
     protected long seed;
 
+    protected String generatorOptions;
+
     // protected GameType gameType = GameType.CREATIVE;
     //
     // protected EnumDifficulty difficulty = EnumDifficulty.PEACEFUL;
@@ -61,13 +63,18 @@ public class Multiworld
     @Expose(serialize = false)
     protected WorldType worldTypeObj;
 
-    public Multiworld(String name, String provider, String worldType, long seed)
+    public Multiworld(String name, String provider, String worldType, long seed) {
+        this(name, provider, worldType, seed, "");
+    }
+
+    public Multiworld(String name, String provider, String worldType, long seed, String generatorOptions)
     {
         this.name = name;
         this.provider = provider;
         this.worldType = worldType;
 
         this.seed = seed;
+        this.generatorOptions = generatorOptions;
         // this.gameType = MinecraftServer.getServer().getGameType();
         // this.difficulty = MinecraftServer.getServer().func_147135_j();
         // this.allowHostileCreatures = true;
@@ -81,7 +88,7 @@ public class Multiworld
 
     public void removeAllPlayersFromWorld()
     {
-        WorldServer overworld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
+        WorldServer overworld = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0);
         for (EntityPlayerMP player : ServerUtil.getPlayerList())
         {
             if (player.dimension == dimensionId)
@@ -110,7 +117,7 @@ public class Multiworld
 
     public WorldServer getWorldServer()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimensionId);
+        return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dimensionId);
     }
 
     public int getDimensionId()

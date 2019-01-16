@@ -14,6 +14,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -23,7 +26,8 @@ import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -130,8 +134,8 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
         APIRegistry.perms.registerPermissionDescription(PERM_BOUNTY, "Bounty for killing entities (ex.: fe.economy.bounty.Skeleton = 5)");
         APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, DefaultPermissionLevel.ALL, "Whether to show a message if a bounty is given");
-        for (Entry<String, Class<? extends Entity>> e : ((Map<String, Class<? extends Entity>>) EntityList.NAME_TO_CLASS).entrySet())
-            if (EntityLiving.class.isAssignableFrom(e.getValue()))
+        for (Entry<ResourceLocation, EntityEntry> e : ForgeRegistries.ENTITIES.getEntries())
+            if (EntityLiving.class.isAssignableFrom(e.getValue().getEntityClass()))
                 APIRegistry.perms.registerPermissionProperty(PERM_BOUNTY + "." + e.getKey(), "0");
 
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHTOLL, "",
@@ -178,19 +182,19 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         int foundStacks = 0;
         int itemDamage = ItemUtil.getItemDamage(itemStack);
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
+        for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
         {
-            ItemStack stack = player.inventory.mainInventory[slot];
+            ItemStack stack = player.inventory.mainInventory.get(slot);
             if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
-                foundStacks += stack.stackSize;
+                foundStacks += stack.getCount();
         }
         foundStacks = amount = Math.min(foundStacks, amount);
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
+        for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
         {
-            ItemStack stack = player.inventory.mainInventory[slot];
+            ItemStack stack = player.inventory.mainInventory.get(slot);
             if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
             {
-                int removeCount = Math.min(stack.stackSize, foundStacks);
+                int removeCount = Math.min(stack.getCount(), foundStacks);
                 player.inventory.decrStackSize(slot, removeCount);
                 foundStacks -= removeCount;
             }
@@ -202,11 +206,11 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         int foundStacks = 0;
         int itemDamage = ItemUtil.getItemDamage(itemType);
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
+        for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
         {
-            ItemStack stack = player.inventory.mainInventory[slot];
+            ItemStack stack = player.inventory.mainInventory.get(slot);
             if (stack != null && stack.getItem() == itemType.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
-                foundStacks += stack.stackSize;
+                foundStacks += stack.getCount();
         }
         return foundStacks;
     }
@@ -261,9 +265,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             ChatOutputHandler.chatNotification((ICommandSender) e.getEntity(), Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
         }
 
-        if (e.getSource().getEntity() instanceof EntityPlayerMP)
+        if (e.getSource().getTrueSource() instanceof EntityPlayerMP)
         {
-            UserIdent killer = UserIdent.get((EntityPlayerMP) e.getSource().getEntity());
+            UserIdent killer = UserIdent.get((EntityPlayerMP) e.getSource().getTrueSource());
             String permission = PERM_BOUNTY + "." + ProtectionEventHandler.getEntityName(e.getEntityLiving());
             double bounty = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(killer, permission), 0);
             if (bounty > 0)
@@ -294,7 +298,12 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
             Wallet wallet = APIRegistry.economy.getWallet(ident);
             if (!wallet.withdraw(price))
+            {
                 event.setCanceled(true);
+                TextComponentTranslation textcomponenttranslation2 = new TextComponentTranslation("You do not have enough money to use this command.", new Object[0]);
+                textcomponenttranslation2.getStyle().setColor(TextFormatting.RED);
+                event.getSender().sendMessage(textcomponenttranslation2);
+            }
             break;
         }
     }
@@ -354,7 +363,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             ConfigCategory category = config.getCategory("ItemTables");
             for (Entry<String, Property> entry : category.entrySet())
             {
-                for (Item item : GameData.getItemRegistry().typeSafeIterable())
+                for (Item item : ForgeRegistries.ITEMS)
                     if (entry.getKey().equals(item.getUnlocalizedName()))
                     {
                         String id = ServerUtil.getItemName(item);

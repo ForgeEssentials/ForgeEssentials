@@ -47,6 +47,7 @@ declare namespace fe {
 		remove(): string;
 		peek(): string;
 		get(index: int): string;
+		getAllArgs(): string;
 		isEmpty(): boolean;
 		hasPlayer(): boolean;
 		parsePlayer(): UserIdent;
@@ -89,6 +90,14 @@ declare namespace fe {
 		 */
 		registerCommand(options: CommandOptions): void;
 		/**
+		 * Returns the total number of unique players that have connected to this server
+		 */
+		getUniquePlayerCount(): int;
+		/**
+		 * Returns the list of players who have ever connected.
+		 */
+		getAllPlayers(): java.util.Set;
+		/**
 		 * Returns the amount of time this player was active on the server in seconds
 		 */
 		getTimePlayed(playerId: java.util.UUID): long;
@@ -103,8 +112,7 @@ declare namespace fe {
 		static getPermissionProperty(player: mc.entity.EntityPlayer, permissionNode: string): string;
 		static registerPermissionDescription(permissionNode: string, description: string): void;
 		static getPermissionDescription(permissionNode: string): string;
-		static registerPermission(permission: string, level: net.minecraftforge.permission.PermissionLevel): void;
-		static registerPermission(permissionNode: string, level: net.minecraftforge.permission.PermissionLevel, description: string): void;
+		static registerPermission(permissionNode: string, level: net.minecraftforge.server.permission.DefaultPermissionLevel, description: string): void;
 		static registerPermissionProperty(permissionNode: string, defaultValue: string): void;
 		static registerPermissionProperty(permissionNode: string, defaultValue: string, description: string): void;
 		static registerPermissionPropertyOp(permissionNode: string, defaultValue: string): void;
@@ -145,6 +153,41 @@ declare namespace fe {
 		constructor();
 		getZoneAt(worldPoint: WorldPoint): Zone;
 		getZonesAt(worldPoint: WorldPoint): java.util.List;
+	}
+	
+	class PlayerInfo extends Wrapper {
+		getUserIdent(): UserIdent;
+		getFirstLogin(): java.util.Date;
+		getLastLogin(): java.util.Date;
+		getLastLogout(): java.util.Date;
+		getTimePlayed(): long;
+		setActive(): void;
+		setActive(delta: long): void;
+		getInactiveTime(): long;
+		removeTimeout(name: string): void;
+		checkTimeout(name: string): boolean;
+		getRemainingTimeout(name: string): long;
+		startTimeout(name: string, milliseconds: long): void;
+		isWandEnabled(): boolean;
+		setWandEnabled(wandEnabled: boolean): void;
+		getWandID(): string;
+		setWandID(wandID: string): void;
+		getWandDmg(): int;
+		setWandDmg(wandDmg: int): void;
+		getSel1(): Point;
+		getSel2(): Point;
+		getSelDim(): int;
+		setSel1(point: Point): void;
+		setSel2(point: Point): void;
+		setSelDim(dimension: int): void;
+		getLastTeleportOrigin(): WarpPoint;
+		setLastTeleportOrigin(lastTeleportStart: WarpPoint): void;
+		getLastDeathLocation(): WarpPoint;
+		setLastDeathLocation(lastDeathLocation: WarpPoint): void;
+		getLastTeleportTime(): long;
+		setLastTeleportTime(currentTimeMillis: long): void;
+		getHome(): WarpPoint;
+		setHome(home: WarpPoint): void;
 	}
 	
 	class Point extends Wrapper {
@@ -193,68 +236,31 @@ declare namespace fe {
 		getPermissionProperty(permissionNode: string): string;
 		getPlayerInfo(): PlayerInfo;
 	}
-
-	class PlayerInfo extends Wrapper {
-        getUserIdent(): UserIdent;
-        getFirstLogin(): Date;
-        getLastLogin(): Date;
-        getLastLogout(): Date;
-        getTimePlayed(): long;
-        setActive(): void;
-        setActive(delta: long): void;
-        getInactiveTime(): long;
-        removeTimeout(name: string): void;
-        checkTimeout(name: string): boolean;
-        getRemainingTimeout(name: string): long;
-        startTimeout(name: string, milliseconds: long): void;
-        isWandEnabled(): boolean;
-        setWandEnabled(wandEnabled: boolean): void;
-        getWandID(): string;
-        setWandID(wandID: string): void;
-        getWandDmg(): int;
-        setWandDmg(wandDmg: int): void;
-        getSel1(): Point;
-        getSel2(): Point;
-        getSelDim(): int;
-        setSel1(point: Point): void;
-        setSel2(point: Point): void;
-        setSelDim(dim: int): void;
-        getLastTeleportOrigin(): WarpPoint;
-        setLastTeleportOrigin(lastTeleportStart: WarpPoint): void;
-        getLastDeathLocation(): WarpPoint;
-        setLastDeathLocation(lastDeathLocation: WarpPoint): void;
-        getLastTeleportTime(): long;
-        setLastTeleportTime(currentTimeMillis: long): void;
-        getHome(): WarpPoint;
-        setHome(home: WarpPoint): void;
-	}
-
+	
 	class WarpPoint extends Wrapper {
-	    toWorldPoint(): WorldPoint;
-	    getWorld(): mc.world.WorldServer;
-	    getBlockX(): int;
-	    getBlockY(): int;
-	    getBlockZ(): int;
-	    getX(): double;
-	    getY(): double;
-	    getZ(): double;
-	    getDimension(): int;
-	    getPitch(): float;
-	    getYaw(): float;
-	    set(dim: int, xd: double, yd: double, zd: double, pitch: float, yaw: float): void;
-	    setDimension(dim: int): void;
-	    setX(value: double): void;
-	    setY(value: double): void;
-	    setZ(value: double): void;
-	    setPitch(value: float): void;
-	    setYaw(value: float): void;
-	    length(): double;
-	    distance(v: WarpPoint): double;
-	    distance(e: mc.entity.Entity): double;
-	    toString(): string;
-	    toReadableString(): string;
-	    fromString(value: string): WarpPoint;
+		static fromString(value: string): WarpPoint;
+		toWorldPoint(): WorldPoint;
+		getBlockX(): int;
+		getX(): double;
+		getY(): double;
+		getZ(): double;
+		getDimension(): int;
+		getPitch(): float;
+		getYaw(): float;
+		set(dim: int, xd: double, yd: double, zd: double, pitch: float, yaw: float): void;
+		setDimension(dim: int): void;
+		setX(value: double): void;
+		setY(value: double): void;
+		setZ(value: double): void;
+		setPitch(value: float): void;
+		setYaw(value: float): void;
+		length(): double;
+		distance(v: WarpPoint): double;
+		distance(e: mc.entity.Entity): double;
+		toString(): string;
+		toReadableString(): string;
 	}
+	
 	class WorldArea extends mc.AreaBase {
 	}
 	
@@ -306,9 +312,9 @@ declare namespace fe.world {
 }
 
 declare class PermissionLevel {
-	static TRUE: net.minecraftforge.permission.PermissionLevel;
-	static OP: net.minecraftforge.permission.PermissionLevel;
-	static FALSE: net.minecraftforge.permission.PermissionLevel;
+	static TRUE: net.minecraftforge.server.permission.DefaultPermissionLevel;
+	static OP: net.minecraftforge.server.permission.DefaultPermissionLevel;
+	static FALSE: net.minecraftforge.server.permission.DefaultPermissionLevel;
 }
 
 

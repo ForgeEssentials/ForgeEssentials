@@ -56,7 +56,7 @@ public class ModuleAfterlife extends ServerEventHandler
     @SubscribeEvent
     public void load(FEModuleInitEvent e)
     {
-        TileEntity.addMapping(TileEntitySkullGrave.class, "FESkull");
+        TileEntity.register("FESkull", TileEntitySkullGrave.class);
     }
 
     @SubscribeEvent

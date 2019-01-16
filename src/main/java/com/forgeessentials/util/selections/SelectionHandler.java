@@ -57,7 +57,7 @@ public class SelectionHandler extends ServerEventHandler
         // Check if wand should activate
         if (player.getHeldItemMainhand() == null)
         {
-            if (info.getWandID() != "hands")
+            if (!info.getWandID().equals("hands"))
                 return;
         }
         else
@@ -93,7 +93,7 @@ public class SelectionHandler extends ServerEventHandler
         // Check if wand should activate
         if (player.getHeldItemMainhand() == null)
         {
-            if (info.getWandID() != "hands")
+            if (!info.getWandID().equals("hands"))
                 return;
         }
         else

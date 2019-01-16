@@ -23,12 +23,12 @@ public class AuthNetHandler implements IMessageHandler<Packet6AuthLogin, IMessag
         switch(message.mode)
         {
         case 1:
-            if (message.hash != "")
+            if (!message.hash.isEmpty())
             {
-                if (PasswordManager.hasSession(UserIdent.get(ctx.getServerHandler().playerEntity).getUuid(), UUID.fromString(message.hash)))
+                if (PasswordManager.hasSession(UserIdent.get(ctx.getServerHandler().player).getUuid(), UUID.fromString(message.hash)))
                 {
-                    ModuleAuth.authenticate(UserIdent.get(ctx.getServerHandler().playerEntity).getUuid());
-                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(ctx.getServerHandler().playerEntity, Source.AUTOLOGIN));
+                    ModuleAuth.authenticate(UserIdent.get(ctx.getServerHandler().player).getUuid());
+                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(ctx.getServerHandler().player, Source.AUTOLOGIN));
                 }
             }
             break;

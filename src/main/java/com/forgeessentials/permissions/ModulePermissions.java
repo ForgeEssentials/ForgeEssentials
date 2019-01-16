@@ -23,6 +23,7 @@ import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.permissions.core.ItemPermissionManager;
 import com.forgeessentials.permissions.core.PermissionScheduler;
 import com.forgeessentials.permissions.core.ZonedPermissionHelper;
+import com.forgeessentials.permissions.ftbu_compat.FTBURankConfigHandler;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
 import com.forgeessentials.permissions.persistence.JsonProvider;
 import com.forgeessentials.permissions.persistence.SQLProvider;
@@ -67,6 +68,12 @@ public class ModulePermissions extends ConfigLoaderBase
         permissionHelper = new ZonedPermissionHelper();
         APIRegistry.perms = permissionHelper;
         PermissionAPI.setPermissionHandler(permissionHelper);
+
+        try {
+            Class.forName("com.feed_the_beast.ftblib.lib.config.IRankConfigHandler");
+            Class.forName("com.feed_the_beast.ftbutilities.ranks.Ranks");
+            MinecraftForge.EVENT_BUS.register(FTBURankConfigHandler.class);
+        } catch (ClassNotFoundException e) {}
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

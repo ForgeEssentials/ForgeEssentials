@@ -28,7 +28,7 @@ public class CommandMessageReplacement extends CommandMessage
 
             if (target == null)
             {
-                throw new PlayerNotFoundException();
+                throw new PlayerNotFoundException("commands.generic.player.notFound");
             }
             else if (target == sender)
             {

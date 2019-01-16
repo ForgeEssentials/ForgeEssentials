@@ -26,6 +26,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -63,7 +64,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -136,12 +136,12 @@ public class ProtectionEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void entityAttackedEvent(EntityAttackedEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || event.source.getEntity() == null)
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || event.source.getTrueSource() == null)
             return;
 
         UserIdent ident = null;
-        if (event.source.getEntity() instanceof EntityPlayer)
-            ident = UserIdent.get((EntityPlayer) event.source.getEntity());
+        if (event.source.getTrueSource() instanceof EntityPlayer)
+            ident = UserIdent.get((EntityPlayer) event.source.getTrueSource());
 
         handleDamageToEntityEvent(event, event.getEntity(), ident);
     }
@@ -170,10 +170,10 @@ public class ProtectionEventHandler extends ServerEventHandler
                 }
             }
 
-            if (event.getSource().getEntity() != null)
+            if (event.getSource().getTrueSource() != null)
             {
                 // non-player-entity (mob) -> player
-                Entity source = event.getSource().getEntity();
+                Entity source = event.getSource().getTrueSource();
                 String permission = ModuleProtection.PERM_DAMAGE_BY + "." + getEntityName(source);
                 ModuleProtection.debugPermission(target, permission);
                 if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), permission))
@@ -363,9 +363,9 @@ public class ProtectionEventHandler extends ServerEventHandler
             ident = APIRegistry.IDENT_NPC;
 
         Vec3d center = event.getExplosion().getPosition();
-        int cx = (int) Math.floor(center.xCoord);
-        int cy = (int) Math.floor(center.yCoord);
-        int cz = (int) Math.floor(center.zCoord);
+        int cx = (int) Math.floor(center.x);
+        int cy = (int) Math.floor(center.y);
+        int cz = (int) Math.floor(center.z);
         float size = ReflectionHelper.getPrivateValue(Explosion.class, event.getExplosion(), "field_77280_f", "explosionSize");
         int s = (int) Math.ceil(size);
 
@@ -465,7 +465,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             // event.useItem = allow ? ALLOW : DENY;
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
             {
-                int itemId = ((FMLControlledNamespacedRegistry<Item>) GameRegistry.findRegistry(Item.class)).getId(stack.getItem());
+                int itemId = Item.REGISTRY.getIDForObject(stack.getItem());
                 Set<Integer> ids = new HashSet<>();
                 ids.add(itemId);
                 NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, ids, null), ident.getPlayerMP());
@@ -606,13 +606,13 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
         UserIdent ident = UserIdent.get(event.getEntityPlayer());
-        if (isItemBanned(ident, event.getItem().getEntityItem()))
+        if (isItemBanned(ident, event.getItem().getItem()))
         {
             event.setCanceled(true);
             event.getItem().setDead();
             return;
         }
-        if (isInventoryItemBanned(ident, event.getItem().getEntityItem()))
+        if (isInventoryItemBanned(ident, event.getItem().getItem()))
         {
             event.setCanceled(true);
             return;
@@ -765,16 +765,16 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         ModulePermissions.permissionHelper.disableDebugMode(true);
 
-        ItemStack[] inventory = ident.getPlayer().inventory.mainInventory;
-        for (int i = 0; i < (reset ? inventory.length : 9); ++i)
+        NonNullList<ItemStack> inventory = ident.getPlayer().inventory.mainInventory;
+        for (int i = 0; i < (reset ? inventory.size() : 9); ++i)
         {
-            ItemStack stack = inventory[i];
+            ItemStack stack = inventory.get(i);
             if (stack == null || !(stack.getItem() instanceof ItemBlock))
                 continue;
-            Block block = ((ItemBlock) stack.getItem()).block;
+            Block block = ((ItemBlock) stack.getItem()).getBlock();
             String permission = ModuleProtection.getBlockPlacePermission(block, 0);
             if (!APIRegistry.perms.checkUserPermission(ident, permission))
-                placeIds.add(((FMLControlledNamespacedRegistry<Block>) GameRegistry.findRegistry(Block.class)).getId(block));
+                placeIds.add(Block.REGISTRY.getIDForObject(block));
         }
 
         ModulePermissions.permissionHelper.disableDebugMode(false);
@@ -802,11 +802,11 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (event.afterZone instanceof AreaZone)
             {
                 center = ((AreaZone) event.afterZone).getArea().getCenter().toVec3();
-                center = new Vec3d(center.xCoord, event.beforePoint.getY(), center.zCoord);
+                center = new Vec3d(center.x, event.beforePoint.getY(), center.y);
             }
             Vec3d delta = event.beforePoint.toVec3().subtract(center).normalize();
-            WarpPoint target = new WarpPoint(event.beforePoint.getDimension(), event.beforePoint.getX() - delta.xCoord, event.beforePoint.getY() - delta.yCoord,
-                    event.beforePoint.getZ() - delta.zCoord, event.afterPoint.getPitch(), event.afterPoint.getYaw());
+            WarpPoint target = new WarpPoint(event.beforePoint.getDimension(), event.beforePoint.getX() - delta.x, event.beforePoint.getY() - delta.y,
+                    event.beforePoint.getZ() - delta.z, event.afterPoint.getPitch(), event.afterPoint.getYaw());
 
             TeleportHelper.doTeleport((EntityPlayerMP) event.getEntityPlayer(), target);
             event.setCanceled(true);

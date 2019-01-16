@@ -104,22 +104,19 @@ public class WorldPoint extends Point
     @Override
     public WorldPoint setX(int x)
     {
-        this.x = x;
-        return this;
+        return (WorldPoint) super.setX(x);
     }
 
     @Override
     public WorldPoint setY(int y)
     {
-        this.y = y;
-        return this;
+        return (WorldPoint) super.setY(y);
     }
 
     @Override
     public WorldPoint setZ(int z)
     {
-        this.z = z;
-        return this;
+        return (WorldPoint) super.setZ(z);
     }
 
     public World getWorld()

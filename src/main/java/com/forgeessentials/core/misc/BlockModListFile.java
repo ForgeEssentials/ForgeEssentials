@@ -14,7 +14,7 @@ import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class BlockModListFile
 {
@@ -71,11 +71,11 @@ public class BlockModListFile
                         + " (Server time)");
                 out.println();
 
-                for (Item i : GameData.getItemRegistry().typeSafeIterable())
+                for (Item i : ForgeRegistries.ITEMS)
                 {
                     out.println(i.getUnlocalizedName());
                 }
-                for (Block b : GameData.getBlockRegistry().typeSafeIterable())
+                for (Block b : ForgeRegistries.BLOCKS)
                 {
                     out.println(b.getUnlocalizedName());
                 }

@@ -16,7 +16,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
-import net.minecraftforge.fml.common.registry.GameData;
 
 public final class MapperUtil
 {
@@ -113,7 +112,7 @@ public final class MapperUtil
 
     public static Color getBlockColor(Block block, int meta)
     {
-        int id = GameData.getBlockRegistry().getId(block);
+        int id = Block.REGISTRY.getIDForObject(block);
         if (id >= colors.length)
             return Color.BLACK;
 

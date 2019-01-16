@@ -53,12 +53,12 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 
     public int getStackSize()
     {
-        return that.stackSize;
+        return that.getCount();
     }
 
     public void setStackSize(int size)
     {
-        that.stackSize = size;
+        that.setCount(size);
     }
 
     public int getMaxStackSize()
