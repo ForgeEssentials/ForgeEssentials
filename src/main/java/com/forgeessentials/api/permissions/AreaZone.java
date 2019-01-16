@@ -44,7 +44,7 @@ public class AreaZone extends Zone implements Comparable<AreaZone>
     public AreaZone(WorldZone worldZone, String name, AreaBase area) throws EventCancelledException
     {
         // Initialize basic AreaZone data
-        this(worldZone.getServerZone().getMaxZoneID() + 1);
+        this(0);
         this.worldZone = worldZone;
         this.name = name;
         this.area = area;
@@ -53,7 +53,7 @@ public class AreaZone extends Zone implements Comparable<AreaZone>
         EventCancelledException.checkedPost(new PermissionEvent.Zone.Create(worldZone.getServerZone(), this), APIRegistry.getFEEventBus());
 
         // If not cancelled, inc the zoneID pointer and add the zone to the world
-        worldZone.getServerZone().nextZoneID();
+        this.setId(worldZone.nextAreaZoneId());
         this.worldZone.addAreaZone(this);
     }
 

@@ -168,6 +168,10 @@ public abstract class Zone
         this.id = id;
     }
 
+    public void setId(int id) {
+    	this.id = id;
+    }
+    
     /**
      * Gets the unique zone-ID
      */
