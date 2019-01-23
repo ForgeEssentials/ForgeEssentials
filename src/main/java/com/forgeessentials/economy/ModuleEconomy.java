@@ -177,25 +177,28 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     public static int tryRemoveItems(EntityPlayer player, ItemStack itemStack, int amount)
     {
-        int foundStacks = 0;
         int itemDamage = ItemUtil.getItemDamage(itemStack);
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
+
+        for (int slot = 0; slot < player.inventory.mainInventory.length && amount > 0; slot++)
         {
             ItemStack stack = player.inventory.mainInventory[slot];
-            if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
-                foundStacks += stack.stackSize;
-        }
-        foundStacks = amount = Math.min(foundStacks, amount);
-        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
-        {
-            ItemStack stack = player.inventory.mainInventory[slot];
+
             if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
             {
-                int removeCount = Math.min(stack.stackSize, foundStacks);
-                player.inventory.decrStackSize(slot, removeCount);
-                foundStacks -= removeCount;
+                int removeCount = Math.min(stack.stackSize, amount);
+
+                if (removeCount == stack.stackSize) {
+                    player.inventory.setInventorySlotContents(slot, null);
+                } else {
+                    player.inventory.decrStackSize(slot, removeCount);
+                }
+
+                amount -= removeCount;
             }
         }
+
+        player.inventoryContainer.detectAndSendChanges();
+
         return amount;
     }
 
