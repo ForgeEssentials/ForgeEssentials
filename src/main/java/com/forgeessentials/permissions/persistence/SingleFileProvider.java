@@ -3,9 +3,10 @@ package com.forgeessentials.permissions.persistence;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.data.v2.DataManager;
@@ -30,7 +31,7 @@ public class SingleFileProvider extends ZonePersistenceProvider
     @Override
     public ServerZone load()
     {
-        try (BufferedReader in = new BufferedReader(new FileReader(file)))
+        try (BufferedReader in = Files.newBufferedReader(file.toPath(), Charset.forName("UTF-8")))
         {
             ServerZone serverZone = DataManager.getGson().fromJson(in, ServerZone.class);
             if (serverZone == null)

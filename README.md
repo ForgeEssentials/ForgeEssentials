@@ -18,7 +18,9 @@ Please follow these rules when reporting bugs:
 - Always attach your ForgeEssentials/modlist.txt file
 - Always attach logs to your reports if you encountered crashes.  
    If the client crashed, please also attach the client log if possible.
+- Each file must be clearly marked and only one url for file.
 - For feature requests, we recommend asking about it on Discord first
+
 **Any issue that does not follow the above rules will be closed!!!**
 
 # Downloads
