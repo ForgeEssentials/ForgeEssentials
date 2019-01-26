@@ -43,7 +43,13 @@ especially a powerful permissions and protection system:
 # Development Setup
 If you are a modder and are interested in making a mod that extends the capabilities of Forge Essentials, or are looking to have increased levels of compatibility with Forge Essentials in your mod, please refer to the [developer documentation](https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Developer-documentation).
 
-We welcome all pull requests from anyone interested in contributing to the mod. If you're planning something major, please speak with the team first.
+We welcome all pull requests from anyone interested in contributing to the mod.
+
+However, we do have a few rules to keep things organized:
+ - Before making any pull request make sure to talk to the team first on discord.
+    - This is doubly important for large fixes that change internals or feature additions
+ - For Bug Fixes, a github issue must be created first that can be referenced in the PR itself
+ - Only 1 PR per Bug Fix unless otherwise approved by the team.
 
 For assistance in setting up a workspace to contribute to ForgeEssentials, please refer to [CONTRIBUTING.md](CONTRIBUTING.md).
 
