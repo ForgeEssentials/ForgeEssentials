@@ -51,7 +51,7 @@ public class SingleFileProvider extends ZonePersistenceProvider
     public void save(ServerZone serverZone)
     {
         writeUserGroupPermissions(serverZone);
-        try (BufferedWriter out = new BufferedWriter(new FileWriter(file)))
+        try (BufferedWriter out = Files.newBufferedWriter(file.toPath(), Charset.forName("UTF-8")))
         {
             out.write(DataManager.getGson().toJson(serverZone));
         }
