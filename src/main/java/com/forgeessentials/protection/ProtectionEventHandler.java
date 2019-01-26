@@ -366,7 +366,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         int cx = (int) Math.floor(center.x);
         int cy = (int) Math.floor(center.y);
         int cz = (int) Math.floor(center.z);
-        float size = ReflectionHelper.getPrivateValue(Explosion.class, event.getExplosion(), "field_77280_f", "explosionSize");
+        float size = event.getExplosion().size;
         int s = (int) Math.ceil(size);
 
         if (!APIRegistry.perms.checkUserPermission(ident, new WorldPoint(event.getWorld(), cx, cy, cz), ModuleProtection.PERM_EXPLOSION))
