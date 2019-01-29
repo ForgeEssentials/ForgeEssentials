@@ -305,7 +305,9 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
                 ChatOutputHandler.sendMessage(event.entityPlayer, msg);
                 return;
             }
+
             int removedAmount = 0;
+
             if (sameItem)
             {
                 removedAmount = Math.min(equippedStack.stackSize, transactionStack.stackSize);
@@ -313,8 +315,11 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
                 if (equippedStack.stackSize <= 0)
                     event.entityPlayer.inventory.mainInventory[event.entityPlayer.inventory.currentItem] = null;
             }
-            if (removedAmount < transactionStack.stackSize)
-                removedAmount += ModuleEconomy.tryRemoveItems(event.entityPlayer, transactionStack, transactionStack.stackSize - removedAmount);
+
+            if (removedAmount < transactionStack.stackSize) {
+                ModuleEconomy.tryRemoveItems(event.entityPlayer, transactionStack, transactionStack.stackSize - removedAmount);
+            }
+
             wallet.add(shop.sellPrice);
             shop.setStock(shop.getStock() + 1);
 
