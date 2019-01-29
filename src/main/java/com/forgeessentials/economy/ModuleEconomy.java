@@ -179,7 +179,8 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         int itemDamage = ItemUtil.getItemDamage(itemStack);
 
-        for (int slot = 0; slot < player.inventory.mainInventory.length && amount > 0; slot++)
+        int srcAmt = amount;
+        for (int slot = 0; slot < player.inventory.mainInventory.length || amount == 0; slot++)
         {
             ItemStack stack = player.inventory.mainInventory[slot];
 
@@ -199,7 +200,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
         player.inventoryContainer.detectAndSendChanges();
 
-        return amount;
+        return srcAmt - amount;
     }
 
     public static int countInventoryItems(EntityPlayer player, ItemStack itemType)
