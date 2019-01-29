@@ -77,6 +77,11 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event)
     {
+        if (event.getWorld().isRemote)
+        {
+            return;
+        }
+
         if (!allowSignCommands)
         {
             return;

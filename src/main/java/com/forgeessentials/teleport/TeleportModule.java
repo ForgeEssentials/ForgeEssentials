@@ -114,6 +114,11 @@ public class TeleportModule extends ConfigLoaderBase
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerSleepInBed(PlayerSleepInBedEvent e) {
+        if (e.getEntityPlayer().world.isRemote)
+        {
+            return;
+        }
+
         if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(e.getEntityPlayer(), e.getPos()) || e.getEntityPlayer().isSneaking())
         {
             e.getEntityPlayer().setSpawnPoint(e.getPos(), false);
