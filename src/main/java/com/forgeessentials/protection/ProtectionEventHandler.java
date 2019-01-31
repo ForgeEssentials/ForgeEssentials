@@ -250,7 +250,8 @@ public class ProtectionEventHandler extends ServerEventHandler
         IBlockState blockState = event.getWorld().getBlockState(event.getPos());
         String permission = ModuleProtection.getBlockBreakPermission(blockState);
         ModuleProtection.debugPermission(event.getPlayer(), permission);
-        if (!APIRegistry.perms.checkUserPermission(ident, permission))
+        WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.getPos());
+        if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
             event.setCanceled(true);
             TileEntity te = event.getWorld().getTileEntity(event.getPos());
