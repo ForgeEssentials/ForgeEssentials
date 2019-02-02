@@ -458,12 +458,20 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         // Check item (and block) usage
         ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
-        if (stack != null && !(stack.getItem() instanceof ItemBlock))
+        if (stack != ItemStack.EMPTY && !(stack.getItem() instanceof ItemBlock))
         {
             String permission = ModuleProtection.getItemUsePermission(stack);
             ModuleProtection.debugPermission(event.getEntityPlayer(), permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
-            // event.useItem = allow ? ALLOW : DENY;
+            if (event instanceof LeftClickBlock)
+            {
+                ((LeftClickBlock) event).setUseBlock(allow ? ALLOW : DENY);
+            }
+            else if (event instanceof RightClickBlock)
+            {
+                ((RightClickBlock) event).setUseBlock(allow ? ALLOW : DENY);
+            }
+
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
             {
                 int itemId = Item.REGISTRY.getIDForObject(stack.getItem());
