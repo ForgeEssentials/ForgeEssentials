@@ -465,11 +465,11 @@ public class ProtectionEventHandler extends ServerEventHandler
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
             if (event instanceof LeftClickBlock)
             {
-                ((LeftClickBlock) event).setUseBlock(allow ? ALLOW : DENY);
+                ((LeftClickBlock) event).setUseItem(allow ? ALLOW : DENY);
             }
             else if (event instanceof RightClickBlock)
             {
-                ((RightClickBlock) event).setUseBlock(allow ? ALLOW : DENY);
+                ((RightClickBlock) event).setUseItem(allow ? ALLOW : DENY);
             }
 
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
