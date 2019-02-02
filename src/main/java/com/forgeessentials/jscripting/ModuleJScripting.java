@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.script.Compilable;
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
@@ -41,6 +42,7 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
+import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 
 @FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false)
 public class ModuleJScripting extends ServerEventHandler implements ScriptHandler
@@ -54,6 +56,12 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     private static final ScriptEngineManager SEM = new ScriptEngineManager(null);
 
+    private static final String DEFAULT_NASHORN_ARGS = "-strict --no-java --no-syntax-extensions";
+
+    private static String nashornArgs;
+
+    private static ScriptEngineFactory factory;
+
     @FEModule.Instance
     protected static ModuleJScripting instance;
 
@@ -63,6 +71,13 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public static boolean isNashorn;
 
     public static boolean isRhino;
+
+    static {
+        nashornArgs = System.getProperty("fe.nashorn.args");
+        if (nashornArgs == null) {
+            nashornArgs = DEFAULT_NASHORN_ARGS;
+        }
+    }
 
     /**
      * Script cache
@@ -79,11 +94,14 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @Preconditions
     public boolean canLoad()
     {
-        System.setProperty("nashorn.args", "-strict --no-java --no-syntax-extensions");
         ScriptEngine engine = SEM.getEngineByName("JavaScript");
-        isNashorn = engine.getFactory().getEngineName().toLowerCase().contains("nashorn");
-        isRhino = engine.getFactory().getEngineName().toLowerCase().contains("rhino");
-        return engine != null;
+        if (engine != null && (factory = engine.getFactory()) != null)
+        {
+            isNashorn = factory instanceof NashornScriptEngineFactory;
+            isRhino = factory.getEngineName().toLowerCase().contains("rhino");
+            return factory != null;
+        }
+        return false;
     }
 
     @SubscribeEvent
@@ -186,7 +204,12 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     public static ScriptEngine getEngine()
     {
-        return SEM.getEngineByName("JavaScript");
+        if (isNashorn)
+        {
+            return ((NashornScriptEngineFactory) factory).getScriptEngine(nashornArgs);
+        } else {
+            return factory.getScriptEngine();
+        }
     }
 
     public static Compilable getCompilable()
