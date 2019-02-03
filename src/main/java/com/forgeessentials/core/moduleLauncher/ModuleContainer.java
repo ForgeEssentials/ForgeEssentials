@@ -117,14 +117,9 @@ public class ModuleContainer implements Comparable
                         return;
                     }
                 }
-                catch (InstantiationException e)
+                catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
                 {
-                }
-                catch (IllegalAccessException e)
-                {
-                }
-                catch (InvocationTargetException e)
-                {
+                    LoggingHandler.felog.error(String.format("Exception Raised when testing preconditions for module: %s", name), e);
                 }
             }
         }

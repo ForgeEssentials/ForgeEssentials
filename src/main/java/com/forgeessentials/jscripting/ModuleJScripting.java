@@ -97,11 +97,10 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         ScriptEngine engine = SEM.getEngineByName("JavaScript");
         if (engine != null && (factory = engine.getFactory()) != null)
         {
-            isNashorn = factory instanceof NashornScriptEngineFactory;
+            isNashorn = factory.getEngineName().toLowerCase().contains("nashorn");
             isRhino = factory.getEngineName().toLowerCase().contains("rhino");
-            return factory != null;
         }
-        return false;
+        return factory != null;
     }
 
     @SubscribeEvent
