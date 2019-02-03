@@ -26,11 +26,17 @@ import com.google.gson.annotations.Expose;
 public class ShopData
 {
 
-    public static final Pattern PATTERN_BUY = Pattern.compile("buy\\s+(?:for\\s+)?(\\d+)");
+    public static final Pattern PATTERN_BUY;
 
-    public static final Pattern PATTERN_SELL = Pattern.compile("sell\\s+(?:for\\s+)?(\\d+)");
+    public static final Pattern PATTERN_SELL;
 
-    public static final Pattern PATTERN_AMOUNT = Pattern.compile("amount\\s+(\\d+)");
+    public static final Pattern PATTERN_AMOUNT;
+
+    static {
+        PATTERN_BUY = Pattern.compile(Translator.translate("buy\\s+(?:for\\s+)?(\\d+)"));
+        PATTERN_SELL = Pattern.compile(Translator.translate("sell\\s+(?:for\\s+)?(\\d+)"));
+        PATTERN_AMOUNT = Pattern.compile(Translator.translate("amount\\s+(\\d+)"));
+    }
 
     /* ------------------------------------------------------------ */
 
