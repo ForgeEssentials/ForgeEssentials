@@ -1,5 +1,7 @@
 package com.forgeessentials.util;
 
+import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -47,14 +49,25 @@ public abstract class WorldUtil
      */
     public static boolean isSafeToReplace(World world, int x, int y, int z, int h) {
         int testedH = 0;
+        ArrayList<BlockPos> setToAir = new ArrayList<>();
         for (int i = 0; i < h; i++)
         {
             BlockPos pos = new BlockPos(x, y + i, z);
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
-            if (block.isPassable(world, pos) || (state.getMaterial() == Material.ROCK && world.getTileEntity(pos) == null))
+            boolean replaceable = state.getMaterial() == Material.ROCK && world.getTileEntity(pos) == null;
+            if (block.isPassable(world, pos) || replaceable)
                 testedH++;
+
+            if (replaceable) {
+                setToAir.add(pos);
+            }
         }
+
+        if (testedH == h) {
+            setToAir.forEach(world::setBlockToAir);
+        }
+
         return testedH == h;
     }
 
