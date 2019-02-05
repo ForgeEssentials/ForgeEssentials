@@ -180,8 +180,12 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         int itemDamage = ItemUtil.getItemDamage(itemStack);
 
         int srcAmt = amount;
-        for (int slot = 0; slot < player.inventory.mainInventory.length || amount == 0; slot++)
+        for (int slot = 0; slot < player.inventory.mainInventory.length; slot++)
         {
+            if (amount <= 0) {
+                break;
+            }
+
             ItemStack stack = player.inventory.mainInventory[slot];
 
             if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
