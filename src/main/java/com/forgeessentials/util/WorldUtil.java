@@ -1,11 +1,14 @@
 package com.forgeessentials.util;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.ForgeEssentials;
 
 public abstract class WorldUtil
 {
@@ -33,6 +36,29 @@ public abstract class WorldUtil
     }
 
     /**
+     * Allow a block to be replaced if it Rock and is not a tile entity
+     *
+     * @param world
+     * @param x
+     * @param y
+     * @param z
+     * @param h
+     * @return y value
+     */
+    public static boolean isSafeToReplace(World world, int x, int y, int z, int h) {
+        int testedH = 0;
+        for (int i = 0; i < h; i++)
+        {
+            BlockPos pos = new BlockPos(x, y + i, z);
+            IBlockState state = world.getBlockState(pos);
+            Block block = state.getBlock();
+            if (block.isPassable(world, pos) || (state.getMaterial() == Material.ROCK && world.getTileEntity(pos) == null))
+                testedH++;
+        }
+        return testedH == h;
+    }
+
+    /**
      * Returns a free spot of height h in the world at the coordinates [x,z] near y. If the blocks at [x,y,z] are free,
      * it returns the next location that is on the ground. If the blocks at [x,y,z] are not free, it goes up until it
      * finds a free spot.
@@ -46,17 +72,20 @@ public abstract class WorldUtil
      */
     public static int placeInWorld(World world, int x, int y, int z, int h)
     {
-        if (y >= 0 && isFree(world, x, y, z, h))
+        if (y >= 0 && isSafeToReplace(world, x, y, z, h))
         {
-            while (isFree(world, x, y - 1, z, h) && y > 0)
+            while (isSafeToReplace(world, x, y - 1, z, h) && y > 0)
                 y--;
         }
         else
         {
-            if (y < 0)
-                y = 0;
+            if (!ForgeEssentials.isCubicChunksInstalled)
+            {
+                if (y < 0)
+                    y = 0;
+            }
             y++;
-            while (y + h < world.getHeight() && !isFree(world, x, y, z, h))
+            while (y + h < world.getHeight() && !isSafeToReplace(world, x, y, z, h) )
                 y++;
         }
         if (y == 0)

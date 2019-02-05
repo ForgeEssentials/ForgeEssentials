@@ -22,6 +22,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.AreaShape;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.TickTask;
@@ -116,7 +117,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             else
             {
                 arguments.confirm("No pregen running");
-                arguments.notify("/pregen start [dim]" + (ModuleCommands.isCubicChunksInstalled ? " [minY] [maxY]" : ""));
+                arguments.notify("/pregen start [dim]" + (ForgeEssentials.isCubicChunksInstalled ? " [minY] [maxY]" : ""));
                 arguments.notify("/pregen status");
                 arguments.notify("/pregen stop");
                 arguments.notify("/pregen flush");
@@ -167,7 +168,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         sizeX = border.getSize().getX() / 16;
         sizeZ = border.getSize().getZ() / 16;
         minX = border.getArea().getLowPoint().getX() / 16;
-        if (ModuleCommands.isCubicChunksInstalled)
+        if (ForgeEssentials.isCubicChunksInstalled)
         {
             try
             {
@@ -269,7 +270,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                     return true;
                 }
 
-                if (!ModuleCommands.isCubicChunksInstalled || !CCPregenCompat.isCCWorld(world))
+                if (!ForgeEssentials.isCubicChunksInstalled || !CCPregenCompat.isCCWorld(world))
                 {
                     if (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F)
                             || (providerServer.chunkExists(x, z)))

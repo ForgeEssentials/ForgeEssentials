@@ -161,6 +161,8 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SuppressWarnings("unused")
     private SelectionHandler selectionHandler;
 
+    public static boolean isCubicChunksInstalled = false;
+
     /* ------------------------------------------------------------ */
 
     public ForgeEssentials()
@@ -229,6 +231,12 @@ public class ForgeEssentials extends ConfigLoaderBase
             LoggingHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
             LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
         }
+
+        try
+        {
+            Class.forName("io.github.opencubicchunks.cubicchunks.core.server");
+            isCubicChunksInstalled = true;
+        } catch (ClassNotFoundException e2) {}
 
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleInitEvent(e));
     }
