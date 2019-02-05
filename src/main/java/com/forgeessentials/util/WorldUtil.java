@@ -47,7 +47,7 @@ public abstract class WorldUtil
      * @param h
      * @return y value
      */
-    public static boolean isSafeToReplace(World world, int x, int y, int z, int h) {
+    public static boolean isSafeToReplace(World world, int x, int y, int z, int h, boolean replaceRock) {
         int testedH = 0;
         ArrayList<BlockPos> setToAir = new ArrayList<>();
         for (int i = 0; i < h; i++)
@@ -55,7 +55,7 @@ public abstract class WorldUtil
             BlockPos pos = new BlockPos(x, y + i, z);
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
-            boolean replaceable = state.getMaterial() == Material.ROCK && world.getTileEntity(pos) == null;
+            boolean replaceable = replaceRock && (state.getMaterial() == Material.ROCK && world.getTileEntity(pos) == null);
             if (block.isPassable(world, pos) || replaceable)
                 testedH++;
 
@@ -83,11 +83,11 @@ public abstract class WorldUtil
      * @param h
      * @return y value
      */
-    public static int placeInWorld(World world, int x, int y, int z, int h)
+    public static int placeInWorld(World world, int x, int y, int z, int h, boolean replaceRock)
     {
-        if (y >= 0 && isSafeToReplace(world, x, y, z, h))
+        if (y >= 0 && isSafeToReplace(world, x, y, z, h, replaceRock))
         {
-            while (isSafeToReplace(world, x, y - 1, z, h) && y > 0)
+            while (isSafeToReplace(world, x, y - 1, z, h, replaceRock) && y > 0)
                 y--;
         }
         else
@@ -98,7 +98,7 @@ public abstract class WorldUtil
                     y = 0;
             }
             y++;
-            while (y + h < world.getHeight() && !isSafeToReplace(world, x, y, z, h) )
+            while (y + h < world.getHeight() && !isSafeToReplace(world, x, y, z, h, replaceRock) )
                 y++;
         }
         if (y == 0)
@@ -119,12 +119,12 @@ public abstract class WorldUtil
      */
     public static int placeInWorld(World world, int x, int y, int z)
     {
-        return placeInWorld(world, x, y, z, 2);
+        return placeInWorld(world, x, y, z, 2, false);
     }
 
     public static WorldPoint placeInWorld(WorldPoint p)
     {
-        return p.setY(placeInWorld(p.getWorld(), p.getX(), p.getY(), p.getZ(), 2));
+        return p.setY(placeInWorld(p.getWorld(), p.getX(), p.getY(), p.getZ()));
     }
 
     public static void placeInWorld(EntityPlayer player)

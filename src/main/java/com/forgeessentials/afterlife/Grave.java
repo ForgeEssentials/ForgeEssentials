@@ -105,7 +105,7 @@ public class Grave implements Loadable
         }
 
         point = new WorldPoint(player);
-        point.setY(WorldUtil.placeInWorld(player.world, point.getX(), point.getY(), point.getZ(), hasFencePost ? 2 : 1));
+        point.setY(WorldUtil.placeInWorld(player.world, point.getX(), point.getY(), point.getZ(), hasFencePost ? 2 : 1, true));
         if (hasFencePost)
         {
             player.world.setBlockState(point.getBlockPos(), Blocks.OAK_FENCE.getDefaultState());
