@@ -60,6 +60,8 @@ public class FilterConfig
 
     public int pickerRange = 0;
 
+    public UserIdent player;
+
     static {
         keywords.add("action");
         keywords.add("block");
@@ -69,6 +71,7 @@ public class FilterConfig
         keywords.add("range");
         keywords.add("whitelist");
         keywords.add("blacklist");
+        keywords.add("player");
 
         ActionEnum[] enums = ActionEnum.values();
 
@@ -140,6 +143,8 @@ public class FilterConfig
                 case "blacklist":
                     parseWhitelist(args,false);
                     break;
+                case "player":
+                    player = args.parsePlayer(true, false);
                 default:
                     throw new TranslatedCommandException("Expected Keyword here!");
 

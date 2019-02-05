@@ -114,6 +114,11 @@ public class PlayerLoggerChecker
             {
                 UserIdent player = UserIdent.get(change.player.uuid);
                 msg += " " + player.getUsernameOrUuid();
+                if (fc.player != null && fc.player != player) {
+                    continue;
+                }
+            } else if (fc.player != null) {
+                continue;
             }
             msg += ": ";
             if (change instanceof Action01Block)
