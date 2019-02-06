@@ -2,6 +2,7 @@ package com.forgeessentials.jscripting;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,8 +42,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-
-import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 
 @FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false)
 public class ModuleJScripting extends ServerEventHandler implements ScriptHandler
@@ -205,10 +204,17 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     {
         if (isNashorn)
         {
-            return ((NashornScriptEngineFactory) factory).getScriptEngine(nashornArgs);
-        } else {
-            return factory.getScriptEngine();
+            try
+            {
+                return (ScriptEngine) factory.getClass().getMethod("getScriptEngine", new Class[] { String.class }).invoke(factory, nashornArgs);
+            }
+            catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
+            {
+                LoggingHandler.felog.error("Error Initializing Scripting Engine with Custom Args...  Failing back to Default Args!", e);
+            }
         }
+
+        return factory.getScriptEngine();
     }
 
     public static Compilable getCompilable()
