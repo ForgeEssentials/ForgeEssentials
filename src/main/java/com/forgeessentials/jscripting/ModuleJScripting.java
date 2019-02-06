@@ -206,7 +206,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         {
             try
             {
-                return (ScriptEngine) factory.getClass().getMethod("getScriptEngine", new Class[] { String.class }).invoke(factory, nashornArgs);
+                return (ScriptEngine) factory.getClass().getMethod("getScriptEngine", new Class[] { String[].class }).invoke(factory,
+                        (Object) nashornArgs.split("\\s+"));
             }
             catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
             {
