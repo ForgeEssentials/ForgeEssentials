@@ -150,7 +150,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
             return;
         CommandHandler cmdHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
         Map<String, ICommand> commandMap = cmdHandler.getCommands();
-        Set<ICommand> commandSet = (Set<ICommand>) ReflectionHelper.getPrivateValue(CommandHandler.class, cmdHandler, "field_71561_b", "commandSet");
+        Set<ICommand> commandSet = cmdHandler.commandSet;
 
         String commandName = getName();
         List<String> commandAliases = getAliases();
