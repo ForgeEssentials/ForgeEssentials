@@ -185,14 +185,14 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
         {
             ItemStack stack = player.inventory.mainInventory.get(slot);
-            if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
                 foundStacks += stack.getCount();
         }
         foundStacks = amount = Math.min(foundStacks, amount);
         for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
         {
             ItemStack stack = player.inventory.mainInventory.get(slot);
-            if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
             {
                 int removeCount = Math.min(stack.getCount(), foundStacks);
                 player.inventory.decrStackSize(slot, removeCount);

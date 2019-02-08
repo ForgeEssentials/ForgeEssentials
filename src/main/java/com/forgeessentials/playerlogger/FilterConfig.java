@@ -145,6 +145,7 @@ public class FilterConfig
                     break;
                 case "player":
                     player = args.parsePlayer(true, false);
+                    break;
                 default:
                     throw new TranslatedCommandException("Expected Keyword here!");
 
