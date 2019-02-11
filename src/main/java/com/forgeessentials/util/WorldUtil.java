@@ -49,7 +49,6 @@ public abstract class WorldUtil
      */
     public static boolean isSafeToReplace(World world, int x, int y, int z, int h, boolean replaceRock) {
         int testedH = 0;
-        ArrayList<BlockPos> setToAir = new ArrayList<>();
         for (int i = 0; i < h; i++)
         {
             BlockPos pos = new BlockPos(x, y + i, z);
@@ -58,14 +57,6 @@ public abstract class WorldUtil
             boolean replaceable = replaceRock && (state.getMaterial() == Material.ROCK && world.getTileEntity(pos) == null);
             if (block.isPassable(world, pos) || replaceable)
                 testedH++;
-
-            if (replaceable) {
-                setToAir.add(pos);
-            }
-        }
-
-        if (testedH == h) {
-            setToAir.forEach(world::setBlockToAir);
         }
 
         return testedH == h;
@@ -85,9 +76,9 @@ public abstract class WorldUtil
      */
     public static int placeInWorld(World world, int x, int y, int z, int h, boolean replaceRock)
     {
-        if (y >= 0 && isSafeToReplace(world, x, y, z, h, replaceRock))
+        if (y >= 0 && isSafeToReplace(world, x, y, z, h, false))
         {
-            while (isSafeToReplace(world, x, y - 1, z, h, replaceRock) && y > 0)
+            while (isSafeToReplace(world, x, y - 1, z, h, false) && y > 0)
                 y--;
         }
         else
