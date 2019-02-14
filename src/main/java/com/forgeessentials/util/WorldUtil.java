@@ -54,9 +54,14 @@ public abstract class WorldUtil
             BlockPos pos = new BlockPos(x, y + i, z);
             IBlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
-            boolean replaceable = replaceRock && (state.getMaterial() == Material.ROCK && world.getTileEntity(pos) == null);
+            float hardness = block.getBlockHardness(state, world, pos);
+            boolean replaceable = replaceRock && (state.getMaterial() == Material.ROCK
+                    && hardness >= 0 && hardness <= 3
+                    && world.getTileEntity(pos) == null);
             if (block.isPassable(world, pos) || replaceable)
+            {
                 testedH++;
+            }
         }
 
         return testedH == h;
