@@ -72,7 +72,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class ModuleEconomy extends ServerEventHandler implements Economy, ConfigLoader
 {
 
-    public static final UserIdent ECONOMY_IDENT = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefeec", "$FE_ECONOMY");
+    public static final UserIdent ECONOMY_IDENT = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefeec", "$FE_ECONOMY");
 
     public static final String PERM = "fe.economy";
     public static final String PERM_COMMAND = PERM + ".command";
