@@ -105,7 +105,7 @@ import com.forgeessentials.util.selections.SelectionHandler;
  */
 
 @Mod(modid = ForgeEssentials.MODID, name = "Forge Essentials", version = BuildInfo.BASE_VERSION, acceptableRemoteVersions = "*",
-        dependencies = BuildInfo.DEPENDENCIES + ";after:worldedit")
+        dependencies = BuildInfo.DEPENDENCIES + ";after:worldedit;after:ftbutilities")
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
