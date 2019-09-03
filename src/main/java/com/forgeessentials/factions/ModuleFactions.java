@@ -24,7 +24,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 
-@FEModule(name = "factions", parentMod = ForgeEssentials.class, canDisable = true)
+@FEModule(name = "factions", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
 public class ModuleFactions extends ConfigLoaderBase
 {
 

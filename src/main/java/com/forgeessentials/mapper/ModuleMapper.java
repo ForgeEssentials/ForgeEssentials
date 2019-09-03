@@ -47,7 +47,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
-@FEModule(name = "mapper", parentMod = ForgeEssentials.class, canDisable = true)
+@FEModule(name = "mapper", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
 public class ModuleMapper extends ConfigLoaderBase
 {
 
