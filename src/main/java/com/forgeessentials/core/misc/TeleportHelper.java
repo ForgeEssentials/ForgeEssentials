@@ -199,8 +199,8 @@ public class TeleportHelper extends ServerEventHandler
         Block block2 = point.getWorld().getBlockState(blockPos2).getBlock();
         AxisAlignedBB blockBounds1 = block1.getCollisionBoundingBox(block1.getDefaultState(), point.getWorld(), blockPos1);
         AxisAlignedBB blockBounds2 = block2.getCollisionBoundingBox(block2.getDefaultState(), point.getWorld(), blockPos2);
-        boolean block1Free = !block1.getMaterial(block1.getDefaultState()).isSolid() || blockBounds1.maxX < 1 || blockBounds1.maxY > 0;
-        boolean block2Free = !block2.getMaterial(block2.getDefaultState()).isSolid() || blockBounds2.maxX < 1 || blockBounds2.maxZ > 0;
+        boolean block1Free = !block1.getMaterial(block1.getDefaultState()).isSolid() || blockBounds1 == null || blockBounds1.maxX < 1 || blockBounds1.maxY > 0;
+        boolean block2Free = !block2.getMaterial(block2.getDefaultState()).isSolid() || blockBounds2 == null || blockBounds2.maxX < 1 || blockBounds2.maxY > 0;
         return block1Free && block2Free;
     }
 
