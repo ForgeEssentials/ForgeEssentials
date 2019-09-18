@@ -34,6 +34,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.PlayerChangedZone;
@@ -191,7 +192,7 @@ public class TeleportHelper extends ServerEventHandler
     public static boolean canTeleportTo(WarpPoint point)
     {
         // TODO (upgrade): Check this!
-        if (point.getY() < 0)
+        if (!ForgeEssentials.isCubicChunksInstalled && point.getY() < 0)
             return false;
         BlockPos blockPos1 = point.getBlockPos();
         BlockPos blockPos2 = new BlockPos(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
