@@ -29,7 +29,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
     public void playerInteractEvent(PlayerInteractEvent event)
     {
         ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
-        if (stack == null || stack.getItem() != Items.CLOCK)
+        if (stack == ItemStack.EMPTY || stack.getItem() != Items.CLOCK)
             return;
         if (event instanceof RightClickEmpty)
             return;
