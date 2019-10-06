@@ -199,6 +199,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
                 foundStacks -= removeCount;
             }
         }
+
+        player.inventoryContainer.detectAndSendChanges();
+
         return amount;
     }
 

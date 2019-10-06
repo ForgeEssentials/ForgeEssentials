@@ -58,7 +58,7 @@ public class CommandPlot extends ParserCommandBase
                     return true;
                 if (!(sender instanceof EntityPlayerMP))
                     return false;
-                return plot.getOwner().equals(sender);
+                return plot.getOwner().getPlayer().equals(sender);
             case SALE:
                 return plot.isForSale();
             default:
@@ -189,8 +189,13 @@ public class CommandPlot extends ParserCommandBase
 
         try
         {
-            Plot.define(selection, arguments.ident);
-            arguments.confirm("Plot created!");
+            if (!Plot.hasPlots(selection))
+            {
+                Plot.define(selection, arguments.ident);
+                arguments.confirm("Plot created!");
+            } else {
+                throw new TranslatedCommandException("Can not create overlapping plots.");
+            }
         }
         catch (PlotRedefinedException e)
         {
