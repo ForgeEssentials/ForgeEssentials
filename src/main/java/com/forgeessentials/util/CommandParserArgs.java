@@ -449,7 +449,7 @@ public class CommandParserArgs
                     break;
                 case "month":
                 case "months":
-                    resultPart *= 1000 * 60 * 60 * 24 * 30;
+                    resultPart *= (long) 1000 * 60 * 60 * 24 * 30;
                     break;
                 default:
                     throw new TranslatedCommandException("Invalid time format: %s", value);

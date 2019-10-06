@@ -188,6 +188,8 @@ public class FilterConfig
         before = c.before;
         after = c.after;
         Awhitelist = c.Awhitelist;
+        Bwhitelist = c.Bwhitelist;
+        player = c.player;
         pickerRange = c.pickerRange;
     }
     public FilterConfig()

@@ -673,7 +673,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         for (Iterator<ItemStack> iterator = event.getDrops().iterator(); iterator.hasNext();)
         {
             ItemStack stack = iterator.next();
-            if (stack != null && isItemBanned(point, stack))
+            if (stack != ItemStack.EMPTY && isItemBanned(point, stack))
                 iterator.remove();
         }
     }
