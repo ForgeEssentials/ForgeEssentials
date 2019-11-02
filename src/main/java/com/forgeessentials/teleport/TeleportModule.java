@@ -82,6 +82,7 @@ public class TeleportModule extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandBed());
         FECommandManager.registerCommand(new CommandHome());
         FECommandManager.registerCommand(new CommandSpawn());
+        FECommandManager.registerCommand(new CommandTp());
         FECommandManager.registerCommand(new CommandTppos());
         FECommandManager.registerCommand(new CommandWarp());
         FECommandManager.registerCommand(new CommandTPA());
@@ -90,8 +91,6 @@ public class TeleportModule extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandPortal());
         FECommandManager.registerCommand(new CommandSetSpawn());
         FECommandManager.registerCommand(new CommandJump());
-
-        ((FMLServerStartingEvent) event.getFMLEvent()).registerServerCommand(new CommandTp());
 
         APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
 
