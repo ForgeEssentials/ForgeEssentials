@@ -188,8 +188,8 @@ dependencies {
 	provided 'org.spongepowered:spongeapi:6.0.0'
     provided "io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT"
     provided "io.github.opencubicchunks:cubicchunks:1.12.2-0.0-SNAPSHOT"
-    provided "com.feed_the_beast.mods:FTBLib:5.4.1.75"
-    provided "com.feed_the_beast.mods:FTBUtilities:5.3.0.72"
+    provided "com.feed_the_beast.mods:FTBLib:5.4.4.5"
+    provided "com.feed_the_beast.mods:FTBUtilities:5.4.0.124"
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")

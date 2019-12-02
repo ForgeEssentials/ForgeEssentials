@@ -14,7 +14,6 @@ import com.feed_the_beast.ftblib.lib.config.ConfigValue;
 import com.feed_the_beast.ftblib.lib.config.DefaultRankConfigHandler;
 import com.feed_the_beast.ftblib.lib.config.IRankConfigHandler;
 import com.feed_the_beast.ftblib.lib.config.RankConfigValueInfo;
-import com.feed_the_beast.ftblib.lib.util.misc.Node;
 import com.feed_the_beast.ftbutilities.FTBUtilitiesConfig;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -50,9 +49,9 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
         return DefaultRankConfigHandler.INSTANCE.getRegisteredConfigs();
     }
 
-    @Override public ConfigValue getConfigValue(MinecraftServer server, GameProfile profile, Node node, @Nullable IContext context)
+    @Override public ConfigValue getConfigValue(MinecraftServer server, GameProfile profile, String node)
     {
-        LoggingHandler.felog.info("Getting Config value " + node.toString() + " for player " + profile.getName());
+        LoggingHandler.felog.info("Getting Config value " + node + " for player " + profile.getName());
         ConfigValue value = ConfigNull.INSTANCE;
 
         RankConfigValueInfo info = getInfo(node);
@@ -62,20 +61,22 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
             UserIdent ident = UserIdent.get(profile.getId());
             value = info.defaultValue.copy();
             WorldPoint point = null;
-            if (context != null && context.getPlayer() != null) {
-                point = WorldPoint.create(context.getPlayer());
+            if (ident.hasPlayer()) {
+                point = WorldPoint.create(ident.getPlayer());
             }
-            if (!value.setValueFromString(null, APIRegistry.perms.getUserPermissionProperty(ident, node.toString()), false)) {
+
+            if (!value.setValueFromString(null, APIRegistry.perms.getUserPermissionProperty(ident, node), false)) {
                 LoggingHandler.felog.info("Failed to set value");
                 return ConfigNull.INSTANCE;
             }
-            LoggingHandler.felog.info(node.toString() + " set to " + value.getString());
+
+            LoggingHandler.felog.info(node+ " set to " + value.getString());
         }
 
         return value;
     }
 
-    @Nullable @Override public RankConfigValueInfo getInfo(Node node)
+    @Nullable @Override public RankConfigValueInfo getInfo(String node)
     {
         return DefaultRankConfigHandler.INSTANCE.getInfo(node);
     }
