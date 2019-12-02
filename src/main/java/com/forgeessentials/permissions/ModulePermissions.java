@@ -73,7 +73,11 @@ public class ModulePermissions extends ConfigLoaderBase
             Class.forName("com.feed_the_beast.ftblib.lib.config.IRankConfigHandler");
             Class.forName("com.feed_the_beast.ftbutilities.FTBUtilitiesConfig");
             MinecraftForge.EVENT_BUS.register(FTBURankConfigHandler.class);
-        } catch (ClassNotFoundException e) {}
+        } catch (ClassNotFoundException e) {
+            LoggingHandler.felog.debug("FTBU not installed!", e);
+        } catch (NoClassDefFoundError e) {
+            LoggingHandler.felog.error("FTBU is installed but an error was encountered while loading the compat!");
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
