@@ -28,12 +28,17 @@ public class MultiworldSaveHandler implements ISaveHandler
 
     private Multiworld world;
 
+    private final File mapDataDir;
+
     public MultiworldSaveHandler(ISaveHandler parent, Multiworld world)
     {
         if (!(parent instanceof SaveHandler))
             throw new RuntimeException();
         this.parent = (SaveHandler) parent;
         this.world = world;
+
+        this.mapDataDir = new File(this.getDimensionDirectory(), "data");
+        this.mapDataDir.mkdirs();
     }
 
     public File getDimensionDirectory()
@@ -168,7 +173,7 @@ public class MultiworldSaveHandler implements ISaveHandler
     @Override
     public File getMapFileFromName(String name)
     {
-        return parent.getMapFileFromName(name);
+        return new File(this.mapDataDir, name + ".dat");
     }
 
     @Override
