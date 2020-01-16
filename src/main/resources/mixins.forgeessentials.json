@@ -17,5 +17,6 @@
         "server.management.MixinItemInWorldManager",
         "MixinDimensionManager"
         //"tileentity.MixinMobSpawnerBaseLogic"
-	]
+	],
+    "required": true
 }
