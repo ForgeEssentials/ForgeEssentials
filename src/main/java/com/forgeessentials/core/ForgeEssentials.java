@@ -18,6 +18,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -232,11 +233,7 @@ public class ForgeEssentials extends ConfigLoaderBase
             LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
         }
 
-        try
-        {
-            Class.forName("io.github.opencubicchunks.cubicchunks.core.server");
-            isCubicChunksInstalled = true;
-        } catch (ClassNotFoundException e2) {}
+        isCubicChunksInstalled = Loader.isModLoaded("cubicchunks");
 
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleInitEvent(e));
     }
