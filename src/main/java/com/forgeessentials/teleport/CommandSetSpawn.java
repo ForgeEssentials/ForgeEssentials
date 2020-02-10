@@ -22,7 +22,13 @@ public class CommandSetSpawn extends ParserCommandBase
     @Override
     public String getName()
     {
-        return "setspawn";
+        return "fesetspawn";
+    }
+    
+    @Override
+    public String[] getDefaultAliases()
+    {
+        return new String[] { "setspawn" };
     }
 
     @Override
