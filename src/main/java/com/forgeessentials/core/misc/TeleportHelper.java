@@ -323,6 +323,7 @@ public class TeleportHelper extends ServerEventHandler
             PotionEffect potioneffect = (PotionEffect) iterator.next();
             player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), potioneffect));
         }
+        player.sendPlayerAbilities();
         player.connection.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
         FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDim, dimension);
     }
