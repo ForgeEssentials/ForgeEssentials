@@ -26,7 +26,7 @@ buildscript {
 		classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
-        classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
 	}
 
 }
@@ -163,10 +163,10 @@ dependencies {
     }
 
     // Shade Mixin library
-    shade (group: "org.spongepowered", name: "mixin", version: "0.7.10-SNAPSHOT") {
+    shade (group: "org.spongepowered", name: "mixin", version: "0.7.11-SNAPSHOT") {
         exclude group: 'org.ow2.asm', module: 'asm-tree'
     }
-    shadeClient (group: "org.spongepowered", name: "mixin", version: "0.7.10-SNAPSHOT") {
+    shadeClient (group: "org.spongepowered", name: "mixin", version: "0.7.11-SNAPSHOT") {
         exclude group: 'org.ow2.asm', module: 'asm-tree'
     }
 
@@ -186,8 +186,9 @@ dependencies {
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
 	provided 'org.spongepowered:spongeapi:6.0.0'
-    provided "io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT"
-    provided "io.github.opencubicchunks:cubicchunks:1.12.2-0.0-SNAPSHOT"
+    provided ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
+        exclude group: "org.spongepowered", module: "mixin"
+    }
     provided "com.feed_the_beast.mods:FTBLib:5.4.4.5"
     provided "com.feed_the_beast.mods:FTBUtilities:5.4.0.124"
 
