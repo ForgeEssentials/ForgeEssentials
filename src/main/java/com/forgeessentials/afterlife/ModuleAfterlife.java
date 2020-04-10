@@ -9,6 +9,7 @@ import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -34,7 +35,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
  * Module to handle death-chest and respawn debuffs.
  */
 
-@FEModule(name = "Afterlife", parentMod = ForgeEssentials.class)
+@FEModule(name = "Afterlife", parentMod = ForgeEssentials.class, defaultModule = false)
 public class ModuleAfterlife extends ServerEventHandler
 {
 
@@ -113,7 +114,7 @@ public class ModuleAfterlife extends ServerEventHandler
             e.player.getFoodStats().addStats(-1 * (20 - respawnFood), 0);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerDeathDropEvent(PlayerDropsEvent event)
     {
         Grave grave = Grave.createGrave(event.getEntityPlayer(), event.getDrops());
