@@ -163,10 +163,10 @@ dependencies {
     }
 
     // Shade Mixin library
-    shade (group: "org.spongepowered", name: "mixin", version: "0.7.11-SNAPSHOT") {
+    shade (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
         exclude group: 'org.ow2.asm', module: 'asm-tree'
     }
-    shadeClient (group: "org.spongepowered", name: "mixin", version: "0.7.11-SNAPSHOT") {
+    shadeClient (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
         exclude group: 'org.ow2.asm', module: 'asm-tree'
     }
 

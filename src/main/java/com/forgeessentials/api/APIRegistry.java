@@ -8,10 +8,12 @@ import java.lang.annotation.Target;
 import com.forgeessentials.api.UserIdent.NpcUserIdent;
 import com.forgeessentials.api.UserIdent.ServerUserIdent;
 import com.forgeessentials.api.economy.Economy;
+import com.forgeessentials.api.modules.FEModules;
 import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
+import com.forgeessentials.core.moduleLauncher.FEModule;
 
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 
@@ -28,6 +30,11 @@ public class APIRegistry
     public static final ServerUserIdent IDENT_CMDBLOCK = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefecb", "$COMMANDBLOCK");
 
     public static final NpcUserIdent IDENT_NPC = UserIdent.getNpc(null);
+
+    /**
+     * Use this to call API functions available in the Module Launcher
+     */
+    public static FEModules modules = new FEModules();;
 
     /**
      * Use this to call API functions available in the economy module.
