@@ -43,7 +43,7 @@ public class ModuleLauncher
         for (ASMData asm : data)
         {
             temp = new ModuleContainer(asm);
-            if (temp.isLoadable && APIRegistry.FE_EVENTBUS.post(new ModuleRegistrationEvent(temp)))
+            if (temp.isLoadable && !APIRegistry.FE_EVENTBUS.post(new ModuleRegistrationEvent(temp)))
             {
                 if (containerMap.containsKey(temp.name))
                 {
