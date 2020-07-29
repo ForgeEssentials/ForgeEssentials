@@ -204,16 +204,29 @@ public class AreaBase {
     }
 
     private static final Pattern pattern = Pattern.compile("\\s*\\{\\s*(\\[.*\\])\\s*,\\s*(\\[.*\\])\\s*\\}\\s*");
+    private static final Pattern patternWithDim = Pattern.compile("\\s*\\{\\s*(-?\\d+)\\s*,\\s*(\\[.*\\])\\s*,\\s*(\\[.*\\])\\s*\\}\\s*");
 
     public static AreaBase fromString(String value)
     {
+        Point p1 = null;
+        Point p2 = null;
+
         Matcher match = pattern.matcher(value);
-        if (!match.matches())
+        Matcher matchWithDim = patternWithDim.matcher(value);
+
+        if (match.matches()) {
+            p1 = Point.fromString(match.group(1));
+            p2 = Point.fromString(match.group(2));
+        }
+        else if (matchWithDim.matches()) {
+            p1 = Point.fromString(matchWithDim.group(2));
+            p2 = Point.fromString(matchWithDim.group(3));
+        }
+
+        if (p1 == null || p2 == null) {
             return null;
-        Point p1 = Point.fromString(match.group(1));
-        Point p2 = Point.fromString(match.group(2));
-        if (p1 == null || p2 == null)
-            return null;
+        }
+
         return new AreaBase(p1, p2);
     }
 

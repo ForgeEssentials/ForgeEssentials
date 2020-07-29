@@ -33,7 +33,7 @@ import com.google.common.base.Throwables;
 
 public class SQLProvider extends ZonePersistenceProvider
 {
-
+    public static boolean DEBUG_QUERIES = true;
     private class TableInfo
     {
 
@@ -69,6 +69,11 @@ public class SQLProvider extends ZonePersistenceProvider
             sb.append("PRIMARY KEY (`");
             sb.append(StringUtils.join(primaryKeys, "`, `"));
             sb.append("`))");
+
+            if (DEBUG_QUERIES) {
+                LoggingHandler.felog.debug(sb.toString());
+            }
+
             return sb.toString();
         }
 
@@ -82,6 +87,11 @@ public class SQLProvider extends ZonePersistenceProvider
             sb.append("` FROM `");
             sb.append(name);
             sb.append("`");
+
+            if (DEBUG_QUERIES) {
+                LoggingHandler.felog.debug(sb.toString());
+            }
+
             return sb.toString();
         }
 
@@ -95,6 +105,11 @@ public class SQLProvider extends ZonePersistenceProvider
             StringBuilder sb = new StringBuilder("SELECT * FROM `");
             sb.append(name);
             sb.append("`");
+
+            if (DEBUG_QUERIES) {
+                LoggingHandler.felog.debug(sb.toString());
+            }
+
             return sb.toString();
         }
 
@@ -114,12 +129,23 @@ public class SQLProvider extends ZonePersistenceProvider
             sb.append("`) VALUES ('");
             sb.append(StringUtils.join(fieldsAndValues.values(), "', '"));
             sb.append("')");
+
+            if (DEBUG_QUERIES) {
+                LoggingHandler.felog.debug(sb.toString());
+            }
+
             return sb.toString();
         }
 
         public String createTruncate()
         {
-            return "TRUNCATE TABLE `" + name + "`";
+            String sb = "TRUNCATE TABLE `" + name + "`";
+
+            if (DEBUG_QUERIES) {
+                LoggingHandler.felog.debug(sb);
+            }
+
+            return sb;
         }
 
         public List<Map<String, Object>> loadList() throws SQLException
@@ -508,13 +534,14 @@ public class SQLProvider extends ZonePersistenceProvider
 
             // Create server-zone
             ServerZone serverZone = null;
-            for (Map<String, Object> zoneData : zonesData)
+            for (Map<String, Object> zoneData : zonesData) {
                 if (zoneData.get("type").equals(0))
                 {
                     serverZone = new ServerZone();
                     zones.put(serverZone.getId(), serverZone);
                     break;
                 }
+            }
 
             // Check if server-zone could be created - otherwise save was corrupt or just not present
             if (serverZone == null)
@@ -525,31 +552,34 @@ public class SQLProvider extends ZonePersistenceProvider
             }
 
             // Create world-zones
-            for (Map<String, Object> zoneData : zonesData)
-                if (zoneData.get("type").equals(1))
-                {
+            for (Map<String, Object> zoneData : zonesData) {
+                if (zoneData.get("type").equals(1)) {
                     WorldZone zone = new WorldZone(serverZone, (Integer) zoneData.get("dimension"), (Integer) zoneData.get("id"));
                     zones.put(zone.getId(), zone);
                 }
+            }
 
             // Create area-zones
-            for (Map<String, Object> zoneData : zonesData)
-                if (zoneData.get("type").equals(2))
-                {
+            for (Map<String, Object> zoneData : zonesData) {
+                if (zoneData.get("type").equals(2)) {
                     WorldZone parentZone = (WorldZone) zones.get(zoneData.get("parent_id"));
-                    if (parentZone != null)
-                    {
+                    if (parentZone != null) {
                         AreaBase area = AreaBase.fromString((String) zoneData.get("area"));
-                        if (area != null)
-                        {
+                        if (area != null) {
                             AreaZone zone = new AreaZone(parentZone, (String) zoneData.get("name"), area, (Integer) zoneData.get("id"));
                             AreaShape shape = AreaShape.getByName((String) zoneData.get("shape"));
-                            if (shape != null)
+                            if (shape != null) {
                                 zone.setShape(shape);
+                            }
+
                             zones.put(zone.getId(), zone);
+                        }
+                        else {
+                            LoggingHandler.felog.error("Failed to parse area bounds string for zone ID: " + zoneData.get("id"));
                         }
                     }
                 }
+            }
 
             // Apply group permissions
             for (Map<String, Object> permData : groupPermissions)
@@ -582,18 +612,23 @@ public class SQLProvider extends ZonePersistenceProvider
             }
 
             // Make sure maxZoneId is valid
-            for (Zone zone : zones.values())
-                if (zone.getId() > serverZone.getMaxZoneID())
+            for (Zone zone : zones.values()) {
+                if (zone.getId() > serverZone.getMaxZoneID()) {
                     serverZone.setMaxZoneId(zone.getId());
+                }
+            }
 
             // Add user to groups by fe.internal.player.groups permission
             for (UserIdent ident : serverZone.getPlayerPermissions().keySet())
             {
                 String groupList = serverZone.getPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
                 serverZone.clearPlayerPermission(ident, FEPermissions.PLAYER_GROUPS);
-                if (groupList == null)
+                if (groupList == null) {
                     continue;
+                }
+
                 String[] groups = groupList.split(",");
+
                 for (String group : groups)
                 {
                     serverZone.addPlayerToGroup(ident, group);
