@@ -33,7 +33,8 @@ import com.google.common.base.Throwables;
 
 public class SQLProvider extends ZonePersistenceProvider
 {
-    public static boolean DEBUG_QUERIES = true;
+    public static boolean DEBUG_QUERIES = false;
+
     private class TableInfo
     {
 
