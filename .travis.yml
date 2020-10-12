@@ -1,7 +1,7 @@
 
 # Tell Travis this is a Java project.
 language: java
-
+dist: trusty
 jdk:
   - oraclejdk8
 
