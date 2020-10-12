@@ -14,6 +14,7 @@
         "fml.common.eventhandler.MixinEventBus",
         "item.crafting.MixinCraftingManager",
         "network.MixinNetHandlerPlayServer",
+        "network.MixinSimpleChannelHandlerWrapper",
         "server.management.MixinItemInWorldManager",
         "MixinDimensionManager"
         //"tileentity.MixinMobSpawnerBaseLogic"

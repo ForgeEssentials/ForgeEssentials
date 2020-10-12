@@ -12,7 +12,9 @@ import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.Packet0Handshake;
 import com.forgeessentials.commons.network.Packet6AuthLogin;
+import com.forgeessentials.commons.network.Packet7Remote;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -25,6 +27,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.relauncher.Side;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, defaultModule = false)
@@ -143,6 +146,9 @@ public class ModuleAuth extends ConfigLoaderBase
         return isAuthenticated(player.getPersistentID());
     }
 
+    public static boolean isAllowedMethod(IMessage msg) {
+        return msg instanceof Packet6AuthLogin || msg instanceof Packet0Handshake || msg instanceof Packet7Remote;
+    }
     public static void authenticate(UUID player)
     {
         authenticatedUsers.add(player);
