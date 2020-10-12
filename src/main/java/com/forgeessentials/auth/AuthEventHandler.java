@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -60,15 +61,15 @@ public class AuthEventHandler extends ServerEventHandler
         else unregister();
     }
 
-    public static boolean isPlayer(Object player)
+    private static boolean notPlayer(Object player)
     {
-        return player != null && player instanceof EntityPlayerMP;
+        return !(player instanceof EntityPlayerMP) || player instanceof FakePlayer;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerMoveEvent(PlayerMoveEvent event)
     {
-        if (!ModuleAuth.isEnabled() || !isPlayer(event.entityPlayer))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.entityPlayer))
             return;
 
         if (ModuleAuth.canMoveWithoutLogin || (event.before.getX() == event.after.getX() && event.before.getZ() == event.after.getZ()))
@@ -85,7 +86,7 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void serverChatEvent(ServerChatEvent event)
     {
-        if (!ModuleAuth.isEnabled() || !isPlayer(event.player))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.player))
             return;
         if (!ModuleAuth.isAuthenticated(event.player))
         {
@@ -97,7 +98,7 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void commandEvent(CommandEvent event)
     {
-        if (!ModuleAuth.isEnabled() || !isPlayer(event.sender))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.sender))
             return;
         EntityPlayer player = (EntityPlayer) event.sender;
         if (!ModuleAuth.isAuthenticated(player) && !ModuleAuth.isGuestCommand(event.command))
@@ -110,7 +111,7 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!ModuleAuth.isEnabled() || !isPlayer(event.entityPlayer))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.entityPlayer))
             return;
         if (!ModuleAuth.isAuthenticated(event.entityPlayer))
         {
@@ -122,7 +123,7 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void entityInteractEvent(EntityInteractEvent event)
     {
-        if (!ModuleAuth.isEnabled() || !isPlayer(event.entityPlayer))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.entityPlayer))
             return;
         if (!ModuleAuth.isAuthenticated(event.entityPlayer))
         {
@@ -134,7 +135,7 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void minecartInteractEvent(MinecartInteractEvent event)
     {
-        if (!ModuleAuth.isEnabled() || !isPlayer(event.player))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.player))
             return;
         if (!ModuleAuth.isAuthenticated(event.player))
         {
@@ -146,7 +147,7 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void itemTossEvent(ItemTossEvent event)
     {
-        if (!ModuleAuth.isEnabled() || !isPlayer(event.player))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.player))
             return;
         if (!ModuleAuth.isAuthenticated(event.player))
         {
@@ -161,7 +162,7 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void entityItemPickupEvent(EntityItemPickupEvent event)
     {
-        if (!ModuleAuth.isEnabled() || !isPlayer(event.entityPlayer))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.entityPlayer))
             return;
         if (!ModuleAuth.isAuthenticated(event.entityPlayer))
         {
@@ -173,7 +174,7 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void livingHurtEvent(LivingHurtEvent event)
     {
-        if (!ModuleAuth.isEnabled() || !isPlayer(event.entityLiving))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.entityLiving))
             return;
         EntityPlayerMP player = (EntityPlayerMP) event.entityLiving;
         if (!ModuleAuth.isAuthenticated(player))
@@ -186,7 +187,7 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void attackEntityEvent(AttackEntityEvent event)
     {
-        if (!ModuleAuth.isEnabled() || !isPlayer(event.entityPlayer))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.entityPlayer))
             return;
         if (!ModuleAuth.isAuthenticated(event.entityPlayer))
         {
