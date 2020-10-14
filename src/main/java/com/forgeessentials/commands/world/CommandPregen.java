@@ -70,15 +70,15 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     private int totalChunks;
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fepregen";
+        return "pregen";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
-        return new String[] { "pregen", "filler" };
+        return new String[] { "filler" };
     }
 
     @Override

@@ -17,7 +17,7 @@ public class CommandQuestioner extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         if (type)
             return "yes";
@@ -26,7 +26,7 @@ public class CommandQuestioner extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         if (type)
             return new String[] { "accept", "allow" };

@@ -31,15 +31,9 @@ public class CommandBed extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "febed";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "bed" };
+        return "bed";
     }
 
     @Override

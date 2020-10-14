@@ -39,15 +39,9 @@ public class CommandWarp extends ParserCommandBase
     private static final String PERM_WARP = PERM + ".warp";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fewarp";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "warp" };
+        return "warp";
     }
 
     @Override

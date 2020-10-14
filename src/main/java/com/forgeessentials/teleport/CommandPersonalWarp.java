@@ -34,13 +34,13 @@ public class CommandPersonalWarp extends ParserCommandBase
     private static final String PERM_LIMIT = PERM + ".max";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "pwarp";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "pw", "personalwarp" };
     }

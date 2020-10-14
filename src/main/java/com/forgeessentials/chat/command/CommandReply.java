@@ -36,13 +36,13 @@ public class CommandReply extends ForgeEssentialsCommandBase
     /* ------------------------------------------------------------ */
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "reply";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "r" };
     }

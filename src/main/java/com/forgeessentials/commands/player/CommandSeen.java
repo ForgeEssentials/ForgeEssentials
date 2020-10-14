@@ -24,15 +24,9 @@ public class CommandSeen extends ParserCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "feseen";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "seen" };
+        return "seen";
     }
 
     @Override

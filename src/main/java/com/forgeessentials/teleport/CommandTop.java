@@ -22,15 +22,9 @@ public class CommandTop extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fetop";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "top" };
+        return "top";
     }
 
     @Override

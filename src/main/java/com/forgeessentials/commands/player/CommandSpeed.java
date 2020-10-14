@@ -16,15 +16,9 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fespeed";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "speed" };
+        return "speed";
     }
 
     @Override

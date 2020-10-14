@@ -16,15 +16,9 @@ public class CommandReach extends ParserCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fereach";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "reach" };
+        return "reach";
     }
 
     @Override

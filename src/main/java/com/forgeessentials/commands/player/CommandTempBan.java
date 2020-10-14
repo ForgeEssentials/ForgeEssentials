@@ -27,15 +27,9 @@ public class CommandTempBan extends ParserCommandBase
     public static final String PERM_BAN_REASON = "tempban.reason";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fetempban";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "tempban" };
+        return "tempban";
     }
 
     @Override

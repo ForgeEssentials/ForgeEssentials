@@ -51,13 +51,13 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "fesettings";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "feconfig" };
     }

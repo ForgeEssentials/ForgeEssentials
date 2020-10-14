@@ -16,15 +16,9 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "feduplicate";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "duplicate" };
+        return "duplicate";
     }
 
     @Override

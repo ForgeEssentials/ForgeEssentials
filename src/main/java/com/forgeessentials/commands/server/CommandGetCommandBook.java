@@ -48,15 +48,15 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fecommandbook";
+        return "commandbook";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
-        return new String[] { "bmdbook", "commandbook" };
+        return new String[] { "cmdbook" };
     }
 
     @Override

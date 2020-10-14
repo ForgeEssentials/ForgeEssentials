@@ -21,7 +21,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "/fewand";
     }
@@ -96,7 +96,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
     @Override
     public String getUsage(ICommandSender sender)
     {
-        return "/" + getName() + " [rebind|unbind|ITEM] Toggles the wand";
+        return "/" + getPrimaryAlias() + " [rebind|unbind|ITEM] Toggles the wand";
     }
 
     @Override

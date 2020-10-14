@@ -31,15 +31,9 @@ public class CommandJump extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fejump";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "jump" };
+        return "jump";
     }
     
     @Override

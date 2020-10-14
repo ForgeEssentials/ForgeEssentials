@@ -21,7 +21,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "ircpm";
     }

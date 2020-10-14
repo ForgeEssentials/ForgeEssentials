@@ -21,13 +21,13 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     public static String name = "Vault 13";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "virtualchest";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "vchest" };
     }

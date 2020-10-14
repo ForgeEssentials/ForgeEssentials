@@ -21,7 +21,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "requestpayment";
     }

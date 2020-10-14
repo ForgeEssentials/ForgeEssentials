@@ -42,15 +42,9 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fecapabilities";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "capabilities" };
+        return "capabilities";
     }
 
     @Override

@@ -34,15 +34,15 @@ public class CommandFaction extends ParserCommandBase
     public static final String MSG_LEFT_FACTION = "Left faction \"%s\"";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fefaction";
+        return "faction";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
-        return new String[] { "faction", "factions" };
+        return new String[] { "f", "factions" };
     }
 
     @Override

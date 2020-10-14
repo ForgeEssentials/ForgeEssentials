@@ -21,15 +21,9 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fenoclip";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "noclip" };
+        return "noclip";
     }
 
     @Override

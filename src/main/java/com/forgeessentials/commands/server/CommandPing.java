@@ -17,15 +17,9 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     public String response = "Pong! %time";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "feping";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "ping" };
+        return "ping";
     }
 
     @Override

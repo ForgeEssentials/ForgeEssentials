@@ -136,7 +136,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
         }
     }
 
-    @Override public String getName()
+    @Override public String getPrimaryAlias()
     {
         return "tp";
     }

@@ -36,15 +36,9 @@ public class CommandAFK extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "feafk";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "afk" };
+        return "afk";
     }
 
     @Override

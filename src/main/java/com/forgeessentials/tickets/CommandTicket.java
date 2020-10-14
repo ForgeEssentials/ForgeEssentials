@@ -27,13 +27,13 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandTicket extends ForgeEssentialsCommandBase
 {
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "ticket";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "tickets" };
     }

@@ -32,7 +32,7 @@ public class CommandZone extends ParserCommandBase
     public static final String PERM_SETTINGS = PERM_NODE + ".settings";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "area";
     }
@@ -44,7 +44,7 @@ public class CommandZone extends ParserCommandBase
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "zone" };
     }

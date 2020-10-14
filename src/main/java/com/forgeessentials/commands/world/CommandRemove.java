@@ -23,15 +23,9 @@ public class CommandRemove extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "feremove";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "remove" };
+        return "remove";
     }
 
     @Override

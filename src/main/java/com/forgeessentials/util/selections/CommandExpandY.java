@@ -20,7 +20,7 @@ public class CommandExpandY extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "/expandY";
     }

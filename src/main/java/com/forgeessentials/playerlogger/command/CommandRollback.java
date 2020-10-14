@@ -36,13 +36,13 @@ public class CommandRollback extends ParserCommandBase
     private Timer playbackTimer = new Timer();
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "rollback";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "rb" };
     }

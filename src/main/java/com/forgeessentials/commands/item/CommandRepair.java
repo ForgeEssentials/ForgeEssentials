@@ -23,15 +23,9 @@ public class CommandRepair extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "ferepair";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "repair" };
+        return "repair";
     }
 
     @Override

@@ -26,15 +26,9 @@ public class CommandDechant extends ParserCommandBase
     private static final String PERM = ModuleCommands.PERM + ".dechant";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fedechant";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "dechant" };
+        return "dechant";
     }
 
     @Override

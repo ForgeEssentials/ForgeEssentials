@@ -94,15 +94,9 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "feweather";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "weather" };
+        return "weather";
     }
 
     @Override

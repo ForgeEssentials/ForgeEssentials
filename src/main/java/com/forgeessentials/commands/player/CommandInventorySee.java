@@ -27,15 +27,9 @@ public class CommandInventorySee extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "feinvsee";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "invsee" };
+        return "invsee";
     }
 
     @Override

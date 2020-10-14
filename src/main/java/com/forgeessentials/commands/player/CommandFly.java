@@ -13,15 +13,9 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandFly extends ForgeEssentialsCommandBase
 {
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fefly";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "fly" };
+        return "fly";
     }
 
     @Override

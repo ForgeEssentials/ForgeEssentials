@@ -78,7 +78,7 @@ public class CommandPlot extends ParserCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "plot";
     }

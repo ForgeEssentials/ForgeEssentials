@@ -27,7 +27,7 @@ public class CommandRemote extends ParserCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "remote";
     }

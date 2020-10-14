@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
@@ -35,6 +37,8 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
     public List<String> aliases = new ArrayList<>();
 
+    protected final static String PREFIX="fe";
+
     // ------------------------------------------------------------
     // Command alias
 
@@ -48,11 +52,44 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
     }
 
     /**
+     * @deprecated Use {@link #getPrimaryAlias()} instead for downstream classes     *
+     */
+    @Override
+    public String getName() {
+        String name = getPrimaryAlias();
+        if (name.startsWith(PREFIX)) {
+            return name;
+        } else
+        {
+            if (name.startsWith("/"))
+            {
+                   String newname = name.substring(1);
+                if (newname.startsWith(PREFIX)) {
+                    return name;
+                } else {
+                    return "/" + PREFIX + newname;
+                }
+            } else
+            {
+                return PREFIX + name;
+            }
+        }
+    }
+
+    /**
+     * @deprecated Use {@link ForgeEssentialsCommandBase#getDefaultSecondaryAliases()} in downstream classes
      * Returns a list of default aliases, that will be added to the configuration on first run
      */
     public String[] getDefaultAliases()
     {
-        return new String[] {};
+        List<String> list = new ArrayList<>();
+        String name = getPrimaryAlias();
+        if (!name.startsWith(PREFIX))
+        {
+            list.add(name);
+        }
+        list.addAll(Arrays.asList(getDefaultSecondaryAliases()));
+        return list.toArray(new String[]{});
     }
 
     public void setAliases(String[] aliases)
@@ -288,4 +325,11 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getOnlinePlayerNames());
     }
 
+    @Nonnull
+    protected abstract String getPrimaryAlias();
+
+    @Nonnull
+    protected String[] getDefaultSecondaryAliases() {
+        return new String[] {};
+    }
 }

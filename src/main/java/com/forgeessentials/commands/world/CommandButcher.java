@@ -28,13 +28,13 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     public static List<String> typeList = ButcherMobType.getNames();
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "febutcher";
+        return "butcher";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "butcher" };
     }

@@ -31,13 +31,13 @@ public class CommandServerSettings extends ParserCommandBase
     public static List<String> options = Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MotD", "spawnProtection", "gamemode");
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "serversettings";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "ss" };
     }

@@ -25,13 +25,13 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandGameMode extends ForgeEssentialsCommandBase
 {
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "gamemode";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "gm" };
     }

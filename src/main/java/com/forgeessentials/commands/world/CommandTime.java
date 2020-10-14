@@ -55,14 +55,13 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
 
     public CommandTime()
     {
-        aliases.add("time");
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fetime";
+        return "time";
     }
 
     @Override

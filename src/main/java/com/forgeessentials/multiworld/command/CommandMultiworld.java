@@ -23,13 +23,9 @@ public class CommandMultiworld extends ParserCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "femw";
-    }
-
-    public String[] getDefaultAliases() {
-        return new String[] {"femw", "mw"};
+        return "mw";
     }
 
     @Override

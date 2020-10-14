@@ -23,13 +23,9 @@ public class CommandMultiworldTeleport extends ParserCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "femwtp";
-    }
-
-    public String[] getDefaultAliases() {
-        return new String[] {"femwtp", "mwtp"};
+        return "mwtp";
     }
 
     @Override

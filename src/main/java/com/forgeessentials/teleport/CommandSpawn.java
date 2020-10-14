@@ -26,15 +26,9 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fespawn";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "spawn" };
+        return "spawn";
     }
 
     @Override

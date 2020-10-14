@@ -16,7 +16,7 @@ public class CommandServerPerf extends ForgeEssentialsCommandBase
     private static final DecimalFormat formatNumbers = new DecimalFormat("########0.000");
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "perfstats";
     }
