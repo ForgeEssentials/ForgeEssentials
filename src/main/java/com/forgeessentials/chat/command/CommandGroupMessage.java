@@ -61,7 +61,7 @@ public class CommandGroupMessage extends ParserCommandBase
             throw new TranslatedCommandException("Missing chat message");
 
         ITextComponent msgComponent = getChatComponentFromNthArg(arguments.sender, arguments.toArray(), 0, !(arguments.sender instanceof EntityPlayer));
-        ModuleChat.tellGroup(arguments.sender, msgComponent.getUnformattedText(), group);
+        ModuleChat.tellGroup(arguments.sender, msgComponent.getUnformattedText(), group, arguments.ident.checkPermission(ModuleChat.PERM_COLOR));
     }
 
 }
