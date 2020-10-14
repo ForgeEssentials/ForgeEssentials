@@ -312,7 +312,7 @@ public class ModuleChat
     }
 
     public static String processChatReplacements(ICommandSender sender, String message) {
-        processChatReplacements(sender, message, true);
+        return processChatReplacements(sender, message, true);
     }
     public static String processChatReplacements(ICommandSender sender, String message, boolean formatColors)
     {

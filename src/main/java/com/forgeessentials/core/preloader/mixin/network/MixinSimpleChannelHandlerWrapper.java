@@ -26,7 +26,7 @@ public abstract class MixinSimpleChannelHandlerWrapper<REQ extends IMessage, REP
     @Final
     private IMessageHandler<? super REQ, ? extends REPLY> messageHandler;
 
-    @Redirect(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraftforge/fml/common/network/simpleimpl/IMessage;)V", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/common/network/simpleimpl/IMessageHandler;onMessage(Lnet/minecraftforge/fml/common/network/simpleimpl/IMessage;Lnet/minecraftforge/fml/common/network/simpleimpl/MessageContext;)Lnet/minecraftforge/fml/common/network/simpleimpl/IMessage;"))
+    @Redirect(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraftforge/fml/common/network/simpleimpl/IMessage;)V", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/common/network/simpleimpl/IMessageHandler;onMessage(Lnet/minecraftforge/fml/common/network/simpleimpl/IMessage;Lnet/minecraftforge/fml/common/network/simpleimpl/MessageContext;)Lnet/minecraftforge/fml/common/network/simpleimpl/IMessage;", remap = false), remap = false)
     private REPLY redirectNetworkHandler(IMessageHandler iMessageHandler, REQ message, MessageContext ctx) {
 
         EntityPlayerMP player = ctx.getServerHandler().player;
