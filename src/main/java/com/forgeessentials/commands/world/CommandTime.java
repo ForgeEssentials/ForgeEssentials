@@ -55,13 +55,14 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
 
     public CommandTime()
     {
+        aliases.add("time");
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
     public String getName()
     {
-        return "time";
+        return "fetime";
     }
 
     @Override
@@ -149,9 +150,20 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
 
     public static void parseTime(CommandParserArgs arguments, boolean addTime) throws CommandException
     {
+        if (arguments.isEmpty()) {
+            throw new TranslatedCommandException("Please Specify a time!");
+        }
         long time;
-        if (!addTime)
+        if (CommandParserArgs.timeFormatPattern.matcher(arguments.peek()).find())
         {
+            time = arguments.mcParseTimeReadable();
+        }
+        else
+        {
+            if (addTime)
+            {
+                throw new TranslatedCommandException("Add time does not accept time values in the form of day, midday, etc");
+            }
             arguments.tabComplete("day", "midday", "dusk", "night", "midnight");
             String timeStr = arguments.remove().toLowerCase();
             switch (timeStr)
@@ -172,13 +184,8 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
                 time = 18 * 1000;
                 break;
             default:
-                time = parseInt(timeStr);
-                break;
+                throw new TranslatedCommandException("Invalid Time format");
             }
-        }
-        else
-        {
-            time = parseInt(arguments.remove());
         }
 
         World world = arguments.isEmpty() ? null : arguments.parseWorld();

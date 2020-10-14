@@ -401,6 +401,57 @@ public class CommandParserArgs
 
     public static final Pattern timeFormatPattern = Pattern.compile("(\\d+)(\\D+)?");
 
+    private static double mcHour = 1000;
+    private static double mcMinute = 1000.0/60;
+    private static double mcSecond = 1000.0/60/60;
+
+    /**
+     * Parses a Time string in Minecraft time format.
+     * @return
+     * @throws CommandException
+     */
+    public Long mcParseTimeReadable() throws CommandException
+    {
+        if (isEmpty()) {
+            checkTabCompletion();
+            return null;
+        }
+        String timeStr = remove();
+
+        Matcher m = timeFormatPattern.matcher(timeStr);
+        if (!m.find())
+        {
+            throw new TranslatedCommandException("Invalid time format: %s", timeStr);
+        }
+
+        double resultPart = Double.parseDouble(m.group(1));
+
+        String unit = m.group(2);
+        if (unit != null)
+        {
+            switch (unit)
+            {
+            case "s":
+            case "second":
+            case "seconds":
+                resultPart *= mcSecond;
+                break;
+            case "m":
+            case "minute":
+            case "minutes":
+                resultPart *= mcMinute;
+                break;
+            case "h":
+            case "hour":
+            case "hours":
+                resultPart *= mcHour;
+                break;
+            default:
+                throw new TranslatedCommandException("Invalid time format: %s", timeStr);
+            }
+        }
+        return Math.round(resultPart);
+    }
     public long parseTimeReadable() throws CommandException
     {
         checkTabCompletion();
