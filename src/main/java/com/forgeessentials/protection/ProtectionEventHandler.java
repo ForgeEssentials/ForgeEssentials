@@ -778,7 +778,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         for (int i = 0; i < (reset ? inventory.size() : 9); ++i)
         {
             ItemStack stack = inventory.get(i);
-            if (stack == null || !(stack.getItem() instanceof ItemBlock))
+            if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof ItemBlock))
                 continue;
             Block block = ((ItemBlock) stack.getItem()).getBlock();
             String permission = ModuleProtection.getBlockPlacePermission(block, 0);
@@ -980,21 +980,21 @@ public class ProtectionEventHandler extends ServerEventHandler
 
     public static boolean isItemBanned(UserIdent ident, ItemStack stack)
     {
-        if (stack == null)
+        if (stack == ItemStack.EMPTY)
             return false;
         return !APIRegistry.perms.checkUserPermission(ident, ModuleProtection.getItemBanPermission(stack));
     }
 
     public static boolean isItemBanned(WorldPoint point, ItemStack stack)
     {
-        if (stack == null)
+        if (stack == ItemStack.EMPTY)
             return false;
         return !APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.getItemBanPermission(stack));
     }
 
     public static boolean isInventoryItemBanned(UserIdent ident, ItemStack stack)
     {
-        if (stack == null)
+        if (stack == ItemStack.EMPTY)
             return false;
         return !APIRegistry.perms.checkUserPermission(ident, ModuleProtection.getItemInventoryPermission(stack));
     }
@@ -1005,11 +1005,11 @@ public class ProtectionEventHandler extends ServerEventHandler
         for (int slotIdx = 0; slotIdx < player.inventory.getSizeInventory(); slotIdx++)
         {
             ItemStack stack = player.inventory.getStackInSlot(slotIdx);
-            if (stack != null)
+            if (stack != ItemStack.EMPTY)
             {
                 if (isItemBanned(ident, stack))
                 {
-                    player.inventory.setInventorySlotContents(slotIdx, null);
+                    player.inventory.setInventorySlotContents(slotIdx, ItemStack.EMPTY);
                     continue;
                 }
                 if (isInventoryItemBanned(ident, stack))
@@ -1018,7 +1018,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                     droppedItem.motionX = 0;
                     droppedItem.motionY = 0;
                     droppedItem.motionZ = 0;
-                    player.inventory.setInventorySlotContents(slotIdx, null);
+                    player.inventory.setInventorySlotContents(slotIdx, ItemStack.EMPTY);
                 }
             }
         }

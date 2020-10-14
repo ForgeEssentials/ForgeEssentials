@@ -56,7 +56,7 @@ public class CommandItemPermission extends ParserCommandBase
 
         if (arguments.isEmpty())
         {
-            if (stack == null)
+            if (stack == ItemStack.EMPTY)
                 throw new TranslatedCommandException("No item equipped!");
             arguments.notify(ModuleProtection.getItemPermission(stack));
             return;
@@ -90,7 +90,7 @@ public class CommandItemPermission extends ParserCommandBase
         else
             value = false;
 
-        if (stack == null)
+        if (stack == ItemStack.EMPTY)
             throw new TranslatedCommandException("No item equipped!");
 
         String permStart = ModuleProtection.BASE_PERM + '.';

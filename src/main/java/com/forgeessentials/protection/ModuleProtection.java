@@ -413,7 +413,7 @@ public class ModuleProtection
         catch (Exception e)
         {
             String msg;
-            if (stack.getItem() == null)
+            if (stack == ItemStack.EMPTY)
                 msg = "Error getting item permission. Stack item is null. Please report this error (except for TF) and try enabling FE safe-mode.";
             else
                 msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.", stack.getItem().getClass().getName());
