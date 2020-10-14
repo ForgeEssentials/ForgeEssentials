@@ -51,7 +51,7 @@ public class UserIdentUtils
         return fetchData(url, "name");
     }
 
-    public static String fetchData(String url, String id)
+    private static String fetchData(String url, String id)
     {
         try
         {
@@ -59,7 +59,16 @@ public class UserIdentUtils
             URL uri = new URL(url);
             HttpsURLConnection huc = (HttpsURLConnection) uri.openConnection();
             InputStream is;
-            try (JsonReader jr = new JsonReader(new InputStreamReader(is = huc.getInputStream())))
+            try {
+                is = huc.getInputStream();
+            } catch (IOException e) {
+                is = huc.getErrorStream();
+            }
+            if (is == null) {
+                return null;
+            }
+
+            try (JsonReader jr = new JsonReader(new InputStreamReader(is)))
             {
                 if (is.available() > 0 && jr.hasNext())
                 {
@@ -77,7 +86,7 @@ public class UserIdentUtils
                             else
                             {
                                 if (jr.peek() == JsonToken.STRING)
-                                    if (name.equals(id))
+                                    if (id.equals(name))
                                         return jr.nextString();     //This should return before the array finishes
                                 name = null;
                             }
@@ -87,10 +96,6 @@ public class UserIdentUtils
                 }
             }
             return null;
-        }
-        catch (MalformedURLException e)
-        {
-            e.printStackTrace();
         }
         catch (IOException e)
         {
