@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.annotation.Nullable;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
@@ -41,7 +43,7 @@ public class ModuleLauncher
         for (ASMData asm : data)
         {
             temp = new ModuleContainer(asm);
-            if (temp.isLoadable)
+            if (temp.isLoadable && !APIRegistry.FE_EVENTBUS.post(new ModuleRegistrationEvent(temp)))
             {
                 if (containerMap.containsKey(temp.name))
                 {
@@ -151,5 +153,10 @@ public class ModuleLauncher
     public static Map<String, ModuleContainer> getModuleMap()
     {
         return containerMap;
+    }
+
+    @Nullable
+    public static ModuleContainer getModuleContainer(String slug) {
+        return containerMap.getOrDefault(slug, null);
     }
 }

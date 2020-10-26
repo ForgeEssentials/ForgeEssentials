@@ -133,15 +133,9 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "ferules";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "rules" };
+        return "rules";
     }
 
     @Override

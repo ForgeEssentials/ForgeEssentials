@@ -22,15 +22,15 @@ public class CommandLocate extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "felocate";
+        return "locate";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
-        return new String[] { "locate", "gps", "loc", "playerinfo" };
+        return new String[] { "gps", "loc", "playerinfo" };
     }
 
     @Override

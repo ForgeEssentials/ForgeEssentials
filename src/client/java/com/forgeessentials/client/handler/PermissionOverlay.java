@@ -100,8 +100,8 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
         else if (event.isCancelable() && event.getType() == ElementType.CROSSHAIRS)
         {
             ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-            int width = res.getScaledWidth();
-            int height = res.getScaledHeight();
+            float width = res.getScaledWidth();
+            float height = res.getScaledHeight();
 
             RayTraceResult mop = Minecraft.getMinecraft().objectMouseOver;
             if (mop != null && mop.typeOfHit == Type.BLOCK)

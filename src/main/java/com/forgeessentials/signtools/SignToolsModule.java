@@ -1,6 +1,7 @@
 package com.forgeessentials.signtools;
 
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
@@ -27,7 +28,8 @@ public class SignToolsModule extends ConfigLoaderBase
 {
 
     public static final String COLORIZE_PERM = "fe.signs.colorize";
-    
+    public static final String EDIT_PERM = "fe.signs.edit";
+
     private static boolean allowSignCommands, allowSignEdit;
 
     @SubscribeEvent
@@ -41,6 +43,7 @@ public class SignToolsModule extends ConfigLoaderBase
     public void registerPerms(FEModuleServerInitEvent e)
     {
         PermissionAPI.registerNode(COLORIZE_PERM, DefaultPermissionLevel.ALL, "Permission to colourize signs");
+        PermissionAPI.registerNode(EDIT_PERM, DefaultPermissionLevel.ALL, "Permission to edit existing signs");
     }
 
     /**
@@ -82,26 +85,29 @@ public class SignToolsModule extends ConfigLoaderBase
             return;
         }
 
-        if (!allowSignCommands)
-        {
-            return;
-        }
-
         TileEntity te = event.getEntityPlayer().world.getTileEntity(event.getPos());
         if (te != null && te instanceof TileEntitySign)
         {
             if (allowSignEdit && event.getEntityPlayer().isSneaking())
             {
-                if(event.getEntityPlayer().getHeldItemMainhand()!= null)
+                if(event.getEntityPlayer().getHeldItemMainhand()!= ItemStack.EMPTY)
                 {
-                    if (event.getEntityPlayer().getHeldItemMainhand().getItem().equals(Items.SIGN) &&
-                            PermissionAPI.hasPermission(event.getEntityPlayer(), "fe.protection.use.minecraft.sign"))
+                    if (PermissionAPI.hasPermission(event.getEntityPlayer(), EDIT_PERM)
+                            && PermissionAPI.hasPermission(event.getEntityPlayer(), "fe.protection.use.minecraft.sign")
+                            && event.getEntityPlayer().getHeldItemMainhand().getItem().equals(Items.SIGN))
                     {
                         event.getEntityPlayer().openEditSign((TileEntitySign) te);
                         event.setCanceled(true);
                     }
                 }
 
+            }
+
+
+
+            if (!allowSignCommands)
+            {
+                return;
             }
 
             ITextComponent[] signText = ((TileEntitySign) te).signText;

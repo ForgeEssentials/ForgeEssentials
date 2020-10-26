@@ -24,7 +24,7 @@ public class CommandPromote extends ParserCommandBase
     public static final String PERM_NODE = "fe.perm.promote";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "promote";
     }

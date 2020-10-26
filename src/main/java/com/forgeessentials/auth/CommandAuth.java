@@ -30,7 +30,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     private static String[] serverCommands = new String[] { "help", "kick", "setpass", "unregister" };
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "auth";
     }

@@ -14,15 +14,15 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "/fedesel";
+        return "/desel";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
-        return new String[] { "/fedeselect", "/deselect", "/sel" };
+        return new String[] { "/deselect", "/deselect", "/sel" };
     }
 
     @Override

@@ -15,15 +15,9 @@ public class CommandRename extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "ferename";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "rename" };
+        return "rename";
     }
 
     @Override

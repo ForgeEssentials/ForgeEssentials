@@ -16,7 +16,7 @@ public class CommandIrc extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "irc";
     }

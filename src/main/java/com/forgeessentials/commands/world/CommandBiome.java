@@ -18,13 +18,13 @@ public class CommandBiome extends ParserCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "febiome";
+        return "biome";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "biomeinfo" };
     }

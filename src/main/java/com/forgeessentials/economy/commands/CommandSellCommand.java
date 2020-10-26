@@ -27,13 +27,13 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "sellcommand";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "sc", "scmd" };
     }

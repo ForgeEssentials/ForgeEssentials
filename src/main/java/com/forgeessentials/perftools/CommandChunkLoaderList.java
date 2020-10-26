@@ -34,7 +34,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "chunkloaderlist";
     }

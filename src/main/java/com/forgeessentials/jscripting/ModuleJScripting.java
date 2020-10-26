@@ -176,9 +176,14 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     public void loadScripts(ICommandSender sender)
     {
-        for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js" }, true); it.hasNext(); )
+        for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js", "ts" }, true); it.hasNext(); )
         {
             File file = it.next();
+            String name = file.getName();
+            if (name.endsWith("ts")) {
+                LoggingHandler.felog.warn("Typescript file: {} found! This file must be transpiled to javascript with the js extension.  This file will be ignored.", name);
+                continue;
+            }
             if (scripts.containsKey(file))
                 continue;
             try

@@ -27,15 +27,9 @@ public class CommandEnchant extends ParserCommandBase
     private static final String PERM = ModuleCommands.PERM + ".enchant";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "feenchant";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "enchant" };
+        return "enchant";
     }
 
     @Override

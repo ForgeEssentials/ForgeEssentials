@@ -28,15 +28,9 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fecraft";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "craft" };
+        return "craft";
     }
 
     @Override

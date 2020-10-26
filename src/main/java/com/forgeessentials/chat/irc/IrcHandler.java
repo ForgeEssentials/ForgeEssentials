@@ -459,7 +459,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     {
         String raw = event.getMessage().trim();
         while (raw.startsWith(":"))
-            raw.replace(":", "");
+            raw = raw.replace(":", "");
 
         // Check to see if it is a command
         if (raw.startsWith(COMMAND_CHAR) && allowCommands)
@@ -486,7 +486,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
         String raw = event.getMessage().trim();
         while (raw.startsWith(":"))
-            raw.replace(":", "");
+            raw = raw.replace(":", "");
 
         if (raw.startsWith(COMMAND_CHAR) && allowCommands)
         {

@@ -83,7 +83,7 @@ public abstract class PlayerUtil
                         amplifier = Integer.parseInt(effectValues[2]);
                     if (Potion.REGISTRY.getObjectById(potionID) == null)
                     {
-                        LoggingHandler.felog.warn("Invalid potion ID %d", potionID);
+                        LoggingHandler.felog.warn("Invalid potion ID {}", potionID);
                         continue;
                     }
                     player.addPotionEffect(new net.minecraft.potion.PotionEffect(Potion.getPotionById(potionID), effectDuration * 20, amplifier));

@@ -49,15 +49,9 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fekit";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "kit" };
+        return "kit";
     }
 
     @Override

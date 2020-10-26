@@ -20,7 +20,7 @@ public class CommandMail extends ParserCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "mail";
     }

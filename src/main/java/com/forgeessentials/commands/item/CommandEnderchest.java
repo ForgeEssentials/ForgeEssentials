@@ -16,13 +16,13 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 public class CommandEnderchest extends ForgeEssentialsCommandBase
 {
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "enderchest";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "echest" };
     }

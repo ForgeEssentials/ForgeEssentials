@@ -23,7 +23,7 @@ public class CommandWallet extends ParserCommandBase
     public static final String PERM_MODIFY = PERM + ".modify";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "wallet";
     }

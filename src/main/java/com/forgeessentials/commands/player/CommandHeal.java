@@ -23,15 +23,9 @@ public class CommandHeal extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "feheal";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "heal" };
+        return "heal";
     }
 
     @Override

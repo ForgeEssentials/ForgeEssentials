@@ -55,13 +55,13 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "timedmessage";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "tm" };
     }

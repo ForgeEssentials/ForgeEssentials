@@ -23,13 +23,13 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     public static final String PERM_OTHERS = PERM + ".others";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "nickname";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "nick" };
     }

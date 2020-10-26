@@ -28,15 +28,9 @@ public class CommandPush extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fepush";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "push" };
+        return "push";
     }
 
     @Override

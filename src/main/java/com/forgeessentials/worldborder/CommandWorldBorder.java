@@ -2,6 +2,8 @@ package com.forgeessentials.worldborder;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -10,18 +12,19 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.LoggingHandler;
 
 public class CommandWorldBorder extends ParserCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "worldborder";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "wb" };
     }
@@ -53,6 +56,25 @@ public class CommandWorldBorder extends ParserCommandBase
     @Override
     public void parse(CommandParserArgs arguments) throws CommandException
     {
+        Integer dim = null;
+        if (!arguments.isEmpty()) {
+            try
+            {
+                dim = Integer.parseInt(arguments.peek());
+                arguments.remove();
+            } catch (NumberFormatException e) {
+                LoggingHandler.felog.info(e);
+            }
+        }
+
+        World worldToUse;
+        if (dim != null || arguments.senderPlayer == null) {
+            worldToUse = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim != null ? dim : 0);
+        } else {
+            worldToUse = arguments.senderPlayer.world;
+        }
+
+        WorldBorder border = ModuleWorldBorder.getInstance().getBorder(worldToUse);
 
         if (arguments.isEmpty())
         {
@@ -60,7 +82,6 @@ public class CommandWorldBorder extends ParserCommandBase
             arguments.confirm("/wb center here: Set worldborder center");
             arguments.confirm("/wb size <xz> [z]: Set worldborder size");
             arguments.confirm("/wb shape box|ellipse: Set worldborder center");
-            WorldBorder border = ModuleWorldBorder.getInstance().getBorder(arguments.senderPlayer.world);
             if (border == null)
             {
                 arguments.error("No worldborder set for this world");
@@ -78,8 +99,6 @@ public class CommandWorldBorder extends ParserCommandBase
                 arguments.error("  enabled = false");
             return;
         }
-
-        WorldBorder border = ModuleWorldBorder.getInstance().getBorder(arguments.senderPlayer.world);
 
         arguments.tabComplete("center", "disable", "enable", "shape", "size", "effect");
         String subCommand = arguments.remove().toLowerCase();

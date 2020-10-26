@@ -14,7 +14,7 @@ public class CommandIrcBot extends ParserCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "ircbot";
     }

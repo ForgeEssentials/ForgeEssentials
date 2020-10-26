@@ -24,7 +24,7 @@ public class CommandTrade extends ParserCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "trade";
     }

@@ -23,15 +23,9 @@ public class CommandBurn extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "feburn";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "burn" };
+        return "burn";
     }
 
     @Override

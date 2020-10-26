@@ -47,13 +47,13 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "help";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "?" };
     }

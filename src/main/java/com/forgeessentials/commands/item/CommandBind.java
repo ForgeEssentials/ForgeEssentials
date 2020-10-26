@@ -37,15 +37,9 @@ public class CommandBind extends ParserCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "febind";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "bind" };
+        return "bind";
     }
 
     @Override

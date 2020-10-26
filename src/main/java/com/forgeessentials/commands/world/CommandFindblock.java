@@ -39,13 +39,13 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "findblock";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "fb" };
     }

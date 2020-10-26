@@ -23,13 +23,13 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandPaidCommand extends ForgeEssentialsCommandBase
 {
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "paidcommand";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "pc", "pcmd" };
     }

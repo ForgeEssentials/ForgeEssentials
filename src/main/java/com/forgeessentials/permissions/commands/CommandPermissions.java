@@ -11,15 +11,15 @@ public class CommandPermissions extends ParserCommandBase
 {
 
     @Override
-    public final String getName()
+    public final String getPrimaryAlias()
     {
-        return "feperm";
+        return "perm";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
-        return new String[] { "perm", "fep", "p" };
+        return new String[] { "fep", "p" };
     }
 
     @Override

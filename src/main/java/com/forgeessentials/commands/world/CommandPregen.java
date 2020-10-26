@@ -70,15 +70,15 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     private int totalChunks;
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fepregen";
+        return "pregen";
     }
 
     @Override
-    public String[] getDefaultAliases()
+    public String[] getDefaultSecondaryAliases()
     {
-        return new String[] { "pregen", "filler" };
+        return new String[] { "filler" };
     }
 
     @Override
@@ -168,6 +168,10 @@ public class CommandPregen extends ParserCommandBase implements TickTask
         sizeX = border.getSize().getX() / 16;
         sizeZ = border.getSize().getZ() / 16;
         minX = border.getArea().getLowPoint().getX() / 16;
+        minZ = border.getArea().getLowPoint().getZ() / 16;
+        maxX = border.getArea().getHighPoint().getX() / 16;
+        maxZ = border.getArea().getHighPoint().getZ() / 16;
+
         if (ForgeEssentials.isCubicChunksInstalled)
         {
             try
@@ -178,8 +182,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             {
                 minY = -8;
             }
-            minZ = border.getArea().getLowPoint().getZ() / 16;
-            maxX = border.getArea().getHighPoint().getX() / 16;
+
             try
             {
                 maxY = arguments.parseInt();
@@ -189,7 +192,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                 maxY = 8;
             }
         }
-        maxZ = border.getArea().getHighPoint().getZ() / 16;
+
         shape = border.getShape();
 
         x = minX - 1;

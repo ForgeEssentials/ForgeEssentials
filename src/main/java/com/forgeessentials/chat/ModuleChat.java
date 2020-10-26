@@ -231,12 +231,14 @@ public class ModuleChat
         logChatMessage(event.getPlayer().getName(), event.getMessage());
 
         // Initialize parameters
-        String message = processChatReplacements(event.getPlayer(), censor.filter(event.getMessage(), event.getPlayer()));
+        String message = processChatReplacements(event.getPlayer(), censor.filter(event.getMessage(), event.getPlayer()), false);
         ITextComponent header = getChatHeader(ident);
 
         // Apply colors
         if (event.getMessage().contains("&") && ident.checkPermission(PERM_COLOR))
+        {
             message = ChatOutputHandler.formatColors(message);
+        }
 
         // Build message part with links
         ITextComponent messageComponent;
@@ -309,12 +311,18 @@ public class ModuleChat
         event.setCanceled(true);
     }
 
-    public static String processChatReplacements(ICommandSender sender, String message)
+    public static String processChatReplacements(ICommandSender sender, String message) {
+        return processChatReplacements(sender, message, true);
+    }
+    public static String processChatReplacements(ICommandSender sender, String message, boolean formatColors)
     {
         message = ScriptArguments.processSafe(message, sender);
         for (Entry<String, String> r : chatConstReplacements.entrySet())
             message = message.replaceAll("%" + r.getKey(), r.getValue());
-        message = ChatOutputHandler.formatColors(message);
+        if (formatColors)
+        {
+            message = ChatOutputHandler.formatColors(message);
+        }
         return message;
     }
 
@@ -504,7 +512,7 @@ public class ModuleChat
         CommandReply.messageSent(sender, target);
         ModuleCommandsEventHandler.checkAfkMessage(target, message);
     }
-    public static void tellGroup(ICommandSender sender, String message, String group)
+    public static void tellGroup(ICommandSender sender, String message, String group, boolean formatColors)
     {
         ServerZone sz = APIRegistry.perms.getServerZone();
         for (String g : sz.getGroups())
@@ -521,7 +529,7 @@ public class ModuleChat
         EntityPlayer player = sender instanceof EntityPlayer ? (EntityPlayer) sender : null;
         msg = player != null ? getChatHeader(UserIdent.get((EntityPlayer) sender)) : new TextComponentTranslation("SERVER ");
         String censored = censor.filter(message, player);
-        String formatted = processChatReplacements(sender, censored);
+        String formatted = processChatReplacements(sender, censored, formatColors);
 
         ITextComponent msgGroup = new TextComponentString("@" + groupName + "@ ");
         msgGroup.getStyle().setColor(TextFormatting.GRAY).setItalic(true);

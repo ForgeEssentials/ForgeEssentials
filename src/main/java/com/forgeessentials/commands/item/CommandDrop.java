@@ -30,15 +30,9 @@ public class CommandDrop extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fedrop";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "drop" };
+        return "drop";
     }
 
     @Override

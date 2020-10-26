@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketEntityEffect;
 import net.minecraft.network.play.server.SPacketRespawn;
+import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -34,6 +35,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.PlayerChangedZone;
@@ -191,7 +193,7 @@ public class TeleportHelper extends ServerEventHandler
     public static boolean canTeleportTo(WarpPoint point)
     {
         // TODO (upgrade): Check this!
-        if (point.getY() < 0)
+        if (!ForgeEssentials.isCubicChunksInstalled && point.getY() < 0)
             return false;
         BlockPos blockPos1 = point.getBlockPos();
         BlockPos blockPos2 = new BlockPos(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
@@ -199,8 +201,8 @@ public class TeleportHelper extends ServerEventHandler
         Block block2 = point.getWorld().getBlockState(blockPos2).getBlock();
         AxisAlignedBB blockBounds1 = block1.getCollisionBoundingBox(block1.getDefaultState(), point.getWorld(), blockPos1);
         AxisAlignedBB blockBounds2 = block2.getCollisionBoundingBox(block2.getDefaultState(), point.getWorld(), blockPos2);
-        boolean block1Free = !block1.getMaterial(block1.getDefaultState()).isSolid() || blockBounds1.maxX < 1 || blockBounds1.maxY > 0;
-        boolean block2Free = !block2.getMaterial(block2.getDefaultState()).isSolid() || blockBounds2.maxX < 1 || blockBounds2.maxZ > 0;
+        boolean block1Free = !block1.getMaterial(block1.getDefaultState()).isSolid() || blockBounds1 == null || blockBounds1.maxX < 1 || blockBounds1.maxY > 0;
+        boolean block2Free = !block2.getMaterial(block2.getDefaultState()).isSolid() || blockBounds2 == null || blockBounds2.maxX < 1 || blockBounds2.maxY > 0;
         return block1Free && block2Free;
     }
 
@@ -321,6 +323,8 @@ public class TeleportHelper extends ServerEventHandler
             PotionEffect potioneffect = (PotionEffect) iterator.next();
             player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), potioneffect));
         }
+        player.sendPlayerAbilities();
+        player.connection.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
         FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDim, dimension);
     }
 

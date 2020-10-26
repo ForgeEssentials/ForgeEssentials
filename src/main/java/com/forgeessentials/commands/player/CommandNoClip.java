@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -20,15 +21,9 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fenoclip";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "noclip" };
+        return "noclip";
     }
 
     @Override
@@ -88,7 +83,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
 
     public static void checkClip(EntityPlayer player)
     {
-        if (player.noClip)
+        if (player.noClip && PermissionAPI.hasPermission(player, ModuleCommands.PERM + ".noclip"))
         {
             if (!player.capabilities.isFlying)
             {

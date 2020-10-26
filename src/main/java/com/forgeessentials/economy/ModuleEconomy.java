@@ -72,7 +72,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class ModuleEconomy extends ServerEventHandler implements Economy, ConfigLoader
 {
 
-    public static final UserIdent ECONOMY_IDENT = UserIdent.get("fefefefe-fefe-fefe-fefe-fefefefefeec", "$FE_ECONOMY");
+    public static final UserIdent ECONOMY_IDENT = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefeec", "$FE_ECONOMY");
 
     public static final String PERM = "fe.economy";
     public static final String PERM_COMMAND = PERM + ".command";
@@ -185,20 +185,23 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
         {
             ItemStack stack = player.inventory.mainInventory.get(slot);
-            if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
                 foundStacks += stack.getCount();
         }
         foundStacks = amount = Math.min(foundStacks, amount);
         for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
         {
             ItemStack stack = player.inventory.mainInventory.get(slot);
-            if (stack != null && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
             {
                 int removeCount = Math.min(stack.getCount(), foundStacks);
                 player.inventory.decrStackSize(slot, removeCount);
                 foundStacks -= removeCount;
             }
         }
+
+        player.inventoryContainer.detectAndSendChanges();
+
         return amount;
     }
 

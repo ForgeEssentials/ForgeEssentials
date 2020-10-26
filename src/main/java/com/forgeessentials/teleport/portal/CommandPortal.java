@@ -21,15 +21,9 @@ public class CommandPortal extends ParserCommandBase
     public static final String PERM = "fe.teleport.portal";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "feportal";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "portal" };
+        return "portal";
     }
     
     @Override

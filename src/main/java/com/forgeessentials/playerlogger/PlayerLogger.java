@@ -666,7 +666,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             for (BlockSnapshot snapshot : ((BlockEvent.MultiPlaceEvent) event).getReplacedBlockSnapshots())
                 changes.put(snapshot.getPos(), snapshot);
             for (BlockSnapshot snapshot : changes.values())
-                eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, null, event.getPlayer(), event.getHand())));
+                eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, event.getPlacedAgainst(), event.getPlayer(), event.getHand())));
             startThread();
         }
         else

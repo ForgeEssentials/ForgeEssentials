@@ -30,15 +30,9 @@ public class CommandBubble extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "febubble";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "bubble" };
+        return "bubble";
     }
 
     @Override

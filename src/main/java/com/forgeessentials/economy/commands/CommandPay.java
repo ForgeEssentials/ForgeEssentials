@@ -19,7 +19,7 @@ public class CommandPay extends ParserCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "pay";
     }

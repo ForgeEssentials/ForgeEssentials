@@ -50,15 +50,9 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fepotion";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "potion" };
+        return "potion";
     }
 
     @Override

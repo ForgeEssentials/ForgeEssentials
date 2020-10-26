@@ -24,15 +24,9 @@ public class CommandSmite extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fesmite";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "smite" };
+        return "smite";
     }
 
     @Override

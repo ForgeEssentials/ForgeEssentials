@@ -29,15 +29,9 @@ public class CommandVanish extends ParserCommandBase
     private static Set<UserIdent> vanishedPlayers = new HashSet<>();
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fevanish";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "vanish" };
+        return "vanish";
     }
 
     @Override

@@ -37,6 +37,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -69,11 +70,18 @@ public class ModulePermissions extends ConfigLoaderBase
         APIRegistry.perms = permissionHelper;
         PermissionAPI.setPermissionHandler(permissionHelper);
 
-        try {
-            Class.forName("com.feed_the_beast.ftblib.lib.config.IRankConfigHandler");
-            Class.forName("com.feed_the_beast.ftbutilities.FTBUtilitiesConfig");
-            MinecraftForge.EVENT_BUS.register(FTBURankConfigHandler.class);
-        } catch (ClassNotFoundException e) {}
+
+        if (Loader.isModLoaded("ftbutilities"))
+        {
+            try
+            {
+                MinecraftForge.EVENT_BUS.register(FTBURankConfigHandler.class);
+            }
+            catch (NoClassDefFoundError e)
+            {
+                LoggingHandler.felog.error("FTBU is installed but an error was encountered while loading the compat!");
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

@@ -20,7 +20,7 @@ public class CommandSetSpawn extends ParserCommandBase
     public static final String PERM_SETSPAWN = "fe.perm.setspawn";
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
         return "setspawn";
     }

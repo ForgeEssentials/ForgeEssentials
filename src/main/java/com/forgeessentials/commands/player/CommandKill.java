@@ -24,15 +24,9 @@ public class CommandKill extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "fekill";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "kill" };
+        return "kill";
     }
 
     @Override

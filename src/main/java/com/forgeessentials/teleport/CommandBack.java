@@ -18,15 +18,9 @@ public class CommandBack extends ForgeEssentialsCommandBase
 {
 
     @Override
-    public String getName()
+    public String getPrimaryAlias()
     {
-        return "feback";
-    }
-
-    @Override
-    public String[] getDefaultAliases()
-    {
-        return new String[] { "back" };
+        return "back";
     }
 
     @Override
