@@ -164,7 +164,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
             return;
 
-        Map<?, ?> commandMap = ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).getCommands();
+        Map<String, ICommand> commandMap = ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).getCommands();
         if (commandMap.containsKey(getName()))
             LoggingHandler.felog.error(String.format("Command %s registered twice", getName()));
 
@@ -172,7 +172,12 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         {
             for (String alias : getAliases())
                 if (alias != null && commandMap.containsKey(alias))
+                {
                     LoggingHandler.felog.error(String.format("Command alias %s of command %s registered twice", alias, getName()));
+                    ICommand old = commandMap.get(alias);
+                    LoggingHandler.felog.error(String.format("Old Class: %s has been removed from commandMap!", old.getClass().getCanonicalName()));
+                    commandMap.remove(alias);
+                }
         }
 
         ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).registerCommand(this);

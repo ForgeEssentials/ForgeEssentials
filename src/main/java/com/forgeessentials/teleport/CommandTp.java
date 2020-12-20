@@ -70,9 +70,9 @@ public class CommandTp extends ForgeEssentialsCommandBase
             if (args.length == 3)
             {
                 EntityPlayerMP player = sender;
-                double x = parseCoordinate(player.posX, args[0], true).getAmount();
+                double x = parseCoordinate(player.posX, args[0], true).getResult();
                 double y = ServerUtil.parseYLocation(sender, player.posY, args[1]);
-                double z = parseCoordinate(player.posZ, args[2], true).getAmount();
+                double z = parseCoordinate(player.posZ, args[2], true).getResult();
                 PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                 TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
@@ -82,9 +82,9 @@ public class CommandTp extends ForgeEssentialsCommandBase
                 EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
-                    double x = parseCoordinate(player.posX, args[1], true).getAmount();
+                    double x = parseCoordinate(player.posX, args[1], true).getResult();
                     double y = ServerUtil.parseYLocation(sender, player.posY, args[2]);
-                    double z = parseCoordinate(player.posZ, args[3], true).getAmount();
+                    double z = parseCoordinate(player.posZ, args[3], true).getResult();
                     PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                     TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
@@ -121,9 +121,9 @@ public class CommandTp extends ForgeEssentialsCommandBase
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                double x = parseCoordinate(player.posX, args[1], true).getAmount();
+                double x = parseCoordinate(player.posX, args[1], true).getResult();
                 double y = ServerUtil.parseYLocation(sender, player.posY, args[2]);
-                double z = parseCoordinate(player.posZ, args[3], true).getAmount();
+                double z = parseCoordinate(player.posZ, args[3], true).getResult();
                 TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
             }
             else

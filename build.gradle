@@ -290,6 +290,11 @@ jar {
     from fileTree(serverLibArchive.archivePath)
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
+
+        exclude 'META-INF/*.SF'
+        exclude 'META-INF/*.RSA'
+        exclude 'META-INF/*.MF'
+        exclude 'LICENSE.txt'
 	}
 
 	manifest {

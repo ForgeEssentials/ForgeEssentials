@@ -180,7 +180,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         {
             File file = it.next();
             String name = file.getName();
-            if (name.endsWith("ts")) {
+            if (!name.endsWith("d.ts") && name.endsWith("ts")) {
                 LoggingHandler.felog.warn("Typescript file: {} found! This file must be transpiled to javascript with the js extension.  This file will be ignored.", name);
                 continue;
             }

@@ -239,7 +239,8 @@ public class TeleportHelper extends ServerEventHandler
         if (player.dimension != point.getDimension())
         {
             SimpleTeleporter teleporter = new SimpleTeleporter(point.getWorld());
-            transferPlayerToDimension(player, point.getDimension(), teleporter);
+            MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+            mcServer.getPlayerList().transferPlayerToDimension(player, point.getDimension(), teleporter);
         }
         player.connection.setPlayerLocation(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
@@ -295,6 +296,7 @@ public class TeleportHelper extends ServerEventHandler
         }
     }
 
+    //TODO: Remove method
     public static void transferPlayerToDimension(EntityPlayerMP player, int dimension, Teleporter teleporter)
     {
         // TODO (upgrade): Check teleportation!

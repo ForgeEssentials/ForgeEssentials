@@ -14,5 +14,6 @@
         "network.MixinSimpleChannelHandlerWrapper",
         "MixinDimensionManager"
         //"tileentity.MixinMobSpawnerBaseLogic"
-	]
+	],
+    "minVersion": "0.8"
 }

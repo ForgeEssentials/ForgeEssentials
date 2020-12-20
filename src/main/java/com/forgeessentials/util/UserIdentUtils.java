@@ -67,32 +67,57 @@ public class UserIdentUtils
             if (is == null) {
                 return null;
             }
-
+            //TODO: Rewrite so it won't become an infinite loop
+            //      In the case of Resolving Username from UUID
+            //      We need to account for multiple usernames
+            //      And grab the current one
             try (JsonReader jr = new JsonReader(new InputStreamReader(is)))
             {
+                boolean inArray = false;
                 if (is.available() > 0 && jr.hasNext())
                 {
                     if (jr.peek() == JsonToken.BEGIN_ARRAY)
+                    {
+                        inArray = true;
                         jr.beginArray();
+                    }
                     JsonToken t = jr.peek();
+                    String value = null;
                     while (t != JsonToken.END_ARRAY && t != JsonToken.END_DOCUMENT)
                     {
                         jr.beginObject();
                         String name = null;
 
                         while (jr.hasNext())
+                        {
                             if (jr.peek() == JsonToken.NAME)
                                 name = jr.nextName();
                             else
                             {
                                 if (jr.peek() == JsonToken.STRING)
+                                {
                                     if (id.equals(name))
-                                        return jr.nextString();     //This should return before the array finishes
-                                name = null;
+                                    {
+                                        value = jr.nextString();
+                                    }
+                                } else
+                                {
+                                    name = null;
+                                }
                             }
+                        }
                         jr.endObject();
+
+                        t = jr.peek();
                     }
-                    jr.endArray();
+                    if (inArray)
+                    {
+                        jr.endArray();
+                    }
+
+                    if (value != null) {
+                        return value;
+                    }
                 }
             }
             return null;

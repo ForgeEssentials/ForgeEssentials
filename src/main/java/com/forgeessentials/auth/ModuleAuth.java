@@ -143,6 +143,9 @@ public class ModuleAuth extends ConfigLoaderBase
 
     public static boolean isAuthenticated(EntityPlayer player)
     {
+        if (player == null) {
+            return true;
+        }
         return isAuthenticated(player.getPersistentID());
     }
 
