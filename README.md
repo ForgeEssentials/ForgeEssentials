@@ -24,7 +24,7 @@ Please follow these rules when reporting bugs:
 **Any issue that does not follow the above rules will be closed!!!**
 
 # Downloads
-**If you just want the latest stable releases, please get them from [Curse](http://minecraft.curseforge.com/mc-mods/74735)**  
+**If you just want the latest stable releases, please get them from [Curse](https://www.curseforge.com/minecraft/mc-mods/forge-essentials-74735)**  
 Nightly builds with the latest features and bugfixes can be found on our [Jenkins build server](http://ci.forgeessentials.com/job/FE-1.12.2/).
 
 # About
