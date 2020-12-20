@@ -12,8 +12,11 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Point;
+import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.ServerUtil;
 
 public class CommandTppos extends ForgeEssentialsCommandBase
 {
@@ -57,20 +60,18 @@ public class CommandTppos extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
     {
-        throw new TranslatedCommandException("Not yet implemented!");
-        // TODO 1.8 check
-        // if (args.length == 3)
-        // {
-        // double x = func_110666_a(sender, sender.posX, args[0]);
-        // double y = ServerUtil.parseYLocation(sender, sender.posY, args[1]);
-        // double z = func_110666_a(sender, sender.posZ, args[2]);
-        // TeleportHelper.teleport(sender, new WarpPoint(sender.dimension, x, y, z, sender.cameraPitch,
-        // sender.cameraYaw));
-        // }
-        // else
-        // {
-        // throw new TranslatedCommandException(getUsage(sender));
-        // }
+         if (args.length == 3)
+         {
+             double x = parseCoordinate(sender.posX, args[0], true).getResult();
+             double y = ServerUtil.parseYLocation(sender, sender.posY, args[1]);
+             double z = parseCoordinate(sender.posZ, args[2], true).getResult();
+             TeleportHelper.teleport(sender, new WarpPoint(sender.dimension, x, y, z, sender.cameraPitch,
+             sender.cameraYaw));
+         }
+         else
+         {
+            throw new TranslatedCommandException(getUsage(sender));
+         }
     }
 
     @Override
