@@ -36,9 +36,13 @@ public abstract class MixinCraftingManager
         )
     private void findCraftingResultPermissible(InventoryCrafting inventory, World world, CallbackInfoReturnable<ItemStack> cir)
     {
+    	ItemStack result = cir.getReturnValue();
+    	if (result == null) {
+    		return;
+    	}
+    	
         EntityPlayer player = ModuleProtection.getCraftingPlayer(inventory);
-        ItemStack result = cir.getReturnValue();
-        if (result == null || player == null || ModuleProtection.canCraft(player, result))
+        if (player == null || ModuleProtection.canCraft(player, result))
         {
             return;
         }
