@@ -30,31 +30,19 @@ public abstract class MixinCraftingManager
      * @param cir the callback info
      */
     @Inject(
-        method = "findMatchingRecipe",
-        at = @At(
-            value = "INVOKE",
-            target = "Ljava/util/List;size()I",
-            shift = At.Shift.BEFORE
-        ),
-        cancellable = true
-    )
+            method = "findMatchingRecipe",
+            at = @At("RETURN"),
+            cancellable = true
+        )
     private void findCraftingResultPermissible(InventoryCrafting inventory, World world, CallbackInfoReturnable<ItemStack> cir)
     {
         EntityPlayer player = ModuleProtection.getCraftingPlayer(inventory);
-        for (IRecipe recipe : this.recipes)
+        ItemStack result = cir.getReturnValue();
+        if (result == null || player == null || ModuleProtection.canCraft(player, result))
         {
-            if (recipe.matches(inventory, world))
-            {
-                ItemStack result = recipe.getCraftingResult(inventory);
-                if (player == null || ModuleProtection.canCraft(player, result))
-                {
-                    cir.setReturnValue(result);
-                    return;
-                }
-            }
+            return;
         }
 
         cir.setReturnValue(null);
     }
-
 }
