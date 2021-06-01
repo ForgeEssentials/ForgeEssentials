@@ -133,8 +133,22 @@ dependencies {
 	includeMod files("lib/worldedit-forge-mc1.7.10-6.1.1-SNAPSHOT-dist.jar")
 
 	// Shade Mixin library
-	shade group: "org.spongepowered", name: "mixin", version: "0.5.10-SNAPSHOT", changing: true
-	shadeClient group: "org.spongepowered", name: "mixin", version: "0.5.10-SNAPSHOT", changing: true
+	shade (group: "org.spongepowered", name: "mixin", version: "0.7.11-SNAPSHOT", changing: true) {
+        exclude group: 'org.ow2.asm', module: 'asm-tree'
+        exclude module: 'launchwrapper'
+        exclude module: 'guava'
+        exclude module: 'gson'
+        exclude module: 'commons-io'
+        exclude module: 'log4j-core'
+    }
+	shadeClient (group: "org.spongepowered", name: "mixin", version: "0.7.11-SNAPSHOT", changing: true) {
+        exclude group: 'org.ow2.asm', module: 'asm-tree'
+        exclude module: 'launchwrapper'
+        exclude module: 'guava'
+        exclude module: 'gson'
+        exclude module: 'commons-io'
+        exclude module: 'log4j-core'
+    }
 	
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
