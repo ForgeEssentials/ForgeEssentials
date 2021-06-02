@@ -8,6 +8,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +82,14 @@ public class FELaunchHandler implements ITweaker
         }
         
         MixinBootstrap.init();
+
+        try {
+            URI uri = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
+            MixinBootstrap.getPlatform().addContainer(uri);
+        } catch (URISyntaxException e) {
+            launchLog.error(e);
+        }
+
         // Fix CoFH compatibility. Fixes #1903
         MixinEnvironment.getEnvironment(Phase.PREINIT).addTransformerExclusion("cofh.asm.CoFHAccessTransformer");
 
