@@ -470,28 +470,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public boolean checkPerms(ICommand command, ICommandSender sender) {
         String node = PermissionManager.getCommandPermission(command);
-        if (sender instanceof DoAsCommandSender) {
-            if (!((DoAsCommandSender) sender).getIdent().isPlayer()) {
-                if (((DoAsCommandSender) sender).getIdent().isNpc()) {
-                    return PermissionAPI.hasPermission(((DoAsCommandSender) sender).getIdent().getGameProfile(), node, null);
-                }
-                else
-                {
-                    return true;
-                }
-            } else {
-                return PermissionAPI.hasPermission(((DoAsCommandSender) sender).getIdent().getPlayer(), node);
-            }
-        }
-        if (sender instanceof MinecraftServer || sender instanceof CommandBlockBaseLogic)
-            return true;
-        if (sender instanceof EntityPlayer)
-        {
-            return PermissionAPI.hasPermission((EntityPlayer) sender, node);
-        } else {
-            NpcUserIdent ident = UserIdent.getNpc(sender.getName());
-            return PermissionAPI.hasPermission(ident.getGameProfile(), node, null);
-        }
+        return APIRegistry.perms.checkUserPermission(UserIdent.get(sender),node);
     }
 
     /* ------------------------------------------------------------ */

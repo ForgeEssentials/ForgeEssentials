@@ -7,6 +7,7 @@
         "block.MixinBlockFire",
         "block.MixinBlockEndPortal",
         "command.MixinCommandHandler",
+        "command.MixinICommandSender",
         "entity.MixinEntity",
         "entity.player.MixinEntityPlayer",
         "item.crafting.MixinCraftingManager",

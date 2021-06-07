@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.UserIdentUtils;
 import com.google.gson.annotations.Expose;
@@ -18,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -189,6 +191,28 @@ public class UserIdent
         return new UserIdent(uuid, null, UserIdent.getPlayerByUuid(uuid));
     }
 
+    public static synchronized UserIdent get(ICommandSender sender) {
+        if (sender instanceof DoAsCommandSender)
+        {
+            return ((DoAsCommandSender) sender).getIdent();
+        }
+        else if (sender instanceof MinecraftServer)
+        {
+            return APIRegistry.IDENT_SERVER;
+        }
+        else if (sender instanceof CommandBlockBaseLogic)
+        {
+            return APIRegistry.IDENT_CMDBLOCK;
+        }
+        else if (sender instanceof EntityPlayerMP)
+        {
+            return get((EntityPlayerMP) sender);
+        }
+        else
+        {
+            return UserIdent.getNpc(sender.getName());
+        }
+    }
     public static synchronized UserIdent getFromUuid(String uuid)
     {
         if (uuid == null)

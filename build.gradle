@@ -3,7 +3,7 @@ buildscript {
 	repositories {
 		maven {
 			name = "forge"
-			url = "http://files.minecraftforge.net/maven"
+			url = "https://files.minecraftforge.net/maven"
 		}
 		maven {
 			name = "sonatype"
@@ -11,7 +11,7 @@ buildscript {
 		}
         maven {
             name = "sponge"
-            url = "http://repo.spongepowered.org/maven/"
+            url = "https://repo.spongepowered.org/maven/"
         }
 		mavenCentral()
 		mavenLocal()
@@ -28,7 +28,6 @@ buildscript {
 		classpath "org.ajoberstar:gradle-git:0.12.0"
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
 	}
-
 }
 
 plugins {
@@ -46,15 +45,18 @@ sonarqube {
     }
 }
 
+//Clear repositories since spongepowered plugin is inserting an extra repo with http!
+//TODO: Update to a newer version of the spongepowered plugin
+repositories.clear()
 // Set up FE required repositories
 repositories {
 	maven {
 		name = "sk89q"
-		url = "http://maven.enginehub.org/repo/"
+		url = "https://maven.enginehub.org/repo/"
 	}
 	maven {
 		name = "sponge"
-		url = "http://repo.spongepowered.org/maven/"
+		url = "https://repo.spongepowered.org/maven/"
 	}
 
 	maven {
@@ -442,7 +444,7 @@ publishing {
 					username project.forgemaven_user
 					password project.forgemaven_password
 				}
-				url "http://files.minecraftforge.net/maven/manage/upload"
+				url "https://files.minecraftforge.net/maven/manage/upload"
 			}
 		} else {
 			maven { url "file://${project.projectDir}/build/repo" }
