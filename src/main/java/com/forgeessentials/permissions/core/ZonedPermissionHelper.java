@@ -21,19 +21,27 @@ import java.util.WeakHashMap;
 import javax.annotation.Nullable;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.context.AreaContext;
+import net.minecraftforge.server.permission.context.BlockPosContext;
+import net.minecraftforge.server.permission.context.ContextKeys;
+import net.minecraftforge.server.permission.context.IContext;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -55,25 +63,12 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.authlib.GameProfile;
-
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.context.AreaContext;
-import net.minecraftforge.server.permission.context.BlockPosContext;
-import net.minecraftforge.server.permission.context.ContextKey;
-import net.minecraftforge.server.permission.context.ContextKeys;
-import net.minecraftforge.server.permission.context.IContext;
 
 /**
  * Main permission management class
@@ -428,7 +423,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 return;
         }
 
-        ITextComponent msg1 = new TextComponentString(String.format("%s = %s", permissionNode, value));
+        ITextComponent msg1 = new TextComponentString(String.format("%s = %s (%s)", permissionNode, value, node));
         msg1.getStyle().setColor(Zone.PERMISSION_FALSE.equals(value) ? TextFormatting.RED : TextFormatting.DARK_GREEN);
 
         ITextComponent msg2;

@@ -14,7 +14,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -649,7 +648,7 @@ public class ServerZone extends Zone implements Loadable
             }
         }
         if (rootZone.permissionDebugger != null)
-            rootZone.permissionDebugger.debugPermission(null, null, GROUP_DEFAULT, node, node, "null", point, true);
+            rootZone.permissionDebugger.debugPermission(null, ident, GROUP_DEFAULT, node, node, "null", point, true);
         return null;
     }
 
