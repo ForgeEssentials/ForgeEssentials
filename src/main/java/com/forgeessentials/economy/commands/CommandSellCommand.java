@@ -87,7 +87,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
         for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
         {
             ItemStack stack = player.inventory.mainInventory.get(slot);
-            if (stack != null && stack.getItem() == itemStack.getItem()
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem()
                     && (itemStack.getItemDamage() == -1 || stack.getItemDamage() == itemStack.getItemDamage()))
                 foundStacks += stack.getCount();
         }
@@ -107,7 +107,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
         for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
         {
             ItemStack stack = player.inventory.mainInventory.get(slot);
-            if (stack != null && stack.getItem() == itemStack.getItem()
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem()
                     && (itemStack.getItemDamage() == -1 || stack.getItemDamage() == itemStack.getItemDamage()))
             {
                 int removeCount = Math.min(stack.getCount(), amount);

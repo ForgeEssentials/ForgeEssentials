@@ -8,8 +8,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -69,7 +69,7 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
         for (int slotIdx = 0; slotIdx < inventory.getSizeInventory(); slotIdx++)
         {
             ItemStack stack = inventory.getStackInSlot(slotIdx);
-            if (stack == null)
+            if (stack == ItemStack.EMPTY)
                 continue;
             boolean isEquipped = slotIdx == inventory.currentItem || slotIdx > inventory.mainInventory.size();
             check(event, stack, isEquipped);
@@ -85,7 +85,7 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
         for (int slotIdx = 0; slotIdx < inventory.getSizeInventory(); slotIdx++)
         {
             ItemStack stack = inventory.getStackInSlot(slotIdx);
-            if (stack == null)
+            if (stack == ItemStack.EMPTY)
                 continue;
             boolean isEquipped = slotIdx == inventory.currentItem || slotIdx > inventory.mainInventory.size();
 

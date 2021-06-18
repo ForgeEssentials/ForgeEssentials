@@ -2,13 +2,10 @@ package com.forgeessentials.economy;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -212,7 +209,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         for (int slot = 0; slot < player.inventory.mainInventory.size(); slot++)
         {
             ItemStack stack = player.inventory.mainInventory.get(slot);
-            if (stack != null && stack.getItem() == itemType.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemType.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
                 foundStacks += stack.getCount();
         }
         return foundStacks;

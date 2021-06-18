@@ -11,8 +11,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +58,7 @@ public class CommandEnchant extends ParserCommandBase
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         ItemStack stack = arguments.senderPlayer.getHeldItemMainhand();
-        if (stack == null)
+        if (stack == ItemStack.EMPTY)
             throw new TranslatedCommandException("You are not holding a valid item");
 
         List<String> validEnchantmentNames = new ArrayList<>();

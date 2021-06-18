@@ -56,7 +56,7 @@ public class CommandItemPermission extends ParserCommandBase
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         ItemStack stack = arguments.senderPlayer.getHeldItemMainhand();
-        if (stack == null)
+        if (stack == ItemStack.EMPTY)
             throw new TranslatedCommandException("No item equipped!");
 
         if (arguments.isEmpty())

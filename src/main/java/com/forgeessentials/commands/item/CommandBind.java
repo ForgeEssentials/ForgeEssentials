@@ -84,7 +84,7 @@ public class CommandBind extends ParserCommandBase
             if (!arguments.isTabCompletion)
             {
                 ItemStack is = arguments.senderPlayer.inventory.getCurrentItem();
-                if (is == null)
+                if (is == ItemStack.EMPTY)
                     throw new TranslatedCommandException("You are not holding a valid item.");
                 NBTTagCompound tag = is.getTagCompound();
                 if (tag != null)
@@ -107,7 +107,7 @@ public class CommandBind extends ParserCommandBase
         }
 
         ItemStack is = arguments.senderPlayer.inventory.getCurrentItem();
-        if (is == null)
+        if (is == ItemStack.EMPTY)
             throw new TranslatedCommandException("You are not holding a valid item.");
         NBTTagCompound tag = ItemUtil.getTagCompound(is);
         NBTTagCompound bindTag = ItemUtil.getCompoundTag(tag, TAG_NAME);
@@ -158,7 +158,7 @@ public class CommandBind extends ParserCommandBase
         if (!(event.getEntityPlayer() instanceof EntityPlayerMP))
             return;
         ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
-        if (stack == null || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TAG_NAME))
+        if (stack == ItemStack.EMPTY || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TAG_NAME))
             return;
         NBTTagCompound nbt = stack.getTagCompound().getCompoundTag(TAG_NAME);
 

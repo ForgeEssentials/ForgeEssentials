@@ -215,7 +215,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             return;
 
         ItemStack equippedStack = event.getEntityPlayer().getHeldItemMainhand();
-        Item equippedItem = equippedStack != null ? equippedStack.getItem() : null;
+        Item equippedItem = equippedStack != ItemStack.EMPTY ? equippedStack.getItem() : null;
 
         WorldPoint point;
         if (event instanceof RightClickEmpty)

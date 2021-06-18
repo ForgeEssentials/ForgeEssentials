@@ -70,7 +70,7 @@ public class CommandTrade extends ParserCommandBase
         // final int amount = arguments.parseInt();
 
         final ItemStack itemStack = arguments.senderPlayer.getHeldItemMainhand();
-        if (itemStack == null)
+        if (itemStack == ItemStack.EMPTY)
             throw new TranslatedCommandException("You need to hold an item first!");
 
         // if (arguments.isEmpty())

@@ -167,7 +167,7 @@ public class CommandSellprice extends ParserCommandBase
                                 stack = stacks[0];
                             }
 
-                            if (stack != null)
+                            if (stack != ItemStack.EMPTY)
                             {
                                 craftRecipes.write(String.format("  %s:%d\n", ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack)));
                             }
@@ -230,7 +230,7 @@ public class CommandSellprice extends ParserCommandBase
                                             stack = stacks[0];
                                         }
 
-                                        if (stack != null)
+                                        if (stack != ItemStack.EMPTY)
                                             msg += String.format("\n  %.0f - %s:%d", priceMap.get(ItemUtil.getItemIdentifier(stack)),
                                                     ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack));
                                     }

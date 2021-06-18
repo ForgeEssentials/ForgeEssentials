@@ -27,12 +27,12 @@ public class JsInventory<T extends IInventory> extends JsWrapper<T>
 
     public void setStackInSlot(int slot, JsItemStack stack)
     {
-        that.setInventorySlotContents(slot, stack == null ? null : stack.getThat());
+        that.setInventorySlotContents(slot, stack.getThat());
     }
 
     public boolean isStackValidForSlot(int slot, JsItemStack stack)
     {
-        return that.isItemValidForSlot(slot, stack == null ? null : stack.getThat());
+        return that.isItemValidForSlot(slot, stack.getThat());
     }
 
     public int getSize()

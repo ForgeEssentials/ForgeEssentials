@@ -1,5 +1,20 @@
 package com.forgeessentials.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
@@ -10,20 +25,6 @@ import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
 import com.forgeessentials.util.events.FEPlayerEvent.InventoryGroupChange;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.google.gson.annotations.Expose;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 public class PlayerInfo implements Loadable
 {
@@ -444,9 +445,9 @@ public class PlayerInfo implements Loadable
             /*
              * ChatOutputHandler.felog.info("Items in old inventory:"); for (int i = 0; i <
              * ident.getPlayer().inventory.getSizeInventory(); i++) { ItemStack itemStack =
-             * ident.getPlayer().inventory.getStackInSlot(i); if (itemStack != null) ChatOutputHandler.felog.info("  " +
+             * ident.getPlayer().inventory.getStackInSlot(i); if (itemStack != ItemStack.EMPTY) ChatOutputHandler.felog.info("  " +
              * itemStack.getDisplayName()); } ChatOutputHandler.felog.info("Items in new inventory:"); for (ItemStack
-             * itemStack : newInventory) if (itemStack != null) ChatOutputHandler.felog.info("  " +
+             * itemStack : newInventory) if (itemStack != ItemStack.EMPTY) ChatOutputHandler.felog.info("  " +
              * itemStack.getDisplayName());
              */
 

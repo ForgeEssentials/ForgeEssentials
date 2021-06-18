@@ -7,9 +7,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -84,7 +84,7 @@ public class CommandJump extends ForgeEssentialsCommandBase
         if (!(event instanceof PlayerInteractEvent.RightClickEmpty) && !(event instanceof PlayerInteractEvent.RightClickBlock))
             return;
         ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
-        if (stack == null || stack.getItem() != Items.COMPASS)
+        if (stack == ItemStack.EMPTY || stack.getItem() != Items.COMPASS)
             return;
         if (!PermissionAPI.hasPermission(event.getEntityPlayer(), TeleportModule.PERM_JUMP_TOOL))
             return;

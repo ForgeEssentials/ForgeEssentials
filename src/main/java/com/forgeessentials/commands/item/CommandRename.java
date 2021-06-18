@@ -51,7 +51,7 @@ public class CommandRename extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException(getUsage(sender));
 
         ItemStack is = sender.inventory.getCurrentItem();
-        if (is == null)
+        if (is == ItemStack.EMPTY)
             throw new TranslatedCommandException("You are not holding a valid item.");
 
         StringBuilder sb = new StringBuilder();

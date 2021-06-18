@@ -66,7 +66,7 @@ public class CommandSell extends ParserCommandBase
         {
             holdingItem = true;
             itemStack = arguments.senderPlayer.getHeldItemMainhand();
-            if (itemStack == null)
+            if (itemStack == ItemStack.EMPTY)
                 throw new TranslatedCommandException("You need to hold an item first!");
             amount = itemStack.getCount();
             meta = itemStack.getItemDamage();

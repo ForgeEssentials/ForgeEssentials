@@ -6,14 +6,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -56,7 +56,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
 
             EntityPlayerSP player = Minecraft.getMinecraft().player;
             ItemStack stack = player.getHeldItemMainhand();
-            if (stack != null)
+            if (stack != ItemStack.EMPTY)
             {
                 int itemId = Item.REGISTRY.getIDForObject((stack.getItem()));
                 for (int id : message.placeIds)
@@ -87,7 +87,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             for (int i = 0; i < 9; ++i)
             {
                 ItemStack stack = Minecraft.getMinecraft().player.inventory.mainInventory.get(i);
-                if (stack == null)
+                if (stack == ItemStack.EMPTY)
                     continue;
                 int id = Item.REGISTRY.getIDForObject(stack.getItem());
                 if (!permissions.placeIds.contains(id))
