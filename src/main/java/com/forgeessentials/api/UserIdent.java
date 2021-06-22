@@ -6,17 +6,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import com.forgeessentials.util.DoAsCommandSender;
-import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.UserIdentUtils;
-import com.google.gson.annotations.Expose;
-import com.mojang.authlib.GameProfile;
-
 import net.minecraft.command.CommandException;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
@@ -25,6 +20,12 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
+
+import com.forgeessentials.util.DoAsCommandSender;
+import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.UserIdentUtils;
+import com.google.gson.annotations.Expose;
+import com.mojang.authlib.GameProfile;
 
 public class UserIdent
 {
@@ -199,6 +200,10 @@ public class UserIdent
         else if (sender instanceof MinecraftServer)
         {
             return APIRegistry.IDENT_SERVER;
+        }
+        else if (sender instanceof RConConsoleSource)
+        {
+            return APIRegistry.IDENT_RCON;
         }
         else if (sender instanceof CommandBlockBaseLogic)
         {
