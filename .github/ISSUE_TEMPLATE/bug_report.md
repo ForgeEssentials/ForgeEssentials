@@ -7,8 +7,10 @@ assignees: ''
 
 ---
 
+# WARNING:  Do not delete any of the sections below.  Improperly filled out issues will be closed if not rectified in a timely manner!
+
 **Initial Steps**
-- [ ] I have updated to the latest build from Jenkins before reporting a bug
+- [ ] I have updated to the latest build from [Jenkins](https://ci.forgeessentials.com/job/FE-1.12.2/) before reporting a bug
 - [ ] I have checked, if the bug was not already reported by using the [search](https://github.com/ForgeEssentials/ForgeEssentials/issues?q=).
 - [ ] Attached is my ForgeEssentials/modlist.txt, my latest.log, and my debug.log
 - [ ] Also, attached are the client logs (if applicable)
