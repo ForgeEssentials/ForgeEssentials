@@ -22,7 +22,7 @@ import com.forgeessentials.core.misc.PermissionManager;
         targets = {"net/minecraft/tileentity/TileEntitySign$1", "net/minecraft/tileentity/TileEntitySign$2"})
 public abstract class MixinICommandSender implements ICommandSender
 {
-    protected static final Logger launchLog = org.apache.logging.log4j.LogManager.getLogger("ForgeEssentials");
+    private static final Logger launchLog = org.apache.logging.log4j.LogManager.getLogger("ForgeEssentials");
 
     @Inject(method = "canUseCommand(ILjava/lang/String;)Z", at = @At("HEAD"), cancellable = true)
     private void canUseCommand(final int permissionLevel, final String commandName, final CallbackInfoReturnable<Boolean> cir) {
