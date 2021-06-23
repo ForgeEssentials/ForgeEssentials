@@ -5,7 +5,6 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.UserIdent.NpcUserIdent;
 import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.util.DoAsCommandSender;
 
@@ -90,13 +88,12 @@ public class MixinCommandHandler
                 return PermissionAPI.hasPermission(((DoAsCommandSender) sender).getIdent().getPlayer(), node);
             }
         }
-        if (sender instanceof MinecraftServer || sender instanceof CommandBlockBaseLogic)
-            return true;
+
         if (sender instanceof EntityPlayer)
         {
             return PermissionAPI.hasPermission((EntityPlayer) sender, node);
         } else {
-            NpcUserIdent ident = UserIdent.getNpc(sender.getName());
+            UserIdent ident = UserIdent.get(sender);
             return PermissionAPI.hasPermission(ident.getGameProfile(), node, null);
         }
     }
