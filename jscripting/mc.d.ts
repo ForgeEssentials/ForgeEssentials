@@ -404,10 +404,6 @@ declare namespace mc.event.entity {
 
 declare namespace mc.event.entity.player {
 	
-	class AchievementEvent extends PlayerEvent {
-		constructor();
-	}
-	
 	class AnvilRepairEvent extends PlayerEvent {
 		constructor();
 	}
@@ -486,6 +482,7 @@ declare namespace mc.item {
 	}
 	
 	class ItemStack extends Wrapper {
+		static EMPTY: ItemStack;
 		constructor(block: mc.world.Block, stackSize: int);
 		constructor(block: mc.world.Block, stackSize: int, damage: int);
 		constructor(item: Item, stackSize: int);
@@ -1018,7 +1015,7 @@ declare namespace net.minecraft.world {
 		getID(): int;
 		getName(): string;
 		configurePlayerCapabilities(arg0: net.minecraft.entity.player.PlayerCapabilities): void;
-		isAdventure(): boolean;
+		hasLimitedInteractions(): boolean;
 		isCreative(): boolean;
 		isSurvivalOrAdventure(): boolean;
 	}

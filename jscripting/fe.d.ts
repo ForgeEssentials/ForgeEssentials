@@ -5,8 +5,8 @@ declare namespace fe {
 
 }
 
-declare namespace net.minecraftforge.server.permission {
-	enum DefaultPermissionLevel {
+declare namespace net.minecraftforge.permission {
+    enum PermissionLevel {
         TRUE,
         OP,
         FALSE,
@@ -235,6 +235,17 @@ declare namespace fe {
 		checkPermission(permissionNode: string): boolean;
 		getPermissionProperty(permissionNode: string): string;
 		getPlayerInfo(): PlayerInfo;
+		getWallet(): Wallet;
+	}
+	
+	class Wallet extends Wrapper {
+		get(): long;
+		set(value: long): void;
+		add(amount: long): void;
+		add(amount: double): void;
+		covers(value: long): boolean;
+		withdraw(value: long): boolean;
+		toString(): string;
 	}
 	
 	class WarpPoint extends Wrapper {
