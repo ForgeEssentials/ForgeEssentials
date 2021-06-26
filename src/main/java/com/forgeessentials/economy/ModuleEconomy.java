@@ -44,6 +44,7 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.economy.commands.CommandPaidCommand;
 import com.forgeessentials.economy.commands.CommandPay;
+import com.forgeessentials.economy.commands.CommandRequestPayment;
 import com.forgeessentials.economy.commands.CommandSell;
 import com.forgeessentials.economy.commands.CommandSellCommand;
 import com.forgeessentials.economy.commands.CommandSellprice;
@@ -116,6 +117,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         FECommandManager.registerCommand(new CommandSellCommand());
         FECommandManager.registerCommand(new CommandTrade());
         FECommandManager.registerCommand(new CommandSellprice());
+        FECommandManager.registerCommand(new CommandRequestPayment());
     }
 
     @SuppressWarnings("unchecked")
