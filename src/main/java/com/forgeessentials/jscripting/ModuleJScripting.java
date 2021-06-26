@@ -18,7 +18,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -184,7 +183,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
                 LoggingHandler.felog.warn("Typescript file: {} found! This file must be transpiled to javascript with the js extension.  This file will be ignored.", name);
                 continue;
             }
-            if (scripts.containsKey(file))
+            if (name.endsWith("d.ts") || scripts.containsKey(file))
                 continue;
             try
             {
