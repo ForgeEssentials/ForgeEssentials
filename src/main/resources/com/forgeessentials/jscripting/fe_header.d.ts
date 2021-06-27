@@ -5,8 +5,8 @@ declare namespace fe {
 
 }
 
-declare namespace net.minecraftforge.permission {
-    enum PermissionLevel {
+declare namespace net.minecraftforge.server.permission {
+    enum DefaultPermissionLevel {
         TRUE,
         OP,
         FALSE,
