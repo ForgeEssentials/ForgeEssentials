@@ -23,10 +23,10 @@ buildscript {
 
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+		classpath "net.minecraftforge.gradle:ForgeGradle:3+"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
-        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
 	}
 }
 
@@ -78,9 +78,14 @@ repositories {
         name = "JEI"
         url "http://dvs1.progwml6.com/files/maven"
     }
+
+    maven {
+        name = "forge"
+        url = "https://files.minecraftforge.net/maven"
+    }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 
 /************************************************************
@@ -108,13 +113,35 @@ targetCompatibility = 1.8
 
 // Set up forge options
 minecraft {
-	version = "$project.minecraftVersion-$project.forgeVersion"
-	runDir = "rundir"
-	
-	mappings = "snapshot_20180304"
+    mappings channel: 'snapshot', version: "20180304-1.12"
+    accessTransformer = file('src/main/resources/META-INF/forgeessentials_at.cfg')
+    runs {
+        client {
+            workingDirectory project.file('rundir')
 
-	replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
-	replace (["_BASEVERSION_":baseVersion,"_MCVERSION_":project.minecraftVersion])
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+            }
+        }
+
+        server {
+            workingDirectory project.file('rundir')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+            }
+        }
+    }
 }
 
 // Configure shared manifest
@@ -156,6 +183,8 @@ configurations {
 
 // Configure dependencies (build-only, shaded and packed libraries)
 dependencies {
+
+    minecraft "net.minecraftforge:forge:$project.minecraftVersion-$project.forgeVersion"
 	// IRC
 	serverLib("org.pircbotx:pircbotx:2.0.1") {
         // these are all packaged with the minecraft server jar
@@ -181,18 +210,18 @@ dependencies {
 	
 	// WorldEdit
     compile "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
-    deobfCompile "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5"
+    compile "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5"
     compile "baubles:Baubles:1.12:1.5.2"
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
     mavenDeps "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
-	provided 'org.spongepowered:spongeapi:6.0.0'
-    provided ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
+	compileOnly 'org.spongepowered:spongeapi:6.0.0'
+    compileOnly ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
         exclude group: "org.spongepowered", module: "mixin"
     }
-    provided "com.feed_the_beast.mods:FTBLib:5.4.4.5"
-    provided "com.feed_the_beast.mods:FTBUtilities:5.4.0.124"
+    compileOnly "com.feed_the_beast.mods:FTBLib:5.4.4.5"
+    compileOnly "com.feed_the_beast.mods:FTBUtilities:5.4.0.124"
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
@@ -205,21 +234,20 @@ dependencies {
 
 sourceSets {
     def deps = [
-		configurations.forgeGradleMcDeps,
-		configurations.forgeGradleMc,
-		configurations.provided
+		configurations.minecraft,
+        configurations.compileOnly
 	]
 	utils {
-		compileClasspath = files(configurations.compile, sourceSets.api.output)
+		compileClasspath = files(configurations.compile)
 		compileClasspath += files deps
 	}
 	main {
-		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+		compileClasspath = files(configurations.compile, sourceSets.utils.output)
 		compileClasspath += files deps
         refMap = "mixins.forgeessentials.refmap.json"
 	}
 	client {
-		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
+		compileClasspath = files(configurations.compile, sourceSets.utils.output)
 		compileClasspath += files deps
         refMap = "mixins.forgeessentials.client.refmap.json"
 	}
@@ -231,7 +259,7 @@ project.processResources {
 		include "mcmod.info"
 		expand (
 			"version": project.version, 
-			"mcversion": project.minecraft.version,
+			"mcversion": project.minecraftVersion,
 		)
 	}
 }
@@ -242,7 +270,7 @@ project.processClientResources {
 		include "mcmod.info"
 		expand (
 			"version": project.version, 
-			"mcversion": project.minecraft.version,
+			"mcversion": project.minecraftVersion,
 		)
 	}
 }
@@ -284,7 +312,7 @@ jar.doLast {
 jar {
 	dependsOn "serverLibArchive"
 	classifier = "server"
-	appendix = minecraft.version
+	appendix = project.minecraftVersion
 	
 	from sourceSets.main.output
 	from sourceSets.utils.output
@@ -310,7 +338,7 @@ jar {
 
 task clientJar (dependsOn: "clientClasses", type: Jar) {
 	classifier = "client"
-	appendix = minecraft.version
+	appendix = project.minecraftVersion
 	
 	from sourceSets.client.output
 	from sourceSets.utils.output
@@ -334,7 +362,7 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 
 task deobfJar(dependsOn: "classes", type: Jar) {
 	classifier = "dev"
-	appendix = minecraft.version
+	appendix = project.minecraftVersion
 	
 	from sourceSets.main.output
 	from sourceSets.utils.output
@@ -372,7 +400,7 @@ javadoc {
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
 	classifier = "javadoc"
-	appendix = project.minecraft.version
+	appendix = project.minecraftVersion
 	
 	from javadoc.destinationDir
 	
@@ -396,7 +424,7 @@ artifacts {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = "3.5"
+	gradleVersion = "4.9"
 }
 
 /************************************************************
