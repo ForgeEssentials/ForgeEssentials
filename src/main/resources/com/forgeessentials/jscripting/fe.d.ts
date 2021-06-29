@@ -48,6 +48,7 @@ declare namespace fe {
 		peek(): string;
 		get(index: int): string;
 		getAllArgs(): string;
+		removeAllArgs(): string;
 		isEmpty(): boolean;
 		hasPlayer(): boolean;
 		parsePlayer(): UserIdent;
@@ -71,6 +72,7 @@ declare namespace fe {
 		requirePlayer(): void;
 		getSenderPoint(): WorldPoint;
 		needsPlayer(): void;
+		clear(): void;
 	}
 	
 	class CommandOptions {
@@ -214,6 +216,8 @@ declare namespace fe {
 		getZonesAt(worldPoint: WorldPoint): java.util.List;
 		getZoneAt(worldPoint: WorldPoint): Zone;
 		getPlayerGroups(player: mc.entity.EntityPlayer): java.util.List;
+		addZone(zoneName: string, area: WorldArea): Zone;
+		removeZone(zone: Zone): void;
 	}
 	
 	class UserIdent extends Wrapper {
@@ -273,6 +277,8 @@ declare namespace fe {
 	}
 	
 	class WorldArea extends mc.AreaBase {
+		constructor(dim: int, p1: Point, p2: Point);
+		getDimension(): int;
 	}
 	
 	class WorldPoint extends Point {

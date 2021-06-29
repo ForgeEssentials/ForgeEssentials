@@ -139,6 +139,9 @@ declare namespace net.minecraft.entity.player {
 declare namespace mc {
 	
 	class AreaBase extends Wrapper {
+		constructor(p1: fe.Point, p2: fe.Point);
+		getHighPoint(): fe.Point;
+		getLowPoint(): fe.Point;
 	}
 	
 	class ICommandSender extends Wrapper {

@@ -1,10 +1,8 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
 import java.util.Collection;
-import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.util.text.ITextComponent;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
@@ -102,6 +100,12 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
             x = x.concat(that.args.get(j) + " ");
         }
         return x.trim();
+    }
+
+    public String removeAllArgs() {
+        String args = getAllArgs();
+        clear();
+        return args;
     }
     public boolean isEmpty()
     {
@@ -230,6 +234,10 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
     public void needsPlayer() throws CommandException
     {
         that.needsPlayer();
+    }
+
+    public void clear() {
+        that.args.clear();
     }
 
 }
