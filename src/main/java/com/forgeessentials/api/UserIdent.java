@@ -137,7 +137,7 @@ public class UserIdent
             if (identUsername != null && identUsername.charAt(0) != '@')
                 byUsername.put(identUsername.toLowerCase(), this);
 
-            if (uuid == null && username != null)
+            if (uuid == null && username != null && identUsername.charAt(0) != '@')
                 uuid = UserIdentUtils.resolveMissingUUID(username);
             else if (uuid != null && username == null)
                 username = UserIdentUtils.resolveMissingUsername(uuid);
