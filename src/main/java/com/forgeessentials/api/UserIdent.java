@@ -6,9 +6,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.rcon.RConConsoleSource;
@@ -287,6 +289,20 @@ public class UserIdent
                     UserIdent.getPlayerByUsername(uuidOrUsername);
             if (player != null)
                 return get(player);
+
+
+            if (sender != null)
+            {
+                try
+                {
+                    Entity entity = CommandBase.getEntity(sender.getServer(), sender, uuidOrUsername);
+                    return get(entity);
+                }
+                catch (CommandException ignored)
+                {
+
+                }
+            }
 
             return mustExist ? null : new UserIdent(null, uuidOrUsername, null);
         }

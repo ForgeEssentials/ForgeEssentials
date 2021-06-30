@@ -86,7 +86,6 @@ public class CommandJScriptCommand extends ParserCommandBase
             }
             else
             {
-                processArguments(arguments);
                 script.call(options.processCommand, options.processCommand, new JsCommandArgs(arguments));
             }
         }
