@@ -1,14 +1,8 @@
 package com.forgeessentials.util;
 
-import com.forgeessentials.util.output.LoggingHandler;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-
-import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
@@ -99,9 +93,11 @@ public class UserIdentUtils
                                     if (id.equals(name))
                                     {
                                         value = jr.nextString();
+                                        break;
                                     }
                                 } else
                                 {
+                                    jr.skipValue();
                                     name = null;
                                 }
                             }
