@@ -102,6 +102,11 @@ public class UserIdentUtils
                                 }
                             }
                         }
+
+                        while (jr.peek() != JsonToken.END_OBJECT) {
+                            jr.skipValue();
+                        }
+
                         jr.endObject();
 
                         t = jr.peek();
@@ -118,7 +123,7 @@ public class UserIdentUtils
             }
             return null;
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
