@@ -58,7 +58,7 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
 
         if (info != null) {
             LoggingHandler.felog.info("Config Value is not null");
-            UserIdent ident = UserIdent.get(profile.getId());
+            UserIdent ident = UserIdent.get(profile);
             value = info.defaultValue.copy();
             WorldPoint point = null;
             if (ident.hasPlayer()) {

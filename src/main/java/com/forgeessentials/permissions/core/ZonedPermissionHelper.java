@@ -38,10 +38,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.context.AreaContext;
-import net.minecraftforge.server.permission.context.BlockPosContext;
-import net.minecraftforge.server.permission.context.ContextKeys;
-import net.minecraftforge.server.permission.context.IContext;
+import net.minecraftforge.server.permission.context.*;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -750,7 +747,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @Override
     public boolean hasPermission(GameProfile player, String permissionNode, @Nullable IContext context)
     {
-        UserIdent ident = player == null ? null : UserIdent.get(player.getId());
+        UserIdent ident = null;
         World w = context != null ? context.getWorld() : null;
         int dim = w != null ? w.provider.getDimension() : 0;
         WorldPoint loc = null;
@@ -771,7 +768,13 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             {
                 BlockPos pos = context.get(ContextKeys.POS);
                 loc = new WorldPoint(dim, pos);
+            } else if (context instanceof PlayerContext)
+            {
+                ident = UserIdent.get(context.getPlayer());
             }
+        }
+        if (ident == null) {
+            ident = player == null ? null : UserIdent.get(player.getId(), player.getName());
         }
 
 

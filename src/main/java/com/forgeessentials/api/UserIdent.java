@@ -29,6 +29,8 @@ import com.forgeessentials.util.UserIdentUtils;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
 
+import javax.annotation.Nullable;
+
 public class UserIdent
 {
 
@@ -146,6 +148,10 @@ public class UserIdent
 
     /* ------------------------------------------------------------ */
 
+    public static synchronized UserIdent get(GameProfile profile)
+    {
+        return get(profile.getId(), profile.getName());
+    }
     public static synchronized UserIdent get(UUID uuid, String username)
     {
         if (uuid == null && (username == null || username.isEmpty()))
@@ -243,6 +249,10 @@ public class UserIdent
     {
         if (player == null)
             throw new IllegalArgumentException();
+
+        if (player instanceof FakePlayer) {
+            return getNpc(player.getName(), player.getPersistentID());
+        }
 
         UserIdent ident = byUuid.get(player.getPersistentID());
         if (ident == null)
@@ -351,10 +361,13 @@ public class UserIdent
         return (ServerUserIdent) ident;
     }
 
-    public static synchronized NpcUserIdent getNpc(String npcName)
+    public static synchronized NpcUserIdent getNpc(String npcName) {
+        return getNpc(npcName, null);
+    }
+    public static synchronized NpcUserIdent getNpc(String npcName, @Nullable UUID uuid)
     {
         String username = "$NPC" + (npcName == null ? "" : "_" + npcName.toUpperCase());
-        UUID _uuid = UUID.nameUUIDFromBytes(username.getBytes());
+        UUID _uuid = uuid != null ? uuid : UUID.nameUUIDFromBytes(username.getBytes());
 
         UserIdent ident = byUuid.get(_uuid);
         if (ident != null)
