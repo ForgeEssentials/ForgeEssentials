@@ -71,7 +71,7 @@ public class ModulePermissions extends ConfigLoaderBase
         PermissionAPI.setPermissionHandler(permissionHelper);
 
 
-        if (Loader.isModLoaded("ftbutilities"))
+        if (Loader.isModLoaded("ftblib"))
         {
             try
             {

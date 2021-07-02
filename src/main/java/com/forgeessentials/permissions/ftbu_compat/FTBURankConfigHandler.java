@@ -28,6 +28,7 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
     @SubscribeEvent
     public static void registerRankConfigHandler(RegisterRankConfigHandlerEvent event)
     {
+        LoggingHandler.felog.debug("registerRankConfigHandler()");
         if (!FTBUtilitiesConfig.ranks.enabled)
         {
             event.setHandler(INSTANCE);
@@ -38,6 +39,7 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
 
     @Override public void registerRankConfig(RankConfigValueInfo info)
     {
+        LoggingHandler.felog.debug("registerRankConfig({})", info);
         DefaultRankConfigHandler.INSTANCE.registerRankConfig(info);
 
         APIRegistry.perms.registerPermissionProperty(info.node.toString(), info.defaultValue.getString());
