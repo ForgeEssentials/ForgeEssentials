@@ -76,11 +76,14 @@ public class ModulePermissions extends ConfigLoaderBase
             try
             {
                 MinecraftForge.EVENT_BUS.register(FTBURankConfigHandler.class);
+                LoggingHandler.felog.debug("Rank Handler for FTBLib has been registered");
             }
             catch (NoClassDefFoundError e)
             {
                 LoggingHandler.felog.error("FTBU is installed but an error was encountered while loading the compat!");
             }
+        } else {
+            LoggingHandler.felog.debug("FTBLib is not loaded!");
         }
     }
 

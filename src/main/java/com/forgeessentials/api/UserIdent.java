@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import com.forgeessentials.util.output.LoggingHandler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.EntitySelector;
@@ -111,22 +112,23 @@ public class UserIdent
 
     private UserIdent(EntityPlayerMP player)
     {
-        this.player = new WeakReference<EntityPlayer>(player);
-        this.uuid = player.getPersistentID();
-        this.username = player.getName();
-        byUuid.put(uuid, this);
-        byUsername.put(username.toLowerCase(), this);
+        this(null, null, player);
     }
 
     private UserIdent(UUID identUuid, String identUsername, EntityPlayerMP identPlayer)
     {
         if (identUsername != null && identUsername.isEmpty())
             identUsername = null;
+
+        UserIdent oldIdent = null;
         player = identPlayer == null ? null : new WeakReference<EntityPlayer>(identPlayer);
         if (identPlayer != null)
         {
             uuid = identPlayer.getPersistentID();
             username = identPlayer.getName();
+            if (byUuid.containsKey(uuid)) {
+                oldIdent = byUuid.get(uuid);
+            }
             byUuid.put(uuid, this);
             byUsername.put(username.toLowerCase(), this);
         }
@@ -134,15 +136,28 @@ public class UserIdent
         {
             uuid = identUuid;
             username = identUsername;
+
+            if (byUuid.containsKey(uuid)) {
+                oldIdent = byUuid.get(uuid);
+            }
+
             if (uuid != null)
                 byUuid.put(this.uuid, this);
             if (identUsername != null && identUsername.charAt(0) != '@')
                 byUsername.put(identUsername.toLowerCase(), this);
 
-            if (uuid == null && username != null && identUsername.charAt(0) != '@')
-                uuid = UserIdentUtils.resolveMissingUUID(username);
-            else if (uuid != null && username == null)
-                username = UserIdentUtils.resolveMissingUsername(uuid);
+            if (identUsername == null || identUsername.charAt(0) != '$' || identUsername.charAt(0) != '@') {
+                if (uuid == null && username != null)
+                    uuid = UserIdentUtils.resolveMissingUUID(username);
+                else if (uuid != null && username == null)
+                    username = UserIdentUtils.resolveMissingUsername(uuid);
+            }
+        }
+
+        if (oldIdent != null && oldIdent.username != null && !oldIdent.username.equals(username)) {
+            byUsername.remove(oldIdent.username);
+            APIRegistry.getFEEventBus().post(new UserIdentInvalidatedEvent(oldIdent, this));
+            LoggingHandler.felog.warn("Old Username: {} for uuid {}, was replaced with {}!",oldIdent.username, uuid, username);
         }
     }
 
@@ -283,6 +298,11 @@ public class UserIdent
 
     public static synchronized UserIdent get(String uuidOrUsername, ICommandSender sender, boolean mustExist)
     {
+        EntityPlayerMP player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
+                UserIdent.getPlayerByUsername(uuidOrUsername);
+        if (player != null)
+            return get(player);
+
         if (uuidOrUsername == null)
             throw new IllegalArgumentException();
         try
@@ -294,12 +314,6 @@ public class UserIdent
             UserIdent ident = byUsername.get(uuidOrUsername.toLowerCase());
             if (ident != null)
                 return ident;
-
-            EntityPlayerMP player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
-                    UserIdent.getPlayerByUsername(uuidOrUsername);
-            if (player != null)
-                return get(player);
-
 
             if (sender != null)
             {
@@ -603,8 +617,6 @@ public class UserIdent
         }
         else if (other instanceof UserIdent)
         {
-            if (this == other)
-                return true;
             // It might happen, that one UserIdent was previously initialized by username and another one by UUID, but
             // after the player in question logged in, they still become equal.
             UserIdent ident = (UserIdent) other;
