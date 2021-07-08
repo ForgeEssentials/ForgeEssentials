@@ -42,6 +42,8 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+
 @FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false)
 public class ModuleJScripting extends ServerEventHandler implements ScriptHandler
 {
@@ -288,7 +290,13 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     @Override
-    public synchronized void runEventScripts(String key, ICommandSender sender)
+    public void runEventScripts(String key, ICommandSender sender)
+    {
+        runEventScripts(key, sender, null);
+    }
+
+    @Override
+    public void runEventScripts(String key, ICommandSender sender, Object additionalData)
     {
         JsICommandSender jsSender = JsICommandSender.get(sender);
         String fnName = "on" + StringUtils.capitalize(key);
@@ -297,7 +305,10 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             try
             {
                 if (!script.hasGlobalCallFailed(fnName))
-                    script.tryCallGlobal(fnName, jsSender);
+                {
+                    ScriptObjectMirror json = (ScriptObjectMirror) getEngine().eval("JSON");
+                    script.tryCallGlobal(fnName, jsSender, json.callMember("parse", additionalData));
+                }
             }
             catch (ScriptException e)
             {

@@ -1,5 +1,6 @@
 package com.forgeessentials.signtools;
 
+import com.forgeessentials.api.APIRegistry;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -29,6 +30,8 @@ public class SignToolsModule extends ConfigLoaderBase
 
     public static final String COLORIZE_PERM = "fe.signs.colorize";
     public static final String EDIT_PERM = "fe.signs.edit";
+    private static final String signinteractKey = "signinteract";
+    private static final String signeditKey = "signedit";
 
     private static boolean allowSignCommands, allowSignEdit;
 
@@ -36,7 +39,8 @@ public class SignToolsModule extends ConfigLoaderBase
     public void onLoad(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
-
+        APIRegistry.scripts.addScriptType(signinteractKey);
+        APIRegistry.scripts.addScriptType(signeditKey);
     }
 
     @SubscribeEvent
@@ -54,6 +58,8 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void onSignEdit(SignEditEvent e)
     {
+        APIRegistry.scripts.runEventScripts(signeditKey, e.editor, new SignInfo(e.editor, e.pos, e.text));
+
         if (!PermissionAPI.hasPermission(e.editor, COLORIZE_PERM))
         {
             return;
@@ -104,30 +110,41 @@ public class SignToolsModule extends ConfigLoaderBase
             }
 
 
+            String[] signText = unformatText(((TileEntitySign) te).signText);
+
+            APIRegistry.scripts.runEventScripts(signinteractKey, event.getEntityPlayer(), new SignInfo(event.getEntityPlayer(), event.getPos(), signText));
 
             if (!allowSignCommands)
             {
                 return;
             }
 
-            ITextComponent[] signText = ((TileEntitySign) te).signText;
-            if (!signText[0].getUnformattedText().equals("[command]"))
+            if (!signText[0].equals("[command]"))
             {
                 return;
             }
 
-                else
+            else
+            {
+                String send = signText[1] + " " + signText[2] + " " + signText[3];
+                if (send != null && FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager() != null)
                 {
-                    String send = signText[1].getUnformattedText() + " " + signText[2].getUnformattedText() + " " + signText[3].getUnformattedText();
-                    if (send != null && FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager() != null)
-                    {
-                        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), send);
-                        event.setCanceled(true);
-                    }
+                    FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), send);
+                    event.setCanceled(true);
                 }
+            }
 
         }
 
+    }
+
+    private String[] unformatText(ITextComponent[] text)
+    {
+        String[] out = new String[text.length];
+        for (int i = 0; i < text.length; i++) {
+            out[i] = text[i].getUnformattedText();
+        }
+        return out;
     }
 
     @Override

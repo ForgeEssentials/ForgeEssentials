@@ -219,7 +219,7 @@ public class ScriptInstance
         }
     }
 
-    public Object tryCallGlobal(String fn, Object... args) throws ScriptException
+    public Object  tryCallGlobal(String fn, Object... args) throws ScriptException
     {
         try
         {

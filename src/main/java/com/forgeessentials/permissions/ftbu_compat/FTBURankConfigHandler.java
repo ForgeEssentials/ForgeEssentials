@@ -36,7 +36,8 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
         }
     }
 
-    public boolean isFTBURanksActive() {
+    public boolean isFTBURanksActive()
+    {
         try {
            Class<?> clazz = Class.forName("com.feed_the_beast.ftbutilities.FTBUtilitiesConfig");
            Field ranksF = clazz.getField("ranks");
