@@ -93,8 +93,9 @@ public class SignToolsModule extends ConfigLoaderBase
         }
 
         TileEntity te = event.getEntityPlayer().world.getTileEntity(event.getPos());
-        if (te != null && te instanceof TileEntitySign)
+        if (te instanceof TileEntitySign)
         {
+            TileEntitySign sign = ((TileEntitySign) te);
             if (allowSignEdit && event.getEntityPlayer().isSneaking())
             {
                 if(event.getEntityPlayer().getHeldItemMainhand()!= ItemStack.EMPTY)
@@ -103,6 +104,11 @@ public class SignToolsModule extends ConfigLoaderBase
                             && PermissionAPI.hasPermission(event.getEntityPlayer(), "fe.protection.use.minecraft.sign")
                             && event.getEntityPlayer().getHeldItemMainhand().getItem().equals(Items.SIGN))
                     {
+                        //Convert Formatting back into FE format for easy use
+                        for (int i = 0; i < sign.signText.length; i++) {
+                            sign.signText[i] = new TextComponentString(sign.signText[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
+                        }
+
                         event.getEntityPlayer().openEditSign((TileEntitySign) te);
                         event.setCanceled(true);
                     }
@@ -111,7 +117,7 @@ public class SignToolsModule extends ConfigLoaderBase
             }
 
 
-            String[] signText = unformatText(((TileEntitySign) te).signText);
+            String[] signText = getFormatted(sign.signText);
 
             APIRegistry.scripts.runEventScripts(signinteractKey, event.getEntityPlayer(), new SignInfo(event.getEntityPlayer(), event.getPos(), signText));
 
@@ -139,11 +145,11 @@ public class SignToolsModule extends ConfigLoaderBase
 
     }
 
-    private String[] unformatText(ITextComponent[] text)
+    private String[] getFormatted(ITextComponent[] text)
     {
         String[] out = new String[text.length];
         for (int i = 0; i < text.length; i++) {
-            out[i] = text[i].getUnformattedText();
+            out[i] = text[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&');
         }
         return out;
     }

@@ -309,8 +309,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
                     Object data = null;
                     if (additionalData != null)
                     {
-                        ScriptObjectMirror json = (ScriptObjectMirror) getEngine().eval("JSON");
-                        data = json.callMember("parse", additionalData);
+                        data = getEngine().eval("JSON.parse('" +additionalData.toString() + "')");
                     }
                     script.tryCallGlobal(fnName, jsSender, data);
                 }
