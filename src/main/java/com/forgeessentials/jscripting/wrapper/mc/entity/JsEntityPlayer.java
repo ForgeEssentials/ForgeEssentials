@@ -3,6 +3,7 @@ package com.forgeessentials.jscripting.wrapper.mc.entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
@@ -321,5 +322,15 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
     public JsInventory<?> getInventoryEnderChest()
     {
         return JsInventory.get(that.getInventoryEnderChest());
+    }
+
+    public void displayGUIChest(JsInventory<IInventory> inventory)
+    {
+        that.displayGUIChest(inventory.getThat());
+    }
+
+    public void closeScreen()
+    {
+        that.closeScreen();
     }
 }
