@@ -384,11 +384,30 @@ public class UserIdent
         UUID _uuid = uuid != null ? uuid : UUID.nameUUIDFromBytes(username.getBytes());
 
         UserIdent ident = byUuid.get(_uuid);
-        if (ident != null)
+        if (ident == null)
+        {
             ident = byUsername.get(username);
+        }
+        else if (ident instanceof NpcUserIdent)
+        {
+            if (!username.equals(ident.username))
+            {
+                ident.username = username;
+            }
+        }
 
-        if (ident == null || !(ident instanceof NpcUserIdent))
+        if (uuid != null && ident instanceof NpcUserIdent)
+        {
+            if (!uuid.equals(ident.uuid))
+            {
+                ident.uuid = uuid;
+            }
+        }
+
+        if (!(ident instanceof NpcUserIdent))
+        {
             ident = new NpcUserIdent(_uuid, username);
+        }
 
         return (NpcUserIdent) ident;
     }
