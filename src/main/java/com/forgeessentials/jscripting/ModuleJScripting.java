@@ -306,8 +306,13 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             {
                 if (!script.hasGlobalCallFailed(fnName))
                 {
-                    ScriptObjectMirror json = (ScriptObjectMirror) getEngine().eval("JSON");
-                    script.tryCallGlobal(fnName, jsSender, json.callMember("parse", additionalData));
+                    Object data = null;
+                    if (additionalData != null)
+                    {
+                        ScriptObjectMirror json = (ScriptObjectMirror) getEngine().eval("JSON");
+                        data = json.callMember("parse", additionalData);
+                    }
+                    script.tryCallGlobal(fnName, jsSender, data);
                 }
             }
             catch (ScriptException e)
