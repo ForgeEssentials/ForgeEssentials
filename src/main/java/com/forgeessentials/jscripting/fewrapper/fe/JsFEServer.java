@@ -1,6 +1,8 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
@@ -18,6 +20,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IInteractionObject;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -36,6 +40,23 @@ import com.forgeessentials.util.PlayerInfo;
 public class JsFEServer
 {
 
+    private class CORoutine
+    {
+        int tickCount, tickStep, lastCount;
+        String method;
+        JsICommandSender sender;
+
+        CORoutine(int tickCount, int tickStep, String method, JsICommandSender sender)
+        {
+            this.tickCount = tickCount;
+            this.lastCount = tickCount;
+            this.tickStep = tickStep;
+            this.method = method;
+            this.sender = sender;
+        }
+    }
+
+    HashSet<CORoutine> coRoutineHashSet = new HashSet<>();
     private ScriptInstance script;
 
     private JsICommandSender server;
@@ -92,6 +113,39 @@ public class JsFEServer
         return pi == null ? null : pi.getLastLogin();
     }
 
+    public void AddCoRoutine(int count, int tickStep, String method, JsICommandSender sender)
+    {
+        coRoutineHashSet.add(new CORoutine(count * tickStep, tickStep, method, sender));
+    }
+
+    @SubscribeEvent
+    public void _onTick(TickEvent e)
+    {
+        Iterator<CORoutine> iterator = coRoutineHashSet.iterator();
+        for (; iterator.hasNext(); )
+        {
+            CORoutine c = iterator.next();
+            try
+            {
+                if ((c.lastCount - c.tickCount) == c.tickStep)
+                {
+                    c.lastCount = c.tickCount;
+                    script.tryCallGlobal(c.method, c.sender);
+                }
+                c.tickCount--;
+                if (c.tickCount < 0)
+                {
+                    iterator.remove();
+                }
+            }
+            catch (ScriptException scriptException)
+            {
+                scriptException.printStackTrace();
+                iterator.remove();
+            }
+        }
+    }
+
     public JsInventory<InventoryBasic> createCustomInventory(final String name, boolean hasCustom, JsItemStack[] stacks)
     {
         InventoryBasic inventoryBasic = new InventoryBasic(name, hasCustom, stacks.length);
@@ -101,8 +155,6 @@ public class JsFEServer
         }
         return JsInventory.get(inventoryBasic);
     }
-
-    ;
 
     public JsInventory<InventoryBasic> cloneInventory(final String name, boolean hasCustom, JsInventory<IInventory> inventory, int size)
     {
