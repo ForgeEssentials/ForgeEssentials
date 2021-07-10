@@ -200,7 +200,15 @@ public class JsFEServer
                         JsItemStack stack = JsItemStack.EMPTY;
                         try
                         {
-                            Object _stack = script.tryCallGlobal(callbackMethod, JsEntityPlayer.get(p_slotClick_4_), p_slotClick_1_, p_slotClick_2_, p_slotClick_3_);
+                            JsInventory<IInventory> inv = null;
+                            JsItemStack itemStack = null;
+                            if (p_slotClick_1_ >= 0 && p_slotClick_1_ < inventorySlots.size())
+                            {
+                                Slot slot = inventorySlots.get(p_slotClick_1_);
+                                itemStack = JsItemStack.get(slot.getStack());
+                                inv = JsInventory.get(slot.inventory);
+                            }
+                            Object _stack = script.tryCallGlobal(callbackMethod, JsEntityPlayer.get(p_slotClick_4_), p_slotClick_1_, p_slotClick_2_, p_slotClick_3_, inv, itemStack);
                             if (_stack instanceof JsItemStack)
                             {
                                 stack = (JsItemStack) _stack;
