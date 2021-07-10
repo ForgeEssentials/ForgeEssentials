@@ -223,6 +223,11 @@ sourceSets {
 		compileClasspath += files deps
         refMap = "mixins.forgeessentials.client.refmap.json"
 	}
+
+    test {
+        compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output, sourceSets.main.output)
+        compileClasspath += files deps
+    }
 }
 
 // Configure server resource processing
@@ -256,7 +261,7 @@ project.processClientResources {
 
 task tsd(type: JavaExec) {
     dependsOn "classes"
-    classpath = project.sourceSets.test.runtimeClasspath
+    classpath = project.sourceSets.test.compileClasspath
     main = "com.forgeessentials.jscripting.TsdGenerator"
 }
 

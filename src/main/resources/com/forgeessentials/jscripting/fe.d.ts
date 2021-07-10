@@ -105,6 +105,10 @@ declare namespace fe {
 		getTimePlayed(playerId: java.util.UUID): long;
 		getLastLogout(playerId: java.util.UUID): java.util.Date;
 		getLastLogin(playerId: java.util.UUID): java.util.Date;
+		AddCoRoutine(count: int, tickStep: int, method: string, sender: mc.ICommandSender): void;
+		createCustomInventory(name: string, hasCustom: boolean, stacks: mc.item.ItemStack[]): mc.item.Inventory;
+		cloneInventory(name: string, hasCustom: boolean, inventory: mc.item.Inventory, size: int): mc.item.Inventory;
+		getMenuChest(name: string, displayName: string, inventory: mc.item.Inventory, callbackMethod: string): mc.item.InteractionObject;
 	}
 	
 	class Permissions {

@@ -359,6 +359,8 @@ declare namespace mc.entity {
 		 * Returns the InventoryEnderChest of this player.
 		 */
 		getInventoryEnderChest(): mc.item.Inventory;
+		displayGUIChest(inventory: mc.item.Inventory): void;
+		closeScreen(): void;
 	}
 	
 	class EntityPlayerList extends JavaList<EntityPlayer> {
@@ -461,6 +463,11 @@ declare namespace mc.event.entity.player {
 declare namespace mc.item {
 	
 	class Enchantment extends Wrapper {
+	}
+	
+	class InteractionObject extends Wrapper {
+		getGuiID(): string;
+		getInventory(): Inventory;
 	}
 	
 	class Inventory extends Wrapper {
