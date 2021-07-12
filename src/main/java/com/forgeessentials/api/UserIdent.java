@@ -6,7 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import com.forgeessentials.util.output.LoggingHandler;
+import javax.annotation.Nullable;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.EntitySelector;
@@ -24,13 +25,13 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.UserIdentUtils;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.annotations.Expose;
 import com.mojang.authlib.GameProfile;
-
-import javax.annotation.Nullable;
 
 public class UserIdent
 {
@@ -189,9 +190,17 @@ public class UserIdent
                 if (uuid != null && ident.uuid != uuid)
                 {
                     ident.uuid = uuid;
-                    byUuid.put(uuid,ident);
+                    byUuid.put(uuid, ident);
                 }
                 return ident;
+            }
+            if (username.startsWith("$NPC"))
+            {
+                return new NpcUserIdent(uuid, username);
+            }
+            else if (username.startsWith("$"))
+            {
+                return new ServerUserIdent(uuid, username);
             }
         }
 
@@ -266,7 +275,7 @@ public class UserIdent
             throw new IllegalArgumentException();
 
         if (player instanceof FakePlayer) {
-            return getNpc(player.getName(), player.getPersistentID());
+            return getNpc(player.getName(), ModulePermissions.fakePlayerIsSpecialBunny ? null : player.getPersistentID());
         }
 
         UserIdent ident = byUuid.get(player.getPersistentID());
@@ -396,11 +405,11 @@ public class UserIdent
             }
         }
 
-        if (uuid != null && ident instanceof NpcUserIdent)
+        if (ident instanceof NpcUserIdent)
         {
-            if (!uuid.equals(ident.uuid))
+            if (!_uuid.equals(ident.uuid))
             {
-                ident.uuid = uuid;
+                ident.uuid = _uuid;
             }
         }
 

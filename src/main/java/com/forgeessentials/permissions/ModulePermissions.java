@@ -5,6 +5,11 @@ import java.io.IOException;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.io.FileUtils;
 
@@ -37,12 +42,6 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
-
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)
 public class ModulePermissions extends ConfigLoaderBase
 {
@@ -63,13 +62,14 @@ public class ModulePermissions extends ConfigLoaderBase
     @SuppressWarnings("unused")
     private ItemPermissionManager itemPermissionManager;
 
+    public static boolean fakePlayerIsSpecialBunny = true;
+
     public ModulePermissions()
     {
         // Earliest initialization of permission system possible
         permissionHelper = new ZonedPermissionHelper();
         APIRegistry.perms = permissionHelper;
         PermissionAPI.setPermissionHandler(permissionHelper);
-
 
         if (Loader.isModLoaded("ftblib"))
         {
@@ -227,6 +227,8 @@ public class ModulePermissions extends ConfigLoaderBase
     {
         persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "singlejson", PERSISTENCE_HELP).getString();
         dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
+
+        fakePlayerIsSpecialBunny = config.getBoolean(CONFIG_CAT, "fakePlayerIsSpecialBunny", true, "Should we force override UUID for fake players? This is by default true because mods are randomly generating UUID each boot!");
     }
 
     public DBConnector getDbConnector()
