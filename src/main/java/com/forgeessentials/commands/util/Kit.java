@@ -87,7 +87,9 @@ public class Kit
         for (int i = 0; i < 4; i++)
             if (armor[i] != null)
                 if (player.inventory.armorInventory.get(i) == ItemStack.EMPTY)
-                    player.inventory.armorInventory.set(i, armor[i]);
+                {
+                    player.inventory.armorInventory.set(i, armor[i].copy());
+                }
                 else
                     couldNotGiveItems |= !player.inventory.addItemStackToInventory(armor[i].copy());
 

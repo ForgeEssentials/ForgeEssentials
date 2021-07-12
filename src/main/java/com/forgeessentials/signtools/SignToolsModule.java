@@ -1,16 +1,15 @@
 package com.forgeessentials.signtools;
 
-import com.forgeessentials.api.APIRegistry;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fe.event.world.SignEditEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -18,6 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
@@ -59,7 +59,10 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void onSignEdit(SignEditEvent e)
     {
-        APIRegistry.scripts.runEventScripts(signeditKey, e.editor, new SignInfo(e.editor, e.pos, e.text));
+        if (APIRegistry.scripts.runEventScripts(signeditKey, e.editor, new SignInfo(e.editor.dimension, e.pos, e.text, e)))
+        {
+            e.setCanceled(true);
+        }
 
         if (!PermissionAPI.hasPermission(e.editor, COLORIZE_PERM))
         {
@@ -85,7 +88,7 @@ public class SignToolsModule extends ConfigLoaderBase
      */
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event)
+    public void onPlayerInteract(PlayerInteractEvent event)
     {
         if (event.getWorld().isRemote)
         {
@@ -96,16 +99,17 @@ public class SignToolsModule extends ConfigLoaderBase
         if (te instanceof TileEntitySign)
         {
             TileEntitySign sign = ((TileEntitySign) te);
-            if (allowSignEdit && event.getEntityPlayer().isSneaking())
+            if (allowSignEdit && event.getEntityPlayer().isSneaking() && event instanceof RightClickBlock)
             {
-                if(event.getEntityPlayer().getHeldItemMainhand()!= ItemStack.EMPTY)
+                if (event.getEntityPlayer().getHeldItemMainhand() != ItemStack.EMPTY)
                 {
                     if (PermissionAPI.hasPermission(event.getEntityPlayer(), EDIT_PERM)
                             && PermissionAPI.hasPermission(event.getEntityPlayer(), "fe.protection.use.minecraft.sign")
                             && event.getEntityPlayer().getHeldItemMainhand().getItem().equals(Items.SIGN))
                     {
                         //Convert Formatting back into FE format for easy use
-                        for (int i = 0; i < sign.signText.length; i++) {
+                        for (int i = 0; i < sign.signText.length; i++)
+                        {
                             sign.signText[i] = new TextComponentString(sign.signText[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
                         }
 
@@ -116,28 +120,23 @@ public class SignToolsModule extends ConfigLoaderBase
 
             }
 
-
             String[] signText = getFormatted(sign.signText);
 
-            APIRegistry.scripts.runEventScripts(signinteractKey, event.getEntityPlayer(), new SignInfo(event.getEntityPlayer(), event.getPos(), signText));
-
-            if (!allowSignCommands)
+            if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getEntityPlayer(), new SignInfo(event.getEntityPlayer().dimension, event.getPos(), signText, event)))
             {
-                return;
+                event.setCanceled(true);
             }
 
-            if (!signText[0].equals("[command]"))
+            if (allowSignCommands && (event instanceof RightClickBlock))
             {
-                return;
-            }
-
-            else
-            {
-                String send = signText[1] + " " + signText[2] + " " + signText[3];
-                if (send != null && FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager() != null)
+                if (signText[0].equals("[command]"))
                 {
-                    FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), send);
-                    event.setCanceled(true);
+                    String send = signText[1] + " " + signText[2] + " " + signText[3];
+                    if (send != null && FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager() != null)
+                    {
+                        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), send);
+                        event.setCanceled(true);
+                    }
                 }
             }
 

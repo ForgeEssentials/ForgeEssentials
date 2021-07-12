@@ -42,8 +42,6 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
-
 @FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false)
 public class ModuleJScripting extends ServerEventHandler implements ScriptHandler
 {
@@ -290,16 +288,17 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     @Override
-    public void runEventScripts(String key, ICommandSender sender)
+    public boolean runEventScripts(String key, ICommandSender sender)
     {
-        runEventScripts(key, sender, null);
+        return runEventScripts(key, sender, null);
     }
 
     @Override
-    public void runEventScripts(String key, ICommandSender sender, Object additionalData)
+    public boolean runEventScripts(String key, ICommandSender sender, Object additionalData)
     {
         JsICommandSender jsSender = JsICommandSender.get(sender);
         String fnName = "on" + StringUtils.capitalize(key);
+        boolean cancelled = false;
         for (ScriptInstance script : scripts.values())
         {
             try
@@ -309,9 +308,13 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
                     Object data = null;
                     if (additionalData != null)
                     {
-                        data = getEngine().eval("JSON.parse('" +additionalData.toString() + "')");
+                        data = getEngine().eval("JSON.parse('" + additionalData.toString() + "')");
                     }
-                    script.tryCallGlobal(fnName, jsSender, data);
+                    Object ret = script.tryCallGlobal(fnName, jsSender, data);
+                    if (ret instanceof Boolean)
+                    {
+                        cancelled |= (boolean) ret;
+                    }
                 }
             }
             catch (ScriptException e)
@@ -319,6 +322,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
                 e.printStackTrace();
             }
         }
+        return cancelled;
     }
 
 }

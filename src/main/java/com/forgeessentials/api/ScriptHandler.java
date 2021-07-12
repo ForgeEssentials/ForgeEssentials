@@ -1,6 +1,5 @@
 package com.forgeessentials.api;
 
-import com.google.gson.JsonObject;
 import net.minecraft.command.ICommandSender;
 
 public interface ScriptHandler
@@ -13,15 +12,17 @@ public interface ScriptHandler
 
     /**
      * Call when you want scripts with your custom key to be run.
-     * @param key your custom script key
+     *
+     * @param key    your custom script key
      * @param sender an ICommandSender, if null will default to console
      */
-    void runEventScripts(String key, ICommandSender sender);
+    boolean runEventScripts(String key, ICommandSender sender);
 
     /**
      * Call when you want scripts with your custom key to be run.
-     * @param key your custom script key
+     *
+     * @param key    your custom script key
      * @param sender an ICommandSender, if null will default to console
      */
-    void runEventScripts(String key, ICommandSender sender, Object additionalData);
+    boolean runEventScripts(String key, ICommandSender sender, Object additionalData);
 }

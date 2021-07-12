@@ -21,7 +21,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IInteractionObject;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -45,14 +46,16 @@ public class JsFEServer
         int tickCount, tickStep, lastCount;
         String method;
         JsICommandSender sender;
+        Object extraData;
 
-        CORoutine(int tickCount, int tickStep, String method, JsICommandSender sender)
+        CORoutine(int tickCount, int tickStep, String method, JsICommandSender sender, Object extraData)
         {
             this.tickCount = tickCount;
             this.lastCount = tickCount;
             this.tickStep = tickStep;
             this.method = method;
             this.sender = sender;
+            this.extraData = extraData;
         }
     }
 
@@ -113,39 +116,63 @@ public class JsFEServer
         return pi == null ? null : pi.getLastLogin();
     }
 
+    /**
+     * Adds a CoRoutine callback
+     *
+     * @param count
+     * @param tickStep
+     * @param method
+     * @param sender
+     */
     public void AddCoRoutine(int count, int tickStep, String method, JsICommandSender sender)
     {
-        coRoutineHashSet.add(new CORoutine(count * tickStep, tickStep, method, sender));
+        AddCoRoutine(count, tickStep, method, sender, null);
+    }
+
+    public void AddCoRoutine(int count, int tickStep, String method, JsICommandSender sender, Object extraData)
+    {
+        coRoutineHashSet.add(new CORoutine(count * tickStep, tickStep, method, sender, extraData));
     }
 
     @SubscribeEvent
-    public void _onTick(TickEvent e)
+    public void _onTick(ServerTickEvent e)
     {
-        Iterator<CORoutine> iterator = coRoutineHashSet.iterator();
-        for (; iterator.hasNext(); )
+        if (e.phase == Phase.START)
         {
-            CORoutine c = iterator.next();
-            try
+            Iterator<CORoutine> iterator = coRoutineHashSet.iterator();
+            for (; iterator.hasNext(); )
             {
-                if ((c.lastCount - c.tickCount) == c.tickStep)
+                CORoutine c = iterator.next();
+                try
                 {
-                    c.lastCount = c.tickCount;
-                    script.tryCallGlobal(c.method, c.sender);
+                    if ((c.lastCount - c.tickCount) == c.tickStep)
+                    {
+                        c.lastCount = c.tickCount;
+                        script.tryCallGlobal(c.method, c.sender);
+                    }
+                    c.tickCount--;
+                    if (c.tickCount < 0)
+                    {
+                        iterator.remove();
+                    }
                 }
-                c.tickCount--;
-                if (c.tickCount < 0)
+                catch (ScriptException scriptException)
                 {
+                    scriptException.printStackTrace();
                     iterator.remove();
                 }
-            }
-            catch (ScriptException scriptException)
-            {
-                scriptException.printStackTrace();
-                iterator.remove();
             }
         }
     }
 
+    /**
+     * Creates a custom inventory from an Itemstack list
+     *
+     * @param name
+     * @param hasCustom
+     * @param stacks
+     * @return
+     */
     public JsInventory<InventoryBasic> createCustomInventory(final String name, boolean hasCustom, JsItemStack[] stacks)
     {
         InventoryBasic inventoryBasic = new InventoryBasic(name, hasCustom, stacks.length);
@@ -156,6 +183,15 @@ public class JsFEServer
         return JsInventory.get(inventoryBasic);
     }
 
+    /**
+     * Clones an existing inventory
+     *
+     * @param name
+     * @param hasCustom
+     * @param inventory
+     * @param size
+     * @return
+     */
     public JsInventory<InventoryBasic> cloneInventory(final String name, boolean hasCustom, JsInventory<IInventory> inventory, int size)
     {
         if (size > inventory.getSize())
@@ -185,6 +221,16 @@ public class JsFEServer
         }
     }
 
+    /**
+     * Gets a Special Interaction Object that is designed to be used as a menu
+     * WARNING: Do not close the screen during the callback. This causes a desync!
+     *
+     * @param name
+     * @param displayName
+     * @param inventory
+     * @param callbackMethod
+     * @return
+     */
     public JsInteractionObject<IInteractionObject> getMenuChest(final String name, final String displayName, final JsInventory<IInventory> inventory, final String callbackMethod)
     {
         final boolean hasCustomName = displayName != null;

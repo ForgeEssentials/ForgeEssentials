@@ -105,9 +105,23 @@ declare namespace fe {
 		getTimePlayed(playerId: java.util.UUID): long;
 		getLastLogout(playerId: java.util.UUID): java.util.Date;
 		getLastLogin(playerId: java.util.UUID): java.util.Date;
+		/**
+		 * Adds a CoRoutine callback
+		 */
 		AddCoRoutine(count: int, tickStep: int, method: string, sender: mc.ICommandSender): void;
+		AddCoRoutine(count: int, tickStep: int, method: string, sender: mc.ICommandSender, extraData: any): void;
+		/**
+		 * Creates a custom inventory from an Itemstack list
+		 */
 		createCustomInventory(name: string, hasCustom: boolean, stacks: mc.item.ItemStack[]): mc.item.Inventory;
+		/**
+		 * Clones an existing inventory
+		 */
 		cloneInventory(name: string, hasCustom: boolean, inventory: mc.item.Inventory, size: int): mc.item.Inventory;
+		/**
+		 * Gets a Special Interaction Object that is designed to be used as a menu
+		 * WARNING: Do not close the screen during the callback. This causes a desync!
+		 */
 		getMenuChest(name: string, displayName: string, inventory: mc.item.Inventory, callbackMethod: string): mc.item.InteractionObject;
 	}
 	
