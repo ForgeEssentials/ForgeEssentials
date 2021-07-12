@@ -7,7 +7,9 @@ assignees: ''
 
 ---
 
-# WARNING:  Do not delete any of the sections below.  Improperly filled out issues will be closed if not rectified in a timely manner!
+<!--
+WARNING:  Do not delete any of the sections below.  Improperly filled out issues will be closed if not rectified in a timely manner!
+-->
 
 **Initial Steps**
 - [ ] I have updated to the latest build from [Jenkins](https://ci.forgeessentials.com/job/FE-1.12.2/) before reporting a bug
