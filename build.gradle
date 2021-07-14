@@ -263,6 +263,14 @@ task tsd(type: JavaExec) {
     dependsOn "classes"
     classpath = project.sourceSets.test.compileClasspath
     main = "com.forgeessentials.jscripting.TsdGenerator"
+    doLast {
+        copy {
+            from files("jscripting/") {
+                include "*.d.ts"
+            }
+            into "build/resources/main/com/forgeessentials/jscripting"
+        }
+    }
 }
 
 // Pack libraries as zip file to include them in the jar file
@@ -281,6 +289,7 @@ jar.doLast {
 // Configure server jar (default)
 jar {
 	dependsOn "serverLibArchive"
+    dependsOn "tsd"
 	classifier = "server"
 	appendix = minecraft.version
 	
