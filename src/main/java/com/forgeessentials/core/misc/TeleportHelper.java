@@ -22,7 +22,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -180,7 +179,7 @@ public class TeleportHelper extends ServerEventHandler
 
         if (!canTeleportTo(point))
         {
-            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed."));
+            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed.") + String.format(" (%2.2f,%2.2f,%2.2f)", point.getX(), point.getY(), point.getZ()));
             return;
         }
 
@@ -210,7 +209,7 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (!canTeleportTo(point))
         {
-            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed."));
+            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed.") + String.format(" (%2.2f,%2.2f,%2.2f)", point.getX(), point.getY(), point.getZ()));
             return;
         }
 
