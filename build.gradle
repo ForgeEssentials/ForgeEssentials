@@ -406,7 +406,7 @@ publishing {
 					username project.forgemaven_user
 					password project.forgemaven_password
 				}
-				url "http://files.minecraftforge.net/maven/manage/upload"
+				url "https://files.minecraftforge.net/maven/manage/upload"
 			}
 		} else {
 			maven { url "file://${project.projectDir}/build/repo" }
