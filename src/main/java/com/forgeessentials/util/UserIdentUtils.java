@@ -52,11 +52,11 @@ public class UserIdentUtils
             LoggingHandler.felog.debug("Fetching " + id + " from " + url);
             URL uri = new URL(url);
             HttpsURLConnection huc = (HttpsURLConnection) uri.openConnection();
-            InputStream is;
+            InputStream is = null;
             try {
                 is = huc.getInputStream();
             } catch (IOException e) {
-                is = huc.getErrorStream();
+                e.printStackTrace();
             }
             if (is == null) {
                 return null;
