@@ -63,35 +63,34 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
         if (!player.capabilities.isFlying && !player.noClip)
             throw new TranslatedCommandException("You must be flying.");
 
+        PlayerInfo pi = PlayerInfo.get(player);
         if (args.length == 0)
         {
-            if (!player.noClip)
-                player.noClip = true;
-            else
-                player.noClip = false;
+            pi.setNoClip(!pi.isNoClip());
         }
         else
         {
-            player.noClip = Boolean.parseBoolean(args[0]);
+            pi.setNoClip(Boolean.parseBoolean(args[0]));
         }
-        if (!player.noClip)
+        if (!pi.isNoClip())
             WorldUtil.placeInWorld(player);
 
-        NetworkUtils.netHandler.sendTo(new Packet5Noclip(player.noClip), player);
-        ChatOutputHandler.chatConfirmation(player, "Noclip " + (player.noClip ? "enabled" : "disabled"));
+        NetworkUtils.netHandler.sendTo(new Packet5Noclip(pi.isNoClip()), player);
+        ChatOutputHandler.chatConfirmation(player, "Noclip " + (pi.isNoClip() ? "enabled" : "disabled"));
     }
 
     public static void checkClip(EntityPlayer player)
     {
-        if (player.noClip && PermissionAPI.hasPermission(player, ModuleCommands.PERM + ".noclip"))
+        PlayerInfo pi = PlayerInfo.get(player);
+        if (pi.isNoClip() && PermissionAPI.hasPermission(player, ModuleCommands.PERM + ".noclip"))
         {
             if (!player.capabilities.isFlying)
             {
-                player.noClip = false;
+                pi.setNoClip(false);
                 WorldUtil.placeInWorld(player);
                 if (!player.world.isRemote)
                 {
-                    NetworkUtils.netHandler.sendTo(new Packet5Noclip(player.noClip), (EntityPlayerMP) player);
+                    NetworkUtils.netHandler.sendTo(new Packet5Noclip(pi.isNoClip()), (EntityPlayerMP) player);
                     ChatOutputHandler.chatNotification(player, "NoClip auto-disabled: the targeted player is not flying");
                 }
             }

@@ -100,6 +100,9 @@ public class PlayerInfo implements Loadable
 
     private HashMap<String, Date> namedTimeout = new HashMap<String, Date>();
 
+    @Expose(serialize = false)
+    private boolean noClip = false;
+
     /* ------------------------------------------------------------ */
 
     private PlayerInfo(UUID uuid)
@@ -520,4 +523,13 @@ public class PlayerInfo implements Loadable
         APIRegistry.getFEEventBus().post(new ClientHandshakeEstablished(this.ident.getPlayer()));
     }
 
+    public boolean isNoClip()
+    {
+        return noClip;
+    }
+
+    public void setNoClip(boolean noClip)
+    {
+        this.noClip = noClip;
+    }
 }
