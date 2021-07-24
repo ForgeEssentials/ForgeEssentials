@@ -1,5 +1,8 @@
 package com.forgeessentials.jscripting.command;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
@@ -12,6 +15,9 @@ import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.fewrapper.fe.JsCommandArgs;
 import com.forgeessentials.jscripting.fewrapper.fe.JsCommandOptions;
+import com.forgeessentials.scripting.ScriptArguments;
+import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
+import com.forgeessentials.scripting.ScriptParser.SyntaxException;
 import com.forgeessentials.util.CommandParserArgs;
 import com.google.common.base.Preconditions;
 
@@ -21,6 +27,8 @@ public class CommandJScriptCommand extends ParserCommandBase
     public final ScriptInstance script;
 
     private JsCommandOptions options;
+
+    private static final Pattern ARGUMENT_PATTERN = Pattern.compile("@(\\w+)(.*)");
 
     public CommandJScriptCommand(ScriptInstance script, JsCommandOptions options)
     {
@@ -93,4 +101,35 @@ public class CommandJScriptCommand extends ParserCommandBase
         }
     }
 
+    public static void processArguments(CommandParserArgs args) {
+        for (int i = 0; i < args.size(); i++) {
+            Matcher matcher = ARGUMENT_PATTERN.matcher(args.get(i));
+            if (!matcher.matches()) {
+                continue;
+            }
+
+            String modifier = matcher.group(1).toLowerCase();
+            String rest = matcher.group(2);
+
+            ScriptArgument argument = ScriptArguments.get(modifier);
+            if (argument != null)
+            {
+                args.args.set(i, argument.process(args.sender) + rest);
+            }
+            else
+            {
+                try
+                {
+                    int idx = Integer.parseInt(modifier);
+                    if (idx >= args.size())
+                        throw new SyntaxException("Missing argument @%d", idx);
+                    args.args.set(i, args.get(idx) + rest);
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new SyntaxException("Unknown argument modifier \"%s\"", modifier);
+                }
+            }
+        }
+    }
 }

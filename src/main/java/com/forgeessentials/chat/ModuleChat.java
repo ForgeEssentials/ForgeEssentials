@@ -240,6 +240,11 @@ public class ModuleChat
             message = ChatOutputHandler.formatColors(message);
         }
 
+        //Apply Text format prefix
+        String textFormats = APIRegistry.perms.getUserPermissionProperty(ident, ModuleChat.PERM_TEXTFORMAT);
+        if (textFormats != null)
+            message = ChatOutputHandler.formatColors(textFormats) + message;
+
         // Build message part with links
         ITextComponent messageComponent;
         if (ident.checkPermission(PERM_URL))
@@ -250,10 +255,6 @@ public class ModuleChat
         {
             messageComponent = new TextComponentString(message);
         }
-
-        String textFormats = APIRegistry.perms.getUserPermissionProperty(ident, ModuleChat.PERM_TEXTFORMAT);
-        if (textFormats != null)
-            ChatOutputHandler.applyFormatting(messageComponent.getStyle(), ChatOutputHandler.enumChatFormattings(textFormats));
 
         // Finish complete message
         event.setComponent(new TextComponentTranslation("%s%s", header, messageComponent));

@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.SortedSet;
 
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.permissions.AreaZone;
 import com.forgeessentials.api.permissions.GroupEntry;
-import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.ServerZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
+import com.forgeessentials.util.events.EventCancelledException;
 
 public class JsServerZone<T extends ServerZone> extends JsZone<T>
 {
@@ -55,5 +56,21 @@ public class JsServerZone<T extends ServerZone> extends JsZone<T>
         for (GroupEntry group : groups)
             result.add(group.getGroup());
         return result;
+    }
+
+    public JsZone<?> addZone(String zoneName, JsWorldArea<?> area) throws EventCancelledException
+    {
+        AreaZone zone = new AreaZone(that.getWorldZone(area.getDimension()), zoneName, area.getThat());
+        that.addZone(zone);
+        return new JsZone<>(zone);
+    }
+
+    public void removeZone(JsZone<?> zone) throws UnsupportedOperationException {
+        if (zone.getThat() instanceof AreaZone)
+        {
+            that.removeZone(zone.getThat());
+        } else {
+            throw new UnsupportedOperationException("Can only remove zones of Type AreaZone via javascript!");
+        }
     }
 }

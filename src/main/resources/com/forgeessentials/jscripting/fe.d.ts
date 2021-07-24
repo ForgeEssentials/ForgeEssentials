@@ -48,6 +48,7 @@ declare namespace fe {
 		peek(): string;
 		get(index: int): string;
 		getAllArgs(): string;
+		removeAllArgs(): string;
 		isEmpty(): boolean;
 		hasPlayer(): boolean;
 		parsePlayer(): UserIdent;
@@ -71,6 +72,7 @@ declare namespace fe {
 		requirePlayer(): void;
 		getSenderPoint(): WorldPoint;
 		needsPlayer(): void;
+		clear(): void;
 	}
 	
 	class CommandOptions {
@@ -103,6 +105,24 @@ declare namespace fe {
 		getTimePlayed(playerId: java.util.UUID): long;
 		getLastLogout(playerId: java.util.UUID): java.util.Date;
 		getLastLogin(playerId: java.util.UUID): java.util.Date;
+		/**
+		 * Adds a CoRoutine callback
+		 */
+		AddCoRoutine(count: int, tickStep: int, method: string, sender: mc.ICommandSender): void;
+		AddCoRoutine(count: int, tickStep: int, method: string, sender: mc.ICommandSender, extraData: any): void;
+		/**
+		 * Creates a custom inventory from an Itemstack list
+		 */
+		createCustomInventory(name: string, hasCustom: boolean, stacks: mc.item.ItemStack[]): mc.item.Inventory;
+		/**
+		 * Clones an existing inventory
+		 */
+		cloneInventory(name: string, hasCustom: boolean, inventory: mc.item.Inventory, size: int): mc.item.Inventory;
+		/**
+		 * Gets a Special Interaction Object that is designed to be used as a menu
+		 * WARNING: Do not close the screen during the callback. This causes a desync!
+		 */
+		getMenuChest(name: string, displayName: string, inventory: mc.item.Inventory, callbackMethod: string): mc.item.InteractionObject;
 	}
 	
 	class Permissions {
@@ -214,6 +234,8 @@ declare namespace fe {
 		getZonesAt(worldPoint: WorldPoint): java.util.List;
 		getZoneAt(worldPoint: WorldPoint): Zone;
 		getPlayerGroups(player: mc.entity.EntityPlayer): java.util.List;
+		addZone(zoneName: string, area: WorldArea): Zone;
+		removeZone(zone: Zone): void;
 	}
 	
 	class UserIdent extends Wrapper {
@@ -273,6 +295,8 @@ declare namespace fe {
 	}
 	
 	class WorldArea extends mc.AreaBase {
+		constructor(dim: int, p1: Point, p2: Point);
+		getDimension(): int;
 	}
 	
 	class WorldPoint extends Point {

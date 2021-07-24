@@ -139,6 +139,9 @@ declare namespace net.minecraft.entity.player {
 declare namespace mc {
 	
 	class AreaBase extends Wrapper {
+		constructor(p1: fe.Point, p2: fe.Point);
+		getHighPoint(): fe.Point;
+		getLowPoint(): fe.Point;
 	}
 	
 	class ICommandSender extends Wrapper {
@@ -356,6 +359,8 @@ declare namespace mc.entity {
 		 * Returns the InventoryEnderChest of this player.
 		 */
 		getInventoryEnderChest(): mc.item.Inventory;
+		displayGUIChest(inventory: mc.item.Inventory): void;
+		closeScreen(): void;
 	}
 	
 	class EntityPlayerList extends JavaList<EntityPlayer> {
@@ -458,6 +463,11 @@ declare namespace mc.event.entity.player {
 declare namespace mc.item {
 	
 	class Enchantment extends Wrapper {
+	}
+	
+	class InteractionObject extends Wrapper {
+		getGuiID(): string;
+		getInventory(): Inventory;
 	}
 	
 	class Inventory extends Wrapper {

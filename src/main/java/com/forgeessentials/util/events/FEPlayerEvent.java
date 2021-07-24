@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 /**
@@ -90,7 +89,7 @@ public class FEPlayerEvent extends PlayerEvent
                 }
                 else
                 {
-                    toSwap.setStackInSlot(slotIdx, null);
+                    toSwap.setStackInSlot(slotIdx, ItemStack.EMPTY);
                 }
             }
             newInvGroup.put(modname, oldItems);

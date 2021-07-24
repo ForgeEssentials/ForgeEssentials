@@ -33,7 +33,9 @@ public class Kit
         List<ItemStack> collapsedInventory = new ArrayList<ItemStack>();
         for (int i = 0; i < player.inventory.mainInventory.size(); i++)
             if (player.inventory.mainInventory.get(i) != ItemStack.EMPTY)
-                collapsedInventory.add(player.inventory.mainInventory.get(i));
+            {
+                collapsedInventory.add(player.inventory.mainInventory.get(i).copy());
+            }
         items = collapsedInventory.toArray(new ItemStack[collapsedInventory.size()]);
 
         armor = new ItemStack[player.inventory.armorInventory.size()];
@@ -85,7 +87,9 @@ public class Kit
         for (int i = 0; i < 4; i++)
             if (armor[i] != null)
                 if (player.inventory.armorInventory.get(i) == ItemStack.EMPTY)
-                    player.inventory.armorInventory.set(i, armor[i]);
+                {
+                    player.inventory.armorInventory.set(i, armor[i].copy());
+                }
                 else
                     couldNotGiveItems |= !player.inventory.addItemStackToInventory(armor[i].copy());
 

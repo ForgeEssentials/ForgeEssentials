@@ -32,7 +32,9 @@ public abstract class MixinICommandSender implements ICommandSender
         {
             permNode = PermissionManager.getCommandPermission(cmd);
         }
-        else
+        else if ("@".equals(commandName)) {
+            return;
+        } else
         {
             permNode = commandName;
         }
@@ -44,7 +46,9 @@ public abstract class MixinICommandSender implements ICommandSender
         }
         if (permValue != null)
         {
-            cir.setReturnValue(APIRegistry.perms.checkBooleanPermission(permValue));
+            if ( !APIRegistry.perms.checkBooleanPermission(permValue)) {
+                cir.setReturnValue(false);
+            }
         } else {
             launchLog.error("canUseCommand({}, {}) returns a null permValue for node: {}. Missing nodes are auto-registered so this should never happen. If you see this message, please report it!",commandName, permissionLevel, permNode);
         }

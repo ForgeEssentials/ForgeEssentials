@@ -2,20 +2,22 @@ package com.forgeessentials.signtools;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fe.event.world.SignEditEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
@@ -29,6 +31,8 @@ public class SignToolsModule extends ConfigLoaderBase
 
     public static final String COLORIZE_PERM = "fe.signs.colorize";
     public static final String EDIT_PERM = "fe.signs.edit";
+    private static final String signinteractKey = "signinteract";
+    private static final String signeditKey = "signedit";
 
     private static boolean allowSignCommands, allowSignEdit;
 
@@ -36,7 +40,8 @@ public class SignToolsModule extends ConfigLoaderBase
     public void onLoad(FEModuleInitEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
-
+        APIRegistry.scripts.addScriptType(signinteractKey);
+        APIRegistry.scripts.addScriptType(signeditKey);
     }
 
     @SubscribeEvent
@@ -54,6 +59,11 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void onSignEdit(SignEditEvent e)
     {
+        if (APIRegistry.scripts.runEventScripts(signeditKey, e.editor, new SignInfo(e.editor.dimension, e.pos, e.text, e)))
+        {
+            e.setCanceled(true);
+        }
+
         if (!PermissionAPI.hasPermission(e.editor, COLORIZE_PERM))
         {
             return;
@@ -77,8 +87,8 @@ public class SignToolsModule extends ConfigLoaderBase
      * lines are arguments to the command.
      */
 
-    @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onPlayerInteract(PlayerInteractEvent event)
     {
         if (event.getWorld().isRemote)
         {
@@ -86,16 +96,23 @@ public class SignToolsModule extends ConfigLoaderBase
         }
 
         TileEntity te = event.getEntityPlayer().world.getTileEntity(event.getPos());
-        if (te != null && te instanceof TileEntitySign)
+        if (te instanceof TileEntitySign)
         {
-            if (allowSignEdit && event.getEntityPlayer().isSneaking())
+            TileEntitySign sign = ((TileEntitySign) te);
+            if (allowSignEdit && event.getEntityPlayer().isSneaking() && event instanceof RightClickBlock)
             {
-                if(event.getEntityPlayer().getHeldItemMainhand()!= ItemStack.EMPTY)
+                if (event.getEntityPlayer().getHeldItemMainhand() != ItemStack.EMPTY)
                 {
                     if (PermissionAPI.hasPermission(event.getEntityPlayer(), EDIT_PERM)
                             && PermissionAPI.hasPermission(event.getEntityPlayer(), "fe.protection.use.minecraft.sign")
                             && event.getEntityPlayer().getHeldItemMainhand().getItem().equals(Items.SIGN))
                     {
+                        //Convert Formatting back into FE format for easy use
+                        for (int i = 0; i < sign.signText.length; i++)
+                        {
+                            sign.signText[i] = new TextComponentString(sign.signText[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
+                        }
+
                         event.getEntityPlayer().openEditSign((TileEntitySign) te);
                         event.setCanceled(true);
                     }
@@ -103,31 +120,37 @@ public class SignToolsModule extends ConfigLoaderBase
 
             }
 
+            String[] signText = getFormatted(sign.signText);
 
-
-            if (!allowSignCommands)
+            if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getEntityPlayer(), new SignInfo(event.getEntityPlayer().dimension, event.getPos(), signText, event)))
             {
-                return;
+                event.setCanceled(true);
             }
 
-            ITextComponent[] signText = ((TileEntitySign) te).signText;
-            if (!signText[0].getUnformattedText().equals("[command]"))
+            if (allowSignCommands && (event instanceof RightClickBlock))
             {
-                return;
-            }
-
-                else
+                if (signText[0].equals("[command]"))
                 {
-                    String send = signText[1].getUnformattedText() + " " + signText[2].getUnformattedText() + " " + signText[3].getUnformattedText();
+                    String send = signText[1] + " " + signText[2] + " " + signText[3];
                     if (send != null && FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager() != null)
                     {
                         FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), send);
                         event.setCanceled(true);
                     }
                 }
+            }
 
         }
 
+    }
+
+    private String[] getFormatted(ITextComponent[] text)
+    {
+        String[] out = new String[text.length];
+        for (int i = 0; i < text.length; i++) {
+            out[i] = text[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&');
+        }
+        return out;
     }
 
     @Override

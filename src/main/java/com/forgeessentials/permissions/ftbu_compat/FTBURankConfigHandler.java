@@ -1,12 +1,12 @@
 package com.forgeessentials.permissions.ftbu_compat;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.server.permission.context.IContext;
 
 import com.feed_the_beast.ftblib.events.RegisterRankConfigHandlerEvent;
 import com.feed_the_beast.ftblib.lib.config.ConfigNull;
@@ -14,7 +14,6 @@ import com.feed_the_beast.ftblib.lib.config.ConfigValue;
 import com.feed_the_beast.ftblib.lib.config.DefaultRankConfigHandler;
 import com.feed_the_beast.ftblib.lib.config.IRankConfigHandler;
 import com.feed_the_beast.ftblib.lib.config.RankConfigValueInfo;
-import com.feed_the_beast.ftbutilities.FTBUtilitiesConfig;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -28,16 +27,34 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
     @SubscribeEvent
     public static void registerRankConfigHandler(RegisterRankConfigHandlerEvent event)
     {
-        if (!FTBUtilitiesConfig.ranks.enabled)
+        LoggingHandler.felog.debug("registerRankConfigHandler()");
+        if (INSTANCE.isFTBURanksActive())
         {
-            event.setHandler(INSTANCE);
-        } else {
             LoggingHandler.felog.info("Ranks are active...  Not registering configs!");
+        } else {
+            event.setHandler(INSTANCE);
         }
+    }
+
+    public boolean isFTBURanksActive()
+    {
+        try {
+           Class<?> clazz = Class.forName("com.feed_the_beast.ftbutilities.FTBUtilitiesConfig");
+           Field ranksF = clazz.getField("ranks");
+           Object ranks = ranksF.get(null);
+           Class<?> ranksConfig = Class.forName("com.feed_the_beast.ftbutilities.FTBUtilitiesConfig$RanksConfig");
+           Field enabledF = ranksConfig.getField("enabled");
+           return enabledF.getBoolean(ranks);
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignored) {
+            LoggingHandler.felog.warn("FTBU is not detected but FTBLib is.  Enabling Configs.");
+            LoggingHandler.felog.debug("Associated Stack Trace:", ignored);
+        }
+        return false;
     }
 
     @Override public void registerRankConfig(RankConfigValueInfo info)
     {
+        LoggingHandler.felog.debug("registerRankConfig({})", info);
         DefaultRankConfigHandler.INSTANCE.registerRankConfig(info);
 
         APIRegistry.perms.registerPermissionProperty(info.node.toString(), info.defaultValue.getString());
@@ -58,7 +75,7 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
 
         if (info != null) {
             LoggingHandler.felog.info("Config Value is not null");
-            UserIdent ident = UserIdent.get(profile.getId());
+            UserIdent ident = UserIdent.get(profile);
             value = info.defaultValue.copy();
             WorldPoint point = null;
             if (ident.hasPlayer()) {

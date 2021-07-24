@@ -5,10 +5,12 @@ import java.io.IOException;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import net.minecraftforge.common.MinecraftForge;
+
 import org.apache.commons.io.IOUtils;
 
-import com.forgeessentials.jscripting.ScriptExtension;
 import com.forgeessentials.jscripting.ScriptCompiler;
+import com.forgeessentials.jscripting.ScriptExtension;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.fewrapper.fe.JsAreaShape;
 import com.forgeessentials.jscripting.fewrapper.fe.JsFEServer;
@@ -42,7 +44,9 @@ public class ScriptExtensionRoot implements ScriptExtension
         engine.put("Permissions", ScriptCompiler.toNashornClass(JsPermissions.class));
         engine.put("PermissionLevel", ScriptCompiler.toNashornClass(JsPermissionLevel.class));
         engine.put("AreaShape", ScriptCompiler.toNashornClass(JsAreaShape.class));
-        engine.put("FEServer", new JsFEServer(script));
+        JsFEServer feServer = new JsFEServer(script);
+        MinecraftForge.EVENT_BUS.register(feServer);
+        engine.put("FEServer", feServer);
 
         engine.eval(INIT_SCRIPT);
     }

@@ -2,18 +2,18 @@ package com.forgeessentials.teleport;
 
 import java.util.List;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -92,13 +92,25 @@ public class CommandTop extends ForgeEssentialsCommandBase
     public void top(EntityPlayerMP player) throws CommandException
     {
         WarpPoint point = new WarpPoint(player);
-        point.setY(player.world.getPrecipitationHeight(player.getPosition()).getY());
-        while (player.world.getBlockState(point.getBlockPos()).getBlock() == Blocks.AIR)
+        int oldY = point.getBlockY();
+        int precY = player.world.getPrecipitationHeight(player.getPosition()).getY();
+
+        if (oldY != precY)
         {
-            point.setY(point.getY() - 1);
+            if (!ForgeEssentials.isCubicChunksInstalled && precY == -1) {
+                point.setY(0);
+                while (player.world.getBlockState(point.getBlockPos()).getMaterial() != Material.AIR) {
+                    point.setY(point.getY() + 1);
+                }
+                if (oldY == point.getBlockY()) {
+                    return;
+                }
+            } else
+            {
+                point.setY(precY);
+            }
+            TeleportHelper.teleport(player, point);
         }
-        point.setY(point.getY() + 1);
-        TeleportHelper.teleport(player, point);
     }
 
     @Override

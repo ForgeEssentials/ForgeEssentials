@@ -15,8 +15,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketOpenWindow;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
@@ -132,8 +133,10 @@ public class Grave implements Loadable
     {
         if (point.getWorld() == null)
         {
-            DataManager.getInstance().delete(Grave.class, point.toString());
-            graves.remove(point);
+            if (!DimensionManager.isDimensionRegistered(point.getDimension())) {
+                DataManager.getInstance().delete(Grave.class, point.toString());
+                graves.remove(point);
+            }
             return;
         }
         if (isProtected)

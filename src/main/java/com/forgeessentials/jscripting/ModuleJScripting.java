@@ -288,22 +288,41 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     @Override
-    public synchronized void runEventScripts(String key, ICommandSender sender)
+    public boolean runEventScripts(String key, ICommandSender sender)
+    {
+        return runEventScripts(key, sender, null);
+    }
+
+    @Override
+    public boolean runEventScripts(String key, ICommandSender sender, Object additionalData)
     {
         JsICommandSender jsSender = JsICommandSender.get(sender);
         String fnName = "on" + StringUtils.capitalize(key);
+        boolean cancelled = false;
         for (ScriptInstance script : scripts.values())
         {
             try
             {
                 if (!script.hasGlobalCallFailed(fnName))
-                    script.tryCallGlobal(fnName, jsSender);
+                {
+                    Object data = null;
+                    if (additionalData != null)
+                    {
+                        data = getEngine().eval("JSON.parse('" + additionalData.toString() + "')");
+                    }
+                    Object ret = script.tryCallGlobal(fnName, jsSender, data);
+                    if (ret instanceof Boolean)
+                    {
+                        cancelled |= (boolean) ret;
+                    }
+                }
             }
             catch (ScriptException e)
             {
                 e.printStackTrace();
             }
         }
+        return cancelled;
     }
 
 }

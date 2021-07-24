@@ -56,18 +56,17 @@ For assistance in setting up a workspace to contribute to ForgeEssentials, pleas
 ForgeEssentials Team
 ================
 Active
-- [spacebuilder2020](https://github.com/spacebuilder2020)
-- [Zethalion](https://github.com/Zethalion)
+- [spacebuilder2020](https://github.com/spacebuilder2020) (Developer)
+- [Zethalion](https://github.com/Zethalion) (QA / Support)
+- [Nexusatko](https://github.com/Nexusatko) (QA / Support)
 
-Inactive
+Retired
 - [olee](https://github.com/olee)
 - [luacs1998](https://github.com/luacs1998)
 - [Techjar](https://github.com/Techjar)
 - [Malkierian](https://github.com/Malkierian)
 - [Helinus](https://github.com/helinus)
 - [Schmois](https://github.com/aschmois) (Remote + Remote Android App)
-
-Retired
 - [AbrarSyed](https://github.com/AbrarSyed)
 - [bspkrs](https://github.com/bspkrs)
 - [RlonRyan](https://github.com/RlonRyan)

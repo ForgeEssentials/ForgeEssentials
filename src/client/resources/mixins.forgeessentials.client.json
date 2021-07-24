@@ -3,6 +3,7 @@
 	"plugin": "com.forgeessentials.client.mixin.FEClientMixinConfig",
     "refmap": "mixins.forgeessentials.client.refmap.json",
 	"mixins": [
-		"MixinPlayerControllerMP"
-	]
+      "MixinEntityPlayer",
+      "MixinPlayerControllerMP"
+    ]
 }
