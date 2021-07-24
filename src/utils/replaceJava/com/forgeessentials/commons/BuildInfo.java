@@ -33,9 +33,9 @@ public abstract class BuildInfo
 
     private static Properties buildTypes = new Properties();
 
-    public static final String MC_BASE_VERSION = "_MCVERSION_";
+    public static final String MC_BASE_VERSION = "@_MCVERSION_@";
 
-    public static final String BASE_VERSION = "_BASEVERSION_";
+    public static final String BASE_VERSION = "@_BASEVERSION_@";
 
     public static final String DEPENDENCIES = "required-after:forge";
 
