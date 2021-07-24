@@ -23,7 +23,7 @@ buildscript {
 
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:3+"
+		classpath "net.minecraftforge.gradle:ForgeGradle:4.+"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
@@ -50,6 +50,9 @@ sonarqube {
 repositories.clear()
 // Set up FE required repositories
 repositories {
+    flatDir {
+        dirs 'lib'
+    }
 	maven {
 		name = "sk89q"
 		url = "https://maven.enginehub.org/repo/"
@@ -205,7 +208,8 @@ dependencies {
 	serverLib group: 'com.h2database', 	name: 'h2', 					version: '1.3.175'
 	serverLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
 	serverLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
-	compile  group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
+    annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
+    annotationProcessor 'org.spongepowered:mixin:0.8.1-SNAPSHOT:processor'
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
@@ -253,11 +257,22 @@ sourceSets {
 	}
 
     test {
-        compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output, sourceSets.main.output)
+        compileClasspath = files(configurations.compile, sourceSets.utils.output, sourceSets.main.output)
         compileClasspath += files deps
     }
 }
 
+import org.apache.tools.ant.filters.ReplaceTokens
+project.compileUtilsJava {
+    doFirst {
+        copy {
+            from ('src/utils/replaceJava') {
+                filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.baseVersion])
+            }
+            into 'src/utils/java'
+        }
+    }
+}
 // Configure server resource processing
 project.processResources {
 	from (sourceSets.main.resources.srcDirs) {
@@ -382,17 +397,17 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 		from serverManifest
 	}
 }
-/*
-task sourceJar(type: Jar) {
-	classifier = "sources"
-	appendix = minecraft.version
-	
-	from sourceSets.main.allSource
-	
-	manifest {
-		from serverManifest
-	}
-}
+//
+//task sourceJar(type: Jar) {
+//	classifier = "sources"
+//	appendix = project.minecraftVersion
+//
+//	from sourceSets.main.allSource
+//
+//	manifest {
+//		from serverManifest
+//	}
+//}
 
 
 /************************************************************
@@ -428,10 +443,6 @@ reobf {
 artifacts {
 	//archives deobfJar
 	archives clientJar
-}
-
-task wrapper(type: Wrapper) {
-	gradleVersion = "4.9"
 }
 
 /************************************************************
@@ -488,5 +499,5 @@ publishing {
 }
 
 task publishAndClean(type: Delete, dependsOn: "publish") {
-    delete javadocJar, sourceJar
+    delete javadocJar
 }
