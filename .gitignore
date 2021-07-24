@@ -38,3 +38,4 @@ modlist.txt
 /.apt_generated/
 /src/*/generated/
 /jscripting/tsconfig.json
+/src/utils/java/com/forgeessentials/commons/BuildInfo.java
