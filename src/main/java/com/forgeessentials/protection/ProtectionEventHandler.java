@@ -444,7 +444,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             point = new WorldPoint(event.getEntityPlayer().dimension, event.getPos());
 
         // Check for block interaction
-        if (event instanceof LeftClickBlock || event instanceof RightClickBlock && !event.getEntityPlayer().isSneaking())
+        if (event instanceof LeftClickBlock || event instanceof RightClickBlock)
         {
             IBlockState blockState = event.getWorld().getBlockState(event.getPos());
             String permission = ModuleProtection.getBlockInteractPermission(blockState);
@@ -457,7 +457,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         }
 
         // Check item (and block) usage
-        ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
+        ItemStack stack = event.getItemStack(); //Get the used item (the one in main or off hand)
         if (stack != ItemStack.EMPTY && !(stack.getItem() instanceof ItemBlock))
         {
             String permission = ModuleProtection.getItemUsePermission(stack);
@@ -470,6 +470,13 @@ public class ProtectionEventHandler extends ServerEventHandler
             else if (event instanceof RightClickBlock)
             {
                 ((RightClickBlock) event).setUseItem(allow ? ALLOW : DENY);
+            }
+            else if (event instanceof RightClickItem)
+            {
+            	//Prevents use without clicking on a block (bow, buckets, etc...)
+            	if(!allow) {
+            		event.setCanceled(true);            		
+            	}
             }
 
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
