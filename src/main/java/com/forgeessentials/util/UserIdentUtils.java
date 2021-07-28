@@ -61,10 +61,7 @@ public class UserIdentUtils
             if (is == null) {
                 return null;
             }
-            //TODO: Rewrite so it won't become an infinite loop
-            //      In the case of Resolving Username from UUID
-            //      We need to account for multiple usernames
-            //      And grab the current one
+
             try (JsonReader jr = new JsonReader(new InputStreamReader(is)))
             {
                 boolean inArray = false;
@@ -75,41 +72,41 @@ public class UserIdentUtils
                         inArray = true;
                         jr.beginArray();
                     }
-                    JsonToken t = jr.peek();
                     String value = null;
-                    while (t != JsonToken.END_ARRAY && t != JsonToken.END_DOCUMENT)
+                    while (jr.peek() != JsonToken.END_ARRAY && jr.peek() != JsonToken.END_DOCUMENT)
                     {
                         jr.beginObject();
                         String name = null;
 
                         while (jr.hasNext())
                         {
-                            if (jr.peek() == JsonToken.NAME)
+
+                            if (jr.peek() == JsonToken.END_DOCUMENT || jr.peek() == JsonToken.END_OBJECT)
+                            {
+                                break;
+                            }
+                            else if (jr.peek() == JsonToken.NAME)
+                            {
                                 name = jr.nextName();
+                            }
                             else
                             {
-                                if (jr.peek() == JsonToken.STRING)
+                                if (jr.peek() == JsonToken.STRING && id.equals(name))
                                 {
-                                    if (id.equals(name))
-                                    {
-                                        value = jr.nextString();
-                                        break;
-                                    }
-                                } else
+                                    value = jr.nextString();
+                                    break;
+                                }
+                                else
                                 {
                                     jr.skipValue();
                                     name = null;
                                 }
                             }
                         }
-
-                        while (jr.peek() != JsonToken.END_OBJECT) {
-                            jr.skipValue();
+                        if (jr.peek() == JsonToken.END_OBJECT)
+                        {
+                            jr.endObject();
                         }
-
-                        jr.endObject();
-
-                        t = jr.peek();
                     }
                     if (inArray)
                     {
