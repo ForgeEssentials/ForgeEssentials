@@ -50,6 +50,9 @@ sonarqube {
 repositories.clear()
 // Set up FE required repositories
 repositories {
+    flatDir {
+        dirs 'lib'
+    }
 	maven {
 		name = "sk89q"
 		url = "https://maven.enginehub.org/repo/"
@@ -193,6 +196,7 @@ dependencies {
     }
     provided "com.feed_the_beast.mods:FTBLib:5.4.4.5"
     provided "com.feed_the_beast.mods:FTBUtilities:5.4.0.124"
+    provided fileTree("lib")
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
