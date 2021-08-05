@@ -264,7 +264,7 @@ public class ModuleProtection
             try
             {
                 blockName = block.getLocalizedName();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 blockName = block.getUnlocalizedName();
             }
             APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, DefaultPermissionLevel.ALL, "BREAK " + blockName);
