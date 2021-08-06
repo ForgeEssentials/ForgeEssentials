@@ -143,7 +143,9 @@ public class SignToolsModule extends ConfigLoaderBase
                         }
                     }
                     else
+                    {
                         ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.translate("You are not allowed to use sign commands!"));
+                    }
                 }
             }
 
