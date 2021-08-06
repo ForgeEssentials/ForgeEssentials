@@ -201,6 +201,9 @@ dependencies {
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
     compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
+	dependencies {
+  		compile files("${System.getProperty('java.home')}/../lib/tools.jar")
+	}
 }
 
 /************************************************************

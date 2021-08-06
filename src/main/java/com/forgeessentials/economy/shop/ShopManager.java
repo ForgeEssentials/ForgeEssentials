@@ -257,10 +257,16 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
                 ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.translate("Item frame already used for another shop!"));
                 return;
             }
+            if(frame.getDisplayedItem().isEmpty())
+            {
+                ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.translate("The item frame is empty!"));
+                return;
+            }
             shop = new ShopData(point, frame);
         }
 
         shop.update();
+
         if (!shop.isValid)
         {
             ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.format("Shop invalid: %s", shop.getError()));
