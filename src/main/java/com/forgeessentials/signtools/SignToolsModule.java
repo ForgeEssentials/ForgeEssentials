@@ -131,7 +131,7 @@ public class SignToolsModule extends ConfigLoaderBase
             if (allowSignCommands && (event instanceof RightClickBlock))
             {
                 // if (signText[0].trim() == "[command]")
-                if ("[command]".contains(signText[0]))
+                if (signText[0].trim().equalsIgnoreCase("[command]"))
                 {
                     if (PermissionAPI.hasPermission(event.getEntityPlayer(), USESIGNCOMMANDS_PERM))
                     {
