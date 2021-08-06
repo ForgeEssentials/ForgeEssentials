@@ -9,6 +9,12 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.ItemUtil;
+import com.forgeessentials.util.ServerUtil;
+import com.google.gson.annotations.Expose;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.item.ItemStack;
@@ -16,12 +22,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-
-import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.ItemUtil;
-import com.forgeessentials.util.ServerUtil;
-import com.google.gson.annotations.Expose;
 
 public class ShopData
 {
@@ -98,7 +98,7 @@ public class ShopData
         }
 
         item = frame.getDisplayedItem();
-        if (item == null)
+        if (item == null || item.isEmpty())
         {
             error = Translator.translate("Item frame empty");
             return;
