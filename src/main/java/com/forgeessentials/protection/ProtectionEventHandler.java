@@ -450,10 +450,17 @@ public class ProtectionEventHandler extends ServerEventHandler
             String permission = ModuleProtection.getBlockInteractPermission(blockState);
             ModuleProtection.debugPermission(event.getEntityPlayer(), permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
-            if (event instanceof LeftClickBlock)
-                ((LeftClickBlock) event).setUseBlock(allow ? ALLOW : DENY);
-            else
-                ((RightClickBlock) event).setUseBlock(allow ? ALLOW : DENY);
+            if (!allow) 
+            {
+            	if (event instanceof LeftClickBlock) 
+            	{
+            		((LeftClickBlock) event).setUseBlock(DENY);            		
+            	}
+            	else 
+            	{
+            		((RightClickBlock) event).setUseBlock(DENY);
+            	}
+            }
         }
 
         // Check item (and block) usage
@@ -463,20 +470,21 @@ public class ProtectionEventHandler extends ServerEventHandler
             String permission = ModuleProtection.getItemUsePermission(stack);
             ModuleProtection.debugPermission(event.getEntityPlayer(), permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
-            if (event instanceof LeftClickBlock)
+            if (!allow)
             {
-                ((LeftClickBlock) event).setUseItem(allow ? ALLOW : DENY);
-            }
-            else if (event instanceof RightClickBlock)
-            {
-                ((RightClickBlock) event).setUseItem(allow ? ALLOW : DENY);
-            }
-            else if (event instanceof RightClickItem)
-            {
-            	//Prevents use without clicking on a block (bow, buckets, etc...)
-            	if(!allow) {
-            		event.setCanceled(true);            		
-            	}
+            	if (event instanceof LeftClickBlock)
+                {
+                    ((LeftClickBlock) event).setUseItem(DENY);
+                }
+                else if (event instanceof RightClickBlock)
+                {
+                    ((RightClickBlock) event).setUseItem(DENY);
+                }
+                else if (event instanceof RightClickItem)
+                {
+                	//Prevents use without clicking on a block (bow, buckets, etc...)
+                	event.setCanceled(true);
+                }
             }
 
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
