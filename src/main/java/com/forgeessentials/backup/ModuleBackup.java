@@ -482,7 +482,7 @@ public class ModuleBackup extends ConfigLoaderBase
                         first = false;
                         continue;
                     }
-                    if (backup.getKey().after(nextDate))
+                    if (backup.getKey().after(oldestDailyBackup) || backup.getKey().after(nextDate))
                         break;
                     LoggingHandler.felog.debug("Removing Daily Backup {} {}", FILE_FORMAT.format(backup.getKey().getTime()), backup.getValue().getParentFile().getName());
                     if (!backup.getValue().delete())
