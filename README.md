@@ -2,9 +2,9 @@ ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEsse
 ===================
 
 The code on this branch is for Minecraft 1.12.2.
-**We are looking for developers. Please contact us on Discord if you are interested in contributing!**
 
-## We are few developers with not so much time at hand - we will try to handle important bugs fast
+## Forge Essentials Is now Officially Inactive!  We will no longer make code changes for the foreseeable future.
+With that said, however, we will still review and accept Pull Requests.
 
 # Help
 For general help about ForgeEssentials and tutorials, please check the **[Wiki](https://github.com/ForgeEssentials/ForgeEssentials/wiki)** pages.
@@ -56,10 +56,10 @@ For assistance in setting up a workspace to contribute to ForgeEssentials, pleas
 ForgeEssentials Team
 ================
 Active
-- [spacebuilder2020](https://github.com/spacebuilder2020) (Developer)
 - [Zethalion](https://github.com/Zethalion) (QA / Support)
 - [Nexusatko](https://github.com/Nexusatko) (QA / Support)
-
+Inactive
+- [spacebuilder2020](https://github.com/spacebuilder2020) (Team Lead / Developer)
 Retired
 - [olee](https://github.com/olee)
 - [luacs1998](https://github.com/luacs1998)

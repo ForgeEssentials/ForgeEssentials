@@ -19,9 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
-import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -148,7 +146,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
     {
         if (!canConsoleUseCommand() && !(sender instanceof EntityPlayer))
             return false;
-        return true;
+        return this.checkCommandPermission(sender);
     }
 
     public abstract boolean canConsoleUseCommand();
