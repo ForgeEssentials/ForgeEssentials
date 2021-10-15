@@ -58,8 +58,10 @@ ForgeEssentials Team
 Active
 - [Zethalion](https://github.com/Zethalion) (QA / Support)
 - [Nexusatko](https://github.com/Nexusatko) (QA / Support)
+
 Inactive
 - [spacebuilder2020](https://github.com/spacebuilder2020) (Team Lead / Developer)
+
 Retired
 - [olee](https://github.com/olee)
 - [luacs1998](https://github.com/luacs1998)
