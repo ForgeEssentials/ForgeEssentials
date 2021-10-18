@@ -46,7 +46,6 @@ public class CommandTp extends ForgeEssentialsCommandBase
         }
         else if (args.length == 2 && APIRegistry.perms.checkPermission(sender, TeleportModule.PERM_TP_OTHERS))
         {
-
             EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {

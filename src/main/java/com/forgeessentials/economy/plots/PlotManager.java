@@ -62,9 +62,13 @@ public class PlotManager extends ServerEventHandler
             else if (!plot.hasOwner())
             {
                 if (plot.isForSale())
+                {
                     message = Translator.translate("You have entered neutral plot which is open for sale");
+                }
                 else
+                {
                     message = Translator.translate("You have entered a plot owned by the server");
+                }
                 ChatOutputHandler.chatConfirmation(event.getEntityPlayer(), message);
             }
             else
@@ -77,9 +81,13 @@ public class PlotManager extends ServerEventHandler
 
             long price = plot.getPrice();
             if (price == 0)
+            {
                 ChatOutputHandler.chatNotification(event.getEntityPlayer(), Translator.translate("You can buy this plot for free"));
+            }
             else if (price > 0)
+            {
                 ChatOutputHandler.chatNotification(event.getEntityPlayer(), Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
+            }
         }
     }
 }

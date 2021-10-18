@@ -94,6 +94,8 @@ public class TeleportModule extends ConfigLoaderBase
 
         APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
 
+        APIRegistry.perms.registerPermission(PERM_TP_OTHERS, DefaultPermissionLevel.OP, "Allow teleporting other players to you");
+
         APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, DefaultPermissionLevel.ALL, "Allow returning to the last death location with back-command");
         APIRegistry.perms.registerPermission(PERM_BACK_ONTP, DefaultPermissionLevel.ALL, "Allow returning to the last location before teleport with back-command");
         APIRegistry.perms.registerPermission(PERM_BED_OTHERS, DefaultPermissionLevel.OP, "Allow teleporting to other player's bed location");

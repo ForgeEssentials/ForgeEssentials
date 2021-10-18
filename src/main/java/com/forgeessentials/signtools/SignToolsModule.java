@@ -1,5 +1,14 @@
 package com.forgeessentials.signtools;
 
+import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.output.ChatOutputHandler;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -17,20 +26,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.output.ChatOutputHandler;
-
 @FEModule(name = "SignTools", parentMod = ForgeEssentials.class)
 public class SignToolsModule extends ConfigLoaderBase
 {
-
     public static final String COLORIZE_PERM = "fe.signs.colorize";
     public static final String EDIT_PERM = "fe.signs.edit";
+    public static final String USESIGNCOMMANDS_PERM = "fe.signs.usesigncommands";
     private static final String signinteractKey = "signinteract";
     private static final String signeditKey = "signedit";
 
@@ -49,6 +50,7 @@ public class SignToolsModule extends ConfigLoaderBase
     {
         PermissionAPI.registerNode(COLORIZE_PERM, DefaultPermissionLevel.ALL, "Permission to colourize signs");
         PermissionAPI.registerNode(EDIT_PERM, DefaultPermissionLevel.ALL, "Permission to edit existing signs");
+        PermissionAPI.registerNode(USESIGNCOMMANDS_PERM, DefaultPermissionLevel.ALL, "Permission to use sign commands");
     }
 
     /**
@@ -81,11 +83,6 @@ public class SignToolsModule extends ConfigLoaderBase
             }
         }
     }
-
-    /**
-     * how to use: First line of the sign MUST BE [command] Second line is the command you want to run Third and fourth
-     * lines are arguments to the command.
-     */
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event)
@@ -120,22 +117,34 @@ public class SignToolsModule extends ConfigLoaderBase
 
             }
 
-            String[] signText = getFormatted(sign.signText);
+            String[] signText = getUnFormatted(sign.signText);
 
             if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getEntityPlayer(), new SignInfo(event.getEntityPlayer().dimension, event.getPos(), signText, event)))
             {
                 event.setCanceled(true);
             }
 
+            /**
+             * how to use: First line of the sign MUST BE [command] Second line is the command you want to run Third and fourth
+             * lines are arguments to the command.
+             */
             if (allowSignCommands && (event instanceof RightClickBlock))
             {
-                if (signText[0].equals("[command]"))
+                // if (signText[0].trim() == "[command]")
+                if (signText[0].trim().equalsIgnoreCase("[command]"))
                 {
-                    String send = signText[1] + " " + signText[2] + " " + signText[3];
-                    if (send != null && FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager() != null)
+                    if (PermissionAPI.hasPermission(event.getEntityPlayer(), USESIGNCOMMANDS_PERM))
                     {
-                        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), send);
-                        event.setCanceled(true);
+                        String send = signText[1] + " " + signText[2] + " " + signText[3];
+                        if (send != null && FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager() != null)
+                        {
+                            FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), send);
+                            event.setCanceled(true);
+                        }
+                    }
+                    else
+                    {
+                        ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.translate("You are not allowed to use sign commands!"));
                     }
                 }
             }
@@ -144,11 +153,11 @@ public class SignToolsModule extends ConfigLoaderBase
 
     }
 
-    private String[] getFormatted(ITextComponent[] text)
+    private String[] getUnFormatted(ITextComponent[] text)
     {
         String[] out = new String[text.length];
         for (int i = 0; i < text.length; i++) {
-            out[i] = text[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&');
+            out[i] = text[i].getUnformattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&');
         }
         return out;
     }

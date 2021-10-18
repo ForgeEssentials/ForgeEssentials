@@ -198,9 +198,18 @@ dependencies {
     provided "com.feed_the_beast.mods:FTBUtilities:5.4.0.124"
     provided fileTree("lib")
 
-	// TOOLS.jar from jdk for javadoc support
+    // TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
-    compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
+
+    if (file(System.getenv("JAVA_HOME") + "/lib/tools.jar").exists()) {
+        compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
+    }
+    else if (file("${System.getProperty('java.home')}/../lib/tools.jar").exists()) {
+        compile files("${System.getProperty('java.home')}/../lib/tools.jar")
+    }
+    else {
+        throw new GradleException("lib/tools.jar file not found")
+    }
 }
 
 /************************************************************
