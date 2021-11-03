@@ -1,6 +1,5 @@
 package com.forgeessentials.protection;
 
-import static net.minecraftforge.fml.common.eventhandler.Event.Result.ALLOW;
 import static net.minecraftforge.fml.common.eventhandler.Event.Result.DENY;
 
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.GameType;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.BlockSnapshot;
@@ -64,8 +62,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 
 import com.forgeessentials.api.APIRegistry;
@@ -1030,10 +1026,13 @@ public class ProtectionEventHandler extends ServerEventHandler
                 if (isInventoryItemBanned(ident, stack))
                 {
                     EntityItem droppedItem = player.dropItem(stack, true, false);
-                    droppedItem.motionX = 0;
-                    droppedItem.motionY = 0;
-                    droppedItem.motionZ = 0;
-                    player.inventory.setInventorySlotContents(slotIdx, ItemStack.EMPTY);
+                    if (droppedItem != null)
+                    {
+                        droppedItem.motionX = 0;
+                        droppedItem.motionY = 0;
+                        droppedItem.motionZ = 0;
+                        player.inventory.setInventorySlotContents(slotIdx, ItemStack.EMPTY);
+                    }
                 }
             }
         }
