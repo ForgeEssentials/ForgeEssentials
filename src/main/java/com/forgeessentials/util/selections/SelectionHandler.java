@@ -86,6 +86,8 @@ public class SelectionHandler extends ServerEventHandler
             ChatOutputHandler.sendMessage(player, message, EnumChatFormatting.DARK_PURPLE);
             event.setCanceled(true);
         }
+
+        SelectionHandler.setDimension((EntityPlayerMP) player, player.dimension);
     }
 
     public static void sendUpdate(EntityPlayerMP player)
