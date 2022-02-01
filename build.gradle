@@ -53,10 +53,12 @@ repositories {
     flatDir {
         dirs 'lib'
     }
+
 	maven {
-		name = "sk89q"
-		url = "https://maven.enginehub.org/repo/"
+		name "Sonatype (Cubic Chunks)"
+		url "https://oss.sonatype.org/content/repositories/public/"
 	}
+
 	maven {
 		name = "sponge"
 		url = "https://repo.spongepowered.org/maven/"
@@ -68,11 +70,6 @@ repositories {
 	}
 
     maven {
-        name "Sonatype (Cubic Chunks)"
-        url "https://oss.sonatype.org/content/repositories/public/"
-    }
-
-    maven {
         name = "LatMod"
         url "https://maven.latmod.com/"
     }
@@ -81,6 +78,10 @@ repositories {
         name = "JEI"
         url "http://dvs1.progwml6.com/files/maven"
     }
+	maven {
+		name = "sk89q"
+		url = "https://maven.enginehub.org/repo/"
+	}
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -191,7 +192,7 @@ dependencies {
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
 	provided 'org.spongepowered:spongeapi:6.0.0'
-    provided ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
+    provided ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT:api") {
         exclude group: "org.spongepowered", module: "mixin"
     }
     provided "com.feed_the_beast.mods:FTBLib:5.4.4.5"

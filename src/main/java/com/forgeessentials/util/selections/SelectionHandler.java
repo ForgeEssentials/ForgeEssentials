@@ -1,10 +1,5 @@
 package com.forgeessentials.util.selections;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet1SelectionUpdate;
 import com.forgeessentials.commons.selections.AreaBase;
@@ -18,7 +13,11 @@ import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -71,13 +70,15 @@ public class SelectionHandler extends ServerEventHandler
         WorldPoint point = new WorldPoint(player.dimension, event.getPos());
 
         SelectionHandler.setStart((EntityPlayerMP) event.getEntityPlayer(), point);
+        SelectionHandler.setDimension((EntityPlayerMP) event.getEntityPlayer(), point.getDimension());
+
         String message = Translator.format("Pos1 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
         ChatOutputHandler.sendMessage(player, message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void playerInteractEvent(PlayerInteractEvent event)
+    public void playerInteractEvent(PlayerInteractEvent.RightClickBlock event)
     {
         // Only handle server events
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
@@ -87,8 +88,9 @@ public class SelectionHandler extends ServerEventHandler
         EntityPlayer player = event.getEntityPlayer();
         PlayerInfo info = PlayerInfo.get(player);
 
-        if (!info.isWandEnabled())
+        if (!info.isWandEnabled() || event.getHand() == EnumHand.OFF_HAND) {
             return;
+        }
 
         // Check if wand should activate
         if (player.getHeldItemMainhand() == null)
@@ -107,6 +109,8 @@ public class SelectionHandler extends ServerEventHandler
         WorldPoint point = new WorldPoint(player.dimension, event.getPos());
 
         SelectionHandler.setEnd((EntityPlayerMP) event.getEntityPlayer(), point);
+        SelectionHandler.setDimension((EntityPlayerMP) event.getEntityPlayer(), point.getDimension());
+
         String message = Translator.format("Pos2 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
         ChatOutputHandler.sendMessage(player, message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);
