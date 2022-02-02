@@ -15,10 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
-        with:
-          repository: ForgeEssentials/DiscordGradleBot
-          path: DiscordGradleBot
       - name: Set up JDK 8
         uses: actions/setup-java@v2
         with:
@@ -29,6 +25,11 @@ jobs:
         run: |
          chmod +x gradlew
          ./gradlew build
+         rm -rf DiscordGradleBot
+      - uses: actions/checkout@v2
+        with:
+          repository: ForgeEssentials/DiscordGradleBot
+          path: DiscordGradleBot
       - name: Publish Binaries to Discord
         working-directory: DiscordGradleBot
         env:
