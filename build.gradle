@@ -97,6 +97,8 @@ import discord4j.core.spec.MessageCreateFields
 import org.ajoberstar.grgit.Grgit
 import reactor.core.publisher.Mono
 
+import java.util.zip.ZipEntry
+
 def splitFile(String name, byte[] file, int maxSize=8192) {
 	int parts = Math.ceil((float) file.size() / (1024 * maxSize))
 	ByteArrayInputStream[] sections = new ByteArrayInputStream[parts]
@@ -179,7 +181,6 @@ if (System.getenv("BUILD_NUMBER") != null) {
 
 // Get commit hash
 
-import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
 def repo = Grgit.open(project.file("."))
@@ -274,7 +275,7 @@ dependencies {
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
 	provided 'org.spongepowered:spongeapi:6.0.0'
-    provided ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT:api") {
+    provided ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
         exclude group: "org.spongepowered", module: "mixin"
     }
     provided "com.feed_the_beast.mods:FTBLib:5.4.4.5"
