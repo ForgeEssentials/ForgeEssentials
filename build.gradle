@@ -98,6 +98,7 @@ import org.ajoberstar.grgit.Grgit
 import reactor.core.publisher.Mono
 
 import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 def splitFile(String name, byte[] file, int maxSize=8192) {
 	int parts = Math.ceil((float) file.size() / (1024 * maxSize))
@@ -137,6 +138,8 @@ task publishToDiscord() {
 		def name = "$archivesBaseName-$version"
 		def sections = splitFile(name, baOS.toByteArray())
 
+		def githubRef = System.getenv("GITHUB_REF")
+
 		final def token = System.getenv("DISCORD_TOKEN")
 		final def client = DiscordClient.create(token)
 		final def channelId = Long.parseLong(System.getenv("CHANNEL_ID"));
@@ -148,11 +151,12 @@ task publishToDiscord() {
 				println("Reading file...")
 
 				println("Sending...")
+				def channel = (gateway.getChannelById(Snowflake.of(channelId)).block() as MessageChannel)
 				Mono prev = null;
 				for (int i = 0; i < sections.size(); i++) {
 
-					Mono cur = (gateway.getChannelById(Snowflake.of(channelId)).block() as MessageChannel).createMessage()
-							.withContent("${name}.zip part ${i+1}")
+					Mono cur = channel.createMessage()
+							.withContent("${name}.zip part ${i+1} build for Ref $githubRef")
 							.withFiles(MessageCreateFields.File.of(name + ".zip.${String.format("%03d", i+1)}", sections[i]))
 					if (prev != null) {
 						prev = prev.then().and(cur);
@@ -180,8 +184,6 @@ if (System.getenv("BUILD_NUMBER") != null) {
 }
 
 // Get commit hash
-
-import java.util.zip.ZipOutputStream
 
 def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
