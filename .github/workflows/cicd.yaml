@@ -27,16 +27,16 @@ jobs:
           cache: gradle
       - name: Build with Gradle
         run: |
-         - chmod +x gradlew
-         - ./gradlew build
+         chmod +x gradlew
+         ./gradlew build
       - name: Publish Binaries to Discord
         working-directory: DiscordGradleBot
         env:
           DISCORD_TOKEN: '${{ secrets.DISCORD_TOKEN }}'
           CHANNEL_ID: '${{ secrets.CHANNEL_ID }}'
         run: |
-          - chmod +x gradlew
-          - ./gradlew publishToDiscord
+          chmod +x gradlew
+          ./gradlew publishToDiscord
       - uses: actions/upload-artifact@v2
         with:
           name: binaries-${{ github.sha }}
