@@ -8,8 +8,8 @@ on:
   pull_request: {}
 env:
   BUILD_NUMBER: 'UNOFFICIAL-${{ github.sha }}'
-  DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-  CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
+  DISCORD_TOKEN: '${{ secrets.DISCORD_TOKEN }}'
+  CHANNEL_ID: '${{ secrets.CHANNEL_ID }}'
 jobs:
   build:
 
