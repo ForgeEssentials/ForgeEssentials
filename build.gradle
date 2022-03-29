@@ -169,6 +169,10 @@ sourceSets {
 	client {
 		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output)
 	}
+
+	test {
+		compileClasspath = files(configurations.compile, sourceSets.api.output, sourceSets.utils.output, sourceSets.main.output)
+	}
 }
 
 // Configure server resource processing
@@ -198,19 +202,18 @@ project.processClientResources {
  */
 
  // Javadoc task for generating tsd - does not work yet
-task tsd(type: Javadoc) {
+task tsd(type: JavaExec) {
 	dependsOn "classes"
-	source = fileTree(dir: 'src/main/java/com/forgeessentials/jscripting/fewrapper', include: 'ScriptExtensionRoot.java')
-	classpath = project.sourceSets.main.compileClasspath
-	
-	options.doclet = "com.forgeessentials.jscripting.TsdGenerator"
-	options.docletpath = [ file("build/classes/main") ]
-	options.addStringOption("sourcepath", "src/main/java")
-	options.addStringOption("subpackages", "com.forgeessentials.jscripting.fewrapper")
-	options.addStringOption("out", "jscripting/fe.d.ts")
-	options.addStringOption("header", "src/main/resources/com/forgeessentials/jscripting/fe_header.d.ts")
-	options.addStringOption("interface", "com.forgeessentials.jscripting.fewrapper.fe.JsFEServer")
-	options.addStringOption("static", "com.forgeessentials.jscripting.fewrapper.fe.JsPermissions")
+	classpath = project.sourceSets.test.compileClasspath
+	main = "com.forgeessentials.jscripting.TsdGenerator"
+	doLast {
+		copy {
+			from files("jscripting/") {
+				include "*.d.ts"
+			}
+			into "build/resources/main/com/forgeessentials/jscripting"
+		}
+	}
 }
  
 // Pack libraries as zip file to include them in the jar file
