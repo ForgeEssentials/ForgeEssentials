@@ -451,6 +451,61 @@ declare namespace mc.event.entity.player {
 	
 }
 
+declare namespace mc.event.fml.common {
+	
+	class ItemCraftedEvent extends PlayerEvent {
+		constructor();
+	}
+	
+	class ItemPickupEvent extends PlayerEvent {
+		constructor();
+	}
+	
+	class ItemSmeltedEvent extends PlayerEvent {
+		constructor();
+	}
+	
+	class PlayerChangedDimensionEvent extends PlayerEvent {
+		constructor();
+	}
+	
+	class PlayerEvent extends mc.event.Event {
+		constructor();
+		getPlayer(): mc.entity.EntityPlayer;
+	}
+	
+	class PlayerLoggedInEvent extends PlayerEvent {
+		constructor();
+	}
+	
+	class PlayerLoggedOutEvent extends PlayerEvent {
+		constructor();
+	}
+	
+	class PlayerRespawnEvent extends PlayerEvent {
+		constructor();
+	}
+	
+	class PlayerTickEvent extends TickEvent {
+		constructor();
+	}
+	
+	class ServerTickEvent extends TickEvent {
+		constructor();
+	}
+	
+	class TickEvent extends mc.event.Event {
+		constructor();
+		getType(): string;
+		getTickPhase(): string;
+	}
+	
+	class WorldTickEvent extends TickEvent {
+		constructor();
+	}
+	
+}
+
 declare namespace mc.item {
 	
 	class Enchantment extends Wrapper {
