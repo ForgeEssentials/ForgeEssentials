@@ -1,6 +1,7 @@
 // Build repositories
 buildscript {
 	repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
 		maven {
 			name = "forge"
 			url = "https://files.minecraftforge.net/maven"
@@ -23,7 +24,7 @@ buildscript {
 
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:4.+"
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
@@ -80,6 +81,7 @@ repositories {
     maven {
         name = "JEI"
         url "http://dvs1.progwml6.com/files/maven"
+        allowInsecureProtocol = true
     }
 
     maven {
@@ -113,6 +115,8 @@ group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+//java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 // Set up forge options
 minecraft {
@@ -189,12 +193,12 @@ dependencies {
 
     minecraft "net.minecraftforge:forge:$project.minecraftVersion-$project.forgeVersion"
 	// IRC
-	serverLib("org.pircbotx:pircbotx:2.0.1") {
-        // these are all packaged with the minecraft server jar
-        exclude module: 'guava'
-        exclude module: 'commons-lang3'
-        exclude module: 'commons-codec'
-    }
+	//serverLib("org.pircbotx:pircbotx:2.0.1") {
+    //    // these are all packaged with the minecraft server jar
+    //    exclude module: 'guava'
+    //    exclude module: 'commons-lang3'
+    //    exclude module: 'commons-codec'
+    //}
 
     // Shade Mixin library
     shade (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
@@ -443,61 +447,4 @@ reobf {
 artifacts {
 	//archives deobfJar
 	archives clientJar
-}
-
-/************************************************************
- * Configure maven publishing
- */
-
-apply plugin: "maven-publish"
-
-publishing {
-	//tasks.publish.dependsOn "deobfJar"
-
-	publications {
-		mavenJava (MavenPublication) {
-			groupId "com.forgeessentials"
-			artifactId "forgeessentials"
-			version baseVersion + "-SNAPSHOT"
-			if (System.getenv("PUBLISH_RELEASE"))
-				version baseVersion
-
-			artifact deobfJar
-			//artifact sourceJar
-			artifact javadocJar
-
-			pom.withXml {
-				def dependenciesNode = asNode().appendNode("dependencies")
-				def allDeps = configurations.mavenDeps.allDependencies +
-					configurations.serverLib.allDependencies + 
-					configurations.shade.allDependencies
-				allDeps.each {
-					def dependencyNode = dependenciesNode.appendNode("dependency")
-					dependencyNode.appendNode("groupId", it.group)
-					dependencyNode.appendNode("artifactId", it.name)
-					dependencyNode.appendNode("version", it.version)
-					//if (it.group == "com.sk89q.worldedit") // Hack to get classifier for worldedit attached (bug https://issues.gradle.org/browse/GRADLE-3030)
-						//dependencyNode.appendNode("classifier", "dev")
-				}
-			}
-		}
-	}
-
-	repositories {
-		if (project.hasProperty("forgemaven_user") && project.hasProperty("forgemaven_password")) {
-			maven {
-				credentials {
-					username project.forgemaven_user
-					password project.forgemaven_password
-				}
-				url "https://files.minecraftforge.net/maven/manage/upload"
-			}
-		} else {
-			maven { url "file://${project.projectDir}/build/repo" }
-		}
-	}
-}
-
-task publishAndClean(type: Delete, dependsOn: "publish") {
-    delete javadocJar
 }

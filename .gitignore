@@ -39,3 +39,5 @@ modlist.txt
 /src/*/generated/
 /jscripting/tsconfig.json
 /src/utils/java/com/forgeessentials/commons/BuildInfo.java
+*.launch
+old gradle/build.gradle

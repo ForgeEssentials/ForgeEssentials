@@ -1,17 +1,17 @@
 package com.forgeessentials.client.gui.forge;
-
+/*
 import java.util.Set;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.fml.client.IModGuiFactory;
-
-public class FEGUIFactory implements IModGuiFactory
-{
+*/
+public class FEGUIFactory //implements IModGuiFactory
+{/*
     @Override
     public void initialize(Minecraft minecraftInstance)
     {
-        /* do nothing */
+       
     }
 
     @Override
@@ -20,7 +20,7 @@ public class FEGUIFactory implements IModGuiFactory
     }
 
     @Override
-    public GuiScreen createConfigGui(GuiScreen guiScreen) {
+    public GuiScreen createConfigGui(Screen guiScreen) {
         return new FEConfigGUI(guiScreen);
     }
 
@@ -28,5 +28,5 @@ public class FEGUIFactory implements IModGuiFactory
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
     {
         return null;
-    }
+    }*/
 }
