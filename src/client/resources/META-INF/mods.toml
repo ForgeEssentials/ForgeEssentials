@@ -8,14 +8,11 @@ license="All rights reserved"
 
 [[mods]]
     modId="forgeessentialsclient"
-    # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-    # ${file.jarVersion} will substitute the value of the Implementation-Version as read from the mod's JAR file metadata
-    # see the associated build.gradle script for how to populate this completely automatically during a build
-    version="${file.jarVersion}"
-    displayName="Forge Essentials Client Addon"
+    version="${version}"
+    displayName="${mod_name}"
     # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
     #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
-    displayURL="https://github.com/ForgeEssentials/ForgeEssentialsMain"
+    displayURL="${mod_download}"
     logoFile="logo.png"
     credits="Thanks to everyone who has helped us so far."
     authors="AbrarSyed, luacs1998", olee, dries007, Malkierian, And a few others"

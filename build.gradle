@@ -41,8 +41,8 @@ apply plugin: 'jacoco'
 sonarqube {
     properties {
         properties['sonar.projectKey'] = "com.forgeessentials:forgeessentials"
-        properties['sonar.projectName'] = project.name
-        properties['sonar.projectVersion'] = project.version
+        properties['sonar.projectName'] = project.mod_name
+        properties['sonar.projectVersion'] = project.mod_version
     }
 }
 
@@ -110,7 +110,7 @@ def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
-version = "$baseVersion.$buildNumber"
+version = "$mod_version.$buildNumber"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.8
@@ -280,10 +280,11 @@ project.compileUtilsJava {
 // Configure server resource processing
 project.processResources {
 	from (sourceSets.main.resources.srcDirs) {
-		include "mcmod.info"
+		include 'META-INF/mods.toml'
 		expand (
-			"version": project.version, 
-			"mcversion": project.minecraftVersion,
+			'version': project.version,
+			'mod_name': mod_name, 
+			'mod_download': mod_download,
 		)
 	}
 }
@@ -291,10 +292,11 @@ project.processResources {
 // Configure client resource processing
 project.processClientResources {
 	from (sourceSets.client.resources.srcDirs) {
-		include "mcmod.info"
+		include 'META-INF/mods.toml'
 		expand (
-			"version": project.version, 
-			"mcversion": project.minecraftVersion,
+			'version': project.version,
+			'mod_name': mod_name, 
+			'mod_download': mod_download,
 		)
 	}
 }
@@ -433,11 +435,11 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 	manifest { from sharedManifest }
 }
 
-reobf {
-    clientJar {
-        classpath = sourceSets.main.compileClasspath
-    }
-}
+//reobf {
+//    clientJar {
+//        classpath = sourceSets.main.compileClasspath
+//    }
+//}
 
 /************************************************************
  * Others
