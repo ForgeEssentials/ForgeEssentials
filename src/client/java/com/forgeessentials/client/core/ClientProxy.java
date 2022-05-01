@@ -5,6 +5,8 @@ import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -15,6 +17,7 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
@@ -72,7 +75,7 @@ public class ClientProxy extends CommonProxy
     }
 
     @Override
-    public void doPreInit(FMLPreInitializationEvent event)
+    public void doPreInit(FMLCommonSetupEvent event)
     {
         BuildInfo.getBuildInfo(event.getSourceFile());
         feclientlog.info(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
@@ -84,17 +87,15 @@ public class ClientProxy extends CommonProxy
         registerNetworkMessages();
     }
 
-    @Override
-    public void load(FMLInitializationEvent event)
-    {
-        super.load(event);
-        ClientCommandHandler.instance.registerCommand(new FEClientCommand());
-    }
+    @SubscribeEvent
+	public void onCommandRegister(final RegisterCommandsEvent event) {
+		CommandInit.registerCommands(event);
+	}
 
     private void registerNetworkMessages()
     {
         // Register network messages
-        NetworkUtils.registerMessageProxy(Packet0Handshake.class, 0, Side.SERVER, new NullMessageHandler<Packet0Handshake>() {
+        NetworkUtils.registerMessageProxy(Packet0Handshake.class, 0, SERVER, new NullMessageHandler<Packet0Handshake>() {
             /* dummy */
         });
         NetworkUtils.registerMessage(cuiRenderer, Packet1SelectionUpdate.class, 1, Side.CLIENT);

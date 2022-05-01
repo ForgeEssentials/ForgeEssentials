@@ -1,19 +1,16 @@
 package com.forgeessentials.client.core;
 
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import com.forgeessentials.client.proxy.IProxy;
 
-public class CommonProxy
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+
+public class CommonProxy implements IProxy
 {
 
-    public void doPreInit(FMLPreInitializationEvent e)
+    public void doPreInit(FMLCommonSetupEvent e)
     {
         /* do nothing */
     }
 
-    public void load(FMLInitializationEvent e)
-    {
-        /* do nothing */
-    }
 
 }
