@@ -1,61 +1,66 @@
 package com.forgeessentials.client.core;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.client.Minecraft;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.Util;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import com.forgeessentials.commons.BuildInfo;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 /**
  * Note: This command only exists within FEClient so no FE server utilities can be used!
  */
-public class FEClientCommand extends CommandBase
-{
-
+public class FEClientCommand extends BaseCommand {
+	
+	public FEClientCommand(String name, int permissionLevel, boolean enabled) {
+		super(name, permissionLevel, enabled);
+	}
+    
     @Override
-    public String getName()
-    {
-        return "feclient";
-    }
+	public LiteralArgumentBuilder<CommandSource> setExecution() {
+		return builder
+				.then(Commands.literal("")
+						.executes(source -> execute(source.getSource(), 0)))
+				.then(Commands.literal("reinit")
+						.executes(source -> execute(source.getSource(), 1)))
+				.then(Commands.literal("info")
+						.executes(source -> execute(source.getSource(), 2)));
+		
+	}
 
-    @Override
-    public String getUsage(ICommandSender p_71518_1_)
+    @SuppressWarnings("resource")
+	public int execute(CommandSource source, int num)
     {
-        return "/feclient [info|reinit]: ForgeEssentials client helper";
-    }
-
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args)
-    {
-        if (args.length == 0)
+        if (num == 0)
         {
-            sender.sendMessage(new TextComponentString("/feclient info: Get FE client info"));
-            sender.sendMessage(new TextComponentString("/feclient reinit: Redo server handshake"));
+        	ITextComponent msg = new StringTextComponent("/feclient info: Get FE client info");
+        	Minecraft.getInstance().player.sendMessage(msg, Util.NIL_UUID);
+            ITextComponent msg2 = new StringTextComponent("/feclient reinit: Redo server handshake");
+        	Minecraft.getInstance().player.sendMessage(msg2, Util.NIL_UUID);
+        	Minecraft.getInstance().close();
         }
-        else if (args[0].equalsIgnoreCase("reinit"))
+        if (num == 1)
         {
             ClientProxy.resendHandshake();
-            sender.sendMessage(new TextComponentString("Resent handshake packet to server."));
+            ITextComponent msg = new StringTextComponent("Resent handshake packet to server.");
+        	Minecraft.getInstance().player.sendMessage(msg, Util.NIL_UUID);
         }
-        else if (args[0].equalsIgnoreCase("info"))
+        if (num == 2)
         {
-            sender.sendMessage(new TextComponentString(String.format("Running ForgeEssentials client %s (%s)", //
-                    BuildInfo.getFullVersion(), BuildInfo.getBuildHash())));
-            sender.sendMessage(new TextComponentString(
-                    "Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers."));
+            ITextComponent msg = new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", //
+                    BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
+        	Minecraft.getInstance().player.sendMessage(msg, Util.NIL_UUID);
+        	
+            ITextComponent msg2 = new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
+        	Minecraft.getInstance().player.sendMessage(msg2, Util.NIL_UUID);
         }
-        else
-        {
-            sender.sendMessage(new TextComponentTranslation("Unknown argument %s", args[0]));
-        }
-    }
-
-    @Override
-    public int getRequiredPermissionLevel()
-    {
-        return 0;
+        return Command.SINGLE_SUCCESS;
     }
 
 }

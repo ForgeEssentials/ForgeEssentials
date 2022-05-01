@@ -5,9 +5,10 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -25,7 +26,6 @@ import com.forgeessentials.commons.selections.Selection;
 @SideOnly(value = Side.CLIENT)
 public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMessage>
 {
-
     private static final float ALPHA = .25f;
 
     private static Selection selection;
@@ -126,10 +126,10 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
      */
     private static void renderBox()
     {
-        BufferBuilder wr = Tessellator.getInstance().getBuffer();
+        BufferBuilder wr = Tessellator.getInstance().getBuilder();
 
         wr.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
-
+wr.
         // FRONT
         wr.pos(-0.5, -0.5, -0.5).endVertex();
         wr.pos(-0.5, 0.5, -0.5).endVertex();
@@ -180,7 +180,7 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
     }
 
     @SubscribeEvent
-    public void connectionOpened(ClientConnectedToServerEvent e)
+    public void connectionOpened(ClientPlayerNetworkEvent.LoggedInEvent e)
     {
         selection = null;
     }

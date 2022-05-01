@@ -3,9 +3,11 @@ package com.forgeessentials.client.core;
 import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
 
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -27,6 +29,7 @@ import com.forgeessentials.client.handler.PermissionOverlay;
 import com.forgeessentials.client.handler.QRRenderer;
 import com.forgeessentials.client.handler.QuestionerKeyHandler;
 import com.forgeessentials.client.handler.ReachDistanceHandler;
+import com.forgeessentials.client.init.CommandInit;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
@@ -160,14 +163,14 @@ public class ClientProxy extends CommonProxy
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
-    public void connectionOpened(FMLNetworkEvent.ClientConnectedToServerEvent e)
+    public void connectionOpened(ClientPlayerNetworkEvent.LoggedInEvent e)
     {
         clientTimeTicked = 0;
         sentHandshake = false;
     }
 
     @SubscribeEvent
-    public void clientTickEvent(TickEvent.ClientTickEvent event)
+    public void clientTickEvent(ClientTickEvent.ClientTickEvent event)
     {
         clientTimeTicked++;
         if (!sentHandshake && clientTimeTicked > 20)

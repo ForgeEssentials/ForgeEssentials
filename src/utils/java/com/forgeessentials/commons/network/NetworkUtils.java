@@ -3,7 +3,7 @@ package com.forgeessentials.commons.network;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class NetworkUtils
 {
 
-    public static SimpleNetworkWrapper netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
+    public static SimpleChannel netHandler = NetworkRegistry.INSTANCE.newSimpleChannel("forgeessentials");
 
     private static Set<Integer> registeredMessages = new HashSet<>();
 
