@@ -15,7 +15,9 @@ import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 
-import net.minecraftforge.fml.common.eventhandler.EventBus;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+
 
 /**
  * This is the central access point for all FE API functions
@@ -69,9 +71,9 @@ public class APIRegistry
     /**
      * The FE internal event-bus
      */
-    public static final EventBus FE_EVENTBUS = new EventBus();
+    public static final IEventBus FE_EVENTBUS = new IEventBus();
 
-    public static EventBus getFEEventBus()
+    public static IEventBus getFEEventBus()
     {
         return FE_EVENTBUS;
     }

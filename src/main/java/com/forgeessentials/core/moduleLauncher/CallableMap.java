@@ -12,7 +12,7 @@ import com.google.common.collect.HashMultimap;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -169,7 +169,7 @@ public class CallableMap
             Class<?> c = m.getDeclaringClass();
             if (c.isAnnotationPresent(Mod.class))
             {
-                ident = c.getAnnotation(Mod.class).modid();
+                ident = c.getAnnotation(Mod.class).value();
             }
             else if (c.isAnnotationPresent(FEModule.class))
             {

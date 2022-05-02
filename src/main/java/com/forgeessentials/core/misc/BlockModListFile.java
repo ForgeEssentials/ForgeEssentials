@@ -14,7 +14,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class BlockModListFile

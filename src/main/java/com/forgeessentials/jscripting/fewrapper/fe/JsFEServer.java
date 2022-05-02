@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IInteractionObject;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -135,7 +136,7 @@ public class JsFEServer
     }
 
     @SubscribeEvent
-    public void _onTick(ServerTickEvent e)
+    public void _onTick(TickEvent.ServerTickEvent e)
     {
         if (e.phase == Phase.START)
         {

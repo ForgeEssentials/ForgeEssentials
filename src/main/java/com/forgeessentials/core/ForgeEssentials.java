@@ -7,16 +7,24 @@ import java.util.regex.Pattern;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -344,7 +352,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     public static final class CommandPermissionRegistrationHandler
     {
         @SubscribeEvent
-        public void serverTickEvent(ServerTickEvent event)
+        public void serverTickEvent(TickEvent.ServerTickEvent event)
         {
             PermissionManager.registerCommandPermissions();
             MinecraftForge.EVENT_BUS.unregister(this);
@@ -399,13 +407,13 @@ public class ForgeEssentials extends ConfigLoaderBase
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void playerLoggedInEvent(PlayerLoggedInEvent event)
+    public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
     {
-        if (event.player instanceof EntityPlayerMP)
+        if (event.getEntity() instanceof PlayerEntity)
         {
-            EntityPlayerMP player = (EntityPlayerMP) event.player;
+        	PlayerEntity player = (PlayerEntity) event.getPlayer();
             UserIdent.login(player);
-            PlayerInfo.login(player.getPersistentID());
+            PlayerInfo.login(player.getUUID());
 
             if (FEConfig.checkSpacesInNames)
             {
@@ -413,8 +421,14 @@ public class ForgeEssentials extends ConfigLoaderBase
                 Matcher matcher = pattern.matcher(player.getGameProfile().getName());
                 if (matcher.find())
                 {
-                    String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.player.getName());
-                    ((EntityPlayerMP) event.player).connection.disconnect(new TextComponentTranslation(msg));
+                    String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.getPlayer().getName());
+                    Entity entity = event.getEntity();
+                    if (entity instanceof ServerPlayerEntity == false) {
+            			return;
+            		}
+            		
+            		ServerPlayerEntity serverplayer = (ServerPlayerEntity)entity;
+            		serverplayer.connection.disconnect(new StringTextComponent(msg));
                 }
             }
 
@@ -427,21 +441,21 @@ public class ForgeEssentials extends ConfigLoaderBase
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerLoggedOutEvent(PlayerLoggedOutEvent event)
+    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent  event)
     {
-        if (event.player instanceof EntityPlayerMP)
+        if (event.getEntity() instanceof PlayerEntity)
         {
-            PlayerInfo.logout(event.player.getPersistentID());
-            UserIdent.logout((EntityPlayerMP) event.player);
+            PlayerInfo.logout(event.getEntity().getUUID());
+            UserIdent.logout((PlayerEntity) event.getPlayer());
         }
     }
 
     @SubscribeEvent
-    public void playerRespawnEvent(PlayerRespawnEvent event)
+    public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent event)
     {
-        if (event.player instanceof EntityPlayerMP)
+        if (event.getEntity() instanceof PlayerEntity)
         {
-            UserIdent.get((EntityPlayerMP) event.player);
+            UserIdent.get((PlayerEntity) event.getPlayer());
         }
     }
 

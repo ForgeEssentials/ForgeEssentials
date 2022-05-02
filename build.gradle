@@ -387,7 +387,7 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
  * Deobfuscated server jar
  * Dependency name for maven = com.forgeessentials:forgeessentials:<version>:
  * */
-
+/*
 task deobfJar(dependsOn: "classes", type: Jar) {
 	classifier = "dev"
 	appendix = project.minecraftVersion
@@ -402,7 +402,7 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 	manifest {
 		from serverManifest
 	}
-}
+}*/
 //
 //task sourceJar(type: Jar) {
 //	classifier = "sources"
@@ -434,12 +434,12 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 	
 	manifest { from sharedManifest }
 }
-
-//reobf {
-//    clientJar {
-//        classpath = sourceSets.main.compileClasspath
-//    }
-//}
+/*
+reobf {
+    clientJar {
+        classpath = sourceSets.main.compileClasspath
+    }
+}*/
 
 /************************************************************
  * Others

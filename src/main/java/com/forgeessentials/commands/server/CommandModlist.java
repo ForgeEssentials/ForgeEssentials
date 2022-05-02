@@ -4,8 +4,12 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+
+import java.util.List;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -47,7 +51,7 @@ public class CommandModlist extends ForgeEssentialsCommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        int size = Loader.instance().getModList().size();
+        int size = ModList.get().size();
         int perPage = 7;
         int pages = (int) Math.ceil(size / (float) perPage);
 
@@ -55,14 +59,15 @@ public class CommandModlist extends ForgeEssentialsCommandBase
         int min = Math.min(page * perPage, size);
 
         ChatOutputHandler.chatNotification(sender, String.format("--- Showing modlist page %1$d of %2$d ---", page + 1, pages));
+        List<ModInfo> mods = ModList.get().getMods();
         for (int i = page * perPage; i < min + perPage; i++)
         {
             if (i >= size)
             {
                 break;
             }
-            ModContainer mod = Loader.instance().getModList().get(i);
-            ChatOutputHandler.chatNotification(sender, mod.getName() + " - " + mod.getVersion());
+            ModInfo mod = mods.get(i);
+            ChatOutputHandler.chatNotification(sender, mod.getDisplayName() + " - " + mod.getVersion());
         }
     }
 

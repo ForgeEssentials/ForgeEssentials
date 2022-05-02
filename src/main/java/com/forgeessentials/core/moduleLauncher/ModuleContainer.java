@@ -19,7 +19,7 @@ import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Throwables;
 
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
 
 @SuppressWarnings("rawtypes")
@@ -311,7 +311,7 @@ public class ModuleContainer implements Comparable
         if (obj == null || contain == null)
             throw new RuntimeException(modClass + " isn't an loaded mod class!");
 
-        modid = contain.getModId() + "-" + contain.getVersion();
+        modid = contain.getModId() + "-" + contain.getModInfo().getVersion();
         if (modClasses.add(modClass))
             LoggingHandler.felog.info("Modules from " + modid + " are being loaded");
         return obj;
