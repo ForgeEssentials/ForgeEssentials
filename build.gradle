@@ -295,7 +295,7 @@ project.processClientResources {
 		include 'META-INF/mods.toml'
 		expand (
 			'version': project.version,
-			'mod_name': mod_name, 
+			'mod_name_client': mod_name, 
 			'mod_download': mod_download,
 		)
 	}
