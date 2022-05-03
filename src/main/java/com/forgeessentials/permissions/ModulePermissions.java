@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -71,7 +72,7 @@ public class ModulePermissions extends ConfigLoaderBase
         APIRegistry.perms = permissionHelper;
         PermissionAPI.setPermissionHandler(permissionHelper);
 
-        if (Loader.isModLoaded("ftblib"))
+        if (ModList.get().isLoaded("ftblib"))
         {
             try
             {

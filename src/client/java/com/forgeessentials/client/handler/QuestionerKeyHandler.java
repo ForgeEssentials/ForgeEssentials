@@ -1,15 +1,13 @@
 package com.forgeessentials.client.handler;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
-import org.lwjgl.input.Keyboard;
 
 import net.minecraftforge.client.event.InputEvent.ClickInputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 /**
  * Just a utility class. Pressing the buttons while there is no question asked will only give you an error message.
@@ -26,20 +24,21 @@ public class QuestionerKeyHandler
         ClientRegistry.registerKeyBinding(no);
         MinecraftForge.EVENT_BUS.register(this);
     }
-    @SubscribeEvent
+    @SuppressWarnings("resource")
+	@SubscribeEvent
     public void onKeyPress(ClickInputEvent e)
     {
-        if (!FMLClientHandler.instance().getClient().inGameHasFocus)
+        if (!Minecraft.getInstance().isWindowActive())
         {
             return;
         }
         if (yes.isDown())
         {
-            FMLClientHandler.instance().getClientPlayerEntity().sendChatMessage("/yes");
+        	Minecraft.getInstance().player.chat("/yes");
         }
         else if (no.isDown())
         {
-            FMLClientHandler.instance().getClientPlayerEntity().sendChatMessage("/no");
+        	Minecraft.getInstance().player.chat("/no");
         }
     }
 }

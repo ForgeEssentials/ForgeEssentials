@@ -3,14 +3,13 @@ package com.forgeessentials.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -24,7 +23,7 @@ public abstract class PlayerUtil
      * @param newItems
      * @return
      */
-    public static List<ItemStack> swapInventory(EntityPlayerMP player, List<ItemStack> newItems)
+    public static List<ItemStack> swapInventory(PlayerEntity player, List<ItemStack> newItems)
     {
         List<ItemStack> oldItems = new ArrayList<>();
         for (int slotIdx = 0; slotIdx < player.inventory.getSizeInventory(); slotIdx++)
@@ -44,11 +43,11 @@ public abstract class PlayerUtil
      * @param player
      * @param item
      */
-    public static void give(EntityPlayer player, ItemStack item)
+    public static void give(PlayerEntity player, ItemStack item)
     {
-        EntityItem entityitem = player.dropItem(item, false);
-        entityitem.setNoPickupDelay();
-        entityitem.setOwner(player.getName());
+        ItemEntity entityitem = player.drop(item, false);
+        entityitem.setNoPickUpDelay();
+        entityitem.setOwner(player.getUUID());
     }
 
     /**
@@ -58,7 +57,7 @@ public abstract class PlayerUtil
      * @param effectString
      *            Comma separated list of id:duration:amplifier or id:duration tuples
      */
-    public static void applyPotionEffects(EntityPlayer player, String effectString)
+    public static void applyPotionEffects(PlayerEntity player, String effectString)
     {
         String[] effects = effectString.replaceAll("\\s", "").split(","); // example = 9:5:0
         for (String poisonEffect : effects)
@@ -102,11 +101,11 @@ public abstract class PlayerUtil
      * @param player
      * @return
      */
-    public static NBTTagCompound getPersistedTag(EntityPlayer player, boolean createIfMissing)
+    public static NBTTagCompound getPersistedTag(PlayerEntity player, boolean createIfMissing)
     {
-        NBTTagCompound tag = player.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+        NBTTagCompound tag = player.getEntityData().getCompoundTag(PlayerEntity.PERSISTED_NBT_TAG);
         if (createIfMissing)
-            player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
+            player.getEntityData().setTag(PlayerEntity.PERSISTED_NBT_TAG, tag);
         return tag;
     }
 
@@ -118,10 +117,10 @@ public abstract class PlayerUtil
      * @param player
      * @return The position as a MovingObjectPosition Null if not existent.
      */
-    public static RayTraceResult getPlayerLookingSpot(EntityPlayer player)
+    public static RayTraceResult getPlayerLookingSpot(PlayerEntity player)
     {
-        if (player instanceof EntityPlayerMP)
-            return getPlayerLookingSpot(player, ((EntityPlayerMP) player).interactionManager.getBlockReachDistance());
+        if (player instanceof PlayerEntity)
+            return getPlayerLookingSpot(player, 5);//setting to 5 since i can't find reach distance for EntityPlayer
         else
             return getPlayerLookingSpot(player, 5);
     }
@@ -134,12 +133,12 @@ public abstract class PlayerUtil
      *            Keep max distance to 5.
      * @return The position as a MovingObjectPosition Null if not existent.
      */
-    public static RayTraceResult getPlayerLookingSpot(EntityPlayer player, double maxDistance)
+    public static RayTraceResult getPlayerLookingSpot(PlayerEntity player, double maxDistance)
     {
-        Vec3d lookAt = player.getLook(1);
-        Vec3d playerPos = new Vec3d(player.posX, player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()), player.posZ);
-        Vec3d pos1 = playerPos.addVector(0, player.getEyeHeight(), 0);
-        Vec3d pos2 = pos1.addVector(lookAt.x * maxDistance, lookAt.y * maxDistance, lookAt.z * maxDistance);
+        Vector3d lookAt = player.getViewVector(1);
+        Vector3d playerPos = new Vector3d(player.position().x, player.position().y /*+ (player.getEyeHeight() - player.getEyeHeight())*/, player.position().z);
+        Vector3d pos1 = playerPos.add(0, player.getEyeHeight(), 0);
+        Vector3d pos2 = pos1.add(lookAt.x * maxDistance, lookAt.y * maxDistance, lookAt.z * maxDistance);
         return player.world.rayTraceBlocks(pos1, pos2);
     }
 

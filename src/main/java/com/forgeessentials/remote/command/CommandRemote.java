@@ -6,6 +6,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -182,9 +183,9 @@ public class CommandRemote extends ParserCommandBase
             passkey = passkey.replaceAll(".", "*");
         String connectString = ModuleRemote.getInstance().getConnectString(ident);
         String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-        TextComponentTranslation msg = new TextComponentTranslation("Remote passkey = " + passkey + " ");
+        ITextComponent msg = new StringTextComponent("Remote passkey = " + passkey + " ");
 
-        ITextComponent qrLink = new TextComponentString("[QR code]");
+        ITextComponent qrLink = new StringTextComponent("[QR code]");
         if (ident.hasUuid() && PlayerInfo.get(ident.getUuid()).getHasFEClient())
             qrLink.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr"));
         else

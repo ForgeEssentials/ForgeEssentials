@@ -1,6 +1,7 @@
 package com.forgeessentials.client;
 
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 import com.forgeessentials.client.core.ClientProxy;
 
 @Mod(ForgeEssentialsClient.MODID)
-@Mod.EventBusSubscriber(modid = ForgeEssentialsClient.MODID, bus = Bus.MOD)
+@Mod.EventBusSubscriber(modid = ForgeEssentialsClient.MODID, bus = Bus.MOD,value = Dist.CLIENT)
 public class ForgeEssentialsClient
 {
     
