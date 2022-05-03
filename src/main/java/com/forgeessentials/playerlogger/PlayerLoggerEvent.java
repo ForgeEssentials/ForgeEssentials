@@ -6,7 +6,7 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 
 import com.forgeessentials.api.UserIdent;
@@ -43,9 +43,9 @@ public abstract class PlayerLoggerEvent<T>
         return ModulePlayerLogger.getLogger().getPlayer(ident.getUuid(), ident.getUsername());
     }
 
-    public PlayerData getPlayer(EntityPlayer player)
+    public PlayerData getPlayer(PlayerEntity player)
     {
-        return ModulePlayerLogger.getLogger().getPlayer(player.getPersistentID(), player.getDisplayNameString());
+        return ModulePlayerLogger.getLogger().getPlayer(player.getUUID(), player.getName().toString());
     }
 
     public Blob getTileEntityBlob(TileEntity tileEntity)

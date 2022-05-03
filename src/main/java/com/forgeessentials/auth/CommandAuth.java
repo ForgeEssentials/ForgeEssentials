@@ -8,6 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -228,7 +229,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             }
 
             // check if the player is logged.
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
+            PlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
             if (player == null)
             {
                 ChatOutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -239,7 +240,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             {
                 if (!hasAdmin)
                     throw new PermissionDeniedException();
-                PasswordManager.setPassword(player.getPersistentID(), args[2]);
+                PasswordManager.setPassword(player.getUUID(), args[2]);
                 ChatOutputHandler.chatConfirmation(sender, Translator.format("Password set for %s", player.getName()));
             }
         }
@@ -272,7 +273,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
         boolean isLogged = true;
 
         // check if the player is logged.
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
+        PlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
         if (player == null)
         {
             ChatOutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");
@@ -291,7 +292,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 }
                 else
                 {
-                    ModuleAuth.deauthenticate(player.getPersistentID());
+                    ModuleAuth.deauthenticate(player.getUUID());
                     ChatOutputHandler.chatConfirmation(sender,
                             Translator.format("Player %s was logged out from the authentication service.", player.getName()));
                     ChatOutputHandler.chatWarning(player, "You have been logged out from the authentication service. Please login again.");
@@ -305,9 +306,9 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             }
             else if (args[0].equalsIgnoreCase("unregister"))
             {
-                if (!ModuleAuth.isRegistered(player.getPersistentID()))
+                if (!ModuleAuth.isRegistered(player.getUUID()))
                     throw new TranslatedCommandException("message.auth.error.notregisterred", args[1]);
-                PasswordManager.setPassword(player.getPersistentID(), null);
+                PasswordManager.setPassword(player.getUUID(), null);
                 return;
             }
 
@@ -323,7 +324,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             // pasre setPass
             if (args[0].equalsIgnoreCase("setPass"))
             {
-                PasswordManager.setPassword(player.getPersistentID(), args[2]);
+                PasswordManager.setPassword(player.getUUID(), args[2]);
                 ChatOutputHandler.chatConfirmation(sender, Translator.format("Password set for %s", player.getName()));
             }
         }
@@ -342,7 +343,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
         switch (args.length)
         {
         case 1:
-            if (sender instanceof EntityPlayer)
+            if (sender instanceof PlayerEntity)
             {
                 list.addAll(getListOfStringsMatchingLastWord(args, playerCommands));
             }
@@ -370,7 +371,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     public String getUsage(ICommandSender sender)
     {
         String s = "/auth help";
-        if (sender instanceof EntityPlayer)
+        if (sender instanceof layerEntity)
         {
             s = s + " Manages your authentication profile.";
         }

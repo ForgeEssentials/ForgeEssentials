@@ -1,12 +1,16 @@
-package com.forgeessentials.commons.selections;
+ package com.forgeessentials.commons.selections;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -28,7 +32,7 @@ public class WarpPoint
     protected double zd;
 
     @Expose(serialize = false)
-    protected WorldServer world;
+    protected ServerWorld world;
 
     // ------------------------------------------------------------
 
@@ -42,10 +46,10 @@ public class WarpPoint
         this.yaw = playerYaw;
     }
 
-    public WarpPoint(WorldServer world, double x, double y, double z, float playerPitch, float playerYaw)
+    public WarpPoint(ServerWorld world, double x, double y, double z, float playerPitch, float playerYaw)
     {
         this.world = world;
-        this.dim = world.provider.getDimension();
+        this.dim = world.getLevel();
         this.xd = x;
         this.yd = y;
         this.zd = z;
@@ -75,7 +79,7 @@ public class WarpPoint
 
     public WarpPoint(Entity entity)
     {
-        this(entity.world instanceof WorldServer ? (WorldServer) entity.world : null, entity.posX, entity.posY, entity.posZ, entity.rotationPitch,
+        this(entity.level instanceof ServerWorld ? (ServerWorld) entity.level : null, entity.position().x, entity.position().y, entity.position().z, entity.rotationPitch,
                 entity.rotationYaw);
     }
 
@@ -151,10 +155,10 @@ public class WarpPoint
         this.dim = dim;
     }
 
-    public WorldServer getWorld()
+    public ServerWorld getWorld()
     {
         if (world == null || world.provider.getDimension() != dim)
-            world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
+            world = world.getLevel();
         return world;
     }
 
@@ -206,7 +210,7 @@ public class WarpPoint
      */
     public double distance(Entity e)
     {
-        return Math.sqrt((xd - e.posX) * (xd - e.posX) + (yd - e.posY) * (yd - e.posY) + (zd - e.posZ) * (zd - e.posZ));
+        return Math.sqrt((xd - e.position().x) * (xd - e.position().x) + (yd - e.position().y) * (yd - e.position().y) + (zd - e.position().z) * (zd - e.position().z));
     }
 
     public void validatePositiveY()
@@ -215,9 +219,9 @@ public class WarpPoint
             yd = 0;
     }
 
-    public Vec3d toVec3()
+    public Vector3d toVec3()
     {
-        return new Vec3d(xd, yd, zd);
+        return new Vector3d(xd, yd, zd);
     }
 
     public WorldPoint toWorldPoint()

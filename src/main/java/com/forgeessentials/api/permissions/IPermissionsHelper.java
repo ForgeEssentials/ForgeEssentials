@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.IPermissionHandler;
 
@@ -49,7 +49,7 @@ public interface IPermissionsHelper extends IPermissionHandler
      * @param player
      * @param permissionNode
      */
-    boolean checkPermission(EntityPlayer player, String permissionNode);
+    boolean checkPermission(PlayerEntity player, String permissionNode);
 
     /**
      * Gets a permission-property for a player
@@ -58,7 +58,7 @@ public interface IPermissionsHelper extends IPermissionHandler
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    String getPermissionProperty(EntityPlayer player, String permissionNode);
+    String getPermissionProperty(PlayerEntity player, String permissionNode);
 
     /**
      * Register a permission description

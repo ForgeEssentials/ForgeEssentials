@@ -7,7 +7,6 @@ import java.util.HashSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
-import net.minecraft.init.Blocks;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.TranslatedCommandException;

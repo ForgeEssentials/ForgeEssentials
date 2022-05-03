@@ -285,7 +285,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
      * @return
      * @throws NumberInvalidException
      */
-    public static int parseInt(String string, int relativeStart) throws NumberInvalidException
+    public static int parseInt(String string, int relativeStart) throws NumberFormatException
     {
         if (string.startsWith("~"))
         {
@@ -305,7 +305,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
      * @param relativeStart
      * @return
      */
-    public static double parseDouble(String string, double relativeStart) throws NumberInvalidException
+    public static double parseDouble(String string, double relativeStart) throws NumberFormatException
     {
         if (string.startsWith("~"))
         {
