@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.lwjgl.opengl.GL11;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.commons.network.Packet3PlayerPermissions;
+import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
 
 public class PermissionOverlay extends Gui implements IMessageHandler<Packet3PlayerPermissions, IMessage>
 {

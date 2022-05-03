@@ -1,4 +1,4 @@
-package com.forgeessentials.commons.network;
+package com.forgeessentials.commons.network.packets;
 
 import io.netty.buffer.ByteBuf;
 

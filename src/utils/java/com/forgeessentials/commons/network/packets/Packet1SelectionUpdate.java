@@ -1,4 +1,4 @@
-package com.forgeessentials.commons.network;
+package com.forgeessentials.commons.network.packets;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;

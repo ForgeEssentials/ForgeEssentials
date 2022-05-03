@@ -17,8 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.forgeessentials.client.core.ClientProxy;
-import com.forgeessentials.client.core.CommonProxy;
-import com.forgeessentials.commons.BuildInfo;
 
 @Mod(ForgeEssentialsClient.MODID)
 @Mod.EventBusSubscriber(modid = ForgeEssentialsClient.MODID, bus = Bus.MOD)

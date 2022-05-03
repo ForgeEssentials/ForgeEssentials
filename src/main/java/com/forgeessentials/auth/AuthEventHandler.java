@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -15,6 +16,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -25,7 +27,7 @@ import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.Packet6AuthLogin;
+import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
 import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
@@ -62,23 +64,23 @@ public class AuthEventHandler extends ServerEventHandler
 
     private static boolean notPlayer(Object player)
     {
-        return !(player instanceof EntityPlayerMP) || player instanceof FakePlayer;
+        return !(player instanceof PlayerEntity) || player instanceof FakePlayer;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerMoveEvent(PlayerMoveEvent event)
     {
-        if (!ModuleAuth.isEnabled() || notPlayer(event.getEntityPlayer()))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.getPlayer()))
             return;
 
         if (ModuleAuth.canMoveWithoutLogin || (event.before.getX() == event.after.getX() && event.before.getZ() == event.after.getZ()))
         {
             return;
         }
-        if (!ModuleAuth.isAuthenticated(event.getEntityPlayer()))
+        if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getEntityPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
         }
     }
 
@@ -99,7 +101,7 @@ public class AuthEventHandler extends ServerEventHandler
     {
         if (!ModuleAuth.isEnabled() || notPlayer(event.getSender()))
             return;
-        EntityPlayer player = (EntityPlayer) event.getSender();
+        PlayerEntity player = (PlayerEntity) event.getSender();
         if (!ModuleAuth.isAuthenticated(player) && !ModuleAuth.isGuestCommand(event.getCommand()))
         {
             event.setCanceled(true);
@@ -110,24 +112,24 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!ModuleAuth.isEnabled() || notPlayer(event.getEntityPlayer()))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.getPlayer()))
             return;
-        if (!ModuleAuth.isAuthenticated(event.getEntityPlayer()))
+        if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getEntityPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void entityInteractEvent(PlayerInteractEvent.EntityInteract event)
     {
-        if (!ModuleAuth.isEnabled() || notPlayer(event.getEntityPlayer()))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.getPlayer()))
             return;
-        if (!ModuleAuth.isAuthenticated(event.getEntityPlayer()))
+        if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getEntityPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
         }
     }
 
@@ -161,12 +163,12 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void entityItemPickupEvent(EntityItemPickupEvent event)
     {
-        if (!ModuleAuth.isEnabled() || notPlayer(event.getEntityPlayer()))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.getPlayer()))
             return;
-        if (!ModuleAuth.isAuthenticated(event.getEntityPlayer()))
+        if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getEntityPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
         }
     }
 
@@ -175,7 +177,7 @@ public class AuthEventHandler extends ServerEventHandler
     {
         if (!ModuleAuth.isEnabled() || notPlayer(event.getEntityLiving()))
             return;
-        EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
+        PlayerEntity player = (PlayerEntity) event.getEntityLiving();
         if (!ModuleAuth.isAuthenticated(player))
         {
             event.setCanceled(true);
@@ -186,12 +188,12 @@ public class AuthEventHandler extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void attackEntityEvent(AttackEntityEvent event)
     {
-        if (!ModuleAuth.isEnabled() || notPlayer(event.getEntityPlayer()))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.getPlayer()))
             return;
-        if (!ModuleAuth.isAuthenticated(event.getEntityPlayer()))
+        if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getEntityPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
         }
     }
 
@@ -204,11 +206,11 @@ public class AuthEventHandler extends ServerEventHandler
      */
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void playerLoggedInEvent(PlayerLoggedInEvent event)
+    public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
     {
         if (!ModuleAuth.isEnabled())
             return;
-        if (!ModuleAuth.isRegistered(event.player.getPersistentID()))
+        if (!ModuleAuth.isRegistered(event.getPlayer().getUUID()))
         {
             ChatOutputHandler.chatError(event.player, "Registration required. Try /auth help.");
         }
@@ -223,15 +225,15 @@ public class AuthEventHandler extends ServerEventHandler
             int availableSlots = FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers() - vipSlots - reservedSlots;
             if (onlinePlayers >= availableSlots)
             {
-                ((EntityPlayerMP) event.player).connection.disconnect(new TextComponentTranslation(nonVipKickMessage));
+                ((PlayerEntity) event.getPlayer()).connection.disconnect(new TextComponentTranslation(nonVipKickMessage));
             }
         }
     }
 
     @SubscribeEvent
-    public void playerLoggedOutEvent(PlayerLoggedOutEvent event)
+    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        ModuleAuth.deauthenticate(event.player.getPersistentID());
+        ModuleAuth.deauthenticate(event.getPlayer().getUUID());
     }
 
     // autologin
@@ -241,7 +243,7 @@ public class AuthEventHandler extends ServerEventHandler
     {
         if (!ModuleAuth.isEnabled())
             return;
-        if (ModuleAuth.isRegistered(e.getPlayer().getPersistentID())  && !ModuleAuth.isAuthenticated(e.getPlayer()))
+        if (ModuleAuth.isRegistered(e.getPlayer().getUUID())  && !ModuleAuth.isAuthenticated(e.getPlayer()))
         {
             NetworkUtils.netHandler.sendTo(new Packet6AuthLogin(0, ""), e.getPlayer());
         }
@@ -254,7 +256,7 @@ public class AuthEventHandler extends ServerEventHandler
         {
             UUID token = UUID.randomUUID();
             NetworkUtils.netHandler.sendTo(new Packet6AuthLogin(2, token.toString()), e.getPlayer());
-            PasswordManager.addSession(e.getPlayer().getPersistentID(), token);
+            PasswordManager.addSession(e.getPlayer().getUUID(), token);
         }
         APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_SUCCESS, e.getPlayer());
     }

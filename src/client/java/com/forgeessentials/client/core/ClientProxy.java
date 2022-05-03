@@ -33,13 +33,13 @@ import com.forgeessentials.client.init.CommandInit;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
-import com.forgeessentials.commons.network.Packet0Handshake;
-import com.forgeessentials.commons.network.Packet1SelectionUpdate;
-import com.forgeessentials.commons.network.Packet2Reach;
-import com.forgeessentials.commons.network.Packet3PlayerPermissions;
-import com.forgeessentials.commons.network.Packet5Noclip;
-import com.forgeessentials.commons.network.Packet6AuthLogin;
-import com.forgeessentials.commons.network.Packet7Remote;
+import com.forgeessentials.commons.network.packets.Packet0Handshake;
+import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
+import com.forgeessentials.commons.network.packets.Packet2Reach;
+import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
+import com.forgeessentials.commons.network.packets.Packet5Noclip;
+import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
+import com.forgeessentials.commons.network.packets.Packet7Remote;
 
 public class ClientProxy extends CommonProxy
 {

@@ -79,9 +79,11 @@ repositories {
     }
 
     maven {
-        name = "JEI"
-        url "http://dvs1.progwml6.com/files/maven"
-        allowInsecureProtocol = true
+        name 'JEI'
+        url "https://dvs1.progwml6.com/files/maven"
+        content {
+            includeGroup 'mezz.jei'
+        }
     }
 
     maven {
@@ -419,7 +421,7 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 /************************************************************
  * Configure API javadoc
  */
-
+/*
 javadoc {
 	include "com/forgeessentials/api/**"
 	classpath = sourceSets.main.compileClasspath + sourceSets.main.output
@@ -433,13 +435,11 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 	from javadoc.destinationDir
 	
 	manifest { from sharedManifest }
-}
-/*
-reobf {
-    clientJar {
-        classpath = sourceSets.main.compileClasspath
-    }
 }*/
+
+reobf {
+    clientJar { classpath.from(sourceSets.main.compileClasspath) }
+}
 
 /************************************************************
  * Others

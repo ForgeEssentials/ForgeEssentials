@@ -17,6 +17,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 
 /**
@@ -71,7 +72,7 @@ public class APIRegistry
     /**
      * The FE internal event-bus
      */
-    public static final IEventBus FE_EVENTBUS = new IEventBus();
+    public static final IEventBus FE_EVENTBUS = FMLJavaModLoadingContext.get().getModEventBus();
 
     public static IEventBus getFEEventBus()
     {

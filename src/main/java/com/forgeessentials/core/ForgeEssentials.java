@@ -25,6 +25,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -61,12 +62,12 @@ import com.forgeessentials.api.UserIdent.NpcUserIdent;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
-import com.forgeessentials.commons.network.Packet0Handshake;
-import com.forgeessentials.commons.network.Packet1SelectionUpdate;
-import com.forgeessentials.commons.network.Packet2Reach;
-import com.forgeessentials.commons.network.Packet3PlayerPermissions;
-import com.forgeessentials.commons.network.Packet5Noclip;
-import com.forgeessentials.commons.network.Packet7Remote;
+import com.forgeessentials.commons.network.packets.Packet0Handshake;
+import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
+import com.forgeessentials.commons.network.packets.Packet2Reach;
+import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
+import com.forgeessentials.commons.network.packets.Packet5Noclip;
+import com.forgeessentials.commons.network.packets.Packet7Remote;
 import com.forgeessentials.compat.BaublesCompat;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.compat.HelpFixer;
@@ -239,7 +240,7 @@ public class ForgeEssentials extends ConfigLoaderBase
             LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
         }
 
-        isCubicChunksInstalled = Loader.isModLoaded("cubicchunks");
+        isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
 
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleInitEvent(e));
     }
@@ -362,6 +363,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @EventHandler
     public void serverStopping(FMLServerStoppingEvent e)
     {
+    	//APIRegistry.getFEEventBus().
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStopEvent(e));
         PlayerInfo.discardAll();
     }

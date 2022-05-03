@@ -1,5 +1,6 @@
 package com.forgeessentials.compat;
 
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -15,7 +16,7 @@ public class BaublesCompat extends ServerEventHandler
 {
     public BaublesCompat()
     {
-        if (Loader.isModLoaded("Baubles"))
+        if (ModList.get().isLoaded("Baubles"))
             LoggingHandler.felog.info("Baubles compatibility enabled.");
         register();
     }

@@ -7,13 +7,14 @@ import java.util.UUID;
 import net.minecraft.command.CommandHelp;
 import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.Packet0Handshake;
-import com.forgeessentials.commons.network.Packet6AuthLogin;
-import com.forgeessentials.commons.network.Packet7Remote;
+import com.forgeessentials.commons.network.packets.Packet0Handshake;
+import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
+import com.forgeessentials.commons.network.packets.Packet7Remote;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -141,12 +142,12 @@ public class ModuleAuth extends ConfigLoaderBase
         return authenticatedUsers.contains(player);
     }
 
-    public static boolean isAuthenticated(EntityPlayer player)
+    public static boolean isAuthenticated(PlayerEntity player)
     {
         if (player == null) {
             return true;
         }
-        return isAuthenticated(player.getPersistentID());
+        return isAuthenticated(player.getUUID());
     }
 
     public static boolean isAllowedMethod(IMessage msg) {

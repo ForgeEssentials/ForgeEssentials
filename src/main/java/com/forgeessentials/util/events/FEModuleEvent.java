@@ -3,18 +3,21 @@ package com.forgeessentials.util.events;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.IModBusEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.common.event.FMLStateEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class FEModuleEvent extends Event
 {
 
-    protected FMLStateEvent event;
+    protected IModBusEvent event;
 
     public FMLStateEvent getFMLEvent()
     {
@@ -23,7 +26,7 @@ public class FEModuleEvent extends Event
 
     public static class FEModulePreInitEvent extends FEModuleEvent
     {
-        public FEModulePreInitEvent(FMLPreInitializationEvent event)
+        public FEModulePreInitEvent(FMLCommonSetupEvent event)
         {
             this.event = event;
         }

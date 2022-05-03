@@ -5,6 +5,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -37,7 +38,7 @@ public class Environment
             isClient = false;
         }
 
-        if (Loader.isModLoaded("worldedit"))
+        if (ModList.get().isLoaded("worldedit"))
         {
             hasWorldEdit = true;
             try
@@ -50,7 +51,7 @@ public class Environment
             }
         }
 
-        if (Loader.isModLoaded("ftbu"))
+        if (ModList.get().isLoaded("ftbu"))
         {
             LoggingHandler.felog.warn("FTB Utilities is installed. Forge Essentials may not work as expected.");
             LoggingHandler.felog.warn("Please uninstall FTB Utilities to regain full FE functionality.");

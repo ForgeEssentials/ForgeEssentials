@@ -1,7 +1,5 @@
 package com.forgeessentials.jscripting.fewrapper.fe.world;
 
-import java.util.WeakHashMap;
-
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.jscripting.fewrapper.fe.JsPoint;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;

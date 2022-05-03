@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.forgeessentials.client.core.ClientProxy;
-import com.forgeessentials.commons.network.Packet6AuthLogin;
+import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
 
 public class ClientAuthNetHandler implements IMessageHandler<Packet6AuthLogin, IMessage>
 {

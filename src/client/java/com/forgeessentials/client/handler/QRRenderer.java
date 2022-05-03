@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import org.lwjgl.opengl.GL11;
 
-import com.forgeessentials.commons.network.Packet7Remote;
+import com.forgeessentials.commons.network.packets.Packet7Remote;
 
 @SideOnly(value = Side.CLIENT)
 public class QRRenderer implements IMessageHandler<Packet7Remote, IMessage>

@@ -1,4 +1,4 @@
-package com.forgeessentials.commons.network;
+package com.forgeessentials.commons.network.packets;
 
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
