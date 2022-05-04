@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.forgeessentials.client.core.ClientProxy;
+import com.forgeessentials.client.init.RegisterCommandEvent;
 
 @Mod(ForgeEssentialsClient.MODID)
 @Mod.EventBusSubscriber(modid = ForgeEssentialsClient.MODID, bus = Bus.MOD,value = Dist.CLIENT)
@@ -60,6 +61,7 @@ public class ForgeEssentialsClient
             //changedWindowTitle=null;
             //confHandler=ConfigurationHandler.getInstance();
             //confHandler.load(ConfigurationProvider.getSuggestedFile(MODID));
+        	MinecraftForge.EVENT_BUS.register(RegisterCommandEvent.class);
         	proxy.doPreInit(event);
             //System.out.println("on Init, confHandler is "+confHandler);
             //MinecraftForge.EVENT_BUS.register(confHandler);

@@ -90,11 +90,6 @@ public class ClientProxy extends CommonProxy
         registerNetworkMessages();
     }
 
-    @SubscribeEvent
-	public void onCommandRegister(final RegisterCommandsEvent event) {
-		CommandInit.registerCommands(event);
-	}
-
     private void registerNetworkMessages()
     {
         // Register network messages
