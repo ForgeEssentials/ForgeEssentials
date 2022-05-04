@@ -1,7 +1,7 @@
 package com.forgeessentials.util;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -66,7 +66,7 @@ public class NamedWorldPoint extends WorldPoint
             if (worldName != null)
             {
                 // If there is a name for the dimension, use it
-                WorldServer world = APIRegistry.namedWorldHandler.getWorld(worldName);
+                ServerWorld world = APIRegistry.namedWorldHandler.getWorld(worldName);
                 if (world != null)
                 {
                     this.dim = world.provider.getDimension();

@@ -3,10 +3,13 @@ package com.forgeessentials.util;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.entity.item.HangingEntity;
+import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.SignTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.text.ITextComponent;
@@ -43,22 +46,22 @@ public final class ItemUtil
             return id + ":" + itemDamage;
     }
 
-    public static boolean isItemFrame(EntityHanging entity)
+    public static boolean isItemFrame(HangingEntity entity)
     {
-        return entity instanceof EntityItemFrame;
+        return entity instanceof ItemFrameEntity;
     }
 
     public static boolean isSign(Block block)
     {
-        return block == Blocks.WALL_SIGN;
+        return block == Block.WallSignBlock;
     }
 
     public static ITextComponent[] getSignText(WorldPoint point)
     {
         TileEntity te = point.getTileEntity();
-        if (te instanceof TileEntitySign)
+        if (te instanceof SignTileEntity)
         {
-            TileEntitySign sign = (TileEntitySign) te;
+        	SignTileEntity sign = (SignTileEntity) te;
             return sign.signText;
         }
         return null;

@@ -25,13 +25,18 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.server.CommandMessage;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
@@ -240,9 +245,9 @@ public abstract class ServerUtil
     public static File getWorldPath()
     {
         if (Environment.isClient())
-            return new File(FMLCommonHandler.instance().getMinecraftServerInstance().getFile("saves"), FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
+            return new File(ServerLifecycleHooks.getCurrentServer().getFile("saves"), FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
         else
-            return FMLCommonHandler.instance().getMinecraftServerInstance().getFile(FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
+            return ServerLifecycleHooks.getCurrentServer().getServerDirectory();
     }
 
     /* ------------------------------------------------------------ */
@@ -253,9 +258,9 @@ public abstract class ServerUtil
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static List<EntityPlayerMP> getPlayerList()
+    public static List<ServerPlayerEntity> getPlayerList()
     {
-        MinecraftServer mc = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer mc = ServerLifecycleHooks.getCurrentServer();
         return mc == null || mc.getPlayerList() == null ? new ArrayList<>() : mc.getPlayerList().getPlayers();
     }
 
@@ -267,9 +272,9 @@ public abstract class ServerUtil
      */
     public static double getWorldTPS(int dimID)
     {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         long sum = 0L;
-        long[] ticks = server.worldTickTimes.get(dimID);
+        long[] ticks = server.getTickTime(World.??);
         for (int i = 0; i < ticks.length; ++i)
         {
             sum += ticks[i];
@@ -288,33 +293,33 @@ public abstract class ServerUtil
      */
     public static double getTPS()
     {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         double tickSum = 0;
-        for (int i = 0; i < server.tickTimeArray.length; ++i)
-            tickSum += server.tickTimeArray[i];
-        tickSum /= server.tickTimeArray.length;
+        for (int i = 0; i < server.getTickCount(); ++i)
+            tickSum += server.tickTimes[i];
+        tickSum /= server.getTickCount();
         double tps = 1000000000 / tickSum;
         return tps; // tps > 20 ? 20 : tps;
     }
 
-    public static WorldServer getOverworld()
+    public static ServerWorld getOverworld()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0];
+        return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD);
     }
 
     public static long getOverworldTime()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0].getWorldInfo().getWorldTime();
+        return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD).getDayTime();
     }
 
     public static boolean isServerRunning()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance() != null && FMLCommonHandler.instance().getMinecraftServerInstance().isServerRunning();
+        return ServerLifecycleHooks.getCurrentServer() != null && ServerLifecycleHooks.getCurrentServer().isRunning();
     }
     
     public static boolean isOnlineMode()
     {
-        return FMLCommonHandler.instance().getSidedDelegate().getServer().isServerInOnlineMode();
+        return ServerLifecycleHooks.getCurrentServer().usesAuthentication();
     }
 
     public static boolean getMojangServerStatus()

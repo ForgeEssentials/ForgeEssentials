@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public interface NamedWorldHandler
 {
 
     static final String WORLD_NAME_END = "end";
     static final String WORLD_NAME_NETHER = "nether";
-    static final String WORLD_NAME_SURFACE = "surface";
+    static final String WORLD_NAME_OVERWORLD = "surface";
 
-    WorldServer getWorld(String name);
+    ServerWorld getWorld(String name);
 
     String getWorldName(int dimId);
 
@@ -24,17 +26,17 @@ public interface NamedWorldHandler
     {
 
         @Override
-        public WorldServer getWorld(String name)
+        public ServerWorld getWorld(String name)
         {
             name = name.toLowerCase();
             switch (name)
             {
-            case WORLD_NAME_SURFACE:
-                return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0);
+            case WORLD_NAME_OVERWORLD:
+                return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD);
             case WORLD_NAME_NETHER:
-                return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(-1);
+            	return ServerLifecycleHooks.getCurrentServer().getLevel(World.NETHER);
             case WORLD_NAME_END:
-                return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(1);
+            	return ServerLifecycleHooks.getCurrentServer().getLevel(World.END);
             default:
             {
                 try
@@ -55,7 +57,7 @@ public interface NamedWorldHandler
             switch (dimId)
             {
             case 0:
-                return WORLD_NAME_SURFACE;
+                return WORLD_NAME_OVERWORLD;
             case -1:
                 return WORLD_NAME_NETHER;
             case 1:
@@ -68,7 +70,7 @@ public interface NamedWorldHandler
         @Override
         public List<String> getWorldNames()
         {
-            return new ArrayList<>(Arrays.asList(WORLD_NAME_SURFACE, WORLD_NAME_NETHER, WORLD_NAME_END));
+            return new ArrayList<>(Arrays.asList(WORLD_NAME_OVERWORLD, WORLD_NAME_NETHER, WORLD_NAME_END));
         }
 
     }

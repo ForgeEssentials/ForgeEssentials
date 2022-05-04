@@ -5,11 +5,11 @@ import java.util.Set;
 
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class NetworkUtils
 {
@@ -28,7 +28,7 @@ public class NetworkUtils
 
     }
 
-    public static <REQ extends IMessage> void registerMessageProxy(Class<REQ> requestMessageType, int discriminator, Side side, NullMessageHandler<REQ> nmh)
+    public static <REQ extends IMessage> void registerMessageProxy(Class<REQ> requestMessageType, int discriminator, Dist side, NullMessageHandler<REQ> nmh)
     {
         if (!registeredMessages.contains(discriminator))
             netHandler.registerMessage(nmh, requestMessageType, discriminator, side);

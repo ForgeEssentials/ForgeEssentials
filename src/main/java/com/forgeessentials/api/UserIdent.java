@@ -415,10 +415,10 @@ public class UserIdent
         return (NpcUserIdent) ident;
     }
 
-    public static synchronized void login(EntityPlayerMP player)
+    public static synchronized void login(PlayerEntity player)
     {
-        UserIdent ident = byUuid.get(player.getPersistentID());
-        UserIdent usernameIdent = byUsername.get(player.getName().toLowerCase());
+        UserIdent ident = byUuid.get(player.getUUID());
+        UserIdent usernameIdent = byUsername.get(player.getName());
 
         if (ident == null)
         {
@@ -427,20 +427,20 @@ public class UserIdent
             else
             {
                 ident = usernameIdent;
-                byUuid.put(player.getPersistentID(), ident);
+                byUuid.put(player.getUUID(), ident);
             }
         }
-        ident.player = new WeakReference<EntityPlayer>(player);
-        ident.username = player.getName();
-        ident.uuid = player.getPersistentID();
+        ident.player = new WeakReference<PlayerEntity>(player);
+        ident.username = player.getName().toString();
+        ident.uuid = player.getUUID();
 
         if (usernameIdent != null && usernameIdent != ident)
         {
             APIRegistry.getFEEventBus().post(new UserIdentInvalidatedEvent(usernameIdent, ident));
 
             // Change data for already existing references to old UserIdent
-            usernameIdent.player = new WeakReference<EntityPlayer>(player);
-            usernameIdent.username = player.getName();
+            usernameIdent.player = new WeakReference<PlayerEntity>(player);
+            usernameIdent.username = player.getName().toString();
 
             // Replace entry in username map by the one from uuid map
             byUsername.remove(usernameIdent.username.toLowerCase());
@@ -448,7 +448,7 @@ public class UserIdent
         }
     }
 
-    public static synchronized void logout(EntityPlayerMP player)
+    public static synchronized void logout(PlayerEntity player)
     {
         UserIdent ident = UserIdent.get(player);
         ident.player = null;
@@ -574,7 +574,7 @@ public class UserIdent
 
     public GameProfile getGameProfile()
     {
-        EntityPlayer player = getPlayer();
+    	PlayerEntity player = getPlayer();
         if (player != null)
         {
             if (!player.getGameProfile().isComplete())

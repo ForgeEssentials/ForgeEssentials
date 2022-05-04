@@ -5,11 +5,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -17,6 +13,7 @@ import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -29,26 +26,20 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -113,8 +104,9 @@ import com.forgeessentials.util.selections.SelectionHandler;
 /**
  * Main mod class
  */
-
-@Mod(ForgeEssentials.MODID)//, dependencies = BuildInfo.DEPENDENCIES + ";after:worldedit;before:ftblib")
+@Mod(ForgeEssentials.MODID)
+@Mod.EventBusSubscriber(modid = ForgeEssentials.MODID, bus = Bus.MOD,value = Dist.DEDICATED_SERVER)
+//@Mod(ForgeEssentials.MODID)//, dependencies = BuildInfo.DEPENDENCIES + ";after:worldedit;before:ftblib")
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
@@ -181,10 +173,11 @@ public class ForgeEssentials extends ConfigLoaderBase
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
         Environment.check();
         MinecraftForge.EVENT_BUS.register(this);
+        
     }
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event)
+    @Mod.Bus
+    public void preInit(FMLCommonSetupEvent event)
     {
         LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
         if (safeMode)
@@ -273,20 +266,20 @@ public class ForgeEssentials extends ConfigLoaderBase
                 PlayerInfo.get(ctx.getServerHandler().player).setHasFEClient(true);
                 return null;
             }
-        }, Packet0Handshake.class, 0, Side.SERVER);
-        NetworkUtils.registerMessageProxy(Packet1SelectionUpdate.class, 1, Side.CLIENT, new NullMessageHandler<Packet1SelectionUpdate>() {
+        }, Packet0Handshake.class, 0, Dist.DEDICATED_SERVER);
+        NetworkUtils.registerMessageProxy(Packet1SelectionUpdate.class, 1, Dist.CLIENT, new NullMessageHandler<Packet1SelectionUpdate>() {
             /* dummy */
         });
-        NetworkUtils.registerMessageProxy(Packet2Reach.class, 2, Side.CLIENT, new NullMessageHandler<Packet2Reach>() {
+        NetworkUtils.registerMessageProxy(Packet2Reach.class, 2, Dist.CLIENT, new NullMessageHandler<Packet2Reach>() {
             /* dummy */
         });
-        NetworkUtils.registerMessageProxy(Packet3PlayerPermissions.class, 3, Side.CLIENT, new NullMessageHandler<Packet3PlayerPermissions>() {
+        NetworkUtils.registerMessageProxy(Packet3PlayerPermissions.class, 3, Dist.CLIENT, new NullMessageHandler<Packet3PlayerPermissions>() {
             /* dummy */
         });
-        NetworkUtils.registerMessageProxy(Packet5Noclip.class, 5, Side.CLIENT, new NullMessageHandler<Packet5Noclip>() {
+        NetworkUtils.registerMessageProxy(Packet5Noclip.class, 5, Dist.CLIENT, new NullMessageHandler<Packet5Noclip>() {
             /* dummy */
         });
-        NetworkUtils.registerMessageProxy(Packet7Remote.class, 7, Side.CLIENT, new NullMessageHandler<Packet7Remote>() {
+        NetworkUtils.registerMessageProxy(Packet7Remote.class, 7, Dist.CLIENT, new NullMessageHandler<Packet7Remote>() {
             /* dummy */
         });
 
