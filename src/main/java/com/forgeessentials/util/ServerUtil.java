@@ -274,7 +274,7 @@ public abstract class ServerUtil
     {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         long sum = 0L;
-        long[] ticks = server.getTickTime(World.??);
+        long[] ticks = server.getTickTime(World);
         for (int i = 0; i < ticks.length; ++i)
         {
             sum += ticks[i];
@@ -293,15 +293,17 @@ public abstract class ServerUtil
      */
     public static double getTPS()
     {
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        double tickSum = 0;
-        for (int i = 0; i < server.getTickCount(); ++i)
-            tickSum += server.tickTimes[i];
-        tickSum /= server.getTickCount();
-        double tps = 1000000000 / tickSum;
-        return tps; // tps > 20 ? 20 : tps;
+    	MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+    	final double meanTickTime = mean(server.tickTimes) * 1.0E-6D;
+		return Math.min(1000 / meanTickTime, 20);// tps > 20 ? 20 : tps;
     }
-
+    private static long mean(final long[] values) {
+		long sum = 0;
+		for (final long v : values) {
+			sum += v;
+		}
+		return sum / values.length;
+	}
     public static ServerWorld getOverworld()
     {
         return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD);
