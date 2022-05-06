@@ -2,7 +2,8 @@ ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEsse
 ===================
 
 The code on this branch is for Minecraft 1.16.5.
-**This is an ongoing port of Forge Essentials for 1.16.5**
+
+## This is an ongoing port of Forge Essentials for 1.16.5
 
 ## We are few developers with not so much time at hand - we will try to handle important bugs fast
 
