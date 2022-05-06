@@ -6,7 +6,7 @@ import java.util.Collection;
 import javax.annotation.Nullable;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.feed_the_beast.ftblib.events.RegisterRankConfigHandlerEvent;
 import com.feed_the_beast.ftblib.lib.config.ConfigNull;

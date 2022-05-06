@@ -1,44 +1,45 @@
 package com.forgeessentials.client.auth;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
+
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraft.nbt.StringNBT;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.io.File;
 import java.io.IOException;
 
 public class AuthAutoLogin
 {
-    private static File KEYSTORE_DIR = new File(FMLClientHandler.instance().getSavesDirectory(), "FEAuthStore/");
+    private static File KEYSTORE_DIR = new File(ServerLifecycleHooks.getCurrentServer().getServerDirectory() , "FEAuthStore/");
 
     private static File KEYSTORE_FILE;
 
-    public static NBTTagCompound KEYSTORE;
+    public static CompoundNBT KEYSTORE;
 
     /**
      * Load the keystore from its NBT save file.
      */
-    public static NBTTagCompound load()
+    public static CompoundNBT load()
     {
         if (!KEYSTORE_DIR.exists())
             KEYSTORE_DIR.mkdirs();
 
         try
         {
-            KEYSTORE_FILE = new File(KEYSTORE_DIR, FMLClientHandler.instance().getClient().player.getDisplayNameString() + ".dat");
+            KEYSTORE_FILE = new File(KEYSTORE_DIR, ServerLifecycleHooks.getCurrentServer().getSingleplayerName() + ".dat");
             if (!KEYSTORE_FILE.exists())
             {
                 KEYSTORE_FILE.createNewFile();
-                return new NBTTagCompound();
+                return new CompoundNBT();
             }
             return CompressedStreamTools.read(KEYSTORE_FILE);
         }
         catch (IOException ex)
         {
             ForgeEssentialsClient.feclientlog.error("Unable to load AuthLogin keystore file - will ignore keystore.");
-            return new NBTTagCompound();
+            return new CompoundNBT();
         }
     }
 
@@ -49,11 +50,11 @@ public class AuthAutoLogin
      */
     public static void setKey(String serverIP, String key)
     {
-        KEYSTORE.setTag(serverIP, new NBTTagString(key));
+        KEYSTORE.put(serverIP, StringNBT.valueOf(key));
         try
         {
-            KEYSTORE_FILE = new File (KEYSTORE_DIR, FMLClientHandler.instance().getClient().player.getDisplayNameString() + ".dat");
-            CompressedStreamTools.safeWrite(KEYSTORE, KEYSTORE_FILE);
+            KEYSTORE_FILE = new File (KEYSTORE_DIR, ServerLifecycleHooks.getCurrentServer().getSingleplayerName() + ".dat");
+            CompressedStreamTools.write(KEYSTORE, KEYSTORE_FILE);
         }
         catch (IOException e)
         {

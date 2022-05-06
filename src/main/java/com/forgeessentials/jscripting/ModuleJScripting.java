@@ -17,7 +17,7 @@ import javax.script.ScriptException;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;

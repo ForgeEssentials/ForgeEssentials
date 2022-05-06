@@ -21,9 +21,9 @@ public class ClientAuthNetHandler implements IMessageHandler<Packet6AuthLogin, I
         switch (message.mode)
         {
         case 0:
-            return new Packet6AuthLogin(1, AuthAutoLogin.getKey(Minecraft.getMinecraft().getCurrentServerData().serverIP));
+            return new Packet6AuthLogin(1, AuthAutoLogin.getKey(Minecraft.getInstance().getCurrentServer().ip));
         case 2:
-            AuthAutoLogin.setKey(Minecraft.getMinecraft().getCurrentServerData().serverIP, message.hash);
+            AuthAutoLogin.setKey(Minecraft.getInstance().getCurrentServer().ip, message.hash);
             break;
         default:
             break;
