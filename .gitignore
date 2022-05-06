@@ -10,6 +10,7 @@
 /forge/*
 /jars/*
 /logs/*
+/old gradle/*
 /reobf/*
 /runtime/*
 /temp/*
@@ -40,4 +41,3 @@ modlist.txt
 /jscripting/tsconfig.json
 /src/utils/java/com/forgeessentials/commons/BuildInfo.java
 *.launch
-old gradle/build.gradle
