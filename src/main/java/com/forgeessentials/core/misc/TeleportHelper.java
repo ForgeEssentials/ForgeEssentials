@@ -8,26 +8,16 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketEntityEffect;
-import net.minecraft.network.play.server.SPacketRespawn;
-import net.minecraft.network.play.server.SPacketSetExperience;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Teleporter;
-import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.entity.EntityPortalEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -48,7 +38,7 @@ public class TeleportHelper extends ServerEventHandler
     public static class SimpleTeleporter extends Teleporter
     {
 
-        public SimpleTeleporter(WorldServer world)
+        public SimpleTeleporter(ServerWorld world)
         {
             super(world);
         }
@@ -80,7 +70,7 @@ public class TeleportHelper extends ServerEventHandler
     public static class TeleportInfo
     {
 
-        private EntityPlayerMP player;
+        private PlayerEntity player;
 
         private long start;
 
@@ -90,7 +80,7 @@ public class TeleportHelper extends ServerEventHandler
 
         private WarpPoint playerPos;
 
-        public TeleportInfo(EntityPlayerMP player, WarpPoint point, int timeout)
+        public TeleportInfo(PlayerEntity player, WarpPoint point, int timeout)
         {
             this.point = point;
             this.timeout = timeout;
@@ -130,7 +120,7 @@ public class TeleportHelper extends ServerEventHandler
 
     private static Map<UUID, TeleportInfo> tpInfos = new HashMap<>();
 
-    public static void teleport(EntityPlayerMP player, WarpPoint point) throws CommandException
+    public static void teleport(PlayerEntity player, WarpPoint point) throws CommandException
     {
         if (point.getWorld() == null)
         {

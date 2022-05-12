@@ -13,6 +13,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -72,7 +73,7 @@ public abstract class BookUtil
         }
     }
 
-    public static void getBookFromFile(EntityPlayer player, File file)
+    public static void getBookFromFile(PlayerEntity player, File file)
     {
         NBTTagCompound tag = new NBTTagCompound();
         NBTTagList pages = new NBTTagList();
@@ -147,7 +148,7 @@ public abstract class BookUtil
         player.inventory.addItemStackToInventory(is);
     }
 
-    public static void getBookFromFile(EntityPlayer player, File file, String title)
+    public static void getBookFromFile(PlayerEntity player, File file, String title)
     {
         NBTTagCompound tag = new NBTTagCompound();
         NBTTagList pages = new NBTTagList();
@@ -221,7 +222,7 @@ public abstract class BookUtil
         player.inventory.addItemStackToInventory(is);
     }
 
-    public static void getBookFromFileUnformatted(EntityPlayer player, File file)
+    public static void getBookFromFileUnformatted(PlayerEntity player, File file)
     {
         NBTTagCompound tag = new NBTTagCompound();
         NBTTagList pages = new NBTTagList();
@@ -276,7 +277,7 @@ public abstract class BookUtil
         player.inventory.addItemStackToInventory(is);
     }
 
-    public static void getBookFromFileUnformatted(EntityPlayer player, File file, String title)
+    public static void getBookFromFileUnformatted(PlayerEntity player, File file, String title)
     {
         NBTTagCompound tag = new NBTTagCompound();
         NBTTagList pages = new NBTTagList();
@@ -331,7 +332,7 @@ public abstract class BookUtil
         player.inventory.addItemStackToInventory(is);
     }
 
-    public static void getBookFromFolder(EntityPlayer player, File folder)
+    public static void getBookFromFolder(PlayerEntity player, File folder)
     {
         NBTTagCompound tag = new NBTTagCompound();
         NBTTagList pages = new NBTTagList();
@@ -411,7 +412,7 @@ public abstract class BookUtil
         player.inventory.addItemStackToInventory(is);
     }
 
-    public static void getBookFromFolder(EntityPlayer player, File folder, String title)
+    public static void getBookFromFolder(PlayerEntity player, File folder, String title)
     {
         NBTTagCompound tag = new NBTTagCompound();
         NBTTagList pages = new NBTTagList();

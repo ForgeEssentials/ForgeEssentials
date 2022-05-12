@@ -1,8 +1,8 @@
 package com.forgeessentials.util.events;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.EventBus;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.IEventBus;
 
 public class EventCancelledException extends Exception
 {
@@ -20,7 +20,7 @@ public class EventCancelledException extends Exception
         return event;
     }
 
-    public static void checkedPost(Event e, EventBus eventBus) throws EventCancelledException
+    public static void checkedPost(Event e, IEventBus eventBus) throws EventCancelledException
     {
         if (eventBus.post(e))
         {

@@ -34,7 +34,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.event.server.ServerLifecycleEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -229,10 +231,11 @@ public abstract class ServerUtil
      * Returns working directory or minecraft data-directory on client side. <br>
      * <b>Please use module directory instead!</b>
      */
-    public static File getBaseDir()
+    @SuppressWarnings("resource")
+	public static File getBaseDir()
     {
-        if (FMLCommonHandler.instance().getSide().isClient())
-            return Minecraft.getMinecraft().mcDataDir;
+        if (ServerLifecycleHooks.getCurrentServer().isSingleplayer())
+            return Minecraft.getInstance().gameDirectory;
         else
             return new File(".");
     }
@@ -245,7 +248,7 @@ public abstract class ServerUtil
     public static File getWorldPath()
     {
         if (Environment.isClient())
-            return new File(ServerLifecycleHooks.getCurrentServer().getFile("saves"), FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
+            return new File(ServerLifecycleHooks.getCurrentServer().getFile("saves"), ServerLifecycleHooks.getCurrentServer().getWorldData().getLevelName());
         else
             return ServerLifecycleHooks.getCurrentServer().getServerDirectory();
     }

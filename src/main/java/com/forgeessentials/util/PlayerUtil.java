@@ -7,6 +7,7 @@ import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Effect;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
@@ -26,13 +27,13 @@ public abstract class PlayerUtil
     public static List<ItemStack> swapInventory(PlayerEntity player, List<ItemStack> newItems)
     {
         List<ItemStack> oldItems = new ArrayList<>();
-        for (int slotIdx = 0; slotIdx < player.inventory.getSizeInventory(); slotIdx++)
+        for (int slotIdx = 0; slotIdx < player.inventory.getContainerSize(); slotIdx++)
         {
-            oldItems.add(player.inventory.getStackInSlot(slotIdx));
+            oldItems.add(player.inventory.getItem(slotIdx));
             if (newItems != null && slotIdx < newItems.size())
-                player.inventory.setInventorySlotContents(slotIdx, newItems.get(slotIdx));
+            	player.inventory.setItem(slotIdx, newItems.get(slotIdx));
             else
-                player.inventory.setInventorySlotContents(slotIdx, ItemStack.EMPTY);
+            	player.inventory.setItem(slotIdx, ItemStack.EMPTY);
         }
         return oldItems;
     }
@@ -80,12 +81,13 @@ public abstract class PlayerUtil
                     int amplifier = 0;
                     if (effectValues.length == 3)
                         amplifier = Integer.parseInt(effectValues[2]);
-                    if (Potion.REGISTRY.getObjectById(potionID) == null)
+                    if (Potion..REGISTRY.getObjectById(potionID) == null)
                     {
                         LoggingHandler.felog.warn("Invalid potion ID {}", potionID);
                         continue;
                     }
-                    player.addPotionEffect(new net.minecraft.potion.PotionEffect(Potion.getPotionById(potionID), effectDuration * 20, amplifier));
+                    //player.addEffect(null);
+                    player.addPotionEffect(new Effect(Potion.getPotionById(potionID), effectDuration * 20, amplifier));
                 }
                 catch (NumberFormatException e)
                 {

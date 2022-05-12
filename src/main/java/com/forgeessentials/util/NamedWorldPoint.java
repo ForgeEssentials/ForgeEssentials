@@ -1,6 +1,8 @@
 package com.forgeessentials.util;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import com.forgeessentials.api.APIRegistry;
@@ -21,7 +23,7 @@ public class NamedWorldPoint extends WorldPoint
     @Expose(serialize = false)
     protected boolean isValid = true;
 
-    public NamedWorldPoint(int dimension, String worldName, int x, int y, int z)
+    public NamedWorldPoint(RegistryKey<World> dimension, String worldName, int x, int y, int z)
     {
         super(dimension, x, y, z);
         this.worldName = worldName;
@@ -33,7 +35,7 @@ public class NamedWorldPoint extends WorldPoint
         this(0, worldName, x, y, z);
     }
 
-    public NamedWorldPoint(int dimension, int x, int y, int z)
+    public NamedWorldPoint(RegistryKey<World> dimension, int x, int y, int z)
     {
         super(dimension, x, y, z);
         this.worldName = APIRegistry.namedWorldHandler.getWorldName(dimension);
@@ -69,7 +71,7 @@ public class NamedWorldPoint extends WorldPoint
                 ServerWorld world = APIRegistry.namedWorldHandler.getWorld(worldName);
                 if (world != null)
                 {
-                    this.dim = world.provider.getDimension();
+                    this.dim = world.dimension();
                     isLinked = true;
                     isValid = true;
                 }

@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.vector.Vector3d;
@@ -19,7 +20,7 @@ import com.google.gson.annotations.Expose;
 public class WarpPoint
 {
 
-    protected int dim;
+    protected RegistryKey<World> dim;
 
     protected float pitch;
 
@@ -36,7 +37,7 @@ public class WarpPoint
 
     // ------------------------------------------------------------
 
-    public WarpPoint(int dimension, double x, double y, double z, float playerPitch, float playerYaw)
+    public WarpPoint(RegistryKey<World> dimension, double x, double y, double z, float playerPitch, float playerYaw)
     {
         this.dim = dimension;
         this.xd = x;
@@ -49,7 +50,7 @@ public class WarpPoint
     public WarpPoint(ServerWorld world, double x, double y, double z, float playerPitch, float playerYaw)
     {
         this.world = world;
-        this.dim = world.getLevel();
+        this.dim = world.dimension();
         this.xd = x;
         this.yd = y;
         this.zd = z;
@@ -57,12 +58,12 @@ public class WarpPoint
         this.yaw = playerYaw;
     }
 
-    public WarpPoint(int dimension, BlockPos location, float pitch, float yaw)
+    public WarpPoint(RegistryKey<World> dimension, BlockPos location, float pitch, float yaw)
     {
         this(dimension, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch, yaw);
     }
 
-    public WarpPoint(Point point, int dimension, float pitch, float yaw)
+    public WarpPoint(Point point, RegistryKey<World> dimension, float pitch, float yaw)
     {
         this(dimension, point.getX(), point.getY(), point.getZ(), pitch, yaw);
     }
@@ -79,7 +80,7 @@ public class WarpPoint
 
     public WarpPoint(Entity entity)
     {
-        this(entity.level instanceof ServerWorld ? (ServerWorld) entity.level : null, entity.position().x, entity.position().y, entity.position().z, entity.rotationPitch,
+        this(entity.level instanceof ServerWorld ? (ServerWorld) entity.level : null, entity.position().x, entity.position().y, entity.position().z, entity.getRotationVector(),
                 entity.rotationYaw);
     }
 
@@ -90,7 +91,7 @@ public class WarpPoint
 
     // ------------------------------------------------------------
 
-    public int getDimension()
+    public RegistryKey<World> getDimension()
     {
         return dim;
     }
@@ -140,7 +141,7 @@ public class WarpPoint
         return yaw;
     }
 
-    public void set(int dim, double xd, double yd, double zd, float pitch, float yaw)
+    public void set(RegistryKey<World> dim, double xd, double yd, double zd, float pitch, float yaw)
     {
         this.dim = dim;
         this.xd = xd;
@@ -150,14 +151,14 @@ public class WarpPoint
         this.yaw = yaw;
     }
 
-    public void setDimension(int dim)
+    public void setDimension(RegistryKey<World> dim)
     {
         this.dim = dim;
     }
 
     public ServerWorld getWorld()
     {
-        if (world == null || world.provider.getDimension() != dim)
+        if (world == null || world.dimension() != dim)
             world = world.getLevel();
         return world;
     }

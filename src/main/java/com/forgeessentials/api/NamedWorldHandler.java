@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -18,7 +19,7 @@ public interface NamedWorldHandler
 
     ServerWorld getWorld(String name);
 
-    String getWorldName(int dimId);
+    String getWorldName(RegistryKey<World> dimension);
 
     List<String> getWorldNames();
 
@@ -52,9 +53,14 @@ public interface NamedWorldHandler
         }
 
         @Override
-        public String getWorldName(int dimId)
+        public List<String> getWorldNames()
         {
-            switch (dimId)
+            return new ArrayList<>(Arrays.asList(WORLD_NAME_OVERWORLD, WORLD_NAME_NETHER, WORLD_NAME_END));
+        }
+
+		@Override
+		public String getWorldName(RegistryKey<World> dimension) {
+			switch (dimension)
             {
             case 0:
                 return WORLD_NAME_OVERWORLD;
@@ -65,13 +71,7 @@ public interface NamedWorldHandler
             default:
                 return Integer.toString(dimId);
             }
-        }
-
-        @Override
-        public List<String> getWorldNames()
-        {
-            return new ArrayList<>(Arrays.asList(WORLD_NAME_OVERWORLD, WORLD_NAME_NETHER, WORLD_NAME_END));
-        }
+		}
 
     }
     

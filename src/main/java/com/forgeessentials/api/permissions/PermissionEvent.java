@@ -2,8 +2,8 @@ package com.forgeessentials.api.permissions;
 
 import com.forgeessentials.api.UserIdent;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Cancelable;
+import net.minecraftforge.eventbus.api.Event;
 
 /**
  * PermissionEvent
@@ -80,7 +80,7 @@ public class PermissionEvent extends Event
             this.ident = ident;
         }
 
-        @Cancelable
+        @net.minecraftforge.eventbus.api.Cancelable
         public static class ModifyPermission extends User
         {
 

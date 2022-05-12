@@ -6,9 +6,11 @@ import java.util.regex.Pattern;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.BlockEvent;
@@ -21,20 +23,20 @@ import com.google.gson.annotations.Expose;
 public class WorldPoint extends Point
 {
 
-    protected int dim;
+    protected RegistryKey<World> dim;
 
     @Expose(serialize = false)
     protected World world;
 
     // ------------------------------------------------------------
 
-    public WorldPoint(int dimension, int x, int y, int z)
+    public WorldPoint(RegistryKey<World> dim2, int x, int y, int z)
     {
         super(x, y, z);
-        dim = dimension;
+        dim = dim2;
     }
 
-    public WorldPoint(int dimension, BlockPos location)
+    public WorldPoint(RegistryKey<World> dimension, BlockPos location)
     {
         this(dimension, location.getX(), location.getY(), location.getZ());
     }
@@ -42,7 +44,7 @@ public class WorldPoint extends Point
     public WorldPoint(World world, int x, int y, int z)
     {
         super(x, y, z);
-        this.dim = world.provider.getDimension();
+        this.dim = world.dimension();
         this.world = world;
     }
 
@@ -58,7 +60,7 @@ public class WorldPoint extends Point
         this.world = entity.world;
     }
 
-    public WorldPoint(int dim, Vec3d vector)
+    public WorldPoint(RegistryKey<World> dim, Vector3d vector)
     {
         super(vector);
         this.dim = dim;
@@ -69,7 +71,7 @@ public class WorldPoint extends Point
         this(other.dim, other.x, other.y, other.z);
     }
 
-    public WorldPoint(int dimension, Point point)
+    public WorldPoint(RegistryKey<World> dimension, Point point)
     {
         this(dimension, point.x, point.y, point.z);
     }
@@ -91,12 +93,12 @@ public class WorldPoint extends Point
 
     // ------------------------------------------------------------
 
-    public int getDimension()
+    public RegistryKey<World> getDimension()
     {
         return dim;
     }
 
-    public void setDimension(int dim)
+    public void setDimension(RegistryKey<World> dim)
     {
         this.dim = dim;
     }
@@ -139,7 +141,7 @@ public class WorldPoint extends Point
 
     public TileEntity getTileEntity()
     {
-        return getWorld().getTileEntity(getBlockPos());
+        return getWorld().getBlockEntity(getBlockPos());
     }
 
     // ------------------------------------------------------------

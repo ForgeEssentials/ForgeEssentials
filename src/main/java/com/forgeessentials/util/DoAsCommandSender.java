@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -88,7 +89,7 @@ public class DoAsCommandSender implements ICommandSender
     }
 
     @Override
-    public Vec3d getPositionVector()
+    public Vector3d getPositionVector()
     {
         return sender.getPositionVector();
     }

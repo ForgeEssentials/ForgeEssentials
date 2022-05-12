@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.Style;
@@ -56,7 +57,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void sendMessage(ICommandSender recipient, ITextComponent message)
     {
-        if (recipient instanceof FakePlayer && ((EntityPlayerMP) recipient).connection == null)
+        if (recipient instanceof FakePlayer && ((PlayerEntity) recipient).connection == null)
             LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getName(), message.getUnformattedText()));
         else
             recipient.sendMessage(message);
@@ -75,7 +76,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     public static void sendMessage(ICommandSender recipient, String message, TextFormatting color)
     {
         message = formatColors(message);
-        if (recipient instanceof EntityPlayer)
+        if (recipient instanceof PlayerEntity)
         {
             TextComponentString component = new TextComponentString(message);
             component.getStyle().setColor(color);
@@ -138,7 +139,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static ITextComponent setChatColor(ITextComponent message, TextFormatting color)
     {
-        message.getStyle().setColor(color);
+        message.getStyle().withColor(color);
         return message;
     }
 
@@ -263,10 +264,10 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         switch (formatting)
         {
         case BOLD:
-            chatStyle.setBold(true);
+            chatStyle.withBold(true);
             break;
         case ITALIC:
-            chatStyle.setItalic(true);
+            chatStyle.withItalic(true);
             break;
         case OBFUSCATED:
             chatStyle.setObfuscated(true);
@@ -280,7 +281,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         case RESET:
             break;
         default:
-            chatStyle.setColor(formatting);
+            chatStyle.withColor(formatting);
             break;
         }
     }
@@ -342,27 +343,27 @@ public final class ChatOutputHandler extends ConfigLoaderBase
                     sb.append(" mcf");
                     sb.append(FORMAT_CHARACTERS[color.ordinal()]);
                 }
-                if (style.getBold())
+                if (style.isBold())
                 {
                     sb.append(" mcf");
                     sb.append(FORMAT_CHARACTERS[TextFormatting.BOLD.ordinal()]);
                 }
-                if (style.getItalic())
+                if (style.isItalic())
                 {
                     sb.append(" mcf");
                     sb.append(FORMAT_CHARACTERS[TextFormatting.ITALIC.ordinal()]);
                 }
-                if (style.getUnderlined())
+                if (style.isUnderlined())
                 {
                     sb.append(" mcf");
                     sb.append(FORMAT_CHARACTERS[TextFormatting.UNDERLINE.ordinal()]);
                 }
-                if (style.getObfuscated())
+                if (style.isObfuscated())
                 {
                     sb.append(" mcf");
                     sb.append(FORMAT_CHARACTERS[TextFormatting.OBFUSCATED.ordinal()]);
                 }
-                if (style.getStrikethrough())
+                if (style.isStrikethrough())
                 {
                     sb.append(" mcf");
                     sb.append(FORMAT_CHARACTERS[TextFormatting.STRIKETHROUGH.ordinal()]);
@@ -412,7 +413,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     public static boolean isStyleEmpty(Style style)
     {
-        return !style.getBold() && !style.getItalic() && !style.getObfuscated() && !style.getStrikethrough() && !style.getUnderlined()
+        return !style.isBold() && !style.isItalic() && !style.isObfuscated() && !style.isStrikethrough() && !style.isUnderlined()
                 && style.getColor() == null;
     }
 
@@ -517,28 +518,28 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     public static void setConfirmationColor(String color)
     {
-        chatConfirmationColor = TextFormatting.getValueByName(color);
+        chatConfirmationColor = TextFormatting.getByName(color);
         if (chatConfirmationColor == null)
             chatConfirmationColor = TextFormatting.GREEN;
     }
 
     public static void setErrorColor(String color)
     {
-        chatErrorColor = TextFormatting.getValueByName(color);
+        chatErrorColor = TextFormatting.getByName(color);
         if (chatErrorColor == null)
             chatErrorColor = TextFormatting.RED;
     }
 
     public static void setNotificationColor(String color)
     {
-        chatNotificationColor = TextFormatting.getValueByName(color);
+        chatNotificationColor = TextFormatting.getByName(color);
         if (chatNotificationColor == null)
             chatNotificationColor = TextFormatting.AQUA;
     }
 
     public static void setWarningColor(String color)
     {
-        chatWarningColor = TextFormatting.getValueByName(color);
+        chatWarningColor = TextFormatting.getByName(color);
         if (chatWarningColor == null)
             chatWarningColor = TextFormatting.YELLOW;
     }
