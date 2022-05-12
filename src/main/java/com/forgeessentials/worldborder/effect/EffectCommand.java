@@ -1,9 +1,8 @@
 package com.forgeessentials.worldborder.effect;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,14 +35,14 @@ public class EffectCommand extends WorldBorderEffect
     }
 
     @Override
-    public void activate(WorldBorder border, EntityPlayerMP player)
+    public void activate(WorldBorder border, ServerPlayerEntity player)
     {
         if (interval <= 0)
             doEffect(player);
     }
 
     @Override
-    public void tick(WorldBorder border, EntityPlayerMP player)
+    public void tick(WorldBorder border, ServerPlayerEntity player)
     {
         if (interval <= 0)
             return;
@@ -55,7 +54,7 @@ public class EffectCommand extends WorldBorderEffect
         }
     }
 
-    public void doEffect(EntityPlayerMP player)
+    public void doEffect(ServerPlayerEntity player)
     {
         String cmd = ScriptArguments.processSafe(command, player);
         FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(FMLCommonHandler.instance().getMinecraftServerInstance(), cmd);

@@ -6,7 +6,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -72,7 +72,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
             throw new InvalidSyntaxException(getUsage(sender));
 
         UserIdent ident = UserIdent.get(args[0], sender);
-        EntityPlayerMP player = ident.getPlayerMP();
+        ServerPlayerEntity player = ident.getPlayerMP();
         if (player == null)
             throw new PlayerNotFoundException("commands.generic.player.notFound");
 

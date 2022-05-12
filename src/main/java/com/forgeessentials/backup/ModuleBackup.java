@@ -22,7 +22,7 @@ import java.util.regex.PatternSyntaxException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.IProgressUpdate;
@@ -519,7 +519,7 @@ public class ModuleBackup extends ConfigLoaderBase
     {
         ITextComponent messageComponent = ChatOutputHandler.notification(message);
         if (!FMLCommonHandler.instance().getMinecraftServerInstance().isServerStopped())
-            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                 if (UserIdent.get(player).checkPermission(PERM_NOTIFY))
                     ChatOutputHandler.sendMessage(player, messageComponent);
         ChatOutputHandler.sendMessage(FMLCommonHandler.instance().getMinecraftServerInstance(), messageComponent);

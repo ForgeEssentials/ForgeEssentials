@@ -14,7 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -147,7 +147,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             event.setCanceled(true);
             TileEntity te = event.getWorld().getTileEntity(event.getPos());
             if (te != null)
-                ProtectionEventHandler.updateBrokenTileEntity((EntityPlayerMP) event.getPlayer(), te);
+                ProtectionEventHandler.updateBrokenTileEntity((ServerPlayerEntity) event.getPlayer(), te);
             return;
         }
 
@@ -290,7 +290,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         transactionStack.setCount(shop.amount);
         ITextComponent itemName = transactionStack.getTextComponent();
 
-        Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((EntityPlayerMP) event.getPlayer()));
+        Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((ServerPlayerEntity) event.getPlayer()));
 
         if (shop.sellPrice >= 0 && (shop.buyPrice < 0 || sameItem))
         {

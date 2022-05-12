@@ -1,7 +1,7 @@
 package com.forgeessentials.jscripting.wrapper.mc.entity;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.EnumHand;
@@ -53,7 +53,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
         that.posX = x;
         that.posY = y;
         that.posZ = z;
-        ((EntityPlayerMP) that).connection.setPlayerLocation(x, y, z, that.cameraYaw, that.cameraPitch);
+        ((ServerPlayerEntity) that).connection.setPlayerLocation(x, y, z, that.cameraYaw, that.cameraPitch);
     }
 
     public void setPosition(double x, double y, double z, float yaw, float pitch)
@@ -61,7 +61,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
         that.posX = x;
         that.posY = y;
         that.posZ = z;
-        ((EntityPlayerMP) that).connection.setPlayerLocation(x, y, z, yaw, pitch);
+        ((ServerPlayerEntity) that).connection.setPlayerLocation(x, y, z, yaw, pitch);
     }
 
     public JsICommandSender asCommandSender()
@@ -86,9 +86,9 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 
     public GameType getGameType()
     {
-        if (that instanceof EntityPlayerMP)
+        if (that instanceof ServerPlayerEntity)
         {
-            return ((EntityPlayerMP) that).interactionManager.getGameType();
+            return ((ServerPlayerEntity) that).interactionManager.getGameType();
         }
         return GameType.NOT_SET;
     }

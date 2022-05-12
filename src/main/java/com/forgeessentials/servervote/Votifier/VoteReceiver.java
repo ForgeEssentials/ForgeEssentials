@@ -33,11 +33,10 @@ import java.security.GeneralSecurityException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.servervote.ConfigServerVote;
@@ -188,7 +187,7 @@ public class VoteReceiver extends Thread
                 // Create the vote.
                 VoteEvent vote = new VoteEvent(username, serviceName, address, timeStamp);
 
-                EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(vote.player);
+                ServerPlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByName(vote.player);
                 if (player == null)
                 {
                     if (!ConfigServerVote.allowOfflineVotes)

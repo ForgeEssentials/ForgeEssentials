@@ -9,7 +9,7 @@ import java.util.TreeSet;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -56,7 +56,7 @@ public class CommandPlot extends ParserCommandBase
             case OWN:
                 if (plot.getOwner() == null)
                     return true;
-                if (!(sender instanceof EntityPlayerMP))
+                if (!(sender instanceof ServerPlayerEntity))
                     return false;
                 return plot.getOwner().getPlayer().equals(sender);
             case SALE:

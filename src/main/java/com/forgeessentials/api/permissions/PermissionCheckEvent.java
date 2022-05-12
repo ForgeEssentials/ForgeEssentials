@@ -3,9 +3,10 @@ package com.forgeessentials.api.permissions;
 import java.util.Collection;
 import java.util.List;
 
-import net.minecraftforge.fml.common.eventhandler.Event;
 
 import com.forgeessentials.api.UserIdent;
+
+import net.minecraftforge.eventbus.api.Event;
 
 public class PermissionCheckEvent extends Event
 {

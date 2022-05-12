@@ -1,18 +1,15 @@
 package com.forgeessentials.signtools;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tileentity.SignTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fe.event.world.SignEditEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
@@ -90,22 +87,22 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-        if (event.getWorld().isRemote)
+        if (!event.getWorld().isClientSide)
         {
             return;
         }
 
-        TileEntity te = event.getEntityPlayer().world.getTileEntity(event.getPos());
-        if (te instanceof TileEntitySign)
+        TileEntity te = event.getPlayer().level.getBlockEntity(event.getPos());
+        if (te instanceof SignTileEntity)
         {
-            TileEntitySign sign = ((TileEntitySign) te);
-            if (allowSignEdit && event.getEntityPlayer().isSneaking() && event instanceof RightClickBlock)
+        	SignTileEntity sign = ((SignTileEntity) te);
+            if (allowSignEdit && event.getPlayer().isCrouching() && event instanceof RightClickBlock)
             {
-                if (event.getEntityPlayer().getHeldItemMainhand() != ItemStack.EMPTY)
+                if (event.getPlayer().getMainHandItem() != ItemStack.EMPTY)
                 {
-                    if (PermissionAPI.hasPermission(event.getEntityPlayer(), EDIT_PERM)
-                            && PermissionAPI.hasPermission(event.getEntityPlayer(), "fe.protection.use.minecraft.sign")
-                            && event.getEntityPlayer().getHeldItemMainhand().getItem().equals(Items.SIGN))
+                    if (PermissionAPI.hasPermission(event.getPlayer(), EDIT_PERM)
+                            && PermissionAPI.hasPermission(event.getPlayer(), "fe.protection.use.minecraft.sign")
+                            && event.getPlayer().getMainHandItem().getItem().equals(ItemTags.SIGNS))
                     {
                         //Convert Formatting back into FE format for easy use
                         for (int i = 0; i < sign.signText.length; i++)
@@ -113,7 +110,7 @@ public class SignToolsModule extends ConfigLoaderBase
                             sign.signText[i] = new TextComponentString(sign.signText[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
                         }
 
-                        event.getEntityPlayer().openEditSign((TileEntitySign) te);
+                        event.getPlayer().openEditSign((SignTileEntity) te);
                         event.setCanceled(true);
                     }
                 }
@@ -122,7 +119,7 @@ public class SignToolsModule extends ConfigLoaderBase
 
             String[] signText = getFormatted(sign.signText);
 
-            if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getEntityPlayer(), new SignInfo(event.getEntityPlayer().dimension, event.getPos(), signText, event)))
+            if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer(), new SignInfo(event.getPlayer().dimension, event.getPos(), signText, event)))
             {
                 event.setCanceled(true);
             }
@@ -134,7 +131,7 @@ public class SignToolsModule extends ConfigLoaderBase
                     String send = signText[1] + " " + signText[2] + " " + signText[3];
                     if (send != null && FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager() != null)
                     {
-                        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), send);
+                        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getPlayer(), send);
                         event.setCanceled(true);
                     }
                 }

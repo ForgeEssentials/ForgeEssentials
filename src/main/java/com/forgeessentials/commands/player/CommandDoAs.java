@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -72,9 +72,9 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
             ChatOutputHandler.chatError(sender, getUsage(sender));
             return;
         }
-        if ((sender instanceof EntityPlayerMP) && args[0].equalsIgnoreCase("[CONSOLE]"))
+        if ((sender instanceof ServerPlayerEntity) && args[0].equalsIgnoreCase("[CONSOLE]"))
         {
-            EntityPlayerMP player = (EntityPlayerMP) sender;
+            ServerPlayerEntity player = (ServerPlayerEntity) sender;
             if (!PermissionAPI.hasPermission(player, "fe.commands.doas.console"))
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
@@ -92,7 +92,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBase
             cmd.append(args[i]);
             cmd.append(" ");
         }
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player != null)
         {
             ChatOutputHandler.chatWarning(player, Translator.format("Player %s is attempting to issue a command as you.", sender.getName()));

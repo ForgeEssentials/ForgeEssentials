@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
@@ -86,7 +86,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         int ID = 0;
         int dur = 0;
@@ -114,7 +114,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
         }
         else if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 
             if (player != null)
             {
@@ -142,7 +142,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
         dur = parseInt(args[2], 0, Integer.MAX_VALUE) * 20;
         PotionEffect eff = new PotionEffect(Potion.getPotionById(ID), dur, ampl);
 
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 
         if (player != null)
         {

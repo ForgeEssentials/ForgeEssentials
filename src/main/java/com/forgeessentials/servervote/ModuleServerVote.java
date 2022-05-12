@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SPacketChat;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
@@ -154,7 +154,7 @@ public class ModuleServerVote
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void serverVoteEvent(VoteEvent vote)
     {
-        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(vote.player);
+        ServerPlayerEntity player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(vote.player);
         if (player != null)
         {
             doPlayer(player, vote);
@@ -170,11 +170,11 @@ public class ModuleServerVote
     {
         if (offlineList.containsKey(e.player.getName()))
         {
-            doPlayer((EntityPlayerMP) e.player, offlineList.remove(e.player.getName()));
+            doPlayer((ServerPlayerEntity) e.player, offlineList.remove(e.player.getName()));
         }
     }
 
-    private static void doPlayer(EntityPlayerMP player, VoteEvent vote)
+    private static void doPlayer(ServerPlayerEntity player, VoteEvent vote)
     {
         log.println(String.format("Player %s voted on service %s on %s", vote.player, vote.serviceName, vote.timeStamp));
         if (!ConfigServerVote.msgAll.equals(""))

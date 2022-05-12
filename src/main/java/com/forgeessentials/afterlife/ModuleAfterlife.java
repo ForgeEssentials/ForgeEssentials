@@ -2,7 +2,7 @@ package com.forgeessentials.afterlife;
 
 import java.util.ArrayList;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
@@ -145,7 +145,7 @@ public class ModuleAfterlife extends ServerEventHandler
         if (grave == null)
             return;
 
-        grave.interact((EntityPlayerMP) event.getEntityPlayer());
+        grave.interact((ServerPlayerEntity) event.getEntityPlayer());
         event.setCanceled(true);
     }
 

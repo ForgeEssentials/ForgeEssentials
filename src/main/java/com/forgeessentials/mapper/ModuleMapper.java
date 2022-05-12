@@ -164,7 +164,7 @@ public class ModuleMapper extends ConfigLoaderBase
     // {
     // if (event.phase == Phase.START || ServerUtil.getPlayerList().isEmpty())
     // return;
-    // EntityPlayerMP player = ServerUtil.getPlayerList().get(0);
+    // ServerPlayerEntity player = ServerUtil.getPlayerList().get(0);
     // int x = (int) Math.floor(player.posX);
     // int z = (int) Math.floor(player.posZ);
     // WorldServer world = (WorldServer) player.world;

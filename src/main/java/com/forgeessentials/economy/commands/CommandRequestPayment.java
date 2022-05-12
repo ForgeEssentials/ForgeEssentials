@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -27,11 +27,11 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length != 2)
             throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amountRequested>");
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
         {
             ChatOutputHandler.chatError(sender, args[0] + " not found!");
@@ -52,7 +52,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
         if (args.length != 2)
             throw new TranslatedCommandException("Improper syntax. Please try this instead: <player> <amountRequested>");
 
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
         {
             ChatOutputHandler.chatError(sender, args[0] + " not found!");

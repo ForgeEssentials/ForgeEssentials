@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandMessage;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.util.text.TextComponentString;
@@ -264,7 +264,7 @@ public class ModuleChat
         if (range != null)
         {
             WorldPoint source = new WorldPoint(event.getPlayer());
-            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            for (ServerPlayerEntity player : ServerUtil.getPlayerList())
             {
                 if (player.dimension == source.getDimension() && source.distance(new WorldPoint(player)) <= range)
                     ChatOutputHandler.sendMessage(player, event.getComponent());
@@ -301,9 +301,9 @@ public class ModuleChat
     @SubscribeEvent(priority = EventPriority.LOW)
     public void commandEvent(CommandEvent event)
     {
-        if (!(event.getSender() instanceof EntityPlayerMP))
+        if (!(event.getSender() instanceof ServerPlayerEntity))
             return;
-        EntityPlayerMP player = (EntityPlayerMP) event.getSender();
+        ServerPlayerEntity player = (ServerPlayerEntity) event.getSender();
         if (!PlayerUtil.getPersistedTag(player, false).getBoolean("mute"))
             return;
         if (!ChatConfig.mutedCommands.contains(event.getCommand().getName()))
@@ -421,7 +421,7 @@ public class ModuleChat
     @SubscribeEvent
     public void onPlayerLogin(PlayerLoggedInEvent e)
     {
-        if (e.player instanceof EntityPlayerMP)
+        if (e.player instanceof ServerPlayerEntity)
             sendMotd(e.player);
     }
 
@@ -540,7 +540,7 @@ public class ModuleChat
         msgBody.getStyle().setColor(TextFormatting.GRAY);
         msg.appendSibling(msgBody);
 
-        for (EntityPlayerMP p : ServerUtil.getPlayerList())
+        for (ServerPlayerEntity p : ServerUtil.getPlayerList())
         {
             List<String> groups = GroupEntry.toList(sz.getPlayerGroups(UserIdent.get(p)));
             if (groups.contains(group))

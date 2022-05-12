@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -60,7 +60,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -71,7 +71,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
             }
             else if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
             {
-                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+                ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
                     ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
@@ -90,7 +90,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
             }
             else if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
             {
-                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+                ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
                     player.setFire(parseInt(args[1], 0, Integer.MAX_VALUE));
@@ -114,7 +114,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
         {
             time = parseInt(args[1], 0, Integer.MAX_VALUE);
         }
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player != null)
         {
             player.setFire(time);

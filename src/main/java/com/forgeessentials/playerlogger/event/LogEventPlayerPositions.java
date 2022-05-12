@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -25,12 +25,12 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
     public void process(EntityManager em)
     {
         @SuppressWarnings("unchecked")
-        List<EntityPlayerMP> players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers();
+        List<ServerPlayerEntity> players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers();
         date = new Date();
         
-        for (Iterator<EntityPlayerMP> it = players.iterator(); it.hasNext();)
+        for (Iterator<ServerPlayerEntity> it = players.iterator(); it.hasNext();)
         {
-            EntityPlayerMP player = it.next();
+            ServerPlayerEntity player = it.next();
 
             // Action03PlayerEvent action = new Action03PlayerEvent();
             // action.type = PlayerEventType.MOVE;

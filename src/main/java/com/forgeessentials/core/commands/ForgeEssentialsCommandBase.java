@@ -16,7 +16,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.tileentity.TileEntityCommandBlock;
@@ -111,9 +111,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        if (sender instanceof EntityPlayerMP)
+        if (sender instanceof ServerPlayerEntity)
         {
-            processCommandPlayer(server, (EntityPlayerMP) sender, args);
+            processCommandPlayer(server, (ServerPlayerEntity) sender, args);
         }
         else if (sender instanceof CommandBlockBaseLogic)
         {
@@ -125,7 +125,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         }
     }
 
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         throw new TranslatedCommandException("This command cannot be used as player");
     }

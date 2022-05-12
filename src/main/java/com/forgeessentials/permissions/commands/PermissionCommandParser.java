@@ -13,7 +13,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -1307,7 +1307,7 @@ public class PermissionCommandParser
             ChatOutputHandler.chatNotification(sender, " - " + ident.getUsernameOrUuid());
 
         ChatOutputHandler.chatNotification(sender, "Online players:");
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
             ChatOutputHandler.chatNotification(sender, " - " + player.getName());
     }
 

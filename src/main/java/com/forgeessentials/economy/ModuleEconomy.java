@@ -8,7 +8,7 @@ import java.util.UUID;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -232,7 +232,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     public void onXPPickup(PlayerPickupXpEvent e)
     {
-        if (e.getEntityPlayer() instanceof EntityPlayerMP)
+        if (e.getEntityPlayer() instanceof ServerPlayerEntity)
         {
             UserIdent ident = UserIdent.get(e.getEntityPlayer());
             double xpMultiplier = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(ident, PERM_XP_MULTIPLIER), 0);
@@ -246,9 +246,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     public void onDeath(LivingDeathEvent e)
     {
-        if (e.getEntity() instanceof EntityPlayerMP)
+        if (e.getEntity() instanceof ServerPlayerEntity)
         {
-            UserIdent ident = UserIdent.get((EntityPlayerMP) e.getEntity());
+            UserIdent ident = UserIdent.get((ServerPlayerEntity) e.getEntity());
             Long deathtoll = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, PERM_DEATHTOLL));
             if (deathtoll == null || deathtoll <= 0)
                 return;
@@ -267,9 +267,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             ChatOutputHandler.chatNotification((ICommandSender) e.getEntity(), Translator.format("You lost %s from dying", APIRegistry.economy.toString(loss)));
         }
 
-        if (e.getSource().getTrueSource() instanceof EntityPlayerMP)
+        if (e.getSource().getTrueSource() instanceof ServerPlayerEntity)
         {
-            UserIdent killer = UserIdent.get((EntityPlayerMP) e.getSource().getTrueSource());
+            UserIdent killer = UserIdent.get((ServerPlayerEntity) e.getSource().getTrueSource());
             String permission = PERM_BOUNTY + "." + ProtectionEventHandler.getEntityName(e.getEntityLiving());
             double bounty = ServerUtil.parseDoubleDefault(APIRegistry.perms.getUserPermissionProperty(killer, permission), 0);
             if (bounty > 0)
@@ -286,9 +286,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void commandEvent(CommandEvent event)
     {
-        if (!(event.getSender() instanceof EntityPlayerMP))
+        if (!(event.getSender() instanceof ServerPlayerEntity))
             return;
-        UserIdent ident = UserIdent.get((EntityPlayerMP) event.getSender());
+        UserIdent ident = UserIdent.get((ServerPlayerEntity) event.getSender());
 
         for (int i = event.getParameters().length; i >= 0; i--)
         {

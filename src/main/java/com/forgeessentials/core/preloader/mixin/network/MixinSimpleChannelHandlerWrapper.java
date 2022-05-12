@@ -1,6 +1,6 @@
 package com.forgeessentials.core.preloader.mixin.network;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -31,7 +31,7 @@ public abstract class MixinSimpleChannelHandlerWrapper<REQ extends IMessage, REP
     private REPLY redirectNetworkHandler(IMessageHandler iMessageHandler, REQ message, MessageContext ctx) {
 
 
-        EntityPlayerMP player = ctx.netHandler instanceof NetHandlerPlayServer ? ctx.getServerHandler().player : null;
+        ServerPlayerEntity player = ctx.netHandler instanceof NetHandlerPlayServer ? ctx.getServerHandler().player : null;
         if (ctx.side == Side.CLIENT || !ModuleAuth.isEnabled() || ModuleAuth.isAuthenticated(player) || ModuleAuth.isAllowedMethod(message)) {
             return messageHandler.onMessage(message, ctx);
         }

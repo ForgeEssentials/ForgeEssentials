@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -27,7 +27,7 @@ import com.forgeessentials.util.PlayerInfo;
 public class RespawnHandler
 {
 
-    protected Set<EntityPlayerMP> respawnPlayers = Collections.newSetFromMap(new WeakHashMap<EntityPlayerMP, Boolean>());
+    protected Set<ServerPlayerEntity> respawnPlayers = Collections.newSetFromMap(new WeakHashMap<ServerPlayerEntity, Boolean>());
 
     public RespawnHandler()
     {
@@ -87,9 +87,9 @@ public class RespawnHandler
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onPlayerDeath(LivingDeathEvent e)
     {
-        if (e.getEntityLiving() instanceof EntityPlayerMP)
+        if (e.getEntityLiving() instanceof ServerPlayerEntity)
         {
-            EntityPlayerMP player = (EntityPlayerMP) e.getEntityLiving();
+            ServerPlayerEntity player = (ServerPlayerEntity) e.getEntityLiving();
             PlayerInfo pi = PlayerInfo.get(player.getPersistentID());
             pi.setLastDeathLocation(new WarpPoint(player));
             pi.setLastTeleportOrigin(pi.getLastDeathLocation());
@@ -99,9 +99,9 @@ public class RespawnHandler
     @SubscribeEvent
     public void doFirstRespawn(EntityJoinWorldEvent e)
     {
-        if (!e.getEntity().getClass().equals(EntityPlayerMP.class))
+        if (!e.getEntity().getClass().equals(ServerPlayerEntity.class))
             return;
-        EntityPlayerMP player = (EntityPlayerMP) e.getEntity();
+        ServerPlayerEntity player = (ServerPlayerEntity) e.getEntity();
         if (respawnPlayers.remove(player))
         {
             WarpPoint p = getPlayerSpawn(player, null, true);
@@ -113,7 +113,7 @@ public class RespawnHandler
     @SubscribeEvent
     public void playerLoadFromFile(PlayerEvent.LoadFromFile event)
     {
-        EntityPlayerMP player = (EntityPlayerMP) event.getEntityLiving();
+        ServerPlayerEntity player = (ServerPlayerEntity) event.getEntityLiving();
         File f = new File(event.getPlayerDirectory(), event.getPlayerUUID() + ".dat");
         if (!f.exists())
         {
@@ -131,7 +131,7 @@ public class RespawnHandler
     @SubscribeEvent
     public void doRespawn(PlayerRespawnEvent event)
     {
-        EntityPlayerMP player = (EntityPlayerMP) event.player;
+        ServerPlayerEntity player = (ServerPlayerEntity) event.player;
         player.connection.player = player;
 
         WarpPoint lastDeathLocation = PlayerInfo.get(player.getPersistentID()).getLastDeathLocation();

@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -63,7 +63,7 @@ public class CommandLocate extends ForgeEssentialsCommandBase
         if (args.length != 1)
             throw new TranslatedCommandException(getUsage(sender));
 
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
             throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 

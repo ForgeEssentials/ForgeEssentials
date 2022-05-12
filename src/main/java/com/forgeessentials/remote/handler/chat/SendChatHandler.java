@@ -1,6 +1,6 @@
 package com.forgeessentials.remote.handler.chat;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.ForgeHooks;
@@ -40,7 +40,7 @@ public class SendChatHandler extends GenericRemoteHandler<String>
         UserIdent ident = session.getUserIdent();
         if (ident != null)
         {
-            EntityPlayerMP player = ident.getFakePlayer();
+            ServerPlayerEntity player = ident.getFakePlayer();
             TextComponentTranslation message = new TextComponentTranslation("chat.type.text", new Object[] { player.getDisplayName(),
                     ForgeHooks.newChatWithLinks(request.data) });
             ServerChatEvent event = new ServerChatEvent(player, request.data, message);

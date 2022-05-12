@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.world.WorldEvent;
@@ -91,7 +91,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     @SubscribeEvent
     public void playerMoveEvent(PlayerMoveEvent event)
     {
-        EntityPlayerMP player = event.getPlayer();
+        ServerPlayerEntity player = event.getPlayer();
         WorldBorder border = getBorder(event.after.getWorld());
         if (border != null && border.isEnabled())
         {
@@ -177,7 +177,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     public void serverTickEvent(TickEvent.ServerTickEvent event)
     {
         // Tick effects
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
             WorldBorder border = getBorder(player.world);
             if (border != null && border.isEnabled())

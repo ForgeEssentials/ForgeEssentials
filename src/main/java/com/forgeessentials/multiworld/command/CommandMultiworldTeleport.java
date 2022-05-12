@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -73,7 +73,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
             return;
         }
 
-        EntityPlayerMP player = arguments.parsePlayer(true, true).getPlayerMP();
+        ServerPlayerEntity player = arguments.parsePlayer(true, true).getPlayerMP();
         if (player == null)
             throw new TranslatedCommandException("Missing player-name argument.");
 

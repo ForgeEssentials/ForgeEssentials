@@ -17,7 +17,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
@@ -45,7 +45,7 @@ public class CommandParserArgs
     public final ICommand command;
     public final LinkedList<String> args;
     public final ICommandSender sender;
-    public final EntityPlayerMP senderPlayer;
+    public final ServerPlayerEntity senderPlayer;
     public final UserIdent ident;
     public final boolean isTabCompletion;
     public final MinecraftServer server;
@@ -58,7 +58,7 @@ public class CommandParserArgs
         this.command = command;
         this.args = new LinkedList<>(Arrays.asList(args));
         this.sender = sender;
-        this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
+        this.senderPlayer = (sender instanceof ServerPlayerEntity) ? (ServerPlayerEntity) sender : null;
         this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null) : UserIdent
                 .get(senderPlayer);
         this.isTabCompletion = isTabCompletion;
@@ -194,7 +194,7 @@ public class CommandParserArgs
             if (CommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
                 result.add(knownPlayerIdent.getUsernameOrUuid());
         }
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
             if (CommandBase.doesStringStartWith(arg, player.getName()))
                 result.add(player.getName());

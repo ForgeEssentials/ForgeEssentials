@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -56,7 +56,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
         Map<UUID, Map<String, JsonElement>> players = new HashMap<>();
         if (request.data == null || request.data.name == null)
         {
-            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            for (ServerPlayerEntity player : ServerUtil.getPlayerList())
             {
                 UserIdent ident = UserIdent.get(player);
                 players.put(ident.getUuid(), getPlayerInfoResponse(session, ident, request.data == null ? null : request.data.flags));

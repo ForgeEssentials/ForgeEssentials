@@ -5,16 +5,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fe.event.entity.EntityPortalEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -81,7 +77,7 @@ public class PortalManager extends ServerEventHandler
             if (portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
             {
                 if (!MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(e.getEntity(), after.getWorld(), after.getBlockPos(), portal.target.getDimension(), portal.target.getBlockPos()))) {
-                    TeleportHelper.doTeleport((EntityPlayerMP) e.getEntityPlayer(), portal.target.toWarpPoint(e.getEntityPlayer().rotationPitch, e.getEntityPlayer().rotationYaw));
+                    TeleportHelper.doTeleport((ServerPlayerEntity) e.getEntityPlayer(), portal.target.toWarpPoint(e.getEntityPlayer().rotationPitch, e.getEntityPlayer().rotationYaw));
                 }
             }
         }
@@ -92,7 +88,7 @@ public class PortalManager extends ServerEventHandler
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.getPos());
+        WorldPoint point = new WorldPoint(event.getPlayer().level, event.getPos());
         Portal portal = getPortalAt(point);
         if (portal != null && portal.hasFrame())
             event.setCanceled(true);

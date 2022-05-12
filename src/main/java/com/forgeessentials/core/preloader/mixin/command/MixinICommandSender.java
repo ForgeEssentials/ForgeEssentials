@@ -2,7 +2,7 @@ package com.forgeessentials.core.preloader.mixin.command;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
@@ -18,7 +18,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.PermissionManager;
 
-@Mixin(value = { EntityPlayerMP.class, MinecraftServer.class, RConConsoleSource.class, CommandBlockBaseLogic.class},
+@Mixin(value = { ServerPlayerEntity.class, MinecraftServer.class, RConConsoleSource.class, CommandBlockBaseLogic.class},
         targets = {"net/minecraft/tileentity/TileEntitySign$1", "net/minecraft/tileentity/TileEntitySign$2"})
 public abstract class MixinICommandSender implements ICommandSender
 {

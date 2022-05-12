@@ -1,16 +1,16 @@
 package com.forgeessentials.commands.util;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryBasic;
 
 public class PlayerInvChest extends InventoryBasic
 {
-    public EntityPlayerMP vieuwer;
-    public EntityPlayerMP owner;
+    public ServerPlayerEntity vieuwer;
+    public ServerPlayerEntity owner;
     public boolean allowUpdate;
 
-    public PlayerInvChest(EntityPlayerMP owner, EntityPlayerMP vieuwer)
+    public PlayerInvChest(ServerPlayerEntity owner, ServerPlayerEntity vieuwer)
     {
         super(owner.getName() + "'s inventory", false, owner.inventory.mainInventory.size());
         this.owner = owner;

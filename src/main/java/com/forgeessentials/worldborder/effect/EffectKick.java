@@ -1,7 +1,7 @@
 package com.forgeessentials.worldborder.effect;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -12,7 +12,6 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
-import net.minecraft.util.text.TextComponentTranslation;
 
 /**
  * Expected syntax: <interval> (in seconds)
@@ -31,7 +30,7 @@ public class EffectKick extends WorldBorderEffect
     }
 
     @Override
-    public void activate(WorldBorder border, EntityPlayerMP player)
+    public void activate(WorldBorder border, ServerPlayerEntity player)
     {
         if (!player.getServer().isDedicatedServer())
         {
@@ -44,7 +43,7 @@ public class EffectKick extends WorldBorderEffect
     }
 
     @Override
-    public void tick(WorldBorder border, EntityPlayerMP player)
+    public void tick(WorldBorder border, ServerPlayerEntity player)
     {
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))

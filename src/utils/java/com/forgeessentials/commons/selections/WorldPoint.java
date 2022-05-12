@@ -23,7 +23,7 @@ import com.google.gson.annotations.Expose;
 public class WorldPoint extends Point
 {
 
-    protected RegistryKey<World> dim;
+    protected World dim;
 
     @Expose(serialize = false)
     protected World world;

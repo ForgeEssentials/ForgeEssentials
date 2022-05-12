@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.GameType;
@@ -189,9 +189,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return ((EntityPlayerMP) sender).getPersistentID().toString();
+            return ((ServerPlayerEntity) sender).getPersistentID().toString();
         }
 
         @Override
@@ -205,9 +205,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString((int) ((EntityPlayerMP) sender).posX);
+            return Integer.toString((int) ((ServerPlayerEntity) sender).posX);
         }
 
         @Override
@@ -221,9 +221,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString((int) ((EntityPlayerMP) sender).posY);
+            return Integer.toString((int) ((ServerPlayerEntity) sender).posY);
         }
 
         @Override
@@ -237,9 +237,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString((int) ((EntityPlayerMP) sender).posZ);
+            return Integer.toString((int) ((ServerPlayerEntity) sender).posZ);
         }
 
         @Override
@@ -253,9 +253,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Double.toString(((EntityPlayerMP) sender).posX);
+            return Double.toString(((ServerPlayerEntity) sender).posX);
         }
 
         @Override
@@ -269,9 +269,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Double.toString(((EntityPlayerMP) sender).posY);
+            return Double.toString(((ServerPlayerEntity) sender).posY);
         }
 
         @Override
@@ -285,9 +285,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Double.toString(((EntityPlayerMP) sender).posZ);
+            return Double.toString(((ServerPlayerEntity) sender).posZ);
         }
 
         @Override
@@ -301,9 +301,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString(((EntityPlayerMP) sender).dimension);
+            return Integer.toString(((ServerPlayerEntity) sender).dimension);
         }
 
         @Override
@@ -317,9 +317,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            GameType type = ((EntityPlayerMP) sender).interactionManager.getGameType();
+            GameType type = ((ServerPlayerEntity) sender).interactionManager.getGameType();
             switch (type) {
                 case CREATIVE:
                     return ChatConfig.gamemodeCreative;
@@ -342,9 +342,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Float.toString(((EntityPlayerMP) sender).getHealth());
+            return Float.toString(((ServerPlayerEntity) sender).getHealth());
         }
 
         @Override
@@ -358,9 +358,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            float health = ((EntityPlayerMP) sender).getHealth();
+            float health = ((ServerPlayerEntity) sender).getHealth();
             if (health <= 6)
                 return TextFormatting.RED.toString();
             if (health < 16)
@@ -379,9 +379,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString(((EntityPlayerMP) sender).getFoodStats().getFoodLevel());
+            return Integer.toString(((ServerPlayerEntity) sender).getFoodStats().getFoodLevel());
         }
 
         @Override
@@ -395,9 +395,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            float hunger = ((EntityPlayerMP) sender).getFoodStats().getFoodLevel();
+            float hunger = ((ServerPlayerEntity) sender).getFoodStats().getFoodLevel();
             if (hunger <= 6)
                 return TextFormatting.RED.toString();
             if (hunger < 12)
@@ -416,9 +416,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Float.toString(((EntityPlayerMP) sender).getFoodStats().getSaturationLevel());
+            return Float.toString(((ServerPlayerEntity) sender).getFoodStats().getSaturationLevel());
         }
 
         @Override
@@ -432,9 +432,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            float hunger = ((EntityPlayerMP) sender).getFoodStats().getSaturationLevel();
+            float hunger = ((ServerPlayerEntity) sender).getFoodStats().getSaturationLevel();
             if (hunger <= 0)
                 return TextFormatting.RED.toString();
             if (hunger <= 1.5)
@@ -453,9 +453,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(((EntityPlayerMP) sender))).getName();
+            return APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(((ServerPlayerEntity) sender))).getName();
         }
 
         @Override
@@ -469,9 +469,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString(APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(((EntityPlayerMP) sender))).getId());
+            return Integer.toString(APIRegistry.perms.getServerZone().getZoneAt(new WorldPoint(((ServerPlayerEntity) sender))).getId());
         }
 
         @Override
@@ -485,9 +485,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            ServerPlayerEntity _player = ((ServerPlayerEntity) sender);
             return APIRegistry.perms.getServerZone().getPlayerGroups(UserIdent.get(_player)).first().getGroup();
         }
 
@@ -502,9 +502,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            ServerPlayerEntity _player = ((ServerPlayerEntity) sender);
             return ChatOutputHandler.formatTimeDurationReadable(PlayerInfo.get(_player).getTimePlayed() / 1000, true);
         }
 
@@ -519,9 +519,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            ServerPlayerEntity _player = ((ServerPlayerEntity) sender);
             return FEConfig.FORMAT_DATE_TIME.format(PlayerInfo.get(_player).getLastLogout());
         }
 
@@ -536,9 +536,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            ServerPlayerEntity _player = ((ServerPlayerEntity) sender);
             return FEConfig.FORMAT_DATE_TIME.format(PlayerInfo.get(_player).getLastLogin());
         }
 
@@ -553,9 +553,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            ServerPlayerEntity _player = ((ServerPlayerEntity) sender);
             return ChatOutputHandler.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogout().getTime()) / 1000, true);
         }
 
@@ -570,9 +570,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            EntityPlayerMP _player = ((EntityPlayerMP) sender);
+            ServerPlayerEntity _player = ((ServerPlayerEntity) sender);
             return ChatOutputHandler.formatTimeDurationReadable((new Date().getTime() - PlayerInfo.get(_player).getLastLogin().getTime()) / 1000, true);
         }
 
@@ -733,9 +733,9 @@ public final class ScriptArguments
         @Override
         public String process(ICommandSender sender)
         {
-            if (!(sender instanceof EntityPlayerMP))
+            if (!(sender instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString(((EntityPlayerMP) sender).experienceLevel);
+            return Integer.toString(((ServerPlayerEntity) sender).experienceLevel);
         }
 
         @Override

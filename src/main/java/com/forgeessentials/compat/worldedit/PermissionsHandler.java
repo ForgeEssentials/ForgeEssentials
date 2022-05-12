@@ -1,7 +1,7 @@
 package com.forgeessentials.compat.worldedit;
 
 import net.minecraft.command.ICommand;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -12,7 +12,7 @@ public class PermissionsHandler implements ForgePermissionsProvider
 {
 
     @Override
-    public boolean hasPermission(EntityPlayerMP player, String permission)
+    public boolean hasPermission(ServerPlayerEntity player, String permission)
     {
         return PermissionAPI.hasPermission(player, permission);
     }

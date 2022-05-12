@@ -5,7 +5,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -75,7 +75,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
         {
             world = ((DedicatedServer) sender).getWorld(0);
         }
-        else if (sender instanceof EntityPlayerMP)
+        else if (sender instanceof ServerPlayerEntity)
         {
             world = ((Entity) sender).world;
             x = (int) this.func_82368_a(sender, ((Entity) sender).posX, args[0]);
@@ -259,9 +259,9 @@ public class CommandDrop extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
-        EntityPlayerMP playermp = UserIdent.getPlayerByMatchOrUsername(sender, sender.getName());
+        ServerPlayerEntity playermp = UserIdent.getPlayerByMatchOrUsername(sender, sender.getName());
         processCommand(playermp, args);
     }
 

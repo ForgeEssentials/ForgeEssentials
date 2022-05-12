@@ -6,7 +6,7 @@ import java.util.Set;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -78,7 +78,7 @@ public class CommandPersonalWarp extends ParserCommandBase
         APIRegistry.perms.registerPermissionPropertyOp(PERM_LIMIT, "false");
     }
 
-    public static PersonalWarp getWarps(EntityPlayerMP player)
+    public static PersonalWarp getWarps(ServerPlayerEntity player)
     {
         PersonalWarp warps = DataManager.getInstance().load(PersonalWarp.class, player.getPersistentID().toString());
         if (warps == null)

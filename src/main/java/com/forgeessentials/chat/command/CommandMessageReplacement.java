@@ -6,7 +6,7 @@ import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.command.server.CommandMessage;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 
@@ -24,7 +24,7 @@ public class CommandMessageReplacement extends CommandMessage
         }
         else
         {
-            EntityPlayerMP target = getPlayer(server, sender, args[0]);
+            ServerPlayerEntity target = getPlayer(server, sender, args[0]);
 
             if (target == null)
             {

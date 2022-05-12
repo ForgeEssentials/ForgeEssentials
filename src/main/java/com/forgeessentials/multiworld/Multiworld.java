@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
@@ -89,7 +89,7 @@ public class Multiworld
     public void removeAllPlayersFromWorld()
     {
         WorldServer overworld = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0);
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
             if (player.dimension == dimensionId)
             {
@@ -212,7 +212,7 @@ public class Multiworld
      * Teleport the player to the multiworld
      * @throws CommandException 
      */
-    public void teleport(EntityPlayerMP player, boolean instant) throws CommandException
+    public void teleport(ServerPlayerEntity player, boolean instant) throws CommandException
     {
         teleport(player, getWorldServer(), instant);
     }
@@ -222,7 +222,7 @@ public class Multiworld
      * 
      * @throws CommandException
      */
-    public static void teleport(EntityPlayerMP player, WorldServer world, boolean instant) throws CommandException
+    public static void teleport(ServerPlayerEntity player, WorldServer world, boolean instant) throws CommandException
     {
         teleport(player, world, player.posX, player.posY, player.posZ, instant);
     }
@@ -232,7 +232,7 @@ public class Multiworld
      * 
      * @throws CommandException
      */
-    public static void teleport(EntityPlayerMP player, WorldServer world, double x, double y, double z, boolean instant) throws CommandException
+    public static void teleport(ServerPlayerEntity player, WorldServer world, double x, double y, double z, boolean instant) throws CommandException
     {
         boolean worldChange = player.world.provider.getDimension() != world.provider.getDimension();
         if (worldChange)
@@ -249,7 +249,7 @@ public class Multiworld
             displayWelcomeMessage(player);
     }
 
-    public static void displayDepartMessage(EntityPlayerMP player)
+    public static void displayDepartMessage(ServerPlayerEntity player)
     {
         // String msg = player.world.provider.getDepartMessage();
         // if (msg == null)
@@ -259,7 +259,7 @@ public class Multiworld
         // ChatOutputHandler.sendMessage(player, new ChatComponentText(msg));
     }
 
-    public static void displayWelcomeMessage(EntityPlayerMP player)
+    public static void displayWelcomeMessage(ServerPlayerEntity player)
     {
         // String msg = player.world.provider.getWelcomeMessage();
         // if (msg == null)

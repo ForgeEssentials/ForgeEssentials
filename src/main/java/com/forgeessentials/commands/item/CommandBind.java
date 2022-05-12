@@ -2,7 +2,7 @@ package com.forgeessentials.commands.item;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -155,7 +155,7 @@ public class CommandBind extends ParserCommandBase
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!(event.getEntityPlayer() instanceof EntityPlayerMP))
+        if (!(event.getEntityPlayer() instanceof ServerPlayerEntity))
             return;
         ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
         if (stack == ItemStack.EMPTY || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TAG_NAME))

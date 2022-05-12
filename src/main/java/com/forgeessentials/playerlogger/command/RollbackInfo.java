@@ -7,7 +7,7 @@ import java.util.TimerTask;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.network.play.server.SPacketBlockChange;
 import net.minecraft.util.ResourceLocation;
@@ -26,7 +26,7 @@ import com.google.common.collect.Lists;
 public class RollbackInfo
 {
 
-    EntityPlayerMP player;
+    ServerPlayerEntity player;
 
     private Selection area;
 
@@ -36,7 +36,7 @@ public class RollbackInfo
 
     public PlaybackTask task;
 
-    public RollbackInfo(EntityPlayerMP player, Selection area)
+    public RollbackInfo(ServerPlayerEntity player, Selection area)
     {
         this.player = player;
         this.area = area;
@@ -149,7 +149,7 @@ public class RollbackInfo
      * @param newBlock
      * @param newMeta
      */
-    public static void sendBlockChange(EntityPlayerMP player, Action01Block change, IBlockState newState)
+    public static void sendBlockChange(ServerPlayerEntity player, Action01Block change, IBlockState newState)
     {
         SPacketBlockChange packet = new SPacketBlockChange(DimensionManager.getWorld(change.world.id), change.getBlockPos());
         packet.blockState = newState;

@@ -3,19 +3,16 @@ package com.forgeessentials.util.events;
 import java.util.HashMap;
 import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class ForgeEssentialsEventFactory extends ServerEventHandler
 {
@@ -49,7 +46,7 @@ public class ForgeEssentialsEventFactory extends ServerEventHandler
     @SubscribeEvent
     public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent e)
     {
-        lastPlayerPosition.remove(e.player.getPersistentID());
+        lastPlayerPosition.remove(e.getPlayer().getUUID());
     }
 
 }

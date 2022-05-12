@@ -3,7 +3,7 @@ package com.forgeessentials.commands.player;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -52,7 +52,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity player, String[] args) throws CommandException
     {
         if (!PlayerInfo.get(player).getHasFEClient())
         {
@@ -91,7 +91,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
                 WorldUtil.placeInWorld(player);
                 if (!player.world.isRemote)
                 {
-                    NetworkUtils.netHandler.sendTo(new Packet5Noclip(pi.isNoClip()), (EntityPlayerMP) player);
+                    NetworkUtils.netHandler.sendTo(new Packet5Noclip(pi.isNoClip()), (ServerPlayerEntity) player);
                     ChatOutputHandler.chatNotification(player, "NoClip auto-disabled: the targeted player is not flying");
                 }
             }

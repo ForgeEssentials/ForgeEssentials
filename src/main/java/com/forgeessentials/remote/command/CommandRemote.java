@@ -1,10 +1,7 @@
 package com.forgeessentials.remote.command;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -187,10 +184,10 @@ public class CommandRemote extends ParserCommandBase
 
         ITextComponent qrLink = new StringTextComponent("[QR code]");
         if (ident.hasUuid() && PlayerInfo.get(ident.getUuid()).getHasFEClient())
-            qrLink.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr"));
+            qrLink.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr"));
         else
-            qrLink.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
-        qrLink.getStyle().setColor(TextFormatting.RED);
+            qrLink.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        qrLink.getStyle().withColor(TextFormatting.RED);
         qrLink.getStyle().setUnderlined(true);
         msg.appendSibling(qrLink);
 

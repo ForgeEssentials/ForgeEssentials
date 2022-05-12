@@ -1,6 +1,6 @@
 package com.forgeessentials.compat.worldedit;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -31,7 +31,7 @@ public class WESelectionHandler implements ISelectionProvider
     }
 
     @Override
-    public Selection getSelection(EntityPlayerMP player)
+    public Selection getSelection(ServerPlayerEntity player)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         if (session.getSelectionWorld() == null)
@@ -114,7 +114,7 @@ public class WESelectionHandler implements ISelectionProvider
     }
 
     @Override
-    public void setDimension(EntityPlayerMP player, int dim)
+    public void setDimension(ServerPlayerEntity player, int dim)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         ForgeWorld world = ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(dim));
@@ -122,21 +122,21 @@ public class WESelectionHandler implements ISelectionProvider
     }
 
     @Override
-    public void setStart(EntityPlayerMP player, Point start)
+    public void setStart(ServerPlayerEntity player, Point start)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         session.getRegionSelector(session.getSelectionWorld()).selectPrimary(new Vector(start.getX(), start.getY(), start.getZ()), null);
     }
 
     @Override
-    public void setEnd(EntityPlayerMP player, Point end)
+    public void setEnd(ServerPlayerEntity player, Point end)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         session.getRegionSelector(session.getSelectionWorld()).selectSecondary(new Vector(end.getX(), end.getY(), end.getZ()), null);
     }
 
     @Override
-    public void select(EntityPlayerMP player, int dimension, AreaBase area)
+    public void select(ServerPlayerEntity player, int dimension, AreaBase area)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         ForgeWorld world = ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(dimension));

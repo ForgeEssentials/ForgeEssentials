@@ -1,7 +1,7 @@
 package com.forgeessentials.commands.util;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,9 +15,9 @@ public class VirtualChest extends InventoryBasic
 
     public static final String VIRTUALCHEST_TAG = "VirtualChestItems";
 
-    private EntityPlayerMP owner;
+    private ServerPlayerEntity owner;
 
-    public VirtualChest(EntityPlayerMP player)
+    public VirtualChest(ServerPlayerEntity player)
     {
         super(CommandVirtualchest.name, false, CommandVirtualchest.size);
         owner = player;

@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -61,7 +61,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -74,7 +74,7 @@ public class CommandHome extends ForgeEssentialsCommandBase
         {
             if (args[0].equalsIgnoreCase("set"))
             {
-                EntityPlayerMP player = sender;
+                ServerPlayerEntity player = sender;
                 if (args.length == 2)
                 {
                     if (!PermissionAPI.hasPermission(sender, TeleportModule.PERM_HOME_OTHER))

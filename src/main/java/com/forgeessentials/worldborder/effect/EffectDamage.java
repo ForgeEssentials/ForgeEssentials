@@ -1,7 +1,7 @@
 package com.forgeessentials.worldborder.effect;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
 
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -35,12 +35,12 @@ public class EffectDamage extends WorldBorderEffect
     }
 
     @Override
-    public void tick(WorldBorder border, EntityPlayerMP player)
+    public void tick(WorldBorder border, ServerPlayerEntity player)
     {
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.attackEntityFrom(DamageSource.OUT_OF_WORLD, damage);
+        	player.hurt(DamageSource.OUT_OF_WORLD, damage);
             pi.startTimeout(this.getClass().getName(), interval *  1000);
         }
     }

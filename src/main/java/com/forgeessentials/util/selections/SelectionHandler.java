@@ -1,7 +1,7 @@
 package com.forgeessentials.util.selections;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
@@ -70,7 +70,7 @@ public class SelectionHandler extends ServerEventHandler
 
         WorldPoint point = new WorldPoint(player.dimension, event.getPos());
 
-        SelectionHandler.setStart((EntityPlayerMP) event.getEntityPlayer(), point);
+        SelectionHandler.setStart((ServerPlayerEntity) event.getEntityPlayer(), point);
         String message = Translator.format("Pos1 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
         ChatOutputHandler.sendMessage(player, message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);
@@ -106,14 +106,14 @@ public class SelectionHandler extends ServerEventHandler
 
         WorldPoint point = new WorldPoint(player.dimension, event.getPos());
 
-        SelectionHandler.setEnd((EntityPlayerMP) event.getEntityPlayer(), point);
+        SelectionHandler.setEnd((ServerPlayerEntity) event.getEntityPlayer(), point);
         String message = Translator.format("Pos2 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
         ChatOutputHandler.sendMessage(player, message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);
 
     }
 
-    public static void sendUpdate(EntityPlayerMP player)
+    public static void sendUpdate(ServerPlayerEntity player)
     {
         if (PlayerInfo.get(player).getHasFEClient())
         {
@@ -128,27 +128,27 @@ public class SelectionHandler extends ServerEventHandler
         }
     }
 
-    public static Selection getSelection(EntityPlayerMP player)
+    public static Selection getSelection(ServerPlayerEntity player)
     {
         return selectionProvider.getSelection(player);
     }
 
-    public static void setDimension(EntityPlayerMP player, int dim)
+    public static void setDimension(ServerPlayerEntity player, int dim)
     {
         selectionProvider.setDimension(player, dim);
     }
 
-    public static void setStart(EntityPlayerMP player, Point start)
+    public static void setStart(ServerPlayerEntity player, Point start)
     {
         selectionProvider.setStart(player, start);
     }
 
-    public static void setEnd(EntityPlayerMP player, Point end)
+    public static void setEnd(ServerPlayerEntity player, Point end)
     {
         selectionProvider.setEnd(player, end);
     }
 
-    public static void select(EntityPlayerMP player, int dimension, AreaBase area)
+    public static void select(ServerPlayerEntity player, int dimension, AreaBase area)
     {
         selectionProvider.select(player, dimension, area);
     }

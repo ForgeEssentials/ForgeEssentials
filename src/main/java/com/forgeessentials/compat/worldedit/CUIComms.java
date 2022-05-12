@@ -3,7 +3,7 @@ package com.forgeessentials.compat.worldedit;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.CommandEvent;
@@ -30,19 +30,19 @@ public class CUIComms
     public static final String[] worldEditSelectionCommands = new String[] { "/pos1", "/pos2", "/sel", "/desel", "/hpos1", "/hpos2", "/chunk", "/expand",
             "/contract", "/outset", "/inset", "/shift" };
 
-    protected List<EntityPlayerMP> updatedSelectionPlayers = new ArrayList<>();
+    protected List<ServerPlayerEntity> updatedSelectionPlayers = new ArrayList<>();
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void checkWECommands(CommandEvent e)
     {
-        if (e.getSender() instanceof EntityPlayerMP)
+        if (e.getSender() instanceof ServerPlayerEntity)
         {
             String cmd = e.getCommand().getName();
             for (String weCmd : worldEditSelectionCommands)
             {
                 if (cmd.equals(weCmd) && !(e.getSender() instanceof FakePlayer))
                 {
-                    updatedSelectionPlayers.add((EntityPlayerMP) e.getSender());
+                    updatedSelectionPlayers.add((ServerPlayerEntity) e.getSender());
                     return;
                 }
             }
@@ -52,7 +52,7 @@ public class CUIComms
     @SubscribeEvent
     public void serverTick(TickEvent.ServerTickEvent e)
     {
-        for (EntityPlayerMP player : updatedSelectionPlayers)
+        for (ServerPlayerEntity player : updatedSelectionPlayers)
             SelectionHandler.sendUpdate(player);
         updatedSelectionPlayers.clear();
     }
@@ -60,8 +60,8 @@ public class CUIComms
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (event.getEntityPlayer() instanceof EntityPlayerMP)
-            updatedSelectionPlayers.add((EntityPlayerMP) event.getEntityPlayer());
+        if (event.getEntityPlayer() instanceof ServerPlayerEntity)
+            updatedSelectionPlayers.add((ServerPlayerEntity) event.getEntityPlayer());
     }
 
 }

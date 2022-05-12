@@ -1,7 +1,7 @@
 package com.forgeessentials.core.preloader.mixin.network;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.CPacketUpdateSign;
 import net.minecraft.tileentity.TileEntity;
@@ -24,7 +24,7 @@ public class MixinNetHandlerPlayServer
 {
 
     @Shadow
-    public EntityPlayerMP player;
+    public ServerPlayerEntity player;
 
     /**
      * Post {@link SignEditEvent} to the event bus.

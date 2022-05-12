@@ -2,7 +2,7 @@ package com.forgeessentials.teleport;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -61,12 +61,12 @@ public class CommandJump extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity player, String[] args) throws CommandException
     {
         jump(player);
     }
 
-    public void jump(EntityPlayerMP player) throws CommandException
+    public void jump(ServerPlayerEntity player) throws CommandException
     {
         RayTraceResult mo = PlayerUtil.getPlayerLookingSpot(player, 500);
         if (mo == null)
@@ -79,7 +79,7 @@ public class CommandJump extends ForgeEssentialsCommandBase
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!(event.getEntityPlayer() instanceof EntityPlayerMP))
+        if (!(event.getEntityPlayer() instanceof ServerPlayerEntity))
             return;
         if (!(event instanceof PlayerInteractEvent.RightClickEmpty) && !(event instanceof PlayerInteractEvent.RightClickBlock))
             return;
@@ -91,7 +91,7 @@ public class CommandJump extends ForgeEssentialsCommandBase
 
         try
         {
-            jump((EntityPlayerMP) event.getEntityPlayer());
+            jump((ServerPlayerEntity) event.getEntityPlayer());
         }
         catch (CommandException ce)
         {

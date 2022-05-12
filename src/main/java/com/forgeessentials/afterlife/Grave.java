@@ -10,7 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.item.ItemStack;
@@ -202,7 +202,7 @@ public class Grave implements Loadable
         return point;
     }
 
-    public void interact(EntityPlayerMP player)
+    public void interact(ServerPlayerEntity player)
     {
         if (!canOpen(player))
         {

@@ -7,7 +7,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -78,12 +78,12 @@ public class CommandPush extends ForgeEssentialsCommandBase
                 z = (int) this.func_82368_a(sender, ((TileEntity) sender).getPos().getZ(), args[2]);
                 world = ((TileEntity) sender).getWorld();
             }
-            else if (sender instanceof EntityPlayerMP)
+            else if (sender instanceof ServerPlayerEntity)
             {
-                x = (int) this.func_82368_a(sender, ((EntityPlayerMP) sender).posX, args[0]);
-                y = (int) this.func_82367_a(sender, ((EntityPlayerMP) sender).posY, args[1], 0, 0);
-                z = (int) this.func_82368_a(sender, ((EntityPlayerMP) sender).posZ, args[2]);
-                world = ((EntityPlayerMP) sender).world;
+                x = (int) this.func_82368_a(sender, ((ServerPlayerEntity) sender).posX, args[0]);
+                y = (int) this.func_82367_a(sender, ((ServerPlayerEntity) sender).posY, args[1], 0, 0);
+                z = (int) this.func_82368_a(sender, ((ServerPlayerEntity) sender).posZ, args[2]);
+                world = ((ServerPlayerEntity) sender).world;
             }
             else if (sender instanceof DedicatedServer)
             {
@@ -109,9 +109,9 @@ public class CommandPush extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
-        EntityPlayerMP playermp = UserIdent.getPlayerByMatchOrUsername(sender, sender.getName());
+        ServerPlayerEntity playermp = UserIdent.getPlayerByMatchOrUsername(sender, sender.getName());
         if (args.length != 3)
         {
             throw new TranslatedCommandException("/push <X> <Y> <Z>", new Object[0]);

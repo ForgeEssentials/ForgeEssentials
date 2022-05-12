@@ -11,12 +11,14 @@ import javax.annotation.Nullable;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.permissions.ModulePermissions;
@@ -260,7 +262,7 @@ public class UserIdent
 
     //public static synchronized UserIdent get(EntityPlayer player)
     //{
-    //    return player instanceof EntityPlayerMP ? get((EntityPlayerMP) player) : null;
+    //    return player instanceof ServerPlayerEntity ? get((ServerPlayerEntity) player) : null;
     //}
 
     public static synchronized UserIdent get(PlayerEntity player)
@@ -528,9 +530,9 @@ public class UserIdent
         return player == null ? null : player.get();
     }
 
-    public PlayerEntity getPlayerMP()
+    public ServerPlayerEntity getPlayerMP()
     {
-        return player == null ? null : (PlayerEntity) player.get();
+        return player == null ? null : (ServerPlayerEntity) player.get();
     }
 
     public PlayerEntity getFakePlayer()
@@ -541,7 +543,7 @@ public class UserIdent
         return FakePlayerFactory.get(ServerUtil.getOverworld(), getGameProfile());
     }
 
-    public PlayerEntity getFakePlayer(WorldServer world)
+    public PlayerEntity getFakePlayer(ServerWorld world)
     {
     	PlayerEntity player = getPlayerMP();
         if (player != null)

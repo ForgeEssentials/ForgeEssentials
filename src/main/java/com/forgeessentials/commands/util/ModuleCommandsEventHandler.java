@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.CommandEvent;
@@ -107,7 +107,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         afkPlayers.remove(player);
     }
 
-    public void playerActive(EntityPlayerMP player)
+    public void playerActive(ServerPlayerEntity player)
     {
         PlayerInfo pi = PlayerInfo.get(player);
         pi.setActive();
@@ -116,10 +116,10 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
 
     public static void checkAfkMessage(ICommandSender target, ITextComponent message)
     {
-        if (!(target instanceof EntityPlayerMP))
+        if (!(target instanceof ServerPlayerEntity))
             return;
-        UserIdent targetIdent = UserIdent.get((EntityPlayerMP) target);
-        if (target instanceof EntityPlayerMP && isAfk(targetIdent))
+        UserIdent targetIdent = UserIdent.get((ServerPlayerEntity) target);
+        if (target instanceof ServerPlayerEntity && isAfk(targetIdent))
         {
             ChatOutputHandler.notification(Translator.format("Player %s is currently AFK", targetIdent.getUsernameOrUuid()));
             return;
@@ -137,7 +137,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        playerActive((EntityPlayerMP) event.getEntityPlayer());
+        playerActive((ServerPlayerEntity) event.getEntityPlayer());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -145,7 +145,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        playerActive((EntityPlayerMP) event.getEntityPlayer());
+        playerActive((ServerPlayerEntity) event.getEntityPlayer());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -163,8 +163,8 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (event.getCommand() instanceof CommandAFK)
             return;
-        if (event.getSender() instanceof EntityPlayerMP)
-            playerActive((EntityPlayerMP) event.getSender());
+        if (event.getSender() instanceof ServerPlayerEntity)
+            playerActive((ServerPlayerEntity) event.getSender());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

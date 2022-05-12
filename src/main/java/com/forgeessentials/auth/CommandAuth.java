@@ -7,7 +7,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -37,7 +37,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -139,7 +139,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             boolean isLogged = true;
 
             // check if the player is logged.
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
             if (player == null)
             {
                 ChatOutputHandler.chatWarning(sender, "A player of that name is not on the server. Doing the action anyways.");

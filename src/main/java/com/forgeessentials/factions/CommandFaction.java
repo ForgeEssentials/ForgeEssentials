@@ -7,7 +7,7 @@ import java.util.Set;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -241,7 +241,7 @@ public class CommandFaction extends ParserCommandBase
             }
         };
 
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
             UserIdent playerIdent = UserIdent.get(player);
             if (ModuleFactions.isInFaction(playerIdent, faction) && playerIdent.checkPermission(ModuleFactions.PERM_INVITE))

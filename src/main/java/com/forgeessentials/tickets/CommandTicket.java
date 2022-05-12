@@ -7,7 +7,7 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -116,7 +116,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             // notify any ticket-admins that are online
             ITextComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", sender.getName()));
             if (!server.isServerStopped())
-                for (EntityPlayerMP player : ServerUtil.getPlayerList())
+                for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                     if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
                         ChatOutputHandler.sendMessage(player, messageComponent);
             ChatOutputHandler.sendMessage(server, messageComponent);
@@ -128,7 +128,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             if (args.length != 2)
                 throw new TranslatedCommandException("Usage: /ticket tp <id>");
             int id = parseInt(args[1], 0, ModuleTickets.currentID + 1);
-            TeleportHelper.teleport((EntityPlayerMP) sender, ModuleTickets.getID(id).point);
+            TeleportHelper.teleport((ServerPlayerEntity) sender, ModuleTickets.getID(id).point);
         }
 
         if (args[0].equalsIgnoreCase("del") || args[0].equalsIgnoreCase("close") && permcheck(sender, "admin"))
