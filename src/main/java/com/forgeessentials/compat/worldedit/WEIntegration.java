@@ -5,7 +5,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -65,7 +65,7 @@ public class WEIntegration
     }
 
     @SubscribeEvent
-    public void preLoad(FEModulePreInitEvent e)
+    public void preLoad(FEModuleCommonSetupEvent e)
     {
         APIRegistry.getFEEventBus().register(new WEIntegrationHandler());
     }

@@ -17,7 +17,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
@@ -94,7 +94,7 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
 
     @Override
     @SubscribeEvent
-    public void serverAboutToStart(FEModuleServerPreInitEvent event)
+    public void serverAboutToStart(FEModuleServerAboutToStartEvent event)
     {
         if (enabled)
             super.serverAboutToStart(event);

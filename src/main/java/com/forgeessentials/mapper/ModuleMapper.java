@@ -43,8 +43,8 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.mapper.command.CommandMapper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
 @FEModule(name = "mapper", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
@@ -102,7 +102,7 @@ public class ModuleMapper extends ConfigLoaderBase
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void serverStarting(FEModuleServerInitEvent event)
+    public void serverStarting(FEModuleServerStartingEvent event)
     {
         dataDirectory = new File(mapperDirectory, FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
         dataDirectory.mkdirs();
@@ -110,7 +110,7 @@ public class ModuleMapper extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent event)
+    public void serverStopping(FEModuleServerStoppingEvent event)
     {
         saveCache(true);
     }

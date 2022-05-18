@@ -5,9 +5,12 @@ import io.netty.buffer.ByteBuf;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.forgeessentials.commons.network.IFEPacket;
+
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-public class Packet3PlayerPermissions implements IMessage
+public class Packet3PlayerPermissions implements IFEPacket
 {
 
     public boolean reset;
@@ -29,8 +32,7 @@ public class Packet3PlayerPermissions implements IMessage
         this.breakIds = breakeIds;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
+    public void decode(PacketBuffer buf)
     {
         reset = buf.readBoolean();
 
@@ -44,7 +46,7 @@ public class Packet3PlayerPermissions implements IMessage
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(PacketBuffer buf)
     {
         buf.writeBoolean(reset);
         if (placeIds != null)

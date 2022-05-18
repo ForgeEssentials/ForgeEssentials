@@ -18,7 +18,7 @@ import com.forgeessentials.api.permissions.PermissionCheckEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
 public class ItemPermissionManager extends ServerEventHandler implements ConfigLoader
@@ -52,7 +52,7 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
 
     @Override
     @SubscribeEvent
-    public void serverAboutToStart(FEModuleServerPreInitEvent event)
+    public void serverAboutToStart(FEModuleServerAboutToStartEvent event)
     {
         if (enabled)
             super.serverAboutToStart(event);

@@ -19,7 +19,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -65,7 +65,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void serverStartingEvent(FEModuleServerInitEvent event)
+    public void serverStartingEvent(FEModuleServerStartingEvent event)
     {
         APIRegistry.perms.registerPermissionDescription(PERM, "Worldborder permissions");
         APIRegistry.perms.registerPermission(PERM_BYPASS, DefaultPermissionLevel.NONE, "Ignore worldborders if granted");

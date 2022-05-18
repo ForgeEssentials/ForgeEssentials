@@ -57,9 +57,9 @@ import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -163,7 +163,7 @@ public class ModuleChat
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FEModuleServerStartingEvent e)
     {
         FECommandManager.registerCommand(new CommandMute());
         FECommandManager.registerCommand(new CommandNickname());
@@ -187,13 +187,13 @@ public class ModuleChat
     }
 
     @SubscribeEvent
-    public void serverStarted(FEModuleServerPostInitEvent e)
+    public void serverStarted(FEModuleServerStartedEvent e)
     {
         ServerUtil.replaceCommand(CommandMessage.class, new CommandMessageReplacement());
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void serverStopping(FEModuleServerStoppingEvent e)
     {
         closeLog();
         ircHandler.disconnect();

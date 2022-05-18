@@ -1,14 +1,11 @@
 package com.forgeessentials.client.handler;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -17,9 +14,6 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import org.lwjgl.opengl.GL11;
 
@@ -54,15 +48,15 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
             permissions.placeIds.addAll(message.placeIds);
             permissions.breakIds.addAll(message.breakIds);
 
-            EntityPlayerSP player = Minecraft.getMinecraft().player;
-            ItemStack stack = player.getHeldItemMainhand();
+            ServerPlayerEntity player = Minecraft.getInstance().play;
+            ItemStack stack = player.getMainHandItem();
             if (stack != ItemStack.EMPTY)
             {
-                int itemId = Item.REGISTRY.getIDForObject((stack.getItem()));
+                int itemId = Item.getIDForObject((stack.getItem()));
                 for (int id : message.placeIds)
                     if (itemId == id)
                     {
-                        player.stopActiveHand();
+                        player.stopUsingItem();;
                         break;
                     }
             }
@@ -120,7 +114,7 @@ public class PermissionOverlay extends Gui implements IMessageHandler<Packet3Pla
 
     public void drawTexturedRect(double xPos, double yPos, double width, double height)
     {
-        BufferBuilder wr = Tessellator.getInstance().getBuffer();
+        BufferBuilder wr = Tessellator.getInstance().getBuilder();
         wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         wr.pos(xPos, yPos + height, zLevel).tex(0, 1).endVertex();
         wr.pos(xPos + width, yPos + height, zLevel).tex(1, 1).endVertex();

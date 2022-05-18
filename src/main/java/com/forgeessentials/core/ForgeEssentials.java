@@ -9,22 +9,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -36,10 +30,6 @@ import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -52,7 +42,6 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.UserIdent.NpcUserIdent;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
 import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.packets.Packet2Reach;
@@ -88,7 +77,8 @@ import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -176,7 +166,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         
     }
 
-    @Mod.Bus
+    @SubscribeEvent
     public void preInit(FMLCommonSetupEvent event)
     {
         LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
@@ -210,14 +200,14 @@ public class ForgeEssentials extends ConfigLoaderBase
         moduleLauncher.preLoad(event);
     }
 
-    @EventHandler
-    public void load(FMLInitializationEvent e)
+    @SubscribeEvent
+    public void load(FMLCommonSetupEvent e)
     {
         registerCommands();
 
         // Init McStats
         mcStats.createGraph("build_type").addPlotter(new ConstantPlotter(BuildInfo.getBuildType(), 1));
-        mcStats.createGraph("server_type").addPlotter(new ConstantPlotter(e.getSide() == Side.SERVER ? "server" : "client", 1));
+        mcStats.createGraph("server_type").addPlotter(new ConstantPlotter(e.getSide() == Dist.DEDICATED_SERVER ? "server" : "client", 1));
         Graph gModules = mcStats.createGraph("modules");
         for (String module : ModuleLauncher.getModuleList())
             gModules.addPlotter(new ConstantPlotter(module, 1));
@@ -235,13 +225,13 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
 
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
     }
 
-    @EventHandler
-    public void postLoad(FMLPostInitializationEvent e)
+    @SubscribeEvent
+    public void postLoad(FMLCommonSetupEvent e)
     {
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModulePostInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
         commandManager = new FECommandManager();
     }
 
@@ -305,16 +295,16 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
 
-    @EventHandler
+    @SubscribeEvent
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
-        APIRegistry.getFEEventBus().post(new FEModuleServerPreInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleServerAboutToStartEvent(e));
         new BaublesCompat();
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void serverStarting(FMLServerStartingEvent e)
     {
         mcStats.start();
@@ -326,13 +316,13 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         registerPermissions();
 
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStartingEvent(e));
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void serverStarted(FMLServerStartedEvent e)
     {
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStartedEvent(e));
 
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         // CommandSetChecker.remove();
@@ -353,15 +343,15 @@ public class ForgeEssentials extends ConfigLoaderBase
         }
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void serverStopping(FMLServerStoppingEvent e)
     {
     	//APIRegistry.getFEEventBus().
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStopEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStoppingEvent(e));
         PlayerInfo.discardAll();
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void serverStopped(FMLServerStoppedEvent e)
     {
         try

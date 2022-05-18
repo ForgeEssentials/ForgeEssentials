@@ -35,10 +35,10 @@ import com.forgeessentials.permissions.persistence.SingleFileProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)
@@ -87,7 +87,7 @@ public class ModulePermissions extends ConfigLoaderBase
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void preLoad(FEModulePreInitEvent e)
+    public void preLoad(FEModuleCommonSetupEvent e)
     {
         itemPermissionManager = new ItemPermissionManager();
 
@@ -108,7 +108,7 @@ public class ModulePermissions extends ConfigLoaderBase
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FEModuleServerStartingEvent e)
     {
         permissionScheduler = new PermissionScheduler();
         // Backup FEData directory
@@ -148,14 +148,14 @@ public class ModulePermissions extends ConfigLoaderBase
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void serverStarted(FEModuleServerPostInitEvent e)
+    public void serverStarted(FEModuleServerStartedEvent e)
     {
         permissionHelper.save();
         // permissionHelper.verbosePermissionDebug = true;
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void serverStopping(FEModuleServerStoppingEvent e)
     {
         // permissionHelper.verbosePermissionDebug = false;
         permissionHelper.disableAutoSave = false;

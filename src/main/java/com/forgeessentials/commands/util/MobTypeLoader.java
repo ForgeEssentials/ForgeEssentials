@@ -5,9 +5,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
-import net.minecraft.entity.passive.EntityTameable;
-import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.api.EnumMobType.FEMob;
@@ -16,7 +15,7 @@ import com.forgeessentials.util.output.LoggingHandler;
 
 public class MobTypeLoader
 {
-    public static void preLoad(FMLPreInitializationEvent event)
+    public static void preLoad(FMLCommonSetupEvent event)
     {
         LoggingHandler.felog.info("Discovering and loading FEMob data...");
         // started ASM handling for the module loading.
@@ -56,7 +55,7 @@ public class MobTypeLoader
 
             // continue cuz its a tameable...
 
-            if (EntityTameable.class.isAssignableFrom(c))
+            if (TameableEntity.class.isAssignableFrom(c))
             {
                 // do NOT add to the map.. its unnecessary...
                 continue;

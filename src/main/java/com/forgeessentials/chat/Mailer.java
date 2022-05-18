@@ -13,7 +13,7 @@ import com.forgeessentials.chat.command.CommandMail;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -63,7 +63,7 @@ public class Mailer extends ServerEventHandler
     private static Map<UserIdent, Mails> mailBags = new HashMap<>();
 
     @SubscribeEvent
-    public void serverStartingEvent(FEModuleServerInitEvent event)
+    public void serverStartingEvent(FEModuleServerStartingEvent event)
     {
         loadAllMails();
     }

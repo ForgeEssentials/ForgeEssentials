@@ -15,8 +15,8 @@ import com.forgeessentials.playerlogger.remote.serializer.BlockDataType;
 import com.forgeessentials.playerlogger.remote.serializer.PlayerDataType;
 import com.forgeessentials.playerlogger.remote.serializer.WorldDataType;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -89,14 +89,14 @@ public class ModulePlayerLogger
     }
 
     @SubscribeEvent
-    public void serverPreInit(FEModuleServerPreInitEvent e)
+    public void serverPreInit(FEModuleServerAboutToStartEvent e)
     {
         registerPermissions();
         logger.loadDatabase();
     }
 
     @SubscribeEvent
-    public void serverPostInit(FEModuleServerPostInitEvent e)
+    public void serverPostInit(FEModuleServerStartedEvent e)
     {
         if (PlayerLoggerConfig.logDuration > 0)
         {

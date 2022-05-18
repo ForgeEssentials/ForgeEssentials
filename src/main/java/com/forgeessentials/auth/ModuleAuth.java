@@ -23,7 +23,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -78,7 +78,7 @@ public class ModuleAuth extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FEModuleServerStartingEvent e)
     {
         APIRegistry.perms.registerPermission("fe.auth.admin", DefaultPermissionLevel.OP, "Administer the auth module");
         APIRegistry.perms.registerPermission("fe.auth", DefaultPermissionLevel.ALL, "Auth module command");

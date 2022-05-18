@@ -1,32 +1,41 @@
 package com.forgeessentials.commons.network.packets;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import com.forgeessentials.client.ForgeEssentialsClient;
+import com.forgeessentials.client.handler.ReachDistanceHandler;
+import com.forgeessentials.commons.network.IFEPacket;
 
-public class Packet2Reach implements IMessage
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
+
+public class Packet2Reach implements IFEPacket
 {
 
     public float distance;
-
-    public Packet2Reach()
-    {
-    }
 
     public Packet2Reach(float distance)
     {
         this.distance = distance;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
+    public static Packet2Reach decode(PacketBuffer buf)
     {
-        distance = buf.readFloat();
+    	return new Packet2Reach(buf.readFloat());
     }
-
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(PacketBuffer buf)
     {
         buf.writeFloat(distance);
     }
+
+	@Override
+	public void handle(Context context) {
+		Minecraft instance = Minecraft.getInstance();
+		if (instance.player != null) {
+			ReachDistanceHandler.setReachDistance(distance);
+		}
+		ForgeEssentialsClient.feclientlog.info("Recieved reach distance from server.");
+		
+	}
 
 }

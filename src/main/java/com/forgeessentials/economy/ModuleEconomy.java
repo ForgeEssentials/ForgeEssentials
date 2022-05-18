@@ -56,8 +56,8 @@ import com.forgeessentials.protection.ProtectionEventHandler;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -122,7 +122,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     @SuppressWarnings("unchecked")
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent event)
+    public void serverStarting(FEModuleServerStartingEvent event)
     {
         APIRegistry.perms.registerPermissionProperty(PERM_XP_MULTIPLIER, "0",
                 "XP to currency conversion rate (integer, a zombie drops around 5 XP, 0 to disable)");
@@ -150,7 +150,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     }
 
     @SubscribeEvent
-    public void serverStop(FEModuleServerStopEvent e)
+    public void serverStop(FEModuleServerStoppingEvent e)
     {
         for (Entry<UserIdent, PlayerWallet> wallet : wallets.entrySet())
             saveWallet(wallet.getKey().getOrGenerateUuid(), wallet.getValue());

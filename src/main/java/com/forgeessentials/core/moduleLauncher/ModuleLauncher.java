@@ -12,13 +12,11 @@ import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.events.ConfigReloadEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ModuleLauncher
 {
@@ -31,7 +29,7 @@ public class ModuleLauncher
     
     private static TreeMap<String, ModuleContainer> containerMap = new TreeMap<String, ModuleContainer>();
 
-    public void preLoad(FMLPreInitializationEvent e)
+    public void preLoad(FMLCommonSetupEvent e)
     {
         LoggingHandler.felog.info("Discovering and loading modules...");
 
@@ -127,7 +125,7 @@ public class ModuleLauncher
             }
         }
 
-        APIRegistry.getFEEventBus().post(new FEModulePreInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
 
         ForgeEssentials.getConfigManager().load(false);
     }

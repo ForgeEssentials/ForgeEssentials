@@ -48,7 +48,7 @@ import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ProtectionEventHandler;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.PlayerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -95,7 +95,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent event)
+    public void serverStarting(FEModuleServerStartingEvent event)
     {
         load();
         APIRegistry.perms.registerPermissionDescription(PERM_BASE, "Shop permissions");

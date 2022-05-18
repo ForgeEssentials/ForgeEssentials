@@ -16,13 +16,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import org.apache.commons.codec.binary.Hex;
 
@@ -39,10 +36,9 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
@@ -114,9 +110,9 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
-    public void getASMDataTable(FEModulePreInitEvent event)
+    public void getASMDataTable(FEModuleCommonSetupEvent event)
     {
-        ASMDataTable asmdata = ((FMLPreInitializationEvent) event.getFMLEvent()).getAsmData();
+        ASMDataTable asmdata = ((FMLCommonSetupEvent) event.getFMLEvent()).getAsmData();
         for (ASMData asm : asmdata.getAll(FERemoteHandler.class.getName()))
         {
             try
@@ -141,7 +137,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
      */
     @SuppressWarnings("deprecation")
     @SubscribeEvent
-    public void load(FEModuleInitEvent event)
+    public void load(FEModuleCommonSetupEvent event)
     {
         APIRegistry.remoteManager = this;
         APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows login to remote module");
@@ -155,7 +151,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
      * Initialize passkeys, server and commands
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void serverStarting(FEModuleServerInitEvent event)
+    public void serverStarting(FEModuleServerStartingEvent event)
     {
         loadPasskeys();
         startServer();
@@ -166,7 +162,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
      * Stop remote server when the MC-server stops
      */
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent event)
+    public void serverStopping(FEModuleServerStoppingEvent event)
     {
         stopServer();
         mcServerStarted = false;

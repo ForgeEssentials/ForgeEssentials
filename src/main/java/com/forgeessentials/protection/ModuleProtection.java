@@ -63,8 +63,8 @@ import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -178,7 +178,7 @@ public class ModuleProtection
     }
 
     @SubscribeEvent
-    public void registerPermissions(FEModuleServerInitEvent event)
+    public void registerPermissions(FEModuleServerStartingEvent event)
     {
         // ----------------------------------------
         // Other
@@ -289,7 +289,7 @@ public class ModuleProtection
     }
 
     @SubscribeEvent
-    public void postServerStart(FEModuleServerPostInitEvent e)
+    public void postServerStart(FEModuleServerStartedEvent e)
     {
         TaskRegistry.scheduleRepeated(new TimerTask() {
             @Override

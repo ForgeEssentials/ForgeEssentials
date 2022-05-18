@@ -1,22 +1,34 @@
 package com.forgeessentials.commons.network.packets;
 
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import io.netty.buffer.ByteBuf;
+import java.util.function.Supplier;
 
-public class Packet0Handshake implements IMessage
-{
-    public Packet0Handshake() {}
+import com.forgeessentials.commons.network.IFEPacket;
 
-    @Override
-    public void fromBytes(ByteBuf buf)
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
+
+public class Packet0Handshake implements IFEPacket {
+
+	public int key;
+	
+	public Packet0Handshake() {
+	}
+	
+	public Packet0Handshake(int key) {
+		this.key = key;
+	}
+	public static Packet0Handshake decode(PacketBuffer buf)
     {
-        /* do nothing */
+    	return new Packet0Handshake(buf.readInt());
     }
-
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(PacketBuffer buf)
     {
-        /* do nothing */
+        buf.writeInt(key);
     }
-    
+	@Override
+	public static void handle(Context context) {
+		
+	}
 }

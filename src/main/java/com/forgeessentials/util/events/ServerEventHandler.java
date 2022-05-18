@@ -3,7 +3,7 @@ package com.forgeessentials.util.events;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -50,7 +50,7 @@ public class ServerEventHandler
     }
 
     @SubscribeEvent
-    public void serverAboutToStart(FEModuleServerPreInitEvent e)
+    public void serverAboutToStart(FEModuleServerAboutToStartEvent e)
     {
         register();
     }

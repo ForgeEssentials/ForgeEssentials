@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 @OnlyIn(Dist.CLIENT)
-@Mixin(EntityRenderer.class)
+@Mixin(RendererEntity.class)
 public abstract class MixinEntityRenderer implements IResourceManagerReloadListener
 {
 

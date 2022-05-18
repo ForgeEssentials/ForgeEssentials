@@ -1,26 +1,18 @@
 package com.forgeessentials.client.handler;
 
-import com.forgeessentials.commons.network.packets.Packet2Reach;
 
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-public class ReachDistanceHandler implements IMessageHandler<Packet2Reach, IMessage>
+public class ReachDistanceHandler
 {
 
     private static float reachDistance = 0;
-
-    @Override
-    public IMessage onMessage(Packet2Reach message, MessageContext ctx)
-    {
-        reachDistance = message.distance;
-        return null;
-    }
 
     public static float getReachDistance()
     {
         return reachDistance;
     }
-
+    public static void setReachDistance(float dis)
+    {
+        if(dis<0) {dis = Math.abs(dis);}
+        reachDistance = dis;
+    }
 }

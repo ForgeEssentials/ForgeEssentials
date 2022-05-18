@@ -3,7 +3,7 @@ package com.forgeessentials.compat.worldedit;
 
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.sk89q.worldedit.forge.ForgeWorldEdit;
@@ -35,7 +35,7 @@ public class WEIntegrationHandler
     }
 
     @SubscribeEvent
-    public void serverStart(FEModuleServerInitEvent e)
+    public void serverStart(FEModuleServerStartingEvent e)
     {
         cuiComms = new CUIComms();
         ForgeWorldEdit.inst.setPermissionsProvider(new PermissionsHandler());

@@ -2,6 +2,8 @@ package com.forgeessentials.client.core;
 
 import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
 
+import java.util.Optional;
+
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,6 +42,9 @@ import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.packets.Packet5Noclip;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
 import com.forgeessentials.commons.network.packets.Packet7Remote;
+
+import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_CLIENT;
+import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_SERVER;
 
 public class ClientProxy extends CommonProxy
 {
@@ -90,16 +95,15 @@ public class ClientProxy extends CommonProxy
         registerNetworkMessages();
     }
 
-    private void registerNetworkMessages()
+    private static void registerNetworkMessages()
     {
+    	NetworkUtils networkUtils = new NetworkUtils();
         // Register network messages
-        NetworkUtils.registerMessageProxy(Packet0Handshake.class, 0, SERVER, new NullMessageHandler<Packet0Handshake>() {
-            /* dummy */
-        });
-        NetworkUtils.registerMessage(cuiRenderer, Packet1SelectionUpdate.class, 1, Side.CLIENT);
-        NetworkUtils.registerMessage(reachDistanceHandler, Packet2Reach.class, 2, Side.CLIENT);
-        NetworkUtils.registerMessage(permissionOverlay, Packet3PlayerPermissions.class, 3, Side.CLIENT);
-        NetworkUtils.registerMessage(new IMessageHandler<Packet5Noclip, IMessage>() {
+        networkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::encode);
+        networkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::decode);
+		networkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
+        networkUtils.registerServerToClient(3, Packet3PlayerPermissions.class,Packet3PlayerPermissions::encode);
+        networkUtils.registerServerToClient(new IMessageHandler<Packet5Noclip, IMessage>() {
             @Override
             public IMessage onMessage(Packet5Noclip message, MessageContext ctx)
             {
@@ -107,8 +111,8 @@ public class ClientProxy extends CommonProxy
                 return null;
             }
         }, Packet5Noclip.class, 5, Side.CLIENT);
-        NetworkUtils.registerMessage(new ClientAuthNetHandler(), Packet6AuthLogin.class, 6, Side.CLIENT);
-        NetworkUtils.registerMessage(qrCodeRenderer, Packet7Remote.class, 7, Side.CLIENT);
+        networkUtils.registerServerToClient(new ClientAuthNetHandler(), Packet6AuthLogin.class, 6, Side.CLIENT);
+        networkUtils.registerServerToClient(qrCodeRenderer, Packet7Remote.class, 7, Side.CLIENT);
     }
 
     /* ------------------------------------------------------------ */
@@ -180,7 +184,7 @@ public class ClientProxy extends CommonProxy
         if (ForgeEssentialsClient.serverHasFE())
         {
             ForgeEssentialsClient.feclientlog.info("Sending Handshake Packet to FE Server");
-            NetworkUtils.netHandler.sendToServer(new Packet0Handshake());
+            NetworkUtils.sendToServer(new Packet0Handshake());
         }
         else
         {

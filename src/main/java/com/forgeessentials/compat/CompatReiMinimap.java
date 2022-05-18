@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextComponentString;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -27,7 +27,7 @@ public class CompatReiMinimap
     public static final String PERM_RADAR_OTHER = PERM_RADAR + ".other";
 
     @SubscribeEvent
-    public void registerPerms(FEModuleServerInitEvent e)
+    public void registerPerms(FEModuleServerStartingEvent e)
     {
         APIRegistry.perms.registerPermissionDescription(PERM, "Rei's minimap permissions");
         PermissionAPI.registerNode(PERM_CAVEMAP, DefaultPermissionLevel.ALL, "Allow cavemaps");

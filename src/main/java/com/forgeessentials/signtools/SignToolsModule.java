@@ -19,7 +19,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 @FEModule(name = "SignTools", parentMod = ForgeEssentials.class)
@@ -42,7 +42,7 @@ public class SignToolsModule extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void registerPerms(FEModuleServerInitEvent e)
+    public void registerPerms(FEModuleServerStartingEvent e)
     {
         PermissionAPI.registerNode(COLORIZE_PERM, DefaultPermissionLevel.ALL, "Permission to colourize signs");
         PermissionAPI.registerNode(EDIT_PERM, DefaultPermissionLevel.ALL, "Permission to edit existing signs");

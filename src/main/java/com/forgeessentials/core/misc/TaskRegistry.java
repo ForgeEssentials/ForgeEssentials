@@ -7,7 +7,7 @@ import java.util.TimerTask;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -85,7 +85,7 @@ public class TaskRegistry extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void onServerStop(FEModuleServerStopEvent event)
+    public void onServerStop(FEModuleServerStoppingEvent event)
     {
         tickTasks.clear();
         runnableTasks.clear();
