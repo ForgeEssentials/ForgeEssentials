@@ -1,6 +1,7 @@
 package com.forgeessentials.client.mixin;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 
@@ -12,14 +13,14 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(PlayerEntity.class)
 public abstract class MixinEntityPlayer extends Entity
 {
-    public MixinEntityPlayer(World p_i1582_1_)
+    public MixinEntityPlayer(EntityType<?>PlayerEntity,World p_i48580_2_)
     {
-        super(p_i1582_1_);
+        super(PlayerEntity, p_i48580_2_);
     }
 
     @Shadow public abstract boolean isSpectator();
 
-    @Redirect(method = "onUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSpectator()Z"))
+    @Redirect(method = "onUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
     private boolean onUpdate_NoClip(PlayerEntity _this) {
         return isSpectator() || noPhysics;
     }

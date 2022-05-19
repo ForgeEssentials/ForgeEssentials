@@ -1,14 +1,17 @@
 package com.forgeessentials.client.mixin;
 
-import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
+import net.minecraft.entity.projectile.ProjectileHelper;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,7 +28,7 @@ public abstract class MixinEntityRenderer implements ISelectiveResourceReloadLis
 {
 
     @Final
-    private Minecraft mc;
+    private Minecraft minecraft;
 
     @Shadow
     private Entity pointedEntity;
@@ -127,11 +130,12 @@ public abstract class MixinEntityRenderer implements ISelectiveResourceReloadLis
                     {
                         this.mc.pointedEntity = this.pointedEntity;
                     }
-                }
+                 }
+              }
 
-                this.mc.mcProfiler.endSection();
-            }
+              this.minecraft.getProfiler().pop();
+           }
         }
-    }
+     }
 
 }

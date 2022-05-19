@@ -82,7 +82,7 @@ public class PermissionOverlay extends AbstractGui
                 if (permissions.breakIds.contains(blockId))
                 {
                 	//instance.gui.re
-                    instance.renderEngine.bindTexture(deniedBreakTexture);
+                	instance.textureManager.bind(deniedBreakTexture);
                     drawTexturedRect(width / 2 - 5, height / 2 - 5, 10, 10);
                     event.setCanceled(true);
                 }
@@ -94,12 +94,11 @@ public class PermissionOverlay extends AbstractGui
     {
         BufferBuilder wr = Tessellator.getInstance().getBuilder();
         wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        wr.
-        wr.pos(xPos, yPos + height).tex(0, 1).endVertex();
-        wr.pos(xPos + width, yPos + height, zLevel).tex(1, 1).endVertex();
-        wr.pos(xPos + width, yPos, zLevel).tex(1, 0).endVertex();
-        wr.pos(xPos, yPos, zLevel).tex(0, 0).endVertex();
-        Tessellator.getInstance().draw();
+        wr.vertex(xPos, yPos + height).tex(0, 1).endVertex();
+        wr.vertex(xPos + width, yPos + height, zLevel).tex(1, 1).endVertex();
+        wr.vertex(xPos + width, yPos, zLevel).tex(1, 0).endVertex();
+        wr.vertex(xPos, yPos, zLevel).tex(0, 0).endVertex();
+        Tessellator.getInstance().end();
     }
 
 }
