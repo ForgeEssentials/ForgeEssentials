@@ -11,7 +11,6 @@ import net.minecraft.command.CommandException;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.CommandParserArgs.CancelParsingException;
 
 public class FilterConfig
 {

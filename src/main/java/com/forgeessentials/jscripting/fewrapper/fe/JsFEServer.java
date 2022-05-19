@@ -9,9 +9,13 @@ import java.util.UUID;
 import javax.script.ScriptException;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -184,7 +188,7 @@ public class JsFEServer
      * @param size
      * @return
      */
-    public JsInventory<InventoryBasic> cloneInventory(final String name, boolean hasCustom, JsInventory<IInventory> inventory, int size)
+    public JsInventory<Inventory> cloneInventory(final String name, boolean hasCustom, JsInventory<IInventory> inventory, int size)
     {
         if (size > inventory.getSize())
         {
@@ -200,7 +204,7 @@ public class JsFEServer
         return JsInventory.get(inventoryBasic);
     }
 
-    private abstract class BasicInteraction extends InventoryBasic implements IInteractionObject
+    private abstract class BasicInteraction extends Inventory implements IInteractionObject
     {
 
         public BasicInteraction(String p_i1561_1_, boolean p_i1561_2_, IInventory source)
@@ -229,7 +233,7 @@ public class JsFEServer
 
         final IInteractionObject menuChest = new BasicInteraction(name, hasCustomName, inventory.getThat())
         {
-            @Override public Container createContainer(InventoryPlayer inventoryPlayer, EntityPlayer entityPlayer)
+            @Override public Container createContainer(PlayerInventory inventoryPlayer, PlayerEntity entityPlayer)
             {
                 return new ContainerChest(inventoryPlayer, this, entityPlayer)
                 {
@@ -243,8 +247,8 @@ public class JsFEServer
                             if (p_slotClick_1_ >= 0 && p_slotClick_1_ < inventorySlots.size())
                             {
                                 Slot slot = inventorySlots.get(p_slotClick_1_);
-                                itemStack = JsItemStack.get(slot.getStack());
-                                inv = JsInventory.get(slot.inventory);
+                                itemStack = JsItemStack.get(slot.getItem());
+                                inv = JsInventory.get(slot.container);
                             }
                             Object _stack = script.tryCallGlobal(callbackMethod, JsEntityPlayer.get(p_slotClick_4_), p_slotClick_1_, p_slotClick_2_, p_slotClick_3_, inv, itemStack);
                             if (_stack instanceof JsItemStack)

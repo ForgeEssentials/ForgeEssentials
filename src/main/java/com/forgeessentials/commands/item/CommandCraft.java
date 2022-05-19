@@ -2,15 +2,14 @@ package com.forgeessentials.commands.item;
 
 import java.lang.ref.WeakReference;
 
-import net.minecraft.block.BlockWorkbench;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.WorkbenchContainer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -20,7 +19,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 public class CommandCraft extends ForgeEssentialsCommandBase
 {
 
-    protected WeakReference<EntityPlayer> lastPlayer = new WeakReference<>(null);
+    protected WeakReference<PlayerEntity> lastPlayer = new WeakReference<>(null);
 
     public CommandCraft()
     {
@@ -60,7 +59,7 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     @SubscribeEvent
     public void playerOpenContainerEvent(PlayerContainerEvent.Open event)
     {
-        if (event.getContainer().canInteractWith(event.getEntityPlayer()) == false && lastPlayer.get() == event.getEntityPlayer())
+        if (event.getContainer().canInteractWith(event.getPlayer()) == false && lastPlayer.get() == event.getPlayer())
         {
             event.setResult(Result.ALLOW);
         }
@@ -70,7 +69,7 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity player, String[] args) throws CommandException
     {
         lastPlayer = new WeakReference<>(player);
-        player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.world, player.getPosition()));
+        player.displayGui(new WorkbenchContainer.InterfaceCraftingTable(player.level, player.getPosition()));
     }
 
 }

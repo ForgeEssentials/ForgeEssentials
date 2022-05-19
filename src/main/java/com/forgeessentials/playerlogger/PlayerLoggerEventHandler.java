@@ -1,7 +1,7 @@
 package com.forgeessentials.playerlogger;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -40,13 +40,13 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         WorldPoint point;
         if (event instanceof RightClickBlock)
             point = new WorldPoint(event.getPlayer().level, //
-                    event.getPos().getX() + event.getFace().getFrontOffsetX(), //
-                    event.getPos().getY() + event.getFace().getFrontOffsetY(), //
-                    event.getPos().getZ() + event.getFace().getFrontOffsetZ());
+                    event.getPos().getX(),// + event.getFace().getFrontOffsetX(), //
+                    event.getPos().getY(),// + event.getFace().getFrontOffsetY(), //
+                    event.getPos().getZ());// + event.getFace().getFrontOffsetZ());
         else
-            point = new WorldPoint(event.getEntityPlayer().dimension, event.getPos());
+            point = new WorldPoint(event.getPlayer().level, event.getPos());
 
-        PlayerLoggerChecker.instance.CheckBlock(point,FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getEntityPlayer())),event.getEntityPlayer());
+        PlayerLoggerChecker.instance.CheckBlock(point,FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getPlayer())),event.getPlayer());
     }
 
 }

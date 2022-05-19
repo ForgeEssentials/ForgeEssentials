@@ -3,7 +3,6 @@ package com.forgeessentials.worldborder.effect;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
