@@ -1,7 +1,6 @@
 package com.forgeessentials.commands.item;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -50,7 +49,7 @@ public class CommandRename extends ForgeEssentialsCommandBase
         if (args.length == 0)
             throw new TranslatedCommandException(getUsage(sender));
 
-        ItemStack is = sender.inventory.getCurrentItem();
+        ItemStack is = sender.inventory.getSelected();
         if (is == ItemStack.EMPTY)
             throw new TranslatedCommandException("You are not holding a valid item.");
 

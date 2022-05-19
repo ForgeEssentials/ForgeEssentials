@@ -2,13 +2,11 @@ package com.forgeessentials.jscripting.wrapper.mc.event;
 
 import javax.script.ScriptException;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.Event.Result;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.jscripting.ScriptInstance;
@@ -66,7 +64,7 @@ public abstract class JsEvent<T extends Event>
 
     protected void _callEvent(T event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if (FMLEnvironment.dist.isClient())
             return;
         try
         {

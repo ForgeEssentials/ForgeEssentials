@@ -1,12 +1,8 @@
 package com.forgeessentials.commands.item;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -14,7 +10,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -83,7 +78,7 @@ public class CommandBind extends ParserCommandBase
         {
             if (!arguments.isTabCompletion)
             {
-                ItemStack is = arguments.senderPlayer.inventory.getCurrentItem();
+                ItemStack is = arguments.senderPlayer.inventory.getSelected();
                 if (is == ItemStack.EMPTY)
                     throw new TranslatedCommandException("You are not holding a valid item.");
                 NBTTagCompound tag = is.getTagCompound();
@@ -106,7 +101,7 @@ public class CommandBind extends ParserCommandBase
             return;
         }
 
-        ItemStack is = arguments.senderPlayer.inventory.getCurrentItem();
+        ItemStack is = arguments.senderPlayer.inventory.getSelected();
         if (is == ItemStack.EMPTY)
             throw new TranslatedCommandException("You are not holding a valid item.");
         NBTTagCompound tag = ItemUtil.getTagCompound(is);
@@ -155,9 +150,9 @@ public class CommandBind extends ParserCommandBase
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!(event.getEntityPlayer() instanceof ServerPlayerEntity))
+        if (!(event.getEntity() instanceof ServerPlayerEntity))
             return;
-        ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
+        ItemStack stack = event.getPlayer().getMainHandItem();
         if (stack == ItemStack.EMPTY || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TAG_NAME))
             return;
         NBTTagCompound nbt = stack.getTagCompound().getCompoundTag(TAG_NAME);
@@ -172,7 +167,7 @@ public class CommandBind extends ParserCommandBase
         if (command == null || command.isEmpty())
             return;
 
-        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), command);
+        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntity(), command);
         event.setCanceled(true);
     }
 
