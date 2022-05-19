@@ -1,7 +1,7 @@
 package com.forgeessentials.compat;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
@@ -42,7 +42,7 @@ public class CompatReiMinimap
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        ChatOutputHandler.sendMessage(e.player, new TextComponentString(getPermissionCodes(e.player)));
+        ChatOutputHandler.sendMessage(e.player, new StringTextComponent(getPermissionCodes(e.player)));
     }
 
     public static String getPermissionCodes(EntityPlayer user)

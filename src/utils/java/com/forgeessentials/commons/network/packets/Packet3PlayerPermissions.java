@@ -1,6 +1,5 @@
 package com.forgeessentials.commons.network.packets;
 
-import io.netty.buffer.ByteBuf;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,7 +7,7 @@ import java.util.Set;
 import com.forgeessentials.commons.network.IFEPacket;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class Packet3PlayerPermissions implements IFEPacket
 {
@@ -32,17 +31,19 @@ public class Packet3PlayerPermissions implements IFEPacket
         this.breakIds = breakeIds;
     }
 
-    public void decode(PacketBuffer buf)
+    public static Packet3PlayerPermissions decode(PacketBuffer buf)
     {
-        reset = buf.readBoolean();
-
+    	boolean reset1 = buf.readBoolean();
+    	Set<Integer> placeIds1 = new HashSet<Integer>();
+    	Set<Integer> breakIds1 = new HashSet<Integer>();
         int count = buf.readShort();
         for (int i = 0; i < count; i++)
-            placeIds.add(buf.readInt());
+            placeIds1.add(buf.readInt());
 
         count = buf.readShort();
         for (int i = 0; i < count; i++)
-            breakIds.add(buf.readInt());
+            breakIds1.add(buf.readInt());
+        return new Packet3PlayerPermissions(reset1,placeIds1,breakIds1);
     }
 
     @Override
@@ -66,5 +67,11 @@ public class Packet3PlayerPermissions implements IFEPacket
         else
             buf.writeShort(0);
     }
+
+	@Override
+	public void handle(Context context) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

@@ -3,7 +3,7 @@ package com.forgeessentials.util.questioner;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -43,21 +43,21 @@ public class QuestionData
 
     public void sendYesNoMessage()
     {
-        ITextComponent yesMessage = new TextComponentString("/yes");
+        ITextComponent yesMessage = new StringTextComponent("/yes");
         yesMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/yes"));
         yesMessage.getStyle().setColor(TextFormatting.RED);
         yesMessage.getStyle().setUnderlined(true);
 
-        ITextComponent noMessage = new TextComponentString("/no");
+        ITextComponent noMessage = new StringTextComponent("/no");
         noMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/no"));
         noMessage.getStyle().setColor(TextFormatting.RED);
         noMessage.getStyle().setUnderlined(true);
 
-        ITextComponent yesNoMessage = new TextComponentString("Type ");
+        ITextComponent yesNoMessage = new StringTextComponent("Type ");
         yesNoMessage.appendSibling(yesMessage);
-        yesNoMessage.appendSibling(new TextComponentString(" or "));
+        yesNoMessage.appendSibling(new StringTextComponent(" or "));
         yesNoMessage.appendSibling(noMessage);
-        yesNoMessage.appendSibling(new TextComponentString(" " + Translator.format("(timeout: %d)", timeout)));
+        yesNoMessage.appendSibling(new StringTextComponent(" " + Translator.format("(timeout: %d)", timeout)));
 
         ChatOutputHandler.sendMessage(target, yesNoMessage);
     }

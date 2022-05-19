@@ -1,38 +1,30 @@
 package com.forgeessentials.commons.selections;
 
-import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
 
 public class WorldArea extends AreaBase
 {
 	
-    protected RegistryKey<World> dim;
+    protected World dim;
 
-    public WorldArea(RegistryKey<World> world, Point start, Point end)
+    public WorldArea(World world, Point start, Point end)
     {
         super(start, end);
         dim = world;
     }
 
-
-    public WorldArea(RegistryKey<World> dim, AreaBase area)
-    {
-        super(area.getHighPoint(), area.getLowPoint());
-        this.dim = dim;
-    }
-
     public WorldArea(World world, AreaBase area)
     {
         super(area.getHighPoint(), area.getLowPoint());
-        dim = world.dimension();
+        dim = world;
     }
 
-    public RegistryKey<World> getDimension()
+    public World getDimension()
 	{
 		return dim;
 	}
 
-    public void setDimension(RegistryKey<World> dimensionId)
+    public void setDimension(World dimensionId)
     {
         this.dim = dimensionId;
     }

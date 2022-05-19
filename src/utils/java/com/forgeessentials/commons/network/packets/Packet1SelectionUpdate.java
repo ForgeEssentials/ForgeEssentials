@@ -1,13 +1,16 @@
 package com.forgeessentials.commons.network.packets;
 
+import com.forgeessentials.commons.network.IFEPacket;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public class Packet1SelectionUpdate implements IMessage
+public class Packet1SelectionUpdate implements IFEPacket
 {
-    private Selection sel;
+    protected Selection sel;
 
     public Packet1SelectionUpdate() {}
 
@@ -16,17 +19,17 @@ public class Packet1SelectionUpdate implements IMessage
         this.sel = sel;
     }
 
-    @Override
-    public void fromBytes(ByteBuf byteBuf)
+    public static Packet1SelectionUpdate decode(PacketBuffer byteBuf)
     {
-        sel = new Selection(
-                byteBuf.readInt(),
+    	Selection selection = new Selection(
+                byteBuf.readUtf(),
                 byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble()) : null,
                 byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble()) : null);
+        return new Packet1SelectionUpdate(selection);
     }
 
     @Override
-    public void toBytes(ByteBuf byteBuf)
+    public void encode(PacketBuffer byteBuf)
     {
         if (sel == null)
         {
@@ -35,8 +38,8 @@ public class Packet1SelectionUpdate implements IMessage
             byteBuf.writeBoolean(false);
             return;
         }
-
-        byteBuf.writeInt(sel.getDimension());
+        String s = sel.getDimension().toString();
+        byteBuf.writeUtf(s);
 
         if (sel.getStart() != null)
         {
@@ -67,4 +70,10 @@ public class Packet1SelectionUpdate implements IMessage
     {
         return sel;
     }
+
+	@Override
+	public void handle(Context context) {
+		// TODO Auto-generated method stub
+		
+	}
 }

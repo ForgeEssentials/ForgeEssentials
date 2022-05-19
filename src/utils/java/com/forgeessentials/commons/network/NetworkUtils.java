@@ -31,18 +31,7 @@ public class NetworkUtils
 			.networkProtocolVersion(() -> PROTOCOL_VERSION)
 			.simpleChannel();
     private static Set<Integer> registeredMessages = new HashSet<>();
-    
-    public static void register() {
-    	registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::encode, PLAY_TO_SERVER);
-        registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::decode, PLAY_TO_CLIENT);
-		registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode, PLAY_TO_CLIENT);
-        registerServerToClient(3, Packet3PlayerPermissions.class,Packet3PlayerPermissions::encode, PLAY_TO_CLIENT);
-    	
-    	
-    	
-    	
-    	
-    }
+
     
     
     

@@ -71,7 +71,7 @@ public class SignToolsModule extends ConfigLoaderBase
             {
                 if (e.text[i].contains("&"))
                 {
-                    TextComponentString text = new TextComponentString(ChatOutputHandler.formatColors(e.text[i]));
+                    StringTextComponent text = new StringTextComponent(ChatOutputHandler.formatColors(e.text[i]));
                     ChatOutputHandler.applyFormatting(text.getStyle(), ChatOutputHandler.enumChatFormattings("0123456789AaBbCcDdEeFfKkLlMmNnOoRr"));
                     e.formatted[i] = text;
                 }
@@ -107,7 +107,7 @@ public class SignToolsModule extends ConfigLoaderBase
                         //Convert Formatting back into FE format for easy use
                         for (int i = 0; i < sign.signText.length; i++)
                         {
-                            sign.signText[i] = new TextComponentString(sign.signText[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
+                            sign.signText[i] = new StringTextComponent(sign.signText[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
                         }
 
                         event.getPlayer().openEditSign((SignTileEntity) te);

@@ -11,18 +11,15 @@ import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
@@ -30,8 +27,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -133,7 +130,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void breakEvent(BreakEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLEnvironment.dist.isClient())
             return;
         WorldPoint point = new WorldPoint(event);
         ShopData shop = getShop(point, event.getPlayer());
@@ -145,7 +142,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         {
             ChatOutputHandler.chatError(event.getPlayer(), Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
-            TileEntity te = event.getWorld().getTileEntity(event.getPos());
+            TileEntity te = event.getWorld().getBlockEntity(event.getPos());
             if (te != null)
                 ProtectionEventHandler.updateBrokenTileEntity((ServerPlayerEntity) event.getPlayer(), te);
             return;
@@ -158,7 +155,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void entityAttackedEvent(EntityAttackedEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || !(event.getEntity() instanceof ItemFrameEntity))
+        if (FMLEnvironment.dist.isClient() || !(event.getEntity() instanceof ItemFrameEntity))
             return;
         final ShopData shop = shopFrameMap.get(event.getEntity().getUUID());
         if (shop == null)
@@ -169,7 +166,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void attackEntityEvent(final AttackEntityEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || !(event.getTarget() instanceof ItemFrameEntity))
+        if (FMLEnvironment.dist.isClient() || !(event.getTarget() instanceof ItemFrameEntity))
             return;
         final ShopData shop = shopFrameMap.get(event.getTarget().getUUID());
         if (shop == null)
@@ -197,7 +194,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void entityInteractEvent(PlayerInteractEvent.EntityInteract event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLEnvironment.dist.isClient())
             return;
         ShopData shop = shopFrameMap.get(event.getTarget().getUUID());
         if (shop == null)
@@ -216,13 +213,13 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         if (event instanceof LeftClickBlock || event instanceof LeftClickEmpty || Minecraft.getInstance().getEffectiveSide().isClient())
             return;
 
-        ItemStack equippedStack = event.getPlayer().getHeldItemMainhand();
+        ItemStack equippedStack = event.getPlayer().getMainHandItem();
         Item equippedItem = equippedStack != ItemStack.EMPTY ? equippedStack.getItem() : null;
 
         WorldPoint point;
         if (event instanceof RightClickEmpty)
         {
-            if (!(equippedItem instanceof ItemBlock))
+            if (!(equippedItem instanceof BlockItem))
                 return;
             RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(event.getPlayer());
             if (mop == null)
@@ -241,7 +238,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             if (!ItemUtil.isSign(block))
                 return;
             ITextComponent[] text = ItemUtil.getSignText(point);
-            if (text == null || text.length < 1 || !shopTags.contains(text[0].getUnformattedText()))
+            if (text == null || text.length < 1 || !shopTags.contains(text[0].plainCopy()))
                 return;
             if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_CREATE))
             {
@@ -254,7 +251,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
                 ChatOutputHandler.chatError(event.getPlayer(), Translator.translate("No item frame found"));
                 return;
             }
-            if (shopFrameMap.containsKey(frame.getPersistentID()))
+            if (shopFrameMap.containsKey(frame.getUUID()))
             {
                 ChatOutputHandler.chatError(event.getPlayer(), Translator.translate("Item frame already used for another shop!"));
                 return;
@@ -288,7 +285,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         ItemStack transactionStack = shop.getItemStack();
         boolean sameItem = transactionStack.getItem() == equippedItem;
         transactionStack.setCount(shop.amount);
-        ITextComponent itemName = transactionStack.getTextComponent();
+        ITextComponent itemName = transactionStack.getDisplayName();
 
         Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((ServerPlayerEntity) event.getPlayer()));
 
@@ -342,7 +339,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         }
     }
 
-    public static ShopData getShop(WorldPoint point, ICommandSender sender)
+    public static ShopData getShop(WorldPoint point, CommandSource sender)
     {
         ShopData shop = shopSignMap.get(point);
         if (shop == null)

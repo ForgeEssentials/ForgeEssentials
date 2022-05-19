@@ -158,7 +158,7 @@ public class CommandRemote extends ParserCommandBase
                 {
                     String connectString = ModuleRemote.getInstance().getConnectString(ident);
                     String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-                    NetworkUtils.netHandler.sendTo(new Packet7Remote(url), ident.getPlayerMP());
+                    NetworkUtils.sendTo(new Packet7Remote(url), ident.getPlayerMP());
                 }
                 return;
             }
@@ -192,7 +192,7 @@ public class CommandRemote extends ParserCommandBase
         msg.appendSibling(qrLink);
 
         ChatOutputHandler.sendMessage(args.sender, msg);
-        ChatOutputHandler.sendMessage(args.sender, new TextComponentString("Port = " + ModuleRemote.getInstance().getPort()));
+        ChatOutputHandler.sendMessage(args.sender, new StringTextComponent("Port = " + ModuleRemote.getInstance().getPort()));
     }
 
     @Override

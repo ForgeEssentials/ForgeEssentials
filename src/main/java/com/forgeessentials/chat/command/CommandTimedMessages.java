@@ -7,7 +7,7 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.config.Configuration;
@@ -282,7 +282,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             {
                 LoggingHandler.felog.warn("Error in timedmessage format: " + ExceptionUtils.getRootCause(e).getMessage());
             }
-            return new TextComponentString(message);
+            return new StringTextComponent(message);
         }
     }
 

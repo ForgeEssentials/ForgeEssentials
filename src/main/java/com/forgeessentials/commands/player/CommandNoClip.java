@@ -1,8 +1,6 @@
 package com.forgeessentials.commands.player;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -61,7 +59,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
             return;
         }
 
-        if (!player.capabilities.isFlying && !player.noClip)
+        if (!player.abilities.flying && !player.noPhysics)
             throw new TranslatedCommandException("You must be flying.");
 
         PlayerInfo pi = PlayerInfo.get(player);
@@ -75,8 +73,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
         }
         if (!pi.isNoClip())
             WorldUtil.placeInWorld(player);
-
-        NetworkUtils.netHandler.sendTo(new Packet5Noclip(pi.isNoClip()), player);
+        NetworkUtils.sendTo(new Packet5Noclip(pi.isNoClip()), player);
         ChatOutputHandler.chatConfirmation(player, "Noclip " + (pi.isNoClip() ? "enabled" : "disabled"));
     }
 
@@ -85,13 +82,13 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.isNoClip() && PermissionAPI.hasPermission(player, ModuleCommands.PERM + ".noclip"))
         {
-            if (!player.capabilities.isFlying)
+            if (!player.abilities.flying)
             {
                 pi.setNoClip(false);
                 WorldUtil.placeInWorld(player);
-                if (!player.world.isRemote)
+                if (player.isControlledByLocalInstance())
                 {
-                    NetworkUtils.netHandler.sendTo(new Packet5Noclip(pi.isNoClip()), (ServerPlayerEntity) player);
+                    NetworkUtils.sendTo(new Packet5Noclip(pi.isNoClip()), (ServerPlayerEntity) player);
                     ChatOutputHandler.chatNotification(player, "NoClip auto-disabled: the targeted player is not flying");
                 }
             }

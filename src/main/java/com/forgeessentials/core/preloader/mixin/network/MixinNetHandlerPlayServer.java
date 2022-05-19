@@ -7,7 +7,7 @@ import net.minecraft.network.play.client.CPacketUpdateSign;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.world.SignEditEvent;
@@ -49,7 +49,7 @@ public class MixinNetHandlerPlayServer
             for (int i = 0; i < event.text.length; ++i)
             {
                 if (event.formatted[i] == null)
-                tileentitysign.signText[i] = new TextComponentString(event.text[i]);
+                tileentitysign.signText[i] = new StringTextComponent(event.text[i]);
                 else tileentitysign.signText[i] = event.formatted[i];
             }
         }

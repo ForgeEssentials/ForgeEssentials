@@ -19,7 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -253,7 +253,7 @@ public class ModuleChat
         }
         else
         {
-            messageComponent = new TextComponentString(message);
+            messageComponent = new StringTextComponent(message);
         }
 
         // Finish complete message
@@ -329,7 +329,7 @@ public class ModuleChat
 
     public static ITextComponent clickChatComponent(String text, Action action, String uri)
     {
-        ITextComponent component = new TextComponentString(ChatOutputHandler.formatColors(text));
+        ITextComponent component = new StringTextComponent(ChatOutputHandler.formatColors(text));
         component.getStyle().setClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, uri));
         return component;
     }
@@ -365,7 +365,7 @@ public class ModuleChat
         // Includes ipv4 and domain pattern
         // Matches an ip (xx.xxx.xx.xxx) or a domain (something.com) with or
         // without a protocol or path.
-        ITextComponent ichat = new TextComponentString("");
+        ITextComponent ichat = new StringTextComponent("");
         Matcher matcher = URL_PATTERN.matcher(text);
         int lastEnd = 0;
 
@@ -379,7 +379,7 @@ public class ModuleChat
             ichat.appendText(text.substring(lastEnd, start));
             lastEnd = end;
             String url = text.substring(start, end);
-            ITextComponent link = new TextComponentString(url);
+            ITextComponent link = new StringTextComponent(url);
             link.getStyle().setUnderlined(true);
 
             try
@@ -532,11 +532,11 @@ public class ModuleChat
         String censored = censor.filter(message, player);
         String formatted = processChatReplacements(sender, censored, formatColors);
 
-        ITextComponent msgGroup = new TextComponentString("@" + groupName + "@ ");
+        ITextComponent msgGroup = new StringTextComponent("@" + groupName + "@ ");
         msgGroup.getStyle().setColor(TextFormatting.GRAY).setItalic(true);
         msg.appendSibling(msgGroup);
 
-        ITextComponent msgBody = new TextComponentString(formatted);
+        ITextComponent msgBody = new StringTextComponent(formatted);
         msgBody.getStyle().setColor(TextFormatting.GRAY);
         msg.appendSibling(msgBody);
 

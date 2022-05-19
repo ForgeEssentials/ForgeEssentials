@@ -1,12 +1,13 @@
 package com.forgeessentials.commons.network.packets;
 
 
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-import io.netty.buffer.ByteBuf;
+import com.forgeessentials.commons.network.IFEPacket;
 
-public class Packet6AuthLogin implements IMessage
+
+public class Packet6AuthLogin implements IFEPacket
 {
     /*
     0 = request to get hash from client (hash will be empty!)
@@ -29,17 +30,21 @@ public class Packet6AuthLogin implements IMessage
         this.hash = hash;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
+    public static Packet6AuthLogin decode(PacketBuffer buf)
     {
-        mode = buf.readInt();
-        hash = ByteBufUtils.readUTF8String(buf);
+    	return new Packet6AuthLogin(buf.readInt(),buf.readUtf());
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(PacketBuffer buf)
     {
         buf.writeInt(mode);
-        ByteBufUtils.writeUTF8String(buf, hash);
+        buf.writeUtf(hash);
     }
+
+	@Override
+	public void handle(Context context) {
+		// TODO Auto-generated method stub
+		
+	}
 }

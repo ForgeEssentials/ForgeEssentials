@@ -1,10 +1,12 @@
 package com.forgeessentials.commons.network.packets;
 
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import io.netty.buffer.ByteBuf;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public class Packet7Remote implements IMessage
+import com.forgeessentials.commons.network.IFEPacket;
+
+
+public class Packet7Remote implements IFEPacket
 {
     public String link;
 
@@ -15,15 +17,22 @@ public class Packet7Remote implements IMessage
         this.link = link;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
+    public static Packet7Remote decode(PacketBuffer buf)
     {
-        link = ByteBufUtils.readUTF8String(buf);
+    	String link = buf.readUtf();
+    	return new Packet7Remote(link);
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(PacketBuffer buf)
     {
-        ByteBufUtils.writeUTF8String(buf, link);
+        buf.writeUtf(link);
     }
+
+	@Override
+	public void handle(Context context) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

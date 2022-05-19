@@ -1,20 +1,16 @@
 package com.forgeessentials.client.handler;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -23,26 +19,26 @@ import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 
-@SideOnly(value = Side.CLIENT)
-public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMessage>
+@OnlyIn(Dist.CLIENT)
+public class CUIRenderrer extends Packet1SelectionUpdate
 {
     private static final float ALPHA = .25f;
-
     private static Selection selection;
 
     @SubscribeEvent
     public void render(RenderWorldLastEvent event)
     {
-        EntityPlayer player = FMLClientHandler.instance().getClient().player;
+    	Minecraft instance = Minecraft.getInstance();
+    	PlayerEntity player = instance.player;
         if (player == null)
             return;
 
-        if (selection == null || selection.getDimension() != FMLClientHandler.instance().getClient().player.dimension)
+        if (selection == null || selection.getDimension() != instance.player.level)
             return;
 
-        double renderPosX = TileEntityRendererDispatcher.staticPlayerX;
-        double renderPosY = TileEntityRendererDispatcher.staticPlayerY;
-        double renderPosZ = TileEntityRendererDispatcher.staticPlayerZ;
+        double renderPosX = TileEntityRendererDispatcher.instance.camera.getBlockPosition().getX();
+        double renderPosY = TileEntityRendererDispatcher.instance.camera.getBlockPosition().getY();
+        double renderPosZ = TileEntityRendererDispatcher.instance.camera.getBlockPosition().getZ();
         GL11.glPushMatrix();
         GL11.glTranslated(-renderPosX + 0.5, -renderPosY + 0.5, -renderPosZ + 0.5);
 
@@ -129,60 +125,52 @@ public class CUIRenderrer implements IMessageHandler<Packet1SelectionUpdate, IMe
         BufferBuilder wr = Tessellator.getInstance().getBuilder();
 
         wr.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION);
-wr.
         // FRONT
-        wr.pos(-0.5, -0.5, -0.5).endVertex();
-        wr.pos(-0.5, 0.5, -0.5).endVertex();
+        wr.vertex(-0.5, -0.5, -0.5).endVertex();
+        wr.vertex(-0.5, 0.5, -0.5).endVertex();
 
-        wr.pos(-0.5, 0.5, -0.5).endVertex();
-        wr.pos(0.5, 0.5, -0.5).endVertex();
+        wr.vertex(-0.5, 0.5, -0.5).endVertex();
+        wr.vertex(0.5, 0.5, -0.5).endVertex();
 
-        wr.pos(0.5, 0.5, -0.5).endVertex();
-        wr.pos(0.5, -0.5, -0.5).endVertex();
+        wr.vertex(0.5, 0.5, -0.5).endVertex();
+        wr.vertex(0.5, -0.5, -0.5).endVertex();
 
-        wr.pos(0.5, -0.5, -0.5).endVertex();
-        wr.pos(-0.5, -0.5, -0.5).endVertex();
+        wr.vertex(0.5, -0.5, -0.5).endVertex();
+        wr.vertex(-0.5, -0.5, -0.5).endVertex();
 
         // BACK
-        wr.pos(-0.5, -0.5, 0.5).endVertex();
-        wr.pos(-0.5, 0.5, 0.5).endVertex();
+        wr.vertex(-0.5, -0.5, 0.5).endVertex();
+        wr.vertex(-0.5, 0.5, 0.5).endVertex();
 
-        wr.pos(-0.5, 0.5, 0.5).endVertex();
-        wr.pos(0.5, 0.5, 0.5).endVertex();
+        wr.vertex(-0.5, 0.5, 0.5).endVertex();
+        wr.vertex(0.5, 0.5, 0.5).endVertex();
 
-        wr.pos(0.5, 0.5, 0.5).endVertex();
-        wr.pos(0.5, -0.5, 0.5).endVertex();
+        wr.vertex(0.5, 0.5, 0.5).endVertex();
+        wr.vertex(0.5, -0.5, 0.5).endVertex();
 
-        wr.pos(0.5, -0.5, 0.5).endVertex();
-        wr.pos(-0.5, -0.5, 0.5).endVertex();
+        wr.vertex(0.5, -0.5, 0.5).endVertex();
+        wr.vertex(-0.5, -0.5, 0.5).endVertex();
 
         // betweens.
-        wr.pos(0.5, 0.5, -0.5).endVertex();
-        wr.pos(0.5, 0.5, 0.5).endVertex();
+        wr.vertex(0.5, 0.5, -0.5).endVertex();
+        wr.vertex(0.5, 0.5, 0.5).endVertex();
 
-        wr.pos(0.5, -0.5, -0.5).endVertex();
-        wr.pos(0.5, -0.5, 0.5).endVertex();
+        wr.vertex(0.5, -0.5, -0.5).endVertex();
+        wr.vertex(0.5, -0.5, 0.5).endVertex();
 
-        wr.pos(-0.5, -0.5, -0.5).endVertex();
-        wr.pos(-0.5, -0.5, 0.5).endVertex();
+        wr.vertex(-0.5, -0.5, -0.5).endVertex();
+        wr.vertex(-0.5, -0.5, 0.5).endVertex();
 
-        wr.pos(-0.5, 0.5, -0.5).endVertex();
-        wr.pos(-0.5, 0.5, 0.5).endVertex();
-
-        Tessellator.getInstance().draw();
+        wr.vertex(-0.5, 0.5, -0.5).endVertex();
+        wr.vertex(-0.5, 0.5, 0.5).endVertex();
+        
+        Tessellator.getInstance().end();
     }
 
     @Override
-    public IMessage onMessage(Packet1SelectionUpdate message, MessageContext ctx)
-    {
-        selection = message.getSelection();
-        return null;
-    }
-
-    @SubscribeEvent
-    public void connectionOpened(ClientPlayerNetworkEvent.LoggedInEvent e)
-    {
-        selection = null;
-    }
-
+	public void handle(Context context) {
+		// TODO Auto-generated method stub
+    	selection = sel;
+		
+	}
 }

@@ -4,18 +4,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.world.BlockEvent;
 
 import com.google.gson.annotations.Expose;
+import com.mojang.brigadier.context.CommandContext;
 
 /**
  * Point which stores dimension as well
@@ -23,7 +22,7 @@ import com.google.gson.annotations.Expose;
 public class WorldPoint extends Point
 {
 
-    protected World dim;
+    protected RegistryKey<World> dim;
 
     @Expose(serialize = false)
     protected World world;
@@ -56,8 +55,8 @@ public class WorldPoint extends Point
     public WorldPoint(Entity entity)
     {
         super(entity);
-        this.dim = entity.dimension;
-        this.world = entity.world;
+        this.dim = entity.level.dimension();
+        this.world = entity.level;
     }
 
     public WorldPoint(RegistryKey<World> dim, Vector3d vector)
@@ -83,12 +82,12 @@ public class WorldPoint extends Point
 
     public WorldPoint(BlockEvent event)
     {
-        this(event.getWorld(), event.getPos());
+        this(event.getWorld()., event.getPos());
     }
 
-    public static WorldPoint create(ICommandSender sender)
+    public static WorldPoint create(CommandSource sender)
     {
-        return new WorldPoint(sender.getEntityWorld(), sender.getPosition());
+        return new WorldPoint(sender.getLevel().dimension(), sender.getPosition());
     }
 
     // ------------------------------------------------------------

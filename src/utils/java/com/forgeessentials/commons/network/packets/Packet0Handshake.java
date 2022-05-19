@@ -1,11 +1,9 @@
 package com.forgeessentials.commons.network.packets;
 
-import java.util.function.Supplier;
 
 import com.forgeessentials.commons.network.IFEPacket;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class Packet0Handshake implements IFEPacket {
@@ -28,7 +26,7 @@ public class Packet0Handshake implements IFEPacket {
         buf.writeInt(key);
     }
 	@Override
-	public static void handle(Context context) {
+	public void handle(Context context) {
 		
 	}
 }

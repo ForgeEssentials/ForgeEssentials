@@ -26,7 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -420,21 +420,21 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 return;
         }
 
-        ITextComponent msg1 = new TextComponentString(String.format("%s = %s (%s)", permissionNode, value, node));
+        ITextComponent msg1 = new StringTextComponent(String.format("%s = %s (%s)", permissionNode, value, node));
         msg1.getStyle().setColor(Zone.PERMISSION_FALSE.equals(value) ? TextFormatting.RED : TextFormatting.DARK_GREEN);
 
         ITextComponent msg2;
         if (zone == null)
         {
-            msg2 = new TextComponentString("  permission not set");
+            msg2 = new StringTextComponent("  permission not set");
             msg2.getStyle().setColor(TextFormatting.YELLOW);
         }
         else
         {
-            ITextComponent msgZone = new TextComponentString(zone.getName());
+            ITextComponent msgZone = new StringTextComponent(zone.getName());
             msgZone.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
 
-            ITextComponent msgUser = new TextComponentString(ident == null ? APIRegistry.IDENT_SERVER.getUsername() : ident.getUsernameOrUuid());
+            ITextComponent msgUser = new StringTextComponent(ident == null ? APIRegistry.IDENT_SERVER.getUsername() : ident.getUsernameOrUuid());
             msgUser.getStyle().setColor(TextFormatting.GOLD);
 
             if (isGroupPermission)
@@ -442,7 +442,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 // String groupName = getServerZone().getGroupPermission(group, FEPermissions.GROUP_NAME);
                 // if (groupName == null)
                 // groupName = group;
-                ITextComponent msgGroup = new TextComponentString(group);
+                ITextComponent msgGroup = new StringTextComponent(group);
                 msgGroup.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
 
                 msg2 = new TextComponentTranslation("  zone %s group %s for user %s", msgZone, msgGroup, msgUser);

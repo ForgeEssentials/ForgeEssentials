@@ -3,7 +3,6 @@ package com.forgeessentials.client.core;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -40,24 +39,24 @@ public class FEClientCommand extends BaseCommand {
     		if (num == 0)
             {
             	ITextComponent msg = new StringTextComponent("/feclient info: Get FE client info");
-            	commandContext.getSource().getServer().getPlayerList().broadcastMessage(msg, ChatType.CHAT, entity.getUUID());
+            	commandContext.getSource().getEntity().sendMessage(msg, entity.getUUID());
                 ITextComponent msg2 = new StringTextComponent("/feclient reinit: Redo server handshake");
-            	commandContext.getSource().getServer().getPlayerList().broadcastMessage(msg2, ChatType.CHAT, entity.getUUID());
+            	commandContext.getSource().getEntity().sendMessage(msg2, entity.getUUID());
             }
             if (num == 1)
             {
                 ClientProxy.resendHandshake();
                 ITextComponent msg = new StringTextComponent("Resent handshake packet to server.");
-            	commandContext.getSource().getServer().getPlayerList().broadcastMessage(msg, ChatType.CHAT, entity.getUUID());
+            	commandContext.getSource().getEntity().sendMessage(msg, entity.getUUID());
             }
             if (num == 2)
             {
                 ITextComponent msg = new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", //
                         BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
-            	commandContext.getSource().getServer().getPlayerList().broadcastMessage(msg, ChatType.CHAT, entity.getUUID());
+            	commandContext.getSource().getEntity().sendMessage(msg, entity.getUUID());
             	
                 ITextComponent msg2 = new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
-            	commandContext.getSource().getServer().getPlayerList().broadcastMessage(msg2, ChatType.CHAT, entity.getUUID());
+            	commandContext.getSource().getEntity().sendMessage(msg2, entity.getUUID());
             }
     	}
         return Command.SINGLE_SUCCESS;

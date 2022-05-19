@@ -1,9 +1,13 @@
 package com.forgeessentials.commons.network.packets;
 
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-public class Packet5Noclip implements IMessage
+import com.forgeessentials.commons.network.IFEPacket;
+
+
+public class Packet5Noclip implements IFEPacket
 {
     private boolean noclip;
 
@@ -14,14 +18,13 @@ public class Packet5Noclip implements IMessage
         this.noclip = noclip;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
+    public static Packet5Noclip decode(PacketBuffer buf)
     {
-        noclip = buf.readBoolean();
+    	return new Packet5Noclip(buf.readBoolean());
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(PacketBuffer buf)
     {
         buf.writeBoolean(noclip);
     }
@@ -30,4 +33,11 @@ public class Packet5Noclip implements IMessage
     {
         return noclip;
     }
+
+	@Override
+	public void handle(Context context) {
+		// TODO Auto-generated method stub
+		Minecraft instance = Minecraft.getInstance();
+		instance.player.noPhysics = noclip;
+	}
 }

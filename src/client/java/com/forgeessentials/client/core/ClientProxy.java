@@ -33,6 +33,7 @@ import com.forgeessentials.client.handler.QuestionerKeyHandler;
 import com.forgeessentials.client.handler.ReachDistanceHandler;
 import com.forgeessentials.client.init.CommandInit;
 import com.forgeessentials.commons.BuildInfo;
+import com.forgeessentials.commons.network.IFEPacket;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
@@ -97,22 +98,21 @@ public class ClientProxy extends CommonProxy
 
     private static void registerNetworkMessages()
     {
-    	NetworkUtils networkUtils = new NetworkUtils();
         // Register network messages
-        networkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::encode);
-        networkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::decode);
-		networkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
-        networkUtils.registerServerToClient(3, Packet3PlayerPermissions.class,Packet3PlayerPermissions::encode);
-        networkUtils.registerServerToClient(new IMessageHandler<Packet5Noclip, IMessage>() {
+        NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::decode);
+        NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::decode);
+		NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
+        NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::decode);
+        NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::decode, new IFEPacket<Packet5Noclip, Supplier<Context>>() {
             @Override
-            public IMessage onMessage(Packet5Noclip message, MessageContext ctx)
+            public IFEPacket handle(Context context)
             {
                 FMLClientHandler.instance().getClientPlayerEntity().noClip = message.getNoclip();
                 return null;
             }
-        }, Packet5Noclip.class, 5, Side.CLIENT);
-        networkUtils.registerServerToClient(new ClientAuthNetHandler(), Packet6AuthLogin.class, 6, Side.CLIENT);
-        networkUtils.registerServerToClient(qrCodeRenderer, Packet7Remote.class, 7, Side.CLIENT);
+        });
+        NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
+        NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::decode);
     }
 
     /* ------------------------------------------------------------ */

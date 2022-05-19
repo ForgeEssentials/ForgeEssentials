@@ -7,18 +7,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -44,9 +45,9 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param message
      *            The message to send.
      */
-    public static void sendMessage(ICommandSender recipient, String message)
+    public static void sendMessage(CommandSource recipient, String message)
     {
-        sendMessage(recipient, new TextComponentString(message));
+        sendMessage(recipient, new StringTextComponent(message));
     }
 
     /**
@@ -55,12 +56,13 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param recipient
      * @param message
      */
-    public static void sendMessage(ICommandSender recipient, ITextComponent message)
+    public static void sendMessage(CommandSource recipient, ITextComponent message)
     {
-        if (recipient instanceof FakePlayer && ((PlayerEntity) recipient).connection == null)
-            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getName(), message.getUnformattedText()));
+    	Entity entity = recipient.getEntity();
+        if (entity instanceof FakePlayer && ((ServerPlayerEntity) entity).connection.getConnection() == null)
+            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", entity.getName(), message.plainCopy()));
         else
-            recipient.sendMessage(message);
+            recipient.getServer().getPlayerList().broadcastMessage(message, ChatType.CHAT, entity.getUUID());
     }
 
     /**
@@ -73,13 +75,13 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param color
      *            Color of text to format
      */
-    public static void sendMessage(ICommandSender recipient, String message, TextFormatting color)
+    public static void sendMessage(CommandSource recipient, String message, TextFormatting color)
     {
         message = formatColors(message);
-        if (recipient instanceof PlayerEntity)
+        if (recipient.getEntity() instanceof PlayerEntity)
         {
-            TextComponentString component = new TextComponentString(message);
-            component.getStyle().setColor(color);
+            TextComponent component = new StringTextComponent(message);
+            component.getStyle().withColor(color);
             sendMessage(recipient, component);
         }
         else
@@ -94,7 +96,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void broadcast(String message)
     {
-        broadcast(new TextComponentString(message));;
+        broadcast(new StringTextComponent(message));;
     }
 
     /**
@@ -105,29 +107,31 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void broadcast(ITextComponent message)
     {
-        FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(message);
+    	for(PlayerEntity p :ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+    		ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT, p.getUUID());
+    	}
     }
 
     /* ------------------------------------------------------------ */
 
     public static ITextComponent confirmation(String message)
     {
-        return setChatColor(new TextComponentString(formatColors(message)), chatConfirmationColor);
+        return setChatColor(new StringTextComponent(formatColors(message)), chatConfirmationColor);
     }
 
     public static ITextComponent notification(String message)
     {
-        return setChatColor(new TextComponentString(formatColors(message)), chatNotificationColor);
+        return setChatColor(new StringTextComponent(formatColors(message)), chatNotificationColor);
     }
 
     public static ITextComponent warning(String message)
     {
-        return setChatColor(new TextComponentString(formatColors(message)), chatWarningColor);
+        return setChatColor(new StringTextComponent(formatColors(message)), chatWarningColor);
     }
 
     public static ITextComponent error(String message)
     {
-        return setChatColor(new TextComponentString(formatColors(message)), chatErrorColor);
+        return setChatColor(new StringTextComponent(formatColors(message)), chatErrorColor);
     }
 
     /**
@@ -153,7 +157,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param msg
      *            the message to be sent
      */
-    public static void chatError(ICommandSender sender, String msg)
+    public static void chatError(CommandSource sender, String msg)
     {
         sendMessage(sender, msg, chatErrorColor);
     }
@@ -166,7 +170,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param msg
      *            the message to be sent
      */
-    public static void chatConfirmation(ICommandSender sender, String msg)
+    public static void chatConfirmation(CommandSource sender, String msg)
     {
         sendMessage(sender, msg, chatConfirmationColor);
     }
@@ -179,7 +183,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param msg
      *            the message to be sent
      */
-    public static void chatWarning(ICommandSender sender, String msg)
+    public static void chatWarning(CommandSource sender, String msg)
     {
         sendMessage(sender, msg, chatWarningColor);
     }
@@ -191,7 +195,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      *            CommandSender to chat to.
      * @param msg
      */
-    public static void chatNotification(ICommandSender sender, String msg)
+    public static void chatNotification(CommandSource sender, String msg)
     {
         sendMessage(sender, msg, chatNotificationColor);
     }
@@ -312,20 +316,14 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     public static String getUnformattedMessage(ITextComponent message)
     {
-        StringBuilder sb = new StringBuilder();
-        for (Object msg : message)
-            sb.append(((ITextComponent) msg).getUnformattedComponentText());
-        return sb.toString();
+        return message.plainCopy().toString();
     }
 
     public static String getFormattedMessage(ITextComponent message)
     {
-        StringBuilder sb = new StringBuilder();
-        for (Object msg : message)
-            sb.append(((ITextComponent) msg).getFormattedText());
-        return sb.toString();
+        return message.copy().toString();
     }
-
+/*
     public static String formatHtml(ITextComponent message)
     {
         // TODO: HTML formatting function
@@ -369,12 +367,12 @@ public final class ChatOutputHandler extends ConfigLoaderBase
                     sb.append(FORMAT_CHARACTERS[TextFormatting.STRIKETHROUGH.ordinal()]);
                 }
                 sb.append("\">");
-                sb.append(formatHtml(msg.getUnformattedComponentText()));
+                sb.append(formatHtml(msg.plainCopy()));
                 sb.append("</span>");
             }
             else
             {
-                sb.append(formatHtml(msg.getUnformattedComponentText()));
+                sb.append(formatHtml(msg.plainCopy()));
             }
         }
         return sb.toString();
@@ -410,7 +408,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
             sb.append("</span>");
         return sb.toString();
     }
-
+*/
     public static boolean isStyleEmpty(Style style)
     {
         return !style.isBold() && !style.isItalic() && !style.isObfuscated() && !style.isStrikethrough() && !style.isUnderlined()
@@ -420,14 +418,14 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     public static enum ChatFormat
     {
 
-        PLAINTEXT, HTML, MINECRAFT, DETAIL;
+        PLAINTEXT, /*HTML,*/ MINECRAFT, DETAIL;
 
         public Object format(ITextComponent message)
         {
             switch (this)
             {
-            case HTML:
-                return ChatOutputHandler.formatHtml(message);
+            //case HTML:
+            //    return ChatOutputHandler.formatHtml(message);
             case MINECRAFT:
                 return ChatOutputHandler.getFormattedMessage(message);
             case DETAIL:

@@ -294,7 +294,7 @@ public class JsFEServer
 
             @Override public ITextComponent getDisplayName()
             {
-                return displayName != null ? new TextComponentString(displayName) : null;
+                return displayName != null ? new StringTextComponent(displayName) : null;
             }
         };
 
