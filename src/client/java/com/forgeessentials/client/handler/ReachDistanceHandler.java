@@ -1,7 +1,12 @@
 package com.forgeessentials.client.handler;
 
+import com.forgeessentials.client.ForgeEssentialsClient;
+import com.forgeessentials.commons.network.packets.Packet2Reach;
 
-public class ReachDistanceHandler
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
+
+public class ReachDistanceHandler extends Packet2Reach
 {
 
     private static float reachDistance = 0;
@@ -15,4 +20,14 @@ public class ReachDistanceHandler
         if(dis<0) {dis = Math.abs(dis);}
         reachDistance = dis;
     }
+    @Override
+	public void handle(Context context) {
+		Minecraft instance = Minecraft.getInstance();
+		if (instance.player != null) {
+			Packet2Reach packet2Reach = new Packet2Reach();
+			reachDistance = packet2Reach.distance;
+		}
+		ForgeEssentialsClient.feclientlog.info("Recieved reach distance from server : "+reachDistance);
+		
+	}
 }

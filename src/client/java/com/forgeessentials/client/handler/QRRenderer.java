@@ -61,7 +61,6 @@ public class QRRenderer extends Packet7Remote
 
     @Override
 	public void handle(Context context) {
-		// TODO Auto-generated method stub
     	Packet7Remote packet7Remote = new Packet7Remote();
     	try
         {
