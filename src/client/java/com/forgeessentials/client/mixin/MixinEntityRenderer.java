@@ -34,105 +34,51 @@ public abstract class MixinEntityRenderer implements ISelectiveResourceReloadLis
     private Entity pointedEntity;
 
     @Overwrite
-    public void getMouseOver(float partialTime)
-    {
-        Entity entity = this.mc.getRenderViewEntity();
+    public void pick(float p_78473_1_) {
+        Entity entity = this.minecraft.getCameraEntity();
+        if (entity != null) {
+           if (this.minecraft.level != null) {
+              this.minecraft.getProfiler().push("pick");
+              this.minecraft.crosshairPickEntity = null;
+              double maxReach = (double)this.minecraft.gameMode.getPickRange();
+              this.minecraft.hitResult = entity.pick(maxReach, p_78473_1_, false);
+              Vector3d vector3d = entity.getEyePosition(p_78473_1_);
+              boolean flag = false;
+              double blockDistance = maxReach;
+              if (this.minecraft.gameMode.hasFarPickRange()) {
+            	  maxReach = 6.0D;
+                  blockDistance = 6.0D;
+              } else {
+                 if (maxReach > 3.0D) {
+                    flag = true;
+                 }
+                 maxReach = blockDistance;
+              }
 
-        if (entity != null)
-        {
-            if (this.mc.level != null)
-            {
-                this.mc.mcProfiler.startSection("pick");
-                this.mc.pointedEntity = null;
-                double maxReach = this.mc.playerController.getBlockReachDistance();
-                this.mc.objectMouseOver = entity.rayTrace(maxReach, partialTime);
-                double blockDistance = maxReach;
-                Vector3d vec3 = entity.getPositionEyes(partialTime);
+              blockDistance = blockDistance * blockDistance;
+              if (this.minecraft.hitResult != null) {
+                 blockDistance = this.minecraft.hitResult.getLocation().distanceToSqr(vector3d);
+              }
 
-                if (this.mc.playerController.extendedReach())
-                {
-                    maxReach = 6.0D;
-                    blockDistance = 6.0D;
-                }
-                else
-                {
-                    if (maxReach > 3.0D)
-                    {
-                        blockDistance = 3.0D;
-                    }
-
-                    maxReach = blockDistance;
-                }
-
-                if (this.mc.objectMouseOver != null)
-                {
-                    blockDistance = this.mc.objectMouseOver.hitVec.distanceTo(vec3);
-                }
-
-                Vector3d vec31 = entity.getLook(partialTime);
-                Vector3d vec32 = vec3.addVector(vec31.x * maxReach, vec31.y * maxReach, vec31.z * maxReach);
-                this.pointedEntity = null;
-                Vector3d vec33 = null;
-                float f1 = 1.0F;
-                List<?> list = this.mc.world.getEntitiesWithinAABBExcludingEntity(entity,
-                        entity.getEntityBoundingBox().expand(vec31.x * maxReach, vec31.y * maxReach, vec31.z * maxReach).grow(f1, f1, f1));
-                double d2 = blockDistance;
-
-                for (int i = 0; i < list.size(); ++i)
-                {
-                    Entity entity1 = (Entity) list.get(i);
-
-                    if (entity1.canBeCollidedWith())
-                    {
-                        float f2 = entity1.getCollisionBorderSize();
-                        AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().grow(f2, f2, f2);
-                        RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
-
-                        if (axisalignedbb.contains(vec3))
-                        {
-                            if (0.0D < d2 || d2 == 0.0D)
-                            {
-                                this.pointedEntity = entity1;
-                                vec33 = movingobjectposition == null ? vec3 : movingobjectposition.hitVec;
-                                d2 = 0.0D;
-                            }
-                        }
-                        else if (movingobjectposition != null)
-                        {
-                            double d3 = vec3.distanceTo(movingobjectposition.hitVec);
-
-                            if (d3 < d2 || d2 == 0.0D)
-                            {
-                                if (entity1 == entity.getRidingEntity() && !entity.canRiderInteract())
-                                {
-                                    if (d2 == 0.0D)
-                                    {
-                                        this.pointedEntity = entity1;
-                                        vec33 = movingobjectposition.hitVec;
-                                    }
-                                }
-                                else
-                                {
-                                    this.pointedEntity = entity1;
-                                    vec33 = movingobjectposition.hitVec;
-                                    d2 = d3;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (this.pointedEntity != null && (d2 < blockDistance || this.mc.objectMouseOver == null))
-                {
-                    this.mc.objectMouseOver = new RayTraceResult(this.pointedEntity, vec33);
-
-                    if (this.pointedEntity instanceof LivingEntity || this.pointedEntity instanceof ItemFrameEntity)
-                    {
-                        this.mc.pointedEntity = this.pointedEntity;
+              Vector3d vector3d1 = entity.getViewVector(1.0F);
+              Vector3d vector3d2 = vector3d.add(vector3d1.x * maxReach, vector3d1.y * maxReach, vector3d1.z * maxReach);
+              AxisAlignedBB axisalignedbb = entity.getBoundingBox().expandTowards(vector3d1.scale(maxReach)).inflate(1.0D, 1.0D, 1.0D);
+              EntityRayTraceResult entityraytraceresult = ProjectileHelper.getEntityHitResult(entity, vector3d, vector3d2, axisalignedbb, (p_215312_0_) -> {
+                 return !p_215312_0_.isSpectator() && p_215312_0_.isPickable();
+              }, blockDistance);
+              if (entityraytraceresult != null) {
+                 Entity entity1 = entityraytraceresult.getEntity();
+                 Vector3d vector3d3 = entityraytraceresult.getLocation();
+                 double d2 = vector3d.distanceToSqr(vector3d3);
+                 if (flag && d2 > 9.0D) {
+                    this.minecraft.hitResult = BlockRayTraceResult.miss(vector3d3, Direction.getNearest(vector3d1.x, vector3d1.y, vector3d1.z), new BlockPos(vector3d3));
+                 } else if (d2 < blockDistance || this.minecraft.hitResult == null) {
+                    this.minecraft.hitResult = entityraytraceresult;
+                    if (entity1 instanceof LivingEntity || entity1 instanceof ItemFrameEntity) {
+                       this.minecraft.crosshairPickEntity = entity1;
                     }
                  }
               }
-
               this.minecraft.getProfiler().pop();
            }
         }
