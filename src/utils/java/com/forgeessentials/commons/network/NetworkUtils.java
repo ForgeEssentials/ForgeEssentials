@@ -3,18 +3,11 @@ package com.forgeessentials.commons.network;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import com.forgeessentials.commons.network.packets.Packet0Handshake;
-import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
-import com.forgeessentials.commons.network.packets.Packet2Reach;
-import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
 
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraft.entity.player.ServerPlayerEntity;

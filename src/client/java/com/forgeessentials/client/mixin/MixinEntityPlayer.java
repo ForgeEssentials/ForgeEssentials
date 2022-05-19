@@ -21,6 +21,6 @@ public abstract class MixinEntityPlayer extends Entity
 
     @Redirect(method = "onUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSpectator()Z"))
     private boolean onUpdate_NoClip(PlayerEntity _this) {
-        return isSpectator() || noClip;
+        return isSpectator() || noPhysics;
     }
 }

@@ -103,14 +103,7 @@ public class ClientProxy extends CommonProxy
         NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::decode);
 		NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
         NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::decode);
-        NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::decode, new IFEPacket<Packet5Noclip, Supplier<Context>>() {
-            @Override
-            public IFEPacket handle(Context context)
-            {
-                FMLClientHandler.instance().getClientPlayerEntity().noClip = message.getNoclip();
-                return null;
-            }
-        });
+        NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::decode);
         NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
         NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::decode);
     }

@@ -1,6 +1,5 @@
 package com.forgeessentials.commons.network.packets;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
@@ -9,7 +8,7 @@ import com.forgeessentials.commons.network.IFEPacket;
 
 public class Packet5Noclip implements IFEPacket
 {
-    private boolean noclip;
+    public boolean noclip;
 
     public Packet5Noclip(){}
 
@@ -37,7 +36,5 @@ public class Packet5Noclip implements IFEPacket
 	@Override
 	public void handle(Context context) {
 		// TODO Auto-generated method stub
-		Minecraft instance = Minecraft.getInstance();
-		instance.player.noPhysics = noclip;
 	}
 }

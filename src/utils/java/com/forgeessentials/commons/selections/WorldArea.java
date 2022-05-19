@@ -37,7 +37,7 @@ public class WorldArea extends AreaBase
 
 	public boolean contains(WorldPoint point)
     {
-        if (point.dim == dim)
+        if (point.dim == dim.dimension())
         {
             return super.contains(point);
         }

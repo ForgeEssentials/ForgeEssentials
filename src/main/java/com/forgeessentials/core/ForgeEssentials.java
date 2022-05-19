@@ -459,7 +459,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         if (!perm) {
             event.setCanceled(true);
-            TextComponentTranslation textcomponenttranslation2 = new TextComponentTranslation("commands.generic.permission", new Object[0]);
+            TranslationTextComponent textcomponenttranslation2 = new TranslationTextComponent("commands.generic.permission", new Object[0]);
             textcomponenttranslation2.getStyle().setColor(TextFormatting.RED);
             event.getSender().sendMessage(textcomponenttranslation2);
         }

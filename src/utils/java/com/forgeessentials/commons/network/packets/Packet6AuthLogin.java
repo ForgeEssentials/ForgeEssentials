@@ -20,9 +20,7 @@ public class Packet6AuthLogin implements IFEPacket
     public String hash;
 
     // dummy ctor
-    public Packet6AuthLogin()
-    {
-    }
+    public Packet6AuthLogin() {}
 
     public Packet6AuthLogin(int mode, String hash)
     {

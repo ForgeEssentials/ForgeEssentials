@@ -293,7 +293,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         {
             if (ModuleEconomy.countInventoryItems(event.getPlayer(), transactionStack) < transactionStack.getCount())
             {
-                TextComponentTranslation msg = new TextComponentTranslation("You do not have enough %s", itemName);
+                TranslationTextComponent msg = new TranslationTextComponent("You do not have enough %s", itemName);
                 msg.getStyle().setColor(ChatOutputHandler.chatConfirmationColor);
                 ChatOutputHandler.sendMessage(event.getPlayer(), msg);
                 return;
@@ -312,7 +312,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             shop.setStock(shop.getStock() + 1);
 
             String price = APIRegistry.economy.toString(shop.sellPrice);
-            TextComponentTranslation msg = new TextComponentTranslation("Sold %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
+            TranslationTextComponent msg = new TranslationTextComponent("Sold %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
             msg.getStyle().setColor(ChatOutputHandler.chatConfirmationColor);
             ChatOutputHandler.sendMessage(event.getPlayer(), msg);
         }
@@ -333,7 +333,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
                 shop.setStock(shop.getStock() - 1);
             PlayerUtil.give(event.getPlayer(), transactionStack);
             String price = APIRegistry.economy.toString(shop.buyPrice);
-            TextComponentTranslation msg = new TextComponentTranslation("Bought %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
+            TranslationTextComponent msg = new TranslationTextComponent("Bought %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
             msg.getStyle().setColor(ChatOutputHandler.chatConfirmationColor);
             ChatOutputHandler.sendMessage(event.getPlayer(), msg);
         }

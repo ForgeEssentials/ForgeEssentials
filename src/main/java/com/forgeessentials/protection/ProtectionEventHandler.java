@@ -22,6 +22,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.IPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -261,7 +262,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 int blockId = Block.getId(blockState);
                 Set<Integer> ids = new HashSet<>();
                 ids.add(blockId);
-                NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, null, ids), ident.getPlayerMP());
+                NetworkUtils.sendTo(new Packet3PlayerPermissions(false, null, ids), ident.getPlayerMP());
             }
             return;
         }
@@ -482,7 +483,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 int itemId = Item.getId(stack.getItem());
                 Set<Integer> ids = new HashSet<>();
                 ids.add(itemId);
-                NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(false, ids, null), ident.getPlayerMP());
+                NetworkUtils.sendTo(new Packet3PlayerPermissions(false, ids, null), ident.getPlayerMP());
             }
         }
 
@@ -781,12 +782,12 @@ public class ProtectionEventHandler extends ServerEventHandler
             Block block = ((BlockItem) stack.getItem()).getBlock();
             String permission = ModuleProtection.getBlockPlacePermission(block, 0);
             if (!APIRegistry.perms.checkUserPermission(ident, permission))
-                placeIds.add(Block.REGISTRY.getIDForObject(block));
+                placeIds.add(Block.getId(block.defaultBlockState()));
         }
 
         ModulePermissions.permissionHelper.disableDebugMode(false);
 
-        NetworkUtils.netHandler.sendTo(new Packet3PlayerPermissions(reset, placeIds, null), ident.getPlayerMP());
+        NetworkUtils.sendTo(new Packet3PlayerPermissions(reset, placeIds, null), ident.getPlayerMP());
     }
 
     /* ------------------------------------------------------------ */
@@ -922,7 +923,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (player == null || player.connection == null)
             return;
-        final Packet<?> packet = te.getUpdatePacket();
+        final IPacket<?> packet = te.getUpdatePacket();
         if (packet == null)
             return;
         TaskRegistry.runLater(new Runnable() {
@@ -930,7 +931,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             public void run()
             {
                 if (player.connection != null)
-                    player.connection.sendPacket(packet);
+                    player.connection.send(packet);
             }
         });
     }

@@ -3,17 +3,16 @@ package com.forgeessentials.client.mixin;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItemFrame;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,8 +20,8 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 @OnlyIn(Dist.CLIENT)
-@Mixin(RendererEntity.class)
-public abstract class MixinEntityRenderer implements IResourceManagerReloadListener
+@Mixin(EntityRenderer.class)
+public abstract class MixinEntityRenderer implements ISelectiveResourceReloadListener
 {
 
     @Final
@@ -38,14 +37,14 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
 
         if (entity != null)
         {
-            if (this.mc.world != null)
+            if (this.mc.level != null)
             {
                 this.mc.mcProfiler.startSection("pick");
                 this.mc.pointedEntity = null;
                 double maxReach = this.mc.playerController.getBlockReachDistance();
                 this.mc.objectMouseOver = entity.rayTrace(maxReach, partialTime);
                 double blockDistance = maxReach;
-                Vec3d vec3 = entity.getPositionEyes(partialTime);
+                Vector3d vec3 = entity.getPositionEyes(partialTime);
 
                 if (this.mc.playerController.extendedReach())
                 {
@@ -67,10 +66,10 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
                     blockDistance = this.mc.objectMouseOver.hitVec.distanceTo(vec3);
                 }
 
-                Vec3d vec31 = entity.getLook(partialTime);
-                Vec3d vec32 = vec3.addVector(vec31.x * maxReach, vec31.y * maxReach, vec31.z * maxReach);
+                Vector3d vec31 = entity.getLook(partialTime);
+                Vector3d vec32 = vec3.addVector(vec31.x * maxReach, vec31.y * maxReach, vec31.z * maxReach);
                 this.pointedEntity = null;
-                Vec3d vec33 = null;
+                Vector3d vec33 = null;
                 float f1 = 1.0F;
                 List<?> list = this.mc.world.getEntitiesWithinAABBExcludingEntity(entity,
                         entity.getEntityBoundingBox().expand(vec31.x * maxReach, vec31.y * maxReach, vec31.z * maxReach).grow(f1, f1, f1));
@@ -124,7 +123,7 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
                 {
                     this.mc.objectMouseOver = new RayTraceResult(this.pointedEntity, vec33);
 
-                    if (this.pointedEntity instanceof EntityLivingBase || this.pointedEntity instanceof EntityItemFrame)
+                    if (this.pointedEntity instanceof LivingEntity || this.pointedEntity instanceof ItemFrameEntity)
                     {
                         this.mc.pointedEntity = this.pointedEntity;
                     }

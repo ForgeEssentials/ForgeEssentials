@@ -15,7 +15,7 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.Configuration;
@@ -153,7 +153,7 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
 
     public void sendCommandUsageMessage(ICommandSender sender, ICommand command, TextFormatting color)
     {
-        ITextComponent chatMsg = new TextComponentTranslation(command.getUsage(sender));
+        ITextComponent chatMsg = new TranslationTextComponent(command.getUsage(sender));
         chatMsg.getStyle().setColor(color);
         chatMsg.getStyle().setClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getName() + " "));
         ChatOutputHandler.sendMessage(sender, chatMsg);

@@ -20,7 +20,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
@@ -257,7 +257,7 @@ public class ModuleChat
         }
 
         // Finish complete message
-        event.setComponent(new TextComponentTranslation("%s%s", header, messageComponent));
+        event.setComponent(new TranslationTextComponent("%s%s", header, messageComponent));
 
         // Handle chat range
         Double range = ServerUtil.tryParseDouble(ident.getPermissionProperty(PERM_RANGE));
@@ -289,7 +289,7 @@ public class ModuleChat
         ITextComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
         ITextComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
         ITextComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
-        ITextComponent header = new TextComponentTranslation(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
+        ITextComponent header = new TranslationTextComponent(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
                 groupPrefix != null ? groupPrefix : "", //
                 playerPrefix != null ? playerPrefix : "", //
                 playerText, //
@@ -502,9 +502,9 @@ public class ModuleChat
 
     public static void tell(ICommandSender sender, ITextComponent message, ICommandSender target)
     {
-        TextComponentTranslation sentMsg = new TextComponentTranslation("commands.message.display.incoming", new Object[] { sender.getDisplayName(),
+        TranslationTextComponent sentMsg = new TranslationTextComponent("commands.message.display.incoming", new Object[] { sender.getDisplayName(),
                 message.createCopy() });
-        TextComponentTranslation senderMsg = new TextComponentTranslation("commands.message.display.outgoing",
+        TranslationTextComponent senderMsg = new TranslationTextComponent("commands.message.display.outgoing",
                 new Object[] { target.getDisplayName(), message });
         sentMsg.getStyle().setColor(TextFormatting.GRAY).setItalic(Boolean.valueOf(true));
         senderMsg.getStyle().setColor(TextFormatting.GRAY).setItalic(Boolean.valueOf(true));
@@ -528,7 +528,7 @@ public class ModuleChat
 
         ITextComponent msg;
         EntityPlayer player = sender instanceof EntityPlayer ? (EntityPlayer) sender : null;
-        msg = player != null ? getChatHeader(UserIdent.get((EntityPlayer) sender)) : new TextComponentTranslation("SERVER ");
+        msg = player != null ? getChatHeader(UserIdent.get((EntityPlayer) sender)) : new TranslationTextComponent("SERVER ");
         String censored = censor.filter(message, player);
         String formatted = processChatReplacements(sender, censored, formatColors);
 

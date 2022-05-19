@@ -4,11 +4,7 @@ import java.util.HashSet;
 import java.util.TimerTask;
 import java.util.UUID;
 
-import net.minecraft.command.CommandHelp;
-import net.minecraft.command.ICommand;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -22,13 +18,12 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, defaultModule = false)
@@ -64,17 +59,17 @@ public class ModuleAuth extends ConfigLoaderBase
     @Preconditions
     public boolean preInit()
     {
-        if (FMLCommonHandler.instance().getSide().isClient())
+        if (FMLEnvironment.dist.isClient())
             return false;
         return true;
     }
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModuleCommonSetupEvent e)
     {
         FECommandManager.registerCommand(new CommandAuth());
         FECommandManager.registerCommand(new CommandVIP());
-        NetworkUtils.registerMessage(new AuthNetHandler(), Packet6AuthLogin.class, 6, Side.SERVER);
+        NetworkUtils.registerMessage(6, Packet6AuthLogin.class, 6, Packet6AuthLogin::decode);
     }
 
     @SubscribeEvent
@@ -104,8 +99,7 @@ public class ModuleAuth extends ConfigLoaderBase
         isOnline = ServerUtil.getMojangServerStatus();
         if (lastOnline == isOnline)
             return;
-
-        FMLCommonHandler.instance().getSidedDelegate().getServer().setOnlineMode(isOnline);
+        ServerLifecycleHooks.getCurrentServer().setUsesAuthentication(isOnline);
         if (lastEnabled == isEnabled())
             return;
 

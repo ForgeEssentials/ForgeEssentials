@@ -27,7 +27,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -445,11 +445,11 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 ITextComponent msgGroup = new StringTextComponent(group);
                 msgGroup.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
 
-                msg2 = new TextComponentTranslation("  zone %s group %s for user %s", msgZone, msgGroup, msgUser);
+                msg2 = new TranslationTextComponent("  zone %s group %s for user %s", msgZone, msgGroup, msgUser);
             }
             else
             {
-                msg2 = new TextComponentTranslation("  zone %s user %s", msgZone, msgUser);
+                msg2 = new TranslationTextComponent("  zone %s user %s", msgZone, msgUser);
             }
         }
         for (ICommandSender sender : permissionDebugUsers)

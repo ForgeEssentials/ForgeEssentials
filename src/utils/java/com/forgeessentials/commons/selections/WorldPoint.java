@@ -82,7 +82,7 @@ public class WorldPoint extends Point
 
     public WorldPoint(BlockEvent event)
     {
-        this(event.getWorld()., event.getPos());
+        this(event.getWorld(), event.getPos());
     }
 
     public static WorldPoint create(CommandSource sender)
@@ -122,7 +122,7 @@ public class WorldPoint extends Point
 
     public World getWorld()
     {
-        if (world != null && world.provider.getDimension() != dim)
+        if (world != null && world.dimension() != dim)
             return world;
         world = DimensionManager.getWorld(dim);
         return world;

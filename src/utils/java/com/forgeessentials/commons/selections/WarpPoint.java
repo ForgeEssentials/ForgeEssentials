@@ -76,8 +76,8 @@ public class WarpPoint
 
     public WarpPoint(Entity entity)
     {
-        this(entity.level instanceof ServerWorld ? (ServerWorld) entity.level : null, entity.position().x, entity.position().y, entity.position().z, entity.getRotationVector(),
-                entity.rotationYaw);
+        this(entity.level instanceof ServerWorld ? (ServerWorld) entity.level : null, entity.position().x, entity.position().y, entity.position().z, entity.yRot,
+                entity.xRot);
     }
 
     public WarpPoint(WarpPoint point)

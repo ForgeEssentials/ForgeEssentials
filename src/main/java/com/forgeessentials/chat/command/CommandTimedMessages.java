@@ -8,7 +8,7 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -153,7 +153,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             return;
         arguments.confirm("List of messages:");
         for (int i = 0; i < messages.size(); i++)
-            arguments.sendMessage(new TextComponentTranslation(String.format("%d: %s", i, formatMessage(messages.get(i)))));
+            arguments.sendMessage(new TranslationTextComponent(String.format("%d: %s", i, formatMessage(messages.get(i)))));
     }
 
     public void parseDelete(CommandParserArgs arguments) throws CommandException

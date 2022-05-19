@@ -16,7 +16,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
@@ -316,7 +316,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         String headerText = String.format(ircHeader, user.getNick());
         ITextComponent header = ModuleChat.clickChatComponent(headerText, Action.SUGGEST_COMMAND, "/ircpm " + user.getNick() + " ");
         ITextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
-        ChatOutputHandler.broadcast(new TextComponentTranslation("%s%s", header, messageComponent));
+        ChatOutputHandler.broadcast(new TranslationTextComponent("%s%s", header, messageComponent));
     }
 
     private void mcSendMessage(String message)
@@ -324,7 +324,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         String filteredMessage = ModuleChat.censor.filterIRC(message);
         ITextComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
         ITextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
-        ChatOutputHandler.broadcast(new TextComponentTranslation("%s%s", header, messageComponent));
+        ChatOutputHandler.broadcast(new TranslationTextComponent("%s%s", header, messageComponent));
     }
 
     public ICommandSender getIrcUser(String username)

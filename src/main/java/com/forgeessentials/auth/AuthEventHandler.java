@@ -2,27 +2,23 @@ package com.forgeessentials.auth;
 
 import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.minecart.MinecartInteractEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
@@ -155,7 +151,7 @@ public class AuthEventHandler extends ServerEventHandler
             ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
             // add the item back to the inventory
             ItemStack stack = event.getEntityItem().getItem();
-            event.getPlayer().inventory.addItemStackToInventory(stack);
+            event.getPlayer().inventory.add(stack);
             event.setCanceled(true);
         }
     }
@@ -221,11 +217,11 @@ public class AuthEventHandler extends ServerEventHandler
 
         if (!PermissionAPI.hasPermission(event.player, "fe.auth.isVIP"))
         {
-            int onlinePlayers = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getCurrentPlayerCount();
-            int availableSlots = FMLCommonHandler.instance().getMinecraftServerInstance().getMaxPlayers() - vipSlots - reservedSlots;
+            int onlinePlayers = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerCount();
+            int availableSlots = ServerLifecycleHooks.getCurrentServer().getPlayerList().getMaxPlayers() - vipSlots - reservedSlots;
             if (onlinePlayers >= availableSlots)
             {
-                ((PlayerEntity) event.getPlayer()).connection.disconnect(new TextComponentTranslation(nonVipKickMessage));
+                ((ServerPlayerEntity) event.getPlayer()).connection.disconnect(new TranslationTextComponent(nonVipKickMessage));
             }
         }
     }
@@ -245,7 +241,7 @@ public class AuthEventHandler extends ServerEventHandler
             return;
         if (ModuleAuth.isRegistered(e.getPlayer().getUUID())  && !ModuleAuth.isAuthenticated(e.getPlayer()))
         {
-            NetworkUtils.netHandler.sendTo(new Packet6AuthLogin(0, ""), e.getPlayer());
+            NetworkUtils.sendTo(new Packet6AuthLogin(0, ""), (ServerPlayerEntity) e.getPlayer());
         }
     }
 
@@ -255,7 +251,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (e.source == Source.COMMAND && ModuleAuth.allowAutoLogin)
         {
             UUID token = UUID.randomUUID();
-            NetworkUtils.netHandler.sendTo(new Packet6AuthLogin(2, token.toString()), e.getPlayer());
+            NetworkUtils.sendTo(new Packet6AuthLogin(2, token.toString()), (ServerPlayerEntity) e.getPlayer());
             PasswordManager.addSession(e.getPlayer().getUUID(), token);
         }
         APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_SUCCESS, e.getPlayer());

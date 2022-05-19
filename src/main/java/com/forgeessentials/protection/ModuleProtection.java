@@ -325,7 +325,7 @@ public class ModuleProtection
         if (cmdBase == null)
             return;
 
-        TextComponentTranslation msg = new TextComponentTranslation(permission);
+        TranslationTextComponent msg = new TranslationTextComponent(permission);
         msg.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
         msg.getStyle().setColor(ChatOutputHandler.chatNotificationColor);
         msg.getStyle().setUnderlined(true);

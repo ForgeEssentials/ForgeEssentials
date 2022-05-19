@@ -1,33 +1,31 @@
 package com.forgeessentials.client.auth;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import com.forgeessentials.client.core.ClientProxy;
+import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
 
-public class ClientAuthNetHandler implements IMessageHandler<Packet6AuthLogin, IMessage>
+public class ClientAuthNetHandler extends Packet6AuthLogin
 {
-    @Override
-    public IMessage onMessage(Packet6AuthLogin message, MessageContext ctx)
-    {
+	@Override
+	public void handle(Context context) {
+		Packet6AuthLogin packet6AuthLogin= new Packet6AuthLogin();
         // send empty response if the client has disabled this
-        if (!ClientProxy.allowAuthAutoLogin)
-            return new Packet6AuthLogin(1, "");
-
+        if (!ClientProxy.allowAuthAutoLogin) {
+        	NetworkUtils.sendToServer(new Packet6AuthLogin(1,""));
+        }
         AuthAutoLogin.KEYSTORE = AuthAutoLogin.load();
-        switch (message.mode)
+        switch (packet6AuthLogin.mode)
         {
         case 0:
-            return new Packet6AuthLogin(1, AuthAutoLogin.getKey(Minecraft.getInstance().getCurrentServer().ip));
+        	NetworkUtils.sendToServer(new Packet6AuthLogin(1, AuthAutoLogin.getKey(Minecraft.getInstance().getCurrentServer().ip)));
         case 2:
-            AuthAutoLogin.setKey(Minecraft.getInstance().getCurrentServer().ip, message.hash);
+            AuthAutoLogin.setKey(Minecraft.getInstance().getCurrentServer().ip, packet6AuthLogin.hash);
             break;
         default:
             break;
         }
-        return null;
     }
 }
