@@ -34,11 +34,12 @@ public class PermissionOverlay extends AbstractGui
 
     protected Packet3PlayerPermissions permissions = new Packet3PlayerPermissions();
 
+    private int zLevel = 100;
+    
     public PermissionOverlay()
     {
         deniedPlaceTexture = new ResourceLocation(ForgeEssentialsClient.MODID.toLowerCase(), "textures/gui/denied_place.png");
         deniedBreakTexture = new ResourceLocation(ForgeEssentialsClient.MODID.toLowerCase(), "textures/gui/denied_break.png");
-        zLevel = 100;
     }
 
     @SubscribeEvent
@@ -81,10 +82,9 @@ public class PermissionOverlay extends AbstractGui
                 int blockId = Block.getId(block);
                 if (permissions.breakIds.contains(blockId))
                 {
-                	//instance.gui.re
                 	instance.textureManager.bind(deniedBreakTexture);
-                    drawTexturedRect(width / 2 - 5, height / 2 - 5, 10, 10);
-                    event.setCanceled(true);
+                	drawTexturedRect(width / 2 - 5, height / 2 - 5, 10, 10);
+                	event.setCanceled(true);
                 }
             }
         }
@@ -94,10 +94,10 @@ public class PermissionOverlay extends AbstractGui
     {
         BufferBuilder wr = Tessellator.getInstance().getBuilder();
         wr.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        wr.vertex(xPos, yPos + height).tex(0, 1).endVertex();
-        wr.vertex(xPos + width, yPos + height, zLevel).tex(1, 1).endVertex();
-        wr.vertex(xPos + width, yPos, zLevel).tex(1, 0).endVertex();
-        wr.vertex(xPos, yPos, zLevel).tex(0, 0).endVertex();
+        wr.vertex(xPos, yPos + height, zLevel).uv(0, 1).endVertex();
+        wr.vertex(xPos + width, yPos + height, zLevel).uv(1, 1).endVertex();
+        wr.vertex(xPos + width, yPos, zLevel).uv(1, 0).endVertex();
+        wr.vertex(xPos, yPos, zLevel).uv(0, 0).endVertex();
         Tessellator.getInstance().end();
     }
 
