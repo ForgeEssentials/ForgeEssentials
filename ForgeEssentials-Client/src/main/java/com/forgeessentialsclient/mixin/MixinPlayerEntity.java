@@ -17,10 +17,10 @@ public abstract class MixinPlayerEntity extends Entity
     {
         super(PlayerEntity, p_i48580_2_);
     }
-/*
+
     @Shadow public abstract boolean isSpectator();
     @Redirect(method = "onUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
     private boolean onUpdate_NoClip(PlayerEntity _this) {
         return isSpectator() || noPhysics;
-    }*/
+    }
 }

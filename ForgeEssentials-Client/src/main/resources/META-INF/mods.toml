@@ -8,19 +8,15 @@ license="GNU General Public License v3.0"
 
 [[mods]]
     modId="forgeessentialsclient"
-    version="${version}"
-    displayName="${mod_name_client}"
+    version="12.3"
+    displayName="Forge Essentials Client Addon"
     # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
     #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
-    displayURL="${mod_download}"
+    displayURL="https://github.com/ForgeEssentials/ForgeEssentials"
     logoFile="logo.png"
     credits="Thanks to everyone who has helped us so far."
-    authors="AbrarSyed, luacs1998", olee, dries007, Malkierian, And a few others"
-    description='''
-    Client addon for ForgeEssentials (optional)
-    '''
-    buildNumber="${buildNumber}"
-    buildHash="${buildHash}"
+    authors="AbrarSyed, luacs1998, olee, dries007, Malkierian, And a few others"
+    description='''Client addon for ForgeEssentials (optional)'''
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.forgeessentialsclient]] #optional

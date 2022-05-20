@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
+import com.forgeessentialsclient.ForgeEssentialsClient;
 import com.forgeessentialsclient.utils.commons.BuildInfo;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -44,7 +45,7 @@ public class FEClientCommand extends BaseCommand {
             }
             if (num == 1)
             {
-                ClientProxy.resendHandshake();
+            	ForgeEssentialsClient.resendHandshake();
                 ITextComponent msg = new StringTextComponent("Resent handshake packet to server.");
             	commandContext.getSource().getEntity().sendMessage(msg, entity.getUUID());
             }

@@ -1,6 +1,6 @@
 package com.forgeessentialsclient.auth;
 
-import com.forgeessentialsclient.core.ClientProxy;
+import com.forgeessentialsclient.ForgeEssentialsClient;
 import com.forgeessentialsclient.utils.commons.network.NetworkUtils;
 import com.forgeessentialsclient.utils.commons.network.packets.Packet6AuthLogin;
 
@@ -14,7 +14,7 @@ public class ClientAuthNetHandler extends Packet6AuthLogin
 	public void handle(Context context) {
 		Packet6AuthLogin packet6AuthLogin= new Packet6AuthLogin();
         // send empty response if the client has disabled this
-        if (!ClientProxy.allowAuthAutoLogin) {
+        if (!ForgeEssentialsClient.allowAuthAutoLogin) {
         	NetworkUtils.sendToServer(new Packet6AuthLogin(1,""));
         }
         AuthAutoLogin.KEYSTORE = AuthAutoLogin.load();
