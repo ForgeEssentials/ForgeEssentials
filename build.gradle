@@ -245,7 +245,7 @@ dependencies {
 sourceSets {
     def deps = [
 		configurations.minecraft,
-        configurations.compileOnly
+        configurations.compileOnly.setCanBeResolved(true)
 	]
 	utils {
 		compileClasspath = files(configurations.compile)
@@ -273,7 +273,7 @@ project.compileUtilsJava {
     doFirst {
         copy {
             from ('src/utils/replaceJava') {
-                filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.baseVersion])
+                filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.mod_version])
             }
             into 'src/utils/java'
         }

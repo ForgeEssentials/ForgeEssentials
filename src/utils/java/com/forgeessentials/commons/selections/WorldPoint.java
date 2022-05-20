@@ -79,12 +79,12 @@ public class WorldPoint extends Point
     {
         this(other.getDimension(), other.getBlockX(), other.getBlockY(), other.getBlockZ());
     }
-
+/*
     public WorldPoint(BlockEvent event)
     {
         this(event.getWorld(), event.getPos());
     }
-
+*/
     public static WorldPoint create(CommandSource sender)
     {
         return new WorldPoint(sender.getLevel().dimension(), sender.getPosition());
@@ -119,7 +119,7 @@ public class WorldPoint extends Point
     {
         return (WorldPoint) super.setZ(z);
     }
-
+/*
     public World getWorld()
     {
         if (world != null && world.dimension() != dim)
@@ -142,7 +142,7 @@ public class WorldPoint extends Point
     {
         return getWorld().getBlockEntity(getBlockPos());
     }
-
+*/
     // ------------------------------------------------------------
 
     @Override
@@ -152,7 +152,7 @@ public class WorldPoint extends Point
     }
 
     private static final Pattern fromStringPattern = Pattern.compile("\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=(-?\\d+)\\]");
-
+/*
     public static WorldPoint fromString(String value)
     {
         value = value.replaceAll("\\s ", "");
@@ -169,12 +169,12 @@ public class WorldPoint extends Point
             }
             catch (NumberFormatException e)
             {
-                /* do nothing */
+                // do nothing 
             }
         }
         return null;
     }
-
+*/
     @Override
     public boolean equals(Object object)
     {
@@ -190,7 +190,7 @@ public class WorldPoint extends Point
         }
         return false;
     }
-
+/*
     @Override
     public int hashCode()
     {
@@ -200,5 +200,5 @@ public class WorldPoint extends Point
         h = h * 31 + dim;
         return h;
     }
-
+*/
 }

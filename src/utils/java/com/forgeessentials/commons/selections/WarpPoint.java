@@ -259,7 +259,7 @@ public class WarpPoint
         }
         return false;
     }
-
+/*
     @Override
     public int hashCode()
     {
@@ -304,5 +304,5 @@ public class WarpPoint
             return new WarpPoint(worldPoint);
         }
     }
-
+*/
 }
