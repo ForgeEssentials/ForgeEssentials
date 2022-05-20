@@ -107,9 +107,9 @@ if (System.getenv("BUILD_NUMBER") != null) {
 }
 
 // Get commit hash
-import org.ajoberstar.grgit.Grgit
-def repo = Grgit.open(project.file("."))
-ext.gitCommitHash = repo.log().find().abbreviatedId
+//import org.ajoberstar.grgit.Grgit
+//def repo = Grgit.open(project.file("."))
+//ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
 version = "$mod_version.$buildNumber"
@@ -156,7 +156,7 @@ minecraft {
 // Configure shared manifest
 ext.sharedManifest = manifest {
 	attributes (
-		"BuildID": gitCommitHash,
+		//"BuildID": gitCommitHash,
 		"BuildNumber": buildNumber,
 		"FMLCorePluginContainsFMLMod": "true",
 		"ForceLoadAsMod": "true",
@@ -287,7 +287,7 @@ project.processResources {
 			'version': project.version,
 			'mod_name': mod_name, 
 			'mod_download': mod_download,
-			'buildHash': gitCommitHash,
+			//'buildHash': gitCommitHash,
 			'buildNumber': buildNumber,
 		)
 	}
@@ -301,7 +301,7 @@ project.processClientResources {
 			'version': project.version,
 			'mod_name_client': mod_name_client, 
 			'mod_download': mod_download,
-			'buildHash': gitCommitHash,
+			//buildHash': gitCommitHash,
 			'buildNumber': buildNumber,
 		)
 	}
