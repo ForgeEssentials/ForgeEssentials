@@ -72,6 +72,6 @@ public class Packet1SelectionUpdate implements IFEPacket
 
 	@Override
 	public void handle(Context context) {
-		// TODO Auto-generated method stuff
+		// TODO Auto-generated method stub
 	}
 }

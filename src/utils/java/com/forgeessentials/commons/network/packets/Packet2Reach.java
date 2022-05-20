@@ -28,6 +28,5 @@ public class Packet2Reach implements IFEPacket
 	@Override
 	public void handle(Context context) {
 		// TODO Auto-generated method stub
-		
 	}
 }
