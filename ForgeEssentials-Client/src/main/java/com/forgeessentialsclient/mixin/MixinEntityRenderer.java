@@ -2,7 +2,7 @@ package com.forgeessentialsclient.mixin;
 
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
@@ -23,26 +23,25 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 @OnlyIn(Dist.CLIENT)
-@Mixin(EntityRenderer.class)
+@Mixin(GameRenderer.class)
 public abstract class MixinEntityRenderer implements ISelectiveResourceReloadListener
 {
 
     @Final
     private Minecraft minecraft;
 
-    @Shadow
-    private Entity pointedEntity;
+    @Shadow private Entity crosshairPickEntity;
 
     @Overwrite
-    public void pick(float p_78473_1_) {
+    public void pick(float idkWhatThisIs) {
         Entity entity = this.minecraft.getCameraEntity();
         if (entity != null) {
            if (this.minecraft.level != null) {
               this.minecraft.getProfiler().push("pick");
               this.minecraft.crosshairPickEntity = null;
               double maxReach = (double)this.minecraft.gameMode.getPickRange();
-              this.minecraft.hitResult = entity.pick(maxReach, p_78473_1_, false);
-              Vector3d vector3d = entity.getEyePosition(p_78473_1_);
+              this.minecraft.hitResult = entity.pick(maxReach, idkWhatThisIs, false);
+              Vector3d vector3d = entity.getEyePosition(idkWhatThisIs);
               boolean flag = false;
               double blockDistance = maxReach;
               if (this.minecraft.gameMode.hasFarPickRange()) {

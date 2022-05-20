@@ -148,19 +148,19 @@ dependencies {
     minecraft "net.minecraftforge:forge:$project.minecraftVersion-$project.forgeVersion"
 
     // Shade Mixin library
-    shade (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
+    shade (group: "org.spongepowered", name: "mixin", version: "0.8.5") {
         exclude group: 'org.ow2.asm', module: 'asm-tree'
     }
-    shadeClient (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
+    shadeClient (group: "org.spongepowered", name: "mixin", version: "0.8.5") {
         exclude group: 'org.ow2.asm', module: 'asm-tree'
     }
 
 	// Database libraries	
-    annotationProcessor 'org.spongepowered:mixin:0.8.1-SNAPSHOT:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
-	compileOnly 'org.spongepowered:spongeapi:8.0.0'
+	compileOnly 'org.spongepowered:spongeapi:9.0.0'
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")

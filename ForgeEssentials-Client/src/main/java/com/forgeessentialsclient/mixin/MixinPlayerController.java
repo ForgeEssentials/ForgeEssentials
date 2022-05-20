@@ -15,13 +15,12 @@ public abstract class MixinPlayerController
     
     @Shadow
     private GameType currentGameType;
-
-    @Overwrite
-    public float getBlockReachDistance()
+    @Overwrite 
+    public float getPickRange()
     {
         if (ReachDistanceHandler.getReachDistance() > 0)
             return ReachDistanceHandler.getReachDistance();
         return this.currentGameType.isCreative() ? 5.0F : 4.5F;
     }
-
+    
 }
