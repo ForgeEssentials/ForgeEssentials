@@ -287,6 +287,8 @@ project.processResources {
 			'version': project.version,
 			'mod_name': mod_name, 
 			'mod_download': mod_download,
+			'buildHash': gitCommitHash,
+			'buildNumber': buildNumber,
 		)
 	}
 }
@@ -297,8 +299,10 @@ project.processClientResources {
 		include 'META-INF/mods.toml'
 		expand (
 			'version': project.version,
-			'mod_name_client': mod_name, 
+			'mod_name_client': mod_name_client, 
 			'mod_download': mod_download,
+			'buildHash': gitCommitHash,
+			'buildNumber': buildNumber,
 		)
 	}
 }

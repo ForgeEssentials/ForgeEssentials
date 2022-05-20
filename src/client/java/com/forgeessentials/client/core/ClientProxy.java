@@ -2,35 +2,22 @@ package com.forgeessentials.client.core;
 
 import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
 
-import java.nio.file.Path;
-import java.util.Optional;
 
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
-import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.loading.FMLPaths;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.auth.ClientAuthNetHandler;
-import com.forgeessentials.client.config.BaseConfig;
 import com.forgeessentials.client.config.ClientConfig;
 import com.forgeessentials.client.config.FEModConfig;
 import com.forgeessentials.client.config.IFEConfig;
-import com.forgeessentials.client.config.ValuesCached.ValueCachedBoolean;
 import com.forgeessentials.client.handler.CUIRenderrer;
 import com.forgeessentials.client.handler.PermissionOverlay;
 import com.forgeessentials.client.handler.QRRenderer;
 import com.forgeessentials.client.handler.QuestionerKeyHandler;
-import com.forgeessentials.client.handler.ReachDistanceHandler;
-import com.forgeessentials.client.init.CommandInit;
 import com.forgeessentials.commons.BuildInfo;
-import com.forgeessentials.commons.network.IFEPacket;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
 import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
@@ -39,9 +26,6 @@ import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.packets.Packet5Noclip;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
 import com.forgeessentials.commons.network.packets.Packet7Remote;
-
-import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_CLIENT;
-import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_SERVER;
 
 public class ClientProxy
 {
@@ -56,7 +40,11 @@ public class ClientProxy
 
     /* ------------------------------------------------------------ */
 
-    public static Boolean allowCUI, allowQRCodeRender, allowPermissionRender, allowQuestionerShortcuts, allowAuthAutoLogin, versionCheck;
+    public static Boolean allowCUI, 
+    allowQRCodeRender, 
+    allowPermissionRender, 
+    allowQuestionerShortcuts, 
+    allowAuthAutoLogin;
 
     public static float reachDistance;
 
@@ -68,8 +56,6 @@ public class ClientProxy
 
     private static PermissionOverlay permissionOverlay = new PermissionOverlay();
 
-    private ReachDistanceHandler reachDistanceHandler = new ReachDistanceHandler();
-
     /* ------------------------------------------------------------ */
 
     public ClientProxy()
@@ -77,13 +63,19 @@ public class ClientProxy
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public void doPreInit(FMLCommonSetupEvent event)
+    public void doSetup(FMLCommonSetupEvent event)
     {
-        BuildInfo.getBuildInfo(event.getSourceFile());
+        BuildInfo.getBuildInfo(null/*event.getSourceFile()*/);
         feclientlog.info(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
 
         // Initialize with configuration options
-        if (!versionCheck)
+        ClientConfig c = new ClientConfig();
+        allowCUI = c.allowCUI.get();
+        allowQRCodeRender = c. allowQRCodeRender.get();
+        allowPermissionRender = c.allowPermissionRender.get();
+        allowQuestionerShortcuts = c.allowQuestionerShortcuts.get();
+        allowAuthAutoLogin = c.allowAuthAutoLogin.get();
+        if (!c.versioncheck.get())
             BuildInfo.checkVersion = false;
 
         if (allowCUI)

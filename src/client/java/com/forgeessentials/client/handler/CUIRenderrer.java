@@ -169,8 +169,7 @@ public class CUIRenderrer extends Packet1SelectionUpdate
 
     @Override
 	public void handle(Context context) {
-		// TODO Auto-generated method stub
-    	selection = sel;
-		
+    	Packet1SelectionUpdate packet1 = new Packet1SelectionUpdate();
+    	selection = packet1.getSelection();
 	}
 }

@@ -31,7 +31,6 @@ public class FEClientCommand extends BaseCommand {
 		
 	}
 
-    @SuppressWarnings("resource")
 	public int execute(CommandContext<CommandSource> commandContext, int num)
     {
     	Entity entity = commandContext.getSource().getEntity();

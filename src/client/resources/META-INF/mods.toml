@@ -9,7 +9,7 @@ license="All rights reserved"
 [[mods]]
     modId="forgeessentialsclient"
     version="${version}"
-    displayName="${mod_name}"
+    displayName="${mod_name_client}"
     # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
     #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
     displayURL="${mod_download}"
@@ -19,6 +19,8 @@ license="All rights reserved"
     description='''
     Client addon for ForgeEssentials (optional)
     '''
+    buildNumber="${buildNumber}"
+    buildHash="${buildHash}"
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.forgeessentialsclient]] #optional

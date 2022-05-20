@@ -12,7 +12,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
-import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.network.FMLHandshakeMessages;
@@ -73,7 +72,7 @@ public class ForgeEssentialsClient
             //confHandler=ConfigurationHandler.getInstance();
             //confHandler.load(ConfigurationProvider.getSuggestedFile(MODID));
         	MinecraftForge.EVENT_BUS.register(RegisterCommandEvent.class);
-        	proxy.doPreInit(event);
+        	proxy.doSetup(event);
             //System.out.println("on Init, confHandler is "+confHandler);
             //MinecraftForge.EVENT_BUS.register(confHandler);
            // MinecraftForge.EVENT_BUS.register(new KeyInputEvent());
