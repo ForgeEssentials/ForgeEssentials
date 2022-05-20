@@ -1,4 +1,4 @@
-package com.forgeessentials.client.handler;
+package com.forgeessentialsclient.handler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -19,8 +19,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import org.lwjgl.opengl.GL11;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
+import com.forgeessentialsclient.ForgeEssentialsClient;
+import com.forgeessentialsclient.utils.commons.network.packets.Packet3PlayerPermissions;
 
 public class PermissionOverlay extends AbstractGui
 {

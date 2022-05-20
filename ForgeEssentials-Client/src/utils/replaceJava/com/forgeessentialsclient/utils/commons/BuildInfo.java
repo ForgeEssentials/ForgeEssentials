@@ -1,4 +1,4 @@
-package com.forgeessentials.commons;
+package com.forgeessentialsclient.utils.commons;
 
 import java.io.File;
 import java.io.IOException;

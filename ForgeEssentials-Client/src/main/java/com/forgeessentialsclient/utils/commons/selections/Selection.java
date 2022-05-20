@@ -1,4 +1,4 @@
-package com.forgeessentials.commons.selections;
+package com.forgeessentialsclient.utils.commons.selections;
 
 import net.minecraft.world.World;
 

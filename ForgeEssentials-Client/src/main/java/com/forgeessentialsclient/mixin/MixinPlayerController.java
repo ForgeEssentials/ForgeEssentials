@@ -1,4 +1,4 @@
-package com.forgeessentials.client.mixin;
+package com.forgeessentialsclient.mixin;
 
 import net.minecraft.client.multiplayer.PlayerController;
 import net.minecraft.world.GameType;
@@ -7,10 +7,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-import com.forgeessentials.client.handler.ReachDistanceHandler;
+import com.forgeessentialsclient.handler.ReachDistanceHandler;
 
 @Mixin(PlayerController.class)
-public abstract class MixinPlayerControllerMP
+public abstract class MixinPlayerController
 {
     
     @Shadow

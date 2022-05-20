@@ -1,9 +1,10 @@
-package com.forgeessentials.commons.network.packets;
+package com.forgeessentialsclient.utils.commons.network.packets;
+
+import com.forgeessentialsclient.utils.commons.network.IFEPacket;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-import com.forgeessentials.commons.network.IFEPacket;
 
 
 public class Packet7Remote implements IFEPacket

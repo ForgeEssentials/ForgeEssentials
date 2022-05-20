@@ -1,4 +1,4 @@
-package com.forgeessentials.client.config;
+package com.forgeessentialsclient.config;
 
 import java.nio.file.Path;
 import java.util.function.Function;

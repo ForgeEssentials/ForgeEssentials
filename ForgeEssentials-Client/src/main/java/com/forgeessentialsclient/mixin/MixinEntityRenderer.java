@@ -1,4 +1,4 @@
-package com.forgeessentials.client.mixin;
+package com.forgeessentialsclient.mixin;
 
 
 import net.minecraft.client.Minecraft;

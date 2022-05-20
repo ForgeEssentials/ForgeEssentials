@@ -1,4 +1,4 @@
-package com.forgeessentials.commons.selections;
+package com.forgeessentialsclient.utils.commons.selections;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

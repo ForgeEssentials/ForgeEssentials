@@ -1,4 +1,4 @@
-package com.forgeessentials.client.handler;
+package com.forgeessentialsclient.handler;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraft.client.renderer.Tessellator;
@@ -15,9 +15,10 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
-import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.commons.selections.Selection;
+import com.forgeessentialsclient.utils.commons.network.packets.Packet1SelectionUpdate;
+import com.forgeessentialsclient.utils.commons.selections.Point;
+import com.forgeessentialsclient.utils.commons.selections.Selection;
+
 
 @OnlyIn(Dist.CLIENT)
 public class CUIRenderrer extends Packet1SelectionUpdate

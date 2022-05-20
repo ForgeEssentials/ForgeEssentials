@@ -1,7 +1,7 @@
-package com.forgeessentials.client.config.ValuesCached;
+package com.forgeessentialsclient.config.ValuesCached;
 
 import java.util.function.BooleanSupplier;
-import com.forgeessentials.client.config.IFEConfig;
+import com.forgeessentialsclient.config.IFEConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
 public class ValueCachedBoolean extends ValueCachedPrimitive<Boolean> implements BooleanSupplier

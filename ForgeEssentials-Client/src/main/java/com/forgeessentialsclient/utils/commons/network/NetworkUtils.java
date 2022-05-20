@@ -1,4 +1,4 @@
-package com.forgeessentials.commons.network;
+package com.forgeessentialsclient.utils.commons.network;
 
 import java.util.HashSet;
 import java.util.Optional;

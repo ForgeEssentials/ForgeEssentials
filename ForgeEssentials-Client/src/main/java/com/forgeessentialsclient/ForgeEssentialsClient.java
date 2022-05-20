@@ -1,4 +1,4 @@
-package com.forgeessentials.client;
+package com.forgeessentialsclient;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,9 +21,9 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.forgeessentials.client.config.FEModConfig;
-import com.forgeessentials.client.core.ClientProxy;
-import com.forgeessentials.client.init.RegisterCommandEvent;
+import com.forgeessentialsclient.config.FEModConfig;
+import com.forgeessentialsclient.core.ClientProxy;
+import com.forgeessentialsclient.init.RegisterCommandEvent;
 
 @Mod(ForgeEssentialsClient.MODID)
 @Mod.EventBusSubscriber(modid = ForgeEssentialsClient.MODID, bus = Bus.MOD,value = Dist.CLIENT)
@@ -34,7 +34,7 @@ public class ForgeEssentialsClient
     public static final String MODNAME = "ForgeEssentialClientAddon";
     public static final Logger feclientlog = LogManager.getLogger("forgeessentials");
 
-    //@SidedProxy(clientSide = "com.forgeessentials.client.core.ClientProxy", serverSide = "com.forgeessentials.client.core.CommonProxy")
+    //@SidedProxy(clientSide = "com.forgeessentialsclientclient.core.ClientProxy", serverSide = "com.forgeessentialsclientclient.core.CommonProxy")
     protected static ClientProxy proxy;
 
     public static ModContainer MOD_CONTAINER;

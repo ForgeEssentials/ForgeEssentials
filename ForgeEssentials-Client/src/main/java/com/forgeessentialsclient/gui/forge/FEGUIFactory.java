@@ -1,4 +1,4 @@
-package com.forgeessentials.client.gui.forge;
+package com.forgeessentialsclient.gui.forge;
 /*
 import java.util.Set;
 

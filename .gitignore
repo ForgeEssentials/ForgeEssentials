@@ -41,3 +41,4 @@ modlist.txt
 /jscripting/tsconfig.json
 /src/utils/java/com/forgeessentials/commons/BuildInfo.java
 *.launch
+ForgeEssentials-Client/build.gradle.old

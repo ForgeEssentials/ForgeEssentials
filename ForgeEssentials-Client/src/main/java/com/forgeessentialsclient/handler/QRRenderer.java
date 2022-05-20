@@ -1,4 +1,4 @@
-package com.forgeessentials.client.handler;
+package com.forgeessentialsclient.handler;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -25,7 +25,8 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import org.lwjgl.opengl.GL11;
 
-import com.forgeessentials.commons.network.packets.Packet7Remote;
+import com.forgeessentialsclient.utils.commons.network.packets.Packet7Remote;
+
 
 @OnlyIn(Dist.CLIENT)
 public class QRRenderer extends Packet7Remote

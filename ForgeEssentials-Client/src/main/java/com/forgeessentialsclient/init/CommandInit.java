@@ -1,9 +1,9 @@
-package com.forgeessentials.client.init;
+package com.forgeessentialsclient.init;
 
 import java.util.ArrayList;
 
-import com.forgeessentials.client.core.BaseCommand;
-import com.forgeessentials.client.core.FEClientCommand;
+import com.forgeessentialsclient.core.BaseCommand;
+import com.forgeessentialsclient.core.FEClientCommand;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandSource;

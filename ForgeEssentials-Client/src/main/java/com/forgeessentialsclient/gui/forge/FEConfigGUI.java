@@ -1,11 +1,11 @@
-package com.forgeessentials.client.gui.forge;
+package com.forgeessentialsclient.gui.forge;
 /*
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.GuiConfig;
 
-import com.forgeessentials.client.core.ClientProxy;
+import com.forgeessentialsclient.core.ClientProxy;
 */
 public class FEConfigGUI //extends GuiConfig
 {

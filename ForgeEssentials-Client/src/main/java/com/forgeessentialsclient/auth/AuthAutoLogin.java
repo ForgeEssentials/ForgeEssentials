@@ -1,6 +1,5 @@
-package com.forgeessentials.client.auth;
+package com.forgeessentialsclient.auth;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -9,6 +8,8 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.io.File;
 import java.io.IOException;
+
+import com.forgeessentialsclient.ForgeEssentialsClient;
 
 public class AuthAutoLogin
 {

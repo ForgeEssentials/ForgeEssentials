@@ -1,4 +1,4 @@
-package com.forgeessentials.client.mixin;
+package com.forgeessentialsclient.mixin;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(PlayerEntity.class)
-public abstract class MixinEntityPlayer extends Entity
+public abstract class MixinPlayerEntity extends Entity
 {
-    public MixinEntityPlayer(EntityType<?>PlayerEntity,World p_i48580_2_)
+    public MixinPlayerEntity(EntityType<?>PlayerEntity,World p_i48580_2_)
     {
         super(PlayerEntity, p_i48580_2_);
     }

@@ -1,4 +1,4 @@
-package com.forgeessentials.client.init;
+package com.forgeessentialsclient.init;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 

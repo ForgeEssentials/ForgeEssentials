@@ -1,6 +1,6 @@
-package com.forgeessentials.client.config;
+package com.forgeessentialsclient.config;
 
-import com.forgeessentials.client.config.ValuesCached.ValueCachedBoolean;
+import com.forgeessentialsclient.config.ValuesCached.ValueCachedBoolean;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;

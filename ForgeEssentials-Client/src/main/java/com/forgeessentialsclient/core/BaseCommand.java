@@ -1,4 +1,4 @@
-package com.forgeessentials.client.core;
+package com.forgeessentialsclient.core;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 

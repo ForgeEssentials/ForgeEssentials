@@ -1,9 +1,9 @@
-package com.forgeessentials.client.config.ValuesCached;
+package com.forgeessentialsclient.config.ValuesCached;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.forgeessentials.client.config.IFEConfig;
+import com.forgeessentialsclient.config.IFEConfig;
 
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 

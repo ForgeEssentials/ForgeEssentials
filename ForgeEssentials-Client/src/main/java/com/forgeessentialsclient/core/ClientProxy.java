@@ -1,6 +1,6 @@
-package com.forgeessentials.client.core;
+package com.forgeessentialsclient.core;
 
-import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
+import static com.forgeessentialsclient.ForgeEssentialsClient.feclientlog;
 
 
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -9,23 +9,23 @@ import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.client.config.ClientConfig;
-import com.forgeessentials.client.config.FEModConfig;
-import com.forgeessentials.client.config.IFEConfig;
-import com.forgeessentials.client.handler.CUIRenderrer;
-import com.forgeessentials.client.handler.PermissionOverlay;
-import com.forgeessentials.client.handler.QRRenderer;
-import com.forgeessentials.client.handler.QuestionerKeyHandler;
-import com.forgeessentials.commons.BuildInfo;
-import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.packets.Packet0Handshake;
-import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
-import com.forgeessentials.commons.network.packets.Packet2Reach;
-import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
-import com.forgeessentials.commons.network.packets.Packet5Noclip;
-import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
-import com.forgeessentials.commons.network.packets.Packet7Remote;
+import com.forgeessentialsclient.ForgeEssentialsClient;
+import com.forgeessentialsclient.config.ClientConfig;
+import com.forgeessentialsclient.config.FEModConfig;
+import com.forgeessentialsclient.config.IFEConfig;
+import com.forgeessentialsclient.handler.CUIRenderrer;
+import com.forgeessentialsclient.handler.PermissionOverlay;
+import com.forgeessentialsclient.handler.QRRenderer;
+import com.forgeessentialsclient.handler.QuestionerKeyHandler;
+import com.forgeessentialsclient.utils.commons.BuildInfo;
+import com.forgeessentialsclient.utils.commons.network.NetworkUtils;
+import com.forgeessentialsclient.utils.commons.network.packets.Packet0Handshake;
+import com.forgeessentialsclient.utils.commons.network.packets.Packet1SelectionUpdate;
+import com.forgeessentialsclient.utils.commons.network.packets.Packet2Reach;
+import com.forgeessentialsclient.utils.commons.network.packets.Packet3PlayerPermissions;
+import com.forgeessentialsclient.utils.commons.network.packets.Packet5Noclip;
+import com.forgeessentialsclient.utils.commons.network.packets.Packet6AuthLogin;
+import com.forgeessentialsclient.utils.commons.network.packets.Packet7Remote;
 
 public class ClientProxy
 {

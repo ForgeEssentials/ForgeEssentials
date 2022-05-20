@@ -1,6 +1,7 @@
-package com.forgeessentials.client.handler;
+package com.forgeessentialsclient.handler;
 
-import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
+
+import com.forgeessentialsclient.utils.commons.network.packets.Packet3PlayerPermissions;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;

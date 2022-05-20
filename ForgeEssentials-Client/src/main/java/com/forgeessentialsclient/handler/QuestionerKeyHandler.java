@@ -1,4 +1,4 @@
-package com.forgeessentials.client.handler;
+package com.forgeessentialsclient.handler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;

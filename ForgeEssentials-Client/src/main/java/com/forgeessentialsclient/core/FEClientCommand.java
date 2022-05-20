@@ -1,4 +1,4 @@
-package com.forgeessentials.client.core;
+package com.forgeessentialsclient.core;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -6,7 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-import com.forgeessentials.commons.BuildInfo;
+import com.forgeessentialsclient.utils.commons.BuildInfo;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;

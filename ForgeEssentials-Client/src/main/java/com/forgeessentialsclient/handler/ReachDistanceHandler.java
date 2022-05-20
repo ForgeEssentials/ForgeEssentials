@@ -1,7 +1,8 @@
-package com.forgeessentials.client.handler;
+package com.forgeessentialsclient.handler;
 
-import com.forgeessentials.client.ForgeEssentialsClient;
-import com.forgeessentials.commons.network.packets.Packet2Reach;
+
+import com.forgeessentialsclient.ForgeEssentialsClient;
+import com.forgeessentialsclient.utils.commons.network.packets.Packet2Reach;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.network.NetworkEvent.Context;

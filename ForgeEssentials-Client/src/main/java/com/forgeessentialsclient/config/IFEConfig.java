@@ -1,7 +1,7 @@
-package com.forgeessentials.client.config;
+package com.forgeessentialsclient.config;
 
-import com.forgeessentials.client.config.ValuesCached.ValueCachedPrimitive;
-import com.forgeessentials.client.config.ValuesCached.ValueCachedResolvableConfig;
+import com.forgeessentialsclient.config.ValuesCached.ValueCachedPrimitive;
+import com.forgeessentialsclient.config.ValuesCached.ValueCachedResolvableConfig;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
