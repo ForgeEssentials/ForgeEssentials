@@ -9,10 +9,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.auth.ClientAuthNetHandler;
+import com.forgeessentials.client.config.BaseConfig;
+import com.forgeessentials.client.config.ValuesCached.ValueCachedBoolean;
 import com.forgeessentials.client.handler.CUIRenderrer;
 import com.forgeessentials.client.handler.PermissionOverlay;
 import com.forgeessentials.client.handler.QRRenderer;
@@ -33,7 +36,7 @@ import com.forgeessentials.commons.network.packets.Packet7Remote;
 import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_CLIENT;
 import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_SERVER;
 
-public class ClientProxy extends CommonProxy
+public class ClientProxy extends BaseConfig
 {
 
     public static final String CONFIG_CAT = Configuration.CATEGORY_GENERAL;
@@ -48,7 +51,7 @@ public class ClientProxy extends CommonProxy
 
     /* ------------------------------------------------------------ */
 
-    public static boolean allowCUI, allowQRCodeRender, allowPermissionRender, allowQuestionerShortcuts, allowAuthAutoLogin;
+    public static ValueCachedBoolean allowCUI, allowQRCodeRender, allowPermissionRender, allowQuestionerShortcuts, allowAuthAutoLogin;
 
     public static float reachDistance;
 
@@ -97,7 +100,7 @@ public class ClientProxy extends CommonProxy
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event)
+    public void onConfigChanged(ModConfigEvent.Reloading event)
     {
         if (event.getModID().equals(ForgeEssentialsClient.MODID))
             loadConfig();
