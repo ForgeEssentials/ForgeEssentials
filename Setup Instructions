@@ -1,0 +1,8 @@
+run ./gradlew genEclipseRuns to build the classpath and generate eclipse files.
+
+Java Build Path sources
+
+scr/utils/replacejava
+scr/main/java
+scr/client/java
+scr/utils/java -exclude scr/utils/java/com/forgeessentials.commons.Buildinfo.java
