@@ -2,19 +2,26 @@ package com.forgeessentials.client.core;
 
 import static com.forgeessentials.client.ForgeEssentialsClient.feclientlog;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
+import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
 import com.forgeessentials.client.auth.ClientAuthNetHandler;
 import com.forgeessentials.client.config.BaseConfig;
+import com.forgeessentials.client.config.ClientConfig;
+import com.forgeessentials.client.config.FEModConfig;
+import com.forgeessentials.client.config.IFEConfig;
 import com.forgeessentials.client.config.ValuesCached.ValueCachedBoolean;
 import com.forgeessentials.client.handler.CUIRenderrer;
 import com.forgeessentials.client.handler.PermissionOverlay;
@@ -36,14 +43,12 @@ import com.forgeessentials.commons.network.packets.Packet7Remote;
 import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_CLIENT;
 import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_SERVER;
 
-public class ClientProxy extends BaseConfig
+public class ClientProxy
 {
-
-    public static final String CONFIG_CAT = Configuration.CATEGORY_GENERAL;
 
     /* ------------------------------------------------------------ */
 
-    private static Configuration config;
+    public static final ClientConfig client = new ClientConfig();
 
     private static int clientTimeTicked;
 
@@ -51,7 +56,7 @@ public class ClientProxy extends BaseConfig
 
     /* ------------------------------------------------------------ */
 
-    public static ValueCachedBoolean allowCUI, allowQRCodeRender, allowPermissionRender, allowQuestionerShortcuts, allowAuthAutoLogin;
+    public static Boolean allowCUI, allowQRCodeRender, allowPermissionRender, allowQuestionerShortcuts, allowAuthAutoLogin, versionCheck;
 
     public static float reachDistance;
 
@@ -72,15 +77,24 @@ public class ClientProxy extends BaseConfig
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @Override
     public void doPreInit(FMLCommonSetupEvent event)
     {
         BuildInfo.getBuildInfo(event.getSourceFile());
         feclientlog.info(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
 
-        // Initialize configuration
-        config = new Configuration(event.getSuggestedConfigurationFile());
-        loadConfig();
+        // Initialize with configuration options
+        if (!versionCheck)
+            BuildInfo.checkVersion = false;
+
+        if (allowCUI)
+            MinecraftForge.EVENT_BUS.register(cuiRenderer);
+        if (allowQRCodeRender)
+            MinecraftForge.EVENT_BUS.register(qrCodeRenderer);
+        if (allowPermissionRender)
+            MinecraftForge.EVENT_BUS.register(permissionOverlay);
+        if (allowQuestionerShortcuts)
+            new QuestionerKeyHandler();
+        BuildInfo.startVersionChecks();
 
         registerNetworkMessages();
     }
@@ -99,49 +113,6 @@ public class ClientProxy extends BaseConfig
 
     /* ------------------------------------------------------------ */
 
-    @SubscribeEvent
-    public void onConfigChanged(ModConfigEvent.Reloading event)
-    {
-        if (event.getModID().equals(ForgeEssentialsClient.MODID))
-            loadConfig();
-    }
-
-    private void loadConfig()
-    {
-        config.load();
-        config.addCustomCategoryComment(CONFIG_CAT, "Configure ForgeEssentials Client addon features.");
-
-        allowCUI = config.getBoolean("allowCUI", Configuration.CATEGORY_GENERAL, true, "Set to false to disable graphical selections.");
-        allowQRCodeRender = config.get(Configuration.CATEGORY_GENERAL, "allowQRCodeRender", true,
-                "Set to false to disable QR code rendering when you enter /remote qr.").getBoolean(true);
-        allowPermissionRender = config.get(Configuration.CATEGORY_GENERAL, "allowPermRender", true,
-                "Set to false to disable visual indication of block/item permissions").getBoolean(true);
-        allowQuestionerShortcuts = config.get(Configuration.CATEGORY_GENERAL, "allowQuestionerShortcuts", true,
-                "Use shortcut buttons to answer questions. Defaults are F8 for yes and F9 for no, change in game options menu.").getBoolean(true);
-        allowAuthAutoLogin = config.get(Configuration.CATEGORY_GENERAL, "allowAuthAutoLogin", true,
-                "Save tokens to automatically log in to servers using FE's Authentication Module.").getBoolean(true);
-        if (!config.get(Configuration.CATEGORY_GENERAL, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
-            BuildInfo.checkVersion = false;
-
-        if (allowCUI)
-            MinecraftForge.EVENT_BUS.register(cuiRenderer);
-        if (allowQRCodeRender)
-            MinecraftForge.EVENT_BUS.register(qrCodeRenderer);
-        if (allowPermissionRender)
-            MinecraftForge.EVENT_BUS.register(permissionOverlay);
-        if (allowQuestionerShortcuts)
-            new QuestionerKeyHandler();
-        BuildInfo.startVersionChecks();
-
-        config.save();
-    }
-
-    public static Configuration getConfig()
-    {
-        return config;
-    }
-
-    /* ------------------------------------------------------------ */
 
     @SubscribeEvent
     public void connectionOpened(ClientPlayerNetworkEvent.LoggedInEvent e)
@@ -178,5 +149,17 @@ public class ClientProxy extends BaseConfig
     {
         sentHandshake = false;
     }
+
+
+	public static void registerConfig() {
+		registerConfig(client);
+		
+	}
+	public static void registerConfig(IFEConfig config) {
+		FEModConfig peModConfig = new FEModConfig(ForgeEssentialsClient.MOD_CONTAINER, config);
+		if (config.addToContainer()) {
+			ForgeEssentialsClient.MOD_CONTAINER.addConfig(peModConfig);
+		}
+	}
 
 }
