@@ -18,7 +18,7 @@ public class ClientConfig extends BaseConfig {
 	public ClientConfig() {
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 		builder.comment("Configure ForgeEssentials Client addon features..")
-				.push("client");
+				.push("General");
 		allowCUI = ValueCachedBoolean.wrap(this, builder
 				.comment("Set to false to disable graphical selections.")
 				.define("allowCUI", true));
@@ -42,7 +42,7 @@ public class ClientConfig extends BaseConfig {
 	}
 	@Override
 	public String getFileName() {
-		return "client";
+		return "ForgeEssentialsClientConfig";
 	}
 	@Override
 	public ForgeConfigSpec getConfigSpec() {
