@@ -1,5 +1,6 @@
 package com.forgeessentialsclient.commands;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
@@ -34,29 +35,29 @@ public class FEClientCommand extends BaseCommand {
 
 	public int execute(CommandContext<CommandSource> commandContext, int num)
     {
+		Minecraft instance = Minecraft.getInstance();
     	Entity entity = commandContext.getSource().getEntity();
     	if (entity != null) {
     		if (num == 0)
             {
             	ITextComponent msg = new StringTextComponent("/feclient info: Get FE client info");
-            	commandContext.getSource().getEntity().sendMessage(msg, entity.getUUID());
-                ITextComponent msg2 = new StringTextComponent("/feclient reinit: Redo server handshake");
-            	commandContext.getSource().getEntity().sendMessage(msg2, entity.getUUID());
+            	instance.gui.getChat().addMessage(msg);
+            	ITextComponent msg2 = new StringTextComponent("/feclient reinit: Redo server handshake");
+            	instance.gui.getChat().addMessage(msg2);
             }
             if (num == 1)
             {
             	ForgeEssentialsClient.resendHandshake();
-                ITextComponent msg = new StringTextComponent("Resent handshake packet to server.");
-            	commandContext.getSource().getEntity().sendMessage(msg, entity.getUUID());
+            	ITextComponent msg = new StringTextComponent("Resent handshake packet to server.");
+            	instance.gui.getChat().addMessage(msg);
             }
             if (num == 2)
             {
-                ITextComponent msg = new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", //
+            	ITextComponent msg = new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", //
                         BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
-            	commandContext.getSource().getEntity().sendMessage(msg, entity.getUUID());
-            	
-                ITextComponent msg2 = new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
-            	commandContext.getSource().getEntity().sendMessage(msg2, entity.getUUID());
+            	instance.gui.getChat().addMessage(msg);
+            	ITextComponent msg2 = new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
+            	instance.gui.getChat().addMessage(msg2);
             }
     	}
         return Command.SINGLE_SUCCESS;
