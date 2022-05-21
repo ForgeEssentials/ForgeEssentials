@@ -1,4 +1,4 @@
-package com.forgeessentialsclient.core;
+package com.forgeessentialsclient.commands;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;

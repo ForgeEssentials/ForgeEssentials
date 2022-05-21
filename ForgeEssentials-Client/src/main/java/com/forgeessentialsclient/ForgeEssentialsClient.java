@@ -26,6 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.forgeessentialsclient.commands.CommandInit;
 import com.forgeessentialsclient.config.ClientConfig;
 import com.forgeessentialsclient.config.FEModConfig;
 import com.forgeessentialsclient.config.IFEConfig;
@@ -33,7 +34,6 @@ import com.forgeessentialsclient.handler.CUIRenderrer;
 import com.forgeessentialsclient.handler.PermissionOverlay;
 import com.forgeessentialsclient.handler.QRRenderer;
 import com.forgeessentialsclient.handler.QuestionerKeyHandler;
-import com.forgeessentialsclient.init.CommandInit;
 import com.forgeessentialsclient.utils.commons.BuildInfo;
 import com.forgeessentialsclient.utils.commons.network.NetworkUtils;
 import com.forgeessentialsclient.utils.commons.network.packets.Packet0Handshake;
