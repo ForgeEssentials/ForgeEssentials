@@ -1,4 +1,4 @@
-ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentials.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentials)
+ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentials.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentials) <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/maximuslotro/ForgeEssentials-1.16.5-PortAndRewrite">
 ===================
 
 The code on this branch is for Minecraft 1.16.5.
