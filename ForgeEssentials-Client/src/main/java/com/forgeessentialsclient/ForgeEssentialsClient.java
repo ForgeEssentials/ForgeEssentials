@@ -87,14 +87,17 @@ public class ForgeEssentialsClient
     /* ------------------------------------------------------------ */
     
     public ForgeEssentialsClient(){
+    	//Set mod as client sdie only
     	MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
-    	ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, ()->Pair.of(
+    	MOD_CONTAINER.registerExtensionPoint(ExtensionPoint.DISPLAYTEST, ()->Pair.of(
   		      ()->"anything. i don't care", // if i'm actually on the server, this string is sent but i'm a client only mod, so it won't be
   		      (remoteversionstring,networkbool)->networkbool));// i accept anything from the server, by returning true if it's asking about the server
-
+    	//Get EventBus
     	IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+    	//Register Listeners
     	bus.addListener(this::commonsetup);
     	bus.addListener(this::onConfigLoad);
+    	
     	//Register our config files
     	registerConfig();
     	MinecraftForge.EVENT_BUS.register(this);
@@ -115,31 +118,29 @@ public class ForgeEssentialsClient
 
     public void commonsetup(FMLCommonSetupEvent event) {
         if (FMLEnvironment.dist.isClient()) {
-           // MinecraftForge.EVENT_BUS.register(new KeyInputEvent());
-            //MinecraftForge.EVENT_BUS.register(new TooltipEvent());
         	registerNetworkMessages();
-        	 BuildInfo.getBuildInfo(null/*event.getSourceFile()*/);
-             feclientlog.info(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
+        	BuildInfo.getBuildInfo(null/*event.getSourceFile()*/);
+        	feclientlog.info(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
+        	
+        	// Initialize with configuration options
+        	ClientConfig c = new ClientConfig();
+            allowCUI = c.allowCUI.get();
+            allowQRCodeRender = c. allowQRCodeRender.get();
+            allowPermissionRender = c.allowPermissionRender.get();
+            allowQuestionerShortcuts = c.allowQuestionerShortcuts.get();
+            allowAuthAutoLogin = c.allowAuthAutoLogin.get();
+            if (!c.versioncheck.get())
+                BuildInfo.checkVersion = false;
 
-             // Initialize with configuration options
-             ClientConfig c = new ClientConfig();
-             allowCUI = c.allowCUI.get();
-             allowQRCodeRender = c. allowQRCodeRender.get();
-             allowPermissionRender = c.allowPermissionRender.get();
-             allowQuestionerShortcuts = c.allowQuestionerShortcuts.get();
-             allowAuthAutoLogin = c.allowAuthAutoLogin.get();
-             if (!c.versioncheck.get())
-                 BuildInfo.checkVersion = false;
-
-             if (allowCUI)
-                 MinecraftForge.EVENT_BUS.register(cuiRenderer);
-             if (allowQRCodeRender)
-                 MinecraftForge.EVENT_BUS.register(qrCodeRenderer);
-             if (allowPermissionRender)
-                 MinecraftForge.EVENT_BUS.register(permissionOverlay);
-             if (allowQuestionerShortcuts)
-                 new QuestionerKeyHandler();
-             BuildInfo.startVersionChecks();
+            if (allowCUI)
+                MinecraftForge.EVENT_BUS.register(cuiRenderer);
+            if (allowQRCodeRender)
+                MinecraftForge.EVENT_BUS.register(qrCodeRenderer);
+            if (allowPermissionRender)
+                MinecraftForge.EVENT_BUS.register(permissionOverlay);
+            if (allowQuestionerShortcuts)
+                new QuestionerKeyHandler();
+            BuildInfo.startVersionChecks();
 
         } else {
             System.err.println("ForgeEssentials client does nothing on servers. You should remove it!");
