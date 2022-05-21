@@ -8,6 +8,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -21,6 +22,7 @@ import net.minecraftforge.fml.network.FMLHandshakeMessages;
 import net.minecraftforge.fml.network.FMLHandshakeMessages.S2CModList;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -86,7 +88,10 @@ public class ForgeEssentialsClient
     
     public ForgeEssentialsClient(){
     	MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
-    	
+    	ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, ()->Pair.of(
+  		      ()->"anything. i don't care", // if i'm actually on the server, this string is sent but i'm a client only mod, so it won't be
+  		      (remoteversionstring,networkbool)->networkbool));// i accept anything from the server, by returning true if it's asking about the server
+
     	IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
     	bus.addListener(this::commonsetup);
     	bus.addListener(this::onConfigLoad);
