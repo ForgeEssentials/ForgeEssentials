@@ -28,7 +28,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
-        PlayerInfo info = PlayerInfo.get(sender.getPersistentID());
+        PlayerInfo info = PlayerInfo.get(sender.getUUID());
         info.setSel1(null);
         info.setSel2(null);
         SelectionHandler.sendUpdate(sender);

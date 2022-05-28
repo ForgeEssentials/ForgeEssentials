@@ -1,15 +1,14 @@
 package com.forgeessentials.chat.irc;
 
-import net.minecraft.command.CommandResultStats.Type;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.config.ModConfig.Type;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import org.pircbotx.User;
 
@@ -46,7 +45,7 @@ public class IrcCommandSender implements ICommandSender
     public void sendMessage(ITextComponent chatComponent)
     {
         if (user.getBot().isConnected())
-            user.send().message(ChatOutputHandler.stripFormatting(chatComponent.getUnformattedText()));
+            user.send().message(ChatOutputHandler.stripFormatting(chatComponent.plainCopy().toString()));
     }
 
     @Override
@@ -62,7 +61,7 @@ public class IrcCommandSender implements ICommandSender
     }
 
     @Override
-    public Vec3d getPositionVector()
+    public Vector3d getPositionVector()
     {
         return getServer().getPositionVector();
     }
@@ -94,7 +93,7 @@ public class IrcCommandSender implements ICommandSender
     @Override
     public MinecraftServer getServer()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance();
+        return ServerLifecycleHooks.getCurrentServer();
     }
 
 }

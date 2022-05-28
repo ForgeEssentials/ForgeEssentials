@@ -22,12 +22,14 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.event.server.ServerLifecycleEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
@@ -262,7 +264,7 @@ public abstract class ServerUtil
      * @param dimID
      * @return -1 if error
      */
-    public static double getWorldTPS(int dimID)
+    public static double getWorldTPS(RegistryKey<World> World)
     {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         long sum = 0L;
@@ -356,21 +358,21 @@ public abstract class ServerUtil
 
     public static String getItemName(Item item)
     {
-        return Item.REGISTRY.getNameForObject(item).toString();
+        return ForgeRegistries.ITEMS.getKey(item).toString();
     }
 
     public static String getItemPermission(Item item)
     {
-        ResourceLocation loc = (ResourceLocation) Item.REGISTRY.getNameForObject(item);
-        return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
+    	ResourceLocation loc = (ResourceLocation) ForgeRegistries.ITEMS.getKey(item);
+        return (loc.getNamespace() + '.' + loc.getPath()).replace(' ', '_');
     }
 
     public static String getBlockName(Block block)
     {
-        Object o = Block.REGISTRY.getNameForObject(block);
+        Object o = ForgeRegistries.BLOCKS.getKey(block).toString();
         if(o instanceof ResourceLocation){
             ResourceLocation rl = (ResourceLocation) o;
-            return rl.getResourcePath();
+            return rl.getPath();
         } else {
             return (String) o;
         }
@@ -378,8 +380,8 @@ public abstract class ServerUtil
 
     public static String getBlockPermission(Block block)
     {
-        ResourceLocation loc = (ResourceLocation) Block.REGISTRY.getNameForObject(block);
-        return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
+        ResourceLocation loc = (ResourceLocation) ForgeRegistries.BLOCKS.getKey(block);
+        return (loc.getNamespace() + '.' + loc.getPath()).replace(' ', '_');
     }
 
     /* ------------------------------------------------------------ */

@@ -7,10 +7,12 @@ import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -81,7 +83,7 @@ public abstract class PlayerUtil
                     int amplifier = 0;
                     if (effectValues.length == 3)
                         amplifier = Integer.parseInt(effectValues[2]);
-                    if (Potion..REGISTRY.getObjectById(potionID) == null)
+                    if (ForgeRegistries.POTIONS.containsValue(potionID) == null)
                     {
                         LoggingHandler.felog.warn("Invalid potion ID {}", potionID);
                         continue;
@@ -103,11 +105,11 @@ public abstract class PlayerUtil
      * @param player
      * @return
      */
-    public static NBTTagCompound getPersistedTag(PlayerEntity player, boolean createIfMissing)
+    public static CompoundNBT getPersistedTag(PlayerEntity player, boolean createIfMissing)
     {
-        NBTTagCompound tag = player.getEntityData().getCompoundTag(PlayerEntity.PERSISTED_NBT_TAG);
+    	CompoundNBT tag = player.getEntityData().getCompoundTag(PlayerEntity.PERSISTED_NBT_TAG);
         if (createIfMissing)
-            player.getEntityData().setTag(PlayerEntity.PERSISTED_NBT_TAG, tag);
+            player.getEntityData().set(PlayerEntity.PERSISTED_NBT_TAG, tag);
         return tag;
     }
 

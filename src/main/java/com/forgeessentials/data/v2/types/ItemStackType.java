@@ -4,8 +4,9 @@ import java.lang.reflect.Type;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.forgeessentials.data.v2.DataManager.DataType;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -42,11 +43,11 @@ public class ItemStackType implements DataType<ItemStack>
     public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context)
     {
         JsonObject result = new JsonObject();
-        result.add(ITEM_ID, new JsonPrimitive(Item.REGISTRY.getNameForObject(src.getItem()).toString()));
+        result.add(ITEM_ID, new JsonPrimitive(ForgeRegistries.ITEMS.getKey(src.getItem()).toString()));
         result.add(STACK_SIZE, new JsonPrimitive(src.getCount()));
-        result.add(DAMAGE, new JsonPrimitive(src.getItemDamage()));
-        if (src.getTagCompound() != null)
-            result.add("compound", context.serialize(src.getTagCompound()));
+        result.add(DAMAGE, new JsonPrimitive(src.getDamageValue()));
+        if (src.getTag() != null)
+            result.add("compound", context.serialize(src.getTag()));
         return result;
     }
 
@@ -62,14 +63,14 @@ public class ItemStackType implements DataType<ItemStack>
             int damage = getSafeJsonInt(obj.get(DAMAGE), 0);
 
             // Get and check item
-            Item item = Item.REGISTRY.getObject(new ResourceLocation(itemID));
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemID));
             if (item == null)
                 return null;
 
             // Create item-stack and parse NBT data if the is any
             ItemStack stack = new ItemStack(item, stackSize, damage);
             if (obj.has("compound"))
-                stack.setTagCompound((NBTTagCompound) context.deserialize(obj.get("compound"), NBTTagCompound.class));
+                stack.setTag((CompoundNBT) context.deserialize(obj.get("compound"), CompoundNBT.class));
 
             return stack;
         }

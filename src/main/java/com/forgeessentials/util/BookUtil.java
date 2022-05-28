@@ -12,13 +12,12 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.TextFormatting;
 
 import com.forgeessentials.util.output.LoggingHandler;
@@ -28,16 +27,16 @@ public abstract class BookUtil
 
     public static void saveBookToFile(ItemStack book, File savefolder)
     {
-        NBTTagList pages;
+    	ListNBT pages;
         String filename = "";
         if (book != null)
         {
-            if (book.hasTagCompound())
+            if (book.hasTag())
             {
-                if (book.getTagCompound().hasKey("title") && book.getTagCompound().hasKey("pages"))
+                if (book.getTag().contains("title") && book.getTag().contains("pages"))
                 {
-                    filename = book.getTagCompound().getString("title") + ".txt";
-                    pages = (NBTTagList) book.getTagCompound().getTag("pages");
+                    filename = book.getTag().getString("title") + ".txt";
+                    pages = (ListNBT) book.getTag().get("pages");
                     File savefile = new File(savefolder, filename);
                     if (savefile.exists())
                     {
@@ -48,9 +47,9 @@ public abstract class BookUtil
                         savefile.createNewFile();
                         try (BufferedWriter out = new BufferedWriter(new FileWriter(savefile)))
                         {
-                            for (int c = 0; c < pages.tagCount(); c++)
+                            for (int c = 0; c < pages.size(); c++)
                             {
-                                String line = pages.getCompoundTagAt(c).toString();
+                                String line = pages.get(c).toString();
                                 while (line.contains("\n"))
                                 {
                                     out.write(line.substring(0, line.indexOf("\n")));
@@ -75,8 +74,8 @@ public abstract class BookUtil
 
     public static void getBookFromFile(PlayerEntity player, File file)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
+    	CompoundNBT tag = new CompoundNBT();
+    	ListNBT pages = new ListNBT();
 
         HashMap<String, String> map = new HashMap<String, String>();
         if (file.isFile())
@@ -136,22 +135,22 @@ public abstract class BookUtil
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
+            pages.appendTag(new StringNBT(name + map.get(name)));
         }
 
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", file.getName().replace(".txt", ""));
-        tag.setTag("pages", pages);
+        tag.putString("author", "ForgeEssentials");
+        tag.putString("title", file.getName().replace(".txt", ""));
+        tag.put("pages", pages);
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
-        player.inventory.addItemStackToInventory(is);
+        is.setTag(tag);
+        player.inventory.add(is);
     }
 
     public static void getBookFromFile(PlayerEntity player, File file, String title)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
+        CompoundNBT tag = new CompoundNBT();
+        ListNBT pages = new ListNBT();
 
         HashMap<String, String> map = new HashMap<String, String>();
         if (file.isFile())
@@ -210,22 +209,22 @@ public abstract class BookUtil
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
+            pages.appendTag(new StringNBT(name + map.get(name)));
         }
 
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", title);
-        tag.setTag("pages", pages);
+        tag.putString("author", "ForgeEssentials");
+        tag.putString("title", title);
+        tag.put("pages", pages);
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
-        player.inventory.addItemStackToInventory(is);
+        is.setTag(tag);
+        player.inventory.add(is);
     }
 
     public static void getBookFromFileUnformatted(PlayerEntity player, File file)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
+    	CompoundNBT tag = new CompoundNBT();
+        ListNBT pages = new ListNBT();
 
         HashMap<String, String> map = new HashMap<String, String>();
         if (file.isFile())
@@ -265,22 +264,22 @@ public abstract class BookUtil
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
+            pages.appendTag(new StringNBT(name + map.get(name)));
         }
 
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", file.getName().replace(".txt", ""));
-        tag.setTag("pages", pages);
+        tag.putString("author", "ForgeEssentials");
+        tag.putString("title", file.getName().replace(".txt", ""));
+        tag.put("pages", pages);
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
-        player.inventory.addItemStackToInventory(is);
+        is.setTag(tag);
+        player.inventory.add(is);
     }
 
     public static void getBookFromFileUnformatted(PlayerEntity player, File file, String title)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
+    	CompoundNBT tag = new CompoundNBT();
+        ListNBT pages = new ListNBT();
 
         HashMap<String, String> map = new HashMap<String, String>();
         if (file.isFile())
@@ -320,22 +319,22 @@ public abstract class BookUtil
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
+            pages.appendTag(new StringNBT(name + map.get(name)));
         }
 
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", title);
-        tag.setTag("pages", pages);
+        tag.putString("author", "ForgeEssentials");
+        tag.putString("title", title);
+        tag.put("pages", pages);
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
-        player.inventory.addItemStackToInventory(is);
+        is.setTag(tag);
+        player.inventory.add(is);
     }
 
     public static void getBookFromFolder(PlayerEntity player, File folder)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
+    	CompoundNBT tag = new CompoundNBT();
+        ListNBT pages = new ListNBT();
 
         HashMap<String, String> map = new HashMap<String, String>();
 
@@ -400,22 +399,22 @@ public abstract class BookUtil
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
+            pages.appendTag(new StringNBT(name + map.get(name)));
         }
 
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", folder.getName());
-        tag.setTag("pages", pages);
+        tag.putString("author", "ForgeEssentials");
+        tag.putString("title", folder.getName());
+        tag.put("pages", pages);
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
-        player.inventory.addItemStackToInventory(is);
+        is.setTag(tag);
+        player.inventory.add(is);
     }
 
     public static void getBookFromFolder(PlayerEntity player, File folder, String title)
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        NBTTagList pages = new NBTTagList();
+    	CompoundNBT tag = new CompoundNBT();
+        ListNBT pages = new ListNBT();
 
         HashMap<String, String> map = new HashMap<String, String>();
 
@@ -480,16 +479,16 @@ public abstract class BookUtil
         SortedSet<String> keys = new TreeSet<String>(map.keySet());
         for (String name : keys)
         {
-            pages.appendTag(new NBTTagString(name + map.get(name)));
+            pages.appendTag(new StringNBT(name + map.get(name)));
         }
 
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", title);
-        tag.setTag("pages", pages);
+        tag.putString("author", "ForgeEssentials");
+        tag.putString("title", title);
+        tag.put("pages", pages);
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
-        player.inventory.addItemStackToInventory(is);
+        is.setTag(tag);
+        player.inventory.add(is);
     }
 
 }

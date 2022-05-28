@@ -5,8 +5,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;

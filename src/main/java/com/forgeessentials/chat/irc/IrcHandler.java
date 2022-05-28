@@ -11,9 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -22,11 +20,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.Configuration;
@@ -379,7 +377,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         String[] args = cmdLine.split(" ");
         String commandName = args[0].substring(1);
         args = Arrays.copyOfRange(args, 1, args.length);
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 
         ICommand command = (ICommand) server.getCommandManager().getCommands().get(commandName);
         if (command == null)
@@ -406,27 +404,27 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     public void chatEvent(ServerChatEvent event)
     {
         if (isConnected() && sendMessages)
-            sendMessage(ChatOutputHandler.stripFormatting(event.getComponent().getUnformattedText()));
+            sendMessage(ChatOutputHandler.stripFormatting(event.getComponent().plainCopy().toString()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoginEvent(PlayerLoggedInEvent event)
     {
         if (showGameEvents)
-            sendMessage(Translator.format("%s joined the game", event.player.getName()));
+            sendMessage(Translator.format("%s joined the game", event.getPlayer().getName()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoginEvent(PlayerLoggedOutEvent event)
     {
         if (showGameEvents)
-            sendMessage(Translator.format("%s left the game", event.player.getName()));
+            sendMessage(Translator.format("%s left the game", event.getPlayer().getName()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerDeathEvent(LivingDeathEvent event)
     {
-        if (!(event.getEntityLiving() instanceof EntityPlayer))
+        if (!(event.getEntityLiving() instanceof PlayerEntity))
             return;
         if (showGameEvents)
             sendMessage(Translator.format("%s died", event.getEntityLiving().getName()));
@@ -435,13 +433,13 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void handleSay(CommandEvent event)
     {
-        if (event.getCommand().getName().equals("say"))
+        if (event.getParseResults().getReader().getString().equals("say"))
         {
-            sendMessage(Translator.format(mcSayHeader, event.getSender().getName(), StringUtils.join(event.getParameters(), " ")));
+            sendMessage(Translator.format(mcSayHeader, event.getParseResults().getContext().getSource().getTextName(), StringUtils.join(event.getParameters(), " ")));
         }
-        else if (event.getCommand().getName().equals("me"))
+        else if (event.getParseResults().getReader().getString().equals("me"))
         {
-            sendMessage(Translator.format("* %s %s", event.getSender().getName(), StringUtils.join(event.getParameters(), " ")));
+            sendMessage(Translator.format("* %s %s", event.getParseResults().getContext().getSource().getTextName(), StringUtils.join(event.getParameters(), " ")));
         }
     }
 

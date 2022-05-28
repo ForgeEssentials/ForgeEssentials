@@ -3,8 +3,7 @@ package com.forgeessentials.chat.irc;
 import java.util.Collection;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
@@ -35,7 +34,7 @@ public interface IrcCommand
 
             public IrcCommandParserArgs(IrcCommand command, String[] args, ICommandSender sender)
             {
-                super(null, args, sender, FMLCommonHandler.instance().getMinecraftServerInstance());
+                super(null, args, sender, ServerLifecycleHooks.getCurrentServer());
                 ircCommand = command;
             }
 

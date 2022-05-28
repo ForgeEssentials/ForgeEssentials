@@ -124,10 +124,10 @@ public class DataManager
         {
             toJson(src, out);
         }
-        catch (Throwable e)
+        catch (RuntimeException | Error | IOException e)
         {
             LoggingHandler.felog.error(String.format("Error saving data to %s", file.getName()), e);
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

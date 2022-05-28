@@ -44,13 +44,13 @@ public class QuestionData
     public void sendYesNoMessage()
     {
         ITextComponent yesMessage = new StringTextComponent("/yes");
-        yesMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/yes"));
-        yesMessage.getStyle().setColor(TextFormatting.RED);
+        yesMessage.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/yes"));
+        yesMessage.getStyle().withColor(TextFormatting.RED);
         yesMessage.getStyle().setUnderlined(true);
 
         ITextComponent noMessage = new StringTextComponent("/no");
-        noMessage.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/no"));
-        noMessage.getStyle().setColor(TextFormatting.RED);
+        noMessage.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/no"));
+        noMessage.getStyle().withColor(TextFormatting.RED);
         noMessage.getStyle().setUnderlined(true);
 
         ITextComponent yesNoMessage = new StringTextComponent("Type ");

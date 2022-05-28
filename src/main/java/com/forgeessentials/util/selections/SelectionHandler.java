@@ -1,6 +1,6 @@
 package com.forgeessentials.util.selections;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -19,9 +19,9 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class SelectionHandler extends ServerEventHandler
 {
@@ -44,33 +44,33 @@ public class SelectionHandler extends ServerEventHandler
     public void playerInteractEvent(PlayerInteractEvent.LeftClickBlock event)
     {
         // Only handle server events
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLEnvironment.dist.isClient())
             return;
 
         // get info now rather than later
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
         PlayerInfo info = PlayerInfo.get(player);
 
         if (!info.isWandEnabled())
             return;
 
         // Check if wand should activate
-        if (player.getHeldItemMainhand() == null)
+        if (player.getMainHandItem() == null)
         {
             if (!info.getWandID().equals("hands"))
                 return;
         }
         else
         {
-            if (!(player.getHeldItemMainhand().getItem().getUnlocalizedName().equals(info.getWandID())))
+            if (!(player.getMainHandItem().getItem().getName(player.getMainHandItem()).toString().equals(info.getWandID())))
                 return;
-            if (player.getHeldItemMainhand().getItemDamage() != info.getWandDmg())
+            if (player.getMainHandItem().getDamageValue() != info.getWandDmg())
                 return;
         }
 
-        WorldPoint point = new WorldPoint(player.dimension, event.getPos());
+        WorldPoint point = new WorldPoint(player.level, event.getPos());
 
-        SelectionHandler.setStart((ServerPlayerEntity) event.getEntityPlayer(), point);
+        SelectionHandler.setStart((ServerPlayerEntity) event.getPlayer(), point);
         String message = Translator.format("Pos1 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
         ChatOutputHandler.sendMessage(player, message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);
@@ -80,33 +80,33 @@ public class SelectionHandler extends ServerEventHandler
     public void playerInteractEvent(PlayerInteractEvent event)
     {
         // Only handle server events
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLEnvironment.dist.isClient())
             return;
 
         // get info now rather than later
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
         PlayerInfo info = PlayerInfo.get(player);
 
         if (!info.isWandEnabled())
             return;
 
         // Check if wand should activate
-        if (player.getHeldItemMainhand() == null)
+        if (player.getMainHandItem() == null)
         {
             if (!info.getWandID().equals("hands"))
                 return;
         }
         else
         {
-            if (!(player.getHeldItemMainhand().getItem().getUnlocalizedName().equals(info.getWandID())))
+            if (!(player.getMainHandItem().getItem().getName(player.getMainHandItem()).toString().equals(info.getWandID())))
                 return;
-            if (player.getHeldItemMainhand().getItemDamage() != info.getWandDmg())
+            if (player.getMainHandItem().getDamageValue() != info.getWandDmg())
                 return;
         }
 
-        WorldPoint point = new WorldPoint(player.dimension, event.getPos());
+        WorldPoint point = new WorldPoint(player.level, event.getPos());
 
-        SelectionHandler.setEnd((ServerPlayerEntity) event.getEntityPlayer(), point);
+        SelectionHandler.setEnd((ServerPlayerEntity) event.getPlayer(), point);
         String message = Translator.format("Pos2 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
         ChatOutputHandler.sendMessage(player, message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);
@@ -119,7 +119,7 @@ public class SelectionHandler extends ServerEventHandler
         {
             try
             {
-                NetworkUtils.netHandler.sendTo(new Packet1SelectionUpdate(selectionProvider.getSelection(player)), player);
+                NetworkUtils.HANDLER.sendTo(new Packet1SelectionUpdate(selectionProvider.getSelection(player)), player);
             }
             catch (NullPointerException e)
             {
