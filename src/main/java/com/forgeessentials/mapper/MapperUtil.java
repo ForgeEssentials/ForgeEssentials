@@ -9,13 +9,14 @@ import java.util.Map;
 import java.util.Scanner;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.storage.AnvilChunkLoader;
+import net.minecraft.world.chunk.storage.ChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public final class MapperUtil
 {
@@ -65,7 +66,7 @@ public final class MapperUtil
         return image;
     }
 
-    public static BufferedImage renderRegion(WorldServer world, int regionX, int regionZ)
+    public static BufferedImage renderRegion(ServerWorld world, int regionX, int regionZ)
     {
         int chunkStartX = regionX * MapperUtil.REGION_CHUNKS;
         int chunkStartZ = regionZ * MapperUtil.REGION_CHUNKS;
@@ -86,7 +87,7 @@ public final class MapperUtil
         return image;
     }
 
-    public static Chunk loadChunk(WorldServer world, int cx, int cz)
+    public static Chunk loadChunk(ServerWorld world, int cx, int cz)
     {
         Chunk chunk = (Chunk) world.getChunkProvider().id2ChunkMap.get(ChunkPos.asLong(cx, cz));
         if (chunk != null)
@@ -103,7 +104,7 @@ public final class MapperUtil
         }
     }
 
-    public static boolean chunkExists(WorldServer world, int cx, int cz)
+    public static boolean chunkExists(ServerWorld world, int cx, int cz)
     {
         return RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), cx, cz).chunkExists(cx & 0x1F, cz & 0x1F);
     }
@@ -112,7 +113,7 @@ public final class MapperUtil
 
     public static Color getBlockColor(Block block, int meta)
     {
-        int id = Block.REGISTRY.getIDForObject(block);
+        int id = ForgeRegistries.BLOCKS;
         if (id >= colors.length)
             return Color.BLACK;
 

@@ -209,7 +209,7 @@ public class JsFEServer
 
         public BasicInteraction(String p_i1561_1_, boolean p_i1561_2_, IInventory source)
         {
-            super(p_i1561_1_, p_i1561_2_, ((source.getSizeInventory() - 1) / 9 + 1) * 9);
+            super(p_i1561_1_, p_i1561_2_, ((source.getContainerSize() - 1) / 9 + 1) * 9);
             for (int i = 0; i < source.getSizeInventory(); i++)
             {
                 this.setInventorySlotContents(i, source.getStackInSlot(i));

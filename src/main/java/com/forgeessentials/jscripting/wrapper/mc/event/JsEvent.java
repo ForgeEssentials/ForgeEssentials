@@ -2,6 +2,7 @@ package com.forgeessentials.jscripting.wrapper.mc.event;
 
 import javax.script.ScriptException;
 
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.Event.Result;
@@ -40,7 +41,7 @@ public abstract class JsEvent<T extends Event>
         return _event;
     }
 
-    public ICommandSender _getSender()
+    public CommandSource _getSender()
     {
         return null;
     }
@@ -69,7 +70,7 @@ public abstract class JsEvent<T extends Event>
         try
         {
             this._event = event;
-            ICommandSender sender = _getSender();
+            CommandSource sender = _getSender();
             if (sender != null)
                 _script.setLastSender(sender);
 

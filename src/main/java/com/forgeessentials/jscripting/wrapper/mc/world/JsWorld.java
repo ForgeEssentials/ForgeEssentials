@@ -5,12 +5,10 @@ import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.server.ServerWorld;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntity;
@@ -42,7 +40,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public static JsWorldServer get(int dim)
     {
-        WorldServer world = DimensionManager.getWorld(dim);
+    	ServerWorld world = DimensionManager.getWorld(dim);
         return world == null ? null : new JsWorldServer(world);
     }
 
@@ -322,7 +320,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public long getSeed()
     {
-        return that.getSeed();
+        return that.seed;
     }
 
     //    /**

@@ -18,9 +18,11 @@ import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -103,7 +105,7 @@ public abstract class ServerUtil
         }
     }
 
-    public static double parseYLocation(ICommandSender sender, double relative, String value) throws CommandException
+    public static double parseYLocation(CommandSource sender, double relative, String value) throws CommandException
     {
         boolean isRelative = value.startsWith("~");
         if (isRelative && Double.isNaN(relative))
@@ -343,15 +345,15 @@ public abstract class ServerUtil
     }
     
     @SuppressWarnings("unchecked")
-    public static void copyNbt(NBTTagCompound nbt, NBTTagCompound data)
+    public static void copyNbt(CompoundNBT nbt, CompoundNBT  data)
     {
         // Clear old data
-        for (String key : new HashSet<String>(nbt.getKeySet()))
-            nbt.removeTag(key);
+        for (String key : new HashSet<String>(nbt.getAllKeys()))
+            nbt.remove(key);
     
         // Write new data
-        for (String key : (Set<String>) data.getKeySet())
-            nbt.setTag(key, data.getTag(key));
+        for (String key : (Set<String>) data.getAllKeys())
+            nbt.put(key, data.get(key));
     }
 
     /* ------------------------------------------------------------ */

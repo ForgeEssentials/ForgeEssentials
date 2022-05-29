@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.World;
 
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
@@ -56,7 +57,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
         }
         catch (Exception e)
         {
-            Throwables.propagate(e);
+        	throw new RuntimeException(e);
         }
         return new JsEntity<>(entity);
     }
@@ -74,98 +75,98 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
 
     public String getName()
     {
-        return that.getName();
+        return that.getName().getString();
     }
 
     public String getId()
     {
-        return that.getPersistentID().toString();
+        return that.getUUID().toString();
     }
 
     public UUID getUuid()
     {
-        return that.getPersistentID();
+        return that.getUUID();
     }
 
     public int getEntityId()
     {
-        return that.getEntityId();
+        return that.getId();
     }
 
-    public int getDimension()
+    public World getDimension()
     {
-        return that.dimension;
+        return that.level;
     }
 
     public double getX()
     {
-        return that.posX;
+        return that.position().x;
     }
 
     public double getY()
     {
-        return that.posY;
+        return that.position().y;
     }
 
     public double getZ()
     {
-        return that.posZ;
+        return that.position().z;
     }
 
     public double getMotionX()
     {
-        return that.motionX;
+        return that.getDeltaMovement().x;
     }
 
     public double getMotionY()
     {
-        return that.motionY;
+        return that.getDeltaMovement().y;
     }
 
     public double getMotionZ()
     {
-        return that.motionZ;
+        return that.getDeltaMovement().z;
     }
 
     public int getChunkCoordX()
     {
-        return that.chunkCoordX;
+        return that.xChunk;
     }
 
     public int getChunkCoordY()
     {
-        return that.chunkCoordY;
+        return that.yChunk;
     }
 
     public int getChunkCoordZ()
     {
-        return that.chunkCoordZ;
+        return that.zChunk;
     }
 
     public float getWidth()
     {
-        return that.width;
+        return that.getBbWidth();
     }
 
     public float getHeight()
     {
-        return that.height;
+        return that.getBbHeight();
     }
 
     public float getStepHeight()
     {
-        return that.stepHeight;
+        return that.maxUpStep;
     }
 
     public boolean isOnGround()
     {
-        return that.onGround;
+        return that.isOnGround();
     }
 
     public JsEntity<?> getRidingEntity()
     {
         if (ridingEntity == null)
-            ridingEntity = get(that.getRidingEntity());
+            ridingEntity = get(that.getEntity().getVehicle());
         return ridingEntity;
     }
 
@@ -179,7 +180,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
     public JsWorld<?> getWorld()
     {
         if (world == null)
-            world = JsWorld.get(that.world);
+            world = JsWorld.get(that.level);
         return world;
     }
 
@@ -196,7 +197,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
      */
     public void _setNbt(String value)
     {
-        ServerUtil.copyNbt(that.getEntityData(), DataManager.fromJson(value, NBTTagCompound.class));
+        ServerUtil.copyNbt(that.getPersistentData(), DataManager.fromJson(value, CompoundNBT.class));
     }
 
     public String getEntityType()

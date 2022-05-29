@@ -27,7 +27,7 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.ITextComponent;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -117,7 +117,7 @@ public class ScriptInstance
 
     private Map<Object, JsEvent<?>> eventHandlers = new HashMap<>();
 
-    private WeakReference<ICommandSender> lastSender;
+    private WeakReference<CommandSource> lastSender;
 
     /* ************************************************************ */
     /* PROPERTY ACCESSING */
@@ -515,7 +515,7 @@ public class ScriptInstance
         chatError(lastSender == null ? null : lastSender.get(), message);
     }
 
-    public void chatError(ICommandSender sender, String message)
+    public void chatError(CommandSource sender, String message)
     {
         ITextComponent msg = ChatOutputHandler.error(message);
         if (sender == null)
@@ -529,7 +529,7 @@ public class ScriptInstance
      *
      * @param sender
      */
-    public void setLastSender(ICommandSender sender)
+    public void setLastSender(CommandSource sender)
     {
         this.lastSender = new WeakReference<>(sender);
     }

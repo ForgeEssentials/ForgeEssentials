@@ -194,13 +194,13 @@ configurations {
 dependencies {
 
     minecraft "net.minecraftforge:forge:$project.minecraftVersion-$project.forgeVersion"
-	// IRC
-	//serverLib("org.pircbotx:pircbotx:2.0.1") {
-    //    // these are all packaged with the minecraft server jar
-    //    exclude module: 'guava'
-    //    exclude module: 'commons-lang3'
-    //    exclude module: 'commons-codec'
-    //}
+	 // IRC
+	serverLib("org.pircbotx:pircbotx:2.1") {
+        // these are all packaged with the minecraft server jar
+        exclude module: 'guava'
+        exclude module: 'commons-lang3'
+        exclude module: 'commons-codec'
+    }
 
     // Shade Mixin library
     shade (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {

@@ -1,8 +1,8 @@
 package com.forgeessentials.jscripting.wrapper.mc.world;
 
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 
-public class JsWorldServer extends JsWorld<WorldServer>
+public class JsWorldServer extends JsWorld<ServerWorld>
 {
 
     public static JsWorldServer get(int dim)
@@ -10,7 +10,7 @@ public class JsWorldServer extends JsWorld<WorldServer>
         return JsWorld.get(dim);
     }
 
-    public JsWorldServer(WorldServer that)
+    public JsWorldServer(ServerWorld that)
     {
         super(that);
     }
