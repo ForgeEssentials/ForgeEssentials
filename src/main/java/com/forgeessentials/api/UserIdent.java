@@ -9,12 +9,16 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.ICommandSource;
+import net.minecraft.command.arguments.EntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
+import net.minecraft.tileentity.CommandBlockLogic;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -220,7 +224,7 @@ public class UserIdent
         return new UserIdent(uuid, null, UserIdent.getPlayerByUuid(uuid));
     }
 
-    public static synchronized UserIdent get(ICommandSender sender) {
+    public static synchronized UserIdent get(ICommandSource sender) {
         if (sender instanceof DoAsCommandSender)
         {
             return ((DoAsCommandSender) sender).getIdent();
@@ -233,7 +237,7 @@ public class UserIdent
         {
             return APIRegistry.IDENT_RCON;
         }
-        else if (sender instanceof CommandBlockBaseLogic)
+        else if (sender instanceof CommandBlockLogic)
         {
             return APIRegistry.IDENT_CMDBLOCK;
         }
@@ -301,7 +305,7 @@ public class UserIdent
         return ident;
     }
 
-    public static synchronized UserIdent get(String uuidOrUsername, ICommandSender sender, boolean mustExist)
+    public static synchronized UserIdent get(String uuidOrUsername, ICommandSource sender, boolean mustExist)
     {
     	PlayerEntity player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
                 UserIdent.getPlayerByUsername(uuidOrUsername);
@@ -337,14 +341,14 @@ public class UserIdent
         }
     }
 
-    public static synchronized UserIdent get(String uuidOrUsername, ICommandSender sender)
+    public static synchronized UserIdent get(String uuidOrUsername, ICommandSource sender)
     {
         return get(uuidOrUsername, sender, false);
     }
 
     public static synchronized UserIdent get(String uuidOrUsername, boolean mustExist)
     {
-        return get(uuidOrUsername, (ICommandSender) null, mustExist);
+        return get(uuidOrUsername, (ICommandSource) null, mustExist);
     }
 
     public static synchronized UserIdent get(String uuidOrUsername)
@@ -420,7 +424,7 @@ public class UserIdent
     public static synchronized void login(PlayerEntity player)
     {
         UserIdent ident = byUuid.get(player.getUUID());
-        UserIdent usernameIdent = byUsername.get(player.getName());
+        UserIdent usernameIdent = byUsername.get(player.getName().getString());
 
         if (ident == null)
         {
@@ -702,7 +706,7 @@ public class UserIdent
         return configurationManager == null ? null : configurationManager.getPlayerByName(username);
     }
 
-    public static PlayerEntity getPlayerByMatchOrUsername(ICommandSender sender, String match)
+    public static PlayerEntity getPlayerByMatchOrUsername(ICommandSource sender, String match)
     {
         try {
         	PlayerEntity player = EntitySelector.matchOnePlayer(sender, match);

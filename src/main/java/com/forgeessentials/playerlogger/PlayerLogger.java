@@ -13,19 +13,24 @@ import java.util.logging.Logger;
 
 import javax.sql.rowset.serial.SerialBlob;
 
+import org.spongepowered.asm.mixin.MixinEnvironment.Side;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.RedstoneBlock;
 import net.minecraft.item.BedItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
+import net.minecraft.world.storage.PlayerData;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
@@ -33,6 +38,7 @@ import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -383,9 +389,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         {
             if (tileEntity == null)
                 return null;
-            NBTTagCompound nbt = new NBTTagCompound();
+            CompoundNBT nbt = new CompoundNBT();
             tileEntity.writeToNBT(nbt);
-            nbt.setString("ENTITY_CLASS", tileEntity.getClass().getName());
+            nbt.putString("ENTITY_CLASS", tileEntity.getClass().getName());
             ByteBuf buf = Unpooled.buffer();
             ByteBufUtils.writeTag(buf, nbt);
             return new SerialBlob(buf.array());
@@ -407,7 +413,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 return null;
 
             ByteBuf buf = Unpooled.wrappedBuffer(blob.getBytes(1, (int) blob.length()));
-            NBTTagCompound nbt = ByteBufUtils.readTag(buf);
+            CompoundNBT nbt = ByteBufUtils.readTag(buf);
             if (nbt == null)
                 return null;
 
@@ -633,9 +639,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void placeEvent(BlockEvent.PlaceEvent event)
+    public void placeEvent(EntityPlaceEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() != Side.SERVER || em == null)
+        if (FMLEnvironment.dist.isClient() || em == null)
             return;
         if (event instanceof BlockEvent.MultiPlaceEvent)
         {

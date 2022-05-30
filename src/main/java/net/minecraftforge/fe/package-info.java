@@ -8,4 +8,4 @@
 @API(owner = "ForgeEssentials", provides = "Forge-FEHooks", apiVersion = "1448.2")
 package net.minecraftforge.fe;
 
-import net.minecraftforge.fml.common.API;
+import net.minecraftforge.eventbus.api.IEventBusInvokeDispatcher;

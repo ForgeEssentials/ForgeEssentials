@@ -58,7 +58,7 @@ public class EffectMessage extends WorldBorderEffect
 
     public void doEffect(ServerPlayerEntity player)
     {
-        ChatOutputHandler.chatError(player, ModuleChat.processChatReplacements(player, message));
+        ChatOutputHandler.chatError(player.createCommandSourceStack(), ModuleChat.processChatReplacements(player.createCommandSourceStack(), message));
     }
 
     @Override

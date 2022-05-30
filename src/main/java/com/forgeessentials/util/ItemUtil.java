@@ -8,6 +8,7 @@ import net.minecraft.entity.item.HangingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.SignTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -66,22 +67,22 @@ public final class ItemUtil
         return null;
     }
 
-    public static NBTTagCompound getTagCompound(ItemStack itemStack)
+    public static CompoundNBT getTagCompound(ItemStack itemStack)
     {
-        NBTTagCompound tag = itemStack.getTagCompound();
+    	CompoundNBT tag = itemStack.getTag();
         if (tag == null)
         {
-            tag = new NBTTagCompound();
-            itemStack.setTagCompound(tag);
+            tag = new CompoundNBT();
+            itemStack.setTag(tag);
         }
         return tag;
     }
 
     
-    public static NBTTagCompound getCompoundTag(NBTTagCompound tag, String side)
+    public static CompoundNBT getCompoundTag(CompoundNBT tag, String side)
     {
-        NBTTagCompound subTag = tag.getCompoundTag(side);
-        tag.setTag(side, subTag);
+    	CompoundNBT subTag = tag.getCompound(side);
+        tag.put(side, subTag);
         return subTag;
     }
 

@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.AreaBase;
@@ -31,19 +32,19 @@ public class WorldBorder implements Loadable
 
     private List<WorldBorderEffect> effects = new ArrayList<>();
 
-    int dimID;
+    RegistryKey<World> dimID;
 
     @Expose(serialize = false)
     private AreaBase area;
 
     @Expose(serialize = false)
-    private Map<EntityPlayer, Set<WorldBorderEffect>> activeEffects = new WeakHashMap<>();
+    private Map<PlayerEntity, Set<WorldBorderEffect>> activeEffects = new WeakHashMap<>();
 
-    public WorldBorder(Point center, int xSize, int zSize, int dimID)
+    public WorldBorder(Point center, int xSize, int zSize, RegistryKey<World> registryKey)
     {
         this.center = center;
         this.size = new Point(xSize, 0, zSize);
-        this.dimID = dimID;
+        this.dimID = registryKey;
         updateArea();
     }
 
@@ -129,7 +130,7 @@ public class WorldBorder implements Loadable
         area = new AreaBase(minP, maxP);
     }
 
-    public Set<WorldBorderEffect> getOrCreateActiveEffects(EntityPlayer player)
+    public Set<WorldBorderEffect> getOrCreateActiveEffects(PlayerEntity player)
     {
         Set<WorldBorderEffect> effects = activeEffects.get(player);
         if (effects == null)
@@ -140,7 +141,7 @@ public class WorldBorder implements Loadable
         return effects;
     }
 
-    public Set<WorldBorderEffect> getActiveEffects(EntityPlayer player)
+    public Set<WorldBorderEffect> getActiveEffects(PlayerEntity player)
     {
         return activeEffects.get(player);
     }
@@ -155,7 +156,7 @@ public class WorldBorder implements Loadable
     public static WorldBorder load(World world)
     {
         // TODO: Better way to identify dimensions
-        String key = Integer.toString(world.provider.getDimension());
+        String key = Integer.toString(world.dimension());
         return DataManager.getInstance().load(WorldBorder.class, key);
     }
 

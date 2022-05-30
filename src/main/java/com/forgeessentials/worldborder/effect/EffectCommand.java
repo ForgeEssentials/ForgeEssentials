@@ -56,7 +56,7 @@ public class EffectCommand extends WorldBorderEffect
 
     public void doEffect(ServerPlayerEntity player)
     {
-        String cmd = ScriptArguments.processSafe(command, player);
+        String cmd = ScriptArguments.processSafe(command, player.createCommandSourceStack());
         FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(FMLCommonHandler.instance().getMinecraftServerInstance(), cmd);
     }
 

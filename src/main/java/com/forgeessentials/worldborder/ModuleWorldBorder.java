@@ -8,7 +8,8 @@ import java.util.Set;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.forgeessentials.api.APIRegistry;
@@ -18,16 +19,15 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.forgeessentials.worldborder.effect.EffectBlock;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -44,7 +44,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     private static ModuleWorldBorder instance;
 
     //TODO: Consider changing the key type to World so the code is not tightly coupled to internal Minecraft logic
-    private Map<WorldServer, WorldBorder> borders = new HashMap<>();
+    private Map<ServerWorld, WorldBorder> borders = new HashMap<>();
 
     public ModuleWorldBorder()
     {
@@ -59,7 +59,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void moduleInitEvent(FEModuleInitEvent event)
+    public void moduleInitEvent(FEModuleCommonSetupEvent event)
     {
         FECommandManager.registerCommand(new CommandWorldBorder());
     }
@@ -74,16 +74,16 @@ public class ModuleWorldBorder extends ServerEventHandler
     @SubscribeEvent
     public void worldLoadEvent(WorldEvent.Load event)
     {
-        if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
+        if (FMLEnvironment.dist.isClient())
             return;
-        borders.put((WorldServer) event.getWorld(), WorldBorder.load(event.getWorld()));
+        borders.put((ServerWorld) event.getWorld(), WorldBorder.load(event.getWorld()));
         getBorder(event.getWorld());
     }
 
     @SubscribeEvent
     public void worldUnLoadEvent(WorldEvent.Unload event)
     {
-        if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
+        if (FMLEnvironment.dist.isClient())
             return;
         borders.remove(event.getWorld());
     }
@@ -128,7 +128,7 @@ public class ModuleWorldBorder extends ServerEventHandler
                 break;
             }
             default:
-                LoggingHandler.felog.error("Unsupported world border shape. Disabling worldborder on world " + event.after.getWorld().provider.getDimension());
+                LoggingHandler.felog.error("Unsupported world border shape. Disabling worldborder on world " + event.after.getWorld());
                 borders.remove(event.after.getWorld());
                 return;
             }
@@ -179,7 +179,7 @@ public class ModuleWorldBorder extends ServerEventHandler
         // Tick effects
         for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
-            WorldBorder border = getBorder(player.world);
+            WorldBorder border = getBorder(player.level);
             if (border != null && border.isEnabled())
             {
                 Set<WorldBorderEffect> effects = border.getActiveEffects(player);
@@ -199,8 +199,8 @@ public class ModuleWorldBorder extends ServerEventHandler
         WorldBorder border = borders.get(world);
         if (border == null)
         {
-            border = new WorldBorder(new Point(0, 0, 0), DEFAULT_SIZE, DEFAULT_SIZE, world.provider.getDimension());
-            borders.put((WorldServer) world, border);
+            border = new WorldBorder(new Point(0, 0, 0), DEFAULT_SIZE, DEFAULT_SIZE, world.dimension());
+            borders.put((ServerWorld) world, border);
         }
         return border;
     }

@@ -13,8 +13,10 @@ import java.util.regex.Pattern;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.ICommandSource;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -44,7 +46,7 @@ public class CommandParserArgs
 
     public final ICommand command;
     public final LinkedList<String> args;
-    public final ICommandSender sender;
+    public final ICommandSource sender;
     public final ServerPlayerEntity senderPlayer;
     public final UserIdent ident;
     public final boolean isTabCompletion;
@@ -53,7 +55,7 @@ public class CommandParserArgs
 
     public List<String> tabCompletion;
 
-    public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, boolean isTabCompletion, MinecraftServer server)
+    public CommandParserArgs(ICommand command, String[] args, ICommandSource sender, boolean isTabCompletion, MinecraftServer server)
     {
         this.command = command;
         this.args = new LinkedList<>(Arrays.asList(args));

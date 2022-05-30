@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.common.config.Configuration;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
@@ -82,7 +81,7 @@ public class Censor extends ConfigLoaderBase
         return filter(message, null);
     }
 
-    public String filter(String message, EntityPlayer player)
+    public String filter(String message, PlayerEntity player)
     {
         if (!enabled)
             return message;
@@ -95,7 +94,7 @@ public class Censor extends ConfigLoaderBase
                     filter.blank = Strings.repeat(censorSymbol, m.end() - m.start());
                 message = m.replaceAll(filter.blank);
                 if (player != null && censorSlap != 0)
-                    player.attackEntityFrom(DamageSource.GENERIC, censorSlap);
+                    player.hurt(DamageSource.GENERIC, censorSlap);
             }
         }
         return message;

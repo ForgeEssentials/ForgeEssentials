@@ -20,9 +20,8 @@ import java.util.WeakHashMap;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -31,12 +30,12 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.context.*;
 
@@ -421,21 +420,21 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         }
 
         ITextComponent msg1 = new StringTextComponent(String.format("%s = %s (%s)", permissionNode, value, node));
-        msg1.getStyle().setColor(Zone.PERMISSION_FALSE.equals(value) ? TextFormatting.RED : TextFormatting.DARK_GREEN);
+        msg1.getStyle().withColor(Zone.PERMISSION_FALSE.equals(value) ? TextFormatting.RED : TextFormatting.DARK_GREEN);
 
         ITextComponent msg2;
         if (zone == null)
         {
             msg2 = new StringTextComponent("  permission not set");
-            msg2.getStyle().setColor(TextFormatting.YELLOW);
+            msg2.getStyle().withColor(TextFormatting.YELLOW);
         }
         else
         {
             ITextComponent msgZone = new StringTextComponent(zone.getName());
-            msgZone.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
+            msgZone.getStyle().withColor(TextFormatting.LIGHT_PURPLE);
 
             ITextComponent msgUser = new StringTextComponent(ident == null ? APIRegistry.IDENT_SERVER.getUsername() : ident.getUsernameOrUuid());
-            msgUser.getStyle().setColor(TextFormatting.GOLD);
+            msgUser.getStyle().withColor(TextFormatting.GOLD);
 
             if (isGroupPermission)
             {
@@ -443,7 +442,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 // if (groupName == null)
                 // groupName = group;
                 ITextComponent msgGroup = new StringTextComponent(group);
-                msgGroup.getStyle().setColor(TextFormatting.LIGHT_PURPLE);
+                msgGroup.getStyle().withColor(TextFormatting.LIGHT_PURPLE);
 
                 msg2 = new TranslationTextComponent("  zone %s group %s for user %s", msgZone, msgGroup, msgUser);
             }
@@ -534,29 +533,29 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     public void playerLogin(PlayerLoggedInEvent e)
     {
         // Make sure each player has at least one permission
-        UserIdent ident = UserIdent.get(e.player);
+        UserIdent ident = UserIdent.get(e.getPlayer());
         if (getServerZone().getPlayerPermissions(ident) == null || getServerZone().getPlayerPermissions(ident).size() == 0)
             getServerZone().setPlayerPermission(ident, FEPermissions.PLAYER_KNOWN, true);
         else
             getServerZone().clearPlayerPermission(ident, FEPermissions.PLAYER_KNOWN);
 
         // Fire first zone-changed event
-        WarpPoint point = new WarpPoint(e.player);
+        WarpPoint point = new WarpPoint(e.getPlayer());
         Zone zone = APIRegistry.perms.getServerZone().getZonesAt(point.toWorldPoint()).get(0);
-        PlayerChangedZone event = new PlayerChangedZone(e.player, zone, zone, point, point);
+        PlayerChangedZone event = new PlayerChangedZone(e.getPlayer(), zone, zone, point, point);
         MinecraftForge.EVENT_BUS.post(event);
     }
 
     @SubscribeEvent
     public void playerLoggedOut(PlayerLoggedOutEvent e)
     {
-        permissionDebugUsers.remove(e.player);
+        permissionDebugUsers.remove(e.getPlayer());
     }
 
     @SubscribeEvent
     public void worldLoad(WorldEvent.Load e)
     {
-        getServerZone().getWorldZone(e.getWorld().provider.getDimension());
+        getServerZone().getWorldZone(e.getWorld());
     }
 
     @SubscribeEvent
@@ -566,7 +565,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         Zone after = APIRegistry.perms.getServerZone().getZonesAt(e.after.toWorldPoint()).get(0);
         if (!before.equals(after))
         {
-            PlayerChangedZone event = new PlayerChangedZone(e.getEntityPlayer(), before, after, e.before, e.after);
+            PlayerChangedZone event = new PlayerChangedZone(e.getPlayer(), before, after, e.before, e.after);
             e.setCanceled(MinecraftForge.EVENT_BUS.post(event));
         }
     }
@@ -574,16 +573,16 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerChangedZoneEvent(PlayerChangedZone event)
     {
-        UserIdent ident = UserIdent.get(event.getEntityPlayer());
+        UserIdent ident = UserIdent.get(event.getPlayer());
         String exitMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.beforeZone, FEPermissions.ZONE_EXIT_MESSAGE);
         if (exitMsg != null)
         {
-            ChatOutputHandler.sendMessage(event.getEntityPlayer(), ChatOutputHandler.formatColors(exitMsg));
+            ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), ChatOutputHandler.formatColors(exitMsg));
         }
         String entryMsg = APIRegistry.perms.getUserPermissionProperty(ident, event.afterZone, FEPermissions.ZONE_ENTRY_MESSAGE);
         if (entryMsg != null)
         {
-            ChatOutputHandler.sendMessage(event.getEntityPlayer(), ChatOutputHandler.formatColors(entryMsg));
+            ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), ChatOutputHandler.formatColors(entryMsg));
         }
     }
 
@@ -928,14 +927,14 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     // ------------------------------------------------------------
 
     @Override
-    public boolean checkPermission(EntityPlayer player, String permissionNode)
+    public boolean checkPermission(PlayerEntity player, String permissionNode)
     {
         UserIdent ident = UserIdent.get(player);
         return checkBooleanPermission(getPermission(ident, new WorldPoint(player), null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, false));
     }
 
     @Override
-    public String getPermissionProperty(EntityPlayer player, String permissionNode)
+    public String getPermissionProperty(PlayerEntity  player, String permissionNode)
     {
         UserIdent ident = UserIdent.get(player);
         return getPermission(ident, new WorldPoint(player), null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);

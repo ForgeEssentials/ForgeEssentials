@@ -10,6 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteResponse;
@@ -80,7 +81,7 @@ public class RemoteCommandSender extends DoAsCommandSender
     {
         // TODO: Instead of directly sending the messages to the client, cache them and send them all after the running
         // command finished (only if enabled)
-        ICommandSender receiver = FMLCommonHandler.instance().getMinecraftServerInstance();
+        ICommandSender receiver = ServerLifecycleHooks.getCurrentServer();
         if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
             receiver = session.getUserIdent().getPlayer();
         ChatOutputHandler.sendMessage(receiver, chatComponent);
@@ -90,7 +91,7 @@ public class RemoteCommandSender extends DoAsCommandSender
             try
             {
                 // TODO: Add second message WITH formatting
-                ChatResponse msg = new ChatResponse(null, ChatOutputHandler.stripFormatting(chatComponent.getUnformattedText()));
+                ChatResponse msg = new ChatResponse(null, ChatOutputHandler.stripFormatting(chatComponent.plainCopy().toString()));
                 session.sendMessage(new RemoteResponse<ChatResponse>(RemoteMessageID.CHAT, msg));
             }
             catch (IOException e)
