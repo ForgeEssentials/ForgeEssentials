@@ -4,7 +4,8 @@ import java.util.TimerTask;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.util.ServerUtil;
@@ -31,20 +32,20 @@ public class MemoryWatchdog extends TimerTask
         if (percentage >= PerfToolsModule.percentageWarn)
         {
 
-            MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
             try
             {
-                if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+                if (FMLEnvironment.dist.isClient())
                 {
                     LoggingHandler.felog.info("High memory use detected. " + percentage + "% of memory in use.");
                 }
                 else
                 {
-                    ChatOutputHandler.sendMessage(server, "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
+                    ChatOutputHandler.sendMessage(server.createCommandSourceStack(), "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
                 }
                 for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                     if (PermissionAPI.hasPermission(player, PerfToolsModule.PERM_WARN))
-                        ChatOutputHandler.chatNotification(player, "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
+                        ChatOutputHandler.chatNotification(player.createCommandSourceStack(), "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
             }
             catch (Exception e)
             {

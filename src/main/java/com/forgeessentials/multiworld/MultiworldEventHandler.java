@@ -2,15 +2,13 @@ package com.forgeessentials.multiworld;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-
-import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
 import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
 import net.minecraftforge.fml.common.network.FMLOutboundHandler;
 import net.minecraftforge.fml.common.network.NetworkHandshakeEstablished;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 /**
  * 
@@ -26,7 +24,7 @@ public class MultiworldEventHandler extends ChannelInboundHandlerAdapter
         super();
 
         this.manager = manager;
-        NetworkRegistry.INSTANCE.getChannel("FORGE", Side.SERVER).pipeline().addFirst("MultiworldEventHandler", this);
+        NetworkRegistry.INSTANCE.getChannel("FORGE", Dist.DEDICATED_SERVER).pipeline().addFirst("MultiworldEventHandler", this);
     }
 
     @Override
@@ -37,7 +35,7 @@ public class MultiworldEventHandler extends ChannelInboundHandlerAdapter
             NetworkHandshakeEstablished event = (NetworkHandshakeEstablished) evt;
 
             // REPLY does not work, see https://github.com/MinecraftForge/FML/issues/360
-            FMLEmbeddedChannel channel = NetworkRegistry.INSTANCE.getChannel("FORGE", Side.SERVER);
+            FMLEmbeddedChannel channel = NetworkRegistry.INSTANCE.getChannel("FORGE", Dist.DEDICATED_SERVER);
             channel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DISPATCHER);
             channel.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(event.dispatcher);
 

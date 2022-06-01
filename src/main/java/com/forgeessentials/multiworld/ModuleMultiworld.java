@@ -10,6 +10,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.multiworld.command.CommandMultiworld;
 import com.forgeessentials.multiworld.command.CommandMultiworldTeleport;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -36,7 +37,7 @@ public class ModuleMultiworld extends ConfigLoaderBase
     private static MultiworldManager multiworldManager = new MultiworldManager();
 
     @SubscribeEvent
-    public void postLoad(FEModulePostInitEvent e)
+    public void postLoad(FEModuleCommonSetupEvent e)
     {
         try
         {
@@ -47,7 +48,7 @@ public class ModuleMultiworld extends ConfigLoaderBase
             FECommandManager.registerCommand(new CommandMultiworldTeleport());
         } catch (java.lang.NoSuchMethodError noSuchMethodError) {
             CrashReport report = CrashReport.makeCrashReport(noSuchMethodError,"MultiWorld Unable to Load, please update Forge or Disable MultiWorld in the main.cfg!");
-            report.makeCategory("MultiWorld");
+            report.addCategory("MultiWorld");
             throw new ReportedException(report);
         }
     }

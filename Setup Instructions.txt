@@ -4,5 +4,4 @@ Java Build Path sources
 
 scr/utils/replacejava
 scr/main/java
-scr/client/java
-scr/utils/java -exclude scr/utils/java/com/forgeessentials.commons.Buildinfo.java
+scr/main/java -exclude com.forgeessentials.commons.Buildinfo.java

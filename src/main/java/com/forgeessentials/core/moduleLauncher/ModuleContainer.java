@@ -18,6 +18,9 @@ import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Throwables;
 
 import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.moddiscovery.ModFile;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 
 @SuppressWarnings("rawtypes")
 public class ModuleContainer implements Comparable
@@ -213,10 +216,10 @@ public class ModuleContainer implements Comparable
                 f.set(module, file);
             }
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             LoggingHandler.felog.info("Error populating fields of " + name);
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -295,7 +298,7 @@ public class ModuleContainer implements Comparable
         Object obj = null;
 
         ModContainer contain = null;
-        for (ModContainer c : Loader.instance().getModList())
+        for (ModContainer c : ModList.mods)
         {
             if (c.getMod() != null && c.getMod().getClass().equals(modClass))
             {

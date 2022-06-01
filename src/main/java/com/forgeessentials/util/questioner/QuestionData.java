@@ -1,10 +1,10 @@
 package com.forgeessentials.util.questioner;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 import com.forgeessentials.core.misc.Translator;
@@ -13,9 +13,9 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class QuestionData
 {
 
-    private ICommandSender target;
+    private CommandSource target;
 
-    private ICommandSender source;
+    private CommandSource source;
 
     private String question;
 
@@ -25,7 +25,7 @@ public class QuestionData
 
     private QuestionerCallback callback;
 
-    public QuestionData(ICommandSender target, String question, QuestionerCallback callback, int timeout, ICommandSender source)
+    public QuestionData(CommandSource target, String question, QuestionerCallback callback, int timeout, CommandSource source)
     {
         this.target = target;
         this.timeout = timeout;
@@ -43,21 +43,21 @@ public class QuestionData
 
     public void sendYesNoMessage()
     {
-        ITextComponent yesMessage = new StringTextComponent("/yes");
+        TextComponent yesMessage = new StringTextComponent("/yes");
         yesMessage.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/yes"));
         yesMessage.getStyle().withColor(TextFormatting.RED);
         yesMessage.getStyle().setUnderlined(true);
 
-        ITextComponent noMessage = new StringTextComponent("/no");
+        TextComponent noMessage = new StringTextComponent("/no");
         noMessage.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/no"));
         noMessage.getStyle().withColor(TextFormatting.RED);
         noMessage.getStyle().setUnderlined(true);
 
-        ITextComponent yesNoMessage = new StringTextComponent("Type ");
-        yesNoMessage.appendSibling(yesMessage);
-        yesNoMessage.appendSibling(new StringTextComponent(" or "));
-        yesNoMessage.appendSibling(noMessage);
-        yesNoMessage.appendSibling(new StringTextComponent(" " + Translator.format("(timeout: %d)", timeout)));
+        TextComponent yesNoMessage = new StringTextComponent("Type ");
+        yesNoMessage.append(yesMessage);
+        yesNoMessage.append(new StringTextComponent(" or "));
+        yesNoMessage.append(noMessage);
+        yesNoMessage.append(new StringTextComponent(" " + Translator.format("(timeout: %d)", timeout)));
 
         ChatOutputHandler.sendMessage(target, yesNoMessage);
     }
@@ -87,12 +87,12 @@ public class QuestionData
 
     /* ------------------------------------------------------------ */
 
-    public ICommandSender getTarget()
+    public CommandSource getTarget()
     {
         return target;
     }
 
-    public ICommandSender getSource()
+    public CommandSource getSource()
     {
         return source;
     }

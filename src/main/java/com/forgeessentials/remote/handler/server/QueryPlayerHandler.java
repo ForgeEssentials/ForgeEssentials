@@ -87,9 +87,9 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
                 break;
             case FLAG_DETAIL:
                 pi.put("health", new JsonPrimitive(ident.getPlayerMP().getHealth()));
-                pi.put("armor", new JsonPrimitive(ident.getPlayerMP().getTotalArmorValue()));
-                pi.put("hunger", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getFoodLevel()));
-                pi.put("saturation", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getSaturationLevel()));
+                pi.put("armor", new JsonPrimitive(ident.getPlayerMP().getArmorValue()));
+                pi.put("hunger", new JsonPrimitive(ident.getPlayerMP().getFoodData().getFoodLevel()));
+                pi.put("saturation", new JsonPrimitive(ident.getPlayerMP().getFoodData().getSaturationLevel()));
                 break;
             }
         }

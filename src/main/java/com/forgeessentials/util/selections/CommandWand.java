@@ -40,12 +40,12 @@ public class CommandWand extends ForgeEssentialsCommandBase
         Item wandItem;
         String wandId, wandName;
         int wandDmg = 0;
-        if (sender.getHeldItemMainhand() != null)
+        if (sender.getMainHandItem() != null)
         {
-            wandName = sender.getHeldItemMainhand().getDisplayName();
-            wandItem = sender.getHeldItemMainhand().getItem();
-            wandDmg = sender.getHeldItemMainhand().getItemDamage();
-            wandId = wandItem.getUnlocalizedName();
+            wandName = sender.getMainHandItem().getDisplayName().getString();
+            wandItem = sender.getMainHandItem().getItem();
+            wandDmg = sender.getMainHandItem().getDamageValue();
+            wandId = wandItem.getRegistryName().getNamespace();
             if (wandDmg == -1)
             {
                 wandDmg = 0;
@@ -57,7 +57,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
             wandId = "hands";
         }
 
-        PlayerInfo info = PlayerInfo.get(sender.getPersistentID());
+        PlayerInfo info = PlayerInfo.get(sender.getUUID());
 
         // Check for rebind
         boolean rebind = args.length > 0 && args[0].equalsIgnoreCase("rebind");
@@ -65,7 +65,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
         // Check for unbind
         if (!rebind && ((info.isWandEnabled() && info.getWandID().equals(wandId)) | (args.length > 0 && args[0].equalsIgnoreCase("unbind"))))
         {
-            ChatOutputHandler.sendMessage(sender, TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
+            ChatOutputHandler.sendMessage(sender.createCommandSourceStack(), TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
             info.setWandEnabled(false);
             return;
         }
@@ -78,7 +78,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
         info.setWandEnabled(true);
         info.setWandID(wandId);
         info.setWandDmg(wandDmg);
-        ChatOutputHandler.chatConfirmation(sender, "Wand bound to " + wandName);
+        ChatOutputHandler.chatConfirmation(sender.createCommandSourceStack(), "Wand bound to " + wandName);
     }
 
     @Override

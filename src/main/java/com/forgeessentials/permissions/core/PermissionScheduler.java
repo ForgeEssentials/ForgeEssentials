@@ -22,6 +22,7 @@ import com.google.gson.annotations.Expose;
 
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class PermissionScheduler extends ServerEventHandler implements ConfigLoader
 {
@@ -117,9 +118,9 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
             else
             {
                 if (schedule.isDelay)
-                    time = DimensionManager.getWorld(0).getWorldInfo().getWorldTotalTime();
+                    time = ServerLifecycleHooks.getCurrentServer().overworld().getGameTime();
                 else
-                    time = DimensionManager.getWorld(0).getWorldInfo().getWorldTime();
+                    time = ServerLifecycleHooks.getCurrentServer().overworld().getDayTime();
             }
 
             if (schedule.isDelay)

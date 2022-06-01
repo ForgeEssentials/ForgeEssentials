@@ -5,12 +5,14 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
@@ -28,6 +30,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -90,6 +93,7 @@ import com.forgeessentials.util.selections.CommandExpandY;
 import com.forgeessentials.util.selections.CommandPos;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionHandler;
+import com.mojang.brigadier.CommandDispatcher;
 
 /**
  * Main mod class
@@ -207,7 +211,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         // Init McStats
         mcStats.createGraph("build_type").addPlotter(new ConstantPlotter(BuildInfo.getBuildType(), 1));
-        mcStats.createGraph("server_type").addPlotter(new ConstantPlotter(e.getSide() == Dist.DEDICATED_SERVER ? "server" : "client", 1));
+        mcStats.createGraph("server_type").addPlotter(new ConstantPlotter(FMLEnvironment.dist == Dist.DEDICATED_SERVER ? "server" : "client", 1));
         Graph gModules = mcStats.createGraph("modules");
         for (String module : ModuleLauncher.getModuleList())
             gModules.addPlotter(new ConstantPlotter(module, 1));
@@ -419,7 +423,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
             // Show version notification
             if (BuildInfo.isOutdated() && UserIdent.get(player).checkPermission(PERM_VERSIONINFO))
-                ChatOutputHandler.chatWarning(player,
+                ChatOutputHandler.chatWarning(player.createCommandSourceStack(),
                         String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
                                 BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
         }
@@ -449,25 +453,25 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void commandEvent(CommandEvent event)
     {
-        boolean perm = checkPerms(event.getCommand(), event.getSender());
+        boolean perm = checkPerms(event.getCommand(), event.getParseResults().getContext().getSource().getPlayerOrException());
 
         if (logCommandsToConsole)
         {
-            LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"/%s %s\"", event.getSender().getName(),
+            LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"/%s %s\"", event.getParseResults().getContext().getSource().getPlayerOrException().getName().getString(),
                     perm ? "used" : "tried to use", event.getCommand().getName(), StringUtils.join(event.getParameters(), " ")));
         }
 
         if (!perm) {
             event.setCanceled(true);
             TranslationTextComponent textcomponenttranslation2 = new TranslationTextComponent("commands.generic.permission", new Object[0]);
-            textcomponenttranslation2.getStyle().setColor(TextFormatting.RED);
-            event.getSender().sendMessage(textcomponenttranslation2);
+            textcomponenttranslation2.getStyle().withColor(TextFormatting.RED);
+            event.getParseResults().getContext().getSource().getPlayerOrException().sendMessage(textcomponenttranslation2, event.getParseResults().getContext().getSource().getPlayerOrException().getUUID());
         }
     }
 
-    public boolean checkPerms(ICommand command, ICommandSender sender) {
+    public boolean checkPerms(CommandDispatcher command, CommandSource sender) {
         String node = PermissionManager.getCommandPermission(command);
-        return APIRegistry.perms.checkUserPermission(UserIdent.get(sender),node);
+        return APIRegistry.perms.checkUserPermission(UserIdent.get(sender.getPlayerOrException().getGameProfile()),node);
     }
 
     /* ------------------------------------------------------------ */

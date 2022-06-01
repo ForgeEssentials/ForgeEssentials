@@ -9,8 +9,9 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.command.CommandSource;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -275,12 +276,12 @@ public class Plot
         // zone.setGroupPermission(GROUP_ALL, ModuleProtection.PERM_INTERACT_ENTITY + Zone.ALL_PERMS, false);
     }
 
-    public void printInfo(ICommandSender sender)
+    public void printInfo(CommandSource sender)
     {
         ChatOutputHandler.chatNotification(sender, String.format("#%d: \"%s\" at %s", zone.getId(), getName(), getCenter().toString()));
     }
 
-    public void printDetails(ICommandSender sender)
+    public void printDetails(CommandSource sender)
     {
         ChatOutputHandler.chatNotification(sender, String.format("Plot #%d: %s", zone.getId(), getName()));
         ChatOutputHandler.chatNotification(sender, String.format("  Owner: %s", owner.getUsernameOrUuid()));
@@ -302,11 +303,11 @@ public class Plot
         return plots.containsKey(zone.getId());
     }
 
-    public static boolean isColumnMode(int dimension)
+    public static boolean isColumnMode(World world)
     {
         ServerZone s = APIRegistry.perms.getServerZone();
         List<Zone> zones = new ArrayList<>();
-        zones.add(s.getWorldZone(dimension));
+        zones.add(s.getWorldZone(world));
         zones.add(s);
         zones.add(s.getRootZone());
         String permValue = s.getPermissionProperty(zones, null, Arrays.asList(GROUP_ALL), PERM_COLUMN, null);
@@ -384,7 +385,7 @@ public class Plot
             }
 
         if (isColumnMode(area.getDimension()))
-            area = new WorldArea(area.getDimension(), area.getHighPoint().setY(FMLCommonHandler.instance().getMinecraftServerInstance().getBuildLimit()), area.getLowPoint().setY(0));
+            area = new WorldArea(area.getDimension(), area.getHighPoint().setY(ServerLifecycleHooks.getCurrentServer().getMaxBuildHeight()), area.getLowPoint().setY(0));
 
         AreaZone zone = new AreaZone(worldZone, "_PLOT_" + (APIRegistry.perms.getServerZone().getMaxZoneID() + 1), area);
         Plot plot = new Plot(zone, owner);

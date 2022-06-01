@@ -16,25 +16,13 @@ import java.util.Set;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.ServerWorldEventHandler;
-import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
-import net.minecraft.world.WorldType;
-import net.minecraft.world.storage.ISaveHandler;
-import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
+import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fe.event.world.WorldPreLoadEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
-import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
-import net.minecraftforge.fml.common.network.FMLOutboundHandler;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 import org.apache.commons.io.FileUtils;
 
@@ -182,9 +170,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     }
 
     @Override
-    public WorldServer getWorld(String name)
+    public ServerWorld getWorld(String name)
     {
-        WorldServer world = parentNamedWorldHandler.getWorld(name);
+    	ServerWorld world = parentNamedWorldHandler.getWorld(name);
         if (world != null)
             return world;
 
@@ -269,15 +257,15 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         {
             // Initialize world settings
             MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
-            WorldServer overworld = DimensionManager.getWorld(0);
+            ServerWorld overworld = DimensionManager.getWorld(0);
             if (overworld == null)
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
 
-            WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), WorldType.parseWorldType(world.worldType));
+            WorldSettings settings = new WorldSettings(world.seed, mcServer.getWorldData().getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), WorldType.parseWorldType(world.worldType));
             settings.setGeneratorOptions(world.generatorOptions);
             WorldInfo info = new WorldInfo(settings, world.name);
-            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.profiler, world);
+            ServerWorld worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.profiler, world);
             worldServer.init();
             // Overwrite dimensionId because WorldProviderEnd for example just hardcodes the dimId
             worldServer.provider.setDimension(world.dimensionId);
@@ -285,9 +273,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).provider.getDimensionType().setLoadSpawn(true);
             worldServer.addEventListener(new ServerWorldEventHandler(mcServer, worldServer));
 
-            mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
-            if (!mcServer.isSinglePlayer())
-                worldServer.getWorldInfo().setGameType(mcServer.getGameType());
+            mcServer.setDifficultyForAllWorlds(mcServer.getWorldData().getDifficulty());
+            if (!mcServer.isSingleplayer())
+                worldServer.getWorldInfo().setGameType(mcServer.getWorldData().getDifficulty());
 
             world.updateWorldSettings();
             world.worldLoaded = true;
@@ -449,7 +437,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     @SubscribeEvent
     public void worldUnloadEvent(WorldEvent.Unload event)
     {
-        Multiworld mw = getMultiworld(event.getWorld().provider.getDimension());
+        Multiworld mw = getMultiworld(event.getWorld());
         if (mw != null)
             mw.worldLoaded = false;
     }

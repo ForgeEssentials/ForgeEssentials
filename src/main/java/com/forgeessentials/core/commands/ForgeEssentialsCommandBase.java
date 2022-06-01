@@ -12,16 +12,21 @@ import javax.annotation.Nonnull;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandHandler;
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.ICommandSource;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
+import net.minecraft.tileentity.CommandBlockLogic;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -115,9 +120,9 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         {
             processCommandPlayer(server, (ServerPlayerEntity) sender, args);
         }
-        else if (sender instanceof CommandBlockBaseLogic)
+        else if (sender instanceof CommandBlockLogic)
         {
-            processCommandBlock(server, (CommandBlockBaseLogic) sender, args);
+            processCommandBlock(server, (CommandBlockLogic) sender, args);
         }
         else
         {
@@ -135,7 +140,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
 
-    public void processCommandBlock(MinecraftServer server, CommandBlockBaseLogic block, String[] args) throws CommandException
+    public void processCommandBlock(MinecraftServer server, CommandBlockLogic block, String[] args) throws CommandException
     {
         processCommandConsole(server, block, args);
     }
@@ -146,7 +151,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender sender)
     {
-        if (!canConsoleUseCommand() && !(sender instanceof EntityPlayer))
+        if (!canConsoleUseCommand() && !(sender instanceof PlayerEntity))
             return false;
         return true;
     }
@@ -161,7 +166,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
      */
     public void register()
     {
-        if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
+        if (ServerLifecycleHooks.getCurrentServer() == null)
             return;
 
         Map<String, ICommand> commandMap = ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).getCommands();
@@ -219,13 +224,13 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
     /**
      * Check, if the sender has permissions to use this command
      */
-    public boolean checkCommandPermission(ICommandSender sender)
+    public boolean checkCommandPermission(CommandSource sender)
     {
         if (getPermissionNode() == null || getPermissionNode().isEmpty())
             return true;
-        if (sender instanceof MinecraftServer || sender instanceof CommandBlockBaseLogic)
+        if (sender.source instanceof MinecraftServer || sender.source instanceof CommandBlockLogic)
             return true;
-        return PermissionAPI.hasPermission(UserIdent.get(sender.getName()).getPlayer(), getPermissionNode());
+        return PermissionAPI.hasPermission(UserIdent.get(sender.getPlayerOrException().getUUID(), getPermissionNode()).getGameProfile());
     }
 
     // ------------------------------------------------------------
@@ -327,7 +332,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
 
     public List<String> matchToPlayers(String[] args)
     {
-        return getListOfStringsMatchingLastWord(args, FMLCommonHandler.instance().getMinecraftServerInstance().getOnlinePlayerNames());
+        return getListOfStringsMatchingLastWord(args, ServerLifecycleHooks.getCurrentServer().getPlayerNames());
     }
 
     @Nonnull

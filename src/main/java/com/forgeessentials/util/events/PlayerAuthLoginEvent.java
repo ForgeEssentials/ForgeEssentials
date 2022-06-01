@@ -1,6 +1,6 @@
 package com.forgeessentials.util.events;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * Fired when a player logs in to the AuthLogin system. Thrown by auth module.
@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 public class PlayerAuthLoginEvent extends FEPlayerEvent
 {
 
-    public PlayerAuthLoginEvent(EntityPlayer player)
+    public PlayerAuthLoginEvent(PlayerEntity player)
     {
         super(player);
     }
@@ -22,7 +22,7 @@ public class PlayerAuthLoginEvent extends FEPlayerEvent
 
         public Source source;
 
-        public Success(EntityPlayer player, Source source)
+        public Success(PlayerEntity player, Source source)
         {
             super(player);
             this.source = source;
@@ -32,7 +32,7 @@ public class PlayerAuthLoginEvent extends FEPlayerEvent
 
     public static class Failure extends PlayerAuthLoginEvent
     {
-        public Failure(EntityPlayer player)
+        public Failure(PlayerEntity player)
         {
             super(player);
         }

@@ -275,13 +275,13 @@ public class UserIdent
             throw new IllegalArgumentException();
 
         if (player instanceof FakePlayer) {
-            return getNpc(player.getName(), ModulePermissions.fakePlayerIsSpecialBunny ? null : player.getPersistentID());
+            return getNpc(player.getName().getString(), ModulePermissions.fakePlayerIsSpecialBunny ? null : player.getUUID());
         }
 
         UserIdent ident = byUuid.get(player.getUUID());
         if (ident == null)
         {
-            ident = byUsername.get(player.getName());
+            ident = byUsername.get(player.getName().getString());
             if (ident != null)
             {
                 ident.uuid = player.getUUID();

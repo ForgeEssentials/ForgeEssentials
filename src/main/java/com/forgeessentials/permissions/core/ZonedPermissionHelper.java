@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -555,7 +556,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent
     public void worldLoad(WorldEvent.Load e)
     {
-        getServerZone().getWorldZone(e.getWorld());
+        getServerZone().getWorldZone((RegistryKey<World>) e.getWorld());
     }
 
     @SubscribeEvent

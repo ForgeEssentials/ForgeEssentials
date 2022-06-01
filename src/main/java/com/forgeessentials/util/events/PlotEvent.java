@@ -3,8 +3,9 @@ package com.forgeessentials.util.events;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.economy.plots.Plot;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Cancelable;
+import net.minecraftforge.eventbus.api.Event;
+
 
 public abstract class PlotEvent extends Event
 {

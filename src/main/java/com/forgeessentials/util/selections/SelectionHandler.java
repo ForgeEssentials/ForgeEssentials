@@ -3,6 +3,7 @@ package com.forgeessentials.util.selections;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -35,7 +36,7 @@ public class SelectionHandler extends ServerEventHandler
             @Override
             public void run()
             {
-                sendUpdate(e.getPlayer());
+                sendUpdate((ServerPlayerEntity) e.getPlayer());
             }
         });
     }
@@ -72,7 +73,7 @@ public class SelectionHandler extends ServerEventHandler
 
         SelectionHandler.setStart((ServerPlayerEntity) event.getPlayer(), point);
         String message = Translator.format("Pos1 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
-        ChatOutputHandler.sendMessage(player, message, TextFormatting.DARK_PURPLE);
+        ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);
     }
 
@@ -108,7 +109,7 @@ public class SelectionHandler extends ServerEventHandler
 
         SelectionHandler.setEnd((ServerPlayerEntity) event.getPlayer(), point);
         String message = Translator.format("Pos2 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
-        ChatOutputHandler.sendMessage(player, message, TextFormatting.DARK_PURPLE);
+        ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);
 
     }
@@ -133,7 +134,7 @@ public class SelectionHandler extends ServerEventHandler
         return selectionProvider.getSelection(player);
     }
 
-    public static void setDimension(ServerPlayerEntity player, int dim)
+    public static void setDimension(ServerPlayerEntity player, World dim)
     {
         selectionProvider.setDimension(player, dim);
     }
@@ -148,7 +149,7 @@ public class SelectionHandler extends ServerEventHandler
         selectionProvider.setEnd(player, end);
     }
 
-    public static void select(ServerPlayerEntity player, int dimension, AreaBase area)
+    public static void select(ServerPlayerEntity player, World dimension, AreaBase area)
     {
         selectionProvider.select(player, dimension, area);
     }
