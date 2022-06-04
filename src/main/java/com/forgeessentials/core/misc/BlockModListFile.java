@@ -13,9 +13,9 @@ import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
 
 public class BlockModListFile
 {
@@ -75,11 +75,11 @@ public class BlockModListFile
 
                 for (Item i : ForgeRegistries.ITEMS)
                 {
-                    out.println(i.getUnlocalizedName());
+                    out.println(i.getRegistryName());
                 }
                 for (Block b : ForgeRegistries.BLOCKS)
                 {
-                    out.println(b.getUnlocalizedName());
+                    out.println(b.getRegistryName());
                 }
             }
         }
