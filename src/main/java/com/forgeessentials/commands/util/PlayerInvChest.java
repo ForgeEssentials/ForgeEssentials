@@ -1,8 +1,7 @@
 package com.forgeessentials.commands.util;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.InventoryBasic;
 
 public class PlayerInvChest extends InventoryBasic
 {
@@ -12,26 +11,26 @@ public class PlayerInvChest extends InventoryBasic
 
     public PlayerInvChest(ServerPlayerEntity owner, ServerPlayerEntity vieuwer)
     {
-        super(owner.getName() + "'s inventory", false, owner.inventory.mainInventory.size());
+        super(owner.getName() + "'s inventory", false, owner.inventory.items.size());
         this.owner = owner;
         this.vieuwer = vieuwer;
     }
 
     @Override
-    public void openInventory(EntityPlayer player)
+    public void openInventory(PlayerEntity player)
     {
         CommandsEventHandler.register(this);
         allowUpdate = false;
-        for (int id = 0; id < owner.inventory.mainInventory.size(); ++id)
+        for (int id = 0; id < owner.inventory.items.size(); ++id)
         {
-            setInventorySlotContents(id, owner.inventory.mainInventory.get(id));
+            setInventorySlotContents(id, owner.inventory.items.get(id));
         }
         allowUpdate = true;
         super.openInventory(player);
     }
 
     @Override
-    public void closeInventory(EntityPlayer player)
+    public void closeInventory(PlayerEntity player)
     {
         CommandsEventHandler.remove(this);
         if (allowUpdate)

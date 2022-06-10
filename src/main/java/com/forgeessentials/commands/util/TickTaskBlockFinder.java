@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -64,11 +65,11 @@ public class TickTaskBlockFinder implements TickTask
             try
             {
                 intId = Integer.parseInt(id);
-                block = Block.b
+                block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(id));
             }
             catch (NumberFormatException e)
             {
-                block = Block.REGISTRY.getObject(new ResourceLocation(id));
+                block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(id));
             }
 
             if (block == Blocks.AIR && intId != 0)
@@ -77,7 +78,7 @@ public class TickTaskBlockFinder implements TickTask
                 return;
             }
         }
-        blockState = block.getStateFromMeta(meta);
+        blockState = block.stateById(meta);
 
         stack = new ItemStack(block, 1, meta);
         blockName = !stack.isEmpty() ? stack.getDisplayName().toString() : ServerUtil.getBlockName(block);
@@ -154,7 +155,7 @@ public class TickTaskBlockFinder implements TickTask
 
     private void msg(String string)
     {
-        ChatOutputHandler.chatNotification(player, string);
+        ChatOutputHandler.chatNotification(player.createCommandSourceStack(), string);
     }
 
 }

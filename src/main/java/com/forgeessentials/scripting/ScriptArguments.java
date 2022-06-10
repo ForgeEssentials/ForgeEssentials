@@ -763,7 +763,7 @@ public final class ScriptArguments
         @Override
         public String process(CommandSource sender)
         {
-            return new DecimalFormat("#").format(server.getEntityWorld().getWorldTime());
+            return new DecimalFormat("#").format(sender.getLevel().getDayTime());
         }
 
         @Override
@@ -780,7 +780,7 @@ public final class ScriptArguments
             try
             {
                 FEConfig.FORMAT_TIME.setTimeZone(TimeZone.getTimeZone("US"));
-                long ticks = server.getEntityWorld().getWorldTime();
+                long ticks = sender.getLevel().getDayTime();
                 Date time = new Date(ticks * 1000 * 60 * 60 * 24 / 24000 + 1000 * 60 * 60 * 6);
                 return FEConfig.FORMAT_TIME.format(time);
             }
@@ -801,7 +801,7 @@ public final class ScriptArguments
         @Override
         public String process(CommandSource sender)
         {
-            return new DecimalFormat("#").format(server.getEntityWorld().getTotalWorldTime());
+            return new DecimalFormat("#").format(sender.getLevel().getGameTime());
         }
 
         @Override

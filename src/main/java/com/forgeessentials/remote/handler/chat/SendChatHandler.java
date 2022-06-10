@@ -6,7 +6,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -40,7 +39,7 @@ public class SendChatHandler extends GenericRemoteHandler<String>
         UserIdent ident = session.getUserIdent();
         if (ident != null)
         {
-            ServerPlayerEntity player = ident.getFakePlayer();
+            ServerPlayerEntity player = ident.getPlayerMP();
             TranslationTextComponent message = new TranslationTextComponent("chat.type.text", new Object[] { player.getDisplayName(),
                     ForgeHooks.newChatWithLinks(request.data) });
             ServerChatEvent event = new ServerChatEvent(player, request.data, message);

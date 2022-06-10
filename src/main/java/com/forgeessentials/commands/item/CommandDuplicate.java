@@ -48,7 +48,7 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity player, String[] args) throws CommandException
     {
-        ItemStack stack = player.getHeldItemMainhand();
+        ItemStack stack = player.getMainHandItem();
         if (stack == ItemStack.EMPTY)
             throw new TranslatedCommandException("No item equipped");
 

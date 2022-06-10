@@ -1,20 +1,17 @@
 package com.forgeessentials.commands.item;
 
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.tileentity.ChestTileEntity;
+import net.minecraft.tileentity.DispenserTileEntity;
+import net.minecraft.tileentity.DropperTileEntity;
+import net.minecraft.tileentity.HopperTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.tileentity.TileEntityDispenser;
-import net.minecraft.tileentity.TileEntityDropper;
-import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -77,7 +74,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
         }
         else if (sender instanceof ServerPlayerEntity)
         {
-            world = ((Entity) sender).world;
+            world = ((Entity) sender).level;
             x = (int) this.func_82368_a(sender, ((Entity) sender).posX, args[0]);
             y = (int) this.func_82367_a(sender, ((Entity) sender).posY, args[1], 0, 0);
             z = (int) this.func_82368_a(sender, ((Entity) sender).posZ, args[2]);
@@ -98,9 +95,9 @@ public class CommandDrop extends ForgeEssentialsCommandBase
         ItemStack tmpStack;
 
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityChest)
+        if (tileEntity instanceof ChestTileEntity)
         {
-            TileEntityChest var10 = (TileEntityChest) tileEntity;
+        	ChestTileEntity var10 = (ChestTileEntity) tileEntity;
 
             for (int slot = 0; slot < var10.getSizeInventory(); ++slot)
             {
@@ -124,9 +121,9 @@ public class CommandDrop extends ForgeEssentialsCommandBase
                 }
             }
         }
-        else if (tileEntity instanceof TileEntityDropper)
+        else if (tileEntity instanceof DropperTileEntity)
         {
-            TileEntityDropper var13 = (TileEntityDropper) tileEntity;
+        	DropperTileEntity var13 = (DropperTileEntity) tileEntity;
 
             for (int slot = 0; slot < var13.getSizeInventory(); ++slot)
             {
@@ -150,9 +147,9 @@ public class CommandDrop extends ForgeEssentialsCommandBase
                 }
             }
         }
-        else if (tileEntity instanceof TileEntityDispenser)
+        else if (tileEntity instanceof DispenserTileEntity)
         {
-            TileEntityDispenser var14 = (TileEntityDispenser) tileEntity;
+        	DispenserTileEntity var14 = (DispenserTileEntity) tileEntity;
 
             for (int slot = 0; slot < var14.getSizeInventory(); ++slot)
             {
@@ -176,9 +173,9 @@ public class CommandDrop extends ForgeEssentialsCommandBase
                 }
             }
         }
-        else if (tileEntity instanceof TileEntityHopper)
+        else if (tileEntity instanceof HopperTileEntity)
         {
-            TileEntityHopper var12 = (TileEntityHopper) tileEntity;
+        	HopperTileEntity var12 = (HopperTileEntity) tileEntity;
 
             for (int slot = 0; slot < var12.getSizeInventory(); ++slot)
             {

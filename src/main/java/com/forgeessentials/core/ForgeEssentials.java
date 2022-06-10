@@ -50,6 +50,7 @@ import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.packets.Packet2Reach;
 import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.packets.Packet5Noclip;
+import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
 import com.forgeessentials.commons.network.packets.Packet7Remote;
 import com.forgeessentials.compat.BaublesCompat;
 import com.forgeessentials.compat.CompatReiMinimap;
@@ -253,29 +254,13 @@ public class ForgeEssentials extends ConfigLoaderBase
     private void registerNetworkMessages()
     {
         // Load network packages
-        NetworkUtils.registerMessage(new IMessageHandler<Packet0Handshake, IMessage>() {
-            @Override
-            public IMessage onMessage(Packet0Handshake message, MessageContext ctx)
-            {
-                PlayerInfo.get(ctx.getServerHandler().player).setHasFEClient(true);
-                return null;
-            }
-        }, Packet0Handshake.class, 0, Dist.DEDICATED_SERVER);
-        NetworkUtils.registerMessageProxy(Packet1SelectionUpdate.class, 1, Dist.CLIENT, new NullMessageHandler<Packet1SelectionUpdate>() {
-            /* dummy */
-        });
-        NetworkUtils.registerMessageProxy(Packet2Reach.class, 2, Dist.CLIENT, new NullMessageHandler<Packet2Reach>() {
-            /* dummy */
-        });
-        NetworkUtils.registerMessageProxy(Packet3PlayerPermissions.class, 3, Dist.CLIENT, new NullMessageHandler<Packet3PlayerPermissions>() {
-            /* dummy */
-        });
-        NetworkUtils.registerMessageProxy(Packet5Noclip.class, 5, Dist.CLIENT, new NullMessageHandler<Packet5Noclip>() {
-            /* dummy */
-        });
-        NetworkUtils.registerMessageProxy(Packet7Remote.class, 7, Dist.CLIENT, new NullMessageHandler<Packet7Remote>() {
-            /* dummy */
-        });
+        NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::decode);
+        NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::decode);
+		NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
+        NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::decode);
+        NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::decode);
+        NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
+        NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::decode);
 
     }
 
@@ -453,12 +438,12 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void commandEvent(CommandEvent event)
     {
-        boolean perm = checkPerms(event.getCommand(), event.getParseResults().getContext().getSource().getPlayerOrException());
+        boolean perm = checkPerms(event.getParseResults().getContext().getDispatcher(), event.getParseResults().getContext().getSource().getPlayerOrException().createCommandSourceStack());
 
         if (logCommandsToConsole)
         {
             LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"/%s %s\"", event.getParseResults().getContext().getSource().getPlayerOrException().getName().getString(),
-                    perm ? "used" : "tried to use", event.getCommand().getName(), StringUtils.join(event.getParameters(), " ")));
+                    perm ? "used" : "tried to use", event.getParseResults().getContext().getCommand(), StringUtils.join(event.getParameters(), " ")));
         }
 
         if (!perm) {

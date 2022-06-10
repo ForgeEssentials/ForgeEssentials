@@ -193,7 +193,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
     @SuppressWarnings("unchecked")
     public void deregister()
     {
-        if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
+        if (ServerLifecycleHooks.getCurrentServer() == null)
             return;
         CommandHandler cmdHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
         Map<String, ICommand> commandMap = cmdHandler.getCommands();

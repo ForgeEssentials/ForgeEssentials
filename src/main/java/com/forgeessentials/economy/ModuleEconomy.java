@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -128,7 +129,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
         APIRegistry.perms.registerPermissionDescription(PERM_BOUNTY, "Bounty for killing entities (ex.: fe.economy.bounty.Skeleton = 5)");
         APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, DefaultPermissionLevel.ALL, "Whether to show a message if a bounty is given");
-        for (Entry<ResourceLocation, EntityEntry> e : ForgeRegistries.ENTITIES.getEntries())
+        for (Entry<ResourceLocation, Entity> e : ForgeRegistries.ENTITIES.getEntries())
             if (LivingEntity.class.isAssignableFrom(e.getValue().getEntityClass()))
                 APIRegistry.perms.registerPermissionProperty(PERM_BOUNTY + "." + e.getKey(), "0");
 
@@ -169,7 +170,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public static void confirmNewWalletAmount(UserIdent ident, Wallet wallet)
     {
         if (ident.hasPlayer())
-            ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("You have now %s", wallet.toString()));
+            ChatOutputHandler.chatConfirmation(ident.getPlayerMP().createCommandSourceStack(), Translator.format("You have now %s", wallet.toString()));
     }
 
     public static int tryRemoveItems(PlayerEntity player, ItemStack itemStack, int amount)
@@ -179,14 +180,14 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         for (int slot = 0; slot < player.inventory.getContainerSize(); slot++)
         {
             ItemStack stack = player.inventory.getItem(slot);
-            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getDamageValue() == itemDamage))
                 foundStacks += stack.getCount();
         }
         foundStacks = amount = Math.min(foundStacks, amount);
         for (int slot = 0; slot < player.inventory.getContainerSize(); slot++)
         {
             ItemStack stack = player.inventory.getItem(slot);
-            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemStack.getItem() && (itemDamage == -1 || stack.getDamageValue() == itemDamage))
             {
                 int removeCount = Math.min(stack.getCount(), foundStacks);
                 player.inventory.removeItem(slot, removeCount);
@@ -205,7 +206,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         for (int slot = 0; slot < player.inventory.getContainerSize(); slot++)
         {
             ItemStack stack = player.inventory.getItem(slot);
-            if (stack != ItemStack.EMPTY && stack.getItem() == itemType.getItem() && (itemDamage == -1 || stack.getItemDamage() == itemDamage))
+            if (stack != ItemStack.EMPTY && stack.getItem() == itemType.getItem() && (itemDamage == -1 || stack.getDamageValue() == itemDamage))
                 foundStacks += stack.getCount();
         }
         return foundStacks;
@@ -271,7 +272,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
                 Wallet wallet = APIRegistry.economy.getWallet(killer);
                 wallet.add(bounty);
                 if (APIRegistry.perms.checkUserPermission(killer, PERM_BOUNTY_MESSAGE))
-                    ChatOutputHandler.chatNotification(killer.getPlayer(),
+                    ChatOutputHandler.chatNotification(killer.getPlayer().createCommandSourceStack(),
                             Translator.format("You received %s as bounty", APIRegistry.economy.toString((long) bounty)));
             }
         }
