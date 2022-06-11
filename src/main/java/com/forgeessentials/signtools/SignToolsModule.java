@@ -5,10 +5,12 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.SignTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fe.event.world.SignEditEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -18,6 +20,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -34,7 +37,7 @@ public class SignToolsModule extends ConfigLoaderBase
     private static boolean allowSignCommands, allowSignEdit;
 
     @SubscribeEvent
-    public void onLoad(FEModuleInitEvent e)
+    public void onLoad(FEModuleCommonSetupEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.scripts.addScriptType(signinteractKey);
@@ -56,7 +59,7 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void onSignEdit(SignEditEvent e)
     {
-        if (APIRegistry.scripts.runEventScripts(signeditKey, e.editor, new SignInfo(e.editor.dimension, e.pos, e.text, e)))
+        if (APIRegistry.scripts.runEventScripts(signeditKey, e.editor.createCommandSourceStack(), new SignInfo(e.editor.dimension, e.pos, e.text, e)))
         {
             e.setCanceled(true);
         }
@@ -119,7 +122,7 @@ public class SignToolsModule extends ConfigLoaderBase
 
             String[] signText = getFormatted(sign.signText);
 
-            if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer(), new SignInfo(event.getPlayer().dimension, event.getPos(), signText, event)))
+            if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer().createCommandSourceStack(), new SignInfo(event.getPlayer().dimension, event.getPos(), signText, event)))
             {
                 event.setCanceled(true);
             }
@@ -129,9 +132,9 @@ public class SignToolsModule extends ConfigLoaderBase
                 if (signText[0].equals("[command]"))
                 {
                     String send = signText[1] + " " + signText[2] + " " + signText[3];
-                    if (send != null && FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager() != null)
+                    if (send != null && ServerLifecycleHooks.getCurrentServer().getCommands() != null)
                     {
-                        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getPlayer(), send);
+                    	ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(event.getPlayer().createCommandSourceStack(), send);
                         event.setCanceled(true);
                     }
                 }

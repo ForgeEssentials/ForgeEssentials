@@ -14,6 +14,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.TickEvent;
@@ -72,8 +73,6 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.DoAsCommandSender;
@@ -94,7 +93,9 @@ import com.forgeessentials.util.selections.CommandExpandY;
 import com.forgeessentials.util.selections.CommandPos;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionHandler;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  * Main mod class
@@ -102,7 +103,7 @@ import com.mojang.brigadier.CommandDispatcher;
 @Mod(ForgeEssentials.MODID)
 @Mod.EventBusSubscriber(modid = ForgeEssentials.MODID, bus = Bus.MOD,value = Dist.DEDICATED_SERVER)
 //@Mod(ForgeEssentials.MODID)//, dependencies = BuildInfo.DEPENDENCIES + ";after:worldedit;before:ftblib")
-public class ForgeEssentials extends ConfigLoaderBase
+public class ForgeEssentials
 {
 
     public static final String MODID = "forgeessentials";
@@ -259,7 +260,6 @@ public class ForgeEssentials extends ConfigLoaderBase
 		NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
         NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::decode);
         NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::decode);
-        NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
         NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::decode);
 
     }
@@ -335,7 +335,6 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStopping(FMLServerStoppingEvent e)
     {
-    	//APIRegistry.getFEEventBus().
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStoppingEvent(e));
         PlayerInfo.discardAll();
     }
@@ -438,7 +437,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void commandEvent(CommandEvent event)
     {
-        boolean perm = checkPerms(event.getParseResults().getContext().getDispatcher(), event.getParseResults().getContext().getSource().getPlayerOrException().createCommandSourceStack());
+        boolean perm = checkPerms(event.getParseResults().getContext().getCommand(), event.getParseResults().getContext().getSource().getPlayerOrException().createCommandSourceStack());
 
         if (logCommandsToConsole)
         {
@@ -454,15 +453,14 @@ public class ForgeEssentials extends ConfigLoaderBase
         }
     }
 
-    public boolean checkPerms(CommandDispatcher command, CommandSource sender) {
+    public boolean checkPerms(Command command, CommandSource sender) throws CommandSyntaxException {
         String node = PermissionManager.getCommandPermission(command);
         return APIRegistry.perms.checkUserPermission(UserIdent.get(sender.getPlayerOrException().getGameProfile()),node);
     }
 
     /* ------------------------------------------------------------ */
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    public static void load(ForgeConfigSpec.Builder SERVER_BUILDER, boolean isReload)
     {
         if (isReload)
             Translator.translations.clear();

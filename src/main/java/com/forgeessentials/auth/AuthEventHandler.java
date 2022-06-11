@@ -76,7 +76,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Login required. Try /auth help.");
         }
     }
 
@@ -88,20 +88,20 @@ public class AuthEventHandler extends ServerEventHandler
         if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Login required. Try /auth help.");
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void commandEvent(CommandEvent event)
     {
-        if (!ModuleAuth.isEnabled() || notPlayer(event.getSender()))
+        if (!ModuleAuth.isEnabled() || notPlayer(event.getParseResults().getContext().getSource().getEntity()))
             return;
-        PlayerEntity player = (PlayerEntity) event.getSender();
-        if (!ModuleAuth.isAuthenticated(player) && !ModuleAuth.isGuestCommand(event.getCommand()))
+        PlayerEntity player = (PlayerEntity) event.getParseResults().getContext().getSource().getEntity();
+        if (!ModuleAuth.isAuthenticated(player) && !ModuleAuth.isGuestCommand(event.getParseResults().getContext().getCommand()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(player, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(player.createCommandSourceStack(), "Login required. Try /auth help.");
         }
     }
 
@@ -113,7 +113,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Login required. Try /auth help.");
         }
     }
 
@@ -125,7 +125,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Login required. Try /auth help.");
         }
     }
 
@@ -148,7 +148,7 @@ public class AuthEventHandler extends ServerEventHandler
             return;
         if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
-            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Login required. Try /auth help.");
             // add the item back to the inventory
             ItemStack stack = event.getEntityItem().getItem();
             event.getPlayer().inventory.add(stack);
@@ -164,7 +164,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Login required. Try /auth help.");
         }
     }
 
@@ -177,7 +177,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (!ModuleAuth.isAuthenticated(player))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(player, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(player.createCommandSourceStack(), "Login required. Try /auth help.");
         }
     }
 
@@ -189,7 +189,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Login required. Try /auth help.");
         }
     }
 
@@ -208,14 +208,14 @@ public class AuthEventHandler extends ServerEventHandler
             return;
         if (!ModuleAuth.isRegistered(event.getPlayer().getUUID()))
         {
-            ChatOutputHandler.chatError(event.player, "Registration required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Registration required. Try /auth help.");
         }
         else
         {
-            ChatOutputHandler.chatError(event.player, "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Login required. Try /auth help.");
         }
 
-        if (!PermissionAPI.hasPermission(event.player, "fe.auth.isVIP"))
+        if (!PermissionAPI.hasPermission(event.getPlayer(), "fe.auth.isVIP"))
         {
             int onlinePlayers = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerCount();
             int availableSlots = ServerLifecycleHooks.getCurrentServer().getPlayerList().getMaxPlayers() - vipSlots - reservedSlots;
@@ -254,13 +254,13 @@ public class AuthEventHandler extends ServerEventHandler
             NetworkUtils.sendTo(new Packet6AuthLogin(2, token.toString()), (ServerPlayerEntity) e.getPlayer());
             PasswordManager.addSession(e.getPlayer().getUUID(), token);
         }
-        APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_SUCCESS, e.getPlayer());
+        APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_SUCCESS, e.getPlayer().createCommandSourceStack());
     }
 
     @SubscribeEvent
     public void onAuthLoginFail(PlayerAuthLoginEvent.Failure e)
     {
-        APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_FAILURE, e.getPlayer());
+        APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_FAILURE, e.getPlayer().createCommandSourceStack());
     }
 
 }

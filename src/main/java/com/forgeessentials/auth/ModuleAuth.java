@@ -20,6 +20,7 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.mojang.brigadier.Command;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -69,7 +70,8 @@ public class ModuleAuth extends ConfigLoaderBase
     {
         FECommandManager.registerCommand(new CommandAuth());
         FECommandManager.registerCommand(new CommandVIP());
-        NetworkUtils.registerMessage(6, Packet6AuthLogin.class, 6, Packet6AuthLogin::decode);
+        NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
+
     }
 
     @SubscribeEvent
@@ -163,7 +165,7 @@ public class ModuleAuth extends ConfigLoaderBase
      * @param command
      * @return
      */
-    public static boolean isGuestCommand(ICommand command)
+    public static boolean isGuestCommand(Command command)
     {
         return command instanceof CommandAuth || //
                 command instanceof CommandHelp;
