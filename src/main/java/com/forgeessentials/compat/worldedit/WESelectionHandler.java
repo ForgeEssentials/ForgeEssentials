@@ -1,8 +1,8 @@
 package com.forgeessentials.compat.worldedit;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.Point;
@@ -114,7 +114,7 @@ public class WESelectionHandler implements ISelectionProvider
     }
 
     @Override
-    public void setDimension(ServerPlayerEntity player, int dim)
+    public void setDimension(ServerPlayerEntity player, World dim)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         ForgeWorld world = ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(dim));
@@ -125,18 +125,18 @@ public class WESelectionHandler implements ISelectionProvider
     public void setStart(ServerPlayerEntity player, Point start)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
-        session.getRegionSelector(session.getSelectionWorld()).selectPrimary(new Vector(start.getX(), start.getY(), start.getZ()), null);
+        session.getRegionSelector(session.getSelectionWorld()).selectPrimary(new Vector3d(start.getX(), start.getY(), start.getZ()), null);
     }
 
     @Override
     public void setEnd(ServerPlayerEntity player, Point end)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
-        session.getRegionSelector(session.getSelectionWorld()).selectSecondary(new Vector(end.getX(), end.getY(), end.getZ()), null);
+        session.getRegionSelector(session.getSelectionWorld()).selectSecondary(new Vector3d(end.getX(), end.getY(), end.getZ()), null);
     }
 
     @Override
-    public void select(ServerPlayerEntity player, int dimension, AreaBase area)
+    public void select(ServerPlayerEntity player, World dimension, AreaBase area)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
         ForgeWorld world = ForgeWorldEdit.inst.getWorld(DimensionManager.getWorld(dimension));
@@ -145,8 +145,8 @@ public class WESelectionHandler implements ISelectionProvider
             selector = new ExtendingCuboidRegionSelector(world);
         else
             selector = new CuboidRegionSelector(world);
-        selector.selectPrimary(new Vector(area.getLowPoint().getX(), area.getLowPoint().getY(), area.getLowPoint().getZ()), null);
-        selector.selectSecondary(new Vector(area.getHighPoint().getX(), area.getHighPoint().getY(), area.getHighPoint().getZ()), null);
+        selector.selectPrimary(new Vector3d(area.getLowPoint().getX(), area.getLowPoint().getY(), area.getLowPoint().getZ()), null);
+        selector.selectSecondary(new Vector3d(area.getHighPoint().getX(), area.getHighPoint().getY(), area.getHighPoint().getZ()), null);
         session.setRegionSelector(world, selector);
         SelectionHandler.sendUpdate(player);
     }

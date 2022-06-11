@@ -6,16 +6,16 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 @FEModule(name = "perftools", parentMod = ForgeEssentials.class, defaultModule = false)
-public class PerfToolsModule extends ConfigLoaderBase
+public class PerfToolsModule
 {
     private MemoryWatchdog watchdog;
 
@@ -42,11 +42,15 @@ public class PerfToolsModule extends ConfigLoaderBase
         }
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    public static void load(ForgeConfigSpec.Builder SERVER_BUILDER)
     {
-        warn = config.get(FEConfig.CONFIG_CAT, "warnHighMemUsage", true, "Warn server ops when we detect high memory usage.").getBoolean(true);
-        percentageWarn = config.get(FEConfig.CONFIG_CAT, "percentageWarn", 90, "Percentage at which to warn server ops").getInt(90);
-        checkInterval = config.get(FEConfig.CONFIG_CAT, "checkInterval", 5, "Interval in minutes to check memory use.").getInt(5);
+    	SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_CAT);
+    	warn = SERVER_BUILDER.comment("Warn server ops when we detect high memory usage.")
+                .define("warnHighMemUsage", true).get();
+    	percentageWarn = SERVER_BUILDER.comment("Percentage at which to warn server ops")
+    			.defineInRange("percentageWarn", 90, 1, 100).get();
+    	percentageWarn = SERVER_BUILDER.comment("Interval in minutes to check memory use.")
+    			.defineInRange("checkInterval", 5, 1, 60).get();
+        SERVER_BUILDER.pop();
     }
 }

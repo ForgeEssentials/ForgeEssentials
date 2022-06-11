@@ -9,8 +9,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
@@ -18,25 +16,23 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandHelp extends ParserCommandBase implements ConfigLoader
+public class CommandHelp extends ParserCommandBase
 {
 
     private static final String CONFIG_HELP = "Add custom messages here that will appear when /help is run";
 
-    private String[] messages;
+    private static String[] messages;
 
     private HelpFixer fixer;
 
@@ -177,16 +173,11 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
         return fixer.getSortedPossibleCommands(sender, server);
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    public static void load(ForgeConfigSpec.Builder SERVER_BUILDER)
     {
-        messages = config.get(FEConfig.CONFIG_CAT, "custom_help", new String[] {}, CONFIG_HELP).getStringList();
+    	SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(CONFIG_CAT);
+    	messages = SERVER_BUILDER.comment(CONFIG_HELP)
+    			.define("custom_help", new String[] {}).get();
+    	SERVER_BUILDER.pop();
     }
-
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return true;
-    }
-
 }

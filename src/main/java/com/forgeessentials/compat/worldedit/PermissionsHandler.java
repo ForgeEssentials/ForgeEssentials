@@ -1,6 +1,5 @@
 package com.forgeessentials.compat.worldedit;
 
-import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;

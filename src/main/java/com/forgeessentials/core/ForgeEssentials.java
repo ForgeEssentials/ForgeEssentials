@@ -22,16 +22,19 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.FileUtils;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -61,6 +64,7 @@ import com.forgeessentials.core.commands.CommandFEWorldInfo;
 import com.forgeessentials.core.commands.CommandFeReload;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandUuid;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.mcstats.ConstantPlotter;
 import com.forgeessentials.core.mcstats.Metrics;
@@ -123,8 +127,6 @@ public class ForgeEssentials
     /* ------------------------------------------------------------ */
     /* ForgeEssentials core submodules */
 
-    protected static ConfigManager configManager;
-
     protected static ModuleLauncher moduleLauncher;
 
     protected static TaskRegistry tasks = new TaskRegistry();
@@ -169,6 +171,7 @@ public class ForgeEssentials
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
         Environment.check();
         MinecraftForge.EVENT_BUS.register(this);
+        
         
     }
 
@@ -245,11 +248,10 @@ public class ForgeEssentials
 
     private void initConfiguration()
     {
-        configDirectory = new File(ServerUtil.getBaseDir(), "/ForgeEssentials");
-        configManager = new ConfigManager(configDirectory, "main");
-        configManager.registerLoader(configManager.getMainConfigName(), this);
-        configManager.registerLoader(configManager.getMainConfigName(), new FEConfig());
-        configManager.registerLoader(configManager.getMainConfigName(), new ChatOutputHandler());
+        //configDirectory = new File(ServerUtil.getBaseDir(), "/ForgeEssentials");
+        FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials"), "ForgeEssentials");
+        //ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ConfigBase.SERVER_CONFIG,configDirectory + "main" + ".toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ConfigBase.SERVER_CONFIG,FMLPaths.GAMEDIR.get() + "ForgeEssentials/main.toml");
     }
 
     private void registerNetworkMessages()
@@ -462,28 +464,27 @@ public class ForgeEssentials
 
     public static void load(ForgeConfigSpec.Builder SERVER_BUILDER, boolean isReload)
     {
+    	SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_CAT);
         if (isReload)
             Translator.translations.clear();
         Translator.load();
-        if (!config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
+        if (!SERVER_BUILDER.comment("Check for newer versions of ForgeEssentials on load?").define("versionCheck", true).get())
             BuildInfo.checkVersion = false;
-        configManager.setUseCanonicalConfig(
-                config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false, "For modules that support it, place their configs in this file.").getBoolean());
-        debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean();
-        safeMode = config.get(FEConfig.CONFIG_CAT, "safeMode", false, "Activates safe mode with will ignore some errors which would normally crash the game. "
-                + "Please only enable this after being instructed to do so by FE team in response to an issue on GitHub!").getBoolean();
-        HelpFixer.hideWorldEditCommands = config
-                .get(FEConfig.CONFIG_CAT, "hide_worldedit_help", true, "Hide WorldEdit commands from /help and only show them in //help command").getBoolean();
-        logCommandsToConsole = config.get(FEConfig.CONFIG_CAT, "logCommands", false, "Log commands to console").getBoolean();
+        //configManager.setUseCanonicalConfig(SERVER_BUILDER.comment("For modules that support it, place their configs in this file.").define("canonicalConfigs", false).get());
+        debugMode = SERVER_BUILDER.comment("Activates developer debug mode. Spams your FML logs.")
+        		.define("debug", false).get();
+        safeMode = SERVER_BUILDER.comment("Activates safe mode with will ignore some errors which would normally crash the game."
+        		+"Please only enable this after being instructed to do so by FE team in response to an issue on GitHub!")
+        		.define("safeMode", false).get();
+        HelpFixer.hideWorldEditCommands = SERVER_BUILDER.comment("Hide WorldEdit commands from /help and only show them in //help command")
+        		.define("hide_worldedit_help", true).get();
+        logCommandsToConsole = SERVER_BUILDER.comment("Log commands to console")
+        		.define("logCommands", false).get();
         BuildInfo.startVersionChecks();
+        SERVER_BUILDER.pop();
     }
 
     /* ------------------------------------------------------------ */
-
-    public static ConfigManager getConfigManager()
-    {
-        return configManager;
-    }
 
     public static Metrics getMcStats()
     {

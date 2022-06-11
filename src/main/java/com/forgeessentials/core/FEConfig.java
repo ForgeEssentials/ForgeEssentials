@@ -42,18 +42,18 @@ public class FEConfig
     			.define("format_time", "HH:mm").get());
     	FORMAT_TIME_SECONDS = new SimpleDateFormat(SERVER_BUILDER.comment("Time-only format with seconds")
     			.define("format_time_seconds", "HH:mm:ss").get());
-    	
     	modlistLocation = SERVER_BUILDER.comment("Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.")
     			.define("modlistLocation", "modlist.txt").get();
         
         
         SERVER_BUILDER.comment("Enable/disable modules here.").push(CONFIG_CAT);
-        SERVER_BUILDER.push(CONFIG_CAT_MISC);
         
+        SERVER_BUILDER.push(CONFIG_CAT_MISC);
         majoritySleep = SERVER_BUILDER.comment("Once this percent of player sleeps, allow the night to pass. Set to 100 to disable.")
     			.defineInRange("MajoritySleepThreshold",50, 0, 100).get();
         checkSpacesInNames = SERVER_BUILDER.comment("Check if a player's name contains spaces (can gum up some things in FE)")
                 .define("CheckSpacesInNames", true).get();
+        
         SERVER_BUILDER.pop();
     }
 

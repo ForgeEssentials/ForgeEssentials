@@ -2,7 +2,7 @@ package com.forgeessentials.compat.worldedit;
 
 
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
@@ -19,7 +19,7 @@ public class WEIntegrationHandler
     private CUIComms cuiComms;
 
     @SubscribeEvent
-    public void postLoad(FEModulePostInitEvent e)
+    public void postLoad(FEModuleCommonSetupEvent e)
     {
         if (WEIntegration.disable)
         {

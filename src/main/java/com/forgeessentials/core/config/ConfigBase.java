@@ -4,7 +4,10 @@ import java.nio.file.Path;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
+import com.forgeessentials.commands.server.CommandHelp;
 import com.forgeessentials.core.FEConfig;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.perftools.PerfToolsModule;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
@@ -18,7 +21,9 @@ public class ConfigBase {
 
     static {
         FEConfig.load(SERVER_BUILDER);
-
+        ForgeEssentials.load(SERVER_BUILDER, true);//always true since We can't detect reloads?
+        PerfToolsModule.load(SERVER_BUILDER);
+        CommandHelp.load(SERVER_BUILDER);
         SERVER_CONFIG = SERVER_BUILDER.build();
     }
 

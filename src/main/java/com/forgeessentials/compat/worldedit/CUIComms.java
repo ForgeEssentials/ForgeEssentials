@@ -7,13 +7,13 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.util.selections.SelectionHandler;
 
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
  * This class checks for player interactions which could modify the WorldEdit selection and sends a selection update to
@@ -35,14 +35,14 @@ public class CUIComms
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void checkWECommands(CommandEvent e)
     {
-        if (e.getSender() instanceof ServerPlayerEntity)
+        if (e.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity)
         {
-            String cmd = e.getCommand().getName();
+            String cmd = e.getParseResults().getContext().getRootNode().getName();
             for (String weCmd : worldEditSelectionCommands)
             {
-                if (cmd.equals(weCmd) && !(e.getSender() instanceof FakePlayer))
+                if (cmd.equals(weCmd) && !(e.getParseResults().getContext().getSource().getEntity() instanceof FakePlayer))
                 {
-                    updatedSelectionPlayers.add((ServerPlayerEntity) e.getSender());
+                    updatedSelectionPlayers.add((ServerPlayerEntity) e.getParseResults().getContext().getSource().getEntity());
                     return;
                 }
             }
@@ -60,8 +60,8 @@ public class CUIComms
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (event.getEntityPlayer() instanceof ServerPlayerEntity)
-            updatedSelectionPlayers.add((ServerPlayerEntity) event.getEntityPlayer());
+        if (event.getPlayer() instanceof ServerPlayerEntity)
+            updatedSelectionPlayers.add((ServerPlayerEntity) event.getPlayer());
     }
 
 }
