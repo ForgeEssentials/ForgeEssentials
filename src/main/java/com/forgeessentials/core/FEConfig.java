@@ -31,8 +31,6 @@ public class FEConfig
 
     public static void load(ForgeConfigSpec.Builder SERVER_BUILDER)
     {
-        FORMAT_TIME = new SimpleDateFormat(config.get(CONFIG_CAT, "format_time", "HH:mm", "Time-only format").getString());
-        FORMAT_TIME_SECONDS = new SimpleDateFormat(config.get(CONFIG_CAT, "format_time", "HH:mm:ss", "Time-only format with seconds").getString());
     	SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(CONFIG_CAT);
     	FORMAT_DATE = new SimpleDateFormat(SERVER_BUILDER.comment("Date-only format")
     			.define("format_date", "yyyy-MM-dd").get()); 
