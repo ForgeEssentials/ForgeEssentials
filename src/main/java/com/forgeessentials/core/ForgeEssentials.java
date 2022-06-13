@@ -1,6 +1,7 @@
 package com.forgeessentials.core;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,6 +78,8 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.DoAsCommandSender;
@@ -107,7 +110,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 @Mod(ForgeEssentials.MODID)
 @Mod.EventBusSubscriber(modid = ForgeEssentials.MODID, bus = Bus.MOD,value = Dist.DEDICATED_SERVER)
 //@Mod(ForgeEssentials.MODID)//, dependencies = BuildInfo.DEPENDENCIES + ";after:worldedit;before:ftblib")
-public class ForgeEssentials
+public class ForgeEssentials extends ConfigLoaderBase
 {
 
     public static final String MODID = "forgeessentials";
@@ -126,7 +129,9 @@ public class ForgeEssentials
 
     /* ------------------------------------------------------------ */
     /* ForgeEssentials core submodules */
-
+    
+    protected static ConfigBase configManager;
+    
     protected static ModuleLauncher moduleLauncher;
 
     protected static TaskRegistry tasks = new TaskRegistry();
@@ -251,7 +256,8 @@ public class ForgeEssentials
         //configDirectory = new File(ServerUtil.getBaseDir(), "/ForgeEssentials");
         FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials"), "ForgeEssentials");
         //ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ConfigBase.SERVER_CONFIG,configDirectory + "main" + ".toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ConfigBase.SERVER_CONFIG,FMLPaths.GAMEDIR.get() + "ForgeEssentials/main.toml");
+        ConfigBase.registerConfig();
+        ConfigBase.loadConfig(ConfigBase.SERVER_CONFIG, Paths.get(FMLPaths.GAMEDIR.get() + "/ForgeEssentials/main.toml"));
     }
 
     private void registerNetworkMessages()
@@ -460,32 +466,37 @@ public class ForgeEssentials
         return APIRegistry.perms.checkUserPermission(UserIdent.get(sender.getPlayerOrException().getGameProfile()),node);
     }
 
-    /* ------------------------------------------------------------ */
-
-    public static void load(ForgeConfigSpec.Builder SERVER_BUILDER, boolean isReload)
+   /* ------------------------------------------------------------ */
+    @Override
+    public void load(ForgeConfigSpec.Builder BUILDER, boolean isReload)
     {
-    	SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_CAT);
+    	BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_CAT);
         if (isReload)
             Translator.translations.clear();
         Translator.load();
-        if (!SERVER_BUILDER.comment("Check for newer versions of ForgeEssentials on load?").define("versionCheck", true).get())
+        if (!BUILDER.comment("Check for newer versions of ForgeEssentials on load?").define("versionCheck", true).get())
             BuildInfo.checkVersion = false;
         //configManager.setUseCanonicalConfig(SERVER_BUILDER.comment("For modules that support it, place their configs in this file.").define("canonicalConfigs", false).get());
-        debugMode = SERVER_BUILDER.comment("Activates developer debug mode. Spams your FML logs.")
+        debugMode = BUILDER.comment("Activates developer debug mode. Spams your FML logs.")
         		.define("debug", false).get();
-        safeMode = SERVER_BUILDER.comment("Activates safe mode with will ignore some errors which would normally crash the game."
+        safeMode = BUILDER.comment("Activates safe mode with will ignore some errors which would normally crash the game."
         		+"Please only enable this after being instructed to do so by FE team in response to an issue on GitHub!")
         		.define("safeMode", false).get();
-        HelpFixer.hideWorldEditCommands = SERVER_BUILDER.comment("Hide WorldEdit commands from /help and only show them in //help command")
+        HelpFixer.hideWorldEditCommands = BUILDER.comment("Hide WorldEdit commands from /help and only show them in //help command")
         		.define("hide_worldedit_help", true).get();
-        logCommandsToConsole = SERVER_BUILDER.comment("Log commands to console")
+        logCommandsToConsole = BUILDER.comment("Log commands to console")
         		.define("logCommands", false).get();
         BuildInfo.startVersionChecks();
-        SERVER_BUILDER.pop();
+        BUILDER.pop();
     }
 
     /* ------------------------------------------------------------ */
 
+    public static ConfigBase getConfigManager()
+    {
+        return configManager;
+    }
+    
     public static Metrics getMcStats()
     {
         return mcStats;

@@ -37,7 +37,7 @@ public class BlockModListFile
                 out.println("# Generated: " + calen.get(Calendar.DAY_OF_MONTH) + "-" + calen.get(Calendar.MONTH) + "-" + calen.get(Calendar.YEAR)
                         + " (Server time)");
                 out.println("# Build: " + BuildInfo.getBuildNumber());
-                out.println("# Change the location of this file in " + ForgeEssentials.getConfigManager().getMainConfigName() + ".cfg");
+                out.println("# Change the location of this file in " + ForgeEssentials.getConfigManager().getMainConfigName() + ".toml");
                 out.println();
 
                 for (ModContainer mod : Loader.instance().getModList())

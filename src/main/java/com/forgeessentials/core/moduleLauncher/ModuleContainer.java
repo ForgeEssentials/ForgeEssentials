@@ -17,10 +17,13 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Throwables;
 
+import net.minecraft.command.ICommandSource;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.moddiscovery.ModFile;
+import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.forgespi.language.IModFileInfo;
 
 @SuppressWarnings("rawtypes")
 public class ModuleContainer implements Comparable
@@ -223,7 +226,7 @@ public class ModuleContainer implements Comparable
         }
     }
 
-    public void runReload(ICommandSender user)
+    public void runReload(ICommandSource user)
     {
         if (!isLoadable || reload == null)
         {
@@ -233,7 +236,7 @@ public class ModuleContainer implements Comparable
         try
         {
             Class<?> c = Class.forName(className);
-            Method m = c.getDeclaredMethod(reload, new Class<?>[] { ICommandSender.class });
+            Method m = c.getDeclaredMethod(reload, new Class<?>[] { ICommandSource.class });
             m.invoke(module, user);
         }
         catch (Throwable e)

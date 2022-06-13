@@ -17,14 +17,14 @@ public class ConfigBase {
 
     private static final ForgeConfigSpec.Builder SERVER_BUILDER = new ForgeConfigSpec.Builder();
 
-    public static final ForgeConfigSpec SERVER_CONFIG;
+    public static ForgeConfigSpec MAIN_CONFIG;
 
-    static {
+    public static void registerConfig(){
         FEConfig.load(SERVER_BUILDER);
         ForgeEssentials.load(SERVER_BUILDER, true);//always true since We can't detect reloads?
         PerfToolsModule.load(SERVER_BUILDER);
         CommandHelp.load(SERVER_BUILDER);
-        SERVER_CONFIG = SERVER_BUILDER.build();
+        MAIN_CONFIG = SERVER_BUILDER.build();
     }
 
 

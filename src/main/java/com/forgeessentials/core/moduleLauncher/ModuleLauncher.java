@@ -16,6 +16,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ModuleLauncher
@@ -103,7 +104,7 @@ public class ModuleLauncher
             }
         }
 
-        for (ModContainer container : Loader.instance().getModList())
+        for (ModContainer container : ModList.mods)
             if (container.getMod() != null)
                 map.scanObject(container);
 

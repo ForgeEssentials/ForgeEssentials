@@ -2,9 +2,11 @@ package com.forgeessentials.core;
 
 import java.text.SimpleDateFormat;
 
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class FEConfig
+public class FEConfig extends ConfigLoaderBase
 {
 
     public static final String CONFIG_CAT = "Core";
@@ -29,7 +31,8 @@ public class FEConfig
 
     public static SimpleDateFormat FORMAT_TIME_SECONDS = new SimpleDateFormat("HH:mm:ss");
 
-    public static void load(ForgeConfigSpec.Builder SERVER_BUILDER)
+    @Override
+    public void load(ForgeConfigSpec.Builder SERVER_BUILDER, boolean reload)
     {
     	SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(CONFIG_CAT);
     	FORMAT_DATE = new SimpleDateFormat(SERVER_BUILDER.comment("Date-only format")
