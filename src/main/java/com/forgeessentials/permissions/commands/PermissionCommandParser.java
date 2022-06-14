@@ -13,8 +13,10 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
@@ -1152,7 +1154,7 @@ public class PermissionCommandParser
             if (zone != null)
                 return zone;
 
-            WorldServer world = APIRegistry.namedWorldHandler.getWorld(zoneId);
+            ServerWorld world = APIRegistry.namedWorldHandler.getWorld(zoneId);
             if (world != null)
                 return APIRegistry.perms.getServerZone().getWorldZone(world.provider.getDimension());
 
@@ -1164,7 +1166,7 @@ public class PermissionCommandParser
             for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
                 if (wz.getName().equals(zoneId))
                     return wz;
-            WorldServer world = APIRegistry.namedWorldHandler.getWorld(zoneId);
+            ServerWorld world = APIRegistry.namedWorldHandler.getWorld(zoneId);
             if (world != null)
                 return APIRegistry.perms.getServerZone().getWorldZone(world.provider.getDimension());
 
@@ -1174,7 +1176,7 @@ public class PermissionCommandParser
                 return null;
             }
 
-            Zone zone = APIRegistry.perms.getServerZone().getWorldZone(arguments.senderPlayer.dimension).getAreaZone(zoneId);
+            Zone zone = APIRegistry.perms.getServerZone().getWorldZone(arguments.senderPlayer.level).getAreaZone(zoneId);
             if (zone != null)
                 return zone;
 
@@ -1289,7 +1291,7 @@ public class PermissionCommandParser
 
     public static void listGroups(ICommandSender sender) throws CommandException
     {
-        if (sender instanceof EntityPlayer && !PermissionAPI.hasPermission((EntityPlayer) sender, PERM_LIST_GROUPS))
+        if (sender instanceof PlayerEntity && !PermissionAPI.hasPermission((PlayerEntity) sender, PERM_LIST_GROUPS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         ChatOutputHandler.chatNotification(sender, "Groups:");
@@ -1299,7 +1301,7 @@ public class PermissionCommandParser
 
     public static void listUsers(ICommandSender sender) throws CommandException
     {
-        if (sender instanceof EntityPlayer && !PermissionAPI.hasPermission((EntityPlayer) sender, PERM_LIST_USERS))
+        if (sender instanceof PlayerEntity && !PermissionAPI.hasPermission((PlayerEntity) sender, PERM_LIST_USERS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         ChatOutputHandler.chatNotification(sender, "Known players:");

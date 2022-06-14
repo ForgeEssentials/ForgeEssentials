@@ -15,8 +15,8 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import org.apache.commons.io.FileUtils;
@@ -33,7 +33,6 @@ import com.forgeessentials.jscripting.wrapper.JsLocalStorage;
 import com.forgeessentials.jscripting.wrapper.ScriptExtensionRoot;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
 import com.forgeessentials.util.events.ConfigReloadEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
@@ -108,7 +107,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent event)
+    public void load(FEModuleCommonSetupEvent event)
     {
         FECommandManager.registerCommand(new CommandJScript());
         try
@@ -137,7 +136,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public void serverStarting(FEModuleServerStartingEvent event)
     {
         JsLocalStorage.load();
-        loadScripts(FMLCommonHandler.instance().getMinecraftServerInstance());
+        loadScripts(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack());
     }
 
     @SubscribeEvent
@@ -157,10 +156,10 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void reload(ConfigReloadEvent event)
     {
-        reloadScripts(FMLCommonHandler.instance().getMinecraftServerInstance());
+        reloadScripts(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack());
     }
 
-    public void reloadScripts(ICommandSender sender)
+    public void reloadScripts(CommandSource sender)
     {
         unloadScripts();
         loadScripts(sender);
@@ -173,7 +172,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         scripts.clear();
     }
 
-    public void loadScripts(ICommandSender sender)
+    public void loadScripts(CommandSource sender)
     {
         for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js", "ts" }, true); it.hasNext(); )
         {
@@ -288,13 +287,13 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     }
 
     @Override
-    public boolean runEventScripts(String key, ICommandSender sender)
+    public boolean runEventScripts(String key, CommandSource sender)
     {
         return runEventScripts(key, sender, null);
     }
 
     @Override
-    public boolean runEventScripts(String key, ICommandSender sender, Object additionalData)
+    public boolean runEventScripts(String key, CommandSource sender, Object additionalData)
     {
         JsICommandSender jsSender = JsICommandSender.get(sender);
         String fnName = "on" + StringUtils.capitalize(key);

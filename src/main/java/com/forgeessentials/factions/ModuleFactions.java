@@ -20,6 +20,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
@@ -73,7 +74,7 @@ public class ModuleFactions extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent event)
+    public void load(FEModuleCommonSetupEvent event)
     {
         FECommandManager.registerCommand(new CommandFaction());
 

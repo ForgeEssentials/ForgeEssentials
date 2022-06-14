@@ -78,12 +78,12 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     /**
      * List of worlds that have been marked for deletion
      */
-    protected ArrayList<WorldServer> worldsToDelete = new ArrayList<>();
+    protected ArrayList<ServerWorld> worldsToDelete = new ArrayList<>();
 
     /**
      * List of worlds that have been marked for removal
      */
-    protected ArrayList<WorldServer> worldsToRemove = new ArrayList<>();
+    protected ArrayList<ServerWorld> worldsToRemove = new ArrayList<>();
 
     /**
      * Event handler for new clients that need to know about our worlds
@@ -446,9 +446,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      */
     protected void unregisterDimensions()
     {
-        for (Iterator<WorldServer> it = worldsToRemove.iterator(); it.hasNext();)
+        for (Iterator<ServerWorld> it = worldsToRemove.iterator(); it.hasNext();)
         {
-            WorldServer world = it.next();
+        	ServerWorld world = it.next();
             // Check with DimensionManager, whether the world is still loaded
             if (DimensionManager.getWorld(world.provider.getDimension()) == null)
             {
@@ -464,9 +464,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      */
     protected void deleteDimensions()
     {
-        for (Iterator<WorldServer> it = worldsToDelete.iterator(); it.hasNext();)
+        for (Iterator<ServerWorld> it = worldsToDelete.iterator(); it.hasNext();)
         {
-            WorldServer world = it.next();
+        	ServerWorld world = it.next();
             // Check with DimensionManager, whether the world is still loaded
             if (DimensionManager.getWorld(world.provider.getDimension()) == null)
             {

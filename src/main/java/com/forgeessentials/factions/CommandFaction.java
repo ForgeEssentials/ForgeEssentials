@@ -248,8 +248,8 @@ public class CommandFaction extends ParserCommandBase
             {
                 try
                 {
-                    Questioner.add(player, message, callback);
-                    arguments.confirm("Requested %s to accept your join request", player.getDisplayNameString());
+                    Questioner.add(player.createCommandSourceStack(), message, callback);
+                    arguments.confirm("Requested %s to accept your join request", player.getDisplayName());
                     return;
                 }
                 catch (QuestionerStillActiveException e)
@@ -380,7 +380,7 @@ public class CommandFaction extends ParserCommandBase
                 for (Entry<UserIdent, Set<String>> player : APIRegistry.perms.getServerZone().getPlayerGroups().entrySet())
                 {
                     if (player.getValue().remove(factionGroup) && player.getKey().hasPlayer())
-                        ChatOutputHandler.chatNotification(player.getKey().getPlayer(), Translator.format("Faction %s has been deleted", faction));
+                        ChatOutputHandler.chatNotification(player.getKey().getPlayer().createCommandSourceStack(), Translator.format("Faction %s has been deleted", faction));
                     for (Iterator<String> it = player.getValue().iterator(); it.hasNext();)
                         if (it.next().startsWith(ModuleFactions.RANK_PREFIX))
                             it.remove();

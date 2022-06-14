@@ -91,7 +91,7 @@ public class Multiworld
     	ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
         for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
-            if (player.level == dimensionId.)
+            if (player.level.dimension() == dimensionId)
             {
                 BlockPos playerPos = player.blockPosition();
                 int y = WorldUtil.placeInWorld(player.level, playerPos.getX(), playerPos.getY(), playerPos.getZ());
@@ -234,7 +234,7 @@ public class Multiworld
      */
     public static void teleport(ServerPlayerEntity player, ServerWorld world, double x, double y, double z, boolean instant) throws CommandException
     {
-        boolean worldChange = player.level != world.dimension();
+        boolean worldChange = player.level.dimension() != world.dimension();
         if (worldChange)
             displayDepartMessage(player);
 

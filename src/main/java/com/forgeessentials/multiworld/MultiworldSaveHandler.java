@@ -14,6 +14,7 @@ import net.minecraft.world.chunk.storage.IChunkLoader;
 import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.minecraft.world.storage.IPlayerFileData;
 import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.IWorldInfo;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.DimensionManager;
@@ -60,7 +61,7 @@ public class MultiworldSaveHandler implements ISaveHandler
             {
             	CompoundNBT nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
             	CompoundNBT nbttagcompound1 = nbttagcompound.getCompound("Data");
-                WorldInfo worldInfo = new WorldInfo(nbttagcompound1);
+                IWorldInfo worldInfo = new WorldInfo(nbttagcompound1);
                 return worldInfo;
             }
             catch (StartupQuery.AbortedException e)
