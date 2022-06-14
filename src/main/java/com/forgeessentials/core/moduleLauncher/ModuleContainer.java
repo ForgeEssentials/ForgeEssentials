@@ -15,7 +15,6 @@ import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
 
 import net.minecraft.command.ICommandSource;
 import net.minecraftforge.fml.ModContainer;
@@ -239,10 +238,10 @@ public class ModuleContainer implements Comparable
             Method m = c.getDeclaredMethod(reload, new Class<?>[] { ICommandSource.class });
             m.invoke(module, user);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             LoggingHandler.felog.info("Error while invoking Reload method for " + name);
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

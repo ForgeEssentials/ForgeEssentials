@@ -98,7 +98,7 @@ public class TsdGenerator extends Doclet
                 indention = 0;
                 try (FileInputStream is = new FileInputStream(headerFile))
                 {
-                    write(IOUtils.toString(is));
+                    write(IOUtils.toString(is,"UTF-8"));
                 }
 
                 List<PackageDoc> packages = new ArrayList<>(Arrays.asList(root.specifiedPackages()));

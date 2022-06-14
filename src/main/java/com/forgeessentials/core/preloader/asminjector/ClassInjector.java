@@ -20,7 +20,6 @@ import com.forgeessentials.core.preloader.asminjector.ASMUtil.IllegalInjectorExc
 import com.forgeessentials.core.preloader.asminjector.annotation.At.Shift;
 import com.forgeessentials.core.preloader.asminjector.annotation.Inject;
 import com.forgeessentials.core.preloader.asminjector.annotation.Mixin;
-import com.google.common.base.Throwables;
 
 public class ClassInjector
 {
@@ -129,7 +128,7 @@ public class ClassInjector
         }
         catch (ClassNotFoundException e)
         {
-            throw Throwables.propagate(e);
+        	throw new RuntimeException(e);
         }
     }
 

@@ -35,7 +35,6 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.multiworld.MultiworldException.Type;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 
 import static net.minecraftforge.common.DimensionManager.getRegisteredDimensions;
@@ -426,7 +425,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             catch (MultiworldException e)
             {
                 e.printStackTrace();
-                Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         }
     }

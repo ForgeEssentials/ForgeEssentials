@@ -21,7 +21,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 

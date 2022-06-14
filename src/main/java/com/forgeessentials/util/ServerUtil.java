@@ -37,7 +37,6 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
 
 public abstract class ServerUtil
 {
@@ -335,7 +334,7 @@ public abstract class ServerUtil
         }
         catch (MalformedURLException e)
         {
-            Throwables.propagate(e);
+        	throw new RuntimeException(e);
             return false;
         }
         catch (IOException e)

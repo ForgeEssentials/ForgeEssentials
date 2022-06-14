@@ -29,7 +29,6 @@ import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
 
 //FIXME: This class should be modified to use PreparedStatements instead of dynamic sql
 public class SQLProvider extends ZonePersistenceProvider
@@ -310,7 +309,7 @@ public class SQLProvider extends ZonePersistenceProvider
         }
         catch (SQLException e)
         {
-            Throwables.propagate(e);
+        	throw new RuntimeException(e);
         }
         return checkOk;
     }
@@ -404,7 +403,7 @@ public class SQLProvider extends ZonePersistenceProvider
             {
                 // Ignore rollback-error
             }
-            Throwables.propagate(se);
+            throw new RuntimeException(se);
         }
     }
 
@@ -453,7 +452,7 @@ public class SQLProvider extends ZonePersistenceProvider
         }
         catch (SQLException e)
         {
-            Throwables.propagate(e);
+        	throw new RuntimeException(e);
         }
     }
 

@@ -142,7 +142,7 @@ public class FELaunchHandler implements ITweaker
         try
         {
             File versionFile = new File(libDirectory, "version.txt");
-            String version = FileUtils.readFileToString(versionFile);
+            String version = FileUtils.readFileToString(versionFile, "UTF-8");
             return !FE_LIB_VERSION.equals(version);
         }
         catch (IOException e)

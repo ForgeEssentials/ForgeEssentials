@@ -16,7 +16,6 @@ import com.forgeessentials.jscripting.wrapper.mc.JsServer;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsItem;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsWorld;
-import com.google.common.base.Throwables;
 
 /**
  * @tsd.namespace mc
@@ -30,11 +29,11 @@ public class ScriptExtensionRoot implements ScriptExtension
     {
         try
         {
-            INIT_SCRIPT = IOUtils.toString(ScriptExtensionRoot.class.getResource("init.js"));
+            INIT_SCRIPT = IOUtils.toString(ScriptExtensionRoot.class.getResource("init.js"),"UTF-8");
         }
         catch (IOException e)
         {
-            Throwables.propagate(e);
+        	throw new RuntimeException(e);
         }
         ScriptCompiler.registerWrapperClass(Date.class, "");
         ScriptCompiler.registerWrapperClass(Calendar.class, "");

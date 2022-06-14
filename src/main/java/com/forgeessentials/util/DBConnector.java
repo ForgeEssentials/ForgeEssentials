@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 
 import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
 
 public class DBConnector
 {
@@ -230,7 +229,7 @@ public class DBConnector
         catch (SQLException e)
         {
             LoggingHandler.felog.error("[FE+SQL] " + name + " CATASTROPHIC DATABASE CONNECTION FAILIURE!!!");
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
 
         return null;

@@ -20,7 +20,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
@@ -55,7 +54,7 @@ public final class ScriptCompiler
         catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e)
         {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -71,7 +70,7 @@ public final class ScriptCompiler
         }
         catch (IOException e)
         {
-            Throwables.propagate(e);
+        	throw new RuntimeException(e);
         }
     }
 
@@ -127,7 +126,7 @@ public final class ScriptCompiler
         }
         catch (SecurityException e)
         {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

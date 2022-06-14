@@ -19,7 +19,6 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeAnnotationNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 
 public final class ASMUtil
@@ -349,7 +348,7 @@ public final class ASMUtil
             }
             catch (ClassNotFoundException e)
             {
-                throw Throwables.propagate(e);
+            	throw new RuntimeException(e);
             }
         }
 
@@ -371,7 +370,7 @@ public final class ASMUtil
             }
             catch (ClassNotFoundException e)
             {
-                throw Throwables.propagate(e);
+            	throw new RuntimeException(e);
             }
         }
 

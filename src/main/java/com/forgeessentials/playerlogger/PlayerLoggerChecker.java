@@ -5,11 +5,10 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
@@ -54,27 +53,27 @@ public class PlayerLoggerChecker
 
     }
 
-    public Map<ICommandSender, LoggerCheckInfo> playerInfo = new WeakHashMap<>();
+    public Map<CommandSource, LoggerCheckInfo> playerInfo = new WeakHashMap<>();
 
     public void CheckBlock(WorldPoint point, FilterConfig fc)
     {
-        CheckBlock(point, fc, FMLCommonHandler.instance().getMinecraftServerInstance());
+        CheckBlock(point, fc, ServerLifecycleHooks.getCurrentServer().createCommandSourceStack());
     }
-    public void CheckBlock(WorldPoint point, FilterConfig fc, ICommandSender sender)
+    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender)
     {
         CheckBlock(point, fc, sender,4);
     }
 
-    public void CheckBlock(WorldPoint point, FilterConfig fc, ICommandSender sender, int pageSize)
+    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender, int pageSize)
     {
         CheckBlock(point, fc, sender, pageSize,false);
     }
 
-    public void CheckBlock(WorldPoint point, FilterConfig fc, ICommandSender sender, int pageSize, boolean newCheck)
+    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender, int pageSize, boolean newCheck)
     {
         CheckBlock(point, fc, sender, pageSize,newCheck, null);
     }
-    public void CheckBlock(WorldPoint point, FilterConfig fc, ICommandSender sender, int pageSize, boolean newCheck, net.minecraftforge.event.entity.player.PlayerInteractEvent action)
+    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender, int pageSize, boolean newCheck, net.minecraftforge.event.entity.player.PlayerInteractEvent action)
     {
         LoggerCheckInfo info = playerInfo.get(sender);
         if (info == null)
