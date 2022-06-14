@@ -3,7 +3,9 @@ package com.forgeessentials.core.misc;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.util.Calendar;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -16,14 +18,14 @@ import com.forgeessentials.util.output.LoggingHandler;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistry;
 
 public class BlockModListFile
 {
 
     private static Calendar calen = Calendar.getInstance();
 
-    public static void makeModList()
+    @SuppressWarnings("unchecked")
+	public static void makeModList()
     {
         try
         {
@@ -40,8 +42,13 @@ public class BlockModListFile
                 out.println("# Build: " + BuildInfo.getBuildNumber());
                 out.println("# Change the location of this file in " + ForgeEssentials.getConfigManager().getMainConfigName() + ".toml");
                 out.println();
-
-                for (ModContainer mod : ModList.mods)
+                
+                ModList l = ModList.get();
+                Field f = ModList.class.getDeclaredField("mods");
+                f.setAccessible(true);
+                List<ModContainer> mods = (List<ModContainer>) f.get(l);
+                
+                for (ModContainer mod : mods)
                 {
                     String url = "";
                     if (mod.getModInfo().getUpdateURL().toString() != null)
