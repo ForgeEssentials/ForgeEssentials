@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.launchwrapper.IClassNameTransformer;
-import net.minecraft.launchwrapper.Launch;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;

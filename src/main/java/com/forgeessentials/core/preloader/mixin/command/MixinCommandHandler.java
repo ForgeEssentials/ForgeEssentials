@@ -1,9 +1,6 @@
 package com.forgeessentials.core.preloader.mixin.command;
 
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -89,9 +86,9 @@ public class MixinCommandHandler
             }
         }
 
-        if (sender instanceof EntityPlayer)
+        if (sender instanceof PlayerEntity)
         {
-            return PermissionAPI.hasPermission((EntityPlayer) sender, node);
+            return PermissionAPI.hasPermission((PlayerEntity) sender, node);
         } else {
             UserIdent ident = UserIdent.get(sender);
             return PermissionAPI.hasPermission(ident.getGameProfile(), node, null);

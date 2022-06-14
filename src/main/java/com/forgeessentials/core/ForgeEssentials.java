@@ -253,11 +253,12 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     private void initConfiguration()
     {
-        //configDirectory = new File(ServerUtil.getBaseDir(), "/ForgeEssentials");
+    	configDirectory = new File(ServerUtil.getBaseDir(), "/ForgeEssentials");
+        configManager = new ConfigBase(configDirectory, "main");
         FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials"), "ForgeEssentials");
         //ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ConfigBase.SERVER_CONFIG,configDirectory + "main" + ".toml");
         ConfigBase.registerConfig();
-        ConfigBase.loadConfig(ConfigBase.SERVER_CONFIG, Paths.get(FMLPaths.GAMEDIR.get() + "/ForgeEssentials/main.toml"));
+        ConfigBase.loadConfig(ConfigBase.MAIN_CONFIG, Paths.get(FMLPaths.GAMEDIR.get() + "/ForgeEssentials/main.toml"));
     }
 
     private void registerNetworkMessages()
@@ -467,6 +468,13 @@ public class ForgeEssentials extends ConfigLoaderBase
     }
 
    /* ------------------------------------------------------------ */
+    
+    ForgeConfigSpec.BooleanValue FEcheckVersion;
+    ForgeConfigSpec.BooleanValue FEdebugMode;
+    ForgeConfigSpec.BooleanValue FEsafeMode;
+    ForgeConfigSpec.BooleanValue FEhideWorldEditCommands;
+    ForgeConfigSpec.BooleanValue FElogCommandsToConsole;
+	
     @Override
     public void load(ForgeConfigSpec.Builder BUILDER, boolean isReload)
     {
@@ -474,22 +482,33 @@ public class ForgeEssentials extends ConfigLoaderBase
         if (isReload)
             Translator.translations.clear();
         Translator.load();
-        if (!BUILDER.comment("Check for newer versions of ForgeEssentials on load?").define("versionCheck", true).get())
-            BuildInfo.checkVersion = false;
+        FEcheckVersion = BUILDER.comment("Check for newer versions of ForgeEssentials on load?").define("versionCheck", true);
         //configManager.setUseCanonicalConfig(SERVER_BUILDER.comment("For modules that support it, place their configs in this file.").define("canonicalConfigs", false).get());
-        debugMode = BUILDER.comment("Activates developer debug mode. Spams your FML logs.")
-        		.define("debug", false).get();
-        safeMode = BUILDER.comment("Activates safe mode with will ignore some errors which would normally crash the game."
+        FEdebugMode = BUILDER.comment("Activates developer debug mode. Spams your FML logs.")
+        		.define("debug", false);
+        FEsafeMode = BUILDER.comment("Activates safe mode with will ignore some errors which would normally crash the game."
         		+"Please only enable this after being instructed to do so by FE team in response to an issue on GitHub!")
-        		.define("safeMode", false).get();
-        HelpFixer.hideWorldEditCommands = BUILDER.comment("Hide WorldEdit commands from /help and only show them in //help command")
-        		.define("hide_worldedit_help", true).get();
-        logCommandsToConsole = BUILDER.comment("Log commands to console")
-        		.define("logCommands", false).get();
-        BuildInfo.startVersionChecks();
+        		.define("safeMode", false);
+        FEhideWorldEditCommands = BUILDER.comment("Hide WorldEdit commands from /help and only show them in //help command")
+        		.define("hide_worldedit_help", true);
+        FElogCommandsToConsole = BUILDER.comment("Log commands to console")
+        		.define("logCommands", false);
+        //BuildInfo.startVersionChecks();
         BUILDER.pop();
     }
-
+    public void bakeConfig(boolean isReload) {
+    	//if (isReload)
+        //    Translator.translations.clear();
+        //Translator.load();
+        if (!FEcheckVersion.get())
+            BuildInfo.checkVersion = false;
+        //configManager.setUseCanonicalConfig(SERVER_BUILDER.comment("For modules that support it, place their configs in this file.").define("canonicalConfigs", false).get());
+        debugMode = FEdebugMode.get();
+        safeMode = FEsafeMode.get();
+        HelpFixer.hideWorldEditCommands = FEhideWorldEditCommands.get();
+        logCommandsToConsole = FElogCommandsToConsole.get();
+        BuildInfo.startVersionChecks();
+    }
     /* ------------------------------------------------------------ */
 
     public static ConfigBase getConfigManager()

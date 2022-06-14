@@ -3,14 +3,14 @@ package com.forgeessentials.core.preloader.mixin.item.crafting;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistries;
 
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,8 +29,8 @@ public abstract class MixinCraftingManager
     @Overwrite
     public static ItemStack findMatchingResult(InventoryCrafting inventory, World world)
     {
-        EntityPlayer player = ModuleProtection.getCraftingPlayer(inventory);
-        Iterator var2 = ForgeRegistries.RECIPES.iterator();
+    	PlayerEntity player = ModuleProtection.getCraftingPlayer(inventory);
+        Iterator var2 = ForgeRegistries.RECIPE_SERIALIZERS.iterator();
 
         IRecipe irecipe;
         do {

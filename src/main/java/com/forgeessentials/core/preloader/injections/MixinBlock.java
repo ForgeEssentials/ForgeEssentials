@@ -27,7 +27,7 @@ public abstract class MixinBlock extends Block
     {
         // Going down a slab: speed ~ 0.4
         // Going down a block: speed ~ 0.7
-        if (!world.isRemote && fallHeight > 0.2)
+        if (!world.isClientSide && fallHeight > 0.2)
         {
             FallOnBlockEvent event = new FallOnBlockEvent(entity, world, pos, this, fallHeight);
             if (MinecraftForge.EVENT_BUS.post(event))

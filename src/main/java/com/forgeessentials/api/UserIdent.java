@@ -585,7 +585,7 @@ public class UserIdent
         {
             if (!player.getGameProfile().isComplete())
             {
-                return new GameProfile(getOrGenerateUuid(), player.getName());
+                return new GameProfile(getOrGenerateUuid(), player.getName().getString());
 
                 /*
                  * // Safeguard against stupid mods who set UUID to null UserIdent playerIdent = UserIdent.byUsername.get(player.getCommandSenderName()); if (playerIdent != this)

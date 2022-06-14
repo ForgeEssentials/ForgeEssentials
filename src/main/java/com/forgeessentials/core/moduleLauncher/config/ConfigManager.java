@@ -21,10 +21,10 @@ public class ConfigManager
 
         public ConfigFile(File path)
         {
-            config = new Config(path);
+            config = path;
         }
 
-        public Config config;
+        public File config;
 
         public Set<ConfigLoader> loaders = new HashSet<>();
 
@@ -34,7 +34,7 @@ public class ConfigManager
 
     private File rootDirectory;
 
-    private Map<String, ConfigFile> configFiles = new HashMap<>();
+    private Map<String, ConfigFile> configFiles = new HashMap<>();// (Name, ConfigFile)
 
     private boolean useCanonicalConfig = false;
 

@@ -1,14 +1,13 @@
 package com.forgeessentials.core.preloader.mixin.network;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.client.CPacketUpdateSign;
+import net.minecraft.tileentity.SignTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.world.SignEditEvent;
 
@@ -41,7 +40,7 @@ public class MixinNetHandlerPlayServer
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true
     )
-    private void getLines(CPacketUpdateSign packetIn, CallbackInfo ci, WorldServer worldserver, BlockPos blockpos, IBlockState iblockstate, TileEntity tileentity, TileEntitySign tileentitysign)
+    private void getLines(CPacketUpdateSign packetIn, CallbackInfo ci, ServerWorld worldserver, BlockPos blockpos, IBlockState iblockstate, TileEntity tileentity, SignTileEntity tileentitysign)
     {
         SignEditEvent event = new SignEditEvent(packetIn.getPosition(), packetIn.getLines(), this.player);
         if (!MinecraftForge.EVENT_BUS.post(event))

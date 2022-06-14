@@ -1,8 +1,9 @@
 package com.forgeessentials.core.preloader.mixin.entity.player;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.PlayerCapabilities;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.world.World;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -14,15 +15,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.forgeessentials.util.PlayerInfo;
 
-@Mixin(EntityPlayer.class)
+@Mixin(PlayerEntity.class)
 public abstract class MixinEntityPlayer extends Entity
 {
     @Shadow
-    public PlayerCapabilities capabilities;
+    public PlayerInteractionManager capabilities;
 
-    public MixinEntityPlayer(World p_i1582_1_)
+    public MixinEntityPlayer(EntityType<?>PlayerEntity,World p_i48580_2_)
     {
-        super(p_i1582_1_);
+        super(PlayerEntity, p_i48580_2_);
     }
 
     @Shadow public abstract boolean isSpectator();
@@ -30,11 +31,11 @@ public abstract class MixinEntityPlayer extends Entity
     @Overwrite
     public boolean canUseCommandBlock()
     {
-        return this.capabilities.isCreativeMode && PermissionAPI.hasPermission((EntityPlayer)(Object)this, "mc.commandblock");
+        return this.capabilities.isCreative() && PermissionAPI.hasPermission((PlayerEntity)(Object)this, "mc.commandblock");
     }
     
-    @Redirect(method = "onUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/EntityPlayer;isSpectator()Z"))
-    public boolean onUpdate_NoClip(EntityPlayer _this) {
+    @Redirect(method = "onUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
+    public boolean onUpdate_NoClip(PlayerEntity _this) {
         return isSpectator() || PlayerInfo.get(_this).isNoClip();
     }
 }

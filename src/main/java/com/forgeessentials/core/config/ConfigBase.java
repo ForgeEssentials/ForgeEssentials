@@ -1,6 +1,11 @@
 package com.forgeessentials.core.config;
 
+import java.io.File;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
@@ -19,6 +24,49 @@ public class ConfigBase {
 
     public static ForgeConfigSpec MAIN_CONFIG;
 
+
+    private static class ConfigFile
+    {
+
+        public ConfigFile(File path)
+        {
+            config = path;
+        }
+
+        public File config;
+
+        public Set<ConfigLoader> loaders = new HashSet<>();
+
+        public Set<ConfigLoader> loaded = new HashSet<>();
+
+    }
+
+    private File rootDirectory;
+
+    private Map<String, ConfigFile> configFiles = new HashMap<>();
+
+    private boolean useCanonicalConfig = false;
+
+    private String mainConfigName;
+
+    public ConfigBase(File rootDirectory, String mainConfigName)
+    {
+        this.rootDirectory = rootDirectory;
+        this.mainConfigName = mainConfigName;
+        load(false);
+    }
+    
+    private ConfigFile getConfigFile(String configName)
+    {
+        ConfigFile loaders = configFiles.get(configName);
+        if (loaders == null)
+        {
+            loaders = new ConfigFile(new File(this.rootDirectory, configName + ".toml"));
+            configFiles.put(configName, loaders);
+        }
+        return loaders;
+    }
+    
     public static void registerConfig(){
         FEConfig.load(SERVER_BUILDER);
         ForgeEssentials.load(SERVER_BUILDER, true);//always true since We can't detect reloads?
@@ -36,8 +84,18 @@ public class ConfigBase {
                 .autosave()
                 .writingMode(WritingMode.REPLACE)
                 .build();
-
+        
         configData.load();
         spec.setConfig(configData);
+    }
+    
+    public String getMainConfigName()
+    {
+        return mainConfigName;
+    }
+
+    public ForgeConfigSpec getMainConfig()
+    {
+        return getConfig(mainConfigName);
     }
 }

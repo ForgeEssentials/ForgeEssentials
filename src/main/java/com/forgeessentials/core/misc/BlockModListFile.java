@@ -14,6 +14,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistry;
 
@@ -40,14 +41,14 @@ public class BlockModListFile
                 out.println("# Change the location of this file in " + ForgeEssentials.getConfigManager().getMainConfigName() + ".toml");
                 out.println();
 
-                for (ModContainer mod : Loader.instance().getModList())
+                for (ModContainer mod : ModList.mods)
                 {
                     String url = "";
-                    if (!mod.getMetadata().url.isEmpty())
+                    if (mod.getModInfo().getUpdateURL().toString() != null)
                     {
-                        url = mod.getMetadata().url;
+                        url = mod.getModInfo().getUpdateURL().toString();
                     }
-                    out.println(mod.getName() + ";" + mod.getVersion() + ";" + mod.getSource().getName() + ";" + url);
+                    out.println(mod.getModInfo().getDisplayName() + ";" + mod.getModInfo().getVersion() + ";" + mod.getModInfo().getOwningFile() + ";" + url);
                 }
             }
         }
