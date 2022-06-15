@@ -13,7 +13,6 @@ public class AuthNetHandler extends Packet6AuthLogin
 {
     @Override
     public void handle(Context context) {
-    {
 
         if (!ModuleAuth.allowAutoLogin)
             //return null;
@@ -22,10 +21,10 @@ public class AuthNetHandler extends Packet6AuthLogin
         case 1:
             if (!message.hash.isEmpty())
             {
-                if (PasswordManager.hasSession(UserIdent.get(ctx.getServerHandler().player).getUuid(), UUID.fromString(message.hash)))
+                if (PasswordManager.hasSession(UserIdent.get(context.getSender().getUUID(), UUID.fromString(message.hash))))
                 {
-                    ModuleAuth.authenticate(UserIdent.get(ctx.getServerHandler().player).getUuid());
-                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(ctx.getServerHandler().player, Source.AUTOLOGIN));
+                    ModuleAuth.authenticate(context.getSender().getUUID());
+                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(context.getSender(), Source.AUTOLOGIN));
                 }
             }
             break;
