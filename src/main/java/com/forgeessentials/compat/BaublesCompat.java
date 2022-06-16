@@ -1,7 +1,6 @@
 package com.forgeessentials.compat;
 
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.IItemHandlerModifiable;

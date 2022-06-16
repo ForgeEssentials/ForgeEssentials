@@ -5,7 +5,6 @@ import java.util.UUID;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.CommandEvent;
@@ -130,14 +129,14 @@ public class AuthEventHandler extends ServerEventHandler
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void minecartInteractEvent(MinecartInteractEvent event)
+    public void minecartInteractEvent(PlayerInteractEvent.EntityInteractSpecific event)
     {
         if (!ModuleAuth.isEnabled() || notPlayer(event.getPlayer()))
             return;
         if (!ModuleAuth.isAuthenticated(event.getPlayer()))
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getPlayer(), "Login required. Try /auth help.");
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Login required. Try /auth help.");
         }
     }
 

@@ -158,7 +158,10 @@ public final class ChatOutputHandler
     {
         sendMessage(sender, msg, chatErrorColor);
     }
-
+    public static void chatError(PlayerEntity sender, String msg)
+    {
+        chatError(sender.createCommandSourceStack(), msg);
+    }
     /**
      * outputs a confirmation message to the chat box of the given sender.
      *
@@ -171,7 +174,10 @@ public final class ChatOutputHandler
     {
         sendMessage(sender, msg, chatConfirmationColor);
     }
-
+    public static void chatConfirmation(PlayerEntity sender, String msg)
+    {
+        sendMessage(sender.createCommandSourceStack(), msg);
+    }
     /**
      * outputs a warning message to the chat box of the given sender.
      *
@@ -184,7 +190,10 @@ public final class ChatOutputHandler
     {
         sendMessage(sender, msg, chatWarningColor);
     }
-
+    public static void chatWarning(PlayerEntity sender, String msg)
+    {
+        sendMessage(sender.createCommandSourceStack(), msg);
+    }
     /**
      * outputs a notification message to the chat box of the given sender.
      * 
@@ -196,7 +205,10 @@ public final class ChatOutputHandler
     {
         sendMessage(sender, msg, chatNotificationColor);
     }
-
+    public static void chatNotification(PlayerEntity sender, String msg)
+    {
+        sendMessage(sender.createCommandSourceStack(), msg);
+    }
     /* ------------------------------------------------------------ */
 
     /**

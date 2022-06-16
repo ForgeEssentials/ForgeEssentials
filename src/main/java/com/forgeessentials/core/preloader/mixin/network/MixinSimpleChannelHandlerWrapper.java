@@ -1,12 +1,7 @@
 package com.forgeessentials.core.preloader.mixin.network;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleChannelHandlerWrapper;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,7 +27,7 @@ public abstract class MixinSimpleChannelHandlerWrapper<REQ extends IMessage, REP
 
 
         ServerPlayerEntity player = ctx.netHandler instanceof NetHandlerPlayServer ? ctx.getServerHandler().player : null;
-        if (ctx.side == Side.CLIENT || !ModuleAuth.isEnabled() || ModuleAuth.isAuthenticated(player) || ModuleAuth.isAllowedMethod(message)) {
+        if (ctx.side == Dist.CLIENT || !ModuleAuth.isEnabled() || ModuleAuth.isAuthenticated(player) || ModuleAuth.isAllowedMethod(message)) {
             return messageHandler.onMessage(message, ctx);
         }
         else {

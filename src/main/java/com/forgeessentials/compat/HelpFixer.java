@@ -12,20 +12,15 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandHelp;
-import net.minecraft.command.CommandNotFoundException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.command.impl.HelpCommand;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 
-public class HelpFixer extends CommandHelp
+public class HelpFixer extends HelpCommand
 {
 
     public static boolean hideWorldEditCommands = true;
@@ -96,7 +91,7 @@ public class HelpFixer extends CommandHelp
         int endIndex = Math.min((startPage + 1) * cmdsPerPage, commands.size());
         TranslationTextComponent msg = new TranslationTextComponent("commands.help.header", new Object[] { Integer.valueOf(startPage + 1),
                 Integer.valueOf(i + 1) });
-        msg.getStyle().setColor(TextFormatting.DARK_GREEN);
+        msg.getStyle().withColor(TextFormatting.DARK_GREEN);
         sender.sendMessage(msg);
 
         for (int index = startPage * cmdsPerPage; index < endIndex; ++index)
@@ -110,10 +105,10 @@ public class HelpFixer extends CommandHelp
             sender.sendMessage(msg2);
         }
 
-        if (startPage == 0 && sender instanceof EntityPlayer)
+        if (startPage == 0 && sender instanceof PlayerEntity)
         {
             TranslationTextComponent msg3 = new TranslationTextComponent("commands.help.footer", new Object[0]);
-            msg3.getStyle().setColor(TextFormatting.GREEN);
+            msg3.getStyle().withColor(TextFormatting.GREEN);
             sender.sendMessage(msg3);
         }
     }

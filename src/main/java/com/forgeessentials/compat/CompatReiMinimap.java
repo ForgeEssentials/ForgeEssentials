@@ -1,15 +1,15 @@
 package com.forgeessentials.compat;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -42,10 +42,10 @@ public class CompatReiMinimap
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        ChatOutputHandler.sendMessage(e.player, new StringTextComponent(getPermissionCodes(e.player)));
+        ChatOutputHandler.sendMessage(e.getPlayer().createCommandSourceStack(), new StringTextComponent(getPermissionCodes(e.getPlayer())));
     }
 
-    public static String getPermissionCodes(EntityPlayer user)
+    public static String getPermissionCodes(PlayerEntity user)
     {
         String MOTD = "\u00a7e\u00a7f";
         if (PermissionAPI.hasPermission(user, PERM_CAVEMAP))

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import net.minecraft.command.impl.HelpCommand;
 import net.minecraft.entity.player.PlayerEntity;
 
 import com.forgeessentials.api.APIRegistry;
@@ -169,7 +170,7 @@ public class ModuleAuth
     public static boolean isGuestCommand(Command command)
     {
         return command instanceof CommandAuth || //
-                command instanceof CommandHelp;
+                command instanceof HelpCommand;
     }
 
     private static final String CFG_DESC_forceEnable = "Forces the authentication server to be loaded regardless of Minecraft auth services";

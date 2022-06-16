@@ -99,14 +99,14 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             // parse login
             if (args[0].equalsIgnoreCase("login"))
             {
-                if (!ModuleAuth.isRegistered(sender.getPersistentID()))
+                if (!ModuleAuth.isRegistered(sender.getUUID()))
                     throw new TranslatedCommandException("Player %s is not registered!", sender.getPersistentID());
 
-                if (PasswordManager.checkPassword(sender.getPersistentID(), args[1]))
+                if (PasswordManager.checkPassword(sender.getUUID(), args[1]))
                 {
                     // login worked
-                    ModuleAuth.authenticate(sender.getPersistentID());
-                    ChatOutputHandler.chatConfirmation(sender, "Login successful.");
+                    ModuleAuth.authenticate(sender.getUUID());
+                    ChatOutputHandler.chatConfirmation(sender.createCommandSourceStack(), "Login successful.");
                     APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(sender, Source.COMMAND));
                 }
                 else
@@ -121,14 +121,14 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             // parse register
             else if (args[0].equalsIgnoreCase("register"))
             {
-                if (ModuleAuth.isRegistered(sender.getPersistentID()))
+                if (ModuleAuth.isRegistered(sender.getUUID()))
                     throw new TranslatedCommandException("Player %s is already registered!", sender.getPersistentID());
 
                 if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineRegistration)
                     throw new TranslatedCommandException("Registrations have been disabled.");
 
-                PasswordManager.setPassword(sender.getPersistentID(), args[1]);
-                ChatOutputHandler.chatConfirmation(sender, "Registration successful.");
+                PasswordManager.setPassword(sender.getUUID(), args[1]);
+                ChatOutputHandler.chatConfirmation(sender.createCommandSourceStack(), "Registration successful.");
                 return;
             }
 
