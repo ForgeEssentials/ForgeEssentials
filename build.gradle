@@ -204,10 +204,10 @@ dependencies {
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
-    compile "com.sk89q.worldedit:worldedit-core:7.2.5-SNAPSHOT"
+    compile "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
     compile "com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5"
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
-    mavenDeps "com.sk89q.worldedit:worldedit-core:7.2.5-SNAPSHOT"
+    mavenDeps "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
 	compileOnly 'org.spongepowered:spongeapi:8.0.0'
