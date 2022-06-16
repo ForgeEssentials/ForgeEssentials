@@ -60,7 +60,6 @@ import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.packets.Packet5Noclip;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
 import com.forgeessentials.commons.network.packets.Packet7Remote;
-import com.forgeessentials.compat.BaublesCompat;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.CommandFEInfo;
@@ -303,7 +302,6 @@ public class ForgeEssentials
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
         APIRegistry.getFEEventBus().post(new FEModuleServerAboutToStartEvent(e));
-        new BaublesCompat();
     }
 
     @SubscribeEvent

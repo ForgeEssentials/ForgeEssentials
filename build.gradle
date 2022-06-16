@@ -206,7 +206,6 @@ dependencies {
 	// WorldEdit
     compile "com.sk89q.worldedit:worldedit-core:7.2.5-SNAPSHOT"
     compile "com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5"
-    compile "baubles:Baubles:1.12:1.5.2"
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
     mavenDeps "com.sk89q.worldedit:worldedit-core:7.2.5-SNAPSHOT"
 
