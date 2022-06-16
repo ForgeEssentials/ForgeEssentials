@@ -6,6 +6,7 @@ import net.minecraft.tileentity.SignTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -21,12 +22,11 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 @FEModule(name = "SignTools", parentMod = ForgeEssentials.class)
-public class SignToolsModule extends ConfigLoaderBase
+public class SignToolsModule
 {
 
     public static final String COLORIZE_PERM = "fe.signs.colorize";
@@ -152,12 +152,20 @@ public class SignToolsModule extends ConfigLoaderBase
         }
         return out;
     }
-
-    @Override
-    public void load(Configuration config, boolean isReload)
+    
+    static ForgeConfigSpec.BooleanValue FEallowSignCommands;
+    static ForgeConfigSpec.BooleanValue FEallowSignEdit;
+    
+ // this is NOT a permprop because perms are checked against the player anyway
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-        // this is NOT a permprop because perms are checked against the player anyway
-        allowSignCommands = config.getBoolean("allowSignCommands", "Signs", true, "Allow commands to be run when right clicking signs.");
-        allowSignEdit = config.getBoolean("allowSignEditing", "Signs", true, "Allow players to edit a sign by right clicking on it with a sign item while sneaking.");
+    	BUILDER.push("Sign");
+    	FEallowSignCommands = BUILDER.comment("Allow commands to be run when right clicking signs.").define("allowSignCommands", true);
+    	FEallowSignEdit = BUILDER.comment("Allow players to edit a sign by right clicking on it with a sign item while sneaking.").define("allowSignEditing", true);
     }
+
+	public static void bakeConfig(boolean reload) {
+		 allowSignCommands = FEallowSignCommands.get();
+	        allowSignEdit = FEallowSignEdit.get();
+	}
 }

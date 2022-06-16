@@ -20,11 +20,12 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
 
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class PermissionScheduler extends ServerEventHandler implements ConfigLoader
+public class PermissionScheduler extends ServerEventHandler
 {
 
     public static final int CHECK_INTERVAL = 1000;
@@ -74,11 +75,11 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
 
     protected long lastCheck;
 
-    protected boolean enabled;
+    protected static boolean enabled;
 
     public PermissionScheduler()
     {
-        ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+        //CONFIG ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
     }
 
     @SubscribeEvent
@@ -176,27 +177,27 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
         for (Entry<String, PermissionSchedule> task : schedules.entrySet())
             DataManager.getInstance().save(task.getValue(), task.getKey());
     }
-
-    @Override
-    public void load(Configuration config, boolean isReload)
+    
+    static ForgeConfigSpec.BooleanValue FEenabled;
+    
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-        enabled = config.get("PermissionScheduler", "enabled", false, HELP).getBoolean();
-        if (ServerUtil.isServerRunning())
+    	BUILDER.push("PermissionScheduler");
+    	FEenabled = BUILDER.comment(HELP).define("enabled", false);
+    	BUILDER.pop();
+    }
+
+	public static void bakeConfig(boolean reload) {
+		enabled = FEenabled.get();
+		
+		if (ServerUtil.isServerRunning())
         {
-            if (enabled)
-            {
+            if (enabled) {
                 register();
-                loadAll();
-            }
-            else
+            	loadAll();
+            }else {
                 unregister();
+            }
         }
     }
-
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return true;
-    }
-
 }

@@ -1,15 +1,17 @@
 package com.forgeessentials.teleport;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer.SleepResult;
+import net.minecraft.entity.player.PlayerEntity.SleepResult;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+
+import java.util.Optional;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
@@ -18,12 +20,12 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.teleport.portal.CommandPortal;
 import com.forgeessentials.teleport.portal.PortalManager;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 @FEModule(name = "Teleport", parentMod = ForgeEssentials.class)
-public class TeleportModule extends ConfigLoaderBase
+public class TeleportModule
 {
 
     public static final String PERM_TP = "fe.teleport.tp";
@@ -66,7 +68,7 @@ public class TeleportModule extends ConfigLoaderBase
     private PortalManager portalManager;
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModuleCommonSetupEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -113,24 +115,32 @@ public class TeleportModule extends ConfigLoaderBase
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerSleepInBed(PlayerSleepInBedEvent e) {
-        if (e.getEntityPlayer().world.isRemote)
+        if (e.getPlayer().level.isClientSide)
         {
             return;
         }
 
-        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(e.getEntityPlayer(), e.getPos()) || e.getEntityPlayer().isSneaking())
+        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(e.getPlayer(),e.getPos()) || (e.getPlayer().isCrouching()))
         {
-            e.getEntityPlayer().setSpawnPoint(e.getPos(), false);
-            ChatOutputHandler.chatConfirmation(e.getEntityPlayer(), "Bed Position Set!");
+            e.getPlayer().setSpawnPoint(e.getPos(), false);
+            ChatOutputHandler.chatConfirmation(e.getPlayer().createCommandSourceStack(), "Bed Position Set!");
             e.setResult(SleepResult.OTHER_PROBLEM);
         }
     }
-
-    @Override
-    public void load(Configuration config, boolean isReload)
+    
+    static ForgeConfigSpec.ConfigValue<String> FEportalBlock;
+    
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-        String portalBlockId = config.get(Configuration.CATEGORY_GENERAL, "portalBlock", "minecraft:glass_pane", "Name of the block to use as material for new portals.\n"
-                + "Does not override vanilla nether/end portals.\nSetting this to 'minecraft:portal' is currently not supported.").getString();
-        PortalManager.portalBlock = Block.REGISTRY.getObject(new ResourceLocation(portalBlockId));
+    	BUILDER.push("General");
+    	FEportalBlock = BUILDER.comment("Name of the block to use as material for new portals.\n"
+                + "Does not override vanilla nether/end portals.\nSetting this to 'minecraft:portal' is currently not supported.")
+    			.define("portalBlock", "minecraft:glass_pane");
+    	BUILDER.pop();
     }
+
+	public static void bakeConfig(boolean reload) {
+		String portalBlockId = FEportalBlock.get();
+        PortalManager.portalBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(portalBlockId));
+	}
 }

@@ -2,16 +2,15 @@ package com.forgeessentials.core;
 
 import java.text.SimpleDateFormat;
 
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class FEConfig extends ConfigLoaderBase
+public class FEConfig
 {
 
-    public static final String CONFIG_CAT = "Core";
-    public static final String CONFIG_CAT_MISC = "Core.Misc";
-    public static final String CONFIG_CAT_MODULES = "Core.Modules";
+    public static final String CONFIG_MAIN_CORE = "Core";
+    public static final String CONFIG_MAIN_MISC = "Misc";
+    public static final String CONFIG_MAIN_MODULES = "Modules";
+    
 
     public static boolean mcStats;
 
@@ -31,33 +30,54 @@ public class FEConfig extends ConfigLoaderBase
 
     public static SimpleDateFormat FORMAT_TIME_SECONDS = new SimpleDateFormat("HH:mm:ss");
 
-    @Override
-    public void load(ForgeConfigSpec.Builder SERVER_BUILDER, boolean reload)
+    static ForgeConfigSpec.ConfigValue<String> FEFORMAT_DATE;
+    static ForgeConfigSpec.ConfigValue<String> FEFORMAT_DATE_TIME;
+    static ForgeConfigSpec.ConfigValue<String> FEFORMAT_DATE_TIME_SECONDS;
+    static ForgeConfigSpec.ConfigValue<String> FEFORMAT_TIME;
+    static ForgeConfigSpec.ConfigValue<String> FEFORMAT_TIME_SECONDS;
+    static ForgeConfigSpec.ConfigValue<String> FEmodlistLocation;
+    static ForgeConfigSpec.IntValue FEmajoritySleep;
+    static ForgeConfigSpec.BooleanValue FEcheckSpacesInNames;
+    
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(CONFIG_CAT);
-    	FORMAT_DATE = new SimpleDateFormat(SERVER_BUILDER.comment("Date-only format")
-    			.define("format_date", "yyyy-MM-dd").get()); 
-    	FORMAT_DATE_TIME = new SimpleDateFormat(SERVER_BUILDER.comment("Date and time format")
-    			.define("format_date_time", "dd.MM HH:mm").get()); 
-    	FORMAT_DATE_TIME_SECONDS = new SimpleDateFormat(SERVER_BUILDER.comment("Date and time format with seconds")
-    			.define("format_date_time_seconds", "dd.MM HH:mm:ss").get()); 
-    	FORMAT_TIME = new SimpleDateFormat(SERVER_BUILDER.comment("Time-only format")
-    			.define("format_time", "HH:mm").get());
-    	FORMAT_TIME_SECONDS = new SimpleDateFormat(SERVER_BUILDER.comment("Time-only format with seconds")
-    			.define("format_time_seconds", "HH:mm:ss").get());
-    	modlistLocation = SERVER_BUILDER.comment("Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.")
-    			.define("modlistLocation", "modlist.txt").get();
+    	BUILDER.comment("Configure ForgeEssentials Core.").push(CONFIG_MAIN_CORE);
+    	FEFORMAT_DATE = BUILDER.comment("Date-only format")
+    			.define("format_date", "yyyy-MM-dd"); 
+    	FEFORMAT_DATE_TIME = BUILDER.comment("Date and time format")
+    			.define("format_date_time", "dd.MM HH:mm"); 
+    	FEFORMAT_DATE_TIME_SECONDS = BUILDER.comment("Date and time format with seconds")
+    			.define("format_date_time_seconds", "dd.MM HH:mm:ss"); 
+    	FEFORMAT_TIME = BUILDER.comment("Time-only format")
+    			.define("format_time", "HH:mm");
+    	FEFORMAT_TIME_SECONDS = BUILDER.comment("Time-only format with seconds")
+    			.define("format_time_seconds", "HH:mm:ss");
+    	FEmodlistLocation = BUILDER.comment("Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.")
+    			.define("modlistLocation", "modlist.txt");
+    	BUILDER.pop();
         
+        BUILDER.comment("Enable/disable modules here.").push(CONFIG_MAIN_MODULES);
+        BUILDER.pop();
         
-        SERVER_BUILDER.comment("Enable/disable modules here.").push(CONFIG_CAT);
+        BUILDER.push(CONFIG_MAIN_MISC);
+        FEmajoritySleep = BUILDER.comment("Once this percent of player sleeps, allow the night to pass. Set to 100 to disable.")
+    			.defineInRange("MajoritySleepThreshold",50, 0, 100);
+        FEcheckSpacesInNames = BUILDER.comment("Check if a player's name contains spaces (can gum up some things in FE)")
+                .define("CheckSpacesInNames", true);
         
-        SERVER_BUILDER.push(CONFIG_CAT_MISC);
-        majoritySleep = SERVER_BUILDER.comment("Once this percent of player sleeps, allow the night to pass. Set to 100 to disable.")
-    			.defineInRange("MajoritySleepThreshold",50, 0, 100).get();
-        checkSpacesInNames = SERVER_BUILDER.comment("Check if a player's name contains spaces (can gum up some things in FE)")
-                .define("CheckSpacesInNames", true).get();
-        
-        SERVER_BUILDER.pop();
+        BUILDER.pop();
     }
+
+	public static void bakeConfig(boolean reload) {
+    	FORMAT_DATE = new SimpleDateFormat(FEFORMAT_DATE.get()); 
+    	FORMAT_DATE_TIME = new SimpleDateFormat(FEFORMAT_DATE_TIME.get()); 
+    	FORMAT_DATE_TIME_SECONDS = new SimpleDateFormat(FEFORMAT_DATE_TIME_SECONDS.get()); 
+    	FORMAT_TIME = new SimpleDateFormat(FEFORMAT_TIME.get());
+    	FORMAT_TIME_SECONDS = new SimpleDateFormat(FEFORMAT_TIME_SECONDS.get());
+    	modlistLocation = FEmodlistLocation.get();
+
+        majoritySleep = FEmajoritySleep.get();
+        checkSpacesInNames = FEcheckSpacesInNames.get();
+	}
 
 }

@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -14,13 +15,12 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.PermissionCheckEvent;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
+import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
-public class ItemPermissionManager extends ServerEventHandler implements ConfigLoader
+public class ItemPermissionManager extends ServerEventHandler
 {
 
     public static final String HELP = "Enable the item permission manager";
@@ -46,7 +46,7 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
 
     public ItemPermissionManager()
     {
-        ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+        //CONFIG ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
     }
 
     @Override
@@ -187,23 +187,25 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
 
     /* ------------------------------------------------------------ */
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    static ForgeConfigSpec.BooleanValue FEenabled;
+    
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-        enabled = config.get("ItemPermissions", "enabled", false, HELP).getBoolean();
-        if (ServerUtil.isServerRunning())
-        {
-            if (enabled)
-                register();
-            else
-                unregister();
-        }
+    	BUILDER.push("ItemPermissions");
+    	FEenabled = BUILDER.comment(HELP).define("enabled", false);
+    	BUILDER.pop();
     }
 
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return true;
-    }
+	public static void bakeConfig(boolean reload) {
+		enabled = FEenabled.get();
+		
+		if (ServerUtil.isServerRunning())
+        {
+            if (enabled)
+            	ModulePermissions.getItemPermissionManager().register();
+            else
+            	ModulePermissions.getItemPermissionManager().unregister();
+        }
+	}
 
 }

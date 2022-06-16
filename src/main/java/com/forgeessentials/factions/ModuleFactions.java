@@ -26,7 +26,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 
 @FEModule(name = "factions", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
-public class ModuleFactions extends ConfigLoaderBase
+public class ModuleFactions
 {
 
     public static final String RANK_OWNER = "owner";
@@ -127,9 +127,9 @@ public class ModuleFactions extends ConfigLoaderBase
     {
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
+    
+    //public void load(Configuration config, boolean isReload)
+    //{
         // localhostOnly = config.get(CONFIG_CAT, "localhostOnly", true, "Allow connections from the web").getBoolean();
         // hostname = config.get(CONFIG_CAT, "hostname", "localhost",
         // "Hostname of your server. Used for QR code generation.").getString();
@@ -138,7 +138,7 @@ public class ModuleFactions extends ConfigLoaderBase
         // "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
         // passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6,
         // "Length of the randomly generated passkeys").getInt();
-    }
+    //}
 
     /* ------------------------------------------------------------ */
 

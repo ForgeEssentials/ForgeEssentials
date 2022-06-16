@@ -110,7 +110,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 @Mod(ForgeEssentials.MODID)
 @Mod.EventBusSubscriber(modid = ForgeEssentials.MODID, bus = Bus.MOD,value = Dist.DEDICATED_SERVER)
 //@Mod(ForgeEssentials.MODID)//, dependencies = BuildInfo.DEPENDENCIES + ";after:worldedit;before:ftblib")
-public class ForgeEssentials extends ConfigLoaderBase
+public class ForgeEssentials
 {
 
     public static final String MODID = "forgeessentials";
@@ -171,8 +171,8 @@ public class ForgeEssentials extends ConfigLoaderBase
     public ForgeEssentials()
     {
         // new TestClass().test();
+    	LoggingHandler.init();
         initConfiguration();
-        LoggingHandler.init();
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
         Environment.check();
         MinecraftForge.EVENT_BUS.register(this);
@@ -257,7 +257,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         configManager = new ConfigBase(configDirectory, "main");
         FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials"), "ForgeEssentials");
         //ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ConfigBase.SERVER_CONFIG,configDirectory + "main" + ".toml");
-        ConfigBase.registerConfig();
+        ConfigBase.registerConfigs();
         ConfigBase.loadConfig(ConfigBase.MAIN_CONFIG, Paths.get(FMLPaths.GAMEDIR.get() + "/ForgeEssentials/main.toml"));
     }
 
@@ -469,19 +469,15 @@ public class ForgeEssentials extends ConfigLoaderBase
 
    /* ------------------------------------------------------------ */
     
-    ForgeConfigSpec.BooleanValue FEcheckVersion;
-    ForgeConfigSpec.BooleanValue FEdebugMode;
-    ForgeConfigSpec.BooleanValue FEsafeMode;
-    ForgeConfigSpec.BooleanValue FEhideWorldEditCommands;
-    ForgeConfigSpec.BooleanValue FElogCommandsToConsole;
+    static ForgeConfigSpec.BooleanValue FEcheckVersion;
+    static ForgeConfigSpec.BooleanValue FEdebugMode;
+    static ForgeConfigSpec.BooleanValue FEsafeMode;
+    static ForgeConfigSpec.BooleanValue FEhideWorldEditCommands;
+    static ForgeConfigSpec.BooleanValue FElogCommandsToConsole;
 	
-    @Override
-    public void load(ForgeConfigSpec.Builder BUILDER, boolean isReload)
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_CAT);
-        if (isReload)
-            Translator.translations.clear();
-        Translator.load();
+    	BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
         FEcheckVersion = BUILDER.comment("Check for newer versions of ForgeEssentials on load?").define("versionCheck", true);
         //configManager.setUseCanonicalConfig(SERVER_BUILDER.comment("For modules that support it, place their configs in this file.").define("canonicalConfigs", false).get());
         FEdebugMode = BUILDER.comment("Activates developer debug mode. Spams your FML logs.")
@@ -496,10 +492,10 @@ public class ForgeEssentials extends ConfigLoaderBase
         //BuildInfo.startVersionChecks();
         BUILDER.pop();
     }
-    public void bakeConfig(boolean isReload) {
-    	//if (isReload)
-        //    Translator.translations.clear();
-        //Translator.load();
+    public static void bakeConfig(boolean isReload) {
+    	if (isReload)
+            Translator.translations.clear();
+        Translator.load();
         if (!FEcheckVersion.get())
             BuildInfo.checkVersion = false;
         //configManager.setUseCanonicalConfig(SERVER_BUILDER.comment("For modules that support it, place their configs in this file.").define("canonicalConfigs", false).get());

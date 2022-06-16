@@ -49,7 +49,7 @@ public class ModuleServerVote
     @SubscribeEvent
     public void init(FEModuleCommonSetupEvent e)
     {
-        ForgeEssentials.getConfigManager().registerLoader("ServerVote", new ConfigServerVote());
+        //CONFIG ForgeEssentials.getConfigManager().registerLoader("ServerVote", new ConfigServerVote());
         APIRegistry.scripts.addScriptType(scriptKey);
     }
 

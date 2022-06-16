@@ -1,22 +1,18 @@
 package com.forgeessentials.chat.command;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.command.server.CommandMessage;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.command.impl.MessageCommand;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 
 import com.forgeessentials.chat.ModuleChat;
 
-public class CommandMessageReplacement extends CommandMessage
+public class CommandMessageReplacement extends MessageCommand
 {
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public void sendMessage(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 2)
         {

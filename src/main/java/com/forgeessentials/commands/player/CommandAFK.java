@@ -114,7 +114,7 @@ public class CommandAFK extends ForgeEssentialsCommandBase
             int autoTime = ServerUtil.parseIntDefault(ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME), 60 * 2);
             int warmup = ServerUtil.parseIntDefault(ident.getPermissionProperty(PERM_WARMUP), 0);
             PlayerInfo.get(sender).setActive(autoTime * 1000 - warmup * 1000);
-            ChatOutputHandler.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
+            ChatOutputHandler.chatConfirmation(sender.createCommandSourceStack(), Translator.format("Stand still for %d seconds.", warmup));
         }
     }
 

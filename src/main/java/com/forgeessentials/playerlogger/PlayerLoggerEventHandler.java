@@ -3,7 +3,6 @@ package com.forgeessentials.playerlogger;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -46,7 +45,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         else
             point = new WorldPoint(event.getPlayer().level, event.getPos());
 
-        PlayerLoggerChecker.instance.CheckBlock(point,FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getPlayer())),event.getPlayer());
+        PlayerLoggerChecker.instance.CheckBlock(point,FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getPlayer())),event.getPlayer().createCommandSourceStack());
     }
 
 }

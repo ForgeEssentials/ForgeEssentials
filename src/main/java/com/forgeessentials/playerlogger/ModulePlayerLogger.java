@@ -15,7 +15,6 @@ import com.forgeessentials.playerlogger.remote.serializer.BlockDataType;
 import com.forgeessentials.playerlogger.remote.serializer.PlayerDataType;
 import com.forgeessentials.playerlogger.remote.serializer.WorldDataType;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -82,7 +81,7 @@ public class ModulePlayerLogger
         
         logger = new PlayerLogger();
         eventHandler = new PlayerLoggerEventHandler();
-        ForgeEssentials.getConfigManager().registerLoader("PlayerLogger", new PlayerLoggerConfig());
+        //CONFIG ForgeEssentials.getConfigManager().registerLoader("PlayerLogger", new PlayerLoggerConfig());
 
         FECommandManager.registerCommand(new CommandRollback());
         FECommandManager.registerCommand(new CommandPlayerlogger());

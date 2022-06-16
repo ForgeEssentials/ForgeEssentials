@@ -16,6 +16,7 @@ import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -57,10 +58,10 @@ import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
-public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoader
+public class IrcHandler extends ListenerAdapter<PircBotX>
 {
 
-    private static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + ".IRC";
+    private static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + "_IRC";
 
     private static final String CHANNELS_HELP = "List of channels to connect to, together with the # character";
 
@@ -122,7 +123,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     public IrcHandler()
     {
-        ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        //CONFIG ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.getFEEventBus().register(this);
 
@@ -233,54 +234,88 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     /* ------------------------------------------------------------ */
 
-    @Override
-    public void load(net.minecraftforge.common.config.Configuration config, boolean isReload)
+    static ForgeConfigSpec.ConfigValue<String> FEserver;
+    static ForgeConfigSpec.IntValue FEport;
+    static ForgeConfigSpec.ConfigValue<String> FEbotName;
+    static ForgeConfigSpec.ConfigValue<String> FEserverPassword;
+    static ForgeConfigSpec.ConfigValue<String> FEnickPassword;
+    static ForgeConfigSpec.BooleanValue FEtwitchMode;
+    static ForgeConfigSpec.BooleanValue FEshowEvents;
+    static ForgeConfigSpec.BooleanValue FEshowGameEvents;
+    static ForgeConfigSpec.BooleanValue FEshowMessages;
+    static ForgeConfigSpec.BooleanValue FEsendMessages;
+    static ForgeConfigSpec.ConfigValue<String> FEircHeader;
+    static ForgeConfigSpec.ConfigValue<String> FEircHeaderGlobal;
+    static ForgeConfigSpec.ConfigValue<String> FEmcHeader;
+    static ForgeConfigSpec.ConfigValue<String> FEmcSayHeader;
+    static ForgeConfigSpec.IntValue FEmessageDelay;
+    static ForgeConfigSpec.BooleanValue FEallowCommands;
+    static ForgeConfigSpec.BooleanValue FEallowMcCommands;
+    static ForgeConfigSpec.ConfigValue<String[]> FEchannels;
+    static ForgeConfigSpec.ConfigValue<String[]> FEadmins;
+    static ForgeConfigSpec.BooleanValue FEenable;
+    
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-        config.addCustomCategoryComment(CATEGORY, "Configure the built-in IRC bot here");
-        server = config.get(CATEGORY, "server", "irc.something.com", "Server address").getString();
-        port = config.get(CATEGORY, "port", 5555, "Server port").getInt();
-        botName = config.get(CATEGORY, "botName", "FEIRCBot", "Bot name").getString();
-        serverPassword = config.get(CATEGORY, "serverPassword", "", "Server password").getString();
-        nickPassword = config.get(CATEGORY, "nickPassword", "", "NickServ password").getString();
-        twitchMode = config.get(CATEGORY, "twitchMode", false, "If set to true, sets connection to twitch mode").getBoolean();
-        showEvents = config.get(CATEGORY, "showEvents", true, "Show IRC events ingame (e.g., join, leave, kick, etc.)").getBoolean();
-        showGameEvents = config.get(CATEGORY, "showGameEvents", true, "Show game events in IRC (e.g., join, leave, death, etc.)").getBoolean();
-        showMessages = config.get(CATEGORY, "showMessages", true, "Show chat messages from IRC ingame").getBoolean();
-        sendMessages = config.get(CATEGORY, "sendMessages", false, "If enabled, ingame messages will be sent to IRC as well").getBoolean();
-        ircHeader = config.get(CATEGORY, "ircHeader", "[\u00a7cIRC\u00a7r]<%s> ", "Header for messages sent from IRC. Must contain one \"%s\"").getString();
-        ircHeaderGlobal = config.get(CATEGORY, "ircHeaderGlobal", "[\u00a7cIRC\u00a7r] ", "Header for IRC events. Must NOT contain any \"%s\"").getString();
-        mcHeader = config.get(CATEGORY, "mcHeader", "<%s> %s", "Header for messages sent from MC to IRC. Must contain two \"%s\"").getString();
-        mcSayHeader = config.get(CATEGORY, "mcSayHeader", "[%s] %s", "Header for messages sent with the /say command from MC to IRC. Must contain two \"%s\"")
-                .getString();
-        messageDelay = config.get(CATEGORY, "messageDelay", 0, "Delay between messages sent to IRC").getInt();
-        allowCommands = config.get(CATEGORY, "allowCommands", true, "If enabled, allows usage of bot commands").getBoolean();
-        allowMcCommands = config.get(CATEGORY, "allowMcCommands", true,
-                "If enabled, allows usage of MC commands through the bot (only if the IRC user is in the admins list)").getBoolean();
+    	BUILDER.comment("Configure the built-in IRC bot here").push(CATEGORY);
+    	FEserver = BUILDER.comment("Server address").define("server", "irc.something.com");
+    	FEport = BUILDER.comment("Server port").defineInRange("port", 5555, 0 , 65535);
+    	FEbotName = BUILDER.comment("Bot name").define("botName", "FEIRCBot");
+    	FEserverPassword = BUILDER.comment("Server password").define("serverPassword", "");
+    	FEnickPassword = BUILDER.comment("NickServ password").define("nickPassword", "");
+    	FEtwitchMode = BUILDER.comment("If set to true, sets connection to twitch mode").define("twitchMode", false);
+    	FEshowEvents = BUILDER.comment("Show IRC events ingame (e.g., join, leave, kick, etc.)").define("showEvents", true);
+    	FEshowGameEvents= BUILDER.comment("Show game events in IRC (e.g., join, leave, death, etc.)").define("showGameEvents", true);
+    	FEshowMessages = BUILDER.comment("Show chat messages from IRC ingame").define("showMessages", true);
+    	FEsendMessages = BUILDER.comment("If enabled, ingame messages will be sent to IRC as well").define("sendMessages", false);
+    	FEircHeader = BUILDER.comment("Header for messages sent from MC to IRC. Must contain two \"%s\"").define("ircHeader", "[\u00a7cIRC\u00a7r]<%s> ");
+    	FEircHeaderGlobal = BUILDER.comment("Header for IRC events. Must NOT contain any \"%s\"").define("ircHeaderGlobal", "[\u00a7cIRC\u00a7r] ");
+    	FEmcHeader = BUILDER.comment("Header for messages sent from MC to IRC. Must contain two \"%s\"").define("mcHeader", "<%s> %s");
+    	FEmcSayHeader = BUILDER.comment("Header for messages sent with the /say command from MC to IRC. Must contain two \"%s\"").define("mcSayHeader", "[%s] %s");
+    	FEmessageDelay = BUILDER.comment("Delay between messages sent to IRC").defineInRange("messageDelay", 0,0,60);
+    	FEallowCommands = BUILDER.comment("If enabled, allows usage of bot commands").define("allowCommands", true);
+    	FEallowMcCommands = BUILDER.comment("If enabled, allows usage of MC commands through the bot (only if the IRC user is in the admins list)").define("allowMcCommands", true);
+    	FEchannels = BUILDER.comment(CHANNELS_HELP).define("channels", new String[] { "#someChannelName" });
+    	FEadmins = BUILDER.comment(ADMINS_HELP).define("admins", new String[] {});
+    	FEenable = BUILDER.comment("Enable IRC interoperability?").define("enable", false);
+    }
+    
+	public static void bakeConfig(boolean reload) {
+		ModuleChat.instance.ircHandler.server = FEserver.get();
+		ModuleChat.instance.ircHandler.port = FEport.get();
+		ModuleChat.instance.ircHandler.botName = FEbotName.get();
+		ModuleChat.instance.ircHandler.serverPassword = FEserverPassword.get();
+		ModuleChat.instance.ircHandler.nickPassword = FEnickPassword.get();
+		ModuleChat.instance.ircHandler.twitchMode = FEtwitchMode.get();
+		ModuleChat.instance.ircHandler.showEvents = FEshowEvents.get();
+		ModuleChat.instance.ircHandler.showGameEvents = FEshowGameEvents.get();
+		ModuleChat.instance.ircHandler.showMessages = FEshowMessages.get();
+		ModuleChat.instance.ircHandler.sendMessages = FEsendMessages.get();
+		ModuleChat.instance.ircHandler.ircHeader = FEircHeader.get();
+		ModuleChat.instance.ircHandler.ircHeaderGlobal = FEircHeaderGlobal.get();
+		ModuleChat.instance.ircHandler.mcHeader = FEmcHeader.get();
+		ModuleChat.instance.ircHandler.mcSayHeader = FEmcSayHeader.get();
+		ModuleChat.instance.ircHandler.messageDelay = FEmessageDelay.get();
+		ModuleChat.instance.ircHandler.allowCommands = FEallowCommands.get();
+		ModuleChat.instance.ircHandler.allowMcCommands = FEallowMcCommands.get();
 
-        channels.clear();
-        for (String channel : config.get(CATEGORY, "channels", new String[] { "#someChannelName" }, CHANNELS_HELP).getStringList())
-            channels.add(channel);
+		ModuleChat.instance.ircHandler.channels.clear();
+        for (String channel : FEchannels.get())
+        	ModuleChat.instance.ircHandler.channels.add(channel);
 
-        admins.clear();
-        for (String admin : config.get(CATEGORY, "admins", new String[] {}, ADMINS_HELP).getStringList())
-            admins.add(admin);
+        ModuleChat.instance.ircHandler.admins.clear();
+        for (String admin : FEadmins.get())
+        	ModuleChat.instance.ircHandler.admins.add(admin);
 
         // mcHeader = config.get(CATEGORY, "mcFormat", "<%username> %message",
         // "String for formatting messages posted to the IRC channel by the bot").getString();
 
-        boolean connectToIrc = config.get(CATEGORY, "enable", false, "Enable IRC interoperability?").getBoolean(false);
+        boolean connectToIrc = FEenable.get();
         if (connectToIrc)
-            connect();
+        	ModuleChat.instance.ircHandler.connect();
         else
-            disconnect();
-    }
-
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return true;
-    }
-
+        	ModuleChat.instance.ircHandler.disconnect();
+	}
     /* ------------------------------------------------------------ */
 
     public void sendMessage(User user, String message)

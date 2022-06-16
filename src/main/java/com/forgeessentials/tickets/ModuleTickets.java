@@ -1,6 +1,7 @@
 package com.forgeessentials.tickets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -11,14 +12,15 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -35,11 +37,11 @@ public class ModuleTickets
     public static int currentID;
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModuleCommonSetupEvent e)
     {
         FECommandManager.registerCommand(new CommandTicket());
         FMLCommonHandler.instance().bus().register(this);
-        ForgeEssentials.getConfigManager().registerLoader("Tickets", new ConfigTickets());
+        //Config ForgeEssentials.getConfigManager().registerLoader("Tickets", new ConfigTickets());
     }
 
     @SubscribeEvent
@@ -101,13 +103,32 @@ public class ModuleTickets
     @SubscribeEvent
     public void loadData(PlayerEvent.PlayerLoggedInEvent e)
     {
-        if (PermissionAPI.hasPermission(e.player, ModuleTickets.PERMBASE + ".admin"))
+        if (PermissionAPI.hasPermission(e.getPlayer(), ModuleTickets.PERMBASE + ".admin"))
         {
             if (!ModuleTickets.ticketList.isEmpty())
             {
-                ChatOutputHandler.sendMessage(e.player, TextFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
+                ChatOutputHandler.sendMessage(e.getPlayer().createCommandSourceStack(), TextFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
             }
         }
+    }
+    static ForgeConfigSpec.ConfigValue<String[]> FEcategories;
+    static ForgeConfigSpec.IntValue FEcurrentID;
+    public static void load(ForgeConfigSpec.Builder BUILDER)
+    {
+        LoggingHandler.felog.debug("Loading Tickets Config");
+        BUILDER.push("Tickets");
+        FEcategories = BUILDER.define("categories", new String[] { "griefing", "overflow", "dispute" });
+        FEcurrentID = BUILDER.comment("Don't change anythign in there.").defineInRange("currentID", 0,0,Integer.MAX_VALUE);
+        BUILDER.pop();
+    }
+    public static void bakeConfig(boolean reload) {
+        ModuleTickets.categories = Arrays.asList(FEcategories.get());
+        ModuleTickets.currentID = FEcurrentID.get();
+    }
+    public static void save()
+    {
+    	FEcategories.set(ModuleTickets.categories.toArray(new String[0]));
+    	FEcurrentID.set(ModuleTickets.currentID);
     }
 
 }

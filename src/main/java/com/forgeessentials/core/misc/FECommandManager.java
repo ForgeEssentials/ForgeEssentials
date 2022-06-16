@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
@@ -13,7 +14,7 @@ import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 
-public class FECommandManager extends ConfigLoaderBase
+public class FECommandManager
 {
 
     public static interface ConfigurableCommand
@@ -31,28 +32,28 @@ public class FECommandManager extends ConfigLoaderBase
 
     protected static Set<ForgeEssentialsCommandBase> registeredCommands = new HashSet<>();
 
-    protected static Configuration config;
-
     protected static boolean newMappings;
 
     public FECommandManager()
     {
-        ForgeEssentials.getConfigManager().registerLoader("Commands", this);
+        //CONFIG ForgeEssentials.getConfigManager().registerLoader("Commands", this);
     }
-
-    @Override
-    public void load(Configuration config, boolean isReload)
+    static ForgeConfigSpec.IntValue FECversion;
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-        FECommandManager.config = config;
-        if (config.get("CommandsConfig", "version", COMMANDS_VERSION).getInt() < COMMANDS_VERSION)
+    	BUILDER.push("CommandsConfig");
+    	FECversion = BUILDER.defineInRange("version", COMMANDS_VERSION, 0 ,Integer.MAX_VALUE);
+        BUILDER.pop();
+    }
+	public static void bakeConfig(boolean b) {
+		if (FECversion.get() < COMMANDS_VERSION)
         {
             newMappings = true;
-            config.get("CommandsConfig", "version", COMMANDS_VERSION).set(COMMANDS_VERSION);
+            FECversion.set(COMMANDS_VERSION);
         }
         for (ForgeEssentialsCommandBase command : commands.values())
             loadCommandConfig(command);
-    }
-
+	}
     private static void loadCommandConfig(ForgeEssentialsCommandBase command)
     {
         if (config == null)

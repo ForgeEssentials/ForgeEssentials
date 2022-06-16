@@ -41,16 +41,26 @@ public class PerfToolsModule
             TaskRegistry.scheduleRepeated(watchdog, checkInterval * 60 * 1000);
         }
     }
-
+    
+    static ForgeConfigSpec.BooleanValue FEwarn;
+    static ForgeConfigSpec.IntValue FEpercentageWarn;
+    static ForgeConfigSpec.IntValue FEcheckInterval;
+    
     public static void load(ForgeConfigSpec.Builder SERVER_BUILDER)
     {
-    	SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_CAT);
-    	warn = SERVER_BUILDER.comment("Warn server ops when we detect high memory usage.")
-                .define("warnHighMemUsage", true).get();
-    	percentageWarn = SERVER_BUILDER.comment("Percentage at which to warn server ops")
-    			.defineInRange("percentageWarn", 90, 1, 100).get();
-    	percentageWarn = SERVER_BUILDER.comment("Interval in minutes to check memory use.")
-    			.defineInRange("checkInterval", 5, 1, 60).get();
+    	SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
+    	FEwarn = SERVER_BUILDER.comment("Warn server ops when we detect high memory usage.")
+                .define("warnHighMemUsage", true);
+    	FEpercentageWarn = SERVER_BUILDER.comment("Percentage at which to warn server ops")
+    			.defineInRange("percentageWarn", 90, 1, 100);
+    	FEcheckInterval = SERVER_BUILDER.comment("Interval in minutes to check memory use.")
+    			.defineInRange("checkInterval", 5, 1, 60);
         SERVER_BUILDER.pop();
     }
+
+	public static void bakeConfig(boolean b) {
+		warn = FEwarn.get();
+		percentageWarn = FEpercentageWarn.get();
+		checkInterval = FEcheckInterval.get();
+	}
 }

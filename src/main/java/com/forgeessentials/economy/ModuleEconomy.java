@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -64,7 +65,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
  * Handles wallets for each player, transactions and plot management.
  */
 @FEModule(name = "Economy", parentMod = ForgeEssentials.class)
-public class ModuleEconomy extends ServerEventHandler implements Economy, ConfigLoader
+public class ModuleEconomy extends ServerEventHandler implements Economy,
 {
 
     public static final UserIdent ECONOMY_IDENT = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefeec", "$FE_ECONOMY");
@@ -353,8 +354,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         APIRegistry.perms.registerPermissionProperty(getItemPricePermission(itemStack), Long.toString(price));
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
         if (config.hasCategory("ItemTables"))
         {
@@ -375,12 +375,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         ConfigCategory category = config.getCategory(CATEGORY_ITEM);
         for (Entry<String, Property> entry : category.entrySet())
             APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString(entry.getValue().getInt(DEFAULT_ITEM_PRICE)));
-    }
-
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return false;
     }
 
     /* ------------------------------------------------------------ */

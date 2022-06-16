@@ -5,10 +5,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -84,7 +81,7 @@ public class CommandReply extends ForgeEssentialsCommandBase
         if (target == sender)
             throw new PlayerNotFoundException("commands.message.sameTarget", new Object[0]);
 
-        ModuleChat.tell(sender, getChatComponentFromNthArg(sender, args, 0, !(sender instanceof EntityPlayer)), target);
+        ModuleChat.tell(sender, getChatComponentFromNthArg(sender, args, 0, !(sender instanceof PlayerEntity)), target);
     }
 
 }

@@ -114,7 +114,7 @@ public class ModuleChat
     {
         MinecraftForge.EVENT_BUS.register(this);
 
-        ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, new ChatConfig());
+        //ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, new ChatConfig());
 
         ircHandler = new IrcHandler();
         censor = new Censor();
@@ -266,7 +266,7 @@ public class ModuleChat
             WorldPoint source = new WorldPoint(event.getPlayer());
             for (ServerPlayerEntity player : ServerUtil.getPlayerList())
             {
-                if (player.level == source.getDimension() && source.distance(new WorldPoint(player)) <= range)
+                if (player.level.dimension() == source.getDimension() && source.distance(new WorldPoint(player)) <= range)
                     ChatOutputHandler.sendMessage(player.createCommandSourceStack(), event.getComponent());
             }
             event.setCanceled(true);
@@ -301,14 +301,14 @@ public class ModuleChat
     @SubscribeEvent(priority = EventPriority.LOW)
     public void commandEvent(CommandEvent event)
     {
-        if (!(event.getSender() instanceof ServerPlayerEntity))
+        if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity))
             return;
-        ServerPlayerEntity player = (ServerPlayerEntity) event.getSender();
+        ServerPlayerEntity player = (ServerPlayerEntity) event.getParseResults().getContext().getSource().getEntity();
         if (!PlayerUtil.getPersistedTag(player, false).getBoolean("mute"))
             return;
-        if (!ChatConfig.mutedCommands.contains(event.getCommand().getName()))
+        if (!ChatConfig.mutedCommands.contains(event.getParseResults().getContext().getCommand().toString()))
             return;
-        ChatOutputHandler.chatWarning(event.getSender(), "You are currently muted.");
+        ChatOutputHandler.chatWarning(event.getParseResults().getContext().getSource(), "You are currently muted.");
         event.setCanceled(true);
     }
 
@@ -503,7 +503,7 @@ public class ModuleChat
     public static void tell(CommandSource sender, ITextComponent message, CommandSource target)
     {
         TranslationTextComponent sentMsg = new TranslationTextComponent("commands.message.display.incoming", new Object[] { sender.getDisplayName(),
-                message.createCopy() });
+                message.copy() });
         TranslationTextComponent senderMsg = new TranslationTextComponent("commands.message.display.outgoing",
                 new Object[] { target.getDisplayName(), message });
         sentMsg.getStyle().withColor(TextFormatting.GRAY).withItalic(Boolean.valueOf(true));

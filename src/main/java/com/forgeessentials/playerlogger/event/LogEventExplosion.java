@@ -32,7 +32,7 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
         WorldData worldData = getWorld(event.getWorld().provider.getDimension());
         for (CachedBlockData blockData : blocks)
         {
-            if (blockData.block.getMaterial(blockData.block.getDefaultState()) != Material.AIR)
+            if (blockData.block.getMaterial(blockData.block.defaultBlockState()) != Material.AIR)
             {
                 Action01Block action = new Action01Block();
                 action.time = date;

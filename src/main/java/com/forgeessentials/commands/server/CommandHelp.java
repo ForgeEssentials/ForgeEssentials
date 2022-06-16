@@ -30,8 +30,6 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandHelp extends ParserCommandBase
 {
 
-    private static final String CONFIG_HELP = "Add custom messages here that will appear when /help is run";
-
     private static String[] messages;
 
     private HelpFixer fixer;
@@ -173,11 +171,17 @@ public class CommandHelp extends ParserCommandBase
         return fixer.getSortedPossibleCommands(sender, server);
     }
 
+    static ForgeConfigSpec.ConfigValue<String[]> FEmessages;
+    
     public static void load(ForgeConfigSpec.Builder SERVER_BUILDER)
     {
-    	SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(CONFIG_CAT);
-    	messages = SERVER_BUILDER.comment(CONFIG_HELP)
-    			.define("custom_help", new String[] {}).get();
+    	SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
+    	FEmessages = SERVER_BUILDER.comment("Add custom messages here that will appear when /help is run")
+    			.define("custom_help", new String[] {});
     	SERVER_BUILDER.pop();
     }
+
+	public static void bakeConfig(boolean reload) {
+		messages = FEmessages.get();
+	}
 }

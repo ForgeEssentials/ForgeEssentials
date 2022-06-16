@@ -18,18 +18,19 @@ import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 
-public final class ChatOutputHandler extends ConfigLoaderBase
+public final class ChatOutputHandler
 {
 
     public static final char COLOR_FORMAT_CHARACTER = '\u00a7';
 
-    public static final String CONFIG_CAT = "Core.Output";
+    public static final String CONFIG_MAIN_OUTPUT = "Output";
 
     public static TextFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
 
@@ -540,19 +541,32 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         if (chatWarningColor == null)
             chatWarningColor = TextFormatting.YELLOW;
     }
-
-    @Override
-    public void load(Configuration config, boolean isReload)
+    static ForgeConfigSpec.ConfigValue<String> FEchatConfirmationColor;
+    static ForgeConfigSpec.ConfigValue<String> FEchatErrorColor;
+    static ForgeConfigSpec.ConfigValue<String> FEchatNotificationColor;
+    static ForgeConfigSpec.ConfigValue<String> FEchatWarningColor;
+    
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-        config.addCustomCategoryComment(CONFIG_CAT,
+    	BUILDER.comment(
                 "This controls the colors of the various chats output by ForgeEssentials." + "\nValid output colors are as follows:"
                         + "\naqua, black, blue, dark_aqua, dark_blue, dark_gray, dark_green, dark_purple, dark_red"
-                        + "\ngold, gray, green, light_purple, red, white, yellow");
-
-        setConfirmationColor(config.get(CONFIG_CAT, "confirmationColor", "green", "Defaults to green.").getString());
-        setErrorColor(config.get(CONFIG_CAT, "errorOutputColor", "red", "Defaults to red.").getString());
-        setNotificationColor(config.get(CONFIG_CAT, "notificationOutputColor", "aqua", "Defaults to aqua.").getString());
-        setWarningColor(config.get(CONFIG_CAT, "warningOutputColor", "yellow", "Defaults to yellow.").getString());
+                        + "\ngold, gray, green, light_purple, red, white, yellow").push(CONFIG_MAIN_OUTPUT);
+    	FEchatConfirmationColor = BUILDER.comment("Defaults to green.")
+    			.define("confirmationColor", "green"); 
+    	FEchatErrorColor = BUILDER.comment("Defaults to red.")
+    			.define("errorOutputColor", "red"); 
+    	FEchatNotificationColor = BUILDER.comment("Defaults to aqua.")
+    			.define("notificationOutputColor", "aqua"); 
+    	FEchatWarningColor = BUILDER.comment("Defaults to yellow.")
+    			.define("warningOutputColor", "yellow"); 
+    	BUILDER.pop();
+    }
+    public static void bakeConfig(boolean isReload) {
+        setConfirmationColor(FEchatConfirmationColor.get());
+        setErrorColor(FEchatErrorColor.get());
+        setNotificationColor(FEchatNotificationColor.get());
+        setWarningColor(FEchatWarningColor.get());
     }
 
 }

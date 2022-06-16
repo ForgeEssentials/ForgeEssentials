@@ -1,13 +1,12 @@
 package com.forgeessentials.afterlife;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntitySkull;
+import net.minecraft.tileentity.SkullTileEntity;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.mojang.authlib.GameProfile;
 
-public class TileEntitySkullGrave extends TileEntitySkull
+public class TileEntitySkullGrave extends SkullTileEntity
 {
 
     public TileEntitySkullGrave()

@@ -3,7 +3,6 @@ package com.forgeessentials.playerlogger.event;
 import javax.persistence.EntityManager;
 
 import net.minecraft.tileentity.CommandBlockBaseLogic;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.CommandEvent;
 

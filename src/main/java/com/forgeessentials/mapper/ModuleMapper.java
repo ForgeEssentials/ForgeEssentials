@@ -34,6 +34,7 @@ import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -46,7 +47,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent
 import com.forgeessentials.util.output.LoggingHandler;
 
 @FEModule(name = "mapper", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
-public class ModuleMapper extends ConfigLoaderBase
+public class ModuleMapper
 {
 
     public static final String TAG_MODIFIED = "lastModified";
@@ -102,7 +103,7 @@ public class ModuleMapper extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void serverStarting(FEModuleServerStartingEvent event)
     {
-        dataDirectory = new File(mapperDirectory, FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
+        dataDirectory = new File(mapperDirectory, ServerLifecycleHooks.getCurrentServer().getServerDirectory().getAbsolutePath());
         dataDirectory.mkdirs();
         loadCache();
     }
@@ -112,10 +113,9 @@ public class ModuleMapper extends ConfigLoaderBase
     {
         saveCache(true);
     }
-
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
+    
+    //public void load(Configuration config, boolean isReload)
+    //{
         // localhostOnly = config.get(CONFIG_CAT, "localhostOnly", true, "Allow connections from the web").getBoolean();
         // hostname = config.get(CONFIG_CAT, "hostname", "localhost",
         // "Hostname of your server. Used for QR code generation.").getString();
@@ -124,7 +124,7 @@ public class ModuleMapper extends ConfigLoaderBase
         // "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
         // passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6,
         // "Length of the randomly generated passkeys").getInt();
-    }
+    //}
 
     /* ------------------------------------------------------------ */
 
@@ -177,13 +177,13 @@ public class ModuleMapper extends ConfigLoaderBase
     public synchronized void setChunkModified(Chunk chunk)
     {
         modifiedChunks.add(chunk);
-        setChunkModified((ServerWorld) chunk.getLevel(), chunk.x, chunk.z);
+        setChunkModified((ServerWorld) chunk.getLevel(), chunk.getPos().x, chunk.getPos().z);
     }
 
     public synchronized void unsetChunkModified(Chunk chunk)
     {
         modifiedChunks.remove(chunk);
-        unsetChunkModified((ServerWorld) chunk.getLevel(), chunk.x, chunk.z);
+        unsetChunkModified((ServerWorld) chunk.getLevel(), chunk.getPos().x, chunk.getPos().z);
     }
 
     public synchronized void setChunkModified(ServerWorld world, int chunkX, int chunkZ)

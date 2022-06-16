@@ -17,8 +17,8 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class Mailer extends ServerEventHandler
 {
@@ -71,7 +71,7 @@ public class Mailer extends ServerEventHandler
     @SubscribeEvent
     public void playerLoggedInEvent(PlayerLoggedInEvent event)
     {
-        UserIdent user = UserIdent.get(event.player);
+        UserIdent user = UserIdent.get(event.getPlayer());
         Mails mailBag = getMailBag(user);
         if (mailBag.mails.isEmpty())
             return;
@@ -79,7 +79,7 @@ public class Mailer extends ServerEventHandler
         for (Mail mail : mailBag.mails)
             senders.add(mail.sender);
         String message = Translator.format("You hav unread mails from %s. Use /mail to read.", UserIdent.join(senders, ", ", " and "));
-        ChatOutputHandler.chatConfirmation(event.player, message);
+        ChatOutputHandler.chatConfirmation(event.getPlayer().createCommandSourceStack(), message);
     }
 
     public static void loadAllMails()
@@ -119,7 +119,7 @@ public class Mailer extends ServerEventHandler
         mailBag.mails.add(new Mail(sender, message));
         saveMails(recipent, mailBag);
         if (recipent.hasPlayer())
-            ChatOutputHandler.chatNotification(recipent.getPlayer(),
+            ChatOutputHandler.chatNotification(recipent.getPlayer().createCommandSourceStack(),
                     Translator.format("You have a new mail from %s", sender == null ? "the server" : sender.getUsernameOrUuid()));
     }
 
