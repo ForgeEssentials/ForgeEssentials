@@ -52,7 +52,7 @@ public class CommandItemPermission extends ParserCommandBase
     @Override
     public void parse(CommandParserArgs arguments) throws CommandException
     {
-        ItemStack stack = arguments.senderPlayer.getHeldItemMainhand();
+        ItemStack stack = arguments.senderPlayer.getMainHandItem();
 
         if (arguments.isEmpty())
         {

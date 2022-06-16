@@ -121,7 +121,7 @@ public class CommandRollback extends ParserCommandBase
         if (args.isTabCompletion)
             return;
 
-        if (rollbacks.containsKey(args.senderPlayer.getPersistentID()))
+        if (rollbacks.containsKey(args.senderPlayer.getUUID()))
             cancelRollback(args);
 
         Selection area = SelectionHandler.getSelection(args.senderPlayer);
@@ -149,7 +149,7 @@ public class CommandRollback extends ParserCommandBase
         }
 
         RollbackInfo rb = new RollbackInfo(args.senderPlayer, area);
-        rollbacks.put(args.senderPlayer.getPersistentID(), rb);
+        rollbacks.put(args.senderPlayer.getUUID(), rb);
         rb.step(step);
         rb.previewChanges();
 
@@ -166,7 +166,7 @@ public class CommandRollback extends ParserCommandBase
         if (args.isTabCompletion)
             return;
 
-        RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.get(args.senderPlayer.getUUID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
 
@@ -182,7 +182,7 @@ public class CommandRollback extends ParserCommandBase
         if (args.isTabCompletion)
             return;
 
-        RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.remove(args.senderPlayer.getUUID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
 
@@ -192,7 +192,7 @@ public class CommandRollback extends ParserCommandBase
 
     private void cancelRollback(CommandParserArgs args) throws CommandException
     {
-        RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.remove(args.senderPlayer.getUUID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress.");
 
@@ -215,7 +215,7 @@ public class CommandRollback extends ParserCommandBase
         if (args.isTabCompletion)
             return;
 
-        RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.get(args.senderPlayer.getUUID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
 
@@ -240,7 +240,7 @@ public class CommandRollback extends ParserCommandBase
         if (args.isTabCompletion)
             return;
 
-        RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.get(args.senderPlayer.getUUID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
         if (rb.task == null)
