@@ -18,7 +18,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
 
     private static PlayerLoggerEventHandler instance = null;
 
-    //public static int pickerRange = 0;
+    // public static int pickerRange = 0;
 
     public static int eventType = 0b1111;
 
@@ -39,13 +39,14 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         WorldPoint point;
         if (event instanceof RightClickBlock)
             point = new WorldPoint(event.getPlayer().level, //
-                    event.getPos().getX(),// + event.getFace().getFrontOffsetX(), //
-                    event.getPos().getY(),// + event.getFace().getFrontOffsetY(), //
+                    event.getPos().getX(), // + event.getFace().getFrontOffsetX(), //
+                    event.getPos().getY(), // + event.getFace().getFrontOffsetY(), //
                     event.getPos().getZ());// + event.getFace().getFrontOffsetZ());
         else
             point = new WorldPoint(event.getPlayer().level, event.getPos());
 
-        PlayerLoggerChecker.instance.CheckBlock(point,FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getPlayer())),event.getPlayer().createCommandSourceStack());
+        PlayerLoggerChecker.instance.CheckBlock(point, FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getPlayer())),
+                event.getPlayer().createCommandSourceStack());
     }
 
 }

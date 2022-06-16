@@ -4,7 +4,6 @@ import com.forgeessentials.api.permissions.Zone;
 
 import net.minecraftforge.eventbus.api.Event;
 
-
 public class ZoneEvent extends Event
 {
 

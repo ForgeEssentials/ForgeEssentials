@@ -58,8 +58,9 @@ public class CommandParserArgs
         this.args = new LinkedList<>(Arrays.asList(args));
         this.sender = sender;
         this.senderPlayer = (sender.getPlayerOrException() instanceof ServerPlayerEntity) ? (ServerPlayerEntity) sender.getPlayerOrException() : null;
-        this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null) : UserIdent
-                .get(senderPlayer);
+        this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null)
+                : UserIdent
+                        .get(senderPlayer);
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
@@ -266,8 +267,9 @@ public class CommandParserArgs
     public boolean hasPermission(String perm)
     {
         if (sender.getPlayerOrException() instanceof PlayerEntity)
-        return APIRegistry.perms.checkPermission(senderPlayer, perm);
-        else return true;
+            return APIRegistry.perms.checkPermission(senderPlayer, perm);
+        else
+            return true;
     }
 
     public void tabComplete(String... completionList) throws CancelParsingException
@@ -346,9 +348,9 @@ public class CommandParserArgs
         {
             int value = Integer.parseInt(strValue);
             if (value < min)
-                throw new Exception("commands.generic.num.tooSmall"+ strValue+ Integer.toString(min));
+                throw new Exception("commands.generic.num.tooSmall" + strValue + Integer.toString(min));
             if (value > max)
-                throw new Exception("commands.generic.num.tooBig"+ strValue+ Integer.toString(max));
+                throw new Exception("commands.generic.num.tooBig" + strValue + Integer.toString(max));
             return value;
         }
         catch (NumberFormatException e)
@@ -401,17 +403,19 @@ public class CommandParserArgs
     public static final Pattern timeFormatPattern = Pattern.compile("(\\d+)(\\D+)?");
 
     private static double mcHour = 1000;
-    private static double mcMinute = 1000.0/60;
-    private static double mcSecond = 1000.0/60/60;
+    private static double mcMinute = 1000.0 / 60;
+    private static double mcSecond = 1000.0 / 60 / 60;
 
     /**
      * Parses a Time string in Minecraft time format.
+     * 
      * @return
      * @throws CommandException
      */
     public Long mcParseTimeReadable() throws CommandException
     {
-        if (isEmpty()) {
+        if (isEmpty())
+        {
             checkTabCompletion();
             return null;
         }
@@ -451,6 +455,7 @@ public class CommandParserArgs
         }
         return Math.round(resultPart);
     }
+
     public long parseTimeReadable() throws CommandException
     {
         checkTabCompletion();

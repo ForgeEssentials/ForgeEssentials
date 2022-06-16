@@ -6,7 +6,6 @@ import com.forgeessentials.economy.plots.Plot;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
-
 public abstract class PlotEvent extends Event
 {
     public final Plot plot;

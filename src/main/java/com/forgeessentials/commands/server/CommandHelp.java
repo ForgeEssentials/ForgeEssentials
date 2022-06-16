@@ -99,7 +99,8 @@ public class CommandHelp extends ParserCommandBase
             {
                 if (arguments.isTabCompletion)
                 {
-                    arguments.tabCompletion = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getTabCompletions(arguments.sender, name, BlockPos.ORIGIN);
+                    arguments.tabCompletion = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getTabCompletions(arguments.sender,
+                            name, BlockPos.ORIGIN);
                     return;
                 }
 
@@ -112,7 +113,8 @@ public class CommandHelp extends ParserCommandBase
                         return a.getName().compareTo(b.getName());
                     }
                 });
-                Set<Map.Entry<String, ICommand>> commands = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().entrySet();
+                Set<Map.Entry<String, ICommand>> commands = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands()
+                        .entrySet();
                 for (Entry<String, ICommand> cmd : commands)
                 {
                     String usage = cmd.getValue().getUsage(arguments.sender);
@@ -172,16 +174,17 @@ public class CommandHelp extends ParserCommandBase
     }
 
     static ForgeConfigSpec.ConfigValue<String[]> FEmessages;
-    
+
     public static void load(ForgeConfigSpec.Builder SERVER_BUILDER)
     {
-    	SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
-    	FEmessages = SERVER_BUILDER.comment("Add custom messages here that will appear when /help is run")
-    			.define("custom_help", new String[] {});
-    	SERVER_BUILDER.pop();
+        SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
+        FEmessages = SERVER_BUILDER.comment("Add custom messages here that will appear when /help is run")
+                .define("custom_help", new String[] {});
+        SERVER_BUILDER.pop();
     }
 
-	public static void bakeConfig(boolean reload) {
-		messages = FEmessages.get();
-	}
+    public static void bakeConfig(boolean reload)
+    {
+        messages = FEmessages.get();
+    }
 }

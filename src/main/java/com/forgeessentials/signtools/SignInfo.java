@@ -45,7 +45,8 @@ public class SignInfo
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "{" +
                 "\"x\":" + x +
@@ -59,7 +60,8 @@ public class SignInfo
                         "\"x\":" + hitVec.getBlockPos().getX() +
                         ", \"y\":" + hitVec.getBlockPos().getY() +
                         ", \"z\":" + hitVec.getBlockPos().getZ() +
-                        "}" : "null") +
+                        "}" : "null")
+                +
                 "}";
     }
 }

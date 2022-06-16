@@ -1,6 +1,7 @@
 package com.forgeessentials.commons.selections;
 
-public enum AreaShape {
+public enum AreaShape
+{
 
     BOX, ELLIPSOID, CYLINDER;
 

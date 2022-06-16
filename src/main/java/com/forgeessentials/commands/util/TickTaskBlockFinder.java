@@ -56,7 +56,8 @@ public class TickTaskBlockFinder implements TickTask
         this.centerZ = (int) player.position().z;
         world = player.level;
 
-        if (id.equalsIgnoreCase("air")) {
+        if (id.equalsIgnoreCase("air"))
+        {
             block = Blocks.AIR;
         }
         else

@@ -164,13 +164,16 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (event.getParseResults().getContext().getCommand() instanceof CommandAFK)
             return;
-        try {
-			if (event.getParseResults().getContext().getSource().getPlayerOrException() instanceof ServerPlayerEntity)
-			    playerActive((ServerPlayerEntity) event.getParseResults().getContext().getSource().getPlayerOrException());
-		} catch (CommandSyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try
+        {
+            if (event.getParseResults().getContext().getSource().getPlayerOrException() instanceof ServerPlayerEntity)
+                playerActive((ServerPlayerEntity) event.getParseResults().getContext().getSource().getPlayerOrException());
+        }
+        catch (CommandSyntaxException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

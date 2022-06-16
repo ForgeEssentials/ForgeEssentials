@@ -35,7 +35,7 @@ public class CommandJump extends ForgeEssentialsCommandBase
     {
         return "jump";
     }
-    
+
     @Override
     public String getUsage(ICommandSender sender)
     {

@@ -19,6 +19,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
     {
         return itemStack == ItemStack.EMPTY ? EMPTY : new JsItemStack(itemStack);
     }
+
     public static final JsItemStack EMPTY = new JsItemStack(ItemStack.EMPTY);
 
     private JsItemStack(ItemStack that)

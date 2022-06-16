@@ -3,7 +3,6 @@ package com.forgeessentials.api.permissions;
 import java.util.Collection;
 import java.util.List;
 
-
 import com.forgeessentials.api.UserIdent;
 
 import net.minecraftforge.eventbus.api.Event;

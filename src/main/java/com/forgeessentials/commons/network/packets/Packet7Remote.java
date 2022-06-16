@@ -5,12 +5,13 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import com.forgeessentials.commons.network.IFEPacket;
 
-
 public class Packet7Remote implements IFEPacket
 {
     public String link;
 
-    public Packet7Remote() {}
+    public Packet7Remote()
+    {
+    }
 
     public Packet7Remote(String link)
     {
@@ -19,8 +20,8 @@ public class Packet7Remote implements IFEPacket
 
     public static Packet7Remote decode(PacketBuffer buf)
     {
-    	String link = buf.readUtf();
-    	return new Packet7Remote(link);
+        String link = buf.readUtf();
+        return new Packet7Remote(link);
     }
 
     @Override
@@ -29,8 +30,9 @@ public class Packet7Remote implements IFEPacket
         buf.writeUtf(link);
     }
 
-	@Override
-	public void handle(Context context) {
-		// TODO Auto-generated method stub
-	}
+    @Override
+    public void handle(Context context)
+    {
+        // TODO Auto-generated method stub
+    }
 }

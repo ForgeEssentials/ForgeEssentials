@@ -59,8 +59,8 @@ public class MultiworldSaveHandler implements ISaveHandler
         {
             try
             {
-            	CompoundNBT nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
-            	CompoundNBT nbttagcompound1 = nbttagcompound.getCompound("Data");
+                CompoundNBT nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
+                CompoundNBT nbttagcompound1 = nbttagcompound.getCompound("Data");
                 IWorldInfo worldInfo = new WorldInfo(nbttagcompound1);
                 return worldInfo;
             }
@@ -79,8 +79,8 @@ public class MultiworldSaveHandler implements ISaveHandler
         {
             try
             {
-            	CompoundNBT nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
-            	CompoundNBT nbttagcompound1 = nbttagcompound.getCompound("Data");
+                CompoundNBT nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
+                CompoundNBT nbttagcompound1 = nbttagcompound.getCompound("Data");
                 WorldInfo worldInfo = new WorldInfo(nbttagcompound1);
                 return worldInfo;
             }
@@ -105,8 +105,8 @@ public class MultiworldSaveHandler implements ISaveHandler
 
     public void saveWorldInfoData(WorldInfo p_75755_1_, CompoundNBT data)
     {
-    	CompoundNBT dataTag = p_75755_1_.cloneNBTCompound(data);
-    	CompoundNBT dataTag1 = new CompoundNBT();
+        CompoundNBT dataTag = p_75755_1_.cloneNBTCompound(data);
+        CompoundNBT dataTag1 = new CompoundNBT();
         dataTag1.put("Data", dataTag);
 
         // Save the list of mods the world was created with
@@ -149,7 +149,7 @@ public class MultiworldSaveHandler implements ISaveHandler
     @Override
     public void saveWorldInfo(WorldInfo worldInformation)
     {
-        this.saveWorldInfoWithPlayer(worldInformation, (CompoundNBT)null);
+        this.saveWorldInfoWithPlayer(worldInformation, (CompoundNBT) null);
     }
 
     @Override

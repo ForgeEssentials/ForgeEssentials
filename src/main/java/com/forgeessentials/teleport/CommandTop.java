@@ -97,15 +97,19 @@ public class CommandTop extends ForgeEssentialsCommandBase
 
         if (oldY != precY)
         {
-            if (!ForgeEssentials.isCubicChunksInstalled && precY == -1) {
+            if (!ForgeEssentials.isCubicChunksInstalled && precY == -1)
+            {
                 point.setY(0);
-                while (player.world.getBlockState(point.getBlockPos()).getMaterial() != Material.AIR) {
+                while (player.world.getBlockState(point.getBlockPos()).getMaterial() != Material.AIR)
+                {
                     point.setY(point.getY() + 1);
                 }
-                if (oldY == point.getBlockY()) {
+                if (oldY == point.getBlockY())
+                {
                     return;
                 }
-            } else
+            }
+            else
             {
                 point.setY(precY);
             }

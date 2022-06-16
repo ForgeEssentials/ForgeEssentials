@@ -101,10 +101,13 @@ public class CommandJScriptCommand extends ParserCommandBase
         }
     }
 
-    public static void processArguments(CommandParserArgs args) {
-        for (int i = 0; i < args.size(); i++) {
+    public static void processArguments(CommandParserArgs args)
+    {
+        for (int i = 0; i < args.size(); i++)
+        {
             Matcher matcher = ARGUMENT_PATTERN.matcher(args.get(i));
-            if (!matcher.matches()) {
+            if (!matcher.matches())
+            {
                 continue;
             }
 

@@ -109,7 +109,7 @@ public class ModuleAfterlife extends ServerEventHandler
 
         Integer respawnFood = ServerUtil.tryParseInt(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.getPlayer()), ModuleAfterlife.PERM_FOOD));
         if (respawnFood != null)
-        	e.getPlayer().getFoodData().eat(-1 * (20 - respawnFood), 0);
+            e.getPlayer().getFoodData().eat(-1 * (20 - respawnFood), 0);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

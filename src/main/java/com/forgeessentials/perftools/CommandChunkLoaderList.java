@@ -90,7 +90,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
 
     private void list(CommandSource sender, int dim, String key)
     {
-    	ServerWorld world = DimensionManager.getWorld(dim);
+        ServerWorld world = DimensionManager.getWorld(dim);
 
         HashMultimap<String, Ticket> modTickets = HashMultimap.create();
         HashMultimap<String, Ticket> playerTickets = HashMultimap.create();

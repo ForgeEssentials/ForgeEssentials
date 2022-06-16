@@ -41,7 +41,7 @@ public class ModuleTickets
     {
         FECommandManager.registerCommand(new CommandTicket());
         FMLCommonHandler.instance().bus().register(this);
-        //Config ForgeEssentials.getConfigManager().registerLoader("Tickets", new ConfigTickets());
+        // Config ForgeEssentials.getConfigManager().registerLoader("Tickets", new ConfigTickets());
     }
 
     @SubscribeEvent
@@ -107,28 +107,34 @@ public class ModuleTickets
         {
             if (!ModuleTickets.ticketList.isEmpty())
             {
-                ChatOutputHandler.sendMessage(e.getPlayer().createCommandSourceStack(), TextFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
+                ChatOutputHandler.sendMessage(e.getPlayer().createCommandSourceStack(),
+                        TextFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
             }
         }
     }
+
     static ForgeConfigSpec.ConfigValue<String[]> FEcategories;
     static ForgeConfigSpec.IntValue FEcurrentID;
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
         LoggingHandler.felog.debug("Loading Tickets Config");
         BUILDER.push("Tickets");
         FEcategories = BUILDER.define("categories", new String[] { "griefing", "overflow", "dispute" });
-        FEcurrentID = BUILDER.comment("Don't change anythign in there.").defineInRange("currentID", 0,0,Integer.MAX_VALUE);
+        FEcurrentID = BUILDER.comment("Don't change anythign in there.").defineInRange("currentID", 0, 0, Integer.MAX_VALUE);
         BUILDER.pop();
     }
-    public static void bakeConfig(boolean reload) {
+
+    public static void bakeConfig(boolean reload)
+    {
         ModuleTickets.categories = Arrays.asList(FEcategories.get());
         ModuleTickets.currentID = FEcurrentID.get();
     }
+
     public static void save()
     {
-    	FEcategories.set(ModuleTickets.categories.toArray(new String[0]));
-    	FEcurrentID.set(ModuleTickets.currentID);
+        FEcategories.set(ModuleTickets.categories.toArray(new String[0]));
+        FEcurrentID.set(ModuleTickets.currentID);
     }
 
 }

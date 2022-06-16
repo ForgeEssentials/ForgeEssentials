@@ -106,13 +106,19 @@ public class Questioner extends ServerEventHandler
     public static synchronized void tick()
     {
         Iterator<Entry<CommandSource, QuestionData>> it = questions.entrySet().iterator();
-        while (it.hasNext()) {
+        while (it.hasNext())
+        {
             Entry<CommandSource, QuestionData> question = it.next();
-            if (question.getValue().isTimeout()) {
-				it.remove();
-				try{
+            if (question.getValue().isTimeout())
+            {
+                it.remove();
+                try
+                {
                     question.getValue().doAnswer(null);
-                } catch (CommandException e){}
+                }
+                catch (CommandException e)
+                {
+                }
 
             }
         }

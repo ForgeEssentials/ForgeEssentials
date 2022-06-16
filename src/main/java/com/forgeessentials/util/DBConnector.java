@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 
@@ -28,8 +27,7 @@ public class DBConnector
      * @param name
      *            a name for the DB connector. to be used in Logging.
      * @param fallback
-     *            The DBConnector from which to take information for a given type if loading that type from this config
-     *            fails.
+     *            The DBConnector from which to take information for a given type if loading that type from this config fails.
      * @param dType
      *            the default database type to use
      * @param dbDefault

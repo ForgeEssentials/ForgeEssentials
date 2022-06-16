@@ -56,7 +56,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
         }
         catch (Exception e)
         {
-        	throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
         return new JsEntity<>(entity);
     }

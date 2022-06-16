@@ -2,7 +2,8 @@ package com.forgeessentials.commons.selections;
 
 import net.minecraft.world.World;
 
-public class Selection extends WorldArea {
+public class Selection extends WorldArea
+{
 
     private Point start;
 
@@ -14,7 +15,6 @@ public class Selection extends WorldArea {
         this.start = start;
         this.end = end;
     }
-
 
     public Selection(World world, AreaBase area)
     {

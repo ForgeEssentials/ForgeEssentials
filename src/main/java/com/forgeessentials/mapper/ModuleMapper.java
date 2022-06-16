@@ -113,18 +113,18 @@ public class ModuleMapper
     {
         saveCache(true);
     }
-    
-    //public void load(Configuration config, boolean isReload)
-    //{
-        // localhostOnly = config.get(CONFIG_CAT, "localhostOnly", true, "Allow connections from the web").getBoolean();
-        // hostname = config.get(CONFIG_CAT, "hostname", "localhost",
-        // "Hostname of your server. Used for QR code generation.").getString();
-        // port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
-        // useSSL = config.get(CONFIG_CAT, "use_ssl", false,
-        // "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
-        // passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6,
-        // "Length of the randomly generated passkeys").getInt();
-    //}
+
+    // public void load(Configuration config, boolean isReload)
+    // {
+    // localhostOnly = config.get(CONFIG_CAT, "localhostOnly", true, "Allow connections from the web").getBoolean();
+    // hostname = config.get(CONFIG_CAT, "hostname", "localhost",
+    // "Hostname of your server. Used for QR code generation.").getString();
+    // port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
+    // useSSL = config.get(CONFIG_CAT, "use_ssl", false,
+    // "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
+    // passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6,
+    // "Length of the randomly generated passkeys").getInt();
+    // }
 
     /* ------------------------------------------------------------ */
 

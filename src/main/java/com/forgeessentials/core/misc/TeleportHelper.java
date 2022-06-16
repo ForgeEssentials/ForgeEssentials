@@ -175,7 +175,8 @@ public class TeleportHelper extends ServerEventHandler
 
         if (!canTeleportTo(point))
         {
-            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed.") + String.format(" (%2.2f,%2.2f,%2.2f)", point.getX(), point.getY(), point.getZ()));
+            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed.")
+                    + String.format(" (%2.2f,%2.2f,%2.2f)", point.getX(), point.getY(), point.getZ()));
             return;
         }
 
@@ -205,7 +206,8 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (!canTeleportTo(point))
         {
-            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed.") + String.format(" (%2.2f,%2.2f,%2.2f)", point.getX(), point.getY(), point.getZ()));
+            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed.")
+                    + String.format(" (%2.2f,%2.2f,%2.2f)", point.getX(), point.getY(), point.getZ()));
             return;
         }
 
@@ -229,7 +231,8 @@ public class TeleportHelper extends ServerEventHandler
             return;
         }
         // TODO: Handle teleportation of mounted entity
-        player.stopRiding();;
+        player.stopRiding();
+        ;
 
         if (player.dimension != point.getDimension())
         {
@@ -291,7 +294,7 @@ public class TeleportHelper extends ServerEventHandler
         }
     }
 
-    //TODO: Remove method
+    // TODO: Remove method
     public static void transferPlayerToDimension(PlayerEntity player, int dimension, Teleporter teleporter)
     {
         // TODO (upgrade): Check teleportation!

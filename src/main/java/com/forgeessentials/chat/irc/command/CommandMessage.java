@@ -49,7 +49,7 @@ public class CommandMessage extends IrcCommandParser
         }
 
         UserIdent player = arguments.parsePlayer(true, true);
-        
+
         if (arguments.isEmpty())
         {
             arguments.error("No message specified");

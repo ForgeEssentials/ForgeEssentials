@@ -36,24 +36,29 @@ public class FECommandManager
 
     public FECommandManager()
     {
-        //CONFIG ForgeEssentials.getConfigManager().registerLoader("Commands", this);
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader("Commands", this);
     }
+
     static ForgeConfigSpec.IntValue FECversion;
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.push("CommandsConfig");
-    	FECversion = BUILDER.defineInRange("version", COMMANDS_VERSION, 0 ,Integer.MAX_VALUE);
+        BUILDER.push("CommandsConfig");
+        FECversion = BUILDER.defineInRange("version", COMMANDS_VERSION, 0, Integer.MAX_VALUE);
         BUILDER.pop();
     }
-	public static void bakeConfig(boolean b) {
-		if (FECversion.get() < COMMANDS_VERSION)
+
+    public static void bakeConfig(boolean b)
+    {
+        if (FECversion.get() < COMMANDS_VERSION)
         {
             newMappings = true;
             FECversion.set(COMMANDS_VERSION);
         }
         for (ForgeEssentialsCommandBase command : commands.values())
             loadCommandConfig(command);
-	}
+    }
+
     private static void loadCommandConfig(ForgeEssentialsCommandBase command)
     {
         if (config == null)

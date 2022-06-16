@@ -40,7 +40,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public static JsWorldServer get(int dim)
     {
-    	ServerWorld world = DimensionManager.getWorld(dim);
+        ServerWorld world = DimensionManager.getWorld(dim);
         return world == null ? null : new JsWorldServer(world);
     }
 
@@ -236,9 +236,8 @@ public class JsWorld<T extends World> extends JsWrapper<T>
     }
 
     /**
-     * Gets the light value of a block location. This is the actual function that gets the value and has a bool flag
-     * that indicates if its a half step block to get the maximum light value of a direct neighboring block (left,
-     * right, forward, back, and up)
+     * Gets the light value of a block location. This is the actual function that gets the value and has a bool flag that indicates if its a half step block to get the maximum
+     * light value of a direct neighboring block (left, right, forward, back, and up)
      */
     public int getBlockLightValue_do(int x, int y, int z, boolean isHalfBlock)
     {
@@ -254,8 +253,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
     }
 
     /**
-     * Returns how bright the block is shown as which is the block's light value looked up in a lookup table (light
-     * values aren't linear for brightness). Args: x, y, z
+     * Returns how bright the block is shown as which is the block's light value looked up in a lookup table (light values aren't linear for brightness). Args: x, y, z
      */
     public float getLightBrightness(int x, int y, int z)
     {
@@ -323,60 +321,60 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         return that.seed;
     }
 
-    //    /**
-    //     * Sets the strength of the rain.
-    //     */
-    //    @SideOnly(Side.CLIENT)
-    //    public void setRainStrength(float strength)
-    //    {
-    //        that.setRainStrength(strength);
-    //    }
+    // /**
+    // * Sets the strength of the rain.
+    // */
+    // @SideOnly(Side.CLIENT)
+    // public void setRainStrength(float strength)
+    // {
+    // that.setRainStrength(strength);
+    // }
     //
-    //    /**
-    //     * Sets the strength of the thunder.
-    //     */
-    //    @SideOnly(Side.CLIENT)
-    //    public void setThunderStrength(float strength)
-    //    {
-    //        that.setThunderStrength(strength);
-    //    }
+    // /**
+    // * Sets the strength of the thunder.
+    // */
+    // @SideOnly(Side.CLIENT)
+    // public void setThunderStrength(float strength)
+    // {
+    // that.setThunderStrength(strength);
+    // }
     //
-    //    /**
-    //     * Returns horizon height for use in rendering the sky.
-    //     */
-    //    @SideOnly(Side.CLIENT)
-    //    public double getHorizon()
-    //    {
-    //        return that.getHorizon();
-    //    }
+    // /**
+    // * Returns horizon height for use in rendering the sky.
+    // */
+    // @SideOnly(Side.CLIENT)
+    // public double getHorizon()
+    // {
+    // return that.getHorizon();
+    // }
     //
-    //    /**
-    //     * Returns the sun brightness - checks time of day, rain and thunder
-    //     */
-    //    @SideOnly(Side.CLIENT)
-    //    public float getSunBrightness(float p_72971_1_)
-    //    {
-    //        return that.getSunBrightness(p_72971_1_);
-    //    }
+    // /**
+    // * Returns the sun brightness - checks time of day, rain and thunder
+    // */
+    // @SideOnly(Side.CLIENT)
+    // public float getSunBrightness(float p_72971_1_)
+    // {
+    // return that.getSunBrightness(p_72971_1_);
+    // }
     //
-    //    @SideOnly(Side.CLIENT)
-    //    public float getSunBrightnessBody(float p_72971_1_)
-    //    {
-    //        return that.getSunBrightnessBody(p_72971_1_);
-    //    }
+    // @SideOnly(Side.CLIENT)
+    // public float getSunBrightnessBody(float p_72971_1_)
+    // {
+    // return that.getSunBrightnessBody(p_72971_1_);
+    // }
     //
-    //    @SideOnly(Side.CLIENT)
-    //    public int getMoonPhase()
-    //    {
-    //        return that.getMoonPhase();
-    //    }
+    // @SideOnly(Side.CLIENT)
+    // public int getMoonPhase()
+    // {
+    // return that.getMoonPhase();
+    // }
     //
-    //    /**
-    //     * Returns the name of the current chunk provider, by calling chunkprovider.makeString()
-    //     */
-    //    @SideOnly(Side.CLIENT)
-    //    public String getProviderName()
-    //    {
-    //        return that.getProviderName();
-    //    }
+    // /**
+    // * Returns the name of the current chunk provider, by calling chunkprovider.makeString()
+    // */
+    // @SideOnly(Side.CLIENT)
+    // public String getProviderName()
+    // {
+    // return that.getProviderName();
+    // }
 }

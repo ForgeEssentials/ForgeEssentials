@@ -65,8 +65,7 @@ public interface IPermissionsHelper extends IPermissionHandler
      * 
      * @param permissionNode
      * @param description
-     *            Description for the permission. Description will be stored as "permissionNode.$desc"
-     *            permission-property.
+     *            Description for the permission. Description will be stored as "permissionNode.$desc" permission-property.
      */
     void registerPermissionDescription(String permissionNode, String description);
 
@@ -79,13 +78,12 @@ public interface IPermissionsHelper extends IPermissionHandler
     String getPermissionDescription(String permissionNode);
 
     /**
-     * This is where permissions are registered with their default value. This function also allows to register a
-     * description.
+     * This is where permissions are registered with their default value. This function also allows to register a description.
      * 
      * @param permissionNode
      * @param level
-     *            Default level of the permission. This can be used to tell the underlying {@link IPermissionHandler}
-     *            whether a player should be allowed to access this permission by default, or as operator only.
+     *            Default level of the permission. This can be used to tell the underlying {@link IPermissionHandler} whether a player should be allowed to access this permission
+     *            by default, or as operator only.
      * @param description
      *            Description for the permission.
      */
@@ -421,8 +419,7 @@ public interface IPermissionsHelper extends IPermissionHandler
     String getPrimaryGroup(UserIdent ident);
 
     /**
-     * Get all groups the player belongs to, together with the system- and included groups. Groups are ordered by
-     * priority.
+     * Get all groups the player belongs to, together with the system- and included groups. Groups are ordered by priority.
      * 
      * @param ident
      */

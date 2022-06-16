@@ -25,7 +25,7 @@ public class BlockType implements DataType<Block>
     @Override
     public Block deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
     {
-    	return ForgeRegistries.BLOCKS.getValue(new ResourceLocation(json.getAsString()));
+        return ForgeRegistries.BLOCKS.getValue(new ResourceLocation(json.getAsString()));
     }
 
     @Override

@@ -309,7 +309,7 @@ public class SQLProvider extends ZonePersistenceProvider
         }
         catch (SQLException e)
         {
-        	throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
         return checkOk;
     }
@@ -452,7 +452,7 @@ public class SQLProvider extends ZonePersistenceProvider
         }
         catch (SQLException e)
         {
-        	throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 

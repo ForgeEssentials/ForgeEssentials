@@ -46,8 +46,9 @@ public class WESelectionHandler implements ISelectionProvider
             {
                 Vector wepos1 = rs.getPrimaryPosition();
                 Vector wepos2 = rs.isDefined() ? rs.getRegion().getPos2() : null;
-                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null : new Point(
-                        wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
+                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null
+                        : new Point(
+                                wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
             }
             catch (IncompleteRegionException e)
             {
@@ -61,8 +62,9 @@ public class WESelectionHandler implements ISelectionProvider
             {
                 Vector wepos1 = rs.isDefined() ? rs.getRegion().getMinimumPoint() : rs.getPrimaryPosition();
                 Vector wepos2 = rs.isDefined() ? rs.getRegion().getMaximumPoint() : null;
-                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null : new Point(
-                        wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
+                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null
+                        : new Point(
+                                wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
             }
             catch (IncompleteRegionException e)
             {
@@ -76,8 +78,9 @@ public class WESelectionHandler implements ISelectionProvider
             {
                 Vector wepos1 = rs.isDefined() ? rs.getRegion().getMinimumPoint() : rs.getPrimaryPosition();
                 Vector wepos2 = rs.isDefined() ? rs.getRegion().getMaximumPoint() : null;
-                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null : new Point(
-                        wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
+                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null
+                        : new Point(
+                                wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
                 // Vector c = ellipsoid.getCenter();
                 // Vector r = ellipsoid.getRadius();
                 // return new Selection(world,
@@ -98,8 +101,9 @@ public class WESelectionHandler implements ISelectionProvider
             {
                 Vector wepos1 = rs.isDefined() ? rs.getRegion().getMinimumPoint() : rs.getPrimaryPosition();
                 Vector wepos2 = rs.isDefined() ? rs.getRegion().getMaximumPoint() : null;
-                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null : new Point(
-                        wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
+                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null
+                        : new Point(
+                                wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
                 // Vector c = cyl.getCenter();
                 // return new Selection(world,
                 // new Point(c.getBlockX() - r.getBlockX(), cyl.getMinimumY(), c.getBlockZ() - r.getBlockZ()),

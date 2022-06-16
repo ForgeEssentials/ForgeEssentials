@@ -114,7 +114,7 @@ public class ModuleChat
     {
         MinecraftForge.EVENT_BUS.register(this);
 
-        //ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, new ChatConfig());
+        // ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, new ChatConfig());
 
         ircHandler = new IrcHandler();
         censor = new Censor();
@@ -240,7 +240,7 @@ public class ModuleChat
             message = ChatOutputHandler.formatColors(message);
         }
 
-        //Apply Text format prefix
+        // Apply Text format prefix
         String textFormats = APIRegistry.perms.getUserPermissionProperty(ident, ModuleChat.PERM_TEXTFORMAT);
         if (textFormats != null)
             message = ChatOutputHandler.formatColors(textFormats) + message;
@@ -312,9 +312,11 @@ public class ModuleChat
         event.setCanceled(true);
     }
 
-    public static String processChatReplacements(CommandSource sender, String message) {
+    public static String processChatReplacements(CommandSource sender, String message)
+    {
         return processChatReplacements(sender, message, true);
     }
+
     public static String processChatReplacements(CommandSource sender, String message, boolean formatColors)
     {
         message = ScriptArguments.processSafe(message, sender);
@@ -513,6 +515,7 @@ public class ModuleChat
         CommandReply.messageSent(sender, target);
         ModuleCommandsEventHandler.checkAfkMessage(target, message);
     }
+
     public static void tellGroup(CommandSource sender, String message, String group, boolean formatColors)
     {
         ServerZone sz = APIRegistry.perms.getServerZone();
@@ -529,7 +532,7 @@ public class ModuleChat
         ITextComponent msg;
         PlayerEntity player = sender.getPlayerOrException() instanceof PlayerEntity ? (PlayerEntity) sender.getPlayerOrException() : null;
         msg = player != null ? getChatHeader(UserIdent.get((PlayerEntity) sender.getPlayerOrException())) : new TranslationTextComponent("SERVER ");
-        String censored = censor.filter(message,player);
+        String censored = censor.filter(message, player);
         String formatted = processChatReplacements(sender, censored, formatColors);
 
         ITextComponent msgGroup = new StringTextComponent("@" + groupName + "@ ");

@@ -34,7 +34,7 @@ public class CommandRemote extends ParserCommandBase
 
     /**
      * @param args
-     * @throws CommandException 
+     * @throws CommandException
      */
     @Override
     public void parse(CommandParserArgs args) throws CommandException

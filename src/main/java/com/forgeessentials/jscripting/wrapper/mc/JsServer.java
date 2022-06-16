@@ -175,6 +175,7 @@ public class JsServer
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         return server == null ? 0 : server.getPlayerCount();
     }
+
     /**
      * Returns an array of players online
      */
@@ -183,9 +184,11 @@ public class JsServer
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server == null)
         {
-        	return new String[] {};
-        } else {
-        	return server.getPlayerNames();
+            return new String[] {};
+        }
+        else
+        {
+            return server.getPlayerNames();
         }
     }
 
@@ -196,32 +199,37 @@ public class JsServer
     {
         return APIRegistry.perms.getServerZone().getKnownPlayers().size();
     }
+
     public List<String> getAllPlayers()
     {
-    	List<String> x = new ArrayList<>();
-    	for (UserIdent j : APIRegistry.perms.getServerZone().getKnownPlayers())
-    	{
-    		x.add(j.getUsername()); 
-    	}
-    	return x;
+        List<String> x = new ArrayList<>();
+        for (UserIdent j : APIRegistry.perms.getServerZone().getKnownPlayers())
+        {
+            x.add(j.getUsername());
+        }
+        return x;
     }
-    public void serverLog(String msg) {
-    	if (msg != null)
+
+    public void serverLog(String msg)
+    {
+        if (msg != null)
         {
             this.getServer().chat(msg);
         }
     }
-    public void tellRaw(String msg) {
-    	MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+
+    public void tellRaw(String msg)
+    {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         try
-        {    
-        	ITextComponent component = ITextComponent.Serializer.fromJson(msg);
+        {
+            ITextComponent component = ITextComponent.Serializer.fromJson(msg);
             server.getPlayerList().sendMessage(component);
         }
         catch (JsonParseException jsonparseexception)
         {
-            this.chatError("There is an error in your JSON: "+jsonparseexception.getMessage());
-        } 
+            this.chatError("There is an error in your JSON: " + jsonparseexception.getMessage());
+        }
     }
 
 }

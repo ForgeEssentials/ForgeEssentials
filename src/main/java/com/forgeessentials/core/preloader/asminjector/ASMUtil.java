@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -348,7 +347,7 @@ public final class ASMUtil
             }
             catch (ClassNotFoundException e)
             {
-            	throw new RuntimeException(e);
+                throw new RuntimeException(e);
             }
         }
 
@@ -370,7 +369,7 @@ public final class ASMUtil
             }
             catch (ClassNotFoundException e)
             {
-            	throw new RuntimeException(e);
+                throw new RuntimeException(e);
             }
         }
 

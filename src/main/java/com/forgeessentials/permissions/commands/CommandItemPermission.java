@@ -85,7 +85,7 @@ public class CommandItemPermission extends ParserCommandBase
             parseGroup(arguments, stack);
             break;
         case "reset":
-        	CompoundNBT stackTag = stack.getTag();
+            CompoundNBT stackTag = stack.getTag();
             if (stackTag != null)
                 stackTag.remove(ItemPermissionManager.TAG_BASE);
             arguments.confirm("Deleted permission item settings");
@@ -153,16 +153,16 @@ public class CommandItemPermission extends ParserCommandBase
 
     public static CompoundNBT getOrCreatePermissionTag(ItemStack stack)
     {
-    	CompoundNBT stackTag = ItemUtil.getTagCompound(stack);
-    	CompoundNBT tag = stackTag.getCompound(ItemPermissionManager.TAG_BASE);
+        CompoundNBT stackTag = ItemUtil.getTagCompound(stack);
+        CompoundNBT tag = stackTag.getCompound(ItemPermissionManager.TAG_BASE);
         stackTag.put(ItemPermissionManager.TAG_BASE, tag);
         return tag;
     }
 
     public static ListNBT getSettingsTag(ItemStack stack)
     {
-    	CompoundNBT tag = getOrCreatePermissionTag(stack);
-    	ListNBT settings = ItemPermissionManager.getSettingsTag(tag);
+        CompoundNBT tag = getOrCreatePermissionTag(stack);
+        ListNBT settings = ItemPermissionManager.getSettingsTag(tag);
         tag.put(ItemPermissionManager.TAG_SETTINGS, settings);
         return settings;
     }

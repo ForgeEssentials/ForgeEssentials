@@ -69,9 +69,11 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     public static boolean isRhino;
 
-    static {
+    static
+    {
         nashornArgs = System.getProperty("fe.nashorn.args");
-        if (nashornArgs == null) {
+        if (nashornArgs == null)
+        {
             nashornArgs = DEFAULT_NASHORN_ARGS;
         }
     }
@@ -174,12 +176,14 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     public void loadScripts(CommandSource sender)
     {
-        for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js", "ts" }, true); it.hasNext(); )
+        for (Iterator<File> it = FileUtils.iterateFiles(moduleDir, new String[] { "js", "ts" }, true); it.hasNext();)
         {
             File file = it.next();
             String name = file.getName();
-            if (!name.endsWith("d.ts") && name.endsWith("ts")) {
-                LoggingHandler.felog.warn("Typescript file: {} found! This file must be transpiled to javascript with the js extension.  This file will be ignored.", name);
+            if (!name.endsWith("d.ts") && name.endsWith("ts"))
+            {
+                LoggingHandler.felog
+                        .warn("Typescript file: {} found! This file must be transpiled to javascript with the js extension.  This file will be ignored.", name);
                 continue;
             }
             if (name.endsWith("d.ts") || scripts.containsKey(file))

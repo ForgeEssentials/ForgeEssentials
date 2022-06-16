@@ -35,9 +35,9 @@ public interface NamedWorldHandler
             case WORLD_NAME_OVERWORLD:
                 return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD);
             case WORLD_NAME_NETHER:
-            	return ServerLifecycleHooks.getCurrentServer().getLevel(World.NETHER);
+                return ServerLifecycleHooks.getCurrentServer().getLevel(World.NETHER);
             case WORLD_NAME_END:
-            	return ServerLifecycleHooks.getCurrentServer().getLevel(World.END);
+                return ServerLifecycleHooks.getCurrentServer().getLevel(World.END);
             default:
             {
                 try
@@ -58,9 +58,10 @@ public interface NamedWorldHandler
             return new ArrayList<>(Arrays.asList(WORLD_NAME_OVERWORLD, WORLD_NAME_NETHER, WORLD_NAME_END));
         }
 
-		@Override
-		public String getWorldName(RegistryKey<World> dimension) {
-			switch (dimension)
+        @Override
+        public String getWorldName(RegistryKey<World> dimension)
+        {
+            switch (dimension)
             {
             case 0:
                 return WORLD_NAME_OVERWORLD;
@@ -71,8 +72,8 @@ public interface NamedWorldHandler
             default:
                 return Integer.toString(dimId);
             }
-		}
+        }
 
     }
-    
+
 }

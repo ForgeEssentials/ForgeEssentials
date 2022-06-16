@@ -168,32 +168,35 @@ public class ModuleRemote implements RemoteManager
         stopServer();
         mcServerStarted = false;
     }
+
     static ForgeConfigSpec.BooleanValue FElocalhostOnly;
     static ForgeConfigSpec.ConfigValue<String> FEhostname;
     static ForgeConfigSpec.IntValue FEport;
     static ForgeConfigSpec.BooleanValue FEuseSSL;
     static ForgeConfigSpec.IntValue FEpasskeyLength;
-    
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.push(CONFIG_CAT);
-    	FElocalhostOnly = BUILDER.comment("Allow connections from the web").define("localhostOnly", true);
-    	FEhostname = BUILDER.comment("Hostname of your server. Used for QR code generation.").define("hostname", "localhost");
-    	FEport = BUILDER.comment("Port to connect remotes to").defineInRange("port", 27020, 0, 65535);
-    	FEuseSSL = BUILDER.comment("Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").define("use_ssl", false);
-    	FEpasskeyLength = BUILDER.comment("Length of the randomly generated passkeys").defineInRange("passkey_length", 6, 1, 256);
-    	BUILDER.pop();
+        BUILDER.push(CONFIG_CAT);
+        FElocalhostOnly = BUILDER.comment("Allow connections from the web").define("localhostOnly", true);
+        FEhostname = BUILDER.comment("Hostname of your server. Used for QR code generation.").define("hostname", "localhost");
+        FEport = BUILDER.comment("Port to connect remotes to").defineInRange("port", 27020, 0, 65535);
+        FEuseSSL = BUILDER.comment("Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)")
+                .define("use_ssl", false);
+        FEpasskeyLength = BUILDER.comment("Length of the randomly generated passkeys").defineInRange("passkey_length", 6, 1, 256);
+        BUILDER.pop();
     }
 
-	public static void bakeConfig(boolean reload) {
-		getInstance().localhostOnly = FElocalhostOnly.get();
-		getInstance().hostname = FEhostname.get();
-		getInstance().port = FEport.get();
-		getInstance().useSSL = FEuseSSL.get();
+    public static void bakeConfig(boolean reload)
+    {
+        getInstance().localhostOnly = FElocalhostOnly.get();
+        getInstance().hostname = FEhostname.get();
+        getInstance().port = FEport.get();
+        getInstance().useSSL = FEuseSSL.get();
         passkeyLength = FEpasskeyLength.get();
         if (getInstance().mcServerStarted)
-        	getInstance().startServer();
-	}
+            getInstance().startServer();
+    }
     /* ------------------------------------------------------------ */
 
     /**
@@ -311,7 +314,8 @@ public class ModuleRemote implements RemoteManager
     {
         StringBuilder passkey = new StringBuilder();
         Random rnd;
-        try {
+        try
+        {
             rnd = SecureRandom.getInstanceStrong();
         }
         catch (NoSuchAlgorithmException e)
@@ -322,6 +326,7 @@ public class ModuleRemote implements RemoteManager
             passkey.append(PASSKEY_CHARS[rnd.nextInt(PASSKEY_CHARS.length)]);
         return passkey.toString();
     }
+
     /**
      * Get stored passkey for user or generate a new one and save it
      * 

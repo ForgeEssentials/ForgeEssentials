@@ -44,8 +44,7 @@ public abstract class BuildInfo
         if (checkVersion)
         {
             // Check for latest version asap
-            checkVersionThread = new Thread(new Runnable()
-            {
+            checkVersionThread = new Thread(new Runnable() {
                 @Override
                 public void run()
                 {
@@ -54,8 +53,7 @@ public abstract class BuildInfo
             });
             checkVersionThread.start();
 
-            checkBuildTypesThread = new Thread(new Runnable()
-            {
+            checkBuildTypesThread = new Thread(new Runnable() {
                 @Override
                 public void run()
                 {

@@ -120,11 +120,11 @@ public class WorldBorder implements Loadable
     public void updateArea()
     {
         Point minP = new Point( //
-                center.getX() - size.getX(),//
+                center.getX() - size.getX(), //
                 center.getY() - size.getY(), //
                 center.getZ() - size.getZ());
         Point maxP = new Point( //
-                center.getX() + size.getX(),//
+                center.getX() + size.getX(), //
                 center.getY() + size.getY(), //
                 center.getZ() + size.getZ());
         area = new AreaBase(minP, maxP);

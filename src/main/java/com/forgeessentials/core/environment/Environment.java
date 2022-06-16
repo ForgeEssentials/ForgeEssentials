@@ -26,7 +26,7 @@ public class Environment
 
     public static void check()
     {
-    	CrashReportExtender.registerCrashCallable(new FECrashCallable());
+        CrashReportExtender.registerCrashCallable(new FECrashCallable());
         // Check if dedicated or integrated server
         try
         {
@@ -108,6 +108,7 @@ public class Environment
         hasSponge = true;
         hasWorldEdit = isWESpongePresent;
     }
+
     public static class FTBUNagHandler
     {
 
@@ -116,7 +117,8 @@ public class Environment
         {
             if (FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().canSendCommands(e.player.getGameProfile()))
             {
-                ChatOutputHandler.chatWarning(e.getPlayer().createCommandSourceStack(), "FTB Utilities is installed. Forge Essentials may not work as expected.");
+                ChatOutputHandler.chatWarning(e.getPlayer().createCommandSourceStack(),
+                        "FTB Utilities is installed. Forge Essentials may not work as expected.");
                 ChatOutputHandler.chatWarning(e.getPlayer().createCommandSourceStack(), "Please uninstall FTB Utilities to regain full FE functionality.");
             }
         }

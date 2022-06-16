@@ -52,7 +52,7 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
 
     public CommandTimedMessages()
     {
-        //CONFIG ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
         addMessage(message);
         arguments.confirm("Added new message:");
         arguments.sendMessage(formatMessage(message));
-        //ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+        // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
         save();
     }
 
@@ -172,7 +172,7 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
             throw new TranslatedCommandException("Index out of bounds");
         messages.remove(index);
         arguments.confirm("Removed message");
-       // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+        // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
         save();
     }
 
@@ -201,7 +201,7 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
             return;
         }
         setInterval(arguments.parseInt());
-        //ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+        // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
         save();
     }
 
@@ -219,7 +219,7 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
         {
             shuffle = newShuffle;
             initMessageOrder();
-            //ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+            // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
             save();
         }
     }
@@ -290,34 +290,35 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
             return new StringTextComponent(message);
         }
     }
-    
+
     static ForgeConfigSpec.IntValue FEinverval;
     static ForgeConfigSpec.BooleanValue FEenabled;
     static ForgeConfigSpec.BooleanValue FEshuffle;
     static ForgeConfigSpec.ConfigValue<String[]> FEmessages;
-    
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.comment("Automated spam").push(CATEGORY);
-    	FEinverval = BUILDER.comment("Interval in seconds. 0 to disable").defineInRange("inverval", 60, 0 , Integer.MAX_VALUE);
-    	FEenabled = BUILDER.comment("Enable TimedMessages.").define("enabled", false);
-    	FEshuffle = BUILDER.comment("Shuffle messages").define("shuffle", false);
-    	FEmessages = BUILDER.comment(MESSAGES_HELP).define("messages", MESSAGES_DEFAULT);
-    	BUILDER.pop();
+        BUILDER.comment("Automated spam").push(CATEGORY);
+        FEinverval = BUILDER.comment("Interval in seconds. 0 to disable").defineInRange("inverval", 60, 0, Integer.MAX_VALUE);
+        FEenabled = BUILDER.comment("Enable TimedMessages.").define("enabled", false);
+        FEshuffle = BUILDER.comment("Shuffle messages").define("shuffle", false);
+        FEmessages = BUILDER.comment(MESSAGES_HELP).define("messages", MESSAGES_DEFAULT);
+        BUILDER.pop();
     }
 
-	public static void bakeConfig(boolean reload) {
-		setInterval(FEinverval.get());
+    public static void bakeConfig(boolean reload)
+    {
+        setInterval(FEinverval.get());
         enabled = FEenabled.get();
         shuffle = FEshuffle.get();
         messages = new ArrayList<String>(Arrays.asList(FEmessages.get()));
         initMessageOrder();
-	}
+    }
 
     public void save()
     {
-    	FEinverval.set(interval);
-    	FEshuffle.set(shuffle);
-    	FEmessages.set(messages.toArray(new String[messages.size()]));
+        FEinverval.set(interval);
+        FEshuffle.set(shuffle);
+        FEmessages.set(messages.toArray(new String[messages.size()]));
     }
 }

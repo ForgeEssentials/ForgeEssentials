@@ -123,7 +123,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
 
     public IrcHandler()
     {
-        //CONFIG ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.getFEEventBus().register(this);
 
@@ -254,68 +254,71 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
     static ForgeConfigSpec.ConfigValue<String[]> FEchannels;
     static ForgeConfigSpec.ConfigValue<String[]> FEadmins;
     static ForgeConfigSpec.BooleanValue FEenable;
-    
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.comment("Configure the built-in IRC bot here").push(CATEGORY);
-    	FEserver = BUILDER.comment("Server address").define("server", "irc.something.com");
-    	FEport = BUILDER.comment("Server port").defineInRange("port", 5555, 0 , 65535);
-    	FEbotName = BUILDER.comment("Bot name").define("botName", "FEIRCBot");
-    	FEserverPassword = BUILDER.comment("Server password").define("serverPassword", "");
-    	FEnickPassword = BUILDER.comment("NickServ password").define("nickPassword", "");
-    	FEtwitchMode = BUILDER.comment("If set to true, sets connection to twitch mode").define("twitchMode", false);
-    	FEshowEvents = BUILDER.comment("Show IRC events ingame (e.g., join, leave, kick, etc.)").define("showEvents", true);
-    	FEshowGameEvents= BUILDER.comment("Show game events in IRC (e.g., join, leave, death, etc.)").define("showGameEvents", true);
-    	FEshowMessages = BUILDER.comment("Show chat messages from IRC ingame").define("showMessages", true);
-    	FEsendMessages = BUILDER.comment("If enabled, ingame messages will be sent to IRC as well").define("sendMessages", false);
-    	FEircHeader = BUILDER.comment("Header for messages sent from MC to IRC. Must contain two \"%s\"").define("ircHeader", "[\u00a7cIRC\u00a7r]<%s> ");
-    	FEircHeaderGlobal = BUILDER.comment("Header for IRC events. Must NOT contain any \"%s\"").define("ircHeaderGlobal", "[\u00a7cIRC\u00a7r] ");
-    	FEmcHeader = BUILDER.comment("Header for messages sent from MC to IRC. Must contain two \"%s\"").define("mcHeader", "<%s> %s");
-    	FEmcSayHeader = BUILDER.comment("Header for messages sent with the /say command from MC to IRC. Must contain two \"%s\"").define("mcSayHeader", "[%s] %s");
-    	FEmessageDelay = BUILDER.comment("Delay between messages sent to IRC").defineInRange("messageDelay", 0,0,60);
-    	FEallowCommands = BUILDER.comment("If enabled, allows usage of bot commands").define("allowCommands", true);
-    	FEallowMcCommands = BUILDER.comment("If enabled, allows usage of MC commands through the bot (only if the IRC user is in the admins list)").define("allowMcCommands", true);
-    	FEchannels = BUILDER.comment(CHANNELS_HELP).define("channels", new String[] { "#someChannelName" });
-    	FEadmins = BUILDER.comment(ADMINS_HELP).define("admins", new String[] {});
-    	FEenable = BUILDER.comment("Enable IRC interoperability?").define("enable", false);
+        BUILDER.comment("Configure the built-in IRC bot here").push(CATEGORY);
+        FEserver = BUILDER.comment("Server address").define("server", "irc.something.com");
+        FEport = BUILDER.comment("Server port").defineInRange("port", 5555, 0, 65535);
+        FEbotName = BUILDER.comment("Bot name").define("botName", "FEIRCBot");
+        FEserverPassword = BUILDER.comment("Server password").define("serverPassword", "");
+        FEnickPassword = BUILDER.comment("NickServ password").define("nickPassword", "");
+        FEtwitchMode = BUILDER.comment("If set to true, sets connection to twitch mode").define("twitchMode", false);
+        FEshowEvents = BUILDER.comment("Show IRC events ingame (e.g., join, leave, kick, etc.)").define("showEvents", true);
+        FEshowGameEvents = BUILDER.comment("Show game events in IRC (e.g., join, leave, death, etc.)").define("showGameEvents", true);
+        FEshowMessages = BUILDER.comment("Show chat messages from IRC ingame").define("showMessages", true);
+        FEsendMessages = BUILDER.comment("If enabled, ingame messages will be sent to IRC as well").define("sendMessages", false);
+        FEircHeader = BUILDER.comment("Header for messages sent from MC to IRC. Must contain two \"%s\"").define("ircHeader", "[\u00a7cIRC\u00a7r]<%s> ");
+        FEircHeaderGlobal = BUILDER.comment("Header for IRC events. Must NOT contain any \"%s\"").define("ircHeaderGlobal", "[\u00a7cIRC\u00a7r] ");
+        FEmcHeader = BUILDER.comment("Header for messages sent from MC to IRC. Must contain two \"%s\"").define("mcHeader", "<%s> %s");
+        FEmcSayHeader = BUILDER.comment("Header for messages sent with the /say command from MC to IRC. Must contain two \"%s\"").define("mcSayHeader",
+                "[%s] %s");
+        FEmessageDelay = BUILDER.comment("Delay between messages sent to IRC").defineInRange("messageDelay", 0, 0, 60);
+        FEallowCommands = BUILDER.comment("If enabled, allows usage of bot commands").define("allowCommands", true);
+        FEallowMcCommands = BUILDER.comment("If enabled, allows usage of MC commands through the bot (only if the IRC user is in the admins list)")
+                .define("allowMcCommands", true);
+        FEchannels = BUILDER.comment(CHANNELS_HELP).define("channels", new String[] { "#someChannelName" });
+        FEadmins = BUILDER.comment(ADMINS_HELP).define("admins", new String[] {});
+        FEenable = BUILDER.comment("Enable IRC interoperability?").define("enable", false);
     }
-    
-	public static void bakeConfig(boolean reload) {
-		ModuleChat.instance.ircHandler.server = FEserver.get();
-		ModuleChat.instance.ircHandler.port = FEport.get();
-		ModuleChat.instance.ircHandler.botName = FEbotName.get();
-		ModuleChat.instance.ircHandler.serverPassword = FEserverPassword.get();
-		ModuleChat.instance.ircHandler.nickPassword = FEnickPassword.get();
-		ModuleChat.instance.ircHandler.twitchMode = FEtwitchMode.get();
-		ModuleChat.instance.ircHandler.showEvents = FEshowEvents.get();
-		ModuleChat.instance.ircHandler.showGameEvents = FEshowGameEvents.get();
-		ModuleChat.instance.ircHandler.showMessages = FEshowMessages.get();
-		ModuleChat.instance.ircHandler.sendMessages = FEsendMessages.get();
-		ModuleChat.instance.ircHandler.ircHeader = FEircHeader.get();
-		ModuleChat.instance.ircHandler.ircHeaderGlobal = FEircHeaderGlobal.get();
-		ModuleChat.instance.ircHandler.mcHeader = FEmcHeader.get();
-		ModuleChat.instance.ircHandler.mcSayHeader = FEmcSayHeader.get();
-		ModuleChat.instance.ircHandler.messageDelay = FEmessageDelay.get();
-		ModuleChat.instance.ircHandler.allowCommands = FEallowCommands.get();
-		ModuleChat.instance.ircHandler.allowMcCommands = FEallowMcCommands.get();
 
-		ModuleChat.instance.ircHandler.channels.clear();
+    public static void bakeConfig(boolean reload)
+    {
+        ModuleChat.instance.ircHandler.server = FEserver.get();
+        ModuleChat.instance.ircHandler.port = FEport.get();
+        ModuleChat.instance.ircHandler.botName = FEbotName.get();
+        ModuleChat.instance.ircHandler.serverPassword = FEserverPassword.get();
+        ModuleChat.instance.ircHandler.nickPassword = FEnickPassword.get();
+        ModuleChat.instance.ircHandler.twitchMode = FEtwitchMode.get();
+        ModuleChat.instance.ircHandler.showEvents = FEshowEvents.get();
+        ModuleChat.instance.ircHandler.showGameEvents = FEshowGameEvents.get();
+        ModuleChat.instance.ircHandler.showMessages = FEshowMessages.get();
+        ModuleChat.instance.ircHandler.sendMessages = FEsendMessages.get();
+        ModuleChat.instance.ircHandler.ircHeader = FEircHeader.get();
+        ModuleChat.instance.ircHandler.ircHeaderGlobal = FEircHeaderGlobal.get();
+        ModuleChat.instance.ircHandler.mcHeader = FEmcHeader.get();
+        ModuleChat.instance.ircHandler.mcSayHeader = FEmcSayHeader.get();
+        ModuleChat.instance.ircHandler.messageDelay = FEmessageDelay.get();
+        ModuleChat.instance.ircHandler.allowCommands = FEallowCommands.get();
+        ModuleChat.instance.ircHandler.allowMcCommands = FEallowMcCommands.get();
+
+        ModuleChat.instance.ircHandler.channels.clear();
         for (String channel : FEchannels.get())
-        	ModuleChat.instance.ircHandler.channels.add(channel);
+            ModuleChat.instance.ircHandler.channels.add(channel);
 
         ModuleChat.instance.ircHandler.admins.clear();
         for (String admin : FEadmins.get())
-        	ModuleChat.instance.ircHandler.admins.add(admin);
+            ModuleChat.instance.ircHandler.admins.add(admin);
 
         // mcHeader = config.get(CATEGORY, "mcFormat", "<%username> %message",
         // "String for formatting messages posted to the IRC channel by the bot").getString();
 
         boolean connectToIrc = FEenable.get();
         if (connectToIrc)
-        	ModuleChat.instance.ircHandler.connect();
+            ModuleChat.instance.ircHandler.connect();
         else
-        	ModuleChat.instance.ircHandler.disconnect();
-	}
+            ModuleChat.instance.ircHandler.disconnect();
+    }
     /* ------------------------------------------------------------ */
 
     public void sendMessage(User user, String message)
@@ -470,11 +473,13 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
     {
         if (event.getParseResults().getReader().getString().equals("say"))
         {
-            sendMessage(Translator.format(mcSayHeader, event.getParseResults().getContext().getSource().getTextName(), StringUtils.join(event.getParameters(), " ")));
+            sendMessage(Translator.format(mcSayHeader, event.getParseResults().getContext().getSource().getTextName(),
+                    StringUtils.join(event.getParameters(), " ")));
         }
         else if (event.getParseResults().getReader().getString().equals("me"))
         {
-            sendMessage(Translator.format("* %s %s", event.getParseResults().getContext().getSource().getTextName(), StringUtils.join(event.getParameters(), " ")));
+            sendMessage(
+                    Translator.format("* %s %s", event.getParseResults().getContext().getSource().getTextName(), StringUtils.join(event.getParameters(), " ")));
         }
     }
 

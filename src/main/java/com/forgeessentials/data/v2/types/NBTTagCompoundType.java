@@ -89,7 +89,7 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 break;
             case NBT.TAG_LIST:
             {
-            	ListNBT tagList = (ListNBT) tag;
+                ListNBT tagList = (ListNBT) tag;
                 JsonArray jsonArray = new JsonArray();
                 String typeId;
                 switch (tagList.getElementType())
@@ -193,11 +193,11 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 case JSON_STRING:
                     if (tagData.getValue().isJsonArray())
                     {
-                    	ListNBT tagList = new ListNBT();
+                        ListNBT tagList = new ListNBT();
                         JsonArray jsonArray = tagData.getValue().getAsJsonArray();
                         for (JsonElement el : jsonArray)
                         {
-                        	StringNBT s = StringNBT.valueOf(context.<String> deserialize(el, String.class));
+                            StringNBT s = StringNBT.valueOf(context.<String> deserialize(el, String.class));
                             tagList.add(s);
                         }
                         result.put(tagName, tagList);
@@ -214,11 +214,11 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 case JSON_INT:
                     if (tagData.getValue().isJsonArray())
                     {
-                    	ListNBT tagList = new ListNBT();
+                        ListNBT tagList = new ListNBT();
                         JsonArray jsonArray = tagData.getValue().getAsJsonArray();
                         for (JsonElement el : jsonArray)
                         {
-                        	IntNBT s = IntNBT.valueOf((int) context.deserialize(el, Integer.class));
+                            IntNBT s = IntNBT.valueOf((int) context.deserialize(el, Integer.class));
                             tagList.add(s);
                         }
                         result.put(tagName, tagList);
@@ -250,11 +250,11 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 case JSON_FLOAT:
                     if (tagData.getValue().isJsonArray())
                     {
-                    	ListNBT tagList = new ListNBT();
+                        ListNBT tagList = new ListNBT();
                         JsonArray jsonArray = tagData.getValue().getAsJsonArray();
                         for (JsonElement el : jsonArray)
                         {
-                        	FloatNBT s = FloatNBT.valueOf((float) context.deserialize(el, Float.class));
+                            FloatNBT s = FloatNBT.valueOf((float) context.deserialize(el, Float.class));
                             tagList.add(s);
                         }
                         result.put(tagName, tagList);
@@ -271,12 +271,12 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 case JSON_DOUBLE:
                     if (tagData.getValue().isJsonArray())
                     {
-                    	ListNBT tagList = new ListNBT();
+                        ListNBT tagList = new ListNBT();
                         JsonArray jsonArray = tagData.getValue().getAsJsonArray();
                         for (JsonElement el : jsonArray)
                         {
-                        	DoubleNBT s = DoubleNBT.valueOf((double) context.deserialize(el, Double.class));
-                        	tagList.add(s);
+                            DoubleNBT s = DoubleNBT.valueOf((double) context.deserialize(el, Double.class));
+                            tagList.add(s);
                         }
                         result.put(tagName, tagList);
                     }
@@ -292,7 +292,7 @@ public class NBTTagCompoundType implements DataType<CompoundNBT>
                 case JSON_COMPOUND:
                     if (tagData.getValue().isJsonArray())
                     {
-                    	ListNBT tagList = new ListNBT();
+                        ListNBT tagList = new ListNBT();
                         JsonArray jsonArray = tagData.getValue().getAsJsonArray();
                         for (JsonElement el : jsonArray)
                         {

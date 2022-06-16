@@ -142,15 +142,18 @@ public class ModuleAuth
 
     public static boolean isAuthenticated(PlayerEntity player)
     {
-        if (player == null) {
+        if (player == null)
+        {
             return true;
         }
         return isAuthenticated(player.getUUID());
     }
 
-    public static boolean isAllowedMethod(IMessage msg) {
+    public static boolean isAllowedMethod(IMessage msg)
+    {
         return msg instanceof Packet6AuthLogin || msg instanceof Packet0Handshake || msg instanceof Packet7Remote;
     }
+
     public static void authenticate(UUID player)
     {
         authenticatedUsers.add(player);
@@ -184,7 +187,7 @@ public class ModuleAuth
     private static final String CFG_DESC_offset = "If you need to be able to have less than the amount of players specified in server.properties logged into your server, use this.";
     private static final String CFG_DESC_autologin = "Allow players with the FEClient and the correct keys to automatically identify themselves with the auth engine.";
     private static final String CFG_DESC_encryption = "Encryption standard to use. Note that changing this will invalidate all passwords. Accepts the following: SHA1, SHA-256, MD5";
-    
+
     static ForgeConfigSpec.ConfigValue<String> FEalgorithm;
     static ForgeConfigSpec.BooleanValue FEcanMoveWithoutLogin;
     static ForgeConfigSpec.BooleanValue FEallowOfflineRegistration;
@@ -193,56 +196,58 @@ public class ModuleAuth
     static ForgeConfigSpec.BooleanValue FEallowAutoLogin;
     static ForgeConfigSpec.BooleanValue FEcheckVanillaAuthStatus;
     static ForgeConfigSpec.IntValue FEauthCheckerInterval;
-    
+
     static ForgeConfigSpec.IntValue FEreservedSlots;
     static ForgeConfigSpec.IntValue FEvipSlots;
-    
+
     static ForgeConfigSpec.ConfigValue<String> FEplayerBannedMessage;
     static ForgeConfigSpec.ConfigValue<String> FEnonVipKickMessage;
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.comment("AuthModule configuration").push(CONFIG_CATEGORY);
-    	FEalgorithm = BUILDER.comment(CFG_DESC_encryption).define("encryptionAlgorithm", "SHA1");
-    	FEcanMoveWithoutLogin = BUILDER.comment(CFG_DESC_canMoveWithoutLogin).define("canMoveWithoutLogin", false);
-    	FEallowOfflineRegistration = BUILDER.comment(CFG_DESC_allowOfflineReg).define("allowOfflineReg", false);
-    	FEforceEnabled = BUILDER.comment(CFG_DESC_forceEnable).define("forceEnable", false);
-    	FEsalt = BUILDER.comment(CFG_DESC_salt).define("salt", EncryptionHelper.generateSalt());
-    	FEallowAutoLogin = BUILDER.comment(CFG_DESC_autologin).define("allowAutoLogin", false);
-    	FEcheckVanillaAuthStatus = BUILDER.comment(CFG_DESC_autoEnable).define("autoEnable", false);
-    	FEauthCheckerInterval = BUILDER.comment(CFG_DESC_checkInterval).defineInRange("checkInterval", 10, 0, Integer.MAX_VALUE);
-    	BUILDER.pop();
-    	
-    	BUILDER.comment(CFG_DESC_authlists).push(CONFIG_CATEGORY_LISTS);
-    	FEreservedSlots = BUILDER.comment(CFG_DESC_offset).defineInRange("offset", 0, 0, Integer.MAX_VALUE);
-    	FEvipSlots = BUILDER.comment("Amount of slots reserved for VIP players.").defineInRange("vipslots", 0, 0, Integer.MAX_VALUE);
-    	BUILDER.pop();
-        
-    	BUILDER.comment(CFG_DESC_kickMsg).push(CONFIG_CATEGORY_LISTS+"_kickmsg");
-    	FEplayerBannedMessage = BUILDER.define("bannedmsg", "You have been banned from this server.");
-    	FEnonVipKickMessage = BUILDER.define("notVIPmsg", "This server is full, and you are not a VIP.");
-    	BUILDER.pop();
+        BUILDER.comment("AuthModule configuration").push(CONFIG_CATEGORY);
+        FEalgorithm = BUILDER.comment(CFG_DESC_encryption).define("encryptionAlgorithm", "SHA1");
+        FEcanMoveWithoutLogin = BUILDER.comment(CFG_DESC_canMoveWithoutLogin).define("canMoveWithoutLogin", false);
+        FEallowOfflineRegistration = BUILDER.comment(CFG_DESC_allowOfflineReg).define("allowOfflineReg", false);
+        FEforceEnabled = BUILDER.comment(CFG_DESC_forceEnable).define("forceEnable", false);
+        FEsalt = BUILDER.comment(CFG_DESC_salt).define("salt", EncryptionHelper.generateSalt());
+        FEallowAutoLogin = BUILDER.comment(CFG_DESC_autologin).define("allowAutoLogin", false);
+        FEcheckVanillaAuthStatus = BUILDER.comment(CFG_DESC_autoEnable).define("autoEnable", false);
+        FEauthCheckerInterval = BUILDER.comment(CFG_DESC_checkInterval).defineInRange("checkInterval", 10, 0, Integer.MAX_VALUE);
+        BUILDER.pop();
+
+        BUILDER.comment(CFG_DESC_authlists).push(CONFIG_CATEGORY_LISTS);
+        FEreservedSlots = BUILDER.comment(CFG_DESC_offset).defineInRange("offset", 0, 0, Integer.MAX_VALUE);
+        FEvipSlots = BUILDER.comment("Amount of slots reserved for VIP players.").defineInRange("vipslots", 0, 0, Integer.MAX_VALUE);
+        BUILDER.pop();
+
+        BUILDER.comment(CFG_DESC_kickMsg).push(CONFIG_CATEGORY_LISTS + "_kickmsg");
+        FEplayerBannedMessage = BUILDER.define("bannedmsg", "You have been banned from this server.");
+        FEnonVipKickMessage = BUILDER.define("notVIPmsg", "This server is full, and you are not a VIP.");
+        BUILDER.pop();
     }
 
-	public static void bakeConfig(boolean reload) {
-		EncryptionHelper.algorithm = FEalgorithm.get();
-		canMoveWithoutLogin = FEcanMoveWithoutLogin.get();
-		allowOfflineRegistration = FEallowOfflineRegistration.get();
-		forceEnabled = FEforceEnabled.get();
-		PasswordManager.setSalt(FEsalt.get());
-		
+    public static void bakeConfig(boolean reload)
+    {
+        EncryptionHelper.algorithm = FEalgorithm.get();
+        canMoveWithoutLogin = FEcanMoveWithoutLogin.get();
+        allowOfflineRegistration = FEallowOfflineRegistration.get();
+        forceEnabled = FEforceEnabled.get();
+        PasswordManager.setSalt(FEsalt.get());
+
         AuthEventHandler.reservedSlots = FEreservedSlots.get();
         AuthEventHandler.vipSlots = FEvipSlots.get();
         AuthEventHandler.playerBannedMessage = FEplayerBannedMessage.get();
         AuthEventHandler.nonVipKickMessage = FEnonVipKickMessage.get();
-        
+
         allowAutoLogin = FEallowAutoLogin.get();
         checkVanillaAuthStatus = FEcheckVanillaAuthStatus.get();
         int authCheckerInterval = FEauthCheckerInterval.get();
-        
+
         if (checkVanillaAuthStatus && !forceEnabled)
             TaskRegistry.scheduleRepeated(mojangServiceChecker, authCheckerInterval * 60 * 1000);
         else
             TaskRegistry.remove(mojangServiceChecker);
-	}
+    }
 
 }

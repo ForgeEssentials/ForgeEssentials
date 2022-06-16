@@ -16,8 +16,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
- * This class checks for player interactions which could modify the WorldEdit selection and sends a selection update to
- * the client if it might be necessary.
+ * This class checks for player interactions which could modify the WorldEdit selection and sends a selection update to the client if it might be necessary.
  */
 public class CUIComms
 {

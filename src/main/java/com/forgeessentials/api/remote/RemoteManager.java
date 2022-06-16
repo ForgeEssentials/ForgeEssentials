@@ -17,8 +17,7 @@ public interface RemoteManager
         /*
          * (non-Javadoc)
          * 
-         * @see
-         * com.forgeessentials.api.remote.RemoteManager#registerHandler(com.forgeessentials.api.remote.RemoteHandler)
+         * @see com.forgeessentials.api.remote.RemoteManager#registerHandler(com.forgeessentials.api.remote.RemoteHandler)
          */
         @Override
         public void registerHandler(RemoteHandler handler, String id)
@@ -40,8 +39,7 @@ public interface RemoteManager
         /*
          * (non-Javadoc)
          * 
-         * @see com.forgeessentials.api.remote.RemoteManager#convertJsonObject(com.google.gson.JsonObject,
-         * java.lang.Class)
+         * @see com.forgeessentials.api.remote.RemoteManager#convertJsonObject(com.google.gson.JsonObject, java.lang.Class)
          */
         @Override
         public Gson getGson()

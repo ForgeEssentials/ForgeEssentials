@@ -119,7 +119,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event.getTarget() instanceof PlayerEntity)
         {
             // player -> player
-        	PlayerEntity target = (PlayerEntity) event.getTarget();
+            PlayerEntity target = (PlayerEntity) event.getTarget();
             if (!APIRegistry.perms.checkUserPermission(UserIdent.get(target), ModuleProtection.PERM_PVP)
                     || !APIRegistry.perms.checkUserPermission(sourceIdent, ModuleProtection.PERM_PVP)
                     || !APIRegistry.perms.checkUserPermission(sourceIdent, new WorldPoint(target), ModuleProtection.PERM_PVP))
@@ -158,7 +158,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event.getEntityLiving() instanceof PlayerEntity)
         {
             // living -> player (fall-damage, mob, dispenser, lava)
-        	PlayerEntity target = (PlayerEntity) event.getEntityLiving();
+            PlayerEntity target = (PlayerEntity) event.getEntityLiving();
             {
                 String permission = event.getSource().isExplosion() ? ModuleProtection.PERM_DAMAGE_BY + ".explosion"
                         : ModuleProtection.PERM_DAMAGE_BY + "." + event.getSource().getMsgId();
@@ -273,9 +273,10 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
-        if (event.getEntity() instanceof PlayerEntity) {
-        	PlayerEntity player= (PlayerEntity)event.getEntity();
-        	UserIdent ident = UserIdent.get(player);
+        if (event.getEntity() instanceof PlayerEntity)
+        {
+            PlayerEntity player = (PlayerEntity) event.getEntity();
+            UserIdent ident = UserIdent.get(player);
             BlockState blockState = event.getWorld().getBlockState(event.getPos());
             String permission = ModuleProtection.getBlockPlacePermission(blockState);
             ModuleProtection.debugPermission(player, permission);
@@ -292,8 +293,7 @@ public class ProtectionEventHandler extends ServerEventHandler
                 return;
             }
         }
-        
-        
+
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -301,9 +301,10 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
-        if (event.getEntity() instanceof PlayerEntity) {
-        	PlayerEntity player= (PlayerEntity)event.getEntity();
-        	UserIdent ident = UserIdent.get(player);
+        if (event.getEntity() instanceof PlayerEntity)
+        {
+            PlayerEntity player = (PlayerEntity) event.getEntity();
+            UserIdent ident = UserIdent.get(player);
             for (BlockSnapshot b : event.getReplacedBlockSnapshots())
             {
                 BlockState blockState = event.getWorld().getBlockState(b.getPos());
@@ -1008,7 +1009,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             {
                 if (isItemBanned(ident, stack))
                 {
-                	player.inventory.setItem(slotIdx, ItemStack.EMPTY);
+                    player.inventory.setItem(slotIdx, ItemStack.EMPTY);
                     continue;
                 }
                 if (isInventoryItemBanned(ident, stack))

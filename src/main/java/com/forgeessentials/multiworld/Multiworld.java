@@ -63,7 +63,8 @@ public class Multiworld
     @Expose(serialize = false)
     protected WorldType worldTypeObj;
 
-    public Multiworld(String name, String provider, String worldType, long seed) {
+    public Multiworld(String name, String provider, String worldType, long seed)
+    {
         this(name, provider, worldType, seed, "");
     }
 
@@ -88,7 +89,7 @@ public class Multiworld
 
     public void removeAllPlayersFromWorld()
     {
-    	ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
+        ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
         for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
             if (player.level.dimension() == dimensionId)
@@ -210,7 +211,8 @@ public class Multiworld
 
     /**
      * Teleport the player to the multiworld
-     * @throws CommandException 
+     * 
+     * @throws CommandException
      */
     public void teleport(ServerPlayerEntity player, boolean instant) throws CommandException
     {

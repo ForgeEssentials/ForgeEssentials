@@ -128,7 +128,7 @@ public class ClassInjector
         }
         catch (ClassNotFoundException e)
         {
-        	throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 

@@ -1,11 +1,9 @@
 package com.forgeessentials.util.events;
 
-
 import com.forgeessentials.commons.selections.WarpPoint;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.eventbus.api.Cancelable;
-
 
 @Cancelable
 public class PlayerMoveEvent extends FEPlayerEvent

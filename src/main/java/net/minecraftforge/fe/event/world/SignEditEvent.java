@@ -24,6 +24,6 @@ public class SignEditEvent extends Event
         this.pos = pos;
         this.text = text;
         this.editor = editor;
-        this.formatted = new ITextComponent[]{null, null, null, null};
+        this.formatted = new ITextComponent[] { null, null, null, null };
     }
 }

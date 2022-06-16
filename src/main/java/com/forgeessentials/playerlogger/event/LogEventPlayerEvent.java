@@ -2,7 +2,6 @@ package com.forgeessentials.playerlogger.event;
 
 import javax.persistence.EntityManager;
 
-
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action03PlayerEvent;
 import com.forgeessentials.playerlogger.entity.Action03PlayerEvent.PlayerEventType;

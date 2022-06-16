@@ -51,7 +51,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
 
     public void setPosition(double x, double y, double z)
     {
-        that.position().x = x; 
+        that.position().x = x;
         that.position().y = y;
         that.position().z = z;
         ((ServerPlayerEntity) that).connection.teleport(x, y, z, that.yRot, that.xRot);
@@ -59,7 +59,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
 
     public void setPosition(double x, double y, double z, float yaw, float pitch)
     {
-    	that.position().x = x;
+        that.position().x = x;
         that.position().y = y;
         that.position().z = z;
         ((ServerPlayerEntity) that).connection.teleport(x, y, z, yaw, pitch);
@@ -117,7 +117,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
      */
     public boolean isBlocking()
     {
-        return that.isBlocking()&& !that.getMainHandItem().isEmpty();
+        return that.isBlocking() && !that.getMainHandItem().isEmpty();
     }
 
     public int getScore()
@@ -147,7 +147,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
     public float getBreakSpeed(JsBlock block, boolean cannotHarvestBlock, int meta, int x, int y, int z)
     {
         block.getThat();
-		return that.getDigSpeed(Block.stateById(meta), new BlockPos(x, y, z));
+        return that.getDigSpeed(Block.stateById(meta), new BlockPos(x, y, z));
     }
 
     /**
@@ -177,8 +177,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
     }
 
     /**
-     * When searching for vulnerable players, if a player is invisible, the return value of this is the chance of seeing
-     * them anyway.
+     * When searching for vulnerable players, if a player is invisible, the return value of this is the chance of seeing them anyway.
      */
     public float getArmorVisibility()
     {
@@ -187,16 +186,17 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
 
     public boolean interactWith(JsEntity<?> entity)
     {
-        switch(that.interactOn(entity.getThat(), Hand.MAIN_HAND)){
+        switch (that.interactOn(entity.getThat(), Hand.MAIN_HAND))
+        {
         case SUCCESS:
         case PASS:
             return true;
         case FAIL:
             return false;
-		case CONSUME:
-			break;
-		default:
-			break;
+        case CONSUME:
+            break;
+        default:
+            break;
         }
 
         return false;
@@ -246,7 +246,8 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
     public JsItemStack getCurrentArmor(int slot)
     {
         EquipmentSlotType eeslot = EquipmentSlotType.MAINHAND;
-        switch (slot){
+        switch (slot)
+        {
         case 0:
             eeslot = EquipmentSlotType.FEET;
             break;

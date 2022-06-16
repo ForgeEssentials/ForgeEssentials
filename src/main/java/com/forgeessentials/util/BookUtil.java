@@ -27,7 +27,7 @@ public abstract class BookUtil
 
     public static void saveBookToFile(ItemStack book, File savefolder)
     {
-    	ListNBT pages;
+        ListNBT pages;
         String filename = "";
         if (book != null)
         {
@@ -74,8 +74,8 @@ public abstract class BookUtil
 
     public static void getBookFromFile(PlayerEntity player, File file)
     {
-    	CompoundNBT tag = new CompoundNBT();
-    	ListNBT pages = new ListNBT();
+        CompoundNBT tag = new CompoundNBT();
+        ListNBT pages = new ListNBT();
 
         HashMap<String, String> map = new HashMap<String, String>();
         if (file.isFile())
@@ -223,7 +223,7 @@ public abstract class BookUtil
 
     public static void getBookFromFileUnformatted(PlayerEntity player, File file)
     {
-    	CompoundNBT tag = new CompoundNBT();
+        CompoundNBT tag = new CompoundNBT();
         ListNBT pages = new ListNBT();
 
         HashMap<String, String> map = new HashMap<String, String>();
@@ -278,7 +278,7 @@ public abstract class BookUtil
 
     public static void getBookFromFileUnformatted(PlayerEntity player, File file, String title)
     {
-    	CompoundNBT tag = new CompoundNBT();
+        CompoundNBT tag = new CompoundNBT();
         ListNBT pages = new ListNBT();
 
         HashMap<String, String> map = new HashMap<String, String>();
@@ -333,7 +333,7 @@ public abstract class BookUtil
 
     public static void getBookFromFolder(PlayerEntity player, File folder)
     {
-    	CompoundNBT tag = new CompoundNBT();
+        CompoundNBT tag = new CompoundNBT();
         ListNBT pages = new ListNBT();
 
         HashMap<String, String> map = new HashMap<String, String>();
@@ -413,7 +413,7 @@ public abstract class BookUtil
 
     public static void getBookFromFolder(PlayerEntity player, File folder, String title)
     {
-    	CompoundNBT tag = new CompoundNBT();
+        CompoundNBT tag = new CompoundNBT();
         ListNBT pages = new ListNBT();
 
         HashMap<String, String> map = new HashMap<String, String>();

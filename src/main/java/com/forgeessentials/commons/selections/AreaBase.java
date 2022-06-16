@@ -5,7 +5,8 @@ import java.util.regex.Pattern;
 
 import net.minecraft.util.math.AxisAlignedBB;
 
-public class AreaBase {
+public class AreaBase
+{
 
     protected Point high;
 

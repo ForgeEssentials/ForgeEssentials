@@ -129,7 +129,8 @@ public class CommandRollback extends ParserCommandBase
             throw new TranslatedCommandException("No selection available. Please select a region first.");
 
         int step = -60;
-        if (!args.isEmpty()) {
+        if (!args.isEmpty())
+        {
             String time = args.remove();
             try
             {
@@ -140,7 +141,7 @@ public class CommandRollback extends ParserCommandBase
                 date.setSeconds(parsedDate.getSeconds());
                 date.setMinutes(parsedDate.getMinutes());
                 date.setHours(parsedDate.getHours());
-                step = (int)((date.getTime() - currentDate.getTime()) / 1000);
+                step = (int) ((date.getTime() - currentDate.getTime()) / 1000);
             }
             catch (ParseException e)
             {

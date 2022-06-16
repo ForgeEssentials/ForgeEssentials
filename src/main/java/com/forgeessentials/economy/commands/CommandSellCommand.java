@@ -119,5 +119,5 @@ public class CommandSellCommand extends ForgeEssentialsCommandBase
             }
         }
     }
-    
+
 }

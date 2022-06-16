@@ -49,7 +49,8 @@ public abstract class WorldUtil
      * @param h
      * @return y value
      */
-    public static boolean isSafeToReplace(World world, int x, int y, int z, int h, boolean replaceRock) {
+    public static boolean isSafeToReplace(World world, int x, int y, int z, int h, boolean replaceRock)
+    {
         int testedH = 0;
         for (int i = 0; i < h; i++)
         {
@@ -70,9 +71,8 @@ public abstract class WorldUtil
     }
 
     /**
-     * Returns a free spot of height h in the world at the coordinates [x,z] near y. If the blocks at [x,y,z] are free,
-     * it returns the next location that is on the ground. If the blocks at [x,y,z] are not free, it goes up until it
-     * finds a free spot.
+     * Returns a free spot of height h in the world at the coordinates [x,z] near y. If the blocks at [x,y,z] are free, it returns the next location that is on the ground. If the
+     * blocks at [x,y,z] are not free, it goes up until it finds a free spot.
      * 
      * @param world
      * @param x
@@ -96,7 +96,7 @@ public abstract class WorldUtil
                     y = 0;
             }
             y++;
-            while (y + h < world.getHeight() && !isSafeToReplace(world, x, y, z, h, replaceRock) )
+            while (y + h < world.getHeight() && !isSafeToReplace(world, x, y, z, h, replaceRock))
                 y++;
         }
         if (y == 0)
@@ -105,9 +105,8 @@ public abstract class WorldUtil
     }
 
     /**
-     * Returns a free spot of height 2 in the world at the coordinates [x,z] near y. If the blocks at [x,y,z] are free,
-     * it returns the next location that is on the ground. If the blocks at [x,y,z] are not free, it goes up until it
-     * finds a free spot.
+     * Returns a free spot of height 2 in the world at the coordinates [x,z] near y. If the blocks at [x,y,z] are free, it returns the next location that is on the ground. If the
+     * blocks at [x,y,z] are not free, it goes up until it finds a free spot.
      * 
      * @param world
      * @param x

@@ -14,10 +14,12 @@ public class FEModuleEvent extends Event
 
     protected ServerLifecycleEvent event;
     protected FMLCommonSetupEvent event2;
+
     public FMLCommonSetupEvent getFMLEvent()
     {
         return event2;
     }
+
     public static class FEModuleCommonSetupEvent extends FEModuleEvent
     {
         public FEModuleCommonSetupEvent(FMLCommonSetupEvent event)
@@ -25,7 +27,6 @@ public class FEModuleEvent extends Event
             this.event2 = event;
         }
     }
-
 
     public static class FEModuleServerAboutToStartEvent extends FEModuleEvent
     {

@@ -46,7 +46,7 @@ public class ItemPermissionManager extends ServerEventHandler
 
     public ItemPermissionManager()
     {
-        //CONFIG ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class ItemPermissionManager extends ServerEventHandler
 
     public static CompoundNBT getPermissionTag(ItemStack stack)
     {
-    	CompoundNBT stackTag = stack.getTag();
+        CompoundNBT stackTag = stack.getTag();
         if (stackTag != null)
         {
             INBT baseTag = stackTag.get(TAG_BASE);
@@ -135,13 +135,13 @@ public class ItemPermissionManager extends ServerEventHandler
 
     public static ListNBT getSettingsTag(CompoundNBT tag)
     {
-    	ListNBT settings = tag.getList(TAG_SETTINGS, NBT.TAG_STRING);
+        ListNBT settings = tag.getList(TAG_SETTINGS, NBT.TAG_STRING);
         return settings;
     }
 
     public static void check(PermissionCheckEvent event, ItemStack stack, boolean isEquipped)
     {
-    	CompoundNBT tag = getPermissionTag(stack);
+        CompoundNBT tag = getPermissionTag(stack);
         if (tag == null)
             return;
 
@@ -188,24 +188,25 @@ public class ItemPermissionManager extends ServerEventHandler
     /* ------------------------------------------------------------ */
 
     static ForgeConfigSpec.BooleanValue FEenabled;
-    
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.push("ItemPermissions");
-    	FEenabled = BUILDER.comment(HELP).define("enabled", false);
-    	BUILDER.pop();
+        BUILDER.push("ItemPermissions");
+        FEenabled = BUILDER.comment(HELP).define("enabled", false);
+        BUILDER.pop();
     }
 
-	public static void bakeConfig(boolean reload) {
-		enabled = FEenabled.get();
-		
-		if (ServerUtil.isServerRunning())
+    public static void bakeConfig(boolean reload)
+    {
+        enabled = FEenabled.get();
+
+        if (ServerUtil.isServerRunning())
         {
             if (enabled)
-            	ModulePermissions.getItemPermissionManager().register();
+                ModulePermissions.getItemPermissionManager().register();
             else
-            	ModulePermissions.getItemPermissionManager().unregister();
+                ModulePermissions.getItemPermissionManager().unregister();
         }
-	}
+    }
 
 }

@@ -53,7 +53,7 @@ public class WorldZone extends Zone implements Loadable
         for (AreaZone zone : areaZones)
             zone.worldZone = this;
     }
-    
+
     @Override
     public boolean isPlayerInZone(PlayerEntity player)
     {
@@ -137,6 +137,5 @@ public class WorldZone extends Zone implements Loadable
         sortAreaZones();
         setDirty();
     }
-
 
 }

@@ -183,5 +183,5 @@ public class CommandTrade extends ParserCommandBase
                     APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.getCount()), buyer.getUsernameOrUuid());
         Questioner.addChecked(arguments.sender, message, sellerHandler, 20);
     }
-    
+
 }

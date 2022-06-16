@@ -171,7 +171,7 @@ public class CommandBind extends ParserCommandBase
             return;
         if (command == null || command.isEmpty())
             return;
-        
+
         ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(event.getPlayer().createCommandSourceStack(), command);
         event.setCanceled(true);
     }

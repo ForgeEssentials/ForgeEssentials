@@ -20,6 +20,7 @@ import net.minecraftforge.server.permission.PermissionAPI;
 public class PermissionManager
 {
     protected static Map<Command, String> commandPermissions = new WeakHashMap<>();
+
     public static String getCommandPermission(Command command)
     {
         if (command instanceof PermissionObject)
@@ -55,8 +56,7 @@ public class PermissionManager
     }
 
     /**
-     * This method allows you to register permissions for commands that cannot implement the PermissionObject interface
-     * for any reason.
+     * This method allows you to register permissions for commands that cannot implement the PermissionObject interface for any reason.
      *
      * @param command
      * @param permission
@@ -69,8 +69,7 @@ public class PermissionManager
     }
 
     /**
-     * This method allows you to register permissions for commands that cannot implement the PermissionObject interface
-     * for any reason.
+     * This method allows you to register permissions for commands that cannot implement the PermissionObject interface for any reason.
      *
      * @param command
      * @param permission
@@ -84,7 +83,8 @@ public class PermissionManager
      * <b>FOR INTERNAL USE ONLY</b> <br>
      * TODO This method should be removed in the PR
      *
-     * @param command a command
+     * @param command
+     *            a command
      */
     public static void registerCommandPermissions()
     {
@@ -111,6 +111,7 @@ public class PermissionManager
         }
 
     }
+
     public interface PermissionObject
     {
         public String getPermissionNode();

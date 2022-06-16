@@ -212,9 +212,7 @@ public class Session implements Runnable, RemoteSession
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * com.forgeessentials.api.remote.RemoteSession#transformRemoteRequest(com.forgeessentials.api.remote.RemoteRequest,
-     * java.lang.Class)
+     * @see com.forgeessentials.api.remote.RemoteSession#transformRemoteRequest(com.forgeessentials.api.remote.RemoteRequest, java.lang.Class)
      */
     @Override
     public <T> RemoteRequest<T> transformRemoteRequest(JsonRemoteRequest request, Class<T> clazz)

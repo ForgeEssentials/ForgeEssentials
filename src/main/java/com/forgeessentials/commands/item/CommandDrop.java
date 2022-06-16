@@ -97,7 +97,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
         TileEntity tileEntity = world.getTileEntity(pos);
         if (tileEntity instanceof ChestTileEntity)
         {
-        	ChestTileEntity var10 = (ChestTileEntity) tileEntity;
+            ChestTileEntity var10 = (ChestTileEntity) tileEntity;
 
             for (int slot = 0; slot < var10.getSizeInventory(); ++slot)
             {
@@ -112,7 +112,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
                     if (var10.getStackInSlot(slot).getMaxStackSize() - var10.getStackInSlot(slot).getCount() >= var9)
                     {
                         tmpStack = var10.getStackInSlot(slot);
-                        tmpStack.setCount( tmpStack.getCount() + var9);
+                        tmpStack.setCount(tmpStack.getCount() + var9);
                         break;
                     }
 
@@ -123,7 +123,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
         }
         else if (tileEntity instanceof DropperTileEntity)
         {
-        	DropperTileEntity var13 = (DropperTileEntity) tileEntity;
+            DropperTileEntity var13 = (DropperTileEntity) tileEntity;
 
             for (int slot = 0; slot < var13.getSizeInventory(); ++slot)
             {
@@ -138,7 +138,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
                     if (var13.getStackInSlot(slot).getMaxStackSize() - var13.getStackInSlot(slot).getCount() >= var9)
                     {
                         tmpStack = var13.getStackInSlot(slot);
-                        tmpStack.setCount( tmpStack.getCount() + var9);
+                        tmpStack.setCount(tmpStack.getCount() + var9);
                         break;
                     }
 
@@ -149,7 +149,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
         }
         else if (tileEntity instanceof DispenserTileEntity)
         {
-        	DispenserTileEntity var14 = (DispenserTileEntity) tileEntity;
+            DispenserTileEntity var14 = (DispenserTileEntity) tileEntity;
 
             for (int slot = 0; slot < var14.getSizeInventory(); ++slot)
             {
@@ -164,7 +164,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
                     if (var14.getStackInSlot(slot).getMaxStackSize() - var14.getStackInSlot(slot).getCount() >= var9)
                     {
                         tmpStack = var14.getStackInSlot(slot);
-                        tmpStack.setCount( tmpStack.getCount() + var9);
+                        tmpStack.setCount(tmpStack.getCount() + var9);
                         break;
                     }
 
@@ -175,7 +175,7 @@ public class CommandDrop extends ForgeEssentialsCommandBase
         }
         else if (tileEntity instanceof HopperTileEntity)
         {
-        	HopperTileEntity var12 = (HopperTileEntity) tileEntity;
+            HopperTileEntity var12 = (HopperTileEntity) tileEntity;
 
             for (int slot = 0; slot < var12.getSizeInventory(); ++slot)
             {

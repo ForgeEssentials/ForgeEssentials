@@ -33,5 +33,5 @@ public class LogEventPostInteract extends PlayerLoggerEvent<PlayerPostInteractEv
         action.z = event.pos.getZ();
         em.persist(action);
     }
-    
+
 }

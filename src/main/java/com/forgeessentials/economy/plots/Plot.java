@@ -360,11 +360,13 @@ public class Plot
         return plots.values();
     }
 
-    public static boolean hasPlots(Selection selection) {
+    public static boolean hasPlots(Selection selection)
+    {
         return plots.values().stream().anyMatch(isPartOfZone(selection));
     }
 
-    public static Predicate<Plot> isPartOfZone(Selection selection) {
+    public static Predicate<Plot> isPartOfZone(Selection selection)
+    {
         return plot -> plot.getZone().isPartOfZone(selection);
     }
 
@@ -385,7 +387,8 @@ public class Plot
             }
 
         if (isColumnMode(area.getDimension()))
-            area = new WorldArea(area.getDimension(), area.getHighPoint().setY(ServerLifecycleHooks.getCurrentServer().getMaxBuildHeight()), area.getLowPoint().setY(0));
+            area = new WorldArea(area.getDimension(), area.getHighPoint().setY(ServerLifecycleHooks.getCurrentServer().getMaxBuildHeight()),
+                    area.getLowPoint().setY(0));
 
         AreaZone zone = new AreaZone(worldZone, "_PLOT_" + (APIRegistry.perms.getServerZone().getMaxZoneID() + 1), area);
         Plot plot = new Plot(zone, owner);

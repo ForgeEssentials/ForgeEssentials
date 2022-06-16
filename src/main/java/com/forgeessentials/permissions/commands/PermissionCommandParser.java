@@ -422,8 +422,8 @@ public class PermissionCommandParser
             return;
 
         String fixPerm = "fe.chat." + (isPlayer ? "playerformat" : "textformat");
-        //TODO: Implement Player / Text Format as an option in the command
-        //EX: /p user [] format [player|text] [format values]
+        // TODO: Implement Player / Text Format as an option in the command
+        // EX: /p user [] format [player|text] [format values]
     }
 
     public static void parseUserPrefixSuffix(CommandParserArgs arguments, UserIdent ident, Zone zone, boolean isSuffix) throws CommandException

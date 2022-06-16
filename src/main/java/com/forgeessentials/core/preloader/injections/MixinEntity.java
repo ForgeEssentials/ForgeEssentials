@@ -16,7 +16,7 @@ import com.forgeessentials.core.preloader.asminjector.annotation.Mixin;
 public abstract class MixinEntity extends Entity
 {
 
-    public MixinEntity(EntityType<?>Entity,World p_i48580_2_)
+    public MixinEntity(EntityType<?> Entity, World p_i48580_2_)
     {
         super(Entity, p_i48580_2_);
     }

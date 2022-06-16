@@ -21,21 +21,23 @@ public abstract class MixinEntityPlayer extends Entity
     @Shadow
     public PlayerInteractionManager capabilities;
 
-    public MixinEntityPlayer(EntityType<?>PlayerEntity,World p_i48580_2_)
+    public MixinEntityPlayer(EntityType<?> PlayerEntity, World p_i48580_2_)
     {
         super(PlayerEntity, p_i48580_2_);
     }
 
-    @Shadow public abstract boolean isSpectator();
+    @Shadow
+    public abstract boolean isSpectator();
 
     @Overwrite
     public boolean canUseCommandBlock()
     {
-        return this.capabilities.isCreative() && PermissionAPI.hasPermission((PlayerEntity)(Object)this, "mc.commandblock");
+        return this.capabilities.isCreative() && PermissionAPI.hasPermission((PlayerEntity) (Object) this, "mc.commandblock");
     }
-    
+
     @Redirect(method = "onUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
-    public boolean onUpdate_NoClip(PlayerEntity _this) {
+    public boolean onUpdate_NoClip(PlayerEntity _this)
+    {
         return isSpectator() || PlayerInfo.get(_this).isNoClip();
     }
 }

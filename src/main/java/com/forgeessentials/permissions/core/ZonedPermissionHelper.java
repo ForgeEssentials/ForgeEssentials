@@ -88,14 +88,12 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     protected boolean dirty = true;
 
     /**
-     * First time that permissions have been changed. At least one minute after this time, permissions will definitely
-     * be saved.
+     * First time that permissions have been changed. At least one minute after this time, permissions will definitely be saved.
      */
     protected long firstDirtyTime = 0;
 
     /**
-     * Last time that permissions have been changed. Five seconds after no more permissions have been changed, they will
-     * be saved.
+     * Last time that permissions have been changed. Five seconds after no more permissions have been changed, they will be saved.
      */
     protected long lastDirtyTime = 0;
 
@@ -768,15 +766,16 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
             {
                 BlockPos pos = context.get(ContextKeys.POS);
                 loc = new WorldPoint(dim, pos);
-            } else if (context instanceof PlayerContext)
+            }
+            else if (context instanceof PlayerContext)
             {
                 ident = UserIdent.get(context.getPlayer());
             }
         }
-        if (ident == null) {
+        if (ident == null)
+        {
             ident = player == null ? null : UserIdent.get(player.getId(), player.getName());
         }
-
 
         SortedSet<GroupEntry> groups = getPlayerGroups(ident);
         return checkBooleanPermission(getPermission(ident, loc, area, GroupEntry.toList(groups), permissionNode, false));
@@ -935,7 +934,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     }
 
     @Override
-    public String getPermissionProperty(PlayerEntity  player, String permissionNode)
+    public String getPermissionProperty(PlayerEntity player, String permissionNode)
     {
         UserIdent ident = UserIdent.get(player);
         return getPermission(ident, new WorldPoint(player), null, GroupEntry.toList(getPlayerGroups(ident)), permissionNode, true);

@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.data.v2.DataManager;
@@ -78,7 +77,7 @@ public class PermissionScheduler extends ServerEventHandler
 
     public PermissionScheduler()
     {
-        //CONFIG ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
     }
 
     @SubscribeEvent
@@ -176,25 +175,29 @@ public class PermissionScheduler extends ServerEventHandler
         for (Entry<String, PermissionSchedule> task : schedules.entrySet())
             DataManager.getInstance().save(task.getValue(), task.getKey());
     }
-    
+
     static ForgeConfigSpec.BooleanValue FEenabled;
-    
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.push("PermissionScheduler");
-    	FEenabled = BUILDER.comment(HELP).define("enabled", false);
-    	BUILDER.pop();
+        BUILDER.push("PermissionScheduler");
+        FEenabled = BUILDER.comment(HELP).define("enabled", false);
+        BUILDER.pop();
     }
 
-	public static void bakeConfig(boolean reload) {
-		enabled = FEenabled.get();
-		
-		if (ServerUtil.isServerRunning())
+    public static void bakeConfig(boolean reload)
+    {
+        enabled = FEenabled.get();
+
+        if (ServerUtil.isServerRunning())
         {
-            if (enabled) {
+            if (enabled)
+            {
                 ModulePermissions.getPermissionScheduler().register();
                 ModulePermissions.getPermissionScheduler().loadAll();
-            }else {
+            }
+            else
+            {
                 ModulePermissions.getPermissionScheduler().unregister();
             }
         }

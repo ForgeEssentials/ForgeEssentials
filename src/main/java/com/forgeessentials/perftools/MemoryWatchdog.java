@@ -41,11 +41,13 @@ public class MemoryWatchdog extends TimerTask
                 }
                 else
                 {
-                    ChatOutputHandler.sendMessage(server.createCommandSourceStack(), "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
+                    ChatOutputHandler.sendMessage(server.createCommandSourceStack(),
+                            "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
                 }
                 for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                     if (PermissionAPI.hasPermission(player, PerfToolsModule.PERM_WARN))
-                        ChatOutputHandler.chatNotification(player.createCommandSourceStack(), "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
+                        ChatOutputHandler.chatNotification(player.createCommandSourceStack(),
+                                "[ForgeEssentials] High memory use detected. " + percentage + "% of memory in use.");
             }
             catch (Exception e)
             {

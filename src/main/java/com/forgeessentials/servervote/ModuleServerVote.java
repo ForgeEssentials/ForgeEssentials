@@ -49,7 +49,7 @@ public class ModuleServerVote
     @SubscribeEvent
     public void init(FEModuleCommonSetupEvent e)
     {
-        //CONFIG ForgeEssentials.getConfigManager().registerLoader("ServerVote", new ConfigServerVote());
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader("ServerVote", new ConfigServerVote());
         APIRegistry.scripts.addScriptType(scriptKey);
     }
 
@@ -178,7 +178,11 @@ public class ModuleServerVote
         log.println(String.format("Player %s voted on service %s on %s", vote.player, vote.serviceName, vote.timeStamp));
         if (!ConfigServerVote.msgAll.equals(""))
         {
-            ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastAll(new SChatPacket(new StringTextComponent(ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player))),ChatType.CHAT,player.getUUID()));
+            ServerLifecycleHooks.getCurrentServer().getPlayerList()
+                    .broadcastAll(new SChatPacket(
+                            new StringTextComponent(ChatOutputHandler
+                                    .formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player))),
+                            ChatType.CHAT, player.getUUID()));
         }
 
         if (!ConfigServerVote.msgVoter.equals(""))
@@ -189,5 +193,5 @@ public class ModuleServerVote
 
         APIRegistry.scripts.runEventScripts(scriptKey, player.createCommandSourceStack());
     }
-    
+
 }

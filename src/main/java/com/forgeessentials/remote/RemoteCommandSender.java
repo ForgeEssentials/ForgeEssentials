@@ -100,7 +100,7 @@ public class RemoteCommandSender extends DoAsCommandSender
                 e.printStackTrace();
             }
         }
-        
+
         ModuleRemote.getInstance().getServer().cleanSessions();
     }
 

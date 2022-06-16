@@ -97,7 +97,8 @@ public class TeleportModule
         APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
 
         APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, DefaultPermissionLevel.ALL, "Allow returning to the last death location with back-command");
-        APIRegistry.perms.registerPermission(PERM_BACK_ONTP, DefaultPermissionLevel.ALL, "Allow returning to the last location before teleport with back-command");
+        APIRegistry.perms.registerPermission(PERM_BACK_ONTP, DefaultPermissionLevel.ALL,
+                "Allow returning to the last location before teleport with back-command");
         APIRegistry.perms.registerPermission(PERM_BED_OTHERS, DefaultPermissionLevel.OP, "Allow teleporting to other player's bed location");
 
         APIRegistry.perms.registerPermission(PERM_HOME, DefaultPermissionLevel.ALL, "Allow usage of /home");
@@ -114,33 +115,35 @@ public class TeleportModule
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerSleepInBed(PlayerSleepInBedEvent e) {
+    public void playerSleepInBed(PlayerSleepInBedEvent e)
+    {
         if (e.getPlayer().level.isClientSide)
         {
             return;
         }
 
-        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(e.getPlayer(),e.getPos()) || (e.getPlayer().isCrouching()))
+        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(e.getPlayer(), e.getPos()) || (e.getPlayer().isCrouching()))
         {
             e.getPlayer().setSpawnPoint(e.getPos(), false);
             ChatOutputHandler.chatConfirmation(e.getPlayer().createCommandSourceStack(), "Bed Position Set!");
             e.setResult(SleepResult.OTHER_PROBLEM);
         }
     }
-    
+
     static ForgeConfigSpec.ConfigValue<String> FEportalBlock;
-    
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.push("General");
-    	FEportalBlock = BUILDER.comment("Name of the block to use as material for new portals.\n"
+        BUILDER.push("General");
+        FEportalBlock = BUILDER.comment("Name of the block to use as material for new portals.\n"
                 + "Does not override vanilla nether/end portals.\nSetting this to 'minecraft:portal' is currently not supported.")
-    			.define("portalBlock", "minecraft:glass_pane");
-    	BUILDER.pop();
+                .define("portalBlock", "minecraft:glass_pane");
+        BUILDER.pop();
     }
 
-	public static void bakeConfig(boolean reload) {
-		String portalBlockId = FEportalBlock.get();
+    public static void bakeConfig(boolean reload)
+    {
+        String portalBlockId = FEportalBlock.get();
         PortalManager.portalBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(portalBlockId));
-	}
+    }
 }

@@ -79,7 +79,8 @@ public class PlotManager extends ServerEventHandler
             if (price == 0)
                 ChatOutputHandler.chatNotification(event.getPlayer().createCommandSourceStack(), Translator.translate("You can buy this plot for free"));
             else if (price > 0)
-                ChatOutputHandler.chatNotification(event.getPlayer().createCommandSourceStack(), Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
+                ChatOutputHandler.chatNotification(event.getPlayer().createCommandSourceStack(),
+                        Translator.format("You can buy this plot for %s", APIRegistry.economy.toString(price)));
         }
     }
 }

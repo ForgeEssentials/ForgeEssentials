@@ -20,18 +20,18 @@ public class MixinCommandHandler
     /**
      * Check if the sender has permission for the command.
      *
-     * @param command the command
-     * @param sender the sender
+     * @param command
+     *            the command
+     * @param sender
+     *            the sender
      * @return {@code true} if the sender has permission
      */
     @Redirect(
             method = "getTabCompletions(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;Lnet/minecraft/util/math/BlockPos;)Ljava/util/List;",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/command/ICommand;checkPermission(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;)Z"
-            ),
-            require = 1
-    )
+                    target = "Lnet/minecraft/command/ICommand;checkPermission(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;)Z"),
+            require = 1)
     private boolean tabComplete(ICommand command, MinecraftServer server, ICommandSender sender)
     {
         return checkPerms(command, sender);
@@ -40,18 +40,18 @@ public class MixinCommandHandler
     /**
      * Check if the sender has permission for the command.
      *
-     * @param command the command
-     * @param sender the sender
+     * @param command
+     *            the command
+     * @param sender
+     *            the sender
      * @return {@code true} if the sender has permission
      */
     @Redirect(
             method = "getPossibleCommands(Lnet/minecraft/command/ICommandSender;)Ljava/util/List;",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/command/ICommand;checkPermission(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;)Z"
-            ),
-            require = 1
-    )
+                    target = "Lnet/minecraft/command/ICommand;checkPermission(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;)Z"),
+            require = 1)
     private boolean hasPermissionAll(ICommand command, MinecraftServer server, ICommandSender sender)
     {
         return checkPerms(command, sender);
@@ -61,27 +61,31 @@ public class MixinCommandHandler
             method = "executeCommand(Lnet/minecraft/command/ICommandSender;Ljava/lang/String;)I",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/command/ICommand;checkPermission(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;)Z"
-            ),
-            require = 1
-    )
+                    target = "Lnet/minecraft/command/ICommand;checkPermission(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/command/ICommandSender;)Z"),
+            require = 1)
     private boolean hasPermission(ICommand command, MinecraftServer server, ICommandSender sender)
     {
         return true;
     }
 
-    public boolean checkPerms(ICommand command, ICommandSender sender) {
+    public boolean checkPerms(ICommand command, ICommandSender sender)
+    {
         String node = PermissionManager.getCommandPermission(command);
-        if (sender instanceof DoAsCommandSender) {
-            if (!((DoAsCommandSender) sender).getIdent().isPlayer()) {
-                if (((DoAsCommandSender) sender).getIdent().isNpc()) {
+        if (sender instanceof DoAsCommandSender)
+        {
+            if (!((DoAsCommandSender) sender).getIdent().isPlayer())
+            {
+                if (((DoAsCommandSender) sender).getIdent().isNpc())
+                {
                     return PermissionAPI.hasPermission(((DoAsCommandSender) sender).getIdent().getGameProfile(), node, null);
                 }
                 else
                 {
                     return true;
                 }
-            } else {
+            }
+            else
+            {
                 return PermissionAPI.hasPermission(((DoAsCommandSender) sender).getIdent().getPlayer(), node);
             }
         }
@@ -89,7 +93,9 @@ public class MixinCommandHandler
         if (sender instanceof PlayerEntity)
         {
             return PermissionAPI.hasPermission((PlayerEntity) sender, node);
-        } else {
+        }
+        else
+        {
             UserIdent ident = UserIdent.get(sender);
             return PermissionAPI.hasPermission(ident.getGameProfile(), node, null);
         }

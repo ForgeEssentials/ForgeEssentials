@@ -80,19 +80,22 @@ public class JsICommandSender extends JsWrapper<CommandSource>
     {
         ChatOutputHandler.chatNotification(that, message);
     }
+
     public void chatError(String message)
     {
         ChatOutputHandler.chatError(that, message);
     }
+
     public void chatWarning(String message)
     {
         ChatOutputHandler.chatWarning(that, message);
     }
+
     public void tellRaw(String msg)
-    { 
-    	if (msg.isEmpty())
-    	{
-    	    return;
+    {
+        if (msg.isEmpty())
+        {
+            return;
         }
         try
         {
@@ -105,11 +108,11 @@ public class JsICommandSender extends JsWrapper<CommandSource>
         }
         catch (JsonParseException jsonparseexception)
         {
-            this.chatError("There is an error in your JSON: "+jsonparseexception.getMessage());
-        } 
-        catch (CommandException e) 
+            this.chatError("There is an error in your JSON: " + jsonparseexception.getMessage());
+        }
+        catch (CommandException e)
         {
-            this.chatError("There is an error in your input: "+e.getMessage());
+            this.chatError("There is an error in your input: " + e.getMessage());
         }
     }
 

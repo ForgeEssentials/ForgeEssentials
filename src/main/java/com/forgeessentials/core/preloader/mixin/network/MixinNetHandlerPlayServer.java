@@ -28,19 +28,19 @@ public class MixinNetHandlerPlayServer
     /**
      * Post {@link SignEditEvent} to the event bus.
      *
-     * @param packetIn the update sign packet
+     * @param packetIn
+     *            the update sign packet
      */
     @Inject(
             method = "processUpdateSign",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/network/play/client/CPacketUpdateSign;getLines()[Ljava/lang/String;"
-            ),
+                    target = "Lnet/minecraft/network/play/client/CPacketUpdateSign;getLines()[Ljava/lang/String;"),
             require = 1,
             locals = LocalCapture.CAPTURE_FAILHARD,
-            cancellable = true
-    )
-    private void getLines(CPacketUpdateSign packetIn, CallbackInfo ci, ServerWorld worldserver, BlockPos blockpos, IBlockState iblockstate, TileEntity tileentity, SignTileEntity tileentitysign)
+            cancellable = true)
+    private void getLines(CPacketUpdateSign packetIn, CallbackInfo ci, ServerWorld worldserver, BlockPos blockpos, IBlockState iblockstate,
+            TileEntity tileentity, SignTileEntity tileentitysign)
     {
         SignEditEvent event = new SignEditEvent(packetIn.getPosition(), packetIn.getLines(), this.player);
         if (!MinecraftForge.EVENT_BUS.post(event))
@@ -48,8 +48,9 @@ public class MixinNetHandlerPlayServer
             for (int i = 0; i < event.text.length; ++i)
             {
                 if (event.formatted[i] == null)
-                tileentitysign.signText[i] = new StringTextComponent(event.text[i]);
-                else tileentitysign.signText[i] = event.formatted[i];
+                    tileentitysign.signText[i] = new StringTextComponent(event.text[i]);
+                else
+                    tileentitysign.signText[i] = event.formatted[i];
             }
         }
 
@@ -61,28 +62,21 @@ public class MixinNetHandlerPlayServer
     /**
      * Copy the {@link #signLines} to the {@link TileEntitySign}.
      *
-     * @param src the source array
-     * @param srcPos starting position in the source array
-     * @param dest the destination array
-     * @param destPos starting position in the destination array
-     * @param length the number of array elements to be copied
+     * @param src
+     *            the source array
+     * @param srcPos
+     *            starting position in the source array
+     * @param dest
+     *            the destination array
+     * @param destPos
+     *            starting position in the destination array
+     * @param length
+     *            the number of array elements to be copied
      *
-    @Redirect(
-            method = "processUpdateSign",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V"
-            ),
-            require = 1
-    )
-    private void copyLinesToBlockEntity(Object src, int srcPos, Object dest, int destPos, int length)
-    {
-        if (this.signLines.length == 0)
-            return;
-        // You may get a warning that `dest` is not Object[] - don't change this, or Mixin will yell at you.
-        System.arraycopy(this.signLines, srcPos, dest, destPos, length);
-        this.signLines = null;
-    }
-    */
+     *            @Redirect( method = "processUpdateSign", at = @At( value = "INVOKE", target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V" ), require =
+     *            1 ) private void copyLinesToBlockEntity(Object src, int srcPos, Object dest, int destPos, int length) { if (this.signLines.length == 0) return; // You may get a
+     *            warning that `dest` is not Object[] - don't change this, or Mixin will yell at you. System.arraycopy(this.signLines, srcPos, dest, destPos, length);
+     *            this.signLines = null; }
+     */
 
 }

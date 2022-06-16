@@ -58,18 +58,18 @@ public class CommandTppos extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
-         if (args.length == 3)
-         {
-             double x = parseCoordinate(sender.posX, args[0], true).getResult();
-             double y = ServerUtil.parseYLocation(sender, sender.posY, args[1]);
-             double z = parseCoordinate(sender.posZ, args[2], true).getResult();
-             TeleportHelper.teleport(sender, new WarpPoint(sender.level, x, y, z, sender.cameraPitch,
-             sender.cameraYaw));
-         }
-         else
-         {
+        if (args.length == 3)
+        {
+            double x = parseCoordinate(sender.posX, args[0], true).getResult();
+            double y = ServerUtil.parseYLocation(sender, sender.posY, args[1]);
+            double z = parseCoordinate(sender.posZ, args[2], true).getResult();
+            TeleportHelper.teleport(sender, new WarpPoint(sender.level, x, y, z, sender.cameraPitch,
+                    sender.cameraYaw));
+        }
+        else
+        {
             throw new TranslatedCommandException(getUsage(sender));
-         }
+        }
     }
 
     @Override

@@ -84,6 +84,7 @@ public class JsFEServer
     {
         return APIRegistry.perms.getServerZone().getKnownPlayers().size();
     }
+
     /**
      * Returns the list of players who have ever connected.
      */
@@ -91,6 +92,7 @@ public class JsFEServer
     {
         return APIRegistry.perms.getServerZone().getKnownPlayers();
     }
+
     /**
      * Returns the amount of time this player was active on the server in seconds
      */
@@ -136,7 +138,7 @@ public class JsFEServer
         if (e.phase == Phase.START)
         {
             Iterator<CORoutine> iterator = coRoutineHashSet.iterator();
-            for (; iterator.hasNext(); )
+            for (; iterator.hasNext();)
             {
                 CORoutine c = iterator.next();
                 try
@@ -218,8 +220,7 @@ public class JsFEServer
     }
 
     /**
-     * Gets a Special Interaction Object that is designed to be used as a menu
-     * WARNING: Do not close the screen during the callback. This causes a desync!
+     * Gets a Special Interaction Object that is designed to be used as a menu WARNING: Do not close the screen during the callback. This causes a desync!
      *
      * @param name
      * @param displayName
@@ -227,17 +228,18 @@ public class JsFEServer
      * @param callbackMethod
      * @return
      */
-    public JsInteractionObject<IInteractionObject> getMenuChest(final String name, final String displayName, final JsInventory<IInventory> inventory, final String callbackMethod)
+    public JsInteractionObject<IInteractionObject> getMenuChest(final String name, final String displayName, final JsInventory<IInventory> inventory,
+            final String callbackMethod)
     {
         final boolean hasCustomName = displayName != null;
 
-        final IInteractionObject menuChest = new BasicInteraction(name, hasCustomName, inventory.getThat())
-        {
-            @Override public Container createContainer(PlayerInventory inventoryPlayer, PlayerEntity entityPlayer)
+        final IInteractionObject menuChest = new BasicInteraction(name, hasCustomName, inventory.getThat()) {
+            @Override
+            public Container createContainer(PlayerInventory inventoryPlayer, PlayerEntity entityPlayer)
             {
-                return new ContainerChest(inventoryPlayer, this, entityPlayer)
-                {
-                    @Override public ItemStack slotClick(int p_slotClick_1_, int p_slotClick_2_, ClickType p_slotClick_3_, EntityPlayer p_slotClick_4_)
+                return new ContainerChest(inventoryPlayer, this, entityPlayer) {
+                    @Override
+                    public ItemStack slotClick(int p_slotClick_1_, int p_slotClick_2_, ClickType p_slotClick_3_, EntityPlayer p_slotClick_4_)
                     {
                         JsItemStack stack = JsItemStack.EMPTY;
                         try
@@ -250,7 +252,8 @@ public class JsFEServer
                                 itemStack = JsItemStack.get(slot.getItem());
                                 inv = JsInventory.get(slot.container);
                             }
-                            Object _stack = script.tryCallGlobal(callbackMethod, JsEntityPlayer.get(p_slotClick_4_), p_slotClick_1_, p_slotClick_2_, p_slotClick_3_, inv, itemStack);
+                            Object _stack = script.tryCallGlobal(callbackMethod, JsEntityPlayer.get(p_slotClick_4_), p_slotClick_1_, p_slotClick_2_,
+                                    p_slotClick_3_, inv, itemStack);
                             if (_stack instanceof JsItemStack)
                             {
                                 stack = (JsItemStack) _stack;
@@ -264,39 +267,46 @@ public class JsFEServer
                         return stack.getThat();
                     }
 
-                    @Override public ItemStack transferStackInSlot(PlayerEntity p_transferStackInSlot_1_, int p_transferStackInSlot_2_)
+                    @Override
+                    public ItemStack transferStackInSlot(PlayerEntity p_transferStackInSlot_1_, int p_transferStackInSlot_2_)
                     {
                         return ItemStack.EMPTY;
                     }
 
-                    @Override public boolean canMergeSlot(ItemStack p_canMergeSlot_1_, Slot p_canMergeSlot_2_)
+                    @Override
+                    public boolean canMergeSlot(ItemStack p_canMergeSlot_1_, Slot p_canMergeSlot_2_)
                     {
                         return false;
                     }
 
-                    @Override public boolean canDragIntoSlot(Slot p_canDragIntoSlot_1_)
+                    @Override
+                    public boolean canDragIntoSlot(Slot p_canDragIntoSlot_1_)
                     {
                         return false;
                     }
                 };
             }
 
-            @Override public String getGuiID()
+            @Override
+            public String getGuiID()
             {
                 return "minecraft:chest";
             }
 
-            @Override public String getName()
+            @Override
+            public String getName()
             {
                 return name;
             }
 
-            @Override public boolean hasCustomName()
+            @Override
+            public boolean hasCustomName()
             {
                 return hasCustomName;
             }
 
-            @Override public ITextComponent getDisplayName()
+            @Override
+            public ITextComponent getDisplayName()
             {
                 return displayName != null ? new StringTextComponent(displayName) : null;
             }

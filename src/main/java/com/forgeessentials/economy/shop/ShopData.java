@@ -32,7 +32,8 @@ public class ShopData
 
     public static final Pattern PATTERN_AMOUNT;
 
-    static {
+    static
+    {
         PATTERN_BUY = Pattern.compile(Translator.translate("buy\\s+(?:for\\s+)?(\\d+)"));
         PATTERN_SELL = Pattern.compile(Translator.translate("sell\\s+(?:for\\s+)?(\\d+)"));
         PATTERN_AMOUNT = Pattern.compile(Translator.translate("amount\\s+(\\d+)"));
@@ -179,7 +180,7 @@ public class ShopData
 
     public ItemFrameEntity getItemFrame()
     {
-    	ItemFrameEntity frame = itemFrame == null ? null : itemFrame.get();
+        ItemFrameEntity frame = itemFrame == null ? null : itemFrame.get();
         if (frame == null)
         {
             List<ItemFrameEntity> entities = getEntitiesWithinAABB(pos.getWorld(), ItemFrameEntity.class, getSignAABB(pos));

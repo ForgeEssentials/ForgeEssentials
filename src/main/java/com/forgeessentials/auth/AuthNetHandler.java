@@ -12,26 +12,27 @@ import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
 public class AuthNetHandler extends Packet6AuthLogin
 {
     @Override
-    public void handle(Context context) {
+    public void handle(Context context)
+    {
 
         if (!ModuleAuth.allowAutoLogin)
-            //return null;
-        switch(message.mode)
-        {
-        case 1:
-            if (!message.hash.isEmpty())
+            // return null;
+            switch (message.mode)
             {
-                if (PasswordManager.hasSession(UserIdent.get(context.getSender().getUUID(), UUID.fromString(message.hash))))
+            case 1:
+                if (!message.hash.isEmpty())
                 {
-                    ModuleAuth.authenticate(context.getSender().getUUID());
-                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(context.getSender(), Source.AUTOLOGIN));
+                    if (PasswordManager.hasSession(UserIdent.get(context.getSender().getUUID(), UUID.fromString(message.hash))))
+                    {
+                        ModuleAuth.authenticate(context.getSender().getUUID());
+                        APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(context.getSender(), Source.AUTOLOGIN));
+                    }
                 }
-            }
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
 
-        }
-        //return null;
+            }
+        // return null;
     }
 }

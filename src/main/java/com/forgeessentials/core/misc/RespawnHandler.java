@@ -42,12 +42,12 @@ public class RespawnHandler
         if (spawnProperty != null)
         {
             WarpPoint point = WarpPoint.fromString(spawnProperty);
-//            if (point == null)
-//            {
-//                WorldPoint worldPoint = WorldPoint.fromString(spawnProperty);
-//                if (worldPoint != null)
-//                    point = new WarpPoint(worldPoint, player.cameraYaw, player.cameraPitch);
-//            }
+            // if (point == null)
+            // {
+            // WorldPoint worldPoint = WorldPoint.fromString(spawnProperty);
+            // if (worldPoint != null)
+            // point = new WarpPoint(worldPoint, player.cameraYaw, player.cameraPitch);
+            // }
             if (point != null)
                 return point;
         }
@@ -62,7 +62,7 @@ public class RespawnHandler
         return getSpawn(player, location, true);
     }
 
-    public static WarpPoint getPlayerSpawn (PlayerEntity player, WarpPoint location, boolean doDefaultSpawn)
+    public static WarpPoint getPlayerSpawn(PlayerEntity player, WarpPoint location, boolean doDefaultSpawn)
     {
         UserIdent ident = UserIdent.get(player);
 

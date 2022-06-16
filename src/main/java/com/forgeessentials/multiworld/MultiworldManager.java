@@ -114,7 +114,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         Map<String, Multiworld> loadedWorlds = DataManager.getInstance().loadAll(Multiworld.class);
         for (Multiworld world : loadedWorlds.values())
         {
-            if (world.generatorOptions == null) {
+            if (world.generatorOptions == null)
+            {
                 world.generatorOptions = "";
             }
 
@@ -171,7 +172,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     @Override
     public ServerWorld getWorld(String name)
     {
-    	ServerWorld world = parentNamedWorldHandler.getWorld(name);
+        ServerWorld world = parentNamedWorldHandler.getWorld(name);
         if (world != null)
             return world;
 
@@ -237,9 +238,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         APIRegistry.perms.getServerZone().getWorldZone(world.dimensionId)
                 .setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD, world.getName());
 
-            // Register the dimension
-            DimensionManager.registerDimension(world.dimensionId, DimensionManager.getProviderType(world.providerId));
-            worldsByDim.put(world.dimensionId, world);
+        // Register the dimension
+        DimensionManager.registerDimension(world.dimensionId, DimensionManager.getProviderType(world.providerId));
+        worldsByDim.put(world.dimensionId, world);
 
         // Allow the world to unload
         DimensionManager.getProviderType(world.dimensionId).setLoadSpawn(false);
@@ -261,7 +262,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
 
-            WorldSettings settings = new WorldSettings(world.seed, mcServer.getWorldData().getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), WorldType.parseWorldType(world.worldType));
+            WorldSettings settings = new WorldSettings(world.seed, mcServer.getWorldData().getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(),
+                    WorldType.parseWorldType(world.worldType));
             settings.setGeneratorOptions(world.generatorOptions);
             WorldInfo info = new WorldInfo(settings, world.name);
             ServerWorld worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.profiler, world);
@@ -448,7 +450,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     {
         for (Iterator<ServerWorld> it = worldsToRemove.iterator(); it.hasNext();)
         {
-        	ServerWorld world = it.next();
+            ServerWorld world = it.next();
             // Check with DimensionManager, whether the world is still loaded
             if (DimensionManager.getWorld(world.provider.getDimension()) == null)
             {
@@ -466,7 +468,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     {
         for (Iterator<ServerWorld> it = worldsToDelete.iterator(); it.hasNext();)
         {
-        	ServerWorld world = it.next();
+            ServerWorld world = it.next();
             // Check with DimensionManager, whether the world is still loaded
             if (DimensionManager.getWorld(world.provider.getDimension()) == null)
             {

@@ -224,7 +224,7 @@ public abstract class ServerUtil
      * <b>Please use module directory instead!</b>
      */
     @SuppressWarnings("resource")
-	public static File getBaseDir()
+    public static File getBaseDir()
     {
         if (ServerLifecycleHooks.getCurrentServer().isSingleplayer())
             return Minecraft.getInstance().gameDirectory;
@@ -288,17 +288,21 @@ public abstract class ServerUtil
      */
     public static double getTPS()
     {
-    	MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-    	final double meanTickTime = mean(server.tickTimes) * 1.0E-6D;
-		return Math.min(1000 / meanTickTime, 20);// tps > 20 ? 20 : tps;
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        final double meanTickTime = mean(server.tickTimes) * 1.0E-6D;
+        return Math.min(1000 / meanTickTime, 20);// tps > 20 ? 20 : tps;
     }
-    private static long mean(final long[] values) {
-		long sum = 0;
-		for (final long v : values) {
-			sum += v;
-		}
-		return sum / values.length;
-	}
+
+    private static long mean(final long[] values)
+    {
+        long sum = 0;
+        for (final long v : values)
+        {
+            sum += v;
+        }
+        return sum / values.length;
+    }
+
     public static ServerWorld getOverworld()
     {
         return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD);
@@ -313,7 +317,7 @@ public abstract class ServerUtil
     {
         return ServerLifecycleHooks.getCurrentServer() != null && ServerLifecycleHooks.getCurrentServer().isRunning();
     }
-    
+
     public static boolean isOnlineMode()
     {
         return ServerLifecycleHooks.getCurrentServer().usesAuthentication();
@@ -334,21 +338,21 @@ public abstract class ServerUtil
         }
         catch (MalformedURLException e)
         {
-        	throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
         catch (IOException e)
         {
             return false;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
-    public static void copyNbt(CompoundNBT nbt, CompoundNBT  data)
+    public static void copyNbt(CompoundNBT nbt, CompoundNBT data)
     {
         // Clear old data
         for (String key : new HashSet<String>(nbt.getAllKeys()))
             nbt.remove(key);
-    
+
         // Write new data
         for (String key : (Set<String>) data.getAllKeys())
             nbt.put(key, data.get(key));
@@ -363,17 +367,20 @@ public abstract class ServerUtil
 
     public static String getItemPermission(Item item)
     {
-    	ResourceLocation loc = (ResourceLocation) ForgeRegistries.ITEMS.getKey(item);
+        ResourceLocation loc = (ResourceLocation) ForgeRegistries.ITEMS.getKey(item);
         return (loc.getNamespace() + '.' + loc.getPath()).replace(' ', '_');
     }
 
     public static String getBlockName(Block block)
     {
         Object o = ForgeRegistries.BLOCKS.getKey(block).toString();
-        if(o instanceof ResourceLocation){
+        if (o instanceof ResourceLocation)
+        {
             ResourceLocation rl = (ResourceLocation) o;
             return rl.getPath();
-        } else {
+        }
+        else
+        {
             return (String) o;
         }
     }

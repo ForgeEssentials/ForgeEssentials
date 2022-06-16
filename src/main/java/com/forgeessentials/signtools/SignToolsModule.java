@@ -83,8 +83,7 @@ public class SignToolsModule
     }
 
     /**
-     * how to use: First line of the sign MUST BE [command] Second line is the command you want to run Third and fourth
-     * lines are arguments to the command.
+     * how to use: First line of the sign MUST BE [command] Second line is the command you want to run Third and fourth lines are arguments to the command.
      */
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -98,7 +97,7 @@ public class SignToolsModule
         TileEntity te = event.getPlayer().level.getBlockEntity(event.getPos());
         if (te instanceof SignTileEntity)
         {
-        	SignTileEntity sign = ((SignTileEntity) te);
+            SignTileEntity sign = ((SignTileEntity) te);
             if (allowSignEdit && event.getPlayer().isCrouching() && event instanceof RightClickBlock)
             {
                 if (event.getPlayer().getMainHandItem() != ItemStack.EMPTY)
@@ -107,10 +106,11 @@ public class SignToolsModule
                             && PermissionAPI.hasPermission(event.getPlayer(), "fe.protection.use.minecraft.sign")
                             && event.getPlayer().getMainHandItem().getItem().equals(ItemTags.SIGNS))
                     {
-                        //Convert Formatting back into FE format for easy use
+                        // Convert Formatting back into FE format for easy use
                         for (int i = 0; i < sign.signText.length; i++)
                         {
-                            sign.signText[i] = new StringTextComponent(sign.signText[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
+                            sign.signText[i] = new StringTextComponent(
+                                    sign.signText[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
                         }
 
                         event.getPlayer().openEditSign((SignTileEntity) te);
@@ -122,7 +122,8 @@ public class SignToolsModule
 
             String[] signText = getFormatted(sign.signText);
 
-            if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer().createCommandSourceStack(), new SignInfo(event.getPlayer().dimension, event.getPos(), signText, event)))
+            if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer().createCommandSourceStack(),
+                    new SignInfo(event.getPlayer().dimension, event.getPos(), signText, event)))
             {
                 event.setCanceled(true);
             }
@@ -134,7 +135,7 @@ public class SignToolsModule
                     String send = signText[1] + " " + signText[2] + " " + signText[3];
                     if (send != null && ServerLifecycleHooks.getCurrentServer().getCommands() != null)
                     {
-                    	ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(event.getPlayer().createCommandSourceStack(), send);
+                        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(event.getPlayer().createCommandSourceStack(), send);
                         event.setCanceled(true);
                     }
                 }
@@ -147,25 +148,28 @@ public class SignToolsModule
     private String[] getFormatted(ITextComponent[] text)
     {
         String[] out = new String[text.length];
-        for (int i = 0; i < text.length; i++) {
+        for (int i = 0; i < text.length; i++)
+        {
             out[i] = text[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&');
         }
         return out;
     }
-    
+
     static ForgeConfigSpec.BooleanValue FEallowSignCommands;
     static ForgeConfigSpec.BooleanValue FEallowSignEdit;
-    
- // this is NOT a permprop because perms are checked against the player anyway
+
+    // this is NOT a permprop because perms are checked against the player anyway
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.push("Sign");
-    	FEallowSignCommands = BUILDER.comment("Allow commands to be run when right clicking signs.").define("allowSignCommands", true);
-    	FEallowSignEdit = BUILDER.comment("Allow players to edit a sign by right clicking on it with a sign item while sneaking.").define("allowSignEditing", true);
+        BUILDER.push("Sign");
+        FEallowSignCommands = BUILDER.comment("Allow commands to be run when right clicking signs.").define("allowSignCommands", true);
+        FEallowSignEdit = BUILDER.comment("Allow players to edit a sign by right clicking on it with a sign item while sneaking.").define("allowSignEditing",
+                true);
     }
 
-	public static void bakeConfig(boolean reload) {
-		 allowSignCommands = FEallowSignCommands.get();
-	        allowSignEdit = FEallowSignEdit.get();
-	}
+    public static void bakeConfig(boolean reload)
+    {
+        allowSignCommands = FEallowSignCommands.get();
+        allowSignEdit = FEallowSignEdit.get();
+    }
 }

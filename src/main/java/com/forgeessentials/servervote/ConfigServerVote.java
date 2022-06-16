@@ -42,7 +42,7 @@ public class ConfigServerVote
     static ForgeConfigSpec.BooleanValue FEallowOfflineVotes;
     static ForgeConfigSpec.ConfigValue<String> FEmsgAll;
     static ForgeConfigSpec.ConfigValue<String> FEmsgVoter;
-    
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
         BUILDER.push(category);
@@ -50,15 +50,16 @@ public class ConfigServerVote
         FEmsgAll = BUILDER.comment("You can use color codes (&), %player and %service").define("msgAll", "%player has voted for this server on %service.");
         FEmsgVoter = BUILDER.comment("You can use color codes (&), %player and %service").define("msgVoter", "Thanks for voting for our server!");
         BUILDER.pop();
-        
+
         BUILDER.comment("This is for votifier compatibility only.").push(subcat);
         FEhostname = BUILDER.comment("Set this to the hostname (or IP address) of your server.").define("hostname", "");
-        FEport = BUILDER.comment("The port which the vote receiver should listen on.").defineInRange("port", 8192, 0 , 65535);
+        FEport = BUILDER.comment("The port which the vote receiver should listen on.").defineInRange("port", 8192, 0, 65535);
         BUILDER.pop();
     }
 
-	public static void bakeConfig(boolean reload) {
-		
+    public static void bakeConfig(boolean reload)
+    {
+
         hostname = FEhostname.get();
         port = FEport.get();
 
@@ -82,10 +83,11 @@ public class ConfigServerVote
                 e1.printStackTrace();
             }
         }
-	}
+    }
+
     private static void loadKeys()
     {
-    	ConfigServerVote.keyFolder = new File(ModuleServerVote.moduleDir, "RSA");
+        ConfigServerVote.keyFolder = new File(ModuleServerVote.moduleDir, "RSA");
         File publicFile = new File(keyFolder, "public.key");
         File privateFile = new File(keyFolder, "private.key");
 

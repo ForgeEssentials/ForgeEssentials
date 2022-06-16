@@ -95,8 +95,9 @@ public class CommandPush extends ForgeEssentialsCommandBase
             }
             BlockPos pos = new BlockPos(x, y, z);
             BlockState state = world.getBlockState(pos);
-            
-            if ((state == Blocks.AIR.defaultBlockState()) || !(state.getBlock() instanceof StoneButtonBlock) || !(state.getBlock() instanceof WoodButtonBlock) && !(state.getBlock() instanceof LeverBlock))
+
+            if ((state == Blocks.AIR.defaultBlockState()) || !(state.getBlock() instanceof StoneButtonBlock)
+                    || !(state.getBlock() instanceof WoodButtonBlock) && !(state.getBlock() instanceof LeverBlock))
             {
                 throw new TranslatedCommandException("Button/Lever Not Found");
             }

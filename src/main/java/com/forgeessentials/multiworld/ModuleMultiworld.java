@@ -46,8 +46,11 @@ public class ModuleMultiworld extends ConfigLoaderBase
 
             FECommandManager.registerCommand(new CommandMultiworld());
             FECommandManager.registerCommand(new CommandMultiworldTeleport());
-        } catch (java.lang.NoSuchMethodError noSuchMethodError) {
-            CrashReport report = CrashReport.makeCrashReport(noSuchMethodError,"MultiWorld Unable to Load, please update Forge or Disable MultiWorld in the main.cfg!");
+        }
+        catch (java.lang.NoSuchMethodError noSuchMethodError)
+        {
+            CrashReport report = CrashReport.makeCrashReport(noSuchMethodError,
+                    "MultiWorld Unable to Load, please update Forge or Disable MultiWorld in the main.cfg!");
             report.addCategory("MultiWorld");
             throw new ReportedException(report);
         }

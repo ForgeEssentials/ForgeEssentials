@@ -139,7 +139,8 @@ public class PlayerInfo implements Loadable
                     }
                 }
             }
-            for (String name : groupsToRemove) {
+            for (String name : groupsToRemove)
+            {
 
                 inventoryGroups.remove(name);
             }

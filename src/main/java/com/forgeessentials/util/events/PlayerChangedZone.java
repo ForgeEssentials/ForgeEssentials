@@ -7,7 +7,6 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.WarpPoint;
 
-
 @Cancelable
 public class PlayerChangedZone extends PlayerEvent
 {

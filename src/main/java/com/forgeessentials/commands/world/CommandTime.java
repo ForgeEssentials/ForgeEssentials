@@ -149,7 +149,8 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
 
     public static void parseTime(CommandParserArgs arguments, boolean addTime) throws CommandException
     {
-        if (arguments.isEmpty()) {
+        if (arguments.isEmpty())
+        {
             throw new TranslatedCommandException("Please Specify a time!");
         }
         long time;

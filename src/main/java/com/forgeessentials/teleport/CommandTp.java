@@ -136,12 +136,14 @@ public class CommandTp extends ForgeEssentialsCommandBase
         }
     }
 
-    @Override public String getPrimaryAlias()
+    @Override
+    public String getPrimaryAlias()
     {
         return "tp";
     }
 
-    @Override public String getUsage(ICommandSender sender)
+    @Override
+    public String getUsage(ICommandSender sender)
     {
         return "/tp [player] <player|<x> <y> <z>> Teleport to a location.";
     }
@@ -170,7 +172,6 @@ public class CommandTp extends ForgeEssentialsCommandBase
             return Collections.emptyList();
         }
     }
-
 
     public DefaultPermissionLevel getPermissionLevel()
     {

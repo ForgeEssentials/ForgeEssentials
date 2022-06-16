@@ -35,11 +35,11 @@ public class AuthEventHandler extends ServerEventHandler
 {
 
     public static String playerBannedMessage;
-    
+
     public static String nonVipKickMessage;
-    
+
     public static int vipSlots;
-    
+
     public static int reservedSlots;
 
     public AuthEventHandler()
@@ -54,7 +54,8 @@ public class AuthEventHandler extends ServerEventHandler
         {
             register();
         }
-        else unregister();
+        else
+            unregister();
     }
 
     private static boolean notPlayer(Object player)
@@ -193,11 +194,9 @@ public class AuthEventHandler extends ServerEventHandler
     }
 
     /*
-     * @SubscribeEvent(priority = EventPriority.HIGHEST) public void onPlayerOpenContainer(PlayerOpenContainerEvent
-     * event) { UUID username = event.getEntityPlayer();
+     * @SubscribeEvent(priority = EventPriority.HIGHEST) public void onPlayerOpenContainer(PlayerOpenContainerEvent event) { UUID username = event.getEntityPlayer();
      * 
-     * if (!ModuleAuth.hasSession.contains(username)) { event.setResult(Result.DENY);
-     * ChatOutputHandler.chatError(event.getEntityPlayer(), "Login required. Try /auth help."); } }
+     * if (!ModuleAuth.hasSession.contains(username)) { event.setResult(Result.DENY); ChatOutputHandler.chatError(event.getEntityPlayer(), "Login required. Try /auth help."); } }
      */
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -238,7 +237,7 @@ public class AuthEventHandler extends ServerEventHandler
     {
         if (!ModuleAuth.isEnabled())
             return;
-        if (ModuleAuth.isRegistered(e.getPlayer().getUUID())  && !ModuleAuth.isAuthenticated(e.getPlayer()))
+        if (ModuleAuth.isRegistered(e.getPlayer().getUUID()) && !ModuleAuth.isAuthenticated(e.getPlayer()))
         {
             NetworkUtils.sendTo(new Packet6AuthLogin(0, ""), (ServerPlayerEntity) e.getPlayer());
         }

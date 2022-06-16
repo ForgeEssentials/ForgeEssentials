@@ -41,7 +41,6 @@ public class ChatConfig
 
     public static Set<String> mutedCommands = new HashSet<>();
 
-    
     static ForgeConfigSpec.ConfigValue<String> FEchatFormat;
     static ForgeConfigSpec.ConfigValue<String> FEwelcomeMessage;
     static ForgeConfigSpec.ConfigValue<String[]> FEloginMessage;
@@ -50,30 +49,31 @@ public class ChatConfig
     static ForgeConfigSpec.ConfigValue<String> FEgamemodeAdventure;
     static ForgeConfigSpec.BooleanValue FELogChat;
     static ForgeConfigSpec.ConfigValue<String[]> FEmutedCommands;
-    
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.comment("Chat configuration").push(CATEGORY);
-    	FEchatFormat = BUILDER.comment(CHAT_FORMAT_HELP).define("ChatFormat", "%s%s<%s>%s%s ");
-    	FELogChat = BUILDER.comment("Log all chat messages").define("LogChat", true);
-    	
-    	FEwelcomeMessage = BUILDER.comment(WELCOME_MESSAGE).define("WelcomeMessage", DEFAULT_WELCOME_MESSAGE);
-    	FEloginMessage = BUILDER.comment(LOGIN_MESSAGE).define("LoginMessage", DEFAULT_LOGIN_MESSAGE);
-    	BUILDER.pop();
-    	
-    	BUILDER.comment("Gamemode names").push(CAT_GM);
+        BUILDER.comment("Chat configuration").push(CATEGORY);
+        FEchatFormat = BUILDER.comment(CHAT_FORMAT_HELP).define("ChatFormat", "%s%s<%s>%s%s ");
+        FELogChat = BUILDER.comment("Log all chat messages").define("LogChat", true);
+
+        FEwelcomeMessage = BUILDER.comment(WELCOME_MESSAGE).define("WelcomeMessage", DEFAULT_WELCOME_MESSAGE);
+        FEloginMessage = BUILDER.comment(LOGIN_MESSAGE).define("LoginMessage", DEFAULT_LOGIN_MESSAGE);
+        BUILDER.pop();
+
+        BUILDER.comment("Gamemode names").push(CAT_GM);
         FEgamemodeSurvival = BUILDER.define("Survival", "survival");
         FEgamemodeCreative = BUILDER.define("Creative", "creative");
         FEgamemodeAdventure = BUILDER.define("Adventure", "adventure");
         BUILDER.pop();
-        
+
         BUILDER.push("mute");
         FEmutedCommands = BUILDER.comment(MUTEDCMD_HELP).define("mutedCommands", new String[] { "me" });
         BUILDER.pop();
     }
 
-	public static void bakeConfig(boolean reload) {
-		try
+    public static void bakeConfig(boolean reload)
+    {
+        try
         {
             chatFormat = FEchatFormat.get();
             String.format(chatFormat, "", "", "", "", "");
@@ -84,17 +84,17 @@ public class ChatConfig
             chatFormat = "%s%s<%s>%s%s ";
         }
 
-		welcomeMessage = FEwelcomeMessage.get();
+        welcomeMessage = FEwelcomeMessage.get();
         loginMessage = FEloginMessage.get();
-        
+
         gamemodeSurvival = FEgamemodeSurvival.get();
         gamemodeCreative = FEgamemodeCreative.get();
         gamemodeAdventure = FEgamemodeAdventure.get();
-        
+
         mutedCommands.clear();
         for (String cmd : FEmutedCommands.get())
             mutedCommands.add(cmd);
-        
+
         ModuleChat.instance.setChatLogging(FELogChat.get());
 
     }

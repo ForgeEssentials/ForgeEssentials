@@ -132,20 +132,20 @@ public class ModuleProtection
     };
 
     private static final DamageSource[] damageByTypes = new DamageSource[] {
-        DamageSource.ANVIL,
-        DamageSource.CACTUS,
-        DamageSource.DROWN,
-        DamageSource.FALL,
-        DamageSource.FALLING_BLOCK,
-        DamageSource.GENERIC,
-        DamageSource.IN_FIRE,
-        DamageSource.IN_WALL,
-        DamageSource.LAVA,
-        DamageSource.MAGIC,
-        DamageSource.ON_FIRE,
-        DamageSource.OUT_OF_WORLD,
-        DamageSource.STARVE,
-        DamageSource.WITHER,
+            DamageSource.ANVIL,
+            DamageSource.CACTUS,
+            DamageSource.DROWN,
+            DamageSource.FALL,
+            DamageSource.FALLING_BLOCK,
+            DamageSource.GENERIC,
+            DamageSource.IN_FIRE,
+            DamageSource.IN_WALL,
+            DamageSource.LAVA,
+            DamageSource.MAGIC,
+            DamageSource.ON_FIRE,
+            DamageSource.OUT_OF_WORLD,
+            DamageSource.STARVE,
+            DamageSource.WITHER,
     };
 
     public static Map<UUID, String> debugModePlayers = new HashMap<>();
@@ -258,7 +258,8 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_PLACE + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow placing blocks");
         APIRegistry.perms.registerPermission(PERM_TRAMPLE + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow trampling on blocks");
         APIRegistry.perms.registerPermission(PERM_EXPLODE + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "(global) Allows blocks to explode");
-        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow interacting with blocks (button, chest, workbench)");
+        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
+                "Allow interacting with blocks (button, chest, workbench)");
         for (Block block : ForgeRegistries.BLOCKS.getValues())
         {
             String blockPerm = "." + ServerUtil.getBlockPermission(block) + Zone.ALL_PERMS;
@@ -268,7 +269,7 @@ public class ModuleProtection
             APIRegistry.perms.registerPermission(PERM_TRAMPLE + blockPerm, DefaultPermissionLevel.ALL, "PLACE " + blockName);
             APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, DefaultPermissionLevel.ALL, "INTERACT " + blockName);
             APIRegistry.perms.registerPermission(PERM_EXPLODE + blockPerm, DefaultPermissionLevel.ALL, "EXPLODE " + blockName);
-    }
+        }
 
         // ----------------------------------------
         // Register zone permissions
@@ -415,7 +416,8 @@ public class ModuleProtection
             if (stack == ItemStack.EMPTY)
                 msg = "Error getting item permission. Stack item is null. Please report this error (except for TF) and try enabling FE safe-mode.";
             else
-                msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.", stack.getItem().getClass().getName());
+                msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.",
+                        stack.getItem().getClass().getName());
             if (!ForgeEssentials.isSafeMode())
                 throw new RuntimeException(msg, e);
             LoggingHandler.felog.error(msg);
@@ -451,12 +453,12 @@ public class ModuleProtection
         Container abstractContainer = inventory.eventHandler;
         if (abstractContainer instanceof PlayerContainer)
         {
-        	PlayerContainer container = (PlayerContainer) abstractContainer;
+            PlayerContainer container = (PlayerContainer) abstractContainer;
             return container.player;
         }
         else if (abstractContainer instanceof WorkbenchContainer)
         {
-        	CraftingResultSlot slot = (CraftingResultSlot) abstractContainer.getSlot(0);
+            CraftingResultSlot slot = (CraftingResultSlot) abstractContainer.getSlot(0);
             return slot.player;
         }
         return null;

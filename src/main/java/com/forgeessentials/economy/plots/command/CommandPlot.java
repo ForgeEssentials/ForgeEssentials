@@ -193,7 +193,9 @@ public class CommandPlot extends ParserCommandBase
             {
                 Plot.define(selection, arguments.ident);
                 arguments.confirm("Plot created!");
-            } else {
+            }
+            else
+            {
                 throw new TranslatedCommandException("Can not create overlapping plots.");
             }
         }

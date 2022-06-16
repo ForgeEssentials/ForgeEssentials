@@ -31,7 +31,7 @@ public class MixinBlockFire
             remap = false)
     public void handleTryCatchFire(World world, BlockPos pos, int chance, Random random, int argValue1, Face face, CallbackInfo ci)
     {
-        //System.out.println("Mixin : Fire destroyed block and spread to below block");
+        // System.out.println("Mixin : Fire destroyed block and spread to below block");
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))
         {
             ci.cancel();
@@ -41,7 +41,7 @@ public class MixinBlockFire
             BlockPos source = pos.add(face.getFrontOffsetX(), face.getFrontOffsetY(), face.getFrontOffsetZ());
             if (MinecraftForge.EVENT_BUS.post(new FireEvent.Spread(world, pos, source)))
             {
-                //System.out.println("Injector: Fire destroyed but could not spread to block below");
+                // System.out.println("Injector: Fire destroyed but could not spread to block below");
                 world.setBlockToAir(pos);
                 ci.cancel();
             }
@@ -57,7 +57,7 @@ public class MixinBlockFire
             remap = false)
     public void handleTryCatchFireAir(World world, BlockPos pos, int chance, Random random, int argValue1, Face face, CallbackInfo ci)
     {
-        //System.out.println("Mixin : Fire destroyed block");
+        // System.out.println("Mixin : Fire destroyed block");
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))
         {
             ci.cancel();
@@ -69,15 +69,15 @@ public class MixinBlockFire
             at = @At(
                     ordinal = 1,
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z"
-            ),
+                    target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z"),
             cancellable = true,
-            locals = LocalCapture.CAPTURE_FAILEXCEPTION
-    )
+            locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     public void updateTick(World world, BlockPos source, BlockState state, Random rnd, CallbackInfo ci,
-            Block block, boolean isFireSource, int age, boolean isHighHumidity, int something, int x, int z, int y, int something2, BlockPos pos, int neighborEncouragement, int difficultyScaling, int ageIncrement)
+            Block block, boolean isFireSource, int age, boolean isHighHumidity, int something, int x, int z, int y, int something2, BlockPos pos,
+            int neighborEncouragement, int difficultyScaling, int ageIncrement)
     {
-        //System.out.println(String.format("Mixin : Fire spreading to other block from [%d,%d,%d] to [%d,%d,%d]", source.getX(), source.getY(), source.getZ(), pos.getX(), pos.getY(), pos.getZ()));
+        // System.out.println(String.format("Mixin : Fire spreading to other block from [%d,%d,%d] to [%d,%d,%d]", source.getX(), source.getY(), source.getZ(), pos.getX(),
+        // pos.getY(), pos.getZ()));
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Spread(world, pos, source)))
         {
             ci.cancel();

@@ -143,7 +143,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
     private GameType getGameTypeFromString(String string)
     {
-        if(StringUtils.isNumeric(string))
+        if (StringUtils.isNumeric(string))
         {
             return GameType.getByID(Integer.parseInt(string));
         }

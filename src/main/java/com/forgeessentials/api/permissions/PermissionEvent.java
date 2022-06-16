@@ -33,8 +33,7 @@ public class PermissionEvent extends Event
     }
 
     /**
-     * Event runs when a new permission-tree (ServerZone) gets initialized. This event can be used to initialize
-     * internal groups or some other default permissions.
+     * Event runs when a new permission-tree (ServerZone) gets initialized. This event can be used to initialize internal groups or some other default permissions.
      */
     public static class Initialize extends PermissionEvent
     {

@@ -4,7 +4,7 @@ import net.minecraft.world.World;
 
 public class WorldArea extends AreaBase
 {
-	
+
     protected World dim;
 
     public WorldArea(World world, Point start, Point end)
@@ -20,9 +20,9 @@ public class WorldArea extends AreaBase
     }
 
     public World getDimension()
-	{
-		return dim;
-	}
+    {
+        return dim;
+    }
 
     public void setDimension(World dimensionId)
     {
@@ -35,7 +35,7 @@ public class WorldArea extends AreaBase
         return new WorldPoint(dim, (high.x + low.x) / 2, (high.y + low.y) / 2, (high.z + low.z) / 2);
     }
 
-	public boolean contains(WorldPoint point)
+    public boolean contains(WorldPoint point)
     {
         if (point.dim == dim.dimension())
         {

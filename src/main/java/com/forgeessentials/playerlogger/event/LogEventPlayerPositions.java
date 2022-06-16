@@ -27,7 +27,7 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
         @SuppressWarnings("unchecked")
         List<ServerPlayerEntity> players = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         date = new Date();
-        
+
         for (Iterator<ServerPlayerEntity> it = players.iterator(); it.hasNext();)
         {
             ServerPlayerEntity player = it.next();
@@ -41,7 +41,7 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
             action.x = (int) player.position().x;
             action.y = (int) player.position().y;
             action.z = (int) player.position().z;
-            //em.persist(action);
+            // em.persist(action);
         }
     }
 

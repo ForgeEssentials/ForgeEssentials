@@ -23,26 +23,32 @@ public abstract class MixinCraftingManager
     /**
      * Try to find a crafting result that the player is able to craft.
      *
-     * @param inventory the crafting inventory
-     * @param world the world
+     * @param inventory
+     *            the crafting inventory
+     * @param world
+     *            the world
      */
     @Overwrite
     public static ItemStack findMatchingResult(InventoryCrafting inventory, World world)
     {
-    	PlayerEntity player = ModuleProtection.getCraftingPlayer(inventory);
+        PlayerEntity player = ModuleProtection.getCraftingPlayer(inventory);
         Iterator var2 = ForgeRegistries.RECIPE_SERIALIZERS.iterator();
 
         IRecipe irecipe;
-        do {
-            if (!var2.hasNext()) {
+        do
+        {
+            if (!var2.hasNext())
+            {
                 return ItemStack.EMPTY;
             }
 
-            irecipe = (IRecipe)var2.next();
-        } while(!irecipe.matches(inventory, world));
+            irecipe = (IRecipe) var2.next();
+        }
+        while (!irecipe.matches(inventory, world));
 
         ItemStack result = irecipe.getCraftingResult(inventory);
-        if (ModuleProtection.canCraft(player, result)) {
+        if (ModuleProtection.canCraft(player, result))
+        {
             return result;
         }
 

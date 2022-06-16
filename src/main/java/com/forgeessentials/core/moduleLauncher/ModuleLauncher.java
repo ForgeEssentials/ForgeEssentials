@@ -27,7 +27,7 @@ public class ModuleLauncher
     }
 
     public static ModuleLauncher instance;
-    
+
     private static TreeMap<String, ModuleContainer> containerMap = new TreeMap<String, ModuleContainer>();
 
     public void preLoad(FMLCommonSetupEvent e)
@@ -155,7 +155,8 @@ public class ModuleLauncher
     }
 
     @Nullable
-    public static ModuleContainer getModuleContainer(String slug) {
+    public static ModuleContainer getModuleContainer(String slug)
+    {
         return containerMap.getOrDefault(slug, null);
     }
 }

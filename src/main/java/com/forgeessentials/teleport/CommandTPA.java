@@ -77,9 +77,9 @@ public class CommandTPA extends ParserCommandBase
             try
             {
                 arguments.confirm(Translator.format("Waiting for response by %s", player.getUsernameOrUuid()));
-                Questioner.addChecked(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getDisplayName().getUnformattedText()),
-                        new QuestionerCallback()
-                        {
+                Questioner.addChecked(player.getPlayer(),
+                        Translator.format("Allow teleporting %s to your location?", arguments.sender.getDisplayName().getUnformattedText()),
+                        new QuestionerCallback() {
                             @Override
                             public void respond(Boolean response)
                             {
@@ -88,14 +88,14 @@ public class CommandTPA extends ParserCommandBase
                                 else if (response == false)
                                     arguments.error("TPA declined");
                                 else
-                                try
-                                {
-                                    TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
-                                }
-                                catch (CommandException e)
-                                {
-                                    arguments.error(e.getMessage());
-                                }
+                                    try
+                                    {
+                                        TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
+                                    }
+                                    catch (CommandException e)
+                                    {
+                                        arguments.error(e.getMessage());
+                                    }
                             }
                         }, 20);
             }
@@ -130,8 +130,7 @@ public class CommandTPA extends ParserCommandBase
             return;
         try
         {
-            Questioner.addChecked(player.getPlayer(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback()
-            {
+            Questioner.addChecked(player.getPlayer(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback() {
                 @Override
                 public void respond(Boolean response)
                 {

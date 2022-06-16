@@ -14,9 +14,9 @@ public class FallOnBlockEvent extends EntityEvent
     public final World world;
 
     public final BlockPos pos;
-    
+
     public final Block block;
-    
+
     public float fallHeight;
 
     public FallOnBlockEvent(Entity entity, World world, BlockPos pos, Block block, float speed)

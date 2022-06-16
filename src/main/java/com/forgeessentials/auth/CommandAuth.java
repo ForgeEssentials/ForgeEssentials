@@ -162,7 +162,8 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                     ModuleAuth.deauthenticate(player.getUUID());
                     ChatOutputHandler.chatConfirmation(sender.createCommandSourceStack(),
                             Translator.format("Player %s was logged out from the authentication service.", player.getName()));
-                    ChatOutputHandler.chatWarning(player.createCommandSourceStack(), "You have been logged out from the authentication service. Please login again.");
+                    ChatOutputHandler.chatWarning(player.createCommandSourceStack(),
+                            "You have been logged out from the authentication service. Please login again.");
                     return;
                 }
             }
@@ -295,7 +296,8 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                     ModuleAuth.deauthenticate(player.getUUID());
                     ChatOutputHandler.chatConfirmation(sender,
                             Translator.format("Player %s was logged out from the authentication service.", player.getName()));
-                    ChatOutputHandler.chatWarning(player.createCommandSourceStack(), "You have been logged out from the authentication service. Please login again.");
+                    ChatOutputHandler.chatWarning(player.createCommandSourceStack(),
+                            "You have been logged out from the authentication service. Please login again.");
                     return;
                 }
             }

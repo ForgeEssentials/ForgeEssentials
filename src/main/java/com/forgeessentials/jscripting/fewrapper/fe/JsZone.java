@@ -26,7 +26,8 @@ public class JsZone<T extends Zone> extends JsWrapper<T>
         if (zone instanceof ServerZone)
             return JsPermissions.getServerZone();
         JsZone<?> result = cache.get(zone);
-        if (result == null) {
+        if (result == null)
+        {
             if (zone instanceof AreaZone)
                 result = new JsZone<>((AreaZone) zone); // TODO: Add additional zone types
             else if (zone instanceof WorldZone)

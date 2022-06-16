@@ -10,8 +10,8 @@ import com.forgeessentials.util.events.EventCancelledException;
 import com.google.gson.annotations.Expose;
 
 /**
- * {@link AreaZone} covers just a specific area in one world. It has higher priority than all other {@link Zone} types.
- * Area zones can overlap. Priority is then decided by assigning highest priority to the innermost, smallest area.
+ * {@link AreaZone} covers just a specific area in one world. It has higher priority than all other {@link Zone} types. Area zones can overlap. Priority is then decided by
+ * assigning highest priority to the innermost, smallest area.
  */
 public class AreaZone extends Zone implements Comparable<AreaZone>
 {
@@ -187,6 +187,5 @@ public class AreaZone extends Zone implements Comparable<AreaZone>
         else
             clearGroupPermission(GROUP_DEFAULT, FEPermissions.ZONE_HIDDEN);
     }
-
 
 }

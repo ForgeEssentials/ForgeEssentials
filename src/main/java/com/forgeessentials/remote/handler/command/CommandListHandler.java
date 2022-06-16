@@ -32,7 +32,7 @@ public class CommandListHandler extends GenericRemoteHandler<String>
         List<String> commands = new ArrayList<String>();
 
         @SuppressWarnings("unchecked")
-        Set<String> cmds = ServerLifecycleHooks.getCurrentServer().getCommands();//idk
+        Set<String> cmds = ServerLifecycleHooks.getCurrentServer().getCommands();// idk
 
         for (String cmd : cmds)
         {

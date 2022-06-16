@@ -12,7 +12,6 @@ import com.google.gson.JsonPrimitive;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
-
 /**
  * Event triggered when the snooper gets a vote from a service.
  * <p/>

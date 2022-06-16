@@ -35,8 +35,7 @@ public class TaskRegistry extends ServerEventHandler
             if (taskRunning)
                 return;
             taskRunning = true;
-            TaskRegistry.runLater(() ->
-            {
+            TaskRegistry.runLater(() -> {
                 try
                 {
                     task.run();
@@ -118,7 +117,7 @@ public class TaskRegistry extends ServerEventHandler
         runLater.clear();
 
         int blockTaskCount = 0;
-        for (Iterator<TickTask> iterator = tickTasks.iterator(); iterator.hasNext(); )
+        for (Iterator<TickTask> iterator = tickTasks.iterator(); iterator.hasNext();)
         {
             TickTask task = iterator.next();
             if (task.editsBlocks())
@@ -180,8 +179,7 @@ public class TaskRegistry extends ServerEventHandler
         TimerTask timerTask = runnableTasks.get(task);
         if (timerTask == null)
         {
-            timerTask = new TimerTask()
-            {
+            timerTask = new TimerTask() {
                 @Override
                 public void run()
                 {

@@ -81,7 +81,7 @@ public class ShopManager extends ServerEventHandler
     public ShopManager()
     {
         shopTags.add("[FEShop]");
-        //CONFIG ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
     }
 
     @Override
@@ -304,7 +304,7 @@ public class ShopManager extends ServerEventHandler
             if (sameItem)
             {
                 removedAmount = Math.min(equippedStack.getCount(), transactionStack.getCount());
-                equippedStack.setCount( equippedStack.getCount() - removedAmount);
+                equippedStack.setCount(equippedStack.getCount() - removedAmount);
                 if (equippedStack.getCount() <= 0)
                     event.getPlayer().inventory.items.set(event.getPlayer().inventory.selected, ItemStack.EMPTY);
             }
@@ -374,17 +374,19 @@ public class ShopManager extends ServerEventHandler
 
     static ForgeConfigSpec.BooleanValue FEuseStock;
     static ForgeConfigSpec.ConfigValue<String[]> FEshopTags;
-    
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.push(CONFIG_FILE);
-    	FEuseStock = BUILDER.comment(STOCK_HELP).define("use_stock", false);
-    	FEshopTags = BUILDER.define("shopTags", shopTags.toArray(new String[shopTags.size()]));
-    	BUILDER.pop();
+        BUILDER.push(CONFIG_FILE);
+        FEuseStock = BUILDER.comment(STOCK_HELP).define("use_stock", false);
+        FEshopTags = BUILDER.define("shopTags", shopTags.toArray(new String[shopTags.size()]));
+        BUILDER.pop();
     }
-    public static void bakeConfig(boolean reload) {
-    	
-    	useStock = FEuseStock.get();
+
+    public static void bakeConfig(boolean reload)
+    {
+
+        useStock = FEuseStock.get();
         String[] tags = FEshopTags.get();
         shopTags.clear();
         for (String tag : tags)

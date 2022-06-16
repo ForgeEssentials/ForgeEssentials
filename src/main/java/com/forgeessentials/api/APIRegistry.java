@@ -17,7 +17,6 @@ import com.forgeessentials.api.remote.RemoteManager;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-
 /**
  * This is the central access point for all FE API functions
  */
@@ -53,14 +52,12 @@ public class APIRegistry
     public static ScriptHandler scripts;
 
     /**
-     * Allows identifying worlds by name. If you change this handler, remember to call the old one in your
-     * implementation!
+     * Allows identifying worlds by name. If you change this handler, remember to call the old one in your implementation!
      */
     public static NamedWorldHandler namedWorldHandler = new NamedWorldHandler.DefaultNamedWorldHandler();
 
     /**
-     * This manager allows registering custom {@link RemoteHandler}s for remote-module. Please be careful to use unique
-     * IDs when registering handlers.
+     * This manager allows registering custom {@link RemoteHandler}s for remote-module. Please be careful to use unique IDs when registering handlers.
      * 
      * Using this instance to register handlers is deprecated. Use the {@link FERemoteHandler} annotation instead.
      */

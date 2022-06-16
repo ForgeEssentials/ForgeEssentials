@@ -51,24 +51,27 @@ public class Censor
 
     public Censor()
     {
-        //CONFIG ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
     }
+
     static ForgeConfigSpec.BooleanValue FEenabled;
     static ForgeConfigSpec.IntValue FEcensorSlap;
     static ForgeConfigSpec.ConfigValue<String> FEcensorSymbol;
     static ForgeConfigSpec.ConfigValue<String[]> FEfilterList;
-    
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.push(CONFIG_CATEGORY);
-    	FEenabled = BUILDER.comment("Enable Chat Censor?").define("enable", true);
-    	FEcensorSlap = BUILDER.comment("Damage to a player when he uses a censored word").defineInRange("slapDamage", 1, 0, Integer.MAX_VALUE);
-    	FEcensorSymbol = BUILDER.comment("Replace censored words with this character").define("censorSymbol", "#");
-    	FEfilterList = BUILDER.comment(CENSOR_HELP).define("words", DEFAULT_WORDS);
-    	BUILDER.pop();
+        BUILDER.push(CONFIG_CATEGORY);
+        FEenabled = BUILDER.comment("Enable Chat Censor?").define("enable", true);
+        FEcensorSlap = BUILDER.comment("Damage to a player when he uses a censored word").defineInRange("slapDamage", 1, 0, Integer.MAX_VALUE);
+        FEcensorSymbol = BUILDER.comment("Replace censored words with this character").define("censorSymbol", "#");
+        FEfilterList = BUILDER.comment(CENSOR_HELP).define("words", DEFAULT_WORDS);
+        BUILDER.pop();
     }
-    public static void bakeConfig(boolean reload) {
-    	enabled = FEenabled.get();
+
+    public static void bakeConfig(boolean reload)
+    {
+        enabled = FEenabled.get();
         censorSlap = FEcensorSlap.get();
         censorSymbol = FEcensorSymbol.get();
         if (censorSymbol.length() > 1)
@@ -85,7 +88,7 @@ public class Censor
         for (String word : FEfilterList.get())
             filterList.add(new CensoredWord(word));
     }
-    
+
     public String filter(String message)
     {
         return filter(message, null);

@@ -25,7 +25,7 @@ public class BlockModListFile
     private static Calendar calen = Calendar.getInstance();
 
     @SuppressWarnings("unchecked")
-	public static void makeModList()
+    public static void makeModList()
     {
         try
         {
@@ -42,12 +42,12 @@ public class BlockModListFile
                 out.println("# Build: " + BuildInfo.getBuildNumber());
                 out.println("# Change the location of this file in " + ForgeEssentials.getConfigManager().getMainConfigName() + ".toml");
                 out.println();
-                
+
                 ModList l = ModList.get();
                 Field f = ModList.class.getDeclaredField("mods");
                 f.setAccessible(true);
                 List<ModContainer> mods = (List<ModContainer>) f.get(l);
-                
+
                 for (ModContainer mod : mods)
                 {
                     String url = "";

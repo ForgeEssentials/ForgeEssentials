@@ -87,10 +87,13 @@ public class FELaunchHandler implements ITweaker
         MixinBootstrap.init();
         MixinEnvironment.setCompatibilityLevel(CompatibilityLevel.JAVA_8);
 
-        try {
+        try
+        {
             URI uri = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
             MixinBootstrap.getPlatform().addContainer(new ContainerHandleURI(uri));
-        } catch (URISyntaxException e) {
+        }
+        catch (URISyntaxException e)
+        {
             launchLog.error(e);
         }
 

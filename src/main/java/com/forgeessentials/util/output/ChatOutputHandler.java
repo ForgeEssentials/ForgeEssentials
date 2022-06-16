@@ -20,8 +20,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-
-
 public final class ChatOutputHandler
 {
 
@@ -34,8 +32,7 @@ public final class ChatOutputHandler
     /* ------------------------------------------------------------ */
 
     /**
-     * Sends a chat message to the given command sender (usually a player) with the given text and no special
-     * formatting.
+     * Sends a chat message to the given command sender (usually a player) with the given text and no special formatting.
      *
      * @param recipient
      *            The recipient of the chat message.
@@ -55,7 +52,7 @@ public final class ChatOutputHandler
      */
     public static void sendMessage(CommandSource recipient, ITextComponent message)
     {
-    	Entity entity = recipient.getEntity();
+        Entity entity = recipient.getEntity();
         if (entity instanceof FakePlayer && ((ServerPlayerEntity) entity).connection.getConnection() == null)
             LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", entity.getName(), message.plainCopy()));
         else
@@ -93,7 +90,8 @@ public final class ChatOutputHandler
      */
     public static void broadcast(String message)
     {
-        broadcast(new StringTextComponent(message));;
+        broadcast(new StringTextComponent(message));
+        ;
     }
 
     /**
@@ -104,9 +102,10 @@ public final class ChatOutputHandler
      */
     public static void broadcast(ITextComponent message)
     {
-    	for(PlayerEntity p :ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-    		ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT, p.getUUID());
-    	}
+        for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+        {
+            ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT, p.getUUID());
+        }
     }
 
     /* ------------------------------------------------------------ */
@@ -158,10 +157,12 @@ public final class ChatOutputHandler
     {
         sendMessage(sender, msg, chatErrorColor);
     }
+
     public static void chatError(PlayerEntity sender, String msg)
     {
         chatError(sender.createCommandSourceStack(), msg);
     }
+
     /**
      * outputs a confirmation message to the chat box of the given sender.
      *
@@ -174,10 +175,12 @@ public final class ChatOutputHandler
     {
         sendMessage(sender, msg, chatConfirmationColor);
     }
+
     public static void chatConfirmation(PlayerEntity sender, String msg)
     {
         sendMessage(sender.createCommandSourceStack(), msg);
     }
+
     /**
      * outputs a warning message to the chat box of the given sender.
      *
@@ -190,10 +193,12 @@ public final class ChatOutputHandler
     {
         sendMessage(sender, msg, chatWarningColor);
     }
+
     public static void chatWarning(PlayerEntity sender, String msg)
     {
         sendMessage(sender.createCommandSourceStack(), msg);
     }
+
     /**
      * outputs a notification message to the chat box of the given sender.
      * 
@@ -205,6 +210,7 @@ public final class ChatOutputHandler
     {
         sendMessage(sender, msg, chatNotificationColor);
     }
+
     public static void chatNotification(PlayerEntity sender, String msg)
     {
         sendMessage(sender.createCommandSourceStack(), msg);
@@ -332,60 +338,6 @@ public final class ChatOutputHandler
     {
         return message.copy().toString();
     }
-/*
-    public static String formatHtml(ITextComponent message)
-    {
-        // TODO: HTML formatting function
-        StringBuilder sb = new StringBuilder();
-        for (Object msgObj : message)
-        {
-            ITextComponent msg = (ITextComponent) msgObj;
-            Style style = msg.getStyle();
-            if (!isStyleEmpty(style))
-            {
-                sb.append("<span class=\"");
-                TextFormatting color = style.getColor();
-                if (color != null)
-                {
-                    sb.append(" mcf");
-                    sb.append(FORMAT_CHARACTERS[color.ordinal()]);
-                }
-                if (style.isBold())
-                {
-                    sb.append(" mcf");
-                    sb.append(FORMAT_CHARACTERS[TextFormatting.BOLD.ordinal()]);
-                }
-                if (style.isItalic())
-                {
-                    sb.append(" mcf");
-                    sb.append(FORMAT_CHARACTERS[TextFormatting.ITALIC.ordinal()]);
-                }
-                if (style.isUnderlined())
-                {
-                    sb.append(" mcf");
-                    sb.append(FORMAT_CHARACTERS[TextFormatting.UNDERLINE.ordinal()]);
-                }
-                if (style.isObfuscated())
-                {
-                    sb.append(" mcf");
-                    sb.append(FORMAT_CHARACTERS[TextFormatting.OBFUSCATED.ordinal()]);
-                }
-                if (style.isStrikethrough())
-                {
-                    sb.append(" mcf");
-                    sb.append(FORMAT_CHARACTERS[TextFormatting.STRIKETHROUGH.ordinal()]);
-                }
-                sb.append("\">");
-                sb.append(formatHtml(msg.plainCopy()));
-                sb.append("</span>");
-            }
-            else
-            {
-                sb.append(formatHtml(msg.plainCopy()));
-            }
-        }
-        return sb.toString();
-    }
 
     public static String formatHtml(String message)
     {
@@ -427,14 +379,14 @@ public final class ChatOutputHandler
     public static enum ChatFormat
     {
 
-        PLAINTEXT, /*HTML,*/ MINECRAFT, DETAIL;
+        PLAINTEXT, /* HTML, */ MINECRAFT, DETAIL;
 
         public Object format(ITextComponent message)
         {
             switch (this)
             {
-            //case HTML:
-            //    return ChatOutputHandler.formatHtml(message);
+            // case HTML:
+            // return ChatOutputHandler.formatHtml(message);
             case MINECRAFT:
                 return ChatOutputHandler.getFormattedMessage(message);
             case DETAIL:
@@ -464,7 +416,8 @@ public final class ChatOutputHandler
     /**
      * Gets a nice string with only needed elements. Max time is weeks
      *
-     * @param time in seconds
+     * @param time
+     *            in seconds
      * @return Time in string format
      */
     public static String formatTimeDurationReadable(long time, boolean showSeconds)
@@ -513,7 +466,8 @@ public final class ChatOutputHandler
     /**
      * Gets a nice string with only needed elements. Max time is weeks
      *
-     * @param time in milliseconds
+     * @param time
+     *            in milliseconds
      * @return Time in string format
      */
     public static String formatTimeDurationReadableMilli(long time, boolean showSeconds)
@@ -550,28 +504,32 @@ public final class ChatOutputHandler
         if (chatWarningColor == null)
             chatWarningColor = TextFormatting.YELLOW;
     }
+
     static ForgeConfigSpec.ConfigValue<String> FEchatConfirmationColor;
     static ForgeConfigSpec.ConfigValue<String> FEchatErrorColor;
     static ForgeConfigSpec.ConfigValue<String> FEchatNotificationColor;
     static ForgeConfigSpec.ConfigValue<String> FEchatWarningColor;
-    
+
     public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-    	BUILDER.comment(
+        BUILDER.comment(
                 "This controls the colors of the various chats output by ForgeEssentials." + "\nValid output colors are as follows:"
                         + "\naqua, black, blue, dark_aqua, dark_blue, dark_gray, dark_green, dark_purple, dark_red"
-                        + "\ngold, gray, green, light_purple, red, white, yellow").push(CONFIG_MAIN_OUTPUT);
-    	FEchatConfirmationColor = BUILDER.comment("Defaults to green.")
-    			.define("confirmationColor", "green"); 
-    	FEchatErrorColor = BUILDER.comment("Defaults to red.")
-    			.define("errorOutputColor", "red"); 
-    	FEchatNotificationColor = BUILDER.comment("Defaults to aqua.")
-    			.define("notificationOutputColor", "aqua"); 
-    	FEchatWarningColor = BUILDER.comment("Defaults to yellow.")
-    			.define("warningOutputColor", "yellow"); 
-    	BUILDER.pop();
+                        + "\ngold, gray, green, light_purple, red, white, yellow")
+                .push(CONFIG_MAIN_OUTPUT);
+        FEchatConfirmationColor = BUILDER.comment("Defaults to green.")
+                .define("confirmationColor", "green");
+        FEchatErrorColor = BUILDER.comment("Defaults to red.")
+                .define("errorOutputColor", "red");
+        FEchatNotificationColor = BUILDER.comment("Defaults to aqua.")
+                .define("notificationOutputColor", "aqua");
+        FEchatWarningColor = BUILDER.comment("Defaults to yellow.")
+                .define("warningOutputColor", "yellow");
+        BUILDER.pop();
     }
-    public static void bakeConfig(boolean isReload) {
+
+    public static void bakeConfig(boolean isReload)
+    {
         setConfirmationColor(FEchatConfirmationColor.get());
         setErrorColor(FEchatErrorColor.get());
         setNotificationColor(FEchatNotificationColor.get());

@@ -61,7 +61,7 @@ public final class ItemUtil
         TileEntity te = point.getTileEntity();
         if (te instanceof SignTileEntity)
         {
-        	SignTileEntity sign = (SignTileEntity) te;
+            SignTileEntity sign = (SignTileEntity) te;
             return sign.signText;
         }
         return null;
@@ -69,7 +69,7 @@ public final class ItemUtil
 
     public static CompoundNBT getTagCompound(ItemStack itemStack)
     {
-    	CompoundNBT tag = itemStack.getTag();
+        CompoundNBT tag = itemStack.getTag();
         if (tag == null)
         {
             tag = new CompoundNBT();
@@ -78,10 +78,9 @@ public final class ItemUtil
         return tag;
     }
 
-    
     public static CompoundNBT getCompoundTag(CompoundNBT tag, String side)
     {
-    	CompoundNBT subTag = tag.getCompound(side);
+        CompoundNBT subTag = tag.getCompound(side);
         tag.put(side, subTag);
         return subTag;
     }

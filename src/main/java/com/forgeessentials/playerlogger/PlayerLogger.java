@@ -456,9 +456,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /**
      * @param root
      * @param area
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @return
      */
     protected Predicate getActionPredicate(Root<? extends Action> root, WorldArea area, Date startTime, Date endTime, long fromId)
@@ -486,9 +489,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /**
      * @param root
      * @param point
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @return
      */
     protected Predicate getActionPredicate(Root<? extends Action> root, WorldPoint point, Date startTime, Date endTime, long fromId)
@@ -513,9 +519,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /**
      * @param area
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @param maxResults
      * @return
      */
@@ -535,9 +544,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /**
      * @param point
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @param maxResults
      * @return
      */
@@ -557,9 +569,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /**
      * @param area
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @param maxResults
      * @return
      */
@@ -689,7 +704,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         if (event.stack != null)
         {
             Item item = event.stack.getItem();
-            if (item instanceof BlockItem/*||item instanceof ItemRedstone*/|| item instanceof BedItem || item instanceof DoorItem || item instanceof SkullItem)
+            if (item instanceof BlockItem/* ||item instanceof ItemRedstone */ || item instanceof BedItem || item instanceof DoorItem
+                    || item instanceof SkullItem)
                 return;
         }
         logEvent(new LogEventPostInteract(event));

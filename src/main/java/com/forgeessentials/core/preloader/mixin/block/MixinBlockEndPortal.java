@@ -17,7 +17,8 @@ public class MixinBlockEndPortal
     @Overwrite
     public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
     {
-        if (!entityIn.isPassenger() && !entityIn.isVehicle() && entityIn.isNonBoss() && !worldIn.isClientSide && entityIn.getEntityBoundingBox().intersects(state.getBoundingBox(worldIn, pos).offset(pos))
+        if (!entityIn.isPassenger() && !entityIn.isVehicle() && entityIn.isNonBoss() && !worldIn.isClientSide
+                && entityIn.getEntityBoundingBox().intersects(state.getBoundingBox(worldIn, pos).offset(pos))
                 && !MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entityIn, worldIn, pos, 1, new BlockPos(0, 0, 0))))
         {
             entityIn.changeDimension(1);
