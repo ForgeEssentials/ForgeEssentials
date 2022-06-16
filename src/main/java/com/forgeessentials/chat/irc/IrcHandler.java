@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
@@ -57,8 +58,9 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.brigadier.Command;
 
-public class IrcHandler extends ListenerAdapter<PircBotX>
+public class IrcHandler extends ListenerAdapter
 {
 
     private static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + "_IRC";
@@ -189,9 +191,9 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
         }
     }
 
-    public Configuration<PircBotX> constructConfig()
+    public Configuration constructConfig()
     {
-        Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
+        Configuration.Builder builder = new Configuration.Builder();
         builder.addListener(this);
         builder.setName(botName);
         builder.setLogin("FEIRCBot");
@@ -338,7 +340,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
                 bot.sendIRC().message(channel, message);
     }
 
-    public void sendPlayerMessage(ICommandSender sender, ITextComponent message)
+    public void sendPlayerMessage(CommandSource sender, ITextComponent message)
     {
         if (isConnected())
             sendMessage(String.format(mcHeader, sender.getName(), ChatOutputHandler.stripFormatting(message.getUnformattedText())));
@@ -416,7 +418,6 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
         String commandName = args[0].substring(1);
         args = Arrays.copyOfRange(args, 1, args.length);
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-
         ICommand command = (ICommand) server.getCommandManager().getCommands().get(commandName);
         if (command == null)
         {
@@ -493,7 +494,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
     /* ------------------------------------------------------------ */
 
     @Override
-    public void onPrivateMessage(PrivateMessageEvent<PircBotX> event)
+    public void onPrivateMessage(PrivateMessageEvent event)
     {
         String raw = event.getMessage().trim();
         while (raw.startsWith(":"))
@@ -517,7 +518,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
     }
 
     @Override
-    public void onMessage(MessageEvent<PircBotX> event)
+    public void onMessage(MessageEvent event)
     {
         if (event.getUser().getNick().equalsIgnoreCase(bot.getNick()))
             return;
@@ -539,7 +540,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
     }
 
     @Override
-    public void onKick(KickEvent<PircBotX> event)
+    public void onKick(KickEvent event)
     {
         if (event.getRecipient() != bot.getUserBot())
         {
@@ -555,7 +556,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
     }
 
     @Override
-    public void onQuit(QuitEvent<PircBotX> event)
+    public void onQuit(QuitEvent event)
     {
         if (!showEvents || event.getUser() == bot.getUserBot())
             return;
@@ -563,7 +564,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
     }
 
     @Override
-    public void onNickChange(NickChangeEvent<PircBotX> event)
+    public void onNickChange(NickChangeEvent event)
     {
         if (!showEvents || event.getUser() == bot.getUserBot())
             return;
@@ -571,7 +572,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
     }
 
     @Override
-    public void onJoin(JoinEvent<PircBotX> event) throws Exception
+    public void onJoin(JoinEvent event) throws Exception
     {
         if (!showEvents || event.getUser() == bot.getUserBot())
             return;
@@ -579,7 +580,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
     }
 
     @Override
-    public void onPart(PartEvent<PircBotX> event) throws Exception
+    public void onPart(PartEvent event) throws Exception
     {
         ircUserCache.remove(event.getUser());
         if (!showEvents || event.getUser() == bot.getUserBot())
@@ -588,25 +589,25 @@ public class IrcHandler extends ListenerAdapter<PircBotX>
     }
 
     @Override
-    public void onConnect(ConnectEvent<PircBotX> event) throws Exception
+    public void onConnect(ConnectEvent event) throws Exception
     {
         mcSendMessage("IRC bot connected to the network");
     }
 
     @Override
-    public void onDisconnect(DisconnectEvent<PircBotX> event) throws Exception
+    public void onDisconnect(DisconnectEvent event) throws Exception
     {
         mcSendMessage("IRC bot disconnected from the network");
     }
 
     @Override
-    public void onAction(ActionEvent<PircBotX> event) throws Exception
+    public void onAction(ActionEvent event) throws Exception
     {
         mcSendMessage(Translator.format("* %s %s", event.getUser().getNick(), event.getMessage()));
     }
 
     @Override
-    public void onNickAlreadyInUse(NickAlreadyInUseEvent<PircBotX> event) throws Exception
+    public void onNickAlreadyInUse(NickAlreadyInUseEvent event) throws Exception
     {
         LoggingHandler.felog.warn(Translator.format("Nick %s already in use, switching to nick %s", event.getUsedNick(), event.getAutoNewNick()));
     }
