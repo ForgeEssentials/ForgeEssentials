@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.init.Biomes;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.layer.GenLayer;
-import net.minecraft.world.gen.layer.IntCache;
+import net.minecraft.world.biome.Biomes;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.BiomeManager.BiomeEntry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.forgeessentials.multiworld.WorldServerMultiworld;
 import com.google.common.collect.ImmutableList;
@@ -71,7 +70,7 @@ public class GenLayerMultiworldBiome extends GenLayer
                 {
                     aint1[j1 + i1 * p_75904_3_] = k1;
                 }
-                else if (k1 == Biome.REGISTRY.getIDForObject(Biomes.MUSHROOM_ISLAND))
+                else if (k1 == Biome.REGISTRY.getIDForObject(Biomes.MUSHROOM_FIELDS))
                 {
                     aint1[j1 + i1 * p_75904_3_] = k1;
                 }
@@ -81,11 +80,11 @@ public class GenLayerMultiworldBiome extends GenLayer
                     {
                         if (this.nextInt(3) == 0)
                         {
-                            aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.MESA_ROCK);
+                            aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.BADLANDS);
                         }
                         else
                         {
-                            aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.MESA_CLEAR_ROCK);
+                            aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.BADLANDS_PLATEAU);
                         }
                     }
                     else
@@ -108,7 +107,7 @@ public class GenLayerMultiworldBiome extends GenLayer
                 {
                     if (l1 > 0)
                     {
-                        aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.COLD_TAIGA);
+                        aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.TAIGA);
                     }
                     else
                     {
@@ -121,7 +120,7 @@ public class GenLayerMultiworldBiome extends GenLayer
                 }
                 else
                 {
-                    aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.MUSHROOM_ISLAND);
+                    aint1[j1 + i1 * p_75904_3_] = Biome.REGISTRY.getIDForObject(Biomes.MUSHROOM_FIELDS);
                 }
             }
         }

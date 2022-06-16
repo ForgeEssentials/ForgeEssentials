@@ -1,5 +1,6 @@
 package com.forgeessentials.afterlife;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.tileentity.SkullTileEntity;
 
 import com.forgeessentials.api.UserIdent;
@@ -34,7 +35,7 @@ public class TileEntitySkullGrave extends SkullTileEntity
             if (owner.hasPlayer())
             {
                 // createPlayerSkull(owner.getPlayer(), world, point.getX(), point.getY(), point.getZ());
-                world.setBlockState(pos, Blocks.CHEST.getDefaultState());
+                world.setBlockState(pos, Blocks.CHEST.defaultBlockState());
             }
         }
         else

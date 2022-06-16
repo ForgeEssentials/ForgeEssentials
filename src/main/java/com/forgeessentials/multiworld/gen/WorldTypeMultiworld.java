@@ -1,13 +1,9 @@
 package com.forgeessentials.multiworld.gen;
 
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldType;
+import net.minecraft.world.server.ServerWorld;
 
 import com.forgeessentials.multiworld.WorldServerMultiworld;
-import net.minecraft.world.gen.ChunkGeneratorSettings;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.layer.GenLayer;
 
 public class WorldTypeMultiworld extends WorldType
 {
@@ -86,7 +82,7 @@ public class WorldTypeMultiworld extends WorldType
      * 
      * @return Fuzz for entity initial spawn in blocks.
      */
-    public int getSpawnFuzz(WorldServer world, net.minecraft.server.MinecraftServer server)
+    public int getSpawnFuzz(ServerWorld world, net.minecraft.server.MinecraftServer server)
     {
         return this.world.getSpawnFuzz(world, server);
     }

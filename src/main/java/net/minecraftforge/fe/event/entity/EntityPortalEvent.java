@@ -16,14 +16,14 @@ public class EntityPortalEvent extends EntityEvent
 
     public final BlockPos target;
 
-    public final int targetDimension;
+    public final World targetDimension;
 
-    public EntityPortalEvent(Entity entity, World world, BlockPos pos, int targetDimension, BlockPos target)
+    public EntityPortalEvent(Entity entity, World world, BlockPos pos, World level, BlockPos target)
     {
         super(entity);
         this.world = world;
         this.pos = pos;
         this.target = target;
-        this.targetDimension = targetDimension;
+        this.targetDimension = level;
     }
 }
