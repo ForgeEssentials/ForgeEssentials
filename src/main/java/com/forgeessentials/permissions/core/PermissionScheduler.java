@@ -11,9 +11,8 @@ import java.util.TimeZone;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -193,10 +192,10 @@ public class PermissionScheduler extends ServerEventHandler
 		if (ServerUtil.isServerRunning())
         {
             if (enabled) {
-                register();
-            	loadAll();
+                ModulePermissions.getPermissionScheduler().register();
+                ModulePermissions.getPermissionScheduler().loadAll();
             }else {
-                unregister();
+                ModulePermissions.getPermissionScheduler().unregister();
             }
         }
     }

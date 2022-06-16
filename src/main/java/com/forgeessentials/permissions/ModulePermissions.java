@@ -248,5 +248,8 @@ public class ModulePermissions
 	public static ItemPermissionManager getItemPermissionManager() {
 		return itemPermissionManager;
 	}
+	public static PermissionScheduler getPermissionScheduler(){
+        return permissionScheduler;
+    }
 
 }
