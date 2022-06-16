@@ -1,9 +1,5 @@
  package com.forgeessentials.commons.selections;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;

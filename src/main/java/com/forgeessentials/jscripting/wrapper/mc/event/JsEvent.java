@@ -12,7 +12,6 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.jscripting.ScriptInstance;
 
-@SuppressWarnings("unused")
 public abstract class JsEvent<T extends Event>
 {
 

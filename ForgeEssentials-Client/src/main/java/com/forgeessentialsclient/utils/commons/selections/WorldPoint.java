@@ -1,20 +1,15 @@
 package com.forgeessentialsclient.utils.commons.selections;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.event.world.BlockEvent;
 
 import com.google.gson.annotations.Expose;
-import com.mojang.brigadier.context.CommandContext;
 
 /**
  * Point which stores dimension as well

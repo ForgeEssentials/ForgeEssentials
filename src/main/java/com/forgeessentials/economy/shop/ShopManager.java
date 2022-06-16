@@ -39,10 +39,8 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ProtectionEventHandler;
@@ -210,6 +208,7 @@ public class ShopManager extends ServerEventHandler
         }
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(final PlayerInteractEvent event)
     {

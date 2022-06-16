@@ -57,7 +57,7 @@ public class ModulePermissions
     private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath()
             + "/permissions", false);
 
-    private PermissionScheduler permissionScheduler;
+    private static PermissionScheduler permissionScheduler;
 
     private static ItemPermissionManager itemPermissionManager;
 

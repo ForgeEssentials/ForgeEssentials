@@ -442,7 +442,6 @@ public class ScriptInstance
         FECommandManager.registerCommand(command, true);
     }
 
-    @SuppressWarnings({ "rawtypes" })
     public void registerEventHandler(String event, Object handler)
     {
         Class<? extends JsEvent> eventType = ScriptCompiler.eventTypes.get(event);
