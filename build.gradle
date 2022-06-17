@@ -120,7 +120,7 @@ targetCompatibility = 1.8
 
 // Set up forge options
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'snapshot', version: "20180304-1.12"
     accessTransformer = file('src/main/resources/META-INF/forgeessentials_at.cfg')
     runs {
         client {
