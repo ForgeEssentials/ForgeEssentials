@@ -200,7 +200,7 @@ public class IrcHandler extends ListenerAdapter
         builder.setAutoNickChange(true);
         builder.setMessageDelay(messageDelay);
         builder.setCapEnabled(!twitchMode);
-        builder.setServer(server, port, serverPassword.isEmpty() ? "" : serverPassword);
+        builder.buildForServer(server, port, serverPassword.isEmpty() ? "" : serverPassword);
 
         if (!nickPassword.isEmpty())
             builder.setNickservPassword(nickPassword);
@@ -343,7 +343,7 @@ public class IrcHandler extends ListenerAdapter
     public void sendPlayerMessage(CommandSource sender, ITextComponent message)
     {
         if (isConnected())
-            sendMessage(String.format(mcHeader, sender.getName(), ChatOutputHandler.stripFormatting(message.getUnformattedText())));
+            sendMessage(String.format(mcHeader, sender.getTextName(), ChatOutputHandler.stripFormatting(message.getString())));
     }
 
     private void mcSendMessage(String message, User user)
@@ -365,7 +365,7 @@ public class IrcHandler extends ListenerAdapter
         ChatOutputHandler.broadcast(new TranslationTextComponent("%s%s", header, messageComponent));
     }
 
-    public ICommandSender getIrcUser(String username)
+    public CommandSource getIrcUser(String username)
     {
         if (!isConnected())
             return null;

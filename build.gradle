@@ -206,6 +206,7 @@ dependencies {
 	// WorldEdit
     compile "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
     compile "com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5"
+    compile "baubles:Baubles:1.8.7.1:1.16.5"
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
     mavenDeps "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
 
@@ -381,7 +382,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 //reobf {
 //    clientJar { classpath.from(sourceSets.main.compileClasspath) }
 //}
-
+jar.finalizedBy('reobfJar') 
 /************************************************************
  * Others
  */
