@@ -1,11 +1,11 @@
 package com.forgeessentials.afterlife;
 
+import com.forgeessentials.api.UserIdent;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 
-import com.forgeessentials.api.UserIdent;
-
-public class InventoryGrave extends InventoryBasic
+public class InventoryGrave extends Inventory
 {
 
     private Grave grave;
