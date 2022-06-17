@@ -23,9 +23,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.IProgressUpdate;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -444,6 +443,8 @@ public class ModuleBackup extends ConfigLoaderBase
             oldestWeeklyBackup.add(Calendar.WEEK_OF_YEAR, weeklyBackups <= 0 ? -1000 : -weeklyBackups);
 
             Calendar oldestBackup = oldestDailyBackup.before(oldestWeeklyBackup) ? oldestDailyBackup : oldestWeeklyBackup;
+            Calendar currentDailyBackup = oldestDailyBackup;
+            Calendar currentWeeklyBackup = oldestWeeklyBackup;
 
             int index = 0;
             for (Iterator<Entry<Calendar, File>> it = files.entrySet().iterator(); it.hasNext();)
@@ -455,58 +456,61 @@ public class ModuleBackup extends ConfigLoaderBase
                 }
                 else if (backup.getKey().before(oldestBackup))
                 {
+                    LoggingHandler.felog.debug("Removing Old Backup {} {}", FILE_FORMAT.format(backup.getKey().getTime()), backup.getValue().getParentFile().getName());
                     if (!backup.getValue().delete())
                         LoggingHandler.felog.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
                     it.remove();
                 }
             }
 
-            while (oldestDailyBackup.before(now))
+            while (currentDailyBackup.before(now))
             {
-                Calendar nextDate = (Calendar) oldestDailyBackup.clone();
+                Calendar nextDate = (Calendar) currentDailyBackup.clone();
                 nextDate.add(Calendar.DAY_OF_YEAR, 1);
                 boolean first = true;
                 for (Iterator<Entry<Calendar, File>> it = files.entrySet().iterator(); it.hasNext();)
                 {
                     Entry<Calendar, File> backup = it.next();
-                    if (backup.getKey().before(oldestDailyBackup))
+                    if (backup.getKey().before(currentDailyBackup))
                         continue;
                     if (first)
                     {
                         first = false;
                         continue;
                     }
-                    if (backup.getKey().after(nextDate))
+                    if (backup.getKey().after(oldestDailyBackup) || backup.getKey().after(nextDate))
                         break;
+                    LoggingHandler.felog.debug("Removing Daily Backup {} {}", FILE_FORMAT.format(backup.getKey().getTime()), backup.getValue().getParentFile().getName());
                     if (!backup.getValue().delete())
                         LoggingHandler.felog.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
                     it.remove();
                 }
-                oldestDailyBackup = nextDate;
+                currentDailyBackup = nextDate;
             }
 
-            while (oldestWeeklyBackup.before(now))
+            while (currentWeeklyBackup.before(now))
             {
-                Calendar nextDate = (Calendar) oldestWeeklyBackup.clone();
+                Calendar nextDate = (Calendar) currentWeeklyBackup.clone();
                 nextDate.add(Calendar.WEEK_OF_YEAR, 1);
                 boolean first = true;
                 for (Iterator<Entry<Calendar, File>> it = files.entrySet().iterator(); it.hasNext();)
                 {
                     Entry<Calendar, File> backup = it.next();
-                    if (backup.getKey().before(oldestWeeklyBackup))
+                    if (backup.getKey().before(currentWeeklyBackup))
                         continue;
                     if (first)
                     {
                         first = false;
                         continue;
                     }
-                    if (backup.getKey().after(nextDate))
+                    if (backup.getKey().after(oldestDailyBackup) || backup.getKey().after(nextDate))
                         break;
+                    LoggingHandler.felog.debug("Removing Weekly Backup {} {}", FILE_FORMAT.format(backup.getKey().getTime()), backup.getValue().getParentFile().getName());
                     if (!backup.getValue().delete())
                         LoggingHandler.felog.error(String.format("Could not delete backup file %s", backup.getValue().getAbsolutePath()));
                     it.remove();
                 }
-                oldestWeeklyBackup = nextDate;
+                currentWeeklyBackup = nextDate;
             }
         }
     }

@@ -28,11 +28,12 @@ buildscript {
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+		classpath "com.discord4j:discord4j-core:3.2.1"
 	}
 }
 
 plugins {
-    id 'org.spongepowered.plugin' version '0.6'
+//    id 'org.spongepowered.plugin' version '0.6'
     id 'org.sonarqube' version '2.5'
 }
 
@@ -54,10 +55,12 @@ repositories {
     flatDir {
         dirs 'lib'
     }
+
 	maven {
-		name = "sk89q"
-		url = "https://maven.enginehub.org/repo/"
+		name "Sonatype (Cubic Chunks)"
+		url "https://oss.sonatype.org/content/repositories/public/"
 	}
+
 	maven {
 		name = "sponge"
 		url = "https://repo.spongepowered.org/maven/"
@@ -67,11 +70,6 @@ repositories {
 		name = "CurseForge"
 		url = "https://minecraft.curseforge.com/api/maven/"
 	}
-
-    maven {
-        name "Sonatype (Cubic Chunks)"
-        url "https://oss.sonatype.org/content/repositories/public/"
-    }
 
     maven {
         name = "LatMod"
@@ -85,6 +83,10 @@ repositories {
             includeGroup 'mezz.jei'
         }
     }
+	maven {
+		name = "sk89q"
+		url = "https://maven.enginehub.org/repo/"
+	}
 
     maven {
         name = "forge"
@@ -94,6 +96,10 @@ repositories {
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
+
+
+import org.ajoberstar.grgit.Grgit
+import org.apache.tools.ant.filters.ReplaceTokens
 
 /************************************************************
  * General configuration
@@ -107,7 +113,7 @@ if (System.getenv("BUILD_NUMBER") != null) {
 }
 
 // Get commit hash
-import org.ajoberstar.grgit.Grgit
+
 def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
@@ -122,10 +128,8 @@ println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getPro
 
 // Set up forge options
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+	mappings channel: 'official', version: '1.16.5'
     accessTransformer = file('src/main/resources/META-INF/forgeessentials_at.cfg')
-    replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
-	replace (["_BASEVERSION_":mod_version,"_MCVERSION_":project.minecraftVersion])
     runs {
         server {
             workingDirectory project.file('rundir')
@@ -191,7 +195,7 @@ dependencies {
     }
 
     // Shade Mixin library
-    shade (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
+    shade (group: "org.spongepowered", name: "mixin", version: "0.8.5-SNAPSHOT") {
         exclude group: 'org.ow2.asm', module: 'asm-tree'
     }
 
@@ -205,8 +209,10 @@ dependencies {
 	
 	// WorldEdit
     compile "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
-    compile "com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5"
-    compile "baubles:Baubles:1.8.7.1:1.16.5"
+    compile ("com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5") {
+		exclude group: "net.minecraftforge", module: "forge"
+	}
+    compile "baubles:baubles:1.8.7.1:1.16.5"
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
     mavenDeps "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
 
@@ -215,8 +221,8 @@ dependencies {
     compileOnly ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
         exclude group: "org.spongepowered", module: "mixin"
     }
-    compileOnly "com.feed_the_beast.mods:FTBLib:5.4.4.5"
-    compileOnly "com.feed_the_beast.mods:FTBUtilities:5.4.0.124"
+    compileOnly "com.feed_the_beast.mods:FTBLib:5.4.7.2"
+    compileOnly "com.feed_the_beast.mods:FTBUtilities:5.4.1.131"
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
@@ -243,7 +249,6 @@ sourceSets {
 	}
 }
 
-import org.apache.tools.ant.filters.ReplaceTokens
 project.compileUtilsJava {
     doFirst {
         copy {

@@ -1,24 +1,19 @@
 package com.forgeessentials.util.output;
 
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.*;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public final class ChatOutputHandler
 {
@@ -369,7 +364,7 @@ public final class ChatOutputHandler
             sb.append("</span>");
         return sb.toString();
     }
-*/
+
     public static boolean isStyleEmpty(Style style)
     {
         return !style.isBold() && !style.isItalic() && !style.isObfuscated() && !style.isStrikethrough() && !style.isUnderlined()

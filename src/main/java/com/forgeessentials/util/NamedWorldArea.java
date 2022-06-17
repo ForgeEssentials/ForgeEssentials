@@ -1,15 +1,14 @@
 package com.forgeessentials.util;
 
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.google.gson.annotations.Expose;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 /**
  * Keeps a WorldArea linked to a particular multiworld, even if the dim-id changes
@@ -56,7 +55,7 @@ public class NamedWorldArea extends WorldArea
 
     public NamedWorldArea(WorldArea area)
     {
-        this(area.getDimension()), area.getLowPoint(), area.getHighPoint());
+        this(area.getDimension(), area.getLowPoint(), area.getHighPoint());
     }
 
     public boolean isLinked()

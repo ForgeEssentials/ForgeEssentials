@@ -153,7 +153,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
     {
         if (!canConsoleUseCommand() && !(sender instanceof PlayerEntity))
             return false;
-        return true;
+        return this.checkCommandPermission(sender);
     }
 
     public abstract boolean canConsoleUseCommand();

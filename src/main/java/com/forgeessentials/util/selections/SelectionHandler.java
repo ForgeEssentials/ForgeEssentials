@@ -72,13 +72,14 @@ public class SelectionHandler extends ServerEventHandler
         WorldPoint point = new WorldPoint(player.level, event.getPos());
 
         SelectionHandler.setStart((ServerPlayerEntity) event.getPlayer(), point);
+        SelectionHandler.setDimension((ServerPlayerEntity) event.getPlayer(), point.getDimension());
         String message = Translator.format("Pos1 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
         ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void playerInteractEvent(PlayerInteractEvent event)
+    public void playerInteractEvent(PlayerInteractEvent.RightClickBlock event)
     {
         // Only handle server events
         if (FMLEnvironment.dist.isClient())
@@ -88,8 +89,9 @@ public class SelectionHandler extends ServerEventHandler
         PlayerEntity player = event.getPlayer();
         PlayerInfo info = PlayerInfo.get(player);
 
-        if (!info.isWandEnabled())
+        if (!info.isWandEnabled() || event.getHand() == EnumHand.OFF_HAND) {
             return;
+        }
 
         // Check if wand should activate
         if (player.getMainHandItem() == null)
@@ -108,6 +110,7 @@ public class SelectionHandler extends ServerEventHandler
         WorldPoint point = new WorldPoint(player.level, event.getPos());
 
         SelectionHandler.setEnd((ServerPlayerEntity) event.getPlayer(), point);
+        SelectionHandler.setDimension((ServerPlayerEntity) event.getEntityPlayer(), point.getDimension());
         String message = Translator.format("Pos2 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
         ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);

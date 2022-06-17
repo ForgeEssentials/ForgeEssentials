@@ -28,7 +28,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.GameType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.BlockSnapshot;
@@ -451,16 +450,23 @@ public class ProtectionEventHandler extends ServerEventHandler
             point = new WorldPoint(event.getPlayer().level, event.getPos());
 
         // Check for block interaction
-        if (event instanceof LeftClickBlock || event instanceof RightClickBlock && !event.getPlayer().isCrouching())
+        if (event instanceof LeftClickBlock || event instanceof RightClickBlock)
         {
             BlockState blockState = event.getWorld().getBlockState(event.getPos());
             String permission = ModuleProtection.getBlockInteractPermission(blockState);
             ModuleProtection.debugPermission(event.getPlayer(), permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
-            if (event instanceof LeftClickBlock)
-                ((LeftClickBlock) event).setUseBlock(allow ? ALLOW : DENY);
-            else
-                ((RightClickBlock) event).setUseBlock(allow ? ALLOW : DENY);
+            if (!allow)
+            {
+            	if (event instanceof LeftClickBlock)
+            	{
+            		((LeftClickBlock) event).setUseBlock(DENY);
+            	}
+            	else
+            	{
+            		((RightClickBlock) event).setUseBlock(DENY);
+            	}
+            }
         }
 
         // Check item (and block) usage
@@ -470,13 +476,21 @@ public class ProtectionEventHandler extends ServerEventHandler
             String permission = ModuleProtection.getItemUsePermission(stack);
             ModuleProtection.debugPermission(event.getPlayer(), permission);
             boolean allow = APIRegistry.perms.checkUserPermission(ident, point, permission);
-            if (event instanceof LeftClickBlock)
+            if (!allow)
             {
-                ((LeftClickBlock) event).setUseItem(allow ? ALLOW : DENY);
-            }
-            else if (event instanceof RightClickBlock)
-            {
-                ((RightClickBlock) event).setUseItem(allow ? ALLOW : DENY);
+            	if (event instanceof LeftClickBlock)
+                {
+                    ((LeftClickBlock) event).setUseItem(DENY);
+                }
+                else if (event instanceof RightClickBlock)
+                {
+                    ((RightClickBlock) event).setUseItem(DENY);
+                }
+                else if (event instanceof RightClickItem)
+                {
+                	//Prevents use without clicking on a block (bow, buckets, etc...)
+                	event.setCanceled(true);
+                }
             }
 
             if (!allow && PlayerInfo.get(ident).getHasFEClient())
@@ -1015,8 +1029,11 @@ public class ProtectionEventHandler extends ServerEventHandler
                 if (isInventoryItemBanned(ident, stack))
                 {
                     ItemEntity droppedItem = player.drop(stack, true, false);
-                    droppedItem.setDeltaMovement(0, 0, 0);
-                    player.inventory.setItem(slotIdx, ItemStack.EMPTY);
+                    if (droppedItem != null)
+                    {
+                        droppedItem.setDeltaMovement(0, 0, 0);
+                        player.inventory.setItem(slotIdx, ItemStack.EMPTY);
+                    }
                 }
             }
         }

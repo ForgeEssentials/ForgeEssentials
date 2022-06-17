@@ -408,6 +408,8 @@ public class PermissionCommandParser
             break;
         case "denydefault":
             arguments.checkPermission(PERM_USER_PERMS);
+            if(arguments.isTabCompletion)
+            	return;
             denyDefault(zone.getPlayerPermissions(ident));
             break;
         default:
@@ -468,9 +470,13 @@ public class PermissionCommandParser
             if (arguments.isTabCompletion && arguments.args.size() == 1)
             {
                 if (type != PermissionAction.CLEAR)
+                {
                     arguments.tabCompletion = completePermission(arguments.args.peek());
+                }
                 else
+                {
                     arguments.tabCompletion = completePermission(arguments.args.peek(), zone.getPlayerPermissions(ident).keySet());
+                }
                 return;
             }
 
@@ -486,6 +492,12 @@ public class PermissionCommandParser
                 value = StringUtils.join(arguments.args, ' ');
                 arguments.args.clear();
             }
+
+            if (arguments.isTabCompletion)
+            {
+                return;
+            }
+
             switch (type)
             {
             case ALLOW:
@@ -835,6 +847,8 @@ public class PermissionCommandParser
             break;
         case "denydefault":
             arguments.checkPermission(PERM_GROUP_PERMS);
+            if(arguments.isTabCompletion)
+            	return;
             denyDefault(zone.getGroupPermissions(group));
             break;
         default:
@@ -902,6 +916,12 @@ public class PermissionCommandParser
                 value = StringUtils.join(arguments.args, ' ');
                 arguments.args.clear();
             }
+
+            if (arguments.isTabCompletion)
+            {
+                return;
+            }
+
             switch (type)
             {
             case ALLOW:
@@ -1017,6 +1037,8 @@ public class PermissionCommandParser
     public static void parseGroupPriority(CommandParserArgs arguments, String group) throws CommandException
     {
         arguments.checkPermission(PERM_GROUP_PERMS);
+        if(arguments.isTabCompletion)
+        	return;
         if (arguments.args.isEmpty())
         {
             arguments.confirm("Priority for group " + group + ": " + APIRegistry.perms.getGroupPermissionProperty(group, FEPermissions.GROUP_PRIORITY));
@@ -1135,9 +1157,13 @@ public class PermissionCommandParser
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
             for (Zone z : APIRegistry.perms.getZones())
+            {
                 arguments.tabCompleteWord(z.getName());
+            }
             for (String n : APIRegistry.namedWorldHandler.getWorldNames())
+            {
                 arguments.tabCompleteWord(n);
+            }
             return null;
         }
         String zoneId = arguments.remove();

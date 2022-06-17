@@ -1,25 +1,5 @@
 package com.forgeessentials.afterlife;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.ContainerChest;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SPacketOpenWindow;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.server.permission.PermissionAPI;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
@@ -31,6 +11,19 @@ import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.annotations.Expose;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.server.permission.PermissionAPI;
+
+import java.util.*;
 
 public class Grave implements Loadable
 {
@@ -170,7 +163,7 @@ public class Grave implements Loadable
         {
             BlockPos fencePos = new BlockPos(point.getX(), point.getY() - 1, point.getZ());
             if (point.getWorld().getBlockState(fencePos) != Blocks.OAK_FENCE.defaultBlockState())
-                point.getWorld().setBlockState(fencePos, Blocks.OAK_FENCE.defaultBlockState()));
+                point.getWorld().setBlockState(fencePos, Blocks.OAK_FENCE.defaultBlockState());
         }
     }
 
