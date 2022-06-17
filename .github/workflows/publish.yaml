@@ -47,8 +47,8 @@ jobs:
             var fs = require('fs');
             fs.writeFileSync('${{github.workspace}}/binaries.zip', Buffer.from(download.data));
       - run: |
-        mkdir -p build/libs
-        unzip binaries.zip -d build/libs
+          mkdir -p build/libs
+          unzip binaries.zip -d build/libs
       - name: Publish Binaries to Discord
         working-directory: DiscordGradleBot
         env:
