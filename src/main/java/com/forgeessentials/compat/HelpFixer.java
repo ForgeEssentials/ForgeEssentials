@@ -39,17 +39,6 @@ public class HelpFixer extends HelpCommand
                     it.remove();
             }
         }
-        // Ok there is some retard who thinks he should implement ICommand instead of extending CommandBase and then
-        // fails to properly implement compareTo (it always returns 0).
-        // So to prevent crashes from these kind of things, we just provide our own comparator
-        Collections.sort(list, new Comparator<ICommand>() {
-            @Override
-            public int compare(ICommand o1, ICommand o2)
-            {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-        return list;
     }
 
     /**
