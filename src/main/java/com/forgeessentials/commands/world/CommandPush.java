@@ -1,11 +1,11 @@
 package com.forgeessentials.commands.world;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LeverBlock;
-import net.minecraft.block.StoneButtonBlock;
-import net.minecraft.block.WoodButtonBlock;
+import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import net.minecraft.block.*;
 import net.minecraft.client.renderer.FaceDirection;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,14 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.b3d.B3DModel.Face;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandPush extends ForgeEssentialsCommandBase
 {
@@ -131,7 +124,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
             BlockPos pos = new BlockPos(x, y, z);
             BlockState state = world.getBlockState(pos);
             
-            if ((state == Blocks.AIR.defaultBlockState() || !(state.getBlock() instanceof StoneButtonBlock) || !(state.getBlock() instanceof WoodButtonBlock) && !(state.getBlock() instanceof LeverBlock))
+            if ((state == Blocks.AIR.defaultBlockState() || !(state.getBlock() instanceof StoneButtonBlock) || !(state.getBlock() instanceof WoodButtonBlock) && !(state.getBlock() instanceof LeverBlock)))
             {
                 throw new TranslatedCommandException("Button/Lever Not Found");
             }

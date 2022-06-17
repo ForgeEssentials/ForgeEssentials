@@ -1,31 +1,5 @@
 package com.forgeessentials.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import net.minecraft.block.Block;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ICommandSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.server.permission.context.IContext;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -37,6 +11,22 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.block.Block;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.server.permission.context.IContext;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -61,7 +51,7 @@ public class CommandParserArgs
         this.args = new LinkedList<>(Arrays.asList(args));
         this.sender = sender;
         this.senderPlayer = (sender.getPlayerOrException() instanceof ServerPlayerEntity) ? (ServerPlayerEntity) sender.getPlayerOrException() : null;
-        this.ident = (senderPlayer == null) ? (sender. instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null) : UserIdent.get(senderPlayer);
+        this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null) : UserIdent.get(senderPlayer);
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
@@ -563,7 +553,7 @@ public class CommandParserArgs
     public WorldPoint getSenderPoint()
     {
         CommandSource s = sender != null ? sender : server;
-        return new WorldPoint(s.getLevel()), s.getPosition());
+        return new WorldPoint(s.getLevel(), s.getPosition());
     }
 
     public WorldZone getWorldZone() throws CommandException

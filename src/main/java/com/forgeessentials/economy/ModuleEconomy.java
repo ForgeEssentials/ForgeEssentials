@@ -1,32 +1,5 @@
 package com.forgeessentials.economy;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.UUID;
-
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerXpEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Economy;
@@ -38,16 +11,8 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.economy.commands.CommandPaidCommand;
-import com.forgeessentials.economy.commands.CommandPay;
-import com.forgeessentials.economy.commands.CommandRequestPayment;
-import com.forgeessentials.economy.commands.CommandSell;
-import com.forgeessentials.economy.commands.CommandSellCommand;
-import com.forgeessentials.economy.commands.CommandSellprice;
-import com.forgeessentials.economy.commands.CommandTrade;
-import com.forgeessentials.economy.commands.CommandWallet;
+import com.forgeessentials.economy.commands.*;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.economy.shop.ShopManager;
 import com.forgeessentials.protection.ProtectionEventHandler;
@@ -58,6 +23,30 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerXpEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 /**
  * Economy module.
@@ -65,7 +54,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
  * Handles wallets for each player, transactions and plot management.
  */
 @FEModule(name = "Economy", parentMod = ForgeEssentials.class)
-public class ModuleEconomy extends ServerEventHandler implements Economy,
+public class ModuleEconomy extends ServerEventHandler implements Economy
 {
 
     public static final UserIdent ECONOMY_IDENT = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefeec", "$FE_ECONOMY");
