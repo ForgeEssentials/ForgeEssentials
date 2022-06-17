@@ -12,6 +12,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.ChestContainer;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -228,7 +229,7 @@ public class JsFEServer
      * @param callbackMethod
      * @return
      */
-    public JsInteractionObject<IInteractionObject> getMenuChest(final String name, final String displayName, final JsInventory<IInventory> inventory,
+    public JsInteractionObject<InteractionObject> getMenuChest(final String name, final String displayName, final JsInventory<IInventory> inventory,
             final String callbackMethod)
     {
         final boolean hasCustomName = displayName != null;
@@ -237,7 +238,7 @@ public class JsFEServer
             @Override
             public Container createContainer(PlayerInventory inventoryPlayer, PlayerEntity entityPlayer)
             {
-                return new ContainerChest(inventoryPlayer, this, entityPlayer) {
+                return new ChestContainer(inventoryPlayer, this, entityPlayer) {
                     @Override
                     public ItemStack slotClick(int p_slotClick_1_, int p_slotClick_2_, ClickType p_slotClick_3_, EntityPlayer p_slotClick_4_)
                     {

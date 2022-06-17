@@ -67,7 +67,7 @@ public class VirtualChest extends InventoryBasic
             if (var3 != null)
             {
                 CompoundNBT var4 = new CompoundNBT();
-                var4.setByte("Slot", (byte) var2);
+                var4.putByte("Slot", (byte) var2);
                 var3.writeToNBT(var4);
                 var1.appendTag(var4);
             }

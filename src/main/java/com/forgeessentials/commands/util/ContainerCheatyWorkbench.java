@@ -4,6 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -43,7 +44,7 @@ public class ContainerCheatyWorkbench extends CraftingInventory
 
                 if (var3 != null)
                 {
-                    par1EntityPlayer.dropItem(var3, true);
+                    par1EntityPlayer.drop(var3, true);
                 }
             }
         }
