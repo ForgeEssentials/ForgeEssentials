@@ -454,8 +454,8 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
         {
             if (point != null && sender instanceof Entity && new WorldPoint((Entity) sender).distance(point) > 32)
                 continue;
-            ChatOutputHandler.ircSendMessageUser(sender, msg1);
-            ChatOutputHandler.ircSendMessageUser(sender, msg2);
+            ChatOutputHandler.sendMessage(sender, msg1);
+            ChatOutputHandler.sendMessage(sender, msg2);
         }
     }
 

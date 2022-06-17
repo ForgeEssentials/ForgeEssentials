@@ -301,7 +301,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         {
             for (String rule : rules)
             {
-                ChatOutputHandler.ircSendMessageUser(sender, rule);
+                ChatOutputHandler.sendMessage(sender, rule);
             }
             return;
         }
@@ -317,7 +317,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
 
             }
 
-            ChatOutputHandler.ircSendMessageUser(sender, rules.get(parseInt(args[0], 1, rules.size()) - 1));
+            ChatOutputHandler.sendMessage(sender, rules.get(parseInt(args[0], 1, rules.size()) - 1));
             return;
         }
 

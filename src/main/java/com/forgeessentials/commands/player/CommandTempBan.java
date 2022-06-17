@@ -76,13 +76,13 @@ public class CommandTempBan extends ParserCommandBase
         if (!arguments.isEmpty())
         {
             String reason = arguments.toString();
-            ChatOutputHandler.ircSendMessageUser(arguments.server,
+            ChatOutputHandler.sendMessage(arguments.server.createCommandSourceStack(),
                     Translator.format("Player %s, has been temporarily banned for %s. Reason: %s", player.getUsername(), durationString, reason));
             APIRegistry.perms.setPlayerPermissionProperty(player, PERM_BAN_REASON, reason);
         }
         else
         {
-            ChatOutputHandler.ircSendMessageUser(arguments.server,
+            ChatOutputHandler.sendMessage(arguments.server.createCommandSourceStack(),
                     Translator.format("Player %s, has been temporarily banned for %s", player.getUsername(), durationString));
         }
     }

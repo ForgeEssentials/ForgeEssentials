@@ -84,7 +84,7 @@ public class RemoteCommandSender extends DoAsCommandSender
         ICommandSender receiver = ServerLifecycleHooks.getCurrentServer();
         if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
             receiver = session.getUserIdent().getPlayer();
-        ChatOutputHandler.ircSendMessageUser(receiver, chatComponent);
+        ChatOutputHandler.sendMessage(receiver, chatComponent);
 
         if (!session.isClosed())
         {

@@ -63,6 +63,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class)
 public class ModuleChat
@@ -513,7 +514,15 @@ public class ModuleChat
         ChatOutputHandler.sendMessage(target, sentMsg);
         ChatOutputHandler.sendMessage(sender, senderMsg);
         CommandReply.messageSent(sender, target);
-        ModuleCommandsEventHandler.checkAfkMessage(target, message);
+        try
+        {
+            ModuleCommandsEventHandler.checkAfkMessage(target, message);
+        }
+        catch (CommandSyntaxException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public static void tellGroup(CommandSource sender, String message, String group, boolean formatColors)

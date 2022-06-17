@@ -97,7 +97,7 @@ public class CommandJump extends ForgeEssentialsCommandBase
         {
             TranslationTextComponent msg = new TranslationTextComponent(ce.getMessage(), ce.getErrorObjects());
             msg.getStyle().setColor(TextFormatting.RED);
-            event.getEntityPlayer().ircSendMessage(msg);
+            event.getPlayer().sendMessage(msg);
         }
     }
 

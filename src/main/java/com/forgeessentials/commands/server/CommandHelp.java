@@ -150,9 +150,9 @@ public class CommandHelp extends ParserCommandBase
     public void sendCommandUsageMessage(ICommandSender sender, ICommand command, TextFormatting color)
     {
         ITextComponent chatMsg = new TranslationTextComponent(command.getUsage(sender));
-        chatMsg.getStyle().setColor(color);
-        chatMsg.getStyle().setClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getName() + " "));
-        ChatOutputHandler.ircSendMessageUser(sender, chatMsg);
+        chatMsg.getStyle().withColor(color);
+        chatMsg.getStyle().withClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getName() + " "));
+        ChatOutputHandler.sendMessage(sender, chatMsg);
     }
 
     public void showHelpPage(MinecraftServer server, ICommandSender sender) throws CommandException

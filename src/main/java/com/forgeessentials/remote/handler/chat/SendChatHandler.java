@@ -6,6 +6,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -46,13 +47,13 @@ public class SendChatHandler extends GenericRemoteHandler<String>
             if (MinecraftForge.EVENT_BUS.post(event))
                 return null;
             if (event.getComponent() != null)
-                FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().ircSendMessageUser(event.getComponent(), false);
+                FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(event.getComponent(), false);
         }
         else
         {
             TranslationTextComponent message = new TranslationTextComponent("chat.type.text", new Object[] { "anonymous",
                     ForgeHooks.newChatWithLinks(request.data) });
-            FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().ircSendMessageUser(message, false);
+            ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastAll(null, message);
             QueryChatHandler.onMessage(message);
             PushChatHandler.onMessage(message, "anonymous");
         }

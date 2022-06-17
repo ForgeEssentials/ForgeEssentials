@@ -118,8 +118,8 @@ public class CommandTicket extends ForgeEssentialsCommandBase
             if (!server.isServerStopped())
                 for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                     if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
-                        ChatOutputHandler.ircSendMessageUser(player, messageComponent);
-            ChatOutputHandler.ircSendMessageUser(server, messageComponent);
+                        ChatOutputHandler.sendMessage(player.createCommandSourceStack(), messageComponent);
+            ChatOutputHandler.sendMessage(server.createCommandSourceStack(), messageComponent);
             return;
         }
 

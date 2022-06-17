@@ -443,7 +443,7 @@ public class IrcHandler extends ListenerAdapter
     public void chatEvent(ServerChatEvent event)
     {
         if (isConnected() && sendMessages)
-            ircSendMessage(ChatOutputHandler.stripFormatting(event.getComponent().plainCopy().toString()));
+            ircSendMessage(ChatOutputHandler.stripFormatting(event.getMessage()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

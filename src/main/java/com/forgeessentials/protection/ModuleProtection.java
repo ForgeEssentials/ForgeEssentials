@@ -43,6 +43,7 @@ import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.inventory.container.WorkbenchContainer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -62,7 +63,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -156,7 +157,7 @@ public class ModuleProtection
     private ProtectionEventHandler protectionHandler;
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModuleCommonSetupEvent e)
     {
         protectionHandler = new ProtectionEventHandler();
 
@@ -298,7 +299,7 @@ public class ModuleProtection
             {
                 for (ServerPlayerEntity p : ServerUtil.getPlayerList())
                     if (!APIRegistry.perms.checkPermission(p, PERM_NEEDSFOOD))
-                        p.getFoodStats().addStats(20, 1.0F);
+                        p.getFoodData().eat(20, 1.0F);
             }
         }, 60 * 1000);
     }
@@ -327,10 +328,10 @@ public class ModuleProtection
             return;
 
         TranslationTextComponent msg = new TranslationTextComponent(permission);
-        msg.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
-        msg.getStyle().setColor(ChatOutputHandler.chatNotificationColor);
+        msg.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
+        msg.getStyle().withColor(ChatOutputHandler.chatNotificationColor);
         msg.getStyle().setUnderlined(true);
-        ChatOutputHandler.ircSendMessageUser(player, msg);
+        ChatOutputHandler.sendMessage(player.createCommandSourceStack(), msg);
     }
 
     /* ------------------------------------------------------------ */
