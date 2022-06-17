@@ -212,7 +212,7 @@ dependencies {
     compile ("com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5") {
 		exclude group: "net.minecraftforge", module: "forge"
 	}
-    compile "baubles:Baubles:1.8.7.1:1.16.5"
+    compile "baubles:baubles:1.8.7.1:1.16.5"
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
     mavenDeps "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
 
