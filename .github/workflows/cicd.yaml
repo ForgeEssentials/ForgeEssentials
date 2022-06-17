@@ -5,7 +5,7 @@ name: Java CI with Gradle
 
 on:
   push: {}
-  pull_request_target: {}
+  pull_request: {}
 env:
   BUILD_NUMBER: 'UNOFFICIAL-${{ github.sha }}'
 jobs:
@@ -25,19 +25,6 @@ jobs:
         run: |
          chmod +x gradlew
          ./gradlew build
-         rm -rf DiscordGradleBot
-      - uses: actions/checkout@v2
-        with:
-          repository: ForgeEssentials/DiscordGradleBot
-          path: DiscordGradleBot
-      - name: Publish Binaries to Discord
-        working-directory: DiscordGradleBot
-        env:
-          DISCORD_TOKEN: '${{ secrets.DISCORD_TOKEN }}'
-          CHANNEL_ID: '${{ secrets.CHANNEL_ID }}'
-        run: |
-          chmod +x gradlew
-          ./gradlew publishToDiscord
       - uses: actions/upload-artifact@v2
         with:
           name: binaries-${{ github.sha }}
