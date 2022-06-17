@@ -57,4 +57,4 @@ jobs:
           BUILD_NUMBER: 'UNOFFICIAL-${{ github.sha }}'
         run: |
           chmod +x gradlew
-          ./gradlew publishToDiscord
+          ./gradlew publishToDiscord -i
