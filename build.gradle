@@ -33,7 +33,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.spongepowered.plugin' version '0.6'
+//    id 'org.spongepowered.plugin' version '0.6'
     id 'org.sonarqube' version '2.5'
 }
 
@@ -128,10 +128,8 @@ println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getPro
 
 // Set up forge options
 minecraft {
-    mappings channel: 'snapshot', version: "20180304-1.12"
+	mappings channel: 'official', version: '1.16.5'
     accessTransformer = file('src/main/resources/META-INF/forgeessentials_at.cfg')
-    replaceIn "src/utils/java/com/forgeessentials/commons/BuildInfo.java"
-	replace (["_BASEVERSION_":mod_version,"_MCVERSION_":project.minecraftVersion])
     runs {
         server {
             workingDirectory project.file('rundir')
@@ -197,7 +195,7 @@ dependencies {
     }
 
     // Shade Mixin library
-    shade (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
+    shade (group: "org.spongepowered", name: "mixin", version: "0.8.5-SNAPSHOT") {
         exclude group: 'org.ow2.asm', module: 'asm-tree'
     }
 
@@ -211,7 +209,9 @@ dependencies {
 	
 	// WorldEdit
     compile "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
-    compile "com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5"
+    compile ("com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5") {
+		exclude group: "net.minecraftforge", module: "forge"
+	}
     compile "baubles:Baubles:1.8.7.1:1.16.5"
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
     mavenDeps "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
