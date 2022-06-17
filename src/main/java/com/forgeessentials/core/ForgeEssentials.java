@@ -257,8 +257,7 @@ public class ForgeEssentials
 
     private void initConfiguration()
     {
-    	configDirectory = new File(ServerUtil.getBaseDir(), "/ForgeEssentials");
-        configManager = new ConfigBase(configDirectory, "main");
+        configManager = new ConfigBase(new File(ServerUtil.getBaseDir(), "/ForgeEssentials"));
         FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials"), "ForgeEssentials");
         //ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ConfigBase.SERVER_CONFIG,configDirectory + "main" + ".toml");
         ConfigBase.registerConfigs();

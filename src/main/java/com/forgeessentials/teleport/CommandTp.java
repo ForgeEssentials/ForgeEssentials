@@ -5,8 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
 import com.forgeessentials.api.APIRegistry;
@@ -38,7 +37,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            EntityPlayer target = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            PlayerEntity target = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 
             if (target == null)
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -50,11 +49,11 @@ public class CommandTp extends ForgeEssentialsCommandBase
             ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                EntityPlayer target = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
+                PlayerEntity target = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
 
                 if (target != null)
                 {
-                    PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
+                    PlayerInfo playerInfo = PlayerInfo.get(player.getUUID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(player));
                     WarpPoint point = new WarpPoint(target);
                     TeleportHelper.teleport(player, point);
@@ -70,24 +69,24 @@ public class CommandTp extends ForgeEssentialsCommandBase
             if (args.length == 3)
             {
                 ServerPlayerEntity player = sender;
-                double x = parseCoordinate(player.posX, args[0], true).getResult();
-                double y = ServerUtil.parseYLocation(sender, player.posY, args[1]);
-                double z = parseCoordinate(player.posZ, args[2], true).getResult();
-                PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
+                double x = parseCoordinate(player.position().x, args[0], true).getResult();
+                double y = ServerUtil.parseYLocation(sender.createCommandSourceStack(), player.position().y, args[1]);
+                double z = parseCoordinate(player.position().z, args[2], true).getResult();
+                PlayerInfo playerInfo = PlayerInfo.get(player.getUUID());
                 playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-                TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
+                TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), x, y, z, player.xRot, player.yRot));
             }
             else if (args.length == 4)
             {
                 ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
-                    double x = parseCoordinate(player.posX, args[1], true).getResult();
-                    double y = ServerUtil.parseYLocation(sender, player.posY, args[2]);
-                    double z = parseCoordinate(player.posZ, args[3], true).getResult();
-                    PlayerInfo playerInfo = PlayerInfo.get(player.getPersistentID());
+                    double x = parseCoordinate(player.position().x, args[1], true).getResult();
+                    double y = ServerUtil.parseYLocation(sender.createCommandSourceStack(), player.position().y, args[2]);
+                    double z = parseCoordinate(player.position().z, args[3], true).getResult();
+                    PlayerInfo playerInfo = PlayerInfo.get(player.getUUID());
                     playerInfo.setLastTeleportOrigin(new WarpPoint(player));
-                    TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
+                    TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), x, y, z, player.xRot, player.yRot));
                 }
                 else
                     throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -107,7 +106,7 @@ public class CommandTp extends ForgeEssentialsCommandBase
             ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                EntityPlayer target = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+                PlayerEntity target = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 
                 if (target == null)
                     throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[1]);
@@ -121,10 +120,10 @@ public class CommandTp extends ForgeEssentialsCommandBase
             ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                double x = parseCoordinate(player.posX, args[1], true).getResult();
-                double y = ServerUtil.parseYLocation(sender, player.posY, args[2]);
-                double z = parseCoordinate(player.posZ, args[3], true).getResult();
-                TeleportHelper.teleport(player, new WarpPoint(player.dimension, x, y, z, player.rotationPitch, player.rotationYaw));
+                double x = parseCoordinate(player.position().x, args[1], true).getResult();
+                double y = ServerUtil.parseYLocation(sender, player.position().y, args[2]);
+                double z = parseCoordinate(player.position().z, args[3], true).getResult();
+                TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), x, y, z, player.xRot, player.yRot));
             }
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);

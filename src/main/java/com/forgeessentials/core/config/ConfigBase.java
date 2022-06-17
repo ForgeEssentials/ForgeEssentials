@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +37,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = com.forgeessentials.core.ForgeEssentials.MODID)
-public class ConfigBase {
+public class ConfigBase
+{
 
     private static final ForgeConfigSpec.Builder MAIN_BUILDER = new ForgeConfigSpec.Builder();
     private static final ForgeConfigSpec.Builder AUTH_BUILDER = new ForgeConfigSpec.Builder();
@@ -51,6 +53,7 @@ public class ConfigBase {
     private static final ForgeConfigSpec.Builder SIGN_BUILDER = new ForgeConfigSpec.Builder();
     private static final ForgeConfigSpec.Builder SERVERVOTE_BUILDER = new ForgeConfigSpec.Builder();
 
+    private static List<ConfigFile> CONFIGS;
 
     public static ForgeConfigSpec MAIN_CONFIG;
     public static ForgeConfigSpec AUTH_CONFIG;
@@ -64,151 +67,158 @@ public class ConfigBase {
     public static ForgeConfigSpec SERVERVOTE_CONFIG;
     public static ForgeConfigSpec PERMISSIONS_CONFIG;
     public static ForgeConfigSpec PLAYERLOGGER_CONFIG;
-    
-/*
+
     private static class ConfigFile
     {
+        private String file;
+        private ForgeConfigSpec config;
 
-        public ConfigFile(File path)
+        public ConfigFile(String file, ForgeConfigSpec config)
         {
-            config = path;
+            if (file == null || config == null)
+            {
+                throw new NullPointerException();
+            }
+            this.file = file;
+            this.config = config;
         }
-        public File config;
 
-        public Set<ConfigLoader> loaders = new HashSet<>();
+        // public Set<ConfigLoader> loaders = new HashSet<>();
 
-        public Set<ConfigLoader> loaded = new HashSet<>();
+        // public Set<ConfigLoader> loaded = new HashSet<>();
 
-    }*/
+    }
+
     @SuppressWarnings("unused")
-	private File rootDirectory;
+    private File rootDirectory;
 
-    //private Map<String, ConfigFile> configFiles = new HashMap<>();
+    // private Map<String, ConfigFile> configFiles = new HashMap<>();
 
-    private String mainConfigName;
-
-    public ConfigBase(File rootDirectory, String mainConfigName)
+    public ConfigBase(File rootDirectory)
     {
         this.rootDirectory = rootDirectory;
-        this.mainConfigName = mainConfigName;
-        //load(false);
+        // load(false);
     }
-    
-    public static void registerConfigs(){
-    	//MAIN
+
+    public static void registerConfigs()
+    {
+        // MAIN
         FEConfig.load(MAIN_BUILDER);
         ForgeEssentials.load(MAIN_BUILDER);
         PerfToolsModule.load(MAIN_BUILDER);
         CommandHelp.load(MAIN_BUILDER);
         ChatOutputHandler.load(MAIN_BUILDER);
         ItemPermissionManager.load(MAIN_BUILDER);
-        MAIN_CONFIG = MAIN_BUILDER.build();
-        
-        //AUTH
+        CONFIGS.add(new ConfigFile("main", (MAIN_CONFIG = MAIN_BUILDER.build())));
+
+        // AUTH
         ModuleAuth.load(AUTH_BUILDER);
-        AUTH_CONFIG = AUTH_BUILDER.build();
-        
-        //CHAT
+        CONFIGS.add(new ConfigFile("AuthLogin", (AUTH_CONFIG = AUTH_BUILDER.build())));
+
+        // CHAT
         ChatConfig.load(CHAT_BUILDER);
         Censor.load(CHAT_BUILDER);
         IrcHandler.load(CHAT_BUILDER);
         CommandTimedMessages.load(CHAT_BUILDER);
-        CHAT_CONFIG = CHAT_BUILDER.build();
-        
-        //Economy
-        ModuleEconomy.load(ECONOMY_BUILDER);///NEEDS FIXING!
+        CONFIGS.add(new ConfigFile("Chat", (CHAT_CONFIG = CHAT_BUILDER.build())));
+
+        // Economy
+        ModuleEconomy.load(ECONOMY_BUILDER);/// NEEDS FIXING!
         ShopManager.load(ECONOMY_BUILDER);
-        ECONOMY_CONFIG = ECONOMY_BUILDER.build();
-        
-        //Tickets
+        CONFIGS.add(new ConfigFile("Economy", (ECONOMY_CONFIG = ECONOMY_BUILDER.build())));
+
+        // Tickets
         ModuleTickets.load(TICKETS_BUILDER);
-        TICKETS_CONFIG = TICKETS_BUILDER.build();
-        
-        //Command
+        CONFIGS.add(new ConfigFile("Tickets", (TICKETS_CONFIG = TICKETS_BUILDER.build())));
+
+        // Command
         FECommandManager.load(COMMAND_BUILDER);
-        COMMAND_CONFIG = COMMAND_BUILDER.build();
-        
-        //Remote
+        CONFIGS.add(new ConfigFile("Commands", (COMMAND_CONFIG = COMMAND_BUILDER.build())));
+
+        // Remote
         ModuleRemote.load(REMOTE_BUILDER);
-        REMOTE_CONFIG = REMOTE_BUILDER.build();
-        
-        //Teleport
+        CONFIGS.add(new ConfigFile("Remote", (REMOTE_CONFIG = REMOTE_BUILDER.build())));
+
+        // Teleport
         TeleportModule.load(TELEPORT_BUILDER);
-        TELEPORT_CONFIG =TELEPORT_BUILDER.build();
-        
-        //Signs
+        CONFIGS.add(new ConfigFile("Teleport", (TELEPORT_CONFIG = TELEPORT_BUILDER.build())));
+
+        // Signs
         SignToolsModule.load(SIGN_BUILDER);
-        SIGN_CONFIG = SIGN_BUILDER.build();
-        
-        //ServerVote
+        CONFIGS.add(new ConfigFile("SignTools", (SIGN_CONFIG = SIGN_BUILDER.build())));
+
+        // ServerVote
         ConfigServerVote.load(SERVERVOTE_BUILDER);
-        SERVERVOTE_CONFIG = SERVERVOTE_BUILDER.build();
-        
-        //Permissions
-        ModulePermissions.load(PERMISSIONS_BUILDER); //needs finishing DB connector
-        PERMISSIONS_CONFIG = PERMISSIONS_BUILDER.build();
-        
-        //PlayerLogger
+        CONFIGS.add(new ConfigFile("ServerVote", (SERVERVOTE_CONFIG = SERVERVOTE_BUILDER.build())));
+
+        // Permissions
+        ModulePermissions.load(PERMISSIONS_BUILDER); // needs finishing DB connector
+        CONFIGS.add(new ConfigFile("Permissions", (PERMISSIONS_CONFIG = PERMISSIONS_BUILDER.build())));
+
+        // PlayerLogger
         PlayerLoggerConfig.load(PLAYERLOGGER_BUILDER);
-        PLAYERLOGGER_CONFIG = PLAYERLOGGER_BUILDER.build();
-        }
-    public static void LoadConfigs(){
-    	//MAIN
+        CONFIGS.add(new ConfigFile("PlayerLogger", (PLAYERLOGGER_CONFIG = PLAYERLOGGER_BUILDER.build())));
+    }
+
+    public static void LoadConfigs()
+    {
+        // MAIN
         FEConfig.bakeConfig(false);
         ForgeEssentials.bakeConfig(false);
         PerfToolsModule.bakeConfig(false);
         CommandHelp.bakeConfig(false);
         ChatOutputHandler.bakeConfig(false);
         ItemPermissionManager.bakeConfig(false);
-        //AUTH
+        // AUTH
         ModuleAuth.bakeConfig(false);
-        //CHAT
+        // CHAT
         ChatConfig.bakeConfig(false);
         Censor.bakeConfig(false);
         IrcHandler.bakeConfig(false);
         CommandTimedMessages.bakeConfig(false);
-        //Economy
-        ModuleEconomy.bakeConfig(false);///////HELP!
+        // Economy
+        ModuleEconomy.bakeConfig(false);/////// HELP!
         ShopManager.bakeConfig(false);
-        //Tickets
+        // Tickets
         ModuleTickets.bakeConfig(false);
-        //Command
+        // Command
         FECommandManager.bakeConfig(false);
-        //Remote
+        // Remote
         ModuleRemote.bakeConfig(false);
-        //Teleport
+        // Teleport
         TeleportModule.bakeConfig(false);
-        //Signs
+        // Signs
         SignToolsModule.bakeConfig(false);
-        //ServerVote
+        // ServerVote
         ConfigServerVote.bakeConfig(false);
-        //Permissions
-        ModulePermissions.bakeConfig(false); //needs finishing DB connector
-        //PlayerLogger
+        // Permissions
+        ModulePermissions.bakeConfig(false); // needs finishing DB connector
+        // PlayerLogger
         PlayerLoggerConfig.bakeConfig(false);
     }
-    public static void SaveConfigs(){
-    	ModuleTickets.save();
+
+    public static void SaveConfigs()
+    {
+        ModuleTickets.save();
     }
 
-
-
-    public static void loadConfig(ForgeConfigSpec spec, Path path) {
+    public static void loadConfig(ForgeConfigSpec spec, Path path)
+    {
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)
                 .sync()
                 .autosave()
                 .writingMode(WritingMode.REPLACE)
                 .build();
-        
+
         configData.load();
         spec.setConfig(configData);
     }
-    
+
     public String getMainConfigName()
     {
-        return mainConfigName;
+        return "main";
     }
-    
+
     /*
     private ConfigFile getConfigFile(String configName)
     {
