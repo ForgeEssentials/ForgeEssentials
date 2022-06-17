@@ -529,7 +529,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_SLEEP))
         {
             event.setResult(SleepResult.NOT_POSSIBLE_HERE);
-            ChatOutputHandler.sendMessage(event.getPlayer(), Translator.translate("You are not allowed to sleep here"));
+            ChatOutputHandler.ircSendMessageUser(event.getPlayer(), Translator.translate("You are not allowed to sleep here"));
             return;
         }
         checkMajoritySleep = true;

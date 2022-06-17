@@ -92,7 +92,7 @@ public class HelpFixer extends HelpCommand
         TranslationTextComponent msg = new TranslationTextComponent("commands.help.header", new Object[] { Integer.valueOf(startPage + 1),
                 Integer.valueOf(i + 1) });
         msg.getStyle().withColor(TextFormatting.DARK_GREEN);
-        sender.sendMessage(msg);
+        sender.ircSendMessage(msg);
 
         for (int index = startPage * cmdsPerPage; index < endIndex; ++index)
         {
@@ -102,14 +102,14 @@ public class HelpFixer extends HelpCommand
                 usage = "/" + cmd.getName();
             TranslationTextComponent msg2 = new TranslationTextComponent(usage, new Object[0]);
             msg2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + cmd.getName() + " "));
-            sender.sendMessage(msg2);
+            sender.ircSendMessage(msg2);
         }
 
         if (startPage == 0 && sender instanceof PlayerEntity)
         {
             TranslationTextComponent msg3 = new TranslationTextComponent("commands.help.footer", new Object[0]);
             msg3.getStyle().withColor(TextFormatting.GREEN);
-            sender.sendMessage(msg3);
+            sender.ircSendMessage(msg3);
         }
     }
 

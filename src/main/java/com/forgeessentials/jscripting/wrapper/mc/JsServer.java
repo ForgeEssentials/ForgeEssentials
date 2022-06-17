@@ -224,7 +224,7 @@ public class JsServer
         try
         {
             ITextComponent component = ITextComponent.Serializer.fromJson(msg);
-            server.getPlayerList().sendMessage(component);
+            server.getPlayerList().ircSendMessage(component);
         }
         catch (JsonParseException jsonparseexception)
         {

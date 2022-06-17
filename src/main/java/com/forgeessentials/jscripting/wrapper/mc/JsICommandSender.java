@@ -103,7 +103,7 @@ public class JsICommandSender extends JsWrapper<CommandSource>
             if (senderEntity != null)
             {
                 ITextComponent itextcomponent = ITextComponent.Serializer.fromJson(msg);
-                this.that.sendMessage(TextComponentUtils.processComponent(this.that, itextcomponent, senderEntity));
+                this.that.ircSendMessage(TextComponentUtils.processComponent(this.that, itextcomponent, senderEntity));
             }
         }
         catch (JsonParseException jsonparseexception)

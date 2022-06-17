@@ -323,7 +323,7 @@ public class IrcHandler extends ListenerAdapter
     }
     /* ------------------------------------------------------------ */
 
-    public void sendMessage(User user, String message)
+    public void ircSendMessageUser(User user, String message)
     {
         if (!isConnected())
             return;
@@ -333,7 +333,7 @@ public class IrcHandler extends ListenerAdapter
         user.send().message(message);
     }
 
-    public void sendMessage(String message)
+    public void ircSendMessage(String message)
     {
         if (isConnected())
             for (String channel : channels)
@@ -343,7 +343,7 @@ public class IrcHandler extends ListenerAdapter
     public void sendPlayerMessage(CommandSource sender, ITextComponent message)
     {
         if (isConnected())
-            sendMessage(String.format(mcHeader, sender.getTextName(), ChatOutputHandler.stripFormatting(message.getString())));
+            ircSendMessage(String.format(mcHeader, sender.getTextName(), ChatOutputHandler.stripFormatting(message.getString())));
     }
 
     private void mcSendMessage(String message, User user)
@@ -390,7 +390,7 @@ public class IrcHandler extends ListenerAdapter
         IrcCommand command = commands.get(commandName);
         if (command == null)
         {
-            sendMessage(user, String.format("Error: Command %s not found!", commandName));
+            ircSendMessageUser(user, String.format("Error: Command %s not found!", commandName));
             return;
         }
 
@@ -402,7 +402,7 @@ public class IrcHandler extends ListenerAdapter
         }
         catch (CommandException e)
         {
-            sendMessage(user, "Error: " + e.getMessage());
+            ircSendMessageUser(user, "Error: " + e.getMessage());
         }
     }
 
@@ -410,7 +410,7 @@ public class IrcHandler extends ListenerAdapter
     {
         if (!admins.contains(user.getNick()))
         {
-            sendMessage(user, "Permission denied. You are not an admin");
+            ircSendMessageUser(user, "Permission denied. You are not an admin");
             return;
         }
 
@@ -421,7 +421,7 @@ public class IrcHandler extends ListenerAdapter
         ICommand command = (ICommand) server.getCommandManager().getCommands().get(commandName);
         if (command == null)
         {
-            sendMessage(user, String.format("Error: Command %s not found!", commandName));
+            ircSendMessageUser(user, String.format("Error: Command %s not found!", commandName));
             return;
         }
 
@@ -433,7 +433,7 @@ public class IrcHandler extends ListenerAdapter
         }
         catch (CommandException e)
         {
-            sendMessage(user, "Error: " + e.getMessage());
+            ircSendMessageUser(user, "Error: " + e.getMessage());
         }
     }
 
@@ -443,21 +443,21 @@ public class IrcHandler extends ListenerAdapter
     public void chatEvent(ServerChatEvent event)
     {
         if (isConnected() && sendMessages)
-            sendMessage(ChatOutputHandler.stripFormatting(event.getComponent().plainCopy().toString()));
+            ircSendMessage(ChatOutputHandler.stripFormatting(event.getComponent().plainCopy().toString()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoginEvent(PlayerLoggedInEvent event)
     {
         if (showGameEvents)
-            sendMessage(Translator.format("%s joined the game", event.getPlayer().getName()));
+            ircSendMessage(Translator.format("%s joined the game", event.getPlayer().getName()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerLoginEvent(PlayerLoggedOutEvent event)
     {
         if (showGameEvents)
-            sendMessage(Translator.format("%s left the game", event.getPlayer().getName()));
+            ircSendMessage(Translator.format("%s left the game", event.getPlayer().getName()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -466,21 +466,21 @@ public class IrcHandler extends ListenerAdapter
         if (!(event.getEntityLiving() instanceof PlayerEntity))
             return;
         if (showGameEvents)
-            sendMessage(Translator.format("%s died", event.getEntityLiving().getName()));
+            ircSendMessage(Translator.format("%s died", event.getEntityLiving().getName()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void handleSay(CommandEvent event)
     {
-        if (event.getParseResults().getReader().getString().equals("say"))
+        if (event.getParseResults().getReader().getString().substring(1).startsWith("say "))
         {
-            sendMessage(Translator.format(mcSayHeader, event.getParseResults().getContext().getSource().getTextName(),
-                    StringUtils.join(event.getParameters(), " ")));
+            ircSendMessage(Translator.format(mcSayHeader, event.getParseResults().getContext().getSource().getTextName(),
+                    StringUtils.join(event.getParseResults().getReader().toString().substring(5+event.getParseResults().getContext().getSource().getTextName().length()+1))));
         }
-        else if (event.getParseResults().getReader().getString().equals("me"))
+        else if (event.getParseResults().getReader().getString().substring(1).startsWith("me "))
         {
-            sendMessage(
-                    Translator.format("* %s %s", event.getParseResults().getContext().getSource().getTextName(), StringUtils.join(event.getParameters(), " ")));
+            ircSendMessage(
+                    Translator.format("* %s %s", event.getParseResults().getContext().getSource().getTextName(), event.getParseResults().getReader().toString().substring(4+event.getParseResults().getContext().getSource().getTextName().length()+1)));
         }
     }
 
@@ -488,7 +488,7 @@ public class IrcHandler extends ListenerAdapter
     public void welcomeNewPlayers(NoPlayerInfoEvent e)
     {
         if (showGameEvents)
-            sendMessage(Translator.format("New player %s has joined the server!", e.getPlayer()));
+            ircSendMessage(Translator.format("New player %s has joined the server!", e.getPlayer()));
     }
 
     /* ------------------------------------------------------------ */
@@ -513,7 +513,7 @@ public class IrcHandler extends ListenerAdapter
         {
             if (twitchMode && (event.getUser().getNick().equals("jtv")))
                 return;
-            sendMessage(event.getUser(), String.format("Hello %s, use %%help for commands", event.getUser().getNick()));
+            ircSendMessageUser(event.getUser(), String.format("Hello %s, use %%help for commands", event.getUser().getNick()));
         }
     }
 

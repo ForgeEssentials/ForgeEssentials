@@ -46,13 +46,13 @@ public class SendChatHandler extends GenericRemoteHandler<String>
             if (MinecraftForge.EVENT_BUS.post(event))
                 return null;
             if (event.getComponent() != null)
-                FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(event.getComponent(), false);
+                FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().ircSendMessageUser(event.getComponent(), false);
         }
         else
         {
             TranslationTextComponent message = new TranslationTextComponent("chat.type.text", new Object[] { "anonymous",
                     ForgeHooks.newChatWithLinks(request.data) });
-            FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(message, false);
+            FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().ircSendMessageUser(message, false);
             QueryChatHandler.onMessage(message);
             PushChatHandler.onMessage(message, "anonymous");
         }

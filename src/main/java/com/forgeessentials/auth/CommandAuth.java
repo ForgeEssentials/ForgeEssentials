@@ -4,14 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -20,6 +16,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.PermissionDeniedException;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
@@ -184,10 +181,10 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 if (!hasAdmin)
                     throw new PermissionDeniedException();
 
-                if (!ModuleAuth.isRegistered(player.getPersistentID()))
+                if (!ModuleAuth.isRegistered(player.getUUID()))
                     throw new TranslatedCommandException("Player %s is not registered!", player.getName());
 
-                PasswordManager.setPassword(player.getPersistentID(), null);
+                PasswordManager.setPassword(player.getUUID(), null);
                 ChatOutputHandler.chatConfirmation(sender,
                         Translator.format("Player %s has been removed from the authentication service.", player.getName()));
                 return;
@@ -214,16 +211,16 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                     return;
                 }
 
-                if (!ModuleAuth.isRegistered(sender.getPersistentID()))
+                if (!ModuleAuth.isRegistered(sender.getUUID()))
                     throw new TranslatedCommandException("Player %s is not registered!", sender.getName());
 
-                if (!PasswordManager.checkPassword(sender.getPersistentID(), args[1]))
+                if (!PasswordManager.checkPassword(sender.getUUID(), args[1]))
                 {
                     ChatOutputHandler.chatConfirmation(sender, "Could not change the password - your old password is wrong");
                     return;
                 }
 
-                PasswordManager.setPassword(sender.getPersistentID(), args[2]);
+                PasswordManager.setPassword(sender.getUUID(), args[2]);
                 ChatOutputHandler.chatConfirmation(sender, "Password change successful.");
                 return;
 

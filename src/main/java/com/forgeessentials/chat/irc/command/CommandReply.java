@@ -3,15 +3,13 @@ package com.forgeessentials.chat.irc.command;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IrcCommand;
+import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
 
 public class CommandReply implements IrcCommand
 {
@@ -41,19 +39,19 @@ public class CommandReply implements IrcCommand
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    public void processCommand(CommandSource sender, String[] args) throws CommandException
     {
         if (args.length < 1)
             throw new WrongUsageException("commands.message.usage", new Object[0]);
 
-        ICommandSender target = com.forgeessentials.chat.command.CommandReply.getReplyTarget(sender);
+        CommandSource target = com.forgeessentials.chat.command.CommandReply.getReplyTarget(sender);
         if (target == null)
             throw new PlayerNotFoundException("commands.generic.player.notFound");
 
         if (target == sender)
             throw new PlayerNotFoundException("commands.message.sameTarget", new Object[0]);
 
-        ModuleChat.tell(sender, CommandBase.getChatComponentFromNthArg(sender, args, 0, !(sender instanceof EntityPlayer)), target);
+        ModuleChat.tell(sender, CommandBase.getChatComponentFromNthArg(sender, args, 0, !(sender instanceof PlayerEntity)), target);
     }
 
 }

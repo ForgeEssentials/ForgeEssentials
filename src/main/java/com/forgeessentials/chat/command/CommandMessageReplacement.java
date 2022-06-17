@@ -1,18 +1,24 @@
 package com.forgeessentials.chat.command;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.impl.MessageCommand;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 
+import java.util.Collection;
+
 import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
+import com.forgeessentials.core.misc.TranslatedCommandException.WrongUsageException;
 
 public class CommandMessageReplacement extends MessageCommand
 {
 
     @Override
-    public void sendMessage(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public void sendMessage(CommandSource p_198538_0_, Collection<ServerPlayerEntity> p_198538_1_, ITextComponent p_198538_2_) throws CommandException
     {
         if (args.length < 2)
         {
@@ -32,7 +38,7 @@ public class CommandMessageReplacement extends MessageCommand
             }
             else
             {
-                ITextComponent message = getChatComponentFromNthArg(sender, args, 1, !(sender instanceof EntityPlayer));
+                ITextComponent message = getChatComponentFromNthArg(sender, args, 1, !(sender instanceof PlayerEntity));
                 ModuleChat.tell(sender, message, target);
             }
         }

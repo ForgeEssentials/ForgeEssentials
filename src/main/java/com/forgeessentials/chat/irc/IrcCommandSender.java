@@ -18,7 +18,7 @@ import org.pircbotx.User;
 
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class IrcCommandSender extends CommandSource implements ICommandSource 
+public class IrcCommandSender extends CommandSource
 {
 
     private User user;

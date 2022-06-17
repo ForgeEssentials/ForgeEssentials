@@ -19,6 +19,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.context.IContext;
@@ -34,6 +35,8 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  *
@@ -41,7 +44,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandParserArgs
 {
 
-    public final ICommand command;
+    public final Command command;
     public final LinkedList<String> args;
     public final CommandSource sender;
     public final ServerPlayerEntity senderPlayer;
@@ -52,15 +55,13 @@ public class CommandParserArgs
 
     public List<String> tabCompletion;
 
-    public CommandParserArgs(ICommand command, String[] args, CommandSource sender, boolean isTabCompletion, MinecraftServer server)
+    public CommandParserArgs(Command command, String[] args, CommandSource sender, boolean isTabCompletion, MinecraftServer server)
     {
         this.command = command;
         this.args = new LinkedList<>(Arrays.asList(args));
         this.sender = sender;
         this.senderPlayer = (sender.getPlayerOrException() instanceof ServerPlayerEntity) ? (ServerPlayerEntity) sender.getPlayerOrException() : null;
-        this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null)
-                : UserIdent
-                        .get(senderPlayer);
+        this.ident = (senderPlayer == null) ? (sender. instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null) : UserIdent.get(senderPlayer);
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
@@ -68,7 +69,7 @@ public class CommandParserArgs
         this.server = server;
     }
 
-    public CommandParserArgs(ICommand command, String[] args, CommandSource sender, MinecraftServer server)
+    public CommandParserArgs(Command command, String[] args, CommandSource sender, MinecraftServer server)
     {
         this(command, args, sender, false, server);
     }
@@ -266,10 +267,18 @@ public class CommandParserArgs
 
     public boolean hasPermission(String perm)
     {
-        if (sender.getPlayerOrException() instanceof PlayerEntity)
-            return APIRegistry.perms.checkPermission(senderPlayer, perm);
-        else
-            return true;
+        try
+        {
+            if (sender.getPlayerOrException() instanceof PlayerEntity)
+                return APIRegistry.perms.checkPermission(senderPlayer, perm);
+            else
+                return true;
+        }
+        catch (CommandSyntaxException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void tabComplete(String... completionList) throws CancelParsingException
@@ -353,7 +362,7 @@ public class CommandParserArgs
                 throw new Exception("commands.generic.num.tooBig" + strValue + Integer.toString(max));
             return value;
         }
-        catch (NumberFormatException e)
+        catch (Exception e)
         {
             throw new TranslatedCommandException("Invalid number: %s", strValue);
         }
@@ -529,7 +538,7 @@ public class CommandParserArgs
 
         public CancelParsingException()
         {
-            super("");
+            super(null);
         }
 
     }

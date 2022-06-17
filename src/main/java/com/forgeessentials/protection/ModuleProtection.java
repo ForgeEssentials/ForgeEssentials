@@ -330,7 +330,7 @@ public class ModuleProtection
         msg.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
         msg.getStyle().setColor(ChatOutputHandler.chatNotificationColor);
         msg.getStyle().setUnderlined(true);
-        ChatOutputHandler.sendMessage(player, msg);
+        ChatOutputHandler.ircSendMessageUser(player, msg);
     }
 
     /* ------------------------------------------------------------ */
