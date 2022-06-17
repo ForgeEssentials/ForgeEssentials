@@ -16,17 +16,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.common.config.Property.Type;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -271,7 +265,7 @@ public class CommandSellprice extends ParserCommandBase
 
         writeMap(priceMap, priceFile);
 
-        for (Item item : Item.REGISTRY)
+        for (Item item : ForgeRegistries.ITEMS)
         {
             String id = ServerUtil.getItemName(item);
             if (!priceMapFull.containsKey(id))
