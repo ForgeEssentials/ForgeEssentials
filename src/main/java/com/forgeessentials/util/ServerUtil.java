@@ -17,27 +17,26 @@ import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
-import net.minecraft.command.server.CommandMessage;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fml.event.server.ServerLifecycleEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
 
 public abstract class ServerUtil
 {
@@ -105,7 +104,7 @@ public abstract class ServerUtil
         }
     }
 
-    public static double parseYLocation(ICommandSender sender, double relative, String value) throws CommandException
+    public static double parseYLocation(CommandSource sender, double relative, String value) throws CommandException
     {
         boolean isRelative = value.startsWith("~");
         if (isRelative && Double.isNaN(relative))
@@ -224,10 +223,11 @@ public abstract class ServerUtil
      * Returns working directory or minecraft data-directory on client side. <br>
      * <b>Please use module directory instead!</b>
      */
+    @SuppressWarnings("resource")
     public static File getBaseDir()
     {
-        if (FMLCommonHandler.instance().getSide().isClient())
-            return Minecraft.getMinecraft().mcDataDir;
+        if (ServerLifecycleHooks.getCurrentServer().isSingleplayer())
+            return Minecraft.getInstance().gameDirectory;
         else
             return new File(".");
     }
@@ -240,9 +240,9 @@ public abstract class ServerUtil
     public static File getWorldPath()
     {
         if (Environment.isClient())
-            return new File(FMLCommonHandler.instance().getMinecraftServerInstance().getFile("saves"), FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
+            return new File(ServerLifecycleHooks.getCurrentServer().getFile("saves"), ServerLifecycleHooks.getCurrentServer().getWorldData().getLevelName());
         else
-            return FMLCommonHandler.instance().getMinecraftServerInstance().getFile(FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
+            return ServerLifecycleHooks.getCurrentServer().getServerDirectory();
     }
 
     /* ------------------------------------------------------------ */
@@ -253,9 +253,9 @@ public abstract class ServerUtil
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static List<EntityPlayerMP> getPlayerList()
+    public static List<ServerPlayerEntity> getPlayerList()
     {
-        MinecraftServer mc = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer mc = ServerLifecycleHooks.getCurrentServer();
         return mc == null || mc.getPlayerList() == null ? new ArrayList<>() : mc.getPlayerList().getPlayers();
     }
 
@@ -265,11 +265,11 @@ public abstract class ServerUtil
      * @param dimID
      * @return -1 if error
      */
-    public static double getWorldTPS(int dimID)
+    public static double getWorldTPS(RegistryKey<World> World)
     {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         long sum = 0L;
-        long[] ticks = server.worldTickTimes.get(dimID);
+        long[] ticks = server.getTickTime(World);
         for (int i = 0; i < ticks.length; ++i)
         {
             sum += ticks[i];
@@ -288,33 +288,39 @@ public abstract class ServerUtil
      */
     public static double getTPS()
     {
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-        double tickSum = 0;
-        for (int i = 0; i < server.tickTimeArray.length; ++i)
-            tickSum += server.tickTimeArray[i];
-        tickSum /= server.tickTimeArray.length;
-        double tps = 1000000000 / tickSum;
-        return tps; // tps > 20 ? 20 : tps;
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        final double meanTickTime = mean(server.tickTimes) * 1.0E-6D;
+        return Math.min(1000 / meanTickTime, 20);// tps > 20 ? 20 : tps;
     }
 
-    public static WorldServer getOverworld()
+    private static long mean(final long[] values)
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0];
+        long sum = 0;
+        for (final long v : values)
+        {
+            sum += v;
+        }
+        return sum / values.length;
+    }
+
+    public static ServerWorld getOverworld()
+    {
+        return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD);
     }
 
     public static long getOverworldTime()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0].getWorldInfo().getWorldTime();
+        return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD).getDayTime();
     }
 
     public static boolean isServerRunning()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance() != null && FMLCommonHandler.instance().getMinecraftServerInstance().isServerRunning();
+        return ServerLifecycleHooks.getCurrentServer() != null && ServerLifecycleHooks.getCurrentServer().isRunning();
     }
-    
+
     public static boolean isOnlineMode()
     {
-        return FMLCommonHandler.instance().getSidedDelegate().getServer().isServerInOnlineMode();
+        return ServerLifecycleHooks.getCurrentServer().usesAuthentication();
     }
 
     public static boolean getMojangServerStatus()
@@ -332,55 +338,57 @@ public abstract class ServerUtil
         }
         catch (MalformedURLException e)
         {
-            Throwables.propagate(e);
-            return false;
+            throw new RuntimeException(e);
         }
         catch (IOException e)
         {
             return false;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
-    public static void copyNbt(NBTTagCompound nbt, NBTTagCompound data)
+    public static void copyNbt(CompoundNBT nbt, CompoundNBT data)
     {
         // Clear old data
-        for (String key : new HashSet<String>(nbt.getKeySet()))
-            nbt.removeTag(key);
-    
+        for (String key : new HashSet<String>(nbt.getAllKeys()))
+            nbt.remove(key);
+
         // Write new data
-        for (String key : (Set<String>) data.getKeySet())
-            nbt.setTag(key, data.getTag(key));
+        for (String key : (Set<String>) data.getAllKeys())
+            nbt.put(key, data.get(key));
     }
 
     /* ------------------------------------------------------------ */
 
     public static String getItemName(Item item)
     {
-        return Item.REGISTRY.getNameForObject(item).toString();
+        return ForgeRegistries.ITEMS.getKey(item).toString();
     }
 
     public static String getItemPermission(Item item)
     {
-        ResourceLocation loc = (ResourceLocation) Item.REGISTRY.getNameForObject(item);
-        return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
+        ResourceLocation loc = (ResourceLocation) ForgeRegistries.ITEMS.getKey(item);
+        return (loc.getNamespace() + '.' + loc.getPath()).replace(' ', '_');
     }
 
     public static String getBlockName(Block block)
     {
-        Object o = Block.REGISTRY.getNameForObject(block);
-        if(o instanceof ResourceLocation){
+        Object o = ForgeRegistries.BLOCKS.getKey(block).toString();
+        if (o instanceof ResourceLocation)
+        {
             ResourceLocation rl = (ResourceLocation) o;
-            return rl.getResourcePath();
-        } else {
+            return rl.getPath();
+        }
+        else
+        {
             return (String) o;
         }
     }
 
     public static String getBlockPermission(Block block)
     {
-        ResourceLocation loc = (ResourceLocation) Block.REGISTRY.getNameForObject(block);
-        return (loc.getResourceDomain() + '.' + loc.getResourcePath()).replace(' ', '_');
+        ResourceLocation loc = (ResourceLocation) ForgeRegistries.BLOCKS.getKey(block);
+        return (loc.getNamespace() + '.' + loc.getPath()).replace(' ', '_');
     }
 
     /* ------------------------------------------------------------ */

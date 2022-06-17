@@ -128,9 +128,8 @@ public class CommandSellprice extends ParserCommandBase
         /*
          * Map<Item, Double> priceMap = new TreeMap<>(new Comparator<Item>() {
          * 
-         * @Override public int compare(Item a, Item b) { try { String aId =
-         * Item.REGISTRY.getNameForObject(a); String bId = Item.REGISTRY.getNameForObject(b);
-         * return aId.compareTo(bId); } catch (Exception e) { return 0; } } });
+         * @Override public int compare(Item a, Item b) { try { String aId = Item.REGISTRY.getNameForObject(a); String bId = Item.REGISTRY.getNameForObject(b); return
+         * aId.compareTo(bId); } catch (Exception e) { return 0; } } });
          */
         Map<String, Double> priceMap = loadPriceList(arguments);
         Map<String, Double> priceMapFull = new TreeMap<>();
@@ -155,7 +154,8 @@ public class CommandSellprice extends ParserCommandBase
                         continue;
                     }
                     craftRecipes
-                            .write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()), ItemUtil.getItemDamage(recipe.getRecipeOutput())));
+                            .write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
+                                    ItemUtil.getItemDamage(recipe.getRecipeOutput())));
                     for (Ingredient ingredient : recipeItems)
                     {
                         if (ingredient != null)
@@ -250,8 +250,10 @@ public class CommandSellprice extends ParserCommandBase
                             if (resultPrice == null || outPrice < resultPrice)
                             {
                                 priceMap.put(ItemUtil.getItemIdentifier(recipe.getValue()), outPrice);
-                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", ServerUtil.getItemName(recipe.getValue().getItem()), ItemUtil.getItemDamage(
-                                        recipe.getValue()), resultPrice == null ? 0 : resultPrice, (int) outPrice, ServerUtil.getItemName(recipe.getKey().getItem())));
+                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", ServerUtil.getItemName(recipe.getValue().getItem()),
+                                        ItemUtil.getItemDamage(
+                                                recipe.getValue()),
+                                        resultPrice == null ? 0 : resultPrice, (int) outPrice, ServerUtil.getItemName(recipe.getKey().getItem())));
                                 changedPrice = true;
                             }
                         }
@@ -458,8 +460,10 @@ public class CommandSellprice extends ParserCommandBase
             {
                 Double itemPrice = null;
                 ItemStack[] stacks = ingredient.getMatchingStacks();
-                for (ItemStack stack : stacks) {
-                    if (stack == ItemStack.EMPTY) {
+                for (ItemStack stack : stacks)
+                {
+                    if (stack == ItemStack.EMPTY)
+                    {
                         continue;
                     }
                     String id = ItemUtil.getItemIdentifier(stack);

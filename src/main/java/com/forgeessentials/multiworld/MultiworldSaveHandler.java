@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.MinecraftException;
@@ -13,6 +14,7 @@ import net.minecraft.world.chunk.storage.IChunkLoader;
 import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.minecraft.world.storage.IPlayerFileData;
 import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.IWorldInfo;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.DimensionManager;
@@ -57,9 +59,9 @@ public class MultiworldSaveHandler implements ISaveHandler
         {
             try
             {
-                NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
-                NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Data");
-                WorldInfo worldInfo = new WorldInfo(nbttagcompound1);
+                CompoundNBT nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
+                CompoundNBT nbttagcompound1 = nbttagcompound.getCompound("Data");
+                IWorldInfo worldInfo = new WorldInfo(nbttagcompound1);
                 return worldInfo;
             }
             catch (StartupQuery.AbortedException e)
@@ -77,8 +79,8 @@ public class MultiworldSaveHandler implements ISaveHandler
         {
             try
             {
-                NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
-                NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Data");
+                CompoundNBT nbttagcompound = CompressedStreamTools.readCompressed(new FileInputStream(file1));
+                CompoundNBT nbttagcompound1 = nbttagcompound.getCompound("Data");
                 WorldInfo worldInfo = new WorldInfo(nbttagcompound1);
                 return worldInfo;
             }
@@ -101,11 +103,11 @@ public class MultiworldSaveHandler implements ISaveHandler
         parent.checkSessionLock();
     }
 
-    public void saveWorldInfoData(WorldInfo p_75755_1_, NBTTagCompound data)
+    public void saveWorldInfoData(WorldInfo p_75755_1_, CompoundNBT data)
     {
-        NBTTagCompound dataTag = p_75755_1_.cloneNBTCompound(data);
-        NBTTagCompound dataTag1 = new NBTTagCompound();
-        dataTag1.setTag("Data", dataTag);
+        CompoundNBT dataTag = p_75755_1_.cloneNBTCompound(data);
+        CompoundNBT dataTag1 = new CompoundNBT();
+        dataTag1.put("Data", dataTag);
 
         // Save the list of mods the world was created with
         FMLCommonHandler.instance().handleWorldDataSave(parent, p_75755_1_, dataTag);
@@ -139,7 +141,7 @@ public class MultiworldSaveHandler implements ISaveHandler
     }
 
     @Override
-    public void saveWorldInfoWithPlayer(WorldInfo worldInfo, NBTTagCompound playerInfo)
+    public void saveWorldInfoWithPlayer(WorldInfo worldInfo, CompoundNBT playerInfo)
     {
         saveWorldInfoData(worldInfo, worldInfo.cloneNBTCompound(playerInfo));
     }
@@ -147,7 +149,7 @@ public class MultiworldSaveHandler implements ISaveHandler
     @Override
     public void saveWorldInfo(WorldInfo worldInformation)
     {
-        this.saveWorldInfoWithPlayer(worldInformation, (NBTTagCompound)null);
+        this.saveWorldInfoWithPlayer(worldInformation, (CompoundNBT) null);
     }
 
     @Override

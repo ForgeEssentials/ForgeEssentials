@@ -6,7 +6,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.Packet2Reach;
+import com.forgeessentials.commons.network.packets.Packet2Reach;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
@@ -64,7 +64,7 @@ public class CommandReach extends ParserCommandBase
         if (distance < 1)
             distance = 5;
 
-        NetworkUtils.netHandler.sendTo(new Packet2Reach(distance), arguments.senderPlayer);
+        NetworkUtils.sendTo(new Packet2Reach(distance), arguments.senderPlayer);
         arguments.senderPlayer.interactionManager.setBlockReachDistance(distance);
         arguments.confirm(Translator.format("Set reach distance to %d", (int) distance));
     }

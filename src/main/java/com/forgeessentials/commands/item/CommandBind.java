@@ -1,12 +1,12 @@
 package com.forgeessentials.commands.item;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -14,8 +14,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
@@ -83,12 +83,12 @@ public class CommandBind extends ParserCommandBase
         {
             if (!arguments.isTabCompletion)
             {
-                ItemStack is = arguments.senderPlayer.inventory.getCurrentItem();
+                ItemStack is = arguments.senderPlayer.inventory.getSelected();
                 if (is == ItemStack.EMPTY)
                     throw new TranslatedCommandException("You are not holding a valid item.");
-                NBTTagCompound tag = is.getTagCompound();
+                CompoundNBT tag = is.getTag();
                 if (tag != null)
-                    tag.removeTag(TAG_NAME);
+                    tag.remove(TAG_NAME);
                 arguments.confirm("Cleared bound commands from item");
             }
             return;
@@ -106,12 +106,12 @@ public class CommandBind extends ParserCommandBase
             return;
         }
 
-        ItemStack is = arguments.senderPlayer.inventory.getCurrentItem();
+        ItemStack is = arguments.senderPlayer.inventory.getSelected();
         if (is == ItemStack.EMPTY)
             throw new TranslatedCommandException("You are not holding a valid item.");
-        NBTTagCompound tag = ItemUtil.getTagCompound(is);
-        NBTTagCompound bindTag = ItemUtil.getCompoundTag(tag, TAG_NAME);
-        NBTTagCompound display = tag.getCompoundTag("display");
+        CompoundNBT tag = ItemUtil.getTagCompound(is);
+        CompoundNBT bindTag = ItemUtil.getCompoundTag(tag, TAG_NAME);
+        CompoundNBT display = tag.getCompound("display");
 
         if (arguments.isTabCompletion)
         {
@@ -123,31 +123,31 @@ public class CommandBind extends ParserCommandBase
         }
         if (arguments.peek().equals("none"))
         {
-            bindTag.removeTag(side);
-            display.setTag("Lore", new NBTTagList());
+            bindTag.remove(side);
+            display.put("Lore", new ListNBT());
             arguments.confirm("Cleared " + side + " bound command from item");
         }
         else
         {
             String command = arguments.toString();
-            bindTag.setString(side, command);
+            bindTag.putString(side, command);
 
             String loreStart = LORE_TEXT_TAG + side + "> ";
-            NBTTagString loreTag = new NBTTagString(loreStart + command);
+            StringNBT loreTag = StringNBT.valueOf(loreStart + command);
 
-            NBTTagList lore = display.getTagList("Lore", 9);
-            for (int i = 0; i < lore.tagCount(); ++i)
+            ListNBT lore = display.getList("Lore", 9);
+            for (int i = 0; i < lore.size(); ++i)
             {
-                if (lore.getStringTagAt(i).startsWith(loreStart))
+                if (lore.getString(i).startsWith(loreStart))
                 {
                     lore.set(i, loreTag);
                     arguments.confirm("Bound command to item");
                     return;
                 }
             }
-            lore.appendTag(loreTag);
-            display.setTag("Lore", lore);
-            tag.setTag("display", display);
+            lore.add(loreTag);
+            display.put("Lore", lore);
+            tag.put("display", display);
         }
         arguments.confirm("Bound command to item");
     }
@@ -155,12 +155,12 @@ public class CommandBind extends ParserCommandBase
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!(event.getEntityPlayer() instanceof EntityPlayerMP))
+        if (!(event.getEntity() instanceof ServerPlayerEntity))
             return;
-        ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
-        if (stack == ItemStack.EMPTY || stack.getTagCompound() == null || !stack.getTagCompound().hasKey(TAG_NAME))
+        ItemStack stack = event.getPlayer().getMainHandItem();
+        if (stack == ItemStack.EMPTY || stack.getTag() == null || !stack.getTag().contains(TAG_NAME))
             return;
-        NBTTagCompound nbt = stack.getTagCompound().getCompoundTag(TAG_NAME);
+        CompoundNBT nbt = stack.getTag().getCompound(TAG_NAME);
 
         String command;
         if (event instanceof LeftClickBlock || event instanceof LeftClickEmpty)
@@ -172,7 +172,7 @@ public class CommandBind extends ParserCommandBase
         if (command == null || command.isEmpty())
             return;
 
-        FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(event.getEntityPlayer(), command);
+        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(event.getPlayer().createCommandSourceStack(), command);
         event.setCanceled(true);
     }
 

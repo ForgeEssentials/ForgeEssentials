@@ -7,8 +7,6 @@ import java.util.concurrent.TimeUnit;
 import javax.persistence.TypedQuery;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -125,9 +123,11 @@ public class CommandPlayerlogger extends ParserCommandBase
             global = arguments.senderPlayer == null || global;
             fc = global ? FilterConfig.globalConfig : new FilterConfig();
             fc.parse(arguments);
-            if (!global) FilterConfig.perPlayerFilters.put(arguments.ident,fc);
+            if (!global)
+                FilterConfig.perPlayerFilters.put(arguments.ident, fc);
 
-            ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors((global ? "Global": arguments.ident.getUsername() + "'s") + " Picker set: \n" + fc.toReadableString()));
+            ChatOutputHandler.sendMessage(arguments.sender,
+                    ChatOutputHandler.formatColors((global ? "Global" : arguments.ident.getUsername() + "'s") + " Picker set: \n" + fc.toReadableString()));
 
             break;
         case "glookup":
@@ -177,7 +177,8 @@ public class CommandPlayerlogger extends ParserCommandBase
                         }
                         catch (NoSuchElementException | TranslatedCommandException e)
                         {
-                            if (next != null) arguments.args.addFirst(next);
+                            if (next != null)
+                                arguments.args.addFirst(next);
                             arguments.args.addFirst(Integer.toString(tmp));
                         }
                     }
@@ -217,8 +218,8 @@ public class CommandPlayerlogger extends ParserCommandBase
                 fc = new FilterConfig();
                 fc.parse(arguments);
             }
-            //ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors("Looking up: \n" + fc.toReadableString()));
-            PlayerLoggerChecker.instance.CheckBlock(p,fc, arguments.sender, pageSize, newCheck);
+            // ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors("Looking up: \n" + fc.toReadableString()));
+            PlayerLoggerChecker.instance.CheckBlock(p, fc, arguments.sender, pageSize, newCheck);
 
             break;
         case "stats":

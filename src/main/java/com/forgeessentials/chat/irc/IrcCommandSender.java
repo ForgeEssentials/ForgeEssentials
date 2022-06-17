@@ -1,21 +1,24 @@
 package com.forgeessentials.chat.irc;
 
-import net.minecraft.command.CommandResultStats.Type;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.ICommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.config.ModConfig.Type;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
+import java.util.UUID;
 
 import org.pircbotx.User;
 
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class IrcCommandSender implements ICommandSender
+public class IrcCommandSender extends CommandSource
 {
 
     private User user;
@@ -31,7 +34,7 @@ public class IrcCommandSender implements ICommandSender
     }
 
     @Override
-    public String getName()
+    public String getTextName()
     {
         return "IRC:" + user.getNick();
     }
@@ -39,14 +42,14 @@ public class IrcCommandSender implements ICommandSender
     @Override
     public ITextComponent getDisplayName()
     {
-        return new TextComponentString(this.getName());
+        return new StringTextComponent(this.getTextName());
     }
 
     @Override
     public void sendMessage(ITextComponent chatComponent)
     {
         if (user.getBot().isConnected())
-            user.send().message(ChatOutputHandler.stripFormatting(chatComponent.getUnformattedText()));
+            user.send().message(ChatOutputHandler.stripFormatting(chatComponent.plainCopy().toString()));
     }
 
     @Override
@@ -56,13 +59,7 @@ public class IrcCommandSender implements ICommandSender
     }
 
     @Override
-    public BlockPos getPosition()
-    {
-        return getServer().getPosition();
-    }
-
-    @Override
-    public Vec3d getPositionVector()
+    public Vector3d getPosition()
     {
         return getServer().getPositionVector();
     }
@@ -74,7 +71,7 @@ public class IrcCommandSender implements ICommandSender
     }
 
     @Override
-    public Entity getCommandSenderEntity()
+    public Entity getEntity()
     {
         return getServer().getCommandSenderEntity();
     }
@@ -94,7 +91,35 @@ public class IrcCommandSender implements ICommandSender
     @Override
     public MinecraftServer getServer()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance();
+        return ServerLifecycleHooks.getCurrentServer();
+    }
+
+    @Override
+    public void sendMessage(ITextComponent p_145747_1_, UUID p_145747_2_)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public boolean acceptsSuccess()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean acceptsFailure()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean shouldInformAdmins()
+    {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

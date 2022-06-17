@@ -25,7 +25,7 @@ public class CommandPortal extends ParserCommandBase
     {
         return "portal";
     }
-    
+
     @Override
     public String getUsage(ICommandSender p_71518_1_)
     {

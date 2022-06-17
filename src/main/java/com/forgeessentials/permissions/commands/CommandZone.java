@@ -132,9 +132,9 @@ public class CommandZone extends ParserCommandBase
     {
         if (arguments.isTabCompletion)
             return;
-        
+
         arguments.checkPermission(PERM_LIST);
-        
+
         final int PAGE_SIZE = 12;
         int limit = 1;
         if (!arguments.isEmpty())
@@ -220,7 +220,7 @@ public class CommandZone extends ParserCommandBase
 
         if (arguments.isTabCompletion)
             return;
-        
+
         AreaBase selection = SelectionHandler.getSelection(arguments.senderPlayer);
         if (selection == null)
             throw new TranslatedCommandException("No selection available. Please select a region first.");
@@ -265,7 +265,7 @@ public class CommandZone extends ParserCommandBase
 
         if (arguments.isTabCompletion)
             return;
-        
+
         WorldZone worldZone = arguments.getWorldZone();
         AreaZone areaZone = getAreaZone(worldZone, areaName);
         if (areaZone == null)
@@ -285,7 +285,7 @@ public class CommandZone extends ParserCommandBase
 
         if (arguments.isTabCompletion)
             return;
-        
+
         WorldZone worldZone = arguments.getWorldZone();
         AreaZone areaZone = getAreaZone(worldZone, areaName);
         if (areaZone == null)
@@ -304,7 +304,7 @@ public class CommandZone extends ParserCommandBase
 
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
-        
+
         if (arguments.isTabCompletion)
             return;
 

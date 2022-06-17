@@ -1,22 +1,20 @@
 package com.forgeessentials.perftools;
 
-import net.minecraftforge.common.config.Configuration;
-
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 @FEModule(name = "perftools", parentMod = ForgeEssentials.class, defaultModule = false)
-public class PerfToolsModule extends ConfigLoaderBase
+public class PerfToolsModule
 {
     private MemoryWatchdog watchdog;
 
@@ -26,14 +24,14 @@ public class PerfToolsModule extends ConfigLoaderBase
     protected static boolean warn;
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModuleCommonSetupEvent e)
     {
         FECommandManager.registerCommand(new CommandServerPerf());
         FECommandManager.registerCommand(new CommandChunkLoaderList());
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FEModuleServerStartingEvent e)
     {
         if (warn)
         {
@@ -43,11 +41,26 @@ public class PerfToolsModule extends ConfigLoaderBase
         }
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    static ForgeConfigSpec.BooleanValue FEwarn;
+    static ForgeConfigSpec.IntValue FEpercentageWarn;
+    static ForgeConfigSpec.IntValue FEcheckInterval;
+
+    public static void load(ForgeConfigSpec.Builder SERVER_BUILDER)
     {
-        warn = config.get(FEConfig.CONFIG_CAT, "warnHighMemUsage", true, "Warn server ops when we detect high memory usage.").getBoolean(true);
-        percentageWarn = config.get(FEConfig.CONFIG_CAT, "percentageWarn", 90, "Percentage at which to warn server ops").getInt(90);
-        checkInterval = config.get(FEConfig.CONFIG_CAT, "checkInterval", 5, "Interval in minutes to check memory use.").getInt(5);
+        SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
+        FEwarn = SERVER_BUILDER.comment("Warn server ops when we detect high memory usage.")
+                .define("warnHighMemUsage", true);
+        FEpercentageWarn = SERVER_BUILDER.comment("Percentage at which to warn server ops")
+                .defineInRange("percentageWarn", 90, 1, 100);
+        FEcheckInterval = SERVER_BUILDER.comment("Interval in minutes to check memory use.")
+                .defineInRange("checkInterval", 5, 1, 60);
+        SERVER_BUILDER.pop();
+    }
+
+    public static void bakeConfig(boolean b)
+    {
+        warn = FEwarn.get();
+        percentageWarn = FEpercentageWarn.get();
+        checkInterval = FEcheckInterval.get();
     }
 }

@@ -95,12 +95,14 @@ public class CommandPromote extends ParserCommandBase
                 APIRegistry.perms.removePlayerFromGroup(ident, group.getGroup());
                 ChatOutputHandler.chatConfirmation(arguments.sender, Translator.format("Removed %s from group %s", ident.getUsernameOrUuid(), group));
                 if (ident.hasPlayer())
-                    ChatOutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have been removed from the %s group", group));
+                    ChatOutputHandler.chatConfirmation(ident.getPlayer().createCommandSourceStack(),
+                            Translator.format("You have been removed from the %s group", group));
             }
         APIRegistry.perms.addPlayerToGroup(ident, groupName);
         ChatOutputHandler.chatConfirmation(arguments.sender, Translator.format("Added %s to group %s", ident.getUsernameOrUuid(), groupName));
         if (ident.hasPlayer())
-            ChatOutputHandler.chatConfirmation(ident.getPlayer(), Translator.format("You have been added to the %s group", groupName));
+            ChatOutputHandler.chatConfirmation(ident.getPlayer().createCommandSourceStack(),
+                    Translator.format("You have been added to the %s group", groupName));
     }
 
 }

@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -355,7 +355,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     public void notifyPlayers(String message)
     {
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
             if (APIRegistry.perms.checkPermission(player, getPermissionNode()))
                 ChatOutputHandler.chatNotification(player, message);
     }

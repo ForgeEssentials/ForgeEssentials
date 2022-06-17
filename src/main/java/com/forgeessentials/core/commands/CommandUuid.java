@@ -48,7 +48,7 @@ public class CommandUuid extends ParserCommandBase
         {
             if (!arguments.hasPlayer())
                 throw new TranslatedCommandException("Player argument needed!");
-            arguments.confirm("UUID = " + arguments.senderPlayer.getPersistentID().toString());
+            arguments.confirm("UUID = " + arguments.senderPlayer.getStringUUID());
         }
         else
         {

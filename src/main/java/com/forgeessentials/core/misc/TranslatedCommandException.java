@@ -9,12 +9,12 @@ public class TranslatedCommandException extends CommandException
 
     public TranslatedCommandException(String message)
     {
-        super(Translator.translate(message));
+        super(Translator.translateITC(message));
     }
 
     public TranslatedCommandException(String message, Object... args)
     {
-        super(Translator.translate(message), args);
+        super(Translator.translateITC(message));//, args);
     }
 
     public static class PlayerNotFoundException extends TranslatedCommandException
@@ -41,6 +41,20 @@ public class TranslatedCommandException extends CommandException
         }
 
         public InvalidSyntaxException(String correctSyntax)
+        {
+            super("Invalid Syntax. Instead use %s", correctSyntax);
+        }
+
+    }
+    public static class WrongUsageException extends TranslatedCommandException
+    {
+
+        public WrongUsageException()
+        {
+            super("Invalid Syntax");
+        }
+
+        public WrongUsageException(String correctSyntax)
         {
             super("Invalid Syntax. Instead use %s", correctSyntax);
         }

@@ -1,13 +1,9 @@
 package com.forgeessentials.multiworld.gen;
 
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldType;
+import net.minecraft.world.server.ServerWorld;
 
 import com.forgeessentials.multiworld.WorldServerMultiworld;
-import net.minecraft.world.gen.ChunkGeneratorSettings;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.layer.GenLayer;
 
 public class WorldTypeMultiworld extends WorldType
 {
@@ -21,7 +17,8 @@ public class WorldTypeMultiworld extends WorldType
         this.world = world;
     }
 
-    public int getVersion() {
+    public int getVersion()
+    {
         return world.getVersion();
     }
 
@@ -38,7 +35,8 @@ public class WorldTypeMultiworld extends WorldType
         return world.isVersioned();
     }
 
-    public int getId() {
+    public int getId()
+    {
         return world.getId();
     }
 
@@ -75,20 +73,23 @@ public class WorldTypeMultiworld extends WorldType
     /**
      * Called when 'Create New World' button is pressed before starting game
      */
-    public void onGUICreateWorldPress() { }
+    public void onGUICreateWorldPress()
+    {
+    }
 
     /**
-     * Gets the spawn fuzz for players who join the world.
-     * Useful for void world types.
+     * Gets the spawn fuzz for players who join the world. Useful for void world types.
+     * 
      * @return Fuzz for entity initial spawn in blocks.
      */
-    public int getSpawnFuzz(WorldServer world, net.minecraft.server.MinecraftServer server)
+    public int getSpawnFuzz(ServerWorld world, net.minecraft.server.MinecraftServer server)
     {
         return this.world.getSpawnFuzz(world, server);
     }
 
     /**
      * Should world creation GUI show 'Customize' button for this world type?
+     * 
      * @return if this world type has customization parameters
      */
     public boolean isCustomizable()
@@ -96,9 +97,9 @@ public class WorldTypeMultiworld extends WorldType
         return this.world.isCustomizable();
     }
 
-
     /**
      * Get the height to render the clouds for this world type
+     * 
      * @return The height to render clouds at
      */
     public float getCloudHeight()
@@ -107,13 +108,15 @@ public class WorldTypeMultiworld extends WorldType
     }
 
     /**
-     * Creates the GenLayerBiome used for generating the world with the specified ChunkProviderSettings JSON String
-     * *IF AND ONLY IF* this WorldType == WorldType.CUSTOMIZED.
+     * Creates the GenLayerBiome used for generating the world with the specified ChunkProviderSettings JSON String *IF AND ONLY IF* this WorldType == WorldType.CUSTOMIZED.
      *
      *
-     * @param worldSeed The world seed
-     * @param parentLayer The parent layer to feed into any layer you return
-     * @param chunkProviderSettingsJson The JSON string to use when initializing ChunkProviderSettings.Factory
+     * @param worldSeed
+     *            The world seed
+     * @param parentLayer
+     *            The parent layer to feed into any layer you return
+     * @param chunkProviderSettingsJson
+     *            The JSON string to use when initializing ChunkProviderSettings.Factory
      * @return A GenLayer that will return ints representing the Biomes to be generated, see GenLayerBiome
      */
     public GenLayer getBiomeLayer(long worldSeed, GenLayer parentLayer, String chunkProviderSettingsJson)

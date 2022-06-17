@@ -6,7 +6,7 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -92,7 +92,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
         }
         else if (args.length == 1)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 ChatOutputHandler.chatNotification(sender, Translator.format("Capabilities for %s:", player.getName()));
@@ -112,7 +112,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
             if (sender instanceof EntityPlayer && !PermissionAPI.hasPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
                 throw new TranslatedCommandException("You don't have permissions for that.");
 
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))
@@ -143,7 +143,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
         {
             if (sender instanceof EntityPlayer && !PermissionAPI.hasPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
                 throw new TranslatedCommandException("You don't have permissions for that.");
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))

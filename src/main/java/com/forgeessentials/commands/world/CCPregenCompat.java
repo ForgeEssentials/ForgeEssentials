@@ -21,7 +21,7 @@ public class CCPregenCompat
     {
 
         ICubeProviderServer providerServer = (ICubeProviderServer) provider;
-        if (providerServer.isCubeGenerated(x,y,z))
+        if (providerServer.isCubeGenerated(x, y, z))
         {
             return false;
         }

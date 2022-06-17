@@ -8,26 +8,22 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketEntityEffect;
-import net.minecraft.network.play.server.SPacketRespawn;
-import net.minecraft.network.play.server.SPacketSetExperience;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Teleporter;
-import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldSettings;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fe.event.entity.EntityPortalEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -48,7 +44,7 @@ public class TeleportHelper extends ServerEventHandler
     public static class SimpleTeleporter extends Teleporter
     {
 
-        public SimpleTeleporter(WorldServer world)
+        public SimpleTeleporter(ServerWorld world)
         {
             super(world);
         }
@@ -80,7 +76,7 @@ public class TeleportHelper extends ServerEventHandler
     public static class TeleportInfo
     {
 
-        private EntityPlayerMP player;
+        private PlayerEntity player;
 
         private long start;
 
@@ -90,7 +86,7 @@ public class TeleportHelper extends ServerEventHandler
 
         private WarpPoint playerPos;
 
-        public TeleportInfo(EntityPlayerMP player, WarpPoint point, int timeout)
+        public TeleportInfo(PlayerEntity player, WarpPoint point, int timeout)
         {
             this.point = point;
             this.timeout = timeout;
@@ -130,7 +126,7 @@ public class TeleportHelper extends ServerEventHandler
 
     private static Map<UUID, TeleportInfo> tpInfos = new HashMap<>();
 
-    public static void teleport(EntityPlayerMP player, WarpPoint point) throws CommandException
+    public static void teleport(PlayerEntity player, WarpPoint point) throws CommandException
     {
         if (point.getWorld() == null)
         {
@@ -179,12 +175,13 @@ public class TeleportHelper extends ServerEventHandler
 
         if (!canTeleportTo(point))
         {
-            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed.") + String.format(" (%2.2f,%2.2f,%2.2f)", point.getX(), point.getY(), point.getZ()));
+            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed.")
+                    + String.format(" (%2.2f,%2.2f,%2.2f)", point.getX(), point.getY(), point.getZ()));
             return;
         }
 
         // Setup timed teleport
-        tpInfos.put(player.getPersistentID(), new TeleportInfo(player, point, teleportWarmup * 1000));
+        tpInfos.put(player.getUUID(), new TeleportInfo(player, point, teleportWarmup * 1000));
         ChatOutputHandler.chatNotification(player,
                 Translator.format("Teleporting. Please stand still for %s.", ChatOutputHandler.formatTimeDurationReadable(teleportWarmup, true)));
     }
@@ -205,11 +202,12 @@ public class TeleportHelper extends ServerEventHandler
         return block1Free && block2Free;
     }
 
-    public static void checkedTeleport(EntityPlayerMP player, WarpPoint point)
+    public static void checkedTeleport(PlayerEntity player, WarpPoint point)
     {
         if (!canTeleportTo(point))
         {
-            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed.") + String.format(" (%2.2f,%2.2f,%2.2f)", point.getX(), point.getY(), point.getZ()));
+            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target location obstructed.")
+                    + String.format(" (%2.2f,%2.2f,%2.2f)", point.getX(), point.getY(), point.getZ()));
             return;
         }
 
@@ -225,7 +223,7 @@ public class TeleportHelper extends ServerEventHandler
         MinecraftForge.EVENT_BUS.post(new PlayerChangedZone(player, before, after, old, point));
     }
 
-    public static void doTeleport(EntityPlayerMP player, WarpPoint point)
+    public static void doTeleport(PlayerEntity player, WarpPoint point)
     {
         if (point.getWorld() == null)
         {
@@ -233,12 +231,13 @@ public class TeleportHelper extends ServerEventHandler
             return;
         }
         // TODO: Handle teleportation of mounted entity
-        player.dismountRidingEntity();
+        player.stopRiding();
+        ;
 
         if (player.dimension != point.getDimension())
         {
             SimpleTeleporter teleporter = new SimpleTeleporter(point.getWorld());
-            MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+            MinecraftServer mcServer = ServerLifecycleHooks.getCurrentServer();
             mcServer.getPlayerList().transferPlayerToDimension(player, point.getDimension(), teleporter);
         }
         player.connection.setPlayerLocation(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
@@ -246,9 +245,9 @@ public class TeleportHelper extends ServerEventHandler
 
     public static void doTeleportEntity(Entity entity, WarpPoint point)
     {
-        if (entity instanceof EntityPlayerMP)
+        if (entity instanceof PlayerEntity)
         {
-            doTeleport((EntityPlayerMP) entity, point);
+            doTeleport((PlayerEntity) entity, point);
             return;
         }
         if (entity.dimension != point.getDimension())
@@ -276,9 +275,9 @@ public class TeleportHelper extends ServerEventHandler
     public void entityPortalEvent(EntityPortalEvent e)
     {
         UserIdent ident = null;
-        if (e.getEntity() instanceof EntityPlayer)
-            ident = UserIdent.get((EntityPlayer) e.getEntity());
-        else if (e.getEntity() instanceof EntityLiving)
+        if (e.getEntity() instanceof PlayerEntity)
+            ident = UserIdent.get((PlayerEntity) e.getEntity());
+        else if (e.getEntity() instanceof LivingEntity)
             ident = APIRegistry.IDENT_NPC;
         WorldPoint pointFrom = new WorldPoint(e.world, e.pos);
         WorldPoint pointTo = new WorldPoint(e.targetDimension, e.target);
@@ -286,7 +285,7 @@ public class TeleportHelper extends ServerEventHandler
             e.setCanceled(true);
         if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_PORTALTO))
             e.setCanceled(true);
-        if (e.world.provider.getDimension() != e.targetDimension)
+        if (e.world.dimension() != e.targetDimension)
         {
             if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_CROSSDIM_PORTALFROM))
                 e.setCanceled(true);
@@ -295,14 +294,14 @@ public class TeleportHelper extends ServerEventHandler
         }
     }
 
-    //TODO: Remove method
-    public static void transferPlayerToDimension(EntityPlayerMP player, int dimension, Teleporter teleporter)
+    // TODO: Remove method
+    public static void transferPlayerToDimension(PlayerEntity player, int dimension, Teleporter teleporter)
     {
         // TODO (upgrade): Check teleportation!
-        int oldDim = player.dimension;
-        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        World oldDim = player.level;
+        MinecraftServer mcServer = ServerLifecycleHooks.getCurrentServer();
 
-        WorldServer oldWorld = mcServer.getWorld(player.dimension);
+        WorldSettings oldWorld = mcServer.getWorld(player.level);
         player.dimension = dimension;
         WorldServer newWorld = mcServer.getWorld(player.dimension);
         player.connection.sendPacket(new SPacketRespawn(player.dimension, newWorld.getDifficulty(),

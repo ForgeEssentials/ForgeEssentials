@@ -1,22 +1,24 @@
 package com.forgeessentials.chat.command;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.command.server.CommandMessage;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.impl.MessageCommand;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 
-import com.forgeessentials.chat.ModuleChat;
+import java.util.Collection;
 
-public class CommandMessageReplacement extends CommandMessage
+import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
+import com.forgeessentials.core.misc.TranslatedCommandException.WrongUsageException;
+
+public class CommandMessageReplacement extends MessageCommand
 {
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public void sendMessage(CommandSource p_198538_0_, Collection<ServerPlayerEntity> p_198538_1_, ITextComponent p_198538_2_) throws CommandException
     {
         if (args.length < 2)
         {
@@ -24,7 +26,7 @@ public class CommandMessageReplacement extends CommandMessage
         }
         else
         {
-            EntityPlayerMP target = getPlayer(server, sender, args[0]);
+            ServerPlayerEntity target = getPlayer(server, sender, args[0]);
 
             if (target == null)
             {
@@ -36,7 +38,7 @@ public class CommandMessageReplacement extends CommandMessage
             }
             else
             {
-                ITextComponent message = getChatComponentFromNthArg(sender, args, 1, !(sender instanceof EntityPlayer));
+                ITextComponent message = getChatComponentFromNthArg(sender, args, 1, !(sender instanceof PlayerEntity));
                 ModuleChat.tell(sender, message, target);
             }
         }

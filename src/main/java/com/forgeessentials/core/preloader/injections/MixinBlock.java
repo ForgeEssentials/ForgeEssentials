@@ -22,12 +22,13 @@ public abstract class MixinBlock extends Block
         super(material);
     }
 
-    @Inject(target = "onFallenUpon(Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;Lnet/minecraft/entity/Entity;F)V", aliases = "onFallenUpon=func_180658_a", at = @At("HEAD"))
+    @Inject(target = "onFallenUpon(Lnet/minecraft/world/World;Lnet/minecraft/util/BlockPos;Lnet/minecraft/entity/Entity;F)V",
+            aliases = "onFallenUpon=func_180658_a", at = @At("HEAD"))
     protected void onFallenUpon_event(World world, BlockPos pos, Entity entity, float fallHeight, CallbackInfo ci)
     {
         // Going down a slab: speed ~ 0.4
         // Going down a block: speed ~ 0.7
-        if (!world.isRemote && fallHeight > 0.2)
+        if (!world.isClientSide && fallHeight > 0.2)
         {
             FallOnBlockEvent event = new FallOnBlockEvent(entity, world, pos, this, fallHeight);
             if (MinecraftForge.EVENT_BUS.post(event))

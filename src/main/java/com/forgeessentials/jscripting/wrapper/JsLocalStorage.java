@@ -23,8 +23,7 @@ public class JsLocalStorage
      */
     public static void load()
     {
-        Type mapType = new TypeToken<HashMap<String, String>>()
-        {
+        Type mapType = new TypeToken<HashMap<String, String>>() {
         }.getType();
         data = DataManager.load(mapType, new File(DataManager.getInstance().getBasePath(), "script_data.json"));
         if (data == null)

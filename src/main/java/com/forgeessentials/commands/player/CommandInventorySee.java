@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -57,7 +57,7 @@ public class CommandInventorySee extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args[0] == null)
             throw new TranslatedCommandException("You need to specify a player!");
@@ -66,8 +66,8 @@ public class CommandInventorySee extends ForgeEssentialsCommandBase
         {
             return;
         }
-        EntityPlayerMP player = sender;
-        EntityPlayerMP victim = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        ServerPlayerEntity player = sender;
+        ServerPlayerEntity victim = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (victim == null)
             throw new TranslatedCommandException("Player %s not found.", args[0]);
 

@@ -11,7 +11,7 @@ import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -149,7 +149,8 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
 
     public static void parseTime(CommandParserArgs arguments, boolean addTime) throws CommandException
     {
-        if (arguments.isEmpty()) {
+        if (arguments.isEmpty())
+        {
             throw new TranslatedCommandException("Please Specify a time!");
         }
         long time;

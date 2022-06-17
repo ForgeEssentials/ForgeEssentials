@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,9 +33,9 @@ public class CommandPm extends ParserCommandBase
         targetMap.remove(sender);
     }
 
-    public static ICommandSender getTarget(ICommandSender sender)
+    public static CommandSource getTarget(CommandSource sender)
     {
-        WeakReference<ICommandSender> target = targetMap.get(sender);
+        WeakReference<CommandSource> target = targetMap.get(sender);
         if (target == null)
             return null;
         return target.get();
@@ -49,7 +50,7 @@ public class CommandPm extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender p_71518_1_)
+    public String getUsage(CommandSource p_71518_1_)
     {
         return "/pm <player>: Sticky private message mode";
     }

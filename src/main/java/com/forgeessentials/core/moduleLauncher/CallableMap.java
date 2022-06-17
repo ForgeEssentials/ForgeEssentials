@@ -10,12 +10,10 @@ import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.HashMultimap;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.ModContainer;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({ "unchecked" })
 public class CallableMap
 {
 
@@ -48,14 +46,15 @@ public class CallableMap
 
             for (Method m : c.getDeclaredMethods())
             {
-                if (m.isAnnotationPresent(SideOnly.class))
+            	/*
+                if (m.isAnnotationPresent(Dist.class))
                 {
-                    SideOnly annot = m.getAnnotation(SideOnly.class);
-                    if (!annot.value().equals(FMLCommonHandler.instance().getSide()))
+                    Dist annot = m.getAnnotation(Dist.class);
+                    if (!annot.values().equals(FMLEnvironment.dist))
                     {
                         continue;
                     }
-                }
+                }*/
 
                 if (Modifier.isStatic(m.getModifiers()))
                 {
@@ -92,14 +91,15 @@ public class CallableMap
 
             for (Method m : c.getDeclaredMethods())
             {
-                if (m.isAnnotationPresent(SideOnly.class))
+            	/*
+                if (m.isAnnotationPresent(Dist.class))
                 {
-                    SideOnly annot = m.getAnnotation(SideOnly.class);
-                    if (!annot.value().equals(FMLCommonHandler.instance().getSide()))
+                	Dist annot = m.getAnnotation(Dist.class);
+                    if (!annot.values().equals(FMLEnvironment.dist))
                     {
                         continue;
                     }
-                }
+                }*/
 
                 if (!Modifier.isStatic(m.getModifiers()))
                 {
@@ -169,7 +169,7 @@ public class CallableMap
             Class<?> c = m.getDeclaringClass();
             if (c.isAnnotationPresent(Mod.class))
             {
-                ident = c.getAnnotation(Mod.class).modid();
+                ident = c.getAnnotation(Mod.class).value();
             }
             else if (c.isAnnotationPresent(FEModule.class))
             {

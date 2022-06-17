@@ -3,9 +3,10 @@ package com.forgeessentials.multiworld.command;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.WorldServer;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -64,7 +65,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
         List<String> worldNames = APIRegistry.namedWorldHandler.getWorldNames();
         worldNames.add(0, "list");
         arguments.tabComplete(worldNames);
-        
+
         String worldName = arguments.remove();
 
         if (worldName.equalsIgnoreCase("list"))
@@ -73,13 +74,13 @@ public class CommandMultiworldTeleport extends ParserCommandBase
             return;
         }
 
-        EntityPlayerMP player = arguments.parsePlayer(true, true).getPlayerMP();
+        ServerPlayerEntity player = arguments.parsePlayer(true, true).getPlayerMP();
         if (player == null)
             throw new TranslatedCommandException("Missing player-name argument.");
 
-        double x = Math.floor(player.posX) + 0.5;
-        double y = Math.floor(player.posY);
-        double z = Math.floor(player.posZ) + 0.5;
+        double x = Math.floor(player.position().x) + 0.5;
+        double y = Math.floor(player.position().y);
+        double z = Math.floor(player.position().z) + 0.5;
         if (!arguments.isEmpty())
         {
             if (arguments.size() < 3)
@@ -90,10 +91,10 @@ public class CommandMultiworldTeleport extends ParserCommandBase
         }
 
         Multiworld multiworld = ModuleMultiworld.getMultiworldManager().getMultiworld(worldName);
-        WorldServer world = multiworld != null ? multiworld.getWorldServer() : APIRegistry.namedWorldHandler.getWorld(worldName);
+        ServerWorld world = multiworld != null ? multiworld.getWorldServer() : APIRegistry.namedWorldHandler.getWorld(worldName);
         if (world == null)
             throw new TranslatedCommandException("Could not find world " + worldName);
-        int dimId = world.provider.getDimension();
+        RegistryKey<World> dimId = world.dimension();
 
         // if (dimId < 0 || dimId == 1)
         // throw new TranslatedCommandException("You are not allowed to teleport to that dimension");
@@ -103,13 +104,13 @@ public class CommandMultiworldTeleport extends ParserCommandBase
         {
             switch (dimId)
             {
-            case 0:
+            case World.OVERWORLD:
                 msg += "the overworld";
                 break;
-            case -1:
+            case World.NETHER:
                 msg += "the nether";
                 break;
-            case 1:
+            case World.END:
                 msg += "the end";
                 break;
             default:
@@ -122,7 +123,7 @@ public class CommandMultiworldTeleport extends ParserCommandBase
             msg += multiworld.getName();
         }
         msg = Translator.format(msg + " at [%.0f, %.0f, %.0f]", x, y, z);
-        ChatOutputHandler.chatConfirmation(player, msg);
+        ChatOutputHandler.chatConfirmation(player.createCommandSourceStack(), msg);
         Multiworld.teleport(player, world, x, y, z, false);
     }
 

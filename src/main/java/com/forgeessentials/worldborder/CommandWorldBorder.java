@@ -57,20 +57,26 @@ public class CommandWorldBorder extends ParserCommandBase
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         Integer dim = null;
-        if (!arguments.isEmpty()) {
+        if (!arguments.isEmpty())
+        {
             try
             {
                 dim = Integer.parseInt(arguments.peek());
                 arguments.remove();
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e)
+            {
                 LoggingHandler.felog.info(e);
             }
         }
 
         World worldToUse;
-        if (dim != null || arguments.senderPlayer == null) {
+        if (dim != null || arguments.senderPlayer == null)
+        {
             worldToUse = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim != null ? dim : 0);
-        } else {
+        }
+        else
+        {
             worldToUse = arguments.senderPlayer.world;
         }
 

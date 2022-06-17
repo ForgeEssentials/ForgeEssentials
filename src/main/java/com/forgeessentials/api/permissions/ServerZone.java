@@ -13,9 +13,10 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,7 +39,7 @@ public class ServerZone extends Zone implements Loadable
     @Expose(serialize = false)
     private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
 
-    private Map<Integer, WorldZone> worldZones = new HashMap<Integer, WorldZone>();
+    private Map<RegistryKey<World>, WorldZone> worldZones = new HashMap<RegistryKey<World>, WorldZone>();
 
     @Expose(serialize = false)
     private int maxZoneID;
@@ -142,7 +143,7 @@ public class ServerZone extends Zone implements Loadable
 
     // ------------------------------------------------------------
 
-    public Map<Integer, WorldZone> getWorldZones()
+    public Map<RegistryKey<World>, WorldZone> getWorldZones()
     {
         return worldZones;
     }
@@ -154,19 +155,19 @@ public class ServerZone extends Zone implements Loadable
         setDirty();
     }
 
-    public WorldZone getWorldZone(int dimensionId)
+    public WorldZone getWorldZone(RegistryKey<World> registryKey)
     {
-        WorldZone zone = getWorldZones().get(dimensionId);
+        WorldZone zone = getWorldZones().get(registryKey);
         if (zone == null)
         {
-            zone = new WorldZone(getServerZone(), dimensionId);
+            zone = new WorldZone(getServerZone(), registryKey);
         }
         return zone;
     }
 
     public WorldZone getWorldZone(World world)
     {
-        return getWorldZone(world.provider.getDimension());
+        return getWorldZone(world.dimension());
     }
 
     // ------------------------------------------------------------
@@ -323,7 +324,7 @@ public class ServerZone extends Zone implements Loadable
         if (ident != null)
         {
             // Include special groups
-            if (FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().canSendCommands(ident.getGameProfile()))
+            if (ServerLifecycleHooks.getCurrentServer().getPlayerList().isOp(ident.getGameProfile()))
             {
                 result.add(new GroupEntry(this, GROUP_OPERATORS));
             }
@@ -338,9 +339,9 @@ public class ServerZone extends Zone implements Loadable
             if (ident.isNpc())
                 result.add(new GroupEntry(GROUP_NPC, 1, 1));
 
-            EntityPlayerMP player = ident.getPlayerMP();
-            if (player != null && player.interactionManager != null)
-                switch (player.interactionManager.getGameType())
+            ServerPlayerEntity player = ident.getPlayerMP();
+            if (player != null && player.abilities != null)
+                switch (player.gameMode.getGameModeForPlayer())
                 {
                 case ADVENTURE:
                     result.add(new GroupEntry(this, GROUP_ADVENTURE));

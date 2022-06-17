@@ -157,7 +157,8 @@ public class MethodInjector implements Comparable<MethodInjector>
                 }
                 for (AbstractInsnNode point : points)
                 {
-                    if (point != null) {
+                    if (point != null)
+                    {
                         log.info(String.format("Injecting %s.%s into %s.%s at %s",
                                 ASMUtil.substringAfterLast(ASMUtil.javaName(injectorClass.name), "."), injector.name,
                                 ASMUtil.substringAfterLast(ASMUtil.javaName(targetClass.name), "."), target.name, injectionPoint.toString()));

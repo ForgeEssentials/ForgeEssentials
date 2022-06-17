@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
@@ -37,7 +37,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         GameType gm;
         switch (args.length)
@@ -143,7 +143,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
     private GameType getGameTypeFromString(String string)
     {
-        if(StringUtils.isNumeric(string))
+        if (StringUtils.isNumeric(string))
         {
             return GameType.getByID(Integer.parseInt(string));
         }

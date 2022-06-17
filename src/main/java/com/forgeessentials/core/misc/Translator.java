@@ -15,6 +15,9 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Charsets;
 
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+
 public final class Translator
 {
 
@@ -39,6 +42,16 @@ public final class Translator
         translations.put(text, null);
         save();
         return text;
+    }
+    
+    public static ITextComponent translateITC(String text)
+    {
+        String translated = translations.get(text);
+        if (translated != null)
+            return new StringTextComponent(translated);
+        translations.put(text, null);
+        save();
+        return new StringTextComponent(text);
     }
 
     public static void save()

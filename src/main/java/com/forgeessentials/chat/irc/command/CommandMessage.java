@@ -3,7 +3,6 @@ package com.forgeessentials.chat.irc.command;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.util.text.ITextComponent;
 
@@ -49,7 +48,7 @@ public class CommandMessage extends IrcCommandParser
         }
 
         UserIdent player = arguments.parsePlayer(true, true);
-        
+
         if (arguments.isEmpty())
         {
             arguments.error("No message specified");
@@ -57,7 +56,7 @@ public class CommandMessage extends IrcCommandParser
         }
 
         ITextComponent msg = CommandBase.getChatComponentFromNthArg(arguments.sender, arguments.toArray(), 0, true);
-        ModuleChat.tell(arguments.sender, msg, player.getPlayer());
+        ModuleChat.tell(arguments.sender, msg, player.getPlayer().createCommandSourceStack());
     }
 
 }

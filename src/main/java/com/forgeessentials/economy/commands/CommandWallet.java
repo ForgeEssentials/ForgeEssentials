@@ -46,7 +46,7 @@ public class CommandWallet extends ParserCommandBase
         APIRegistry.perms.registerPermission(PERM_OTHERS, DefaultPermissionLevel.OP, "Allows viewing other player's wallets");
         APIRegistry.perms.registerPermission(PERM_MODIFY, DefaultPermissionLevel.OP, "Allows modifying wallets");
     }
-    
+
     @Override
     public String getUsage(ICommandSender sender)
     {
@@ -73,14 +73,14 @@ public class CommandWallet extends ParserCommandBase
         UserIdent player = arguments.parsePlayer(true, false);
         if (!player.equals(arguments.ident))
             arguments.checkPermission(PERM_OTHERS);
-        
+
         Wallet wallet = APIRegistry.economy.getWallet(player);
         if (arguments.isEmpty())
         {
             arguments.confirm(Translator.format("Wallet of %s contains %s", player.getUsernameOrUuid(), wallet.toString()));
             return;
         }
-        
+
         arguments.tabComplete(new String[] { "set", "add", "remove" });
         String subCommand = arguments.remove().toLowerCase();
 

@@ -1,16 +1,15 @@
 package com.forgeessentials.commands.player;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.Packet5Noclip;
+import com.forgeessentials.commons.network.packets.Packet5Noclip;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
@@ -51,7 +50,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity player, String[] args) throws CommandException
     {
         if (!PlayerInfo.get(player).getHasFEClient())
         {
@@ -60,7 +59,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
             return;
         }
 
-        if (!player.capabilities.isFlying && !player.noClip)
+        if (!player.abilities.flying && !player.noPhysics)
             throw new TranslatedCommandException("You must be flying.");
 
         PlayerInfo pi = PlayerInfo.get(player);
@@ -74,23 +73,22 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
         }
         if (!pi.isNoClip())
             WorldUtil.placeInWorld(player);
-
-        NetworkUtils.netHandler.sendTo(new Packet5Noclip(pi.isNoClip()), player);
+        NetworkUtils.sendTo(new Packet5Noclip(pi.isNoClip()), player);
         ChatOutputHandler.chatConfirmation(player, "Noclip " + (pi.isNoClip() ? "enabled" : "disabled"));
     }
 
-    public static void checkClip(EntityPlayer player)
+    public static void checkClip(PlayerEntity player)
     {
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.isNoClip() && PermissionAPI.hasPermission(player, ModuleCommands.PERM + ".noclip"))
         {
-            if (!player.capabilities.isFlying)
+            if (!player.abilities.flying)
             {
                 pi.setNoClip(false);
                 WorldUtil.placeInWorld(player);
-                if (!player.world.isRemote)
+                if (player.isControlledByLocalInstance())
                 {
-                    NetworkUtils.netHandler.sendTo(new Packet5Noclip(pi.isNoClip()), (EntityPlayerMP) player);
+                    NetworkUtils.sendTo(new Packet5Noclip(pi.isNoClip()), (ServerPlayerEntity) player);
                     ChatOutputHandler.chatNotification(player, "NoClip auto-disabled: the targeted player is not flying");
                 }
             }

@@ -3,11 +3,11 @@ package com.forgeessentials.permissions;
 import java.io.File;
 import java.io.IOException;
 
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -36,31 +36,30 @@ import com.forgeessentials.permissions.persistence.SingleFileProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)
-public class ModulePermissions extends ConfigLoaderBase
+public class ModulePermissions
 {
 
-    private static final String CONFIG_CAT = "Permissions";
+    public static final String CONFIG_CAT = "Permissions";
 
     private static final String PERSISTENCE_HELP = "Choose a permission persistence backend (flatfile, sql, json, singlejson). DO NOT use SQL, unless you really need to use it.";
 
     public static ZonedPermissionHelper permissionHelper;
 
-    private String persistenceBackend = "flatfile";
+    private static String persistenceBackend = "flatfile";
 
     private DBConnector dbConnector = new DBConnector("Permissions", null, EnumDBType.H2_FILE, "ForgeEssentials", ForgeEssentials.getFEDirectory().getPath()
             + "/permissions", false);
 
-    private PermissionScheduler permissionScheduler;
+    private static PermissionScheduler permissionScheduler;
 
-    @SuppressWarnings("unused")
-    private ItemPermissionManager itemPermissionManager;
+    private static ItemPermissionManager itemPermissionManager;
 
     public static boolean fakePlayerIsSpecialBunny = true;
 
@@ -71,7 +70,7 @@ public class ModulePermissions extends ConfigLoaderBase
         APIRegistry.perms = permissionHelper;
         PermissionAPI.setPermissionHandler(permissionHelper);
 
-        if (Loader.isModLoaded("ftblib"))
+        if (ModList.get().isLoaded("ftblib"))
         {
             try
             {
@@ -88,7 +87,7 @@ public class ModulePermissions extends ConfigLoaderBase
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void preLoad(FEModulePreInitEvent e)
+    public void preLoad(FEModuleCommonSetupEvent e)
     {
         itemPermissionManager = new ItemPermissionManager();
 
@@ -109,7 +108,7 @@ public class ModulePermissions extends ConfigLoaderBase
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FEModuleServerStartingEvent e)
     {
         permissionScheduler = new PermissionScheduler();
         // Backup FEData directory
@@ -149,14 +148,14 @@ public class ModulePermissions extends ConfigLoaderBase
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void serverStarted(FEModuleServerPostInitEvent e)
+    public void serverStarted(FEModuleServerStartedEvent e)
     {
         permissionHelper.save();
         // permissionHelper.verbosePermissionDebug = true;
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void serverStopping(FEModuleServerStoppingEvent e)
     {
         // permissionHelper.verbosePermissionDebug = false;
         permissionHelper.disableAutoSave = false;
@@ -221,19 +220,36 @@ public class ModulePermissions extends ConfigLoaderBase
         APIRegistry.perms.registerPermission("fe.perm.autoPromote", DefaultPermissionLevel.OP, "Auto-promote a user after some time has passed");
         APIRegistry.perms.registerPermission("fe.core.info", DefaultPermissionLevel.OP, "Access FE's /feinfo command");
     }
-
-    @Override
-    public void load(Configuration config, boolean isReload)
+    
+    static ForgeConfigSpec.ConfigValue<String> FEpersistenceBackend;
+    static ForgeConfigSpec.BooleanValue FEfakePlayerIsSpecialBunny;
+    
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-        persistenceBackend = config.get(CONFIG_CAT, "persistenceBackend", "singlejson", PERSISTENCE_HELP).getString();
-        dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
+    	BUILDER.push(CONFIG_CAT);
+    	FEpersistenceBackend = BUILDER.comment(PERSISTENCE_HELP).define("persistenceBackend", "singlejson");
+    	FEfakePlayerIsSpecialBunny = BUILDER.comment("Should we force override UUID for fake players? This is by default true because mods are randomly generating UUID each boot!").define("fakePlayerIsSpecialBunny", true);
+    	BUILDER.pop();
+        dbConnector.loadOrGenerate(config, CONFIG_CAT + "_SQL");
 
-        fakePlayerIsSpecialBunny = config.getBoolean(CONFIG_CAT, "fakePlayerIsSpecialBunny", true, "Should we force override UUID for fake players? This is by default true because mods are randomly generating UUID each boot!");
     }
 
+	public static void bakeConfig(boolean reload) { 
+		persistenceBackend = FEpersistenceBackend.get();
+		fakePlayerIsSpecialBunny = FEfakePlayerIsSpecialBunny.get();
+        dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
+	}
+	
     public DBConnector getDbConnector()
     {
         return dbConnector;
+    }
+
+	public static ItemPermissionManager getItemPermissionManager() {
+		return itemPermissionManager;
+	}
+	public static PermissionScheduler getPermissionScheduler(){
+        return permissionScheduler;
     }
 
 }

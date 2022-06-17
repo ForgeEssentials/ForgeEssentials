@@ -8,7 +8,7 @@ import java.util.SortedSet;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -20,12 +20,13 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 
 @FEModule(name = "factions", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
-public class ModuleFactions extends ConfigLoaderBase
+public class ModuleFactions
 {
 
     public static final String RANK_OWNER = "owner";
@@ -73,7 +74,7 @@ public class ModuleFactions extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent event)
+    public void load(FEModuleCommonSetupEvent event)
     {
         FECommandManager.registerCommand(new CommandFaction());
 
@@ -117,27 +118,26 @@ public class ModuleFactions extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent event)
+    public void serverStarting(FEModuleServerStartingEvent event)
     {
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent event)
+    public void serverStopping(FEModuleServerStoppingEvent event)
     {
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
-        // localhostOnly = config.get(CONFIG_CAT, "localhostOnly", true, "Allow connections from the web").getBoolean();
-        // hostname = config.get(CONFIG_CAT, "hostname", "localhost",
-        // "Hostname of your server. Used for QR code generation.").getString();
-        // port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
-        // useSSL = config.get(CONFIG_CAT, "use_ssl", false,
-        // "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
-        // passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6,
-        // "Length of the randomly generated passkeys").getInt();
-    }
+    // public void load(Configuration config, boolean isReload)
+    // {
+    // localhostOnly = config.get(CONFIG_CAT, "localhostOnly", true, "Allow connections from the web").getBoolean();
+    // hostname = config.get(CONFIG_CAT, "hostname", "localhost",
+    // "Hostname of your server. Used for QR code generation.").getString();
+    // port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
+    // useSSL = config.get(CONFIG_CAT, "use_ssl", false,
+    // "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)").getBoolean();
+    // passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6,
+    // "Length of the randomly generated passkeys").getInt();
+    // }
 
     /* ------------------------------------------------------------ */
 

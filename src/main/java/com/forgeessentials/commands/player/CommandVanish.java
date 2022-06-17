@@ -8,7 +8,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityTrackerEntry;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SPacketSpawnPlayer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -104,7 +104,7 @@ public class CommandVanish extends ParserCommandBase
 
     public static void vanish(UserIdent ident, boolean vanish)
     {
-        EntityPlayerMP player = ident.getPlayerMP();
+        ServerPlayerEntity player = ident.getPlayerMP();
         WorldServer world = (WorldServer) player.world;
         List<EntityPlayer> players = world.playerEntities;
         if (vanish)
@@ -112,7 +112,7 @@ public class CommandVanish extends ParserCommandBase
             vanishedPlayers.add(ident);
             EntityTrackerEntry tracker = world.getEntityTracker().trackedEntityHashTable.lookup(player.getEntityId());
 
-            Set<EntityPlayerMP> tracked = new HashSet<>(tracker.trackingPlayers);
+            Set<ServerPlayerEntity> tracked = new HashSet<>(tracker.trackingPlayers);
             world.getEntityTracker().untrack(player);
             tracked.forEach(tP -> {
                 player.connection.sendPacket(new SPacketSpawnPlayer(tP));

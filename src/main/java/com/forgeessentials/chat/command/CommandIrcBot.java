@@ -46,7 +46,7 @@ public class CommandIrcBot extends ParserCommandBase
     @Override
     public void parse(CommandParserArgs arguments) throws CommandException
     {
-        switch(arguments.remove())
+        switch (arguments.remove())
         {
         case "connect":
         case "reconnect":

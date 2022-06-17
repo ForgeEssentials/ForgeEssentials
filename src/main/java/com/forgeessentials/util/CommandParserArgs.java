@@ -11,17 +11,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.ICommandSource;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.WorldServer;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.context.IContext;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +35,8 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  *
@@ -42,10 +44,10 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandParserArgs
 {
 
-    public final ICommand command;
+    public final Command command;
     public final LinkedList<String> args;
-    public final ICommandSender sender;
-    public final EntityPlayerMP senderPlayer;
+    public final CommandSource sender;
+    public final ServerPlayerEntity senderPlayer;
     public final UserIdent ident;
     public final boolean isTabCompletion;
     public final MinecraftServer server;
@@ -53,14 +55,13 @@ public class CommandParserArgs
 
     public List<String> tabCompletion;
 
-    public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, boolean isTabCompletion, MinecraftServer server)
+    public CommandParserArgs(Command command, String[] args, CommandSource sender, boolean isTabCompletion, MinecraftServer server)
     {
         this.command = command;
         this.args = new LinkedList<>(Arrays.asList(args));
         this.sender = sender;
-        this.senderPlayer = (sender instanceof EntityPlayerMP) ? (EntityPlayerMP) sender : null;
-        this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null) : UserIdent
-                .get(senderPlayer);
+        this.senderPlayer = (sender.getPlayerOrException() instanceof ServerPlayerEntity) ? (ServerPlayerEntity) sender.getPlayerOrException() : null;
+        this.ident = (senderPlayer == null) ? (sender. instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null) : UserIdent.get(senderPlayer);
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
@@ -68,7 +69,7 @@ public class CommandParserArgs
         this.server = server;
     }
 
-    public CommandParserArgs(ICommand command, String[] args, ICommandSender sender, MinecraftServer server)
+    public CommandParserArgs(Command command, String[] args, CommandSource sender, MinecraftServer server)
     {
         this(command, args, sender, false, server);
     }
@@ -194,7 +195,7 @@ public class CommandParserArgs
             if (CommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
                 result.add(knownPlayerIdent.getUsernameOrUuid());
         }
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
             if (CommandBase.doesStringStartWith(arg, player.getName()))
                 result.add(player.getName());
@@ -206,10 +207,10 @@ public class CommandParserArgs
     {
         if (isTabCompletion && size() == 1)
         {
-            for (Object item : Item.REGISTRY.getKeys())
+            for (Object item : ForgeRegistries.ITEMS.getKeys())
                 if (item.toString().startsWith(peek()))
                     tabCompletion.add(item.toString());
-            for (Object item : Item.REGISTRY.getKeys())
+            for (Object item : ForgeRegistries.ITEMS.getKeys())
                 if (item.toString().startsWith("minecraft:" + peek()))
                     tabCompletion.add(item.toString().substring(10));
             throw new CancelParsingException();
@@ -225,10 +226,10 @@ public class CommandParserArgs
     {
         if (isTabCompletion && size() == 1)
         {
-            for (Object block : Block.REGISTRY.getKeys())
+            for (Object block : ForgeRegistries.BLOCKS.getKeys())
                 if (block.toString().startsWith(peek()))
                     tabCompletion.add(block.toString());
-            for (Object block : Block.REGISTRY.getKeys())
+            for (Object block : ForgeRegistries.BLOCKS.getKeys())
                 if (block.toString().startsWith("minecraft:" + peek()))
                     tabCompletion.add(block.toString().substring(10));
             throw new CancelParsingException();
@@ -266,9 +267,18 @@ public class CommandParserArgs
 
     public boolean hasPermission(String perm)
     {
-        if (sender instanceof EntityPlayer)
-        return APIRegistry.perms.checkPermission(senderPlayer, perm);
-        else return true;
+        try
+        {
+            if (sender.getPlayerOrException() instanceof PlayerEntity)
+                return APIRegistry.perms.checkPermission(senderPlayer, perm);
+            else
+                return true;
+        }
+        catch (CommandSyntaxException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void tabComplete(String... completionList) throws CancelParsingException
@@ -295,7 +305,7 @@ public class CommandParserArgs
             tabCompletion.add(completion);
     }
 
-    public WorldServer parseWorld() throws CommandException
+    public ServerWorld parseWorld() throws CommandException
     {
         if (isTabCompletion && size() == 1)
         {
@@ -305,7 +315,7 @@ public class CommandParserArgs
         if (isEmpty())
         {
             if (senderPlayer != null)
-                return (WorldServer) senderPlayer.world;
+                return (ServerWorld) senderPlayer.getLevel();
             else
                 throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
         }
@@ -316,7 +326,7 @@ public class CommandParserArgs
             {
                 if (senderPlayer == null)
                     throw new TranslatedCommandException("\"here\" cannot be used in console.");
-                return (WorldServer) senderPlayer.world;
+                return (ServerWorld) senderPlayer.getLevel();
             }
             else
             {
@@ -347,12 +357,12 @@ public class CommandParserArgs
         {
             int value = Integer.parseInt(strValue);
             if (value < min)
-                throw new NumberInvalidException("commands.generic.num.tooSmall", strValue, Integer.toString(min));
+                throw new Exception("commands.generic.num.tooSmall" + strValue + Integer.toString(min));
             if (value > max)
-                throw new NumberInvalidException("commands.generic.num.tooBig", strValue, Integer.toString(max));
+                throw new Exception("commands.generic.num.tooBig" + strValue + Integer.toString(max));
             return value;
         }
-        catch (NumberFormatException e)
+        catch (Exception e)
         {
             throw new TranslatedCommandException("Invalid number: %s", strValue);
         }
@@ -402,17 +412,19 @@ public class CommandParserArgs
     public static final Pattern timeFormatPattern = Pattern.compile("(\\d+)(\\D+)?");
 
     private static double mcHour = 1000;
-    private static double mcMinute = 1000.0/60;
-    private static double mcSecond = 1000.0/60/60;
+    private static double mcMinute = 1000.0 / 60;
+    private static double mcSecond = 1000.0 / 60 / 60;
 
     /**
      * Parses a Time string in Minecraft time format.
+     * 
      * @return
      * @throws CommandException
      */
     public Long mcParseTimeReadable() throws CommandException
     {
-        if (isEmpty()) {
+        if (isEmpty())
+        {
             checkTabCompletion();
             return null;
         }
@@ -452,6 +464,7 @@ public class CommandParserArgs
         }
         return Math.round(resultPart);
     }
+
     public long parseTimeReadable() throws CommandException
     {
         checkTabCompletion();
@@ -525,7 +538,7 @@ public class CommandParserArgs
 
         public CancelParsingException()
         {
-            super("");
+            super(null);
         }
 
     }
@@ -549,15 +562,15 @@ public class CommandParserArgs
 
     public WorldPoint getSenderPoint()
     {
-        ICommandSender s = sender != null ? sender : server;
-        return new WorldPoint(s.getEntityWorld(), s.getPosition());
+        CommandSource s = sender != null ? sender : server;
+        return new WorldPoint(s.getLevel()), s.getPosition());
     }
 
     public WorldZone getWorldZone() throws CommandException
     {
         if (senderPlayer == null)
             throw new TranslatedCommandException("Player needed");
-        return APIRegistry.perms.getServerZone().getWorldZone(senderPlayer.dimension);
+        return APIRegistry.perms.getServerZone().getWorldZone(senderPlayer.getLevel());
     }
 
     public void needsPlayer() throws CommandException

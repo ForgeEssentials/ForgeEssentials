@@ -10,12 +10,13 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.multiworld.command.CommandMultiworld;
 import com.forgeessentials.multiworld.command.CommandMultiworldTeleport;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModulePostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -36,7 +37,7 @@ public class ModuleMultiworld extends ConfigLoaderBase
     private static MultiworldManager multiworldManager = new MultiworldManager();
 
     @SubscribeEvent
-    public void postLoad(FEModulePostInitEvent e)
+    public void postLoad(FEModuleCommonSetupEvent e)
     {
         try
         {
@@ -45,15 +46,18 @@ public class ModuleMultiworld extends ConfigLoaderBase
 
             FECommandManager.registerCommand(new CommandMultiworld());
             FECommandManager.registerCommand(new CommandMultiworldTeleport());
-        } catch (java.lang.NoSuchMethodError noSuchMethodError) {
-            CrashReport report = CrashReport.makeCrashReport(noSuchMethodError,"MultiWorld Unable to Load, please update Forge or Disable MultiWorld in the main.cfg!");
-            report.makeCategory("MultiWorld");
+        }
+        catch (java.lang.NoSuchMethodError noSuchMethodError)
+        {
+            CrashReport report = CrashReport.makeCrashReport(noSuchMethodError,
+                    "MultiWorld Unable to Load, please update Forge or Disable MultiWorld in the main.cfg!");
+            report.addCategory("MultiWorld");
             throw new ReportedException(report);
         }
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FEModuleServerStartingEvent e)
     {
         multiworldManager.load();
 

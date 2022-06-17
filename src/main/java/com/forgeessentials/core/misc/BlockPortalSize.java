@@ -1,10 +1,10 @@
 package com.forgeessentials.core.misc;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockPortal;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -14,31 +14,31 @@ public class BlockPortalSize
 {
 
     private final World field_150867_a;
-    private final EnumFacing.Axis field_150865_b;
-    private final EnumFacing field_150866_c;
-    private final EnumFacing field_150863_d;
+    private final Direction.Axis field_150865_b;
+    private final Direction field_150866_c;
+    private final Direction field_150863_d;
     private BlockPos field_150861_f;
     private int field_150862_g;
     private int field_150868_h;
 
-    public BlockPortalSize(World worldIn, BlockPos p_i45694_2_, EnumFacing.Axis p_i45694_3_)
+    public BlockPortalSize(World worldIn, BlockPos p_i45694_2_, Direction.Axis p_i45694_3_)
     {
         this.field_150867_a = worldIn;
         this.field_150865_b = p_i45694_3_;
 
-        if (p_i45694_3_ == EnumFacing.Axis.X)
+        if (p_i45694_3_ == Direction.Axis.X)
         {
-            this.field_150863_d = EnumFacing.EAST;
-            this.field_150866_c = EnumFacing.WEST;
+            this.field_150863_d = Direction.EAST;
+            this.field_150866_c = Direction.WEST;
         }
         else
         {
-            this.field_150863_d = EnumFacing.NORTH;
-            this.field_150866_c = EnumFacing.SOUTH;
+            this.field_150863_d = Direction.NORTH;
+            this.field_150866_c = Direction.SOUTH;
         }
 
         for (BlockPos blockpos1 = p_i45694_2_; p_i45694_2_.getY() > blockpos1.getY() - 21 && p_i45694_2_.getY() > 0
-                && this.func_150857_a(worldIn.getBlockState(p_i45694_2_.down()).getBlock()); p_i45694_2_ = p_i45694_2_.down())
+                && this.func_150857_a(worldIn.getBlockState(p_i45694_2_.below()).getBlock()); p_i45694_2_ = p_i45694_2_.below())
         {
             ;
         }
@@ -63,7 +63,7 @@ public class BlockPortalSize
         }
     }
 
-    protected int func_180120_a(BlockPos p_180120_1_, EnumFacing p_180120_2_)
+    protected int func_180120_a(BlockPos p_180120_1_, Direction p_180120_2_)
     {
         int i;
 
@@ -72,7 +72,7 @@ public class BlockPortalSize
             BlockPos blockpos1 = p_180120_1_.offset(p_180120_2_, i);
 
             if (!this.func_150857_a(this.field_150867_a.getBlockState(blockpos1).getBlock())
-                    || this.field_150867_a.getBlockState(blockpos1.down()).getBlock() != Blocks.OBSIDIAN)
+                    || this.field_150867_a.getBlockState(blockpos1.below()).getBlock() != Blocks.OBSIDIAN)
             {
                 break;
             }
@@ -91,7 +91,7 @@ public class BlockPortalSize
         {
             for (i = 0; i < this.field_150868_h; ++i)
             {
-                BlockPos blockpos = this.field_150861_f.offset(this.field_150866_c, i).up(this.field_150862_g);
+                BlockPos blockpos = this.field_150861_f.offset(this.field_150866_c, i).above(this.field_150862_g);
                 Block block = this.field_150867_a.getBlockState(blockpos).getBlock();
 
                 if (!this.func_150857_a(block))
@@ -99,7 +99,7 @@ public class BlockPortalSize
                     break label56;
                 }
 
-                if (block == Blocks.PORTAL)
+                if (block == Blocks.NETHER_PORTAL)
                 {
                 }
 
@@ -126,7 +126,7 @@ public class BlockPortalSize
 
         for (i = 0; i < this.field_150868_h; ++i)
         {
-            if (this.field_150867_a.getBlockState(this.field_150861_f.offset(this.field_150866_c, i).up(this.field_150862_g)).getBlock() != Blocks.OBSIDIAN)
+            if (this.field_150867_a.getBlockState(this.field_150861_f.offset(this.field_150866_c, i).above(this.field_150862_g)).getBlock() != Blocks.OBSIDIAN)
             {
                 this.field_150862_g = 0;
                 break;
@@ -148,7 +148,7 @@ public class BlockPortalSize
 
     protected boolean func_150857_a(Block p_150857_1_)
     {
-        return p_150857_1_.getMaterial(p_150857_1_.getDefaultState()) == Material.AIR || p_150857_1_ == Blocks.FIRE || p_150857_1_ == Blocks.PORTAL;
+        return p_150857_1_.getMaterial(p_150857_1_.defaultBlockState()) == Material.AIR || p_150857_1_ == Blocks.FIRE || p_150857_1_ == Blocks.NETHER_PORTAL;
     }
 
     public boolean func_150860_b()
@@ -164,8 +164,8 @@ public class BlockPortalSize
 
             for (int j = 0; j < this.field_150862_g; ++j)
             {
-                this.field_150867_a.setBlockState(blockpos.up(j),
-                        Blocks.PORTAL.getDefaultState().withProperty(BlockPortal.AXIS, this.field_150865_b), 2);
+                this.field_150867_a.setBlockState(blockpos.above(j),
+                        Blocks.NETHER_PORTAL.defaultBlockState().withProperty(NetherPortalBlock.AXIS, this.field_150865_b), 2);
             }
         }
     }

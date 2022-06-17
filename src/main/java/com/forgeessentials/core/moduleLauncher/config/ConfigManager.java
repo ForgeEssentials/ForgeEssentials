@@ -6,8 +6,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.ForgeConfigSpec;
 
+import com.electronwill.nightconfig.core.Config;
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.core.file.FileConfig;
 import com.forgeessentials.util.output.LoggingHandler;
 
 public class ConfigManager
@@ -18,10 +21,10 @@ public class ConfigManager
 
         public ConfigFile(File path)
         {
-            config = new Configuration(path, true);
+            config = path;
         }
 
-        public Configuration config;
+        public File config;
 
         public Set<ConfigLoader> loaders = new HashSet<>();
 
@@ -31,7 +34,7 @@ public class ConfigManager
 
     private File rootDirectory;
 
-    private Map<String, ConfigFile> configFiles = new HashMap<>();
+    private Map<String, ConfigFile> configFiles = new HashMap<>();// (Name, ConfigFile)
 
     private boolean useCanonicalConfig = false;
 
@@ -49,13 +52,13 @@ public class ConfigManager
         ConfigFile loaders = configFiles.get(configName);
         if (loaders == null)
         {
-            loaders = new ConfigFile(new File(this.rootDirectory, configName + ".cfg"));
+            loaders = new ConfigFile(new File(this.rootDirectory, configName + ".toml"));
             configFiles.put(configName, loaders);
         }
         return loaders;
     }
 
-    public Configuration getConfig(String configName)
+    public ForgeConfigSpec getConfig(String configName)
     {
         return getConfigFile(configName).config;
     }
@@ -132,11 +135,6 @@ public class ConfigManager
         file.config.save();
     }
 
-    public boolean isUseCanonicalConfig()
-    {
-        return useCanonicalConfig;
-    }
-
     public void setUseCanonicalConfig(boolean useCanonicalConfig)
     {
         this.useCanonicalConfig = useCanonicalConfig;
@@ -147,7 +145,7 @@ public class ConfigManager
         return mainConfigName;
     }
 
-    public Configuration getMainConfig()
+    public ForgeConfigSpec getMainConfig()
     {
         return getConfig(mainConfigName);
     }

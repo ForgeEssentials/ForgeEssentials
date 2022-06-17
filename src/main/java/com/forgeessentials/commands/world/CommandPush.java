@@ -1,21 +1,22 @@
 package com.forgeessentials.commands.world;
 
-import net.minecraft.block.BlockButton;
-import net.minecraft.block.BlockLever;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.LeverBlock;
+import net.minecraft.block.StoneButtonBlock;
+import net.minecraft.block.WoodButtonBlock;
+import net.minecraft.client.renderer.FaceDirection;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.b3d.B3DModel.Face;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -76,42 +77,42 @@ public class CommandPush extends ForgeEssentialsCommandBase
                 x = (int) this.func_82368_a(sender, ((TileEntity) sender).getPos().getX(), args[0]);
                 y = (int) this.func_82367_a(sender, ((TileEntity) sender).getPos().getY(), args[1], 0, 0);
                 z = (int) this.func_82368_a(sender, ((TileEntity) sender).getPos().getZ(), args[2]);
-                world = ((TileEntity) sender).getWorld();
+                world = ((TileEntity) sender).getLevel();
             }
-            else if (sender instanceof EntityPlayerMP)
+            else if (sender instanceof ServerPlayerEntity)
             {
-                x = (int) this.func_82368_a(sender, ((EntityPlayerMP) sender).posX, args[0]);
-                y = (int) this.func_82367_a(sender, ((EntityPlayerMP) sender).posY, args[1], 0, 0);
-                z = (int) this.func_82368_a(sender, ((EntityPlayerMP) sender).posZ, args[2]);
-                world = ((EntityPlayerMP) sender).world;
+                x = (int) this.func_82368_a(sender, ((ServerPlayerEntity) sender).posX, args[0]);
+                y = (int) this.func_82367_a(sender, ((ServerPlayerEntity) sender).posY, args[1], 0, 0);
+                z = (int) this.func_82368_a(sender, ((ServerPlayerEntity) sender).posZ, args[2]);
+                world = ((ServerPlayerEntity) sender).level;
             }
             else if (sender instanceof DedicatedServer)
             {
                 x = (int) this.func_82368_a(sender, 0.0D, args[0]);
                 y = (int) this.func_82367_a(sender, 0.0D, args[1], 0, 0);
                 z = (int) this.func_82368_a(sender, 0.0D, args[2]);
-                world = ((DedicatedServer) sender).getWorld(0);
+                world = ((DedicatedServer) sender).getLevel(0);
             }
             BlockPos pos = new BlockPos(x, y, z);
-            IBlockState state = world.getBlockState(pos);
-            
-            if ((state == Blocks.AIR.getDefaultState() || !(state.getBlock() instanceof BlockButton))
-                    && !(state.getBlock() instanceof BlockLever))
+            BlockState state = world.getBlockState(pos);
+
+            if ((state == Blocks.AIR.defaultBlockState()) || !(state.getBlock() instanceof StoneButtonBlock)
+                    || !(state.getBlock() instanceof WoodButtonBlock) && !(state.getBlock() instanceof LeverBlock))
             {
                 throw new TranslatedCommandException("Button/Lever Not Found");
             }
             else
             {
-                state.getBlock().onBlockActivated(world, pos, state, (EntityPlayer) null, EnumHand.MAIN_HAND, null, EnumFacing.DOWN.getIndex(), 0.0F, 0.0F);
+                state.getBlock().onBlockActivated(world, pos, state, (PlayerEntity) null, EnumHand.MAIN_HAND, null, EnumFacing.DOWN.getIndex(), 0.0F, 0.0F);
                 ChatOutputHandler.chatConfirmation(sender, "Button/Lever Pushed");
             }
         }
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
-        EntityPlayerMP playermp = UserIdent.getPlayerByMatchOrUsername(sender, sender.getName());
+        ServerPlayerEntity playermp = UserIdent.getPlayerByMatchOrUsername(sender, sender.getName());
         if (args.length != 3)
         {
             throw new TranslatedCommandException("/push <X> <Y> <Z>", new Object[0]);
@@ -123,21 +124,20 @@ public class CommandPush extends ForgeEssentialsCommandBase
             int z = 0;
             World world = null;
 
-            x = (int) this.func_82368_a(playermp, playermp.posX, args[0]);
-            y = (int) this.func_82367_a(playermp, playermp.posY, args[1], 0, 0);
-            z = (int) this.func_82368_a(playermp, playermp.posZ, args[2]);
-            world = playermp.world;
+            x = (int) this.func_82368_a(playermp, playermp.position().x, args[0]);
+            y = (int) this.func_82367_a(playermp, playermp.position().y, args[1], 0, 0);
+            z = (int) this.func_82368_a(playermp, playermp.position().z, args[2]);
+            world = playermp.level;
             BlockPos pos = new BlockPos(x, y, z);
-            IBlockState state = world.getBlockState(pos);
+            BlockState state = world.getBlockState(pos);
             
-            if ((state == Blocks.AIR.getDefaultState() || !(state.getBlock() instanceof BlockButton))
-                    && !(state.getBlock() instanceof BlockLever))
+            if ((state == Blocks.AIR.defaultBlockState() || !(state.getBlock() instanceof StoneButtonBlock) || !(state.getBlock() instanceof WoodButtonBlock) && !(state.getBlock() instanceof LeverBlock))
             {
                 throw new TranslatedCommandException("Button/Lever Not Found");
             }
             else
             {
-                state.getBlock().onBlockActivated(world, pos, state, (EntityPlayer) null, EnumHand.MAIN_HAND, null, EnumFacing.DOWN.getIndex(), 0.0F, 0.0F);
+                state.getBlock().onBlockActivated(world, pos, state, (PlayerEntity) null, Hand.MAIN_HAND, null, FaceDirection.DOWN, 0.0F, 0.0F);
                 ChatOutputHandler.chatConfirmation(sender, "Button/Lever Pushed");
             }
         }

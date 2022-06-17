@@ -6,7 +6,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -61,7 +61,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -72,7 +72,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             }
             else
             {
-                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+                ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
                     player.world.addWeatherEffect(new EntityLightningBolt(player.world, player.posX, player.posY, player.posZ, false));
@@ -115,7 +115,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     {
         if (args.length >= 1)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 player.world.addWeatherEffect(new EntityLightningBolt(player.world, player.posX, player.posY, player.posZ, false));

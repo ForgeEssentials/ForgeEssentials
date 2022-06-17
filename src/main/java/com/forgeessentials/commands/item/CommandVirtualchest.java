@@ -2,7 +2,7 @@ package com.forgeessentials.commands.item;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -57,14 +57,14 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
-        EntityPlayerMP player = sender;
-        if (player.openContainer != player.inventoryContainer)
+        ServerPlayerEntity player = sender;
+        if (player.containerMenu != player.inventoryMenu)
         {
-            player.closeScreen();
+            player.doCloseContainer();
         }
-        player.getNextWindowId();
+        player.nextContainerCounter();
 
         VirtualChest chest = new VirtualChest(player);
         player.displayGUIChest(chest);

@@ -15,18 +15,16 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -142,7 +140,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     public String getUsage(ICommandSender sender)
     {
         // Needs elaboration.
-        if (sender instanceof EntityPlayer)
+        if (sender instanceof PlayerEntity)
         {
             return "/rules [#|add|remove|move|change|help|book] Gets or sets the rules of the server.";
         }
@@ -177,7 +175,7 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -189,8 +187,8 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         }
         else if (args[0].equalsIgnoreCase("book"))
         {
-            NBTTagCompound tag = new NBTTagCompound();
-            NBTTagList pages = new NBTTagList();
+            CompoundNBT tag = new CompoundNBT();
+            ListNBT pages = new ListNBT();
 
             HashMap<String, String> map = new HashMap<>();
 
@@ -202,16 +200,17 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             SortedSet<String> keys = new TreeSet<>(map.keySet());
             for (String name : keys)
             {
-                pages.appendTag(new NBTTagString(name + map.get(name)));
+                StringNBT s = StringNBT.valueOf(name + map.get(name));
+                pages.add(s);
             }
 
-            tag.setString("author", "ForgeEssentials");
-            tag.setString("title", "Rule Book");
-            tag.setTag("pages", pages);
+            tag.putString("author", "ForgeEssentials");
+            tag.putString("title", "Rule Book");
+            tag.put("pages", pages);
 
             ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
             is.setTagCompound(tag);
-            sender.inventory.addItemStackToInventory(is);
+            sender.inventory.add(is);
             return;
         }
         else if (args.length == 1)

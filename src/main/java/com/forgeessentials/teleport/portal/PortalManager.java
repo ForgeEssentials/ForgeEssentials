@@ -5,17 +5,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fe.event.entity.EntityPortalEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
@@ -33,7 +32,7 @@ public class PortalManager extends ServerEventHandler
 
     // private static boolean mixinLoaded = false;
 
-    public static Block portalBlock = Blocks.PORTAL;
+    public static Block portalBlock = Blocks.NETHER_PORTAL;
 
     public PortalManager()
     {
@@ -80,8 +79,11 @@ public class PortalManager extends ServerEventHandler
         {
             if (portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
             {
-                if (!MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(e.getEntity(), after.getWorld(), after.getBlockPos(), portal.target.getDimension(), portal.target.getBlockPos()))) {
-                    TeleportHelper.doTeleport((EntityPlayerMP) e.getEntityPlayer(), portal.target.toWarpPoint(e.getEntityPlayer().rotationPitch, e.getEntityPlayer().rotationYaw));
+                if (!MinecraftForge.EVENT_BUS.post(
+                        new EntityPortalEvent(e.getEntity(), after.getWorld(), after.getBlockPos(), portal.target.getDimension(), portal.target.getBlockPos())))
+                {
+                    TeleportHelper.doTeleport((ServerPlayerEntity) e.getPlayer(),
+                            portal.target.toWarpPoint(e.getEntityPlayer().rotationPitch, e.getEntityPlayer().rotationYaw));
                 }
             }
         }
@@ -90,9 +92,9 @@ public class PortalManager extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void breakEvent(BreakEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLEnvironment.dist.isClient())
             return;
-        WorldPoint point = new WorldPoint(event.getPlayer().dimension, event.getPos());
+        WorldPoint point = new WorldPoint(event.getPlayer().level, event.getPos());
         Portal portal = getPortalAt(point);
         if (portal != null && portal.hasFrame())
             event.setCanceled(true);
@@ -168,7 +170,7 @@ public class PortalManager extends ServerEventHandler
                     {
                         BlockPos pos = new BlockPos(ix, iy, iz);
                         if (world.getBlockState(pos).getBlock() != portalBlock)
-                            world.setBlockState(pos, portalBlock.getDefaultState());
+                            world.setBlockState(pos, portalBlock.defaultBlockState());
                     }
         }
     }
@@ -186,8 +188,8 @@ public class PortalManager extends ServerEventHandler
                     {
                         BlockPos pos = new BlockPos(ix, iy, iz);
                         Block block = world.getBlockState(pos).getBlock();
-                        if (block == portalBlock || block == Blocks.PORTAL)
-                            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                        if (block == portalBlock || block == Blocks.NETHER_PORTAL)
+                            world.setBlockState(pos, Blocks.AIR.defaultBlockState());
                     }
         }
     }

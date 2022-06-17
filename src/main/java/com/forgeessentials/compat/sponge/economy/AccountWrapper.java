@@ -54,8 +54,9 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     public BigDecimal getBalance(Currency currency, Set<Context> contexts)
     {
         if (currency instanceof FECurrency)
-        return new BigDecimal(APIRegistry.economy.getWallet(ident).get());
-        else return new BigDecimal(0);
+            return new BigDecimal(APIRegistry.economy.getWallet(ident).get());
+        else
+            return new BigDecimal(0);
     }
 
     @Override
@@ -80,7 +81,8 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
         Map<Currency, TransactionResult> returned = new HashMap();
         Currency currency = new FECurrency();
         APIRegistry.economy.getWallet(ident).set(getDefaultBalance(currency).longValue());
-        returned.put(currency, new FETransaction(this, currency, new BigDecimal(APIRegistry.economy.getWallet(ident).get()), contexts, ResultType.SUCCESS, "resetacc"));
+        returned.put(currency,
+                new FETransaction(this, currency, new BigDecimal(APIRegistry.economy.getWallet(ident).get()), contexts, ResultType.SUCCESS, "resetacc"));
         return returned;
     }
 
@@ -173,11 +175,12 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
         private final ResultType result;
         private final TransactionType type;
 
-        //will be null for non-transfer transactions
+        // will be null for non-transfer transactions
         private final Account recipient;
 
         /**
          * non-transfer
+         * 
          * @param account
          * @param currency
          * @param amount
@@ -198,6 +201,7 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
 
         /**
          * transfer
+         * 
          * @param account
          * @param currency
          * @param amount
@@ -263,15 +267,17 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     public class FETransType implements TransactionType
     {
         private final String name;
+
         public FETransType(String name)
         {
             this.name = name;
 
         }
+
         @Override
         public String getId()
         {
-            return "fe:"+ name;
+            return "fe:" + name;
         }
 
         @Override

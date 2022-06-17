@@ -11,46 +11,34 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.SingularAttribute;
 import javax.sql.rowset.serial.SerialBlob;
 
+import org.spongepowered.asm.mixin.MixinEnvironment.Side;
+
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.block.RedstoneBlock;
+import net.minecraft.item.BedItem;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBed;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemDoor;
-import net.minecraft.item.ItemRedstone;
-import net.minecraft.item.ItemSkull;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
+import net.minecraft.world.storage.PlayerData;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
@@ -60,11 +48,7 @@ import com.forgeessentials.playerlogger.entity.Action;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action02Command;
 import com.forgeessentials.playerlogger.entity.Action03PlayerEvent.PlayerEventType;
-import com.forgeessentials.playerlogger.entity.Action_;
 import com.forgeessentials.playerlogger.entity.BlockData;
-import com.forgeessentials.playerlogger.entity.BlockData_;
-import com.forgeessentials.playerlogger.entity.PlayerData;
-import com.forgeessentials.playerlogger.entity.PlayerData_;
 import com.forgeessentials.playerlogger.entity.WorldData;
 import com.forgeessentials.playerlogger.event.LogEventBreak;
 import com.forgeessentials.playerlogger.event.LogEventBurn;
@@ -405,9 +389,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         {
             if (tileEntity == null)
                 return null;
-            NBTTagCompound nbt = new NBTTagCompound();
+            CompoundNBT nbt = new CompoundNBT();
             tileEntity.writeToNBT(nbt);
-            nbt.setString("ENTITY_CLASS", tileEntity.getClass().getName());
+            nbt.putString("ENTITY_CLASS", tileEntity.getClass().getName());
             ByteBuf buf = Unpooled.buffer();
             ByteBufUtils.writeTag(buf, nbt);
             return new SerialBlob(buf.array());
@@ -429,7 +413,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 return null;
 
             ByteBuf buf = Unpooled.wrappedBuffer(blob.getBytes(1, (int) blob.length()));
-            NBTTagCompound nbt = ByteBufUtils.readTag(buf);
+            CompoundNBT nbt = ByteBufUtils.readTag(buf);
             if (nbt == null)
                 return null;
 
@@ -472,9 +456,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /**
      * @param root
      * @param area
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @return
      */
     protected Predicate getActionPredicate(Root<? extends Action> root, WorldArea area, Date startTime, Date endTime, long fromId)
@@ -502,9 +489,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     /**
      * @param root
      * @param point
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @return
      */
     protected Predicate getActionPredicate(Root<? extends Action> root, WorldPoint point, Date startTime, Date endTime, long fromId)
@@ -529,9 +519,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /**
      * @param area
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @param maxResults
      * @return
      */
@@ -551,9 +544,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /**
      * @param point
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @param maxResults
      * @return
      */
@@ -573,9 +569,12 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /**
      * @param area
-     * @param startTime startTime <= t <= endTime
-     * @param endTime startTime <= t <= endTime
-     * @param fromId if fromId != 0 returns only entries with id < fromId
+     * @param startTime
+     *            startTime <= t <= endTime
+     * @param endTime
+     *            startTime <= t <= endTime
+     * @param fromId
+     *            if fromId != 0 returns only entries with id < fromId
      * @param maxResults
      * @return
      */
@@ -655,9 +654,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void placeEvent(BlockEvent.PlaceEvent event)
+    public void placeEvent(EntityPlaceEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() != Side.SERVER || em == null)
+        if (FMLEnvironment.dist.isClient() || em == null)
             return;
         if (event instanceof BlockEvent.MultiPlaceEvent)
         {
@@ -690,9 +689,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerInteractEvent(PlayerInteractEvent.LeftClickBlock event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
+        if (FM || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
             return;
-        GameType gameType = ((EntityPlayerMP) event.getEntityPlayer()).interactionManager.getGameType();
+        GameType gameType = ((ServerPlayerEntity) event.getEntityPlayer()).interactionManager.getGameType();
         if (gameType != GameType.CREATIVE)
         {
             logEvent(new LogEventInteract(event));
@@ -705,7 +704,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         if (event.stack != null)
         {
             Item item = event.stack.getItem();
-            if (item instanceof ItemBlock || item instanceof ItemRedstone || item instanceof ItemBed || item instanceof ItemDoor || item instanceof ItemSkull)
+            if (item instanceof BlockItem/* ||item instanceof ItemRedstone */ || item instanceof BedItem || item instanceof DoorItem
+                    || item instanceof SkullItem)
                 return;
         }
         logEvent(new LogEventPostInteract(event));

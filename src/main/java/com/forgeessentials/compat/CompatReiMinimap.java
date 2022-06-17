@@ -1,15 +1,15 @@
 package com.forgeessentials.compat;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -27,7 +27,7 @@ public class CompatReiMinimap
     public static final String PERM_RADAR_OTHER = PERM_RADAR + ".other";
 
     @SubscribeEvent
-    public void registerPerms(FEModuleServerInitEvent e)
+    public void registerPerms(FEModuleServerStartingEvent e)
     {
         APIRegistry.perms.registerPermissionDescription(PERM, "Rei's minimap permissions");
         PermissionAPI.registerNode(PERM_CAVEMAP, DefaultPermissionLevel.ALL, "Allow cavemaps");
@@ -42,10 +42,10 @@ public class CompatReiMinimap
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        ChatOutputHandler.sendMessage(e.player, new TextComponentString(getPermissionCodes(e.player)));
+        ChatOutputHandler.sendMessage(e.getPlayer().createCommandSourceStack(), new StringTextComponent(getPermissionCodes(e.getPlayer())));
     }
 
-    public static String getPermissionCodes(EntityPlayer user)
+    public static String getPermissionCodes(PlayerEntity user)
     {
         String MOTD = "\u00a7e\u00a7f";
         if (PermissionAPI.hasPermission(user, PERM_CAVEMAP))

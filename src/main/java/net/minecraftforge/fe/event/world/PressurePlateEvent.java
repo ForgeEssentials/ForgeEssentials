@@ -2,7 +2,7 @@ package net.minecraftforge.fe.event.world;
 
 import net.minecraft.entity.Entity;
 import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import net.minecraftforge.eventbus.api.Cancelable;
 
 /**
  * Fired when an entity triggers a pressure plate or trip wire.

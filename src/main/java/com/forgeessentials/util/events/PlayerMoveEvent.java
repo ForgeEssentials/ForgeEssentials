@@ -1,10 +1,9 @@
 package com.forgeessentials.util.events;
 
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.forgeessentials.commons.selections.WarpPoint;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.eventbus.api.Cancelable;
 
 @Cancelable
 public class PlayerMoveEvent extends FEPlayerEvent
@@ -12,7 +11,7 @@ public class PlayerMoveEvent extends FEPlayerEvent
     public final WarpPoint before;
     public final WarpPoint after;
 
-    public PlayerMoveEvent(EntityPlayer player, WarpPoint before, WarpPoint after)
+    public PlayerMoveEvent(PlayerEntity player, WarpPoint before, WarpPoint after)
     {
         super(player);
         this.before = before;

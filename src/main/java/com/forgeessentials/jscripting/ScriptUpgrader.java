@@ -14,7 +14,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.io.FileUtils;
@@ -48,7 +48,7 @@ public class ScriptUpgrader
             "wake"
     };
 
-    public static void upgradeOldScripts(ICommandSender sender)
+    public static void upgradeOldScripts(CommandSource sender)
     {
         File baseDir = new File(ForgeEssentials.getFEDirectory(), "Scripting");
         if (!baseDir.exists())
@@ -74,7 +74,7 @@ public class ScriptUpgrader
                 }
                 try
                 {
-                    List<String> lines = FileUtils.readLines(file);
+                    List<String> lines = FileUtils.readLines(file, "UTF-8");
                     if (lines.isEmpty())
                         continue;
 

@@ -6,7 +6,7 @@ import java.util.Collection;
 import javax.annotation.Nullable;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.feed_the_beast.ftblib.events.RegisterRankConfigHandlerEvent;
 import com.feed_the_beast.ftblib.lib.config.ConfigNull;
@@ -31,28 +31,34 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
         if (INSTANCE.isFTBURanksActive())
         {
             LoggingHandler.felog.info("Ranks are active...  Not registering configs!");
-        } else {
+        }
+        else
+        {
             event.setHandler(INSTANCE);
         }
     }
 
     public boolean isFTBURanksActive()
     {
-        try {
-           Class<?> clazz = Class.forName("com.feed_the_beast.ftbutilities.FTBUtilitiesConfig");
-           Field ranksF = clazz.getField("ranks");
-           Object ranks = ranksF.get(null);
-           Class<?> ranksConfig = Class.forName("com.feed_the_beast.ftbutilities.FTBUtilitiesConfig$RanksConfig");
-           Field enabledF = ranksConfig.getField("enabled");
-           return enabledF.getBoolean(ranks);
-        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignored) {
+        try
+        {
+            Class<?> clazz = Class.forName("com.feed_the_beast.ftbutilities.FTBUtilitiesConfig");
+            Field ranksF = clazz.getField("ranks");
+            Object ranks = ranksF.get(null);
+            Class<?> ranksConfig = Class.forName("com.feed_the_beast.ftbutilities.FTBUtilitiesConfig$RanksConfig");
+            Field enabledF = ranksConfig.getField("enabled");
+            return enabledF.getBoolean(ranks);
+        }
+        catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException ignored)
+        {
             LoggingHandler.felog.warn("FTBU is not detected but FTBLib is.  Enabling Configs.");
             LoggingHandler.felog.debug("Associated Stack Trace:", ignored);
         }
         return false;
     }
 
-    @Override public void registerRankConfig(RankConfigValueInfo info)
+    @Override
+    public void registerRankConfig(RankConfigValueInfo info)
     {
         LoggingHandler.felog.debug("registerRankConfig({})", info);
         DefaultRankConfigHandler.INSTANCE.registerRankConfig(info);
@@ -61,39 +67,46 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
         APIRegistry.perms.registerPermissionPropertyOp(info.node.toString(), info.defaultOPValue.getString());
     }
 
-    @Override public Collection<RankConfigValueInfo> getRegisteredConfigs()
+    @Override
+    public Collection<RankConfigValueInfo> getRegisteredConfigs()
     {
         return DefaultRankConfigHandler.INSTANCE.getRegisteredConfigs();
     }
 
-    @Override public ConfigValue getConfigValue(MinecraftServer server, GameProfile profile, String node)
+    @Override
+    public ConfigValue getConfigValue(MinecraftServer server, GameProfile profile, String node)
     {
         LoggingHandler.felog.info("Getting Config value " + node + " for player " + profile.getName());
         ConfigValue value = ConfigNull.INSTANCE;
 
         RankConfigValueInfo info = getInfo(node);
 
-        if (info != null) {
+        if (info != null)
+        {
             LoggingHandler.felog.info("Config Value is not null");
             UserIdent ident = UserIdent.get(profile);
             value = info.defaultValue.copy();
             WorldPoint point = null;
-            if (ident.hasPlayer()) {
+            if (ident.hasPlayer())
+            {
                 point = WorldPoint.create(ident.getPlayer());
             }
 
-            if (!value.setValueFromString(null, APIRegistry.perms.getUserPermissionProperty(ident, node), false)) {
+            if (!value.setValueFromString(null, APIRegistry.perms.getUserPermissionProperty(ident, node), false))
+            {
                 LoggingHandler.felog.info("Failed to set value");
                 return ConfigNull.INSTANCE;
             }
 
-            LoggingHandler.felog.info(node+ " set to " + value.getString());
+            LoggingHandler.felog.info(node + " set to " + value.getString());
         }
 
         return value;
     }
 
-    @Nullable @Override public RankConfigValueInfo getInfo(String node)
+    @Nullable
+    @Override
+    public RankConfigValueInfo getInfo(String node)
     {
         return DefaultRankConfigHandler.INSTANCE.getInfo(node);
     }

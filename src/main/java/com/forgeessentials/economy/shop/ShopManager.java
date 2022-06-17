@@ -10,17 +10,18 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.item.ItemFrameEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
@@ -28,31 +29,30 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ProtectionEventHandler;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.PlayerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.reflect.TypeToken;
 
-public class ShopManager extends ServerEventHandler implements ConfigLoader
+public class ShopManager extends ServerEventHandler
 {
 
     public static final String PERM_BASE = ModuleEconomy.PERM + ".shop";
@@ -61,7 +61,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     public static final String PERM_USE = PERM_BASE + ".use";
 
     public static final String MSG_MODIFY_DENIED = "You are not allowed to modify shops!";
-    public static final String STOCK_HELP = "If disabled, shops have an infinite stock. Otherwise players can only buy items, that have been sold to the shop before";
+    public static final String STOCK_HELP = "If disabled, shops have an infinite stock. Otherwise players can only buy items that have been sold to the shop before";
 
     public static final String CONFIG_FILE = "EconomyConfig";
 
@@ -81,7 +81,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     public ShopManager()
     {
         shopTags.add("[FEShop]");
-        ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent event)
+    public void serverStarting(FEModuleServerStartingEvent event)
     {
         load();
         APIRegistry.perms.registerPermissionDescription(PERM_BASE, "Shop permissions");
@@ -131,34 +131,34 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void breakEvent(BreakEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLEnvironment.dist.isClient())
             return;
-        WorldPoint point = new WorldPoint(event);
-        ShopData shop = getShop(point, event.getPlayer());
+        WorldPoint point = new WorldPoint(event.getPlayer());
+        ShopData shop = getShop(point, event.getPlayer().createCommandSourceStack());
         if (shop == null)
             return;
 
         UserIdent ident = UserIdent.get(event.getPlayer());
         if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_DESTROY))
         {
-            ChatOutputHandler.chatError(event.getPlayer(), Translator.translate(MSG_MODIFY_DENIED));
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
-            TileEntity te = event.getWorld().getTileEntity(event.getPos());
+            TileEntity te = event.getWorld().getBlockEntity(event.getPos());
             if (te != null)
-                ProtectionEventHandler.updateBrokenTileEntity((EntityPlayerMP) event.getPlayer(), te);
+                ProtectionEventHandler.updateBrokenTileEntity((ServerPlayerEntity) event.getPlayer(), te);
             return;
         }
 
         removeShop(shop);
-        ChatOutputHandler.chatNotification(event.getPlayer(), Translator.translate("Shop destroyed"));
+        ChatOutputHandler.chatNotification(event.getPlayer().createCommandSourceStack(), Translator.translate("Shop destroyed"));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void entityAttackedEvent(EntityAttackedEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || !(event.getEntity() instanceof EntityItemFrame))
+        if (FMLEnvironment.dist.isClient() || !(event.getEntity() instanceof ItemFrameEntity))
             return;
-        final ShopData shop = shopFrameMap.get(event.getEntity().getPersistentID());
+        final ShopData shop = shopFrameMap.get(event.getEntity().getUUID());
         if (shop == null)
             return;
         event.setCanceled(true);
@@ -167,14 +167,14 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void attackEntityEvent(final AttackEntityEvent event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient() || !(event.getTarget() instanceof EntityItemFrame))
+        if (FMLEnvironment.dist.isClient() || !(event.getTarget() instanceof ItemFrameEntity))
             return;
-        final ShopData shop = shopFrameMap.get(event.getTarget().getPersistentID());
+        final ShopData shop = shopFrameMap.get(event.getTarget().getUUID());
         if (shop == null)
             return;
-        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.getEntityPlayer()), new WorldPoint(event.getTarget()), PERM_DESTROY))
+        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.getPlayer()), new WorldPoint(event.getTarget()), PERM_DESTROY))
         {
-            ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.translate(MSG_MODIFY_DENIED));
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
             return;
         }
@@ -186,7 +186,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
                 if (!shop.isValid)
                 {
                     removeShop(shop);
-                    ChatOutputHandler.chatNotification(event.getEntityPlayer(), Translator.translate("Shop destroyed"));
+                    ChatOutputHandler.chatNotification(event.getPlayer().createCommandSourceStack(), Translator.translate("Shop destroyed"));
                 }
             }
         });
@@ -195,42 +195,43 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void entityInteractEvent(PlayerInteractEvent.EntityInteract event)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLEnvironment.dist.isClient())
             return;
-        ShopData shop = shopFrameMap.get(event.getTarget().getPersistentID());
+        ShopData shop = shopFrameMap.get(event.getTarget().getUUID());
         if (shop == null)
             return;
-        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.getEntityPlayer()), new WorldPoint(event.getTarget()), PERM_CREATE))
+        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(event.getPlayer()), new WorldPoint(event.getTarget()), PERM_CREATE))
         {
-            ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.translate(MSG_MODIFY_DENIED));
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), Translator.translate(MSG_MODIFY_DENIED));
             event.setCanceled(true);
             return;
         }
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(final PlayerInteractEvent event)
     {
-        if (event instanceof LeftClickBlock || event instanceof LeftClickEmpty || FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (event instanceof LeftClickBlock || event instanceof LeftClickEmpty || ServerLifecycleHooks.getCurrentServer().isSingleplayer())
             return;
 
-        ItemStack equippedStack = event.getEntityPlayer().getHeldItemMainhand();
+        ItemStack equippedStack = event.getPlayer().getMainHandItem();
         Item equippedItem = equippedStack != ItemStack.EMPTY ? equippedStack.getItem() : null;
 
         WorldPoint point;
         if (event instanceof RightClickEmpty)
         {
-            if (!(equippedItem instanceof ItemBlock))
+            if (!(equippedItem instanceof BlockItem))
                 return;
-            RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(event.getEntityPlayer());
+            RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(event.getPlayer());
             if (mop == null)
                 return;
-            point = new WorldPoint(event.getWorld(), mop.getBlockPos());
+            point = new WorldPoint(event.getWorld(), new BlockPos(mop.getLocation()));
         }
         else
             point = new WorldPoint(event.getWorld(), event.getPos());
 
-        UserIdent ident = UserIdent.get(event.getEntityPlayer());
+        UserIdent ident = UserIdent.get(event.getPlayer());
         ShopData shop = shopSignMap.get(point);
         boolean newShop = shop == null;
         if (newShop)
@@ -239,22 +240,22 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
             if (!ItemUtil.isSign(block))
                 return;
             ITextComponent[] text = ItemUtil.getSignText(point);
-            if (text == null || text.length < 1 || !shopTags.contains(text[0].getUnformattedText()))
+            if (text == null || text.length < 1 || !shopTags.contains(text[0].plainCopy()))
                 return;
             if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_CREATE))
             {
-                ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.translate("You are not allowed to create shops!"));
+                ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), Translator.translate("You are not allowed to create shops!"));
                 return;
             }
-            EntityItemFrame frame = ShopData.findFrame(point);
+            ItemFrameEntity frame = ShopData.findFrame(point);
             if (frame == null)
             {
-                ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.translate("No item frame found"));
+                ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), Translator.translate("No item frame found"));
                 return;
             }
-            if (shopFrameMap.containsKey(frame.getPersistentID()))
+            if (shopFrameMap.containsKey(frame.getUUID()))
             {
-                ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.translate("Item frame already used for another shop!"));
+                ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), Translator.translate("Item frame already used for another shop!"));
                 return;
             }
             shop = new ShopData(point, frame);
@@ -263,14 +264,14 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         shop.update();
         if (!shop.isValid)
         {
-            ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.format("Shop invalid: %s", shop.getError()));
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), Translator.format("Shop invalid: %s", shop.getError()));
             if (!newShop)
                 removeShop(shop);
             return;
         }
         if (newShop)
         {
-            ChatOutputHandler.chatConfirmation(event.getEntityPlayer(), Translator.translate("Created shop!"));
+            ChatOutputHandler.chatConfirmation(event.getPlayer().createCommandSourceStack(), Translator.translate("Created shop!"));
             addShop(shop);
             return;
         }
@@ -279,68 +280,68 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
 
         if (!APIRegistry.perms.checkUserPermission(ident, point, PERM_USE))
         {
-            ChatOutputHandler.chatError(event.getEntityPlayer(), Translator.translate("You are not allowed to use shops!"));
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), Translator.translate("You are not allowed to use shops!"));
             return;
         }
 
         ItemStack transactionStack = shop.getItemStack();
         boolean sameItem = transactionStack.getItem() == equippedItem;
         transactionStack.setCount(shop.amount);
-        ITextComponent itemName = transactionStack.getTextComponent();
+        ITextComponent itemName = transactionStack.getDisplayName();
 
-        Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((EntityPlayerMP) event.getEntityPlayer()));
+        Wallet wallet = APIRegistry.economy.getWallet(UserIdent.get((ServerPlayerEntity) event.getPlayer()));
 
         if (shop.sellPrice >= 0 && (shop.buyPrice < 0 || sameItem))
         {
-            if (ModuleEconomy.countInventoryItems(event.getEntityPlayer(), transactionStack) < transactionStack.getCount())
+            if (ModuleEconomy.countInventoryItems(event.getPlayer(), transactionStack) < transactionStack.getCount())
             {
-                TextComponentTranslation msg = new TextComponentTranslation("You do not have enough %s", itemName);
-                msg.getStyle().setColor(ChatOutputHandler.chatConfirmationColor);
-                ChatOutputHandler.sendMessage(event.getEntityPlayer(), msg);
+                TranslationTextComponent msg = new TranslationTextComponent("You do not have enough %s", itemName);
+                msg.getStyle().withColor(ChatOutputHandler.chatConfirmationColor);
+                ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), msg);
                 return;
             }
             int removedAmount = 0;
             if (sameItem)
             {
                 removedAmount = Math.min(equippedStack.getCount(), transactionStack.getCount());
-                equippedStack.setCount( equippedStack.getCount() - removedAmount);
+                equippedStack.setCount(equippedStack.getCount() - removedAmount);
                 if (equippedStack.getCount() <= 0)
-                    event.getEntityPlayer().inventory.mainInventory.set(event.getEntityPlayer().inventory.currentItem, ItemStack.EMPTY);
+                    event.getPlayer().inventory.items.set(event.getPlayer().inventory.selected, ItemStack.EMPTY);
             }
             if (removedAmount < transactionStack.getCount())
-                removedAmount += ModuleEconomy.tryRemoveItems(event.getEntityPlayer(), transactionStack, transactionStack.getCount() - removedAmount);
+                removedAmount += ModuleEconomy.tryRemoveItems(event.getPlayer(), transactionStack, transactionStack.getCount() - removedAmount);
             wallet.add(shop.sellPrice);
             shop.setStock(shop.getStock() + 1);
 
             String price = APIRegistry.economy.toString(shop.sellPrice);
-            TextComponentTranslation msg = new TextComponentTranslation("Sold %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
-            msg.getStyle().setColor(ChatOutputHandler.chatConfirmationColor);
-            ChatOutputHandler.sendMessage(event.getEntityPlayer(), msg);
+            TranslationTextComponent msg = new TranslationTextComponent("Sold %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
+            msg.getStyle().withColor(ChatOutputHandler.chatConfirmationColor);
+            ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), msg);
         }
         else
         {
             if (useStock && shop.getStock() <= 0)
             {
-                ChatOutputHandler.chatError(event.getEntityPlayer(), "Shop stock is empty");
+                ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Shop stock is empty");
                 return;
             }
             if (!wallet.withdraw(shop.buyPrice))
             {
                 String errorMsg = Translator.format("You do not have enough %s in your wallet", APIRegistry.economy.currency(2));
-                ChatOutputHandler.chatError(event.getEntityPlayer(), errorMsg);
+                ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), errorMsg);
                 return;
             }
             if (useStock)
                 shop.setStock(shop.getStock() - 1);
-            PlayerUtil.give(event.getEntityPlayer(), transactionStack);
+            PlayerUtil.give(event.getPlayer(), transactionStack);
             String price = APIRegistry.economy.toString(shop.buyPrice);
-            TextComponentTranslation msg = new TextComponentTranslation("Bought %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
-            msg.getStyle().setColor(ChatOutputHandler.chatConfirmationColor);
-            ChatOutputHandler.sendMessage(event.getEntityPlayer(), msg);
+            TranslationTextComponent msg = new TranslationTextComponent("Bought %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
+            msg.getStyle().withColor(ChatOutputHandler.chatConfirmationColor);
+            ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), msg);
         }
     }
 
-    public static ShopData getShop(WorldPoint point, ICommandSender sender)
+    public static ShopData getShop(WorldPoint point, CommandSource sender)
     {
         ShopData shop = shopSignMap.get(point);
         if (shop == null)
@@ -371,20 +372,24 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
 
     /* ------------------------------------------------------------ */
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    static ForgeConfigSpec.BooleanValue FEuseStock;
+    static ForgeConfigSpec.ConfigValue<String[]> FEshopTags;
+
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-        useStock = config.getBoolean(CONFIG_FILE, "use_stock", false, STOCK_HELP);
-        String[] tags = config.get(CONFIG_FILE, "shopTags", shopTags.toArray(new String[shopTags.size()])).getStringList();
+        BUILDER.push(CONFIG_FILE);
+        FEuseStock = BUILDER.comment(STOCK_HELP).define("use_stock", false);
+        FEshopTags = BUILDER.define("shopTags", shopTags.toArray(new String[shopTags.size()]));
+        BUILDER.pop();
+    }
+
+    public static void bakeConfig(boolean reload)
+    {
+
+        useStock = FEuseStock.get();
+        String[] tags = FEshopTags.get();
         shopTags.clear();
         for (String tag : tags)
             shopTags.add(tag);
     }
-
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return true;
-    }
-
 }

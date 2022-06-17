@@ -1,6 +1,5 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
-
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 

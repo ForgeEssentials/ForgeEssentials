@@ -1,7 +1,6 @@
 package com.forgeessentials.afterlife;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 import com.forgeessentials.api.UserIdent;
@@ -18,7 +17,7 @@ public class InventoryGrave extends InventoryBasic
     }
 
     @Override
-    public void openInventory(EntityPlayer player)
+    public void openInventory(PlayerEntity player)
     {
         grave.setOpen(true);
         for (int i = 0; i < getSizeInventory(); i++)
@@ -27,7 +26,7 @@ public class InventoryGrave extends InventoryBasic
     }
 
     @Override
-    public void closeInventory(EntityPlayer player)
+    public void closeInventory(PlayerEntity player)
     {
         for (int i = 0; i < getSizeInventory(); i++)
         {
@@ -42,7 +41,7 @@ public class InventoryGrave extends InventoryBasic
     }
 
     @Override
-    public boolean isUsableByPlayer(EntityPlayer player)
+    public boolean isUsableByPlayer(PlayerEntity player)
     {
         return true;
     }

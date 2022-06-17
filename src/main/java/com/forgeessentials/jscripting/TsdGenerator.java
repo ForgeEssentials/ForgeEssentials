@@ -98,7 +98,7 @@ public class TsdGenerator extends Doclet
                 indention = 0;
                 try (FileInputStream is = new FileInputStream(headerFile))
                 {
-                    write(IOUtils.toString(is));
+                    write(IOUtils.toString(is, "UTF-8"));
                 }
 
                 List<PackageDoc> packages = new ArrayList<>(Arrays.asList(root.specifiedPackages()));
@@ -454,8 +454,8 @@ public class TsdGenerator extends Doclet
         if (mappedName == null)
         {
             String fqn = type.qualifiedTypeName();
-            //            ClassDoc classDoc = rootDoc.classNamed(fqn);
-            //            classDoc.containingPackage()
+            // ClassDoc classDoc = rootDoc.classNamed(fqn);
+            // classDoc.containingPackage()
 
             int idx = fqn.lastIndexOf('.');
             String typeName = fqn.substring(idx + 1, fqn.length());
@@ -599,8 +599,7 @@ public class TsdGenerator extends Doclet
                 "-sourcepath", "src/main/java",
                 "-subpackages", "com.forgeessentials.jscripting.fewrapper",
                 "-out", feDtsFile.getAbsolutePath(),
-                "-header", "src/main/resources/com/forgeessentials/jscripting/fe_header.d.ts"
-        );
+                "-header", "src/main/resources/com/forgeessentials/jscripting/fe_header.d.ts");
 
         generator = new TsdGenerator();
         Main.execute(ClassLoader.getSystemClassLoader(), "-doclet", TsdGenerator.class.getName(), "-public",
@@ -615,8 +614,7 @@ public class TsdGenerator extends Doclet
                 "-external", Locale.class.getName(),
                 // "-external", Instant.class.getName(),
                 // "-external", Collection.class.getName(),
-                "-external", net.minecraft.world.GameType.class.getName()
-        );
+                "-external", net.minecraft.world.GameType.class.getName());
 
         FileUtils.copyFileToDirectory(feDtsFile, outDir);
         FileUtils.copyFileToDirectory(mcDtsFile, outDir);

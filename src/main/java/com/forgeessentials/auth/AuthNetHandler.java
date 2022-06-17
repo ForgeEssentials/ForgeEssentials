@@ -1,41 +1,38 @@
 package com.forgeessentials.auth;
 
 import java.util.UUID;
-
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.commons.network.Packet6AuthLogin;
+import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
 
-public class AuthNetHandler implements IMessageHandler<Packet6AuthLogin, IMessage>
+public class AuthNetHandler extends Packet6AuthLogin
 {
     @Override
-    public IMessage onMessage(Packet6AuthLogin message, MessageContext ctx)
+    public void handle(Context context)
     {
 
         if (!ModuleAuth.allowAutoLogin)
-            return null;
-        switch(message.mode)
-        {
-        case 1:
-            if (!message.hash.isEmpty())
+            // return null;
+            switch (message.mode)
             {
-                if (PasswordManager.hasSession(UserIdent.get(ctx.getServerHandler().player).getUuid(), UUID.fromString(message.hash)))
+            case 1:
+                if (!message.hash.isEmpty())
                 {
-                    ModuleAuth.authenticate(UserIdent.get(ctx.getServerHandler().player).getUuid());
-                    APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(ctx.getServerHandler().player, Source.AUTOLOGIN));
+                    if (PasswordManager.hasSession(UserIdent.get(context.getSender().getUUID(), UUID.fromString(message.hash))))
+                    {
+                        ModuleAuth.authenticate(context.getSender().getUUID());
+                        APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(context.getSender(), Source.AUTOLOGIN));
+                    }
                 }
-            }
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
 
-        }
-        return null;
+            }
+        // return null;
     }
 }

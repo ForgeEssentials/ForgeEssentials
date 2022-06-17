@@ -2,7 +2,7 @@ package com.forgeessentials.util.selections;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -26,9 +26,9 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
-        PlayerInfo info = PlayerInfo.get(sender.getPersistentID());
+        PlayerInfo info = PlayerInfo.get(sender.getUUID());
         info.setSel1(null);
         info.setSel2(null);
         SelectionHandler.sendUpdate(sender);

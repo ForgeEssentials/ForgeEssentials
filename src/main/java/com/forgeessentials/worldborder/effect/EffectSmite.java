@@ -2,7 +2,8 @@ package com.forgeessentials.worldborder.effect;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.effect.LightningBoltEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
@@ -27,14 +28,14 @@ public class EffectSmite extends WorldBorderEffect
     }
 
     @Override
-    public void activate(WorldBorder border, EntityPlayerMP player)
+    public void activate(WorldBorder border, ServerPlayerEntity player)
     {
         if (interval <= 0)
             doEffect(player);
     }
 
     @Override
-    public void tick(WorldBorder border, EntityPlayerMP player)
+    public void tick(WorldBorder border, ServerPlayerEntity player)
     {
         if (interval <= 0)
             return;
@@ -46,9 +47,9 @@ public class EffectSmite extends WorldBorderEffect
         }
     }
 
-    public void doEffect(EntityPlayerMP player)
+    public void doEffect(ServerPlayerEntity player)
     {
-        player.world.addWeatherEffect(new EntityLightningBolt(player.world, player.posX, player.posY, player.posZ, false));
+        player.level.addWeatherEffect(new LightningBoltEntity(player.level, player.posX, player.posY, player.posZ, false));
     }
 
     public String toString()

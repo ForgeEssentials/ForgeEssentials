@@ -91,7 +91,8 @@ public class CommandMultiworld extends ParserCommandBase
 
     /**
      * Create a new multiworld
-     * @throws CommandException 
+     * 
+     * @throws CommandException
      */
     public static void parseCreate(CommandParserArgs arguments) throws CommandException
     {
@@ -154,7 +155,9 @@ public class CommandMultiworld extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        arguments.confirm("Creating a Multiworld named \"%s\", provided by \"%s\", with a world type of \"%s\", generator options set to \"%s\" and the seed set to \"%s\"", name, provider, worldType, generatorOptions, seed);
+        arguments.confirm(
+                "Creating a Multiworld named \"%s\", provided by \"%s\", with a world type of \"%s\", generator options set to \"%s\" and the seed set to \"%s\"",
+                name, provider, worldType, generatorOptions, seed);
         Multiworld world = new Multiworld(name, provider, worldType, seed, generatorOptions);
         try
         {
@@ -172,7 +175,8 @@ public class CommandMultiworld extends ParserCommandBase
 
     /**
      * Delete a multiworld
-     * @throws CommandException 
+     * 
+     * @throws CommandException
      */
     public static void parseDelete(CommandParserArgs arguments) throws CommandException
     {

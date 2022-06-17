@@ -5,11 +5,10 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
@@ -32,7 +31,6 @@ public class PlayerLoggerChecker
 
     }
 
-
     private WorldArea getAreaAround(WorldPoint wp)
     {
         return getAreaAround(wp, FilterConfig.globalConfig.pickerRange);
@@ -54,27 +52,30 @@ public class PlayerLoggerChecker
 
     }
 
-    public Map<ICommandSender, LoggerCheckInfo> playerInfo = new WeakHashMap<>();
+    public Map<CommandSource, LoggerCheckInfo> playerInfo = new WeakHashMap<>();
 
     public void CheckBlock(WorldPoint point, FilterConfig fc)
     {
-        CheckBlock(point, fc, FMLCommonHandler.instance().getMinecraftServerInstance());
-    }
-    public void CheckBlock(WorldPoint point, FilterConfig fc, ICommandSender sender)
-    {
-        CheckBlock(point, fc, sender,4);
+        CheckBlock(point, fc, ServerLifecycleHooks.getCurrentServer().createCommandSourceStack());
     }
 
-    public void CheckBlock(WorldPoint point, FilterConfig fc, ICommandSender sender, int pageSize)
+    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender)
     {
-        CheckBlock(point, fc, sender, pageSize,false);
+        CheckBlock(point, fc, sender, 4);
     }
 
-    public void CheckBlock(WorldPoint point, FilterConfig fc, ICommandSender sender, int pageSize, boolean newCheck)
+    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender, int pageSize)
     {
-        CheckBlock(point, fc, sender, pageSize,newCheck, null);
+        CheckBlock(point, fc, sender, pageSize, false);
     }
-    public void CheckBlock(WorldPoint point, FilterConfig fc, ICommandSender sender, int pageSize, boolean newCheck, net.minecraftforge.event.entity.player.PlayerInteractEvent action)
+
+    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender, int pageSize, boolean newCheck)
+    {
+        CheckBlock(point, fc, sender, pageSize, newCheck, null);
+    }
+
+    public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender, int pageSize, boolean newCheck,
+            net.minecraftforge.event.entity.player.PlayerInteractEvent action)
     {
         LoggerCheckInfo info = playerInfo.get(sender);
         if (info == null)
@@ -83,7 +84,7 @@ public class PlayerLoggerChecker
             playerInfo.put(sender, info);
         }
 
-        newCheck |=  !point.equals(info.checkPoint);
+        newCheck |= !point.equals(info.checkPoint);
         if (newCheck)
         {
             info.checkPoint = point;
@@ -95,9 +96,11 @@ public class PlayerLoggerChecker
         }
 
         ChatOutputHandler.chatNotification(sender, "Loading logs from database!  This may take a while.");
-        List<Action> changes = ModulePlayerLogger.getLogger().getLoggedActions(getAreaAround(point,fc.pickerRange),fc.After(),fc.Before(),info.checkStartId,pageSize);
+        List<Action> changes = ModulePlayerLogger.getLogger().getLoggedActions(getAreaAround(point, fc.pickerRange), fc.After(), fc.Before(), info.checkStartId,
+                pageSize);
 
-        //List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getAreaAround(point, fc.pickerRange),fc.After(), fc.Before(), info.checkStartId, pageSize);
+        // List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getAreaAround(point, fc.pickerRange),fc.After(), fc.Before(), info.checkStartId,
+        // pageSize);
 
         if (changes.size() == 0 && !newCheck)
         {
@@ -114,10 +117,13 @@ public class PlayerLoggerChecker
             {
                 UserIdent player = UserIdent.get(change.player.uuid);
                 msg += " " + player.getUsernameOrUuid();
-                if (fc.player != null && fc.player != player) {
+                if (fc.player != null && fc.player != player)
+                {
                     continue;
                 }
-            } else if (fc.player != null) {
+            }
+            else if (fc.player != null)
+            {
                 continue;
             }
             msg += ": ";
@@ -130,8 +136,6 @@ public class PlayerLoggerChecker
 
                 if (blockName.contains(":"))
                     blockName = blockName.split(":", 2)[1];
-
-
 
                 switch (change2.type)
                 {
@@ -176,7 +180,7 @@ public class PlayerLoggerChecker
                 Action02Command change2 = (Action02Command) change;
                 String command = change2.command;
                 String args = change2.arguments;
-                msg += String.format("Ran Command: %s with args: %s",command,args);
+                msg += String.format("Ran Command: %s with args: %s", command, args);
             }
             else if (change instanceof Action03PlayerEvent)
             {

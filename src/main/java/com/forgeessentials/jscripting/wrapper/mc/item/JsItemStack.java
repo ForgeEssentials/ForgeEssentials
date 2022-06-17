@@ -1,7 +1,7 @@
 package com.forgeessentials.jscripting.wrapper.mc.item;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
@@ -19,6 +19,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
     {
         return itemStack == ItemStack.EMPTY ? EMPTY : new JsItemStack(itemStack);
     }
+
     public static final JsItemStack EMPTY = new JsItemStack(ItemStack.EMPTY);
 
     private JsItemStack(ItemStack that)
@@ -74,22 +75,22 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 
     public boolean isDamageable()
     {
-        return that.isItemStackDamageable();
+        return that.isDamageableItem();
     }
 
     public boolean isDamaged()
     {
-        return that.isItemDamaged();
+        return that.isDamaged();
     }
 
     public int getDamage()
     {
-        return that.getItemDamage();
+        return that.getDamageValue();
     }
 
     public void setDamage(int damage)
     {
-        that.setItemDamage(damage);
+        that.setDamageValue(damage);
     }
 
     public int getMaxDamage()
@@ -99,7 +100,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 
     public String getDisplayName()
     {
-        return that.getDisplayName();
+        return that.getDisplayName().toString();
     }
 
     public void setDisplayName(String name)
@@ -109,17 +110,17 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 
     public boolean hasDisplayName()
     {
-        return that.hasDisplayName();
+        return that.hasCustomHoverName();
     }
 
     public boolean isItemEnchanted()
     {
-        return that.isItemEnchanted();
+        return that.isEnchanted();
     }
 
     public int getRepairCost()
     {
-        return that.getRepairCost();
+        return that.getBaseRepairCost();
     }
 
     public void setRepairCost(int cost)
@@ -133,7 +134,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
     @Override
     public boolean equals(Object obj)
     {
-        return obj instanceof JsItemStack ? that.isItemEqual(((JsItemStack) obj).getThat()) : false;
+        return obj instanceof JsItemStack ? that.equals(((JsItemStack) obj).getThat()) : false;
     }
 
     /**
@@ -141,7 +142,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
      */
     public String _getNbt()
     {
-        return that.getTagCompound() == null ? null : DataManager.toJson(that.getTagCompound());
+        return that.getTag() == null ? null : DataManager.toJson(that.getTag());
     }
 
     /**
@@ -149,7 +150,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
      */
     public void _setNbt(String value)
     {
-        that.setTagCompound(value == null ? null : DataManager.fromJson(value, NBTTagCompound.class));
+        that.setTag(value == null ? null : DataManager.fromJson(value, CompoundNBT.class));
     }
 
 }

@@ -6,7 +6,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -71,18 +71,18 @@ public class CommandTempBan extends ParserCommandBase
 
         String durationString = ChatOutputHandler.formatTimeDurationReadable(duration / 1000, true);
         if (player.hasPlayer())
-            player.getPlayerMP().connection.disconnect(new TextComponentTranslation(Translator.format("You have been banned for %s", durationString)));
+            player.getPlayerMP().connection.disconnect(new TranslationTextComponent(Translator.format("You have been banned for %s", durationString)));
 
         if (!arguments.isEmpty())
         {
             String reason = arguments.toString();
-            ChatOutputHandler.sendMessage(arguments.server,
+            ChatOutputHandler.sendMessage(arguments.server.createCommandSourceStack(),
                     Translator.format("Player %s, has been temporarily banned for %s. Reason: %s", player.getUsername(), durationString, reason));
             APIRegistry.perms.setPlayerPermissionProperty(player, PERM_BAN_REASON, reason);
         }
         else
         {
-            ChatOutputHandler.sendMessage(arguments.server,
+            ChatOutputHandler.sendMessage(arguments.server.createCommandSourceStack(),
                     Translator.format("Player %s, has been temporarily banned for %s", player.getUsername(), durationString));
         }
     }

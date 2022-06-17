@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -56,7 +56,7 @@ public class CommandPlot extends ParserCommandBase
             case OWN:
                 if (plot.getOwner() == null)
                     return true;
-                if (!(sender instanceof EntityPlayerMP))
+                if (!(sender instanceof ServerPlayerEntity))
                     return false;
                 return plot.getOwner().getPlayer().equals(sender);
             case SALE:
@@ -193,7 +193,9 @@ public class CommandPlot extends ParserCommandBase
             {
                 Plot.define(selection, arguments.ident);
                 arguments.confirm("Plot created!");
-            } else {
+            }
+            else
+            {
                 throw new TranslatedCommandException("Can not create overlapping plots.");
             }
         }
@@ -646,8 +648,16 @@ public class CommandPlot extends ParserCommandBase
             arguments.confirm(msgBase + "to interact with chests");
             break;
         case "button":
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.WOODEN_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.ACACIA_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.BIRCH_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.CRIMSON_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.DARK_OAK_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.JUNGLE_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.OAK_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.SPRUCE_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.WARPED_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
             plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.STONE_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.POLISHED_BLACKSTONE_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
             arguments.confirm(msgBase + "to interact with buttons");
             break;
         case "lever":
@@ -655,7 +665,15 @@ public class CommandPlot extends ParserCommandBase
             arguments.confirm(msgBase + "to interact with levers");
             break;
         case "door":
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.ACACIA_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.BIRCH_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.CRIMSON_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.DARK_OAK_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.JUNGLE_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
             plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.OAK_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.OAK_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.WARPED_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
+
             arguments.confirm(Translator.translate(msgBase + "to interact with doors"));
             break;
         case "animal":
@@ -755,7 +773,7 @@ public class CommandPlot extends ParserCommandBase
                             buyPlot(arguments, plot, plotPrice);
                         }
                     };
-                    Questioner.addChecked(plot.getOwner().getPlayerMP(), message, handler, 60);
+                    Questioner.addChecked(plot.getOwner().getPlayerMP().createCommandSourceStack(), message, handler, 60);
                 }
                 else
                 {
@@ -804,9 +822,9 @@ public class CommandPlot extends ParserCommandBase
         plot.setPrice(-1);
     }
 
-    public static Plot getPlot(ICommandSender sender) throws CommandException
+    public static Plot getPlot(CommandSource sender) throws CommandException
     {
-        Plot plot = Plot.getPlot(new WorldPoint(sender.getEntityWorld(), sender.getPosition()));
+        Plot plot = Plot.getPlot(new WorldPoint(sender.getEntity().level.dimension(), sender.getPosition()));
         if (plot == null)
             throw new TranslatedCommandException("There is no plot at this position. You have to stand inside it to use plot commands.");
         return plot;

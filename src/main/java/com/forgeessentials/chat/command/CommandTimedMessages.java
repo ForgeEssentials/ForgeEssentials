@@ -7,9 +7,10 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -27,10 +28,10 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.JsonParseException;
 
-public class CommandTimedMessages extends ParserCommandBase implements ConfigSaver, Runnable
+public class CommandTimedMessages extends ParserCommandBase implements Runnable
 {
 
-    public static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + ".TimedMessage";
+    public static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + "_TimedMessage";
 
     public static final String MESSAGES_HELP = "Each line is 1 message. \nYou can use scripting arguments and color codes. "
             + "\nUsing json messages (tellraw) is also supported";
@@ -51,7 +52,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
 
     public CommandTimedMessages()
     {
-        ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
     }
 
     @Override
@@ -144,7 +145,8 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         addMessage(message);
         arguments.confirm("Added new message:");
         arguments.sendMessage(formatMessage(message));
-        ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+        // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+        save();
     }
 
     public void parseList(CommandParserArgs arguments)
@@ -153,7 +155,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             return;
         arguments.confirm("List of messages:");
         for (int i = 0; i < messages.size(); i++)
-            arguments.sendMessage(new TextComponentTranslation(String.format("%d: %s", i, formatMessage(messages.get(i)))));
+            arguments.sendMessage(new TranslationTextComponent(String.format("%d: %s", i, formatMessage(messages.get(i)))));
     }
 
     public void parseDelete(CommandParserArgs arguments) throws CommandException
@@ -170,7 +172,8 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             throw new TranslatedCommandException("Index out of bounds");
         messages.remove(index);
         arguments.confirm("Removed message");
-        ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+        // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+        save();
     }
 
     public void parseSend(CommandParserArgs arguments) throws CommandException
@@ -198,7 +201,8 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             return;
         }
         setInterval(arguments.parseInt());
-        ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+        // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+        save();
     }
 
     public void parseShuffle(CommandParserArgs arguments) throws CommandException
@@ -215,7 +219,8 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         {
             shuffle = newShuffle;
             initMessageOrder();
-            ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+            // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+            save();
         }
     }
 
@@ -274,7 +279,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         message = ModuleChat.processChatReplacements(null, message);
         try
         {
-            return ITextComponent.Serializer.jsonToComponent(message);
+            return ITextComponent.Serializer.fromJson(message);
         }
         catch (JsonParseException e)
         {
@@ -282,33 +287,38 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             {
                 LoggingHandler.felog.warn("Error in timedmessage format: " + ExceptionUtils.getRootCause(e).getMessage());
             }
-            return new TextComponentString(message);
+            return new StringTextComponent(message);
         }
     }
 
-    @Override
-    public boolean supportsCanonicalConfig()
+    static ForgeConfigSpec.IntValue FEinverval;
+    static ForgeConfigSpec.BooleanValue FEenabled;
+    static ForgeConfigSpec.BooleanValue FEshuffle;
+    static ForgeConfigSpec.ConfigValue<String[]> FEmessages;
+
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-        return true;
+        BUILDER.comment("Automated spam").push(CATEGORY);
+        FEinverval = BUILDER.comment("Interval in seconds. 0 to disable").defineInRange("inverval", 60, 0, Integer.MAX_VALUE);
+        FEenabled = BUILDER.comment("Enable TimedMessages.").define("enabled", false);
+        FEshuffle = BUILDER.comment("Shuffle messages").define("shuffle", false);
+        FEmessages = BUILDER.comment(MESSAGES_HELP).define("messages", MESSAGES_DEFAULT);
+        BUILDER.pop();
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    public static void bakeConfig(boolean reload)
     {
-        config.addCustomCategoryComment(CATEGORY, "Automated spam");
-        setInterval(config.get(CATEGORY, "inverval", 60, "Interval in seconds. 0 to disable").getInt());
-        enabled = config.get(CATEGORY, "enabled", false).getBoolean();
-        shuffle = config.get(CATEGORY, "shuffle", false).getBoolean();
-        messages = new ArrayList<String>(Arrays.asList(config.get(CATEGORY, "messages", MESSAGES_DEFAULT, MESSAGES_HELP).getStringList()));
+        setInterval(FEinverval.get());
+        enabled = FEenabled.get();
+        shuffle = FEshuffle.get();
+        messages = new ArrayList<String>(Arrays.asList(FEmessages.get()));
         initMessageOrder();
     }
 
-    @Override
-    public void save(Configuration config)
+    public void save()
     {
-        config.get(CATEGORY, "inverval", 60).set(interval);
-        config.get(CATEGORY, "shuffle", false).set(shuffle);
-        config.get(CATEGORY, "messages", MESSAGES_DEFAULT).set(messages.toArray(new String[messages.size()]));
+        FEinverval.set(interval);
+        FEshuffle.set(shuffle);
+        FEmessages.set(messages.toArray(new String[messages.size()]));
     }
-
 }

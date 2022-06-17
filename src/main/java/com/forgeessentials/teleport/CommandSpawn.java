@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -63,7 +63,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
@@ -71,7 +71,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
             {
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
             }
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player == null)
             {
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -84,7 +84,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
         }
         else if (args.length == 0)
         {
-            EntityPlayerMP player = sender;
+            ServerPlayerEntity player = sender;
 
             WarpPoint point = RespawnHandler.getSpawn(player, null);
             if (point == null)
@@ -105,7 +105,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
         {
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
         }
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
         {
             throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);

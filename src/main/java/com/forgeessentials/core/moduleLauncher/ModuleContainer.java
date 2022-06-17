@@ -6,8 +6,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 
-import net.minecraft.command.ICommandSender;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule.Container;
@@ -16,11 +14,14 @@ import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.core.moduleLauncher.FEModule.ParentMod;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
 
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
+import net.minecraft.command.ICommandSource;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.moddiscovery.ModFile;
+import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import net.minecraftforge.forgespi.language.IModFileInfo;
 
 @SuppressWarnings("rawtypes")
 public class ModuleContainer implements Comparable
@@ -216,14 +217,14 @@ public class ModuleContainer implements Comparable
                 f.set(module, file);
             }
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             LoggingHandler.felog.info("Error populating fields of " + name);
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
-    public void runReload(ICommandSender user)
+    public void runReload(ICommandSource user)
     {
         if (!isLoadable || reload == null)
         {
@@ -233,13 +234,13 @@ public class ModuleContainer implements Comparable
         try
         {
             Class<?> c = Class.forName(className);
-            Method m = c.getDeclaredMethod(reload, new Class<?>[] { ICommandSender.class });
+            Method m = c.getDeclaredMethod(reload, new Class<?>[] { ICommandSource.class });
             m.invoke(module, user);
         }
-        catch (Throwable e)
+        catch (Exception e)
         {
             LoggingHandler.felog.info("Error while invoking Reload method for " + name);
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -298,7 +299,7 @@ public class ModuleContainer implements Comparable
         Object obj = null;
 
         ModContainer contain = null;
-        for (ModContainer c : Loader.instance().getModList())
+        for (ModContainer c : ModList.mods)
         {
             if (c.getMod() != null && c.getMod().getClass().equals(modClass))
             {
@@ -311,7 +312,7 @@ public class ModuleContainer implements Comparable
         if (obj == null || contain == null)
             throw new RuntimeException(modClass + " isn't an loaded mod class!");
 
-        modid = contain.getModId() + "-" + contain.getVersion();
+        modid = contain.getModId() + "-" + contain.getModInfo().getVersion();
         if (modClasses.add(modClass))
             LoggingHandler.felog.info("Modules from " + modid + " are being loaded");
         return obj;

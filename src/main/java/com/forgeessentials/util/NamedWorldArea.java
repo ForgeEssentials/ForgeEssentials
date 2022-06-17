@@ -1,6 +1,8 @@
 package com.forgeessentials.util;
 
-import net.minecraft.world.WorldServer;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.AreaBase;
@@ -15,7 +17,7 @@ import com.google.gson.annotations.Expose;
 public class NamedWorldArea extends WorldArea
 {
 
-    protected String worldName;
+    protected RegistryKey<World> worldName;
 
     @Expose(serialize = false)
     protected boolean isLinked = false;
@@ -23,16 +25,16 @@ public class NamedWorldArea extends WorldArea
     @Expose(serialize = false)
     protected boolean isValid = true;
 
-    public NamedWorldArea(int dimension, String worldName, Point start, Point end)
+    public NamedWorldArea(RegistryKey<World> dimension, RegistryKey<World> registryKey, Point start, Point end)
     {
         super(dimension, start, end);
-        this.worldName = worldName;
+        this.worldName = registryKey;
         isLinked();
     }
 
-    public NamedWorldArea(String worldName, Point start, Point end)
+    public NamedWorldArea(RegistryKey<World> registryKey, Point start, Point end)
     {
-        this(0, worldName, start, end);
+        this(0, registryKey, start, end);
     }
 
     public NamedWorldArea(String worldName, AreaBase area)
@@ -40,7 +42,7 @@ public class NamedWorldArea extends WorldArea
         this(0, worldName, area.getLowPoint(), area.getHighPoint());
     }
 
-    public NamedWorldArea(int dimension, Point start, Point end)
+    public NamedWorldArea(RegistryKey<World> dimension, Point start, Point end)
     {
         super(dimension, start, end);
         this.worldName = APIRegistry.namedWorldHandler.getWorldName(dimension);
@@ -54,7 +56,7 @@ public class NamedWorldArea extends WorldArea
 
     public NamedWorldArea(WorldArea area)
     {
-        this(area.getDimension(), area.getLowPoint(), area.getHighPoint());
+        this(area.getDimension()), area.getLowPoint(), area.getHighPoint());
     }
 
     public boolean isLinked()
@@ -71,10 +73,10 @@ public class NamedWorldArea extends WorldArea
             if (worldName != null)
             {
                 // If there is a name for the dimension, use it
-                WorldServer world = APIRegistry.namedWorldHandler.getWorld(worldName);
+                ServerWorld world = APIRegistry.namedWorldHandler.getWorld(worldName);
                 if (world != null)
                 {
-                    this.dim = world.provider.getDimension();
+                    this.dim = world.dimension();
                     isLinked = true;
                     isValid = true;
                 }

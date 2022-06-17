@@ -1,12 +1,13 @@
 package com.forgeessentials.signtools;
 
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 import com.forgeessentials.util.StringUtil;
 
@@ -15,8 +16,8 @@ public class SignInfo
     int x, y, z, dim;
     String[] text;
     String event;
-    EnumHand hand;
-    Vec3d hitVec;
+    Hand hand;
+    BlockRayTraceResult hitVec;
 
     public SignInfo(int dim, BlockPos pos, String[] text, Event event)
     {
@@ -44,7 +45,8 @@ public class SignInfo
         }
     }
 
-    @Override public String toString()
+    @Override
+    public String toString()
     {
         return "{" +
                 "\"x\":" + x +
@@ -55,10 +57,11 @@ public class SignInfo
                 ", \"hand\":\"" + hand + "\"" +
                 ", \"hitVec\":" +
                 (hitVec != null ? "{" +
-                        "\"x\":" + hitVec.x +
-                        ", \"y\":" + hitVec.y +
-                        ", \"z\":" + hitVec.z +
-                        "}" : "null") +
+                        "\"x\":" + hitVec.getBlockPos().getX() +
+                        ", \"y\":" + hitVec.getBlockPos().getY() +
+                        ", \"z\":" + hitVec.getBlockPos().getZ() +
+                        "}" : "null")
+                +
                 "}";
     }
 }

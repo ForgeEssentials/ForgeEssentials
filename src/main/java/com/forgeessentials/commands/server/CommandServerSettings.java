@@ -7,7 +7,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -136,7 +136,7 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 String motd = ScriptArguments.process(arguments.toString(), null);
-                server.getServerStatusResponse().setServerDescription(new TextComponentString(ChatOutputHandler.formatColors(motd)));
+                server.getServerStatusResponse().setServerDescription(new StringTextComponent(ChatOutputHandler.formatColors(motd)));
                 server.setMOTD(motd);
                 setProperty("motd", motd);
                 arguments.confirm("Set MotD to %s", motd);

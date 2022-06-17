@@ -14,13 +14,13 @@ import com.forgeessentials.playerlogger.command.CommandRollback;
 import com.forgeessentials.playerlogger.remote.serializer.BlockDataType;
 import com.forgeessentials.playerlogger.remote.serializer.PlayerDataType;
 import com.forgeessentials.playerlogger.remote.serializer.WorldDataType;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class)
@@ -73,7 +73,7 @@ public class ModulePlayerLogger
     */
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModuleCommonSetupEvent e)
     {
         DataManager.addDataType(new WorldDataType());
         DataManager.addDataType(new PlayerDataType());
@@ -81,7 +81,7 @@ public class ModulePlayerLogger
         
         logger = new PlayerLogger();
         eventHandler = new PlayerLoggerEventHandler();
-        ForgeEssentials.getConfigManager().registerLoader("PlayerLogger", new PlayerLoggerConfig());
+        //CONFIG ForgeEssentials.getConfigManager().registerLoader("PlayerLogger", new PlayerLoggerConfig());
 
         FECommandManager.registerCommand(new CommandRollback());
         FECommandManager.registerCommand(new CommandPlayerlogger());
@@ -89,14 +89,14 @@ public class ModulePlayerLogger
     }
 
     @SubscribeEvent
-    public void serverPreInit(FEModuleServerPreInitEvent e)
+    public void serverPreInit(FEModuleServerAboutToStartEvent e)
     {
         registerPermissions();
         logger.loadDatabase();
     }
 
     @SubscribeEvent
-    public void serverPostInit(FEModuleServerPostInitEvent e)
+    public void serverPostInit(FEModuleServerStartedEvent e)
     {
         if (PlayerLoggerConfig.logDuration > 0)
         {

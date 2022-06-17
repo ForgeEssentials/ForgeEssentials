@@ -2,26 +2,25 @@ package com.forgeessentials.permissions.core;
 
 import java.util.List;
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.PermissionCheckEvent;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
+import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
-public class ItemPermissionManager extends ServerEventHandler implements ConfigLoader
+public class ItemPermissionManager extends ServerEventHandler
 {
 
     public static final String HELP = "Enable the item permission manager";
@@ -47,12 +46,12 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
 
     public ItemPermissionManager()
     {
-        ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
     }
 
     @Override
     @SubscribeEvent
-    public void serverAboutToStart(FEModuleServerPreInitEvent event)
+    public void serverAboutToStart(FEModuleServerAboutToStartEvent event)
     {
         if (enabled)
             super.serverAboutToStart(event);
@@ -65,13 +64,13 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
     {
         if (!enabled || event.ident == null || !event.ident.hasPlayer())
             return;
-        InventoryPlayer inventory = event.ident.getPlayer().inventory;
-        for (int slotIdx = 0; slotIdx < inventory.getSizeInventory(); slotIdx++)
+        PlayerInventory inventory = event.ident.getPlayer().inventory;
+        for (int slotIdx = 0; slotIdx < inventory.getContainerSize(); slotIdx++)
         {
-            ItemStack stack = inventory.getStackInSlot(slotIdx);
+            ItemStack stack = inventory.getItem(slotIdx);
             if (stack == ItemStack.EMPTY)
                 continue;
-            boolean isEquipped = slotIdx == inventory.currentItem || slotIdx > inventory.mainInventory.size();
+            boolean isEquipped = slotIdx == inventory.selected || slotIdx > inventory.getContainerSize();
             check(event, stack, isEquipped);
         }
     }
@@ -81,15 +80,15 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
         List<String> groups = GroupEntry.toList(APIRegistry.perms.getPlayerGroups(ident));
         if (!enabled || ident == null || !ident.hasPlayer())
             return groups;
-        InventoryPlayer inventory = ident.getPlayer().inventory;
-        for (int slotIdx = 0; slotIdx < inventory.getSizeInventory(); slotIdx++)
+        PlayerInventory inventory = ident.getPlayer().inventory;
+        for (int slotIdx = 0; slotIdx < inventory.getContainerSize(); slotIdx++)
         {
-            ItemStack stack = inventory.getStackInSlot(slotIdx);
+            ItemStack stack = inventory.getItem(slotIdx);
             if (stack == ItemStack.EMPTY)
                 continue;
-            boolean isEquipped = slotIdx == inventory.currentItem || slotIdx > inventory.mainInventory.size();
+            boolean isEquipped = slotIdx == inventory.selected || slotIdx > inventory.getContainerSize();
 
-            NBTTagCompound tag = getPermissionTag(stack);
+            CompoundNBT tag = getPermissionTag(stack);
             if (tag == null)
                 continue;
 
@@ -110,10 +109,10 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
             }
 
             // Check permissions
-            NBTTagList settings = getSettingsTag(tag);
-            for (int i = 0; i < settings.tagCount(); i++)
+            ListNBT settings = getSettingsTag(tag);
+            for (int i = 0; i < settings.size(); i++)
             {
-                String setting = settings.getStringTagAt(i);
+                String setting = settings.getString(i);
                 String[] parts = setting.split("=", 2);
                 if (parts.length == 1)
                     groups.add(1, parts[0]);
@@ -122,27 +121,27 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
         return groups;
     }
 
-    public static NBTTagCompound getPermissionTag(ItemStack stack)
+    public static CompoundNBT getPermissionTag(ItemStack stack)
     {
-        NBTTagCompound stackTag = stack.getTagCompound();
+        CompoundNBT stackTag = stack.getTag();
         if (stackTag != null)
         {
-            NBTBase baseTag = stackTag.getTag(TAG_BASE);
-            if (baseTag instanceof NBTTagCompound)
-                return (NBTTagCompound) baseTag;
+            INBT baseTag = stackTag.get(TAG_BASE);
+            if (baseTag instanceof CompoundNBT)
+                return (CompoundNBT) baseTag;
         }
         return null;
     }
 
-    public static NBTTagList getSettingsTag(NBTTagCompound tag)
+    public static ListNBT getSettingsTag(CompoundNBT tag)
     {
-        NBTTagList settings = tag.getTagList(TAG_SETTINGS, NBT.TAG_STRING);
+        ListNBT settings = tag.getList(TAG_SETTINGS, NBT.TAG_STRING);
         return settings;
     }
 
     public static void check(PermissionCheckEvent event, ItemStack stack, boolean isEquipped)
     {
-        NBTTagCompound tag = getPermissionTag(stack);
+        CompoundNBT tag = getPermissionTag(stack);
         if (tag == null)
             return;
 
@@ -163,10 +162,10 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
         }
 
         // Check permissions
-        NBTTagList settings = getSettingsTag(tag);
-        for (int i = 0; i < settings.tagCount(); i++)
+        ListNBT settings = getSettingsTag(tag);
+        for (int i = 0; i < settings.size(); i++)
         {
-            String setting = settings.getStringTagAt(i);
+            String setting = settings.getString(i);
             String[] parts = setting.split("=", 2);
             if (parts.length == 2)
             {
@@ -188,23 +187,26 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
 
     /* ------------------------------------------------------------ */
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    static ForgeConfigSpec.BooleanValue FEenabled;
+
+    public static void load(ForgeConfigSpec.Builder BUILDER)
     {
-        enabled = config.get("ItemPermissions", "enabled", false, HELP).getBoolean();
+        BUILDER.push("ItemPermissions");
+        FEenabled = BUILDER.comment(HELP).define("enabled", false);
+        BUILDER.pop();
+    }
+
+    public static void bakeConfig(boolean reload)
+    {
+        enabled = FEenabled.get();
+
         if (ServerUtil.isServerRunning())
         {
             if (enabled)
-                register();
+                ModulePermissions.getItemPermissionManager().register();
             else
-                unregister();
+                ModulePermissions.getItemPermissionManager().unregister();
         }
-    }
-
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return true;
     }
 
 }

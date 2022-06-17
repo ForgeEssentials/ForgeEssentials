@@ -16,25 +16,13 @@ import java.util.Set;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.ServerWorldEventHandler;
-import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldSettings;
-import net.minecraft.world.WorldType;
-import net.minecraft.world.storage.ISaveHandler;
-import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
+import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fe.event.world.WorldPreLoadEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
-import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
-import net.minecraftforge.fml.common.network.FMLOutboundHandler;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import org.apache.commons.io.FileUtils;
 
@@ -47,7 +35,6 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.multiworld.MultiworldException.Type;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 
 import static net.minecraftforge.common.DimensionManager.getRegisteredDimensions;
@@ -91,12 +78,12 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     /**
      * List of worlds that have been marked for deletion
      */
-    protected ArrayList<WorldServer> worldsToDelete = new ArrayList<>();
+    protected ArrayList<ServerWorld> worldsToDelete = new ArrayList<>();
 
     /**
      * List of worlds that have been marked for removal
      */
-    protected ArrayList<WorldServer> worldsToRemove = new ArrayList<>();
+    protected ArrayList<ServerWorld> worldsToRemove = new ArrayList<>();
 
     /**
      * Event handler for new clients that need to know about our worlds
@@ -127,7 +114,8 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         Map<String, Multiworld> loadedWorlds = DataManager.getInstance().loadAll(Multiworld.class);
         for (Multiworld world : loadedWorlds.values())
         {
-            if (world.generatorOptions == null) {
+            if (world.generatorOptions == null)
+            {
                 world.generatorOptions = "";
             }
 
@@ -182,9 +170,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     }
 
     @Override
-    public WorldServer getWorld(String name)
+    public ServerWorld getWorld(String name)
     {
-        WorldServer world = parentNamedWorldHandler.getWorld(name);
+        ServerWorld world = parentNamedWorldHandler.getWorld(name);
         if (world != null)
             return world;
 
@@ -250,9 +238,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         APIRegistry.perms.getServerZone().getWorldZone(world.dimensionId)
                 .setGroupPermissionProperty(Zone.GROUP_DEFAULT, PERM_PROP_MULTIWORLD, world.getName());
 
-            // Register the dimension
-            DimensionManager.registerDimension(world.dimensionId, DimensionManager.getProviderType(world.providerId));
-            worldsByDim.put(world.dimensionId, world);
+        // Register the dimension
+        DimensionManager.registerDimension(world.dimensionId, DimensionManager.getProviderType(world.providerId));
+        worldsByDim.put(world.dimensionId, world);
 
         // Allow the world to unload
         DimensionManager.getProviderType(world.dimensionId).setLoadSpawn(false);
@@ -269,15 +257,16 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         {
             // Initialize world settings
             MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
-            WorldServer overworld = DimensionManager.getWorld(0);
+            ServerWorld overworld = DimensionManager.getWorld(0);
             if (overworld == null)
                 throw new RuntimeException("Cannot hotload dim: Overworld is not Loaded!");
             ISaveHandler savehandler = new MultiworldSaveHandler(overworld.getSaveHandler(), world);
 
-            WorldSettings settings = new WorldSettings(world.seed, mcServer.getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(), WorldType.parseWorldType(world.worldType));
+            WorldSettings settings = new WorldSettings(world.seed, mcServer.getWorldData().getGameType(), mcServer.canStructuresSpawn(), mcServer.isHardcore(),
+                    WorldType.parseWorldType(world.worldType));
             settings.setGeneratorOptions(world.generatorOptions);
             WorldInfo info = new WorldInfo(settings, world.name);
-            WorldServer worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.profiler, world);
+            ServerWorld worldServer = new WorldServerMultiworld(mcServer, savehandler, info, world.dimensionId, overworld, mcServer.profiler, world);
             worldServer.init();
             // Overwrite dimensionId because WorldProviderEnd for example just hardcodes the dimId
             worldServer.provider.setDimension(world.dimensionId);
@@ -285,9 +274,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0).provider.getDimensionType().setLoadSpawn(true);
             worldServer.addEventListener(new ServerWorldEventHandler(mcServer, worldServer));
 
-            mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
-            if (!mcServer.isSinglePlayer())
-                worldServer.getWorldInfo().setGameType(mcServer.getGameType());
+            mcServer.setDifficultyForAllWorlds(mcServer.getWorldData().getDifficulty());
+            if (!mcServer.isSingleplayer())
+                worldServer.getWorldInfo().setGameType(mcServer.getWorldData().getDifficulty());
 
             world.updateWorldSettings();
             world.worldLoaded = true;
@@ -438,7 +427,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             catch (MultiworldException e)
             {
                 e.printStackTrace();
-                Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         }
     }
@@ -449,7 +438,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     @SubscribeEvent
     public void worldUnloadEvent(WorldEvent.Unload event)
     {
-        Multiworld mw = getMultiworld(event.getWorld().provider.getDimension());
+        Multiworld mw = getMultiworld(event.getWorld());
         if (mw != null)
             mw.worldLoaded = false;
     }
@@ -459,9 +448,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      */
     protected void unregisterDimensions()
     {
-        for (Iterator<WorldServer> it = worldsToRemove.iterator(); it.hasNext();)
+        for (Iterator<ServerWorld> it = worldsToRemove.iterator(); it.hasNext();)
         {
-            WorldServer world = it.next();
+            ServerWorld world = it.next();
             // Check with DimensionManager, whether the world is still loaded
             if (DimensionManager.getWorld(world.provider.getDimension()) == null)
             {
@@ -477,9 +466,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      */
     protected void deleteDimensions()
     {
-        for (Iterator<WorldServer> it = worldsToDelete.iterator(); it.hasNext();)
+        for (Iterator<ServerWorld> it = worldsToDelete.iterator(); it.hasNext();)
         {
-            WorldServer world = it.next();
+            ServerWorld world = it.next();
             // Check with DimensionManager, whether the world is still loaded
             if (DimensionManager.getWorld(world.provider.getDimension()) == null)
             {

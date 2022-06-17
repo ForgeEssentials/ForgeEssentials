@@ -3,13 +3,11 @@ package com.forgeessentials.commands.item;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -31,7 +29,7 @@ public class CommandRepair extends ForgeEssentialsCommandBase
     @Override
     public String getUsage(ICommandSender sender)
     {
-        if (sender instanceof EntityPlayer)
+        if (sender instanceof PlayerEntity)
         {
             return "/repair [player] Repairs the item you or another player is holding.";
         }
@@ -67,24 +65,24 @@ public class CommandRepair extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
-            ItemStack item = sender.getHeldItemMainhand();
+            ItemStack item = sender.getMainHandItem();
             if (item == null)
                 throw new TranslatedCommandException("You are not holding a reparable item.");
-            item.setItemDamage(0);
+            item.setDamageValue(0);
         }
         else if (args.length == 1 && PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player == null)
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 
-            ItemStack item = player.getHeldItemMainhand();
+            ItemStack item = player.getMainHandItem();
             if (item != null)
-                item.setItemDamage(0);
+                item.setDamageValue(0);
         }
         else
         {
@@ -98,15 +96,15 @@ public class CommandRepair extends ForgeEssentialsCommandBase
         if (args.length == 1)
         {
             // PlayerSelector.matchPlayers(sender, args[0])
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
 
-                ItemStack item = player.getHeldItemMainhand();
+                ItemStack item = player.getMainHandItem();
 
                 if (item != null)
                 {
-                    item.setItemDamage(0);
+                    item.setDamageValue(0);
                 }
 
             }

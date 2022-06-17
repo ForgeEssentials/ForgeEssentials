@@ -7,6 +7,8 @@ import net.minecraft.block.Block;
 //import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
+
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.GameData;
 
 /**
@@ -44,7 +46,7 @@ public class JsBlock extends JsWrapper<Block>
 
     public String getName()
     {
-        return Block.REGISTRY.getNameForObject(that).toString();
+        return ForgeRegistries.BLOCKS.getKey(that).toString();
     }
 
 }

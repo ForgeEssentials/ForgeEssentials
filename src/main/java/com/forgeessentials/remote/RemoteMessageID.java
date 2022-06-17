@@ -26,5 +26,5 @@ public abstract class RemoteMessageID
     public static final String PL_QUERY_LOG = PL + ".log";
     public static final String PL_QUERY_LOG_COMMANDS = PL + ".commands";
     public static final String PL_QUERY_LOG_BLOCKS = PL + ".blocks";
-    
+
 }

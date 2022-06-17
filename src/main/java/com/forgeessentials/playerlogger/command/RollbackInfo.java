@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.TimerTask;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.network.play.server.SPacketBlockChange;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.misc.Translator;
@@ -26,7 +25,7 @@ import com.google.common.collect.Lists;
 public class RollbackInfo
 {
 
-    EntityPlayerMP player;
+    ServerPlayerEntity player;
 
     private Selection area;
 
@@ -36,7 +35,7 @@ public class RollbackInfo
 
     public PlaybackTask task;
 
-    public RollbackInfo(EntityPlayerMP player, Selection area)
+    public RollbackInfo(ServerPlayerEntity player, Selection area)
     {
         this.player = player;
         this.area = area;
@@ -65,14 +64,14 @@ public class RollbackInfo
                 Action01Block change = changes.get(i);
                 if (change.type == ActionBlockType.PLACE)
                 {
-                    sendBlockChange(player, change, Blocks.AIR.getDefaultState());
+                    sendBlockChange(player, change, Blocks.AIR.defaultBlockState());
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REMOVED " +
                     // change.block.name);
                 }
                 else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
                 {
-                    Block block = Block.REGISTRY.getObject(new ResourceLocation(change.block.name));
-                    sendBlockChange(player, change, block.getStateFromMeta(change.metadata));
+                    Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
+                    sendBlockChange(player, change, block.stateById(change.metadata));
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " RESTORED " +
                     // change.block.name + ":" + change.metadata);
                 }
@@ -85,14 +84,14 @@ public class RollbackInfo
                 Action01Block change = lastChanges.get(i);
                 if (change.type == ActionBlockType.PLACE)
                 {
-                    Block block = Block.REGISTRY.getObject(new ResourceLocation(change.block.name));
-                    sendBlockChange(player, change, block.getStateFromMeta(change.metadata));
+                    Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
+                    sendBlockChange(player, change, block.stateById(change.metadata));
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REPLACED " +
                     // change.block.name);
                 }
                 else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
                 {
-                    sendBlockChange(player, change, Blocks.AIR.getDefaultState());
+                    sendBlockChange(player, change, Blocks.AIR.defaultBlockState());
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REBROKE " +
                     // change.block.name + ":" + change.metadata);
                 }
@@ -108,15 +107,15 @@ public class RollbackInfo
         {
             if (change.type == ActionBlockType.PLACE)
             {
-                WorldServer world = DimensionManager.getWorld(change.world.id);
+                ServerWorld world = DimensionManager.getWorld(change.world.id);
                 world.setBlockToAir(change.getBlockPos());
                 System.out.println(change.time + " REMOVED " + change.block.name);
             }
             else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
             {
-                WorldServer world = DimensionManager.getWorld(change.world.id);
-                Block block = Block.REGISTRY.getObject(new ResourceLocation(change.block.name));
-                world.setBlockState(change.getBlockPos(), block.getStateFromMeta(change.metadata), 3);
+                ServerWorld world = DimensionManager.getWorld(change.world.id);
+                Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
+                world.setBlockState(change.getBlockPos(), block.stateById(change.metadata), 3);
                 world.setTileEntity(change.getBlockPos(), PlayerLogger.blobToTileEntity(change.entity));
                 System.out.println(change.time + " RESTORED " + change.block.name + ":" + change.metadata);
             }
@@ -149,7 +148,7 @@ public class RollbackInfo
      * @param newBlock
      * @param newMeta
      */
-    public static void sendBlockChange(EntityPlayerMP player, Action01Block change, IBlockState newState)
+    public static void sendBlockChange(ServerPlayerEntity player, Action01Block change, BlockState newState)
     {
         SPacketBlockChange packet = new SPacketBlockChange(DimensionManager.getWorld(change.world.id), change.getBlockPos());
         packet.blockState = newState;

@@ -5,10 +5,11 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.CrashReportExtender;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class Environment
 {
@@ -25,7 +26,7 @@ public class Environment
 
     public static void check()
     {
-        FMLCommonHandler.instance().registerCrashCallable(new FECrashCallable());
+        CrashReportExtender.registerCrashCallable(new FECrashCallable());
         // Check if dedicated or integrated server
         try
         {
@@ -37,7 +38,7 @@ public class Environment
             isClient = false;
         }
 
-        if (Loader.isModLoaded("worldedit"))
+        if (ModList.get().isLoaded("worldedit"))
         {
             hasWorldEdit = true;
             try
@@ -50,7 +51,7 @@ public class Environment
             }
         }
 
-        if (Loader.isModLoaded("ftbu"))
+        if (ModList.get().isLoaded("ftbu"))
         {
             LoggingHandler.felog.warn("FTB Utilities is installed. Forge Essentials may not work as expected.");
             LoggingHandler.felog.warn("Please uninstall FTB Utilities to regain full FE functionality.");
@@ -69,7 +70,7 @@ public class Environment
         // Some additional checks
 
         // Check for Cauldron or LavaBukkit
-        String modName = FMLCommonHandler.instance().getModName();
+        String modName = ServerLifecycleHooks.getCurrentServer().getServerModName();
         if (modName.contains("cauldron"))
         {
             LoggingHandler.felog.error("You are attempting to run FE on Cauldron. This is completely unsupported.");
@@ -107,6 +108,7 @@ public class Environment
         hasSponge = true;
         hasWorldEdit = isWESpongePresent;
     }
+
     public static class FTBUNagHandler
     {
 
@@ -115,8 +117,9 @@ public class Environment
         {
             if (FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().canSendCommands(e.player.getGameProfile()))
             {
-                ChatOutputHandler.chatWarning(e.player, "FTB Utilities is installed. Forge Essentials may not work as expected.");
-                ChatOutputHandler.chatWarning(e.player, "Please uninstall FTB Utilities to regain full FE functionality.");
+                ChatOutputHandler.chatWarning(e.getPlayer().createCommandSourceStack(),
+                        "FTB Utilities is installed. Forge Essentials may not work as expected.");
+                ChatOutputHandler.chatWarning(e.getPlayer().createCommandSourceStack(), "Please uninstall FTB Utilities to regain full FE functionality.");
             }
         }
     }

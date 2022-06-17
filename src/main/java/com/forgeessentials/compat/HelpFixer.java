@@ -12,20 +12,15 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandHelp;
-import net.minecraft.command.CommandNotFoundException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.command.impl.HelpCommand;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 
-public class HelpFixer extends CommandHelp
+public class HelpFixer extends HelpCommand
 {
 
     public static boolean hideWorldEditCommands = true;
@@ -44,17 +39,6 @@ public class HelpFixer extends CommandHelp
                     it.remove();
             }
         }
-        // Ok there is some retard who thinks he should implement ICommand instead of extending CommandBase and then
-        // fails to properly implement compareTo (it always returns 0).
-        // So to prevent crashes from these kind of things, we just provide our own comparator
-        Collections.sort(list, new Comparator<ICommand>() {
-            @Override
-            public int compare(ICommand o1, ICommand o2)
-            {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-        return list;
     }
 
     /**
@@ -94,9 +78,9 @@ public class HelpFixer extends CommandHelp
         }
 
         int endIndex = Math.min((startPage + 1) * cmdsPerPage, commands.size());
-        TextComponentTranslation msg = new TextComponentTranslation("commands.help.header", new Object[] { Integer.valueOf(startPage + 1),
+        TranslationTextComponent msg = new TranslationTextComponent("commands.help.header", new Object[] { Integer.valueOf(startPage + 1),
                 Integer.valueOf(i + 1) });
-        msg.getStyle().setColor(TextFormatting.DARK_GREEN);
+        msg.getStyle().withColor(TextFormatting.DARK_GREEN);
         sender.sendMessage(msg);
 
         for (int index = startPage * cmdsPerPage; index < endIndex; ++index)
@@ -105,15 +89,15 @@ public class HelpFixer extends CommandHelp
             String usage = cmd.getUsage(sender);
             if (usage == null)
                 usage = "/" + cmd.getName();
-            TextComponentTranslation msg2 = new TextComponentTranslation(usage, new Object[0]);
+            TranslationTextComponent msg2 = new TranslationTextComponent(usage, new Object[0]);
             msg2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + cmd.getName() + " "));
             sender.sendMessage(msg2);
         }
 
-        if (startPage == 0 && sender instanceof EntityPlayer)
+        if (startPage == 0 && sender instanceof PlayerEntity)
         {
-            TextComponentTranslation msg3 = new TextComponentTranslation("commands.help.footer", new Object[0]);
-            msg3.getStyle().setColor(TextFormatting.GREEN);
+            TranslationTextComponent msg3 = new TranslationTextComponent("commands.help.footer", new Object[0]);
+            msg3.getStyle().withColor(TextFormatting.GREEN);
             sender.sendMessage(msg3);
         }
     }

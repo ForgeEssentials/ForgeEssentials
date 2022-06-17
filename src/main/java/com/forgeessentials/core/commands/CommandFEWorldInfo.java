@@ -9,7 +9,7 @@ import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandFEWorldInfo extends ParserCommandBase
 {
-    
+
     @Override
     public void parse(CommandParserArgs arguments)
     {

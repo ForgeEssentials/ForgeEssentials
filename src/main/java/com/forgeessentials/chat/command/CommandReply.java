@@ -5,29 +5,28 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.misc.Translator;
 
 public class CommandReply extends ForgeEssentialsCommandBase
 {
 
-    public static Map<ICommandSender, WeakReference<ICommandSender>> replyMap = new WeakHashMap<>();
+    public static Map<CommandSource, WeakReference<CommandSource>> replyMap = new WeakHashMap<>();
 
-    public static void messageSent(ICommandSender argFrom, ICommandSender argTo)
+    public static void messageSent(CommandSource argFrom, CommandSource argTo)
     {
-        replyMap.put(argTo, new WeakReference<ICommandSender>(argFrom));
+        replyMap.put(argTo, new WeakReference<CommandSource>(argFrom));
     }
 
-    public static ICommandSender getReplyTarget(ICommandSender sender)
+    public static CommandSource getReplyTarget(CommandSource sender)
     {
-        WeakReference<ICommandSender> replyTarget = replyMap.get(sender);
+        WeakReference<CommandSource> replyTarget = replyMap.get(sender);
         if (replyTarget == null)
             return null;
         return replyTarget.get();
@@ -75,16 +74,16 @@ public class CommandReply extends ForgeEssentialsCommandBase
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 1)
-            throw new WrongUsageException("commands.message.usage", new Object[0]);
+            throw new CommandException("commands.message.usage", new Object[0]);
 
-        ICommandSender target = getReplyTarget(sender);
+        CommandSource target = getReplyTarget(sender);
         if (target == null)
-            throw new PlayerNotFoundException("No reply target found");
+            throw new CommandException(Translator.translateITC("No reply target found"));
 
         if (target == sender)
-            throw new PlayerNotFoundException("commands.message.sameTarget", new Object[0]);
+            throw new CommandException("commands.message.sameTarget", new Object[0]);
 
-        ModuleChat.tell(sender, getChatComponentFromNthArg(sender, args, 0, !(sender instanceof EntityPlayer)), target);
+        ModuleChat.tell(sender, getChatComponentFromNthArg(sender, args, 0, !(sender instanceof PlayerEntity)), target);
     }
 
 }
