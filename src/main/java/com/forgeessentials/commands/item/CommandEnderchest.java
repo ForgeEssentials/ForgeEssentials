@@ -3,6 +3,7 @@ package com.forgeessentials.commands.item;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EnderChestInventory;
 import net.minecraft.inventory.InventoryEnderChest;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -31,13 +32,13 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
     public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         ServerPlayerEntity player = sender;
-        if (player.openContainer != player.inventoryContainer)
+        if (player.containerMenu != player.inventoryMenu)
         {
-            player.closeScreen();
+            player.closeContainer();
         }
-        player.getNextWindowId();
+        player.nextContainerCounter();
 
-        InventoryEnderChest chest = player.getInventoryEnderChest();
+        EnderChestInventory chest = player.getEnderChestInventory();
         chest.setChestTileEntity(null);
         player.displayGUIChest(chest);
     }

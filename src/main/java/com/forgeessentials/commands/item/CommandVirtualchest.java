@@ -60,11 +60,11 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         ServerPlayerEntity player = sender;
-        if (player.openContainer != player.inventoryContainer)
+        if (player.containerMenu != player.inventoryMenu)
         {
-            player.closeScreen();
+            player.doCloseContainer();
         }
-        player.getNextWindowId();
+        player.nextContainerCounter();
 
         VirtualChest chest = new VirtualChest(player);
         player.displayGUIChest(chest);

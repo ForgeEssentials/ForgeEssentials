@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IrcCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
+import com.forgeessentials.core.misc.TranslatedCommandException.WrongUsageException;
 
 public class CommandReply implements IrcCommand
 {
