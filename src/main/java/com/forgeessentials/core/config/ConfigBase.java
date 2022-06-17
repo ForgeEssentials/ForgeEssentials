@@ -89,18 +89,17 @@ public class ConfigBase
 
     }
 
-    @SuppressWarnings("unused")
-    private File rootDirectory;
+    private static File rootDirectory;
 
     // private Map<String, ConfigFile> configFiles = new HashMap<>();
 
     public ConfigBase(File rootDirectory)
     {
-        this.rootDirectory = rootDirectory;
+        ConfigBase.rootDirectory = rootDirectory;
         // load(false);
     }
 
-    public static void registerConfigs()
+    public static void settupConfigs()
     {
         // MAIN
         FEConfig.load(MAIN_BUILDER);
@@ -160,41 +159,41 @@ public class ConfigBase
         CONFIGS.add(new ConfigFile("PlayerLogger", (PLAYERLOGGER_CONFIG = PLAYERLOGGER_BUILDER.build())));
     }
 
-    public static void LoadConfigs()
+    public static void BakeConfigs(Boolean reload)
     {
         // MAIN
-        FEConfig.bakeConfig(false);
-        ForgeEssentials.bakeConfig(false);
-        PerfToolsModule.bakeConfig(false);
-        CommandHelp.bakeConfig(false);
-        ChatOutputHandler.bakeConfig(false);
-        ItemPermissionManager.bakeConfig(false);
+        FEConfig.bakeConfig(reload);
+        ForgeEssentials.bakeConfig(reload);
+        PerfToolsModule.bakeConfig(reload);
+        CommandHelp.bakeConfig(reload);
+        ChatOutputHandler.bakeConfig(reload);
+        ItemPermissionManager.bakeConfig(reload);
         // AUTH
-        ModuleAuth.bakeConfig(false);
+        ModuleAuth.bakeConfig(reload);
         // CHAT
-        ChatConfig.bakeConfig(false);
-        Censor.bakeConfig(false);
-        IrcHandler.bakeConfig(false);
-        CommandTimedMessages.bakeConfig(false);
+        ChatConfig.bakeConfig(reload);
+        Censor.bakeConfig(reload);
+        IrcHandler.bakeConfig(reload);
+        CommandTimedMessages.bakeConfig(reload);
         // Economy
-        ModuleEconomy.bakeConfig(false);/////// HELP!
-        ShopManager.bakeConfig(false);
+        ModuleEconomy.bakeConfig(reload);/////// HELP!
+        ShopManager.bakeConfig(reload);
         // Tickets
-        ModuleTickets.bakeConfig(false);
+        ModuleTickets.bakeConfig(reload);
         // Command
-        FECommandManager.bakeConfig(false);
+        FECommandManager.bakeConfig(reload);
         // Remote
-        ModuleRemote.bakeConfig(false);
+        ModuleRemote.bakeConfig(reload);
         // Teleport
-        TeleportModule.bakeConfig(false);
+        TeleportModule.bakeConfig(reload);
         // Signs
-        SignToolsModule.bakeConfig(false);
+        SignToolsModule.bakeConfig(reload);
         // ServerVote
-        ConfigServerVote.bakeConfig(false);
+        ConfigServerVote.bakeConfig(reload);
         // Permissions
-        ModulePermissions.bakeConfig(false); // needs finishing DB connector
+        ModulePermissions.bakeConfig(reload); // needs finishing DB connector
         // PlayerLogger
-        PlayerLoggerConfig.bakeConfig(false);
+        PlayerLoggerConfig.bakeConfig(reload);
     }
 
     public static void SaveConfigs()
@@ -202,7 +201,7 @@ public class ConfigBase
         ModuleTickets.save();
     }
 
-    public static void loadConfig(ForgeConfigSpec spec, Path path)
+    public static void registerConfigManual(ForgeConfigSpec spec, Path path)
     {
         final CommentedFileConfig configData = CommentedFileConfig.builder(path)
                 .sync()
@@ -212,6 +211,22 @@ public class ConfigBase
 
         configData.load();
         spec.setConfig(configData);
+    }
+    
+    public static void registerConfigAutomatic()
+    {
+        for(ConfigFile config : CONFIGS) {
+            ForgeConfigSpec spec = config.config;
+            String file = config.file;
+            final CommentedFileConfig configData = CommentedFileConfig.builder(rootDirectory+"/"+file+".toml")
+                    .sync()
+                    .autosave()
+                    .writingMode(WritingMode.REPLACE)
+                    .build();
+
+            configData.load();
+            spec.setConfig(configData);
+        }
     }
 
     public String getMainConfigName()

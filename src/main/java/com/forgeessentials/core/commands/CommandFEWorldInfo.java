@@ -1,8 +1,6 @@
 package com.forgeessentials.core.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.util.CommandParserArgs;

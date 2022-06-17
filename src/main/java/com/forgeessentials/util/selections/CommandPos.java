@@ -3,7 +3,6 @@ package com.forgeessentials.util.selections;
 //Depreciated
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.RayTraceResult;
@@ -105,7 +104,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
         y = mop.getBlockPos().getY();
         z = mop.getBlockPos().getZ();
 
-        WorldPoint point = new WorldPoint(player.dimension, x, y, z);
+        WorldPoint point = new WorldPoint(player.level, x, y, z);
         if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point, getPermissionNode()))
             throw new TranslatedCommandException("Insufficient permissions.");
 

@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
@@ -115,6 +116,7 @@ public class ModuleLauncher
         // Register modules with configuration manager
         for (ModuleContainer module : containerMap.values())
         {
+            /* TODO Not usable until dynamic configs are re-added
             if (module.module instanceof ConfigLoader)
             {
                 LoggingHandler.felog.debug("Registering configuration for FE module " + module.name);
@@ -123,17 +125,21 @@ public class ModuleLauncher
             else
             {
                 LoggingHandler.felog.debug("No configuration for FE module " + module.name);
-            }
+            }*/
         }
 
         APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
 
-        ForgeEssentials.getConfigManager().load(false);
+        // TODO Check if this works
+        ConfigBase.BakeConfigs(false);
+        // ForgeEssentials.getConfigManager().load(false);
     }
 
     public void reloadConfigs()
     {
-        ForgeEssentials.getConfigManager().load(true);
+        // TODO Check if this works
+        ConfigBase.BakeConfigs(true);
+        // ForgeEssentials.getConfigManager().load(true);
         APIRegistry.getFEEventBus().post(new ConfigReloadEvent());
     }
 
