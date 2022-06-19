@@ -1,6 +1,7 @@
 package com.forgeessentials.core.moduleLauncher;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -11,6 +12,8 @@ import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.HashMultimap;
 
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModContainer;
 
 @SuppressWarnings({ "unchecked" })
@@ -46,15 +49,15 @@ public class CallableMap
 
             for (Method m : c.getDeclaredMethods())
             {
-            	/*
+            	
                 if (m.isAnnotationPresent(Dist.class))
                 {
                     Dist annot = m.getAnnotation(Dist.class);
-                    if (!annot.values().equals(FMLEnvironment.dist))
+                    if (!annot.values().equals(FMLEnvironment.dist.isDedicatedServer()))
                     {
                         continue;
                     }
-                }*/
+                }
 
                 if (Modifier.isStatic(m.getModifiers()))
                 {

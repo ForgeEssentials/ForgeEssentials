@@ -1,11 +1,19 @@
 package com.forgeessentials.core.moduleLauncher;
 
+import java.lang.annotation.ElementType;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
+
+import org.objectweb.asm.Type;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
@@ -15,10 +23,16 @@ import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.google.common.collect.Maps;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.forgespi.language.ModFileScanData;
+import net.minecraftforge.registries.ObjectHolder;
+
+import static net.minecraftforge.registries.ForgeRegistry.REGISTRIES;
 
 public class ModuleLauncher
 {
@@ -31,16 +45,32 @@ public class ModuleLauncher
 
     private static TreeMap<String, ModuleContainer> containerMap = new TreeMap<String, ModuleContainer>();
 
+    private static final Type MOD = Type.getType(FEModule.class);
+    
     public void preLoad(FMLCommonSetupEvent e)
     {
         LoggingHandler.felog.info("Discovering and loading modules...");
 
-        // started ASM handling for the module loading
-        Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
+        final List<ModFileScanData.AnnotationData> annotations = ModList.get().getAllScanData().stream()
+                .map(ModFileScanData::getAnnotations)
+                .flatMap(Collection::stream)
+                .filter(a -> MOD.equals(a.getAnnotationType()))
+                .collect(Collectors.toList());
 
+        Map<Type, String> classModIds = Maps.newHashMap();
+        Map<Type, Class<?>> classCache = Maps.newHashMap();
+
+        // Gather all @FEModule classes
+        annotations.stream().filter(a -> MOD.equals(a.getAnnotationType())).forEach(data -> classModIds.put(data.getClassType(), (String)data.getAnnotationData().get("value")));
+
+            LoggingHandler.felog.info(REGISTRIES,"Found {} ObjectHolder annotations", annotations.size());
+            
+        // started ASM handling for the module loading
+        //Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
+        
         // LOAD THE MODULES!
         ModuleContainer temp, other;
-        for (ASMData asm : data)
+        for (ModFileScanData.AnnotationData asm : annotations)
         {
             temp = new ModuleContainer(asm);
             if (temp.isLoadable && !APIRegistry.FE_EVENTBUS.post(new ModuleRegistrationEvent(temp)))

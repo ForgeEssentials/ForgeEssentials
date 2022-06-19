@@ -22,6 +22,7 @@ import net.minecraftforge.fml.loading.moddiscovery.ModFile;
 import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.forgespi.language.IModFileInfo;
+import net.minecraftforge.forgespi.language.ModFileScanData;
 
 @SuppressWarnings("rawtypes")
 public class ModuleContainer implements Comparable
@@ -45,11 +46,11 @@ public class ModuleContainer implements Comparable
     protected boolean doesOverride;
 
     @SuppressWarnings("unchecked")
-    public ModuleContainer(ASMData data)
+    public ModuleContainer(ModFileScanData.AnnotationData data)
     {
         // get the class....
         Class c = null;
-        className = data.getClassName();
+        className = (String)data.getAnnotationData().get("value");
 
         try
         {
@@ -57,7 +58,7 @@ public class ModuleContainer implements Comparable
         }
         catch (Throwable e)
         {
-            LoggingHandler.felog.info("Error trying to load " + data.getClassName() + " as a FEModule!");
+            LoggingHandler.felog.info("Error trying to load " + (String)data.getAnnotationData().get("value") + " as a FEModule!");
             e.printStackTrace();
 
             isCore = false;
