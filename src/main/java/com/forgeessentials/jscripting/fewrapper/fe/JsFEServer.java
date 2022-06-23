@@ -234,7 +234,7 @@ public class JsFEServer
     {
         final boolean hasCustomName = displayName != null;
 
-        final IInteractionObject menuChest = new BasicInteraction(name, hasCustomName, inventory.getThat()) {
+        final InteractionObject menuChest = new BasicInteraction(name, hasCustomName, inventory.getThat()) {
             @Override
             public Container createContainer(PlayerInventory inventoryPlayer, PlayerEntity entityPlayer)
             {

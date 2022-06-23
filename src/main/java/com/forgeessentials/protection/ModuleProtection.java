@@ -49,9 +49,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -272,7 +269,7 @@ public class ModuleProtection
             {
                 blockName = block.getName().toString();
             } catch (Throwable e) {
-                blockName = block.getUnlocalizedName();
+                blockName = block.getRegistryName().toString();
             }
             APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, DefaultPermissionLevel.ALL, "BREAK " + blockName);
             APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, DefaultPermissionLevel.ALL, "PLACE " + blockName);

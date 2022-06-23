@@ -28,6 +28,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.GameType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.BlockSnapshot;
@@ -325,7 +326,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
         String permission = (event instanceof FireEvent.Spread) ? ModuleProtection.PERM_FIRE_SPREAD : ModuleProtection.PERM_FIRE_DESTROY;
-        WorldPoint point = new WorldPoint(event.getWorld().provider.getDimension(), event.getPos());
+        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
         if (!APIRegistry.perms.checkUserPermission(null, point, permission))
         {
             event.setCanceled(true);
@@ -543,7 +544,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (!APIRegistry.perms.checkUserPermission(ident, point, ModuleProtection.PERM_SLEEP))
         {
             event.setResult(SleepResult.NOT_POSSIBLE_HERE);
-            ChatOutputHandler.sendMessage(event.getPlayer(), Translator.translate("You are not allowed to sleep here"));
+            ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), Translator.translate("You are not allowed to sleep here"));
             return;
         }
         checkMajoritySleep = true;
@@ -568,7 +569,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         if (percentage >= FEConfig.majoritySleep && percentage < 1)
         {
-            if (world.getGameRules().getBoolean("doDaylightCycle"))
+            if (world.getGameRules().getBoolean(GameRules.RULE_DAYLIGHT))
             {
                 long time = world.getWorldServer().getDayTime() + 24000L;
                 world.getWorldServer().setDayTime(time - time % 24000L);
@@ -658,7 +659,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event.getEntity() instanceof ItemEntity)
         {
             // 1) Do nothing if the whole world is creative!
-            WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getWorld().provider.getDimension());
+            WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getWorld().dimension());
             if (stringToGameType(worldZone.getGroupPermission(Zone.GROUP_DEFAULT, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
             {
                 // 2) If creative mode is set for any group at the location where the block was destroyed, prevent drops

@@ -89,7 +89,7 @@ public enum FTBURankConfigHandler implements IRankConfigHandler
             WorldPoint point = null;
             if (ident.hasPlayer())
             {
-                point = WorldPoint.create(ident.getPlayer());
+                point = WorldPoint.create(ident.getPlayer().createCommandSourceStack());
             }
 
             if (!value.setValueFromString(null, APIRegistry.perms.getUserPermissionProperty(ident, node), false))

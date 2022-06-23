@@ -28,6 +28,8 @@ import net.minecraft.nbt.IntArrayNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.server.ChunkHolder;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
@@ -45,6 +47,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.google.common.collect.Lists;
 
 @FEModule(name = "mapper", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
 public class ModuleMapper
@@ -122,7 +125,7 @@ public class ModuleMapper
         if (event.getWorld().isClientSide())
             return;
         Chunk chunk = event.getChunk();
-        if (chunk.needsSaving(false) && !modifiedChunks.contains(chunk))
+        if (!chunk.isUnsaved() && !modifiedChunks.contains(chunk))
         {
             setChunkModified(chunk);
             setRegionModified((ServerWorld) chunk.getLevel(), MapperUtil.chunkToRegion(chunk.x), MapperUtil.chunkToRegion(chunk.z));
@@ -136,12 +139,12 @@ public class ModuleMapper
         if (event.side.isClient())
             return;
         ServerWorld world = (ServerWorld) event.world;
-        List<Chunk> chunks = new ArrayList<>(world.getChunkProvider().getLoadedChunks());
-        for (Chunk chunk : chunks)
-            if (chunk != null && chunk.needsSaving(false) && !modifiedChunks.contains(chunk))
+        List<ChunkHolder> list = Lists.newArrayList(world.getChunkSource().chunkMap.getChunks());
+        for (Chunk chunk : list)
+            if (chunk != null && !chunk.isUnsaved() && !modifiedChunks.contains(chunk))
             {
                 setChunkModified(chunk);
-                setRegionModified(world, MapperUtil.chunkToRegion(chunk.x), MapperUtil.chunkToRegion(chunk.z));
+                setRegionModified(world, MapperUtil.chunkToRegion(chunk.getPos().x), MapperUtil.chunkToRegion(chunk.getPos().z));
             }
     }
 

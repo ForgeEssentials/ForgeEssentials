@@ -6,8 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.ForgeEssentials;
@@ -52,9 +51,9 @@ public class CommandMapper extends ParserCommandBase
     @Override
     public void parse(CommandParserArgs arguments)
     {
-        int x = (int) Math.floor(arguments.senderPlayer.posX);
-        int z = (int) Math.floor(arguments.senderPlayer.posZ);
-        WorldServer world = (WorldServer) arguments.senderPlayer.world;
+        int x = (int) Math.floor(arguments.senderPlayer.position().x);
+        int z = (int) Math.floor(arguments.senderPlayer.position().z);
+        ServerWorld world = (ServerWorld) arguments.senderPlayer.getLevel();
         BufferedImage img = ModuleMapper.getInstance().getRegionImage(world, MapperUtil.worldToRegion(x), MapperUtil.worldToRegion(z));
         try
         {
