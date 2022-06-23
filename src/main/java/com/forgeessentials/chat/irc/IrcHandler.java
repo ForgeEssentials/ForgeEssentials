@@ -57,6 +57,7 @@ import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.ParseResults;
 
 public class IrcHandler extends ListenerAdapter
 {
@@ -421,8 +422,8 @@ public class IrcHandler extends ListenerAdapter
         IrcCommandSender sender = new IrcCommandSender(user);
         ircUserCache.put(sender.getUser(), sender);
         
-        Command command = (Command) server.getCommands().getDispatcher().parse(commandName, sender);// TODO better usage than null
-        if (command == null)
+        ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher().parse(commandName, sender);// TODO better usage than null
+        if (command.getReader().canRead() != true)
         {
             ircSendMessageUser(user, String.format("Error: Command %s not found!", commandName));
             return;

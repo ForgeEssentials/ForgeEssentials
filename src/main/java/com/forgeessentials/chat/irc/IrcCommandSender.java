@@ -9,6 +9,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -64,11 +65,6 @@ public class IrcCommandSender extends CommandSource
         return getServer().getPositionVector();
     }
 
-    @Override
-    public World getEntityWorld()
-    {
-        return getServer().getEntityWorld();
-    }
 
     @Override
     public Entity getEntity()
@@ -80,12 +76,6 @@ public class IrcCommandSender extends CommandSource
     public boolean sendCommandFeedback()
     {
         return getServer().sendCommandFeedback();
-    }
-
-    @Override
-    public void setCommandStat(Type p_174794_1_, int p_174794_2_)
-    {
-        getServer().setCommandStat(p_174794_1_, p_174794_2_);
     }
 
     @Override

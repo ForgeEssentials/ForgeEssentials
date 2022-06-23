@@ -37,7 +37,7 @@ public class CommandHelp extends ParserCommandBase
     public CommandHelp()
     {
         fixer = new HelpFixer();
-        ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
     }
 
     @Override
