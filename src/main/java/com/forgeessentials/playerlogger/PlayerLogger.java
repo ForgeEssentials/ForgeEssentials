@@ -688,7 +688,11 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || (event.useBlock == Result.DENY && event.useItem == Result.DENY))
             return;
-        GameType gameType = ((EntityPlayerMP) event.entityPlayer).theItemInWorldManager.getGameType();
+        GameType gameType = GameType.SURVIVAL;
+        if (event.entityPlayer instanceof  EntityPlayerMP) {
+            gameType = ((EntityPlayerMP) event.entityPlayer).theItemInWorldManager.getGameType();
+        }
+
         if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && gameType != GameType.CREATIVE)
         {
             logEvent(new LogEventInteract(event));
