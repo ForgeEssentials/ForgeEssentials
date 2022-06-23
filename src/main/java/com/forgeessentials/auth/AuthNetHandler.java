@@ -17,12 +17,12 @@ public class AuthNetHandler extends Packet6AuthLogin
 
         if (!ModuleAuth.allowAutoLogin)
             // return null;
-            switch (message.mode)
+            switch (mode)
             {
             case 1:
-                if (!message.hash.isEmpty())
+                if (!hash.isEmpty())
                 {
-                    if (PasswordManager.hasSession(UserIdent.get(context.getSender().getUUID(), UUID.fromString(message.hash))))
+                    if (PasswordManager.hasSession(UserIdent.get(context.getSender()).getUuid(), UUID.fromString(hash)))
                     {
                         ModuleAuth.authenticate(context.getSender().getUUID());
                         APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Success(context.getSender(), Source.AUTOLOGIN));

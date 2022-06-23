@@ -8,6 +8,7 @@ import net.minecraft.command.impl.HelpCommand;
 import net.minecraft.entity.player.PlayerEntity;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.network.IFEPacket;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
@@ -22,6 +23,7 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.Message;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -149,7 +151,7 @@ public class ModuleAuth
         return isAuthenticated(player.getUUID());
     }
 
-    public static boolean isAllowedMethod(IMessage msg)
+    public static boolean isAllowedMethod(IFEPacket msg)
     {
         return msg instanceof Packet6AuthLogin || msg instanceof Packet0Handshake || msg instanceof Packet7Remote;
     }
