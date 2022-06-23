@@ -55,7 +55,6 @@ jobs:
         env:
           DISCORD_TOKEN: '${{ secrets.DISCORD_TOKEN }}'
           CHANNEL_ID: '${{ secrets.CHANNEL_ID }}'
-          BUILD_NUMBER: 'UNOFFICIAL-${{ github.sha }}'
         run: |
           chmod +x gradlew
           ./gradlew publishToDiscord -i
