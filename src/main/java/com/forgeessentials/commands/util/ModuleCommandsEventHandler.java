@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.IChatComponent;
 import net.minecraftforge.event.CommandEvent;
@@ -107,7 +108,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         afkPlayers.remove(player);
     }
 
-    public void playerActive(EntityPlayerMP player)
+    public void playerActive(EntityPlayer player)
     {
         PlayerInfo pi = PlayerInfo.get(player);
         pi.setActive();
@@ -137,7 +138,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        playerActive((EntityPlayerMP) event.entityPlayer);
+        playerActive(event.entityPlayer);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -145,7 +146,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient())
             return;
-        playerActive((EntityPlayerMP) event.entityPlayer);
+        playerActive(event.entityPlayer);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -163,8 +164,8 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     {
         if (event.command instanceof CommandAFK)
             return;
-        if (event.sender instanceof EntityPlayerMP)
-            playerActive((EntityPlayerMP) event.sender);
+        if (event.sender instanceof EntityPlayer)
+            playerActive((EntityPlayer) event.sender);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
