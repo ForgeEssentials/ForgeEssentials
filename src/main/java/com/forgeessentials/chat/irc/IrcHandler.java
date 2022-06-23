@@ -52,9 +52,7 @@ import com.forgeessentials.chat.irc.command.CommandHelp;
 import com.forgeessentials.chat.irc.command.CommandListPlayers;
 import com.forgeessentials.chat.irc.command.CommandMessage;
 import com.forgeessentials.chat.irc.command.CommandReply;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -365,6 +363,7 @@ public class IrcHandler extends ListenerAdapter
         ChatOutputHandler.broadcast(new TranslationTextComponent("%s%s", header, messageComponent));
     }
 
+    @SuppressWarnings("resource")
     public CommandSource getIrcUser(String username)
     {
         if (!isConnected())
@@ -418,18 +417,20 @@ public class IrcHandler extends ListenerAdapter
         String commandName = args[0].substring(1);
         args = Arrays.copyOfRange(args, 1, args.length);
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        ICommand command = (ICommand) server.getCommandManager().getCommands().get(commandName);
+        
+        IrcCommandSender sender = new IrcCommandSender(user);
+        ircUserCache.put(sender.getUser(), sender);
+        
+        Command command = (Command) server.getCommands().getDispatcher().parse(commandName, sender);// TODO better usage than null
         if (command == null)
         {
             ircSendMessageUser(user, String.format("Error: Command %s not found!", commandName));
             return;
         }
 
-        IrcCommandSender sender = new IrcCommandSender(user);
-        ircUserCache.put(sender.getUser(), sender);
         try
         {
-            command.execute(server, sender, args);
+            server.getCommands().performCommand(sender, commandName.substring(1));
         }
         catch (CommandException e)
         {
@@ -472,12 +473,12 @@ public class IrcHandler extends ListenerAdapter
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void handleSay(CommandEvent event)
     {
-        if (event.getParseResults().getReader().getString().substring(1).startsWith("say "))
+        if (event.getParseResults().getContext().getNodes().get(0).getNode().getName() == "say")
         {
             ircSendMessage(Translator.format(mcSayHeader, event.getParseResults().getContext().getSource().getTextName(),
                     StringUtils.join(event.getParseResults().getReader().toString().substring(5+event.getParseResults().getContext().getSource().getTextName().length()+1))));
         }
-        else if (event.getParseResults().getReader().getString().substring(1).startsWith("me "))
+        else if (event.getParseResults().getContext().getNodes().get(0).getNode().getName() == "me")
         {
             ircSendMessage(
                     Translator.format("* %s %s", event.getParseResults().getContext().getSource().getTextName(), event.getParseResults().getReader().toString().substring(4+event.getParseResults().getContext().getSource().getTextName().length()+1)));
