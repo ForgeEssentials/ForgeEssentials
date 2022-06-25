@@ -11,15 +11,29 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.sql.rowset.serial.SerialBlob;
 
 import org.spongepowered.asm.mixin.MixinEnvironment.Side;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.DoorBlock;
 import net.minecraft.block.RedstoneBlock;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BedItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.SkullItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -30,11 +44,13 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.BlockEvent.EntityMultiPlaceEvent;
 import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
+import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -658,14 +674,14 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     {
         if (FMLEnvironment.dist.isClient() || em == null)
             return;
-        if (event instanceof BlockEvent.MultiPlaceEvent)
+        if (event instanceof EntityMultiPlaceEvent)
         {
             // Get only last state of all changes
             Map<BlockPos, BlockSnapshot> changes = new HashMap<>();
-            for (BlockSnapshot snapshot : ((BlockEvent.MultiPlaceEvent) event).getReplacedBlockSnapshots())
+            for (BlockSnapshot snapshot : ((EntityMultiPlaceEvent) event).getReplacedBlockSnapshots())
                 changes.put(snapshot.getPos(), snapshot);
             for (BlockSnapshot snapshot : changes.values())
-                eventQueue.add(new LogEventPlace(new BlockEvent.PlaceEvent(snapshot, event.getPlacedAgainst(), event.getPlayer(), event.getHand())));
+                eventQueue.add(new LogEventPlace(new EntityPlaceEvent(snapshot, event.getPlacedAgainst(), event.getPlayer(), event.getHand())));
             startThread();
         }
         else
@@ -689,9 +705,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerInteractEvent(PlayerInteractEvent.LeftClickBlock event)
     {
-        if (FM || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
+        if (FMLEnvironment.dist.isClient() || (event.getUseBlock() == Result.DENY && event.getUseItem() == Result.DENY))
             return;
-        GameType gameType = ((ServerPlayerEntity) event.getEntityPlayer()).interactionManager.getGameType();
+        GameType gameType = ((ServerPlayerEntity) event.getPlayer()).gameMode.getGameModeForPlayer();
         if (gameType != GameType.CREATIVE)
         {
             logEvent(new LogEventInteract(event));
@@ -704,7 +720,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         if (event.stack != null)
         {
             Item item = event.stack.getItem();
-            if (item instanceof BlockItem/* ||item instanceof ItemRedstone */ || item instanceof BedItem || item instanceof DoorItem
+            if (item instanceof BlockItem/* ||item instanceof ItemRedstone */ || item instanceof BedItem/* || item instanceof DoorItem*/
                     || item instanceof SkullItem)
                 return;
         }
