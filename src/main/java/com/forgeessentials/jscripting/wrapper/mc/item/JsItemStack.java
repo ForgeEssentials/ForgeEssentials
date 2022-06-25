@@ -2,6 +2,8 @@ package com.forgeessentials.jscripting.wrapper.mc.item;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
@@ -45,6 +47,8 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 
     public JsItemStack(JsItem item, int stackSize, int damage)
     {
+        //CompoundNBT c = new CompoundNBT().putInt("Damage", Math.max(0, damage));
+        
         this(new ItemStack(item.getThat(), stackSize, damage));
     }
 
@@ -105,7 +109,7 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
 
     public void setDisplayName(String name)
     {
-        that.setStackDisplayName(name);
+        that.setHoverName(new StringTextComponent(name));
     }
 
     public boolean hasDisplayName()

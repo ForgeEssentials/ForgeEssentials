@@ -68,7 +68,9 @@ public class ItemStackType implements DataType<ItemStack>
                 return null;
 
             // Create item-stack and parse NBT data if the is any
-            ItemStack stack = new ItemStack(item, stackSize, damage);
+            CompoundNBT c = new CompoundNBT();
+            c.putInt("Damage", Math.max(0, damage));
+            ItemStack stack = new ItemStack(item, stackSize, c);
             if (obj.has("compound"))
                 stack.setTag((CompoundNBT) context.deserialize(obj.get("compound"), CompoundNBT.class));
 
