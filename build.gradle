@@ -218,6 +218,7 @@ dependencies {
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
 	compileOnly 'org.spongepowered:spongeapi:8.0.0'
+	implementation 'net.kyori:adventure-api:4.11.0'
     compileOnly ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
         exclude group: "org.spongepowered", module: "mixin"
     }

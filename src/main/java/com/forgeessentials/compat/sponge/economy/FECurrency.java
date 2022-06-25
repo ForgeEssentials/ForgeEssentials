@@ -3,7 +3,7 @@ package com.forgeessentials.compat.sponge.economy;
 import java.math.BigDecimal;
 
 import org.spongepowered.api.service.economy.Currency;
-import org.spongepowered.api.text.Text;
+import net.kyori.adventure.text.Component;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.economy.ModuleEconomy;
@@ -11,15 +11,15 @@ import com.forgeessentials.economy.ModuleEconomy;
 public class FECurrency implements Currency
 {
     @Override
-    public Text getDisplayName()
+    public Component displayName()
     {
-        return Text.builder(APIRegistry.perms.getGlobalPermissionProperty(ModuleEconomy.PERM_CURRENCY_SINGULAR)).build();
+        return Component.text(APIRegistry.perms.getGlobalPermissionProperty(ModuleEconomy.PERM_CURRENCY_SINGULAR));
     }
 
     @Override
-    public Text getPluralDisplayName()
+    public Component pluralDisplayName()
     {
-        return Text.builder(APIRegistry.perms.getGlobalPermissionProperty(ModuleEconomy.PERM_CURRENCY)).build();
+        return Component.text(APIRegistry.perms.getGlobalPermissionProperty(ModuleEconomy.PERM_CURRENCY));
     }
 
     /**
@@ -27,19 +27,19 @@ public class FECurrency implements Currency
      * @return
      */
     @Override
-    public Text getSymbol()
+    public Component symbol()
     {
-        return Text.EMPTY;
+        return Component.empty();
     }
 
     @Override
-    public Text format(BigDecimal amount, int numFractionDigits)
+    public Component format(BigDecimal amount, int numFractionDigits)
     {
-        return Text.builder(APIRegistry.economy.currency(amount.longValue())).build();
+        return Component.text(APIRegistry.economy.currency(amount.longValue()));
     }
 
     @Override
-    public int getDefaultFractionDigits()
+    public int defaultFractionDigits()
     {
         return 0;
     }

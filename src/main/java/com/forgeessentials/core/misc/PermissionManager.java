@@ -5,11 +5,7 @@ import java.util.WeakHashMap;
 
 import com.mojang.brigadier.Command;
 
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.Commands;
-import net.minecraft.command.ICommand;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
