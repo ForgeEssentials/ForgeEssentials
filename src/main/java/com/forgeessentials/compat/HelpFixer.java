@@ -90,7 +90,7 @@ public class HelpFixer extends HelpCommand
             if (usage == null)
                 usage = "/" + cmd.getName();
             TranslationTextComponent msg2 = new TranslationTextComponent(usage, new Object[0]);
-            msg2.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + cmd.getName() + " "));
+            msg2.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + cmd.getName() + " "));
             sender.sendMessage(msg2);
         }
 
