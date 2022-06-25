@@ -112,7 +112,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
  */
 @Mod(ForgeEssentials.MODID)
 @Mod.EventBusSubscriber(modid = ForgeEssentials.MODID, bus = Bus.MOD,value = Dist.DEDICATED_SERVER)
-//@Mod(ForgeEssentials.MODID)//, dependencies = BuildInfo.DEPENDENCIES + ";after:worldedit;before:ftblib")
 public class ForgeEssentials
 {
 

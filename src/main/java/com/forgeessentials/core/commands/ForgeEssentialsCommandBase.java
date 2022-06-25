@@ -9,23 +9,13 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandHandler;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.command.ICommandSource;
-import net.minecraft.command.NumberInvalidException;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.tileentity.CommandBlockLogic;
-import net.minecraft.tileentity.TileEntityCommandBlock;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;

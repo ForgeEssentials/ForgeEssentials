@@ -74,7 +74,7 @@ public class ModulePermissions
         {
             try
             {
-                MinecraftForge.EVENT_BUS.register(FTBURankConfigHandler.class);
+                // MinecraftForge.EVENT_BUS.register(FTBURankConfigHandler.class);
                 LoggingHandler.felog.debug("Rank Handler for FTBLib has been registered");
             }
             catch (NoClassDefFoundError e)
