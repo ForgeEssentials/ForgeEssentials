@@ -107,10 +107,10 @@ public class SignToolsModule
                             && event.getPlayer().getMainHandItem().getItem().equals(ItemTags.SIGNS))
                     {
                         // Convert Formatting back into FE format for easy use
-                        for (int i = 0; i < sign.signText.length; i++)
+                        for (int i = 0; i < sign.messages.length; i++)
                         {
-                            sign.signText[i] = new StringTextComponent(
-                                    sign.signText[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
+                            sign.messages[i] = new StringTextComponent(
+                                    sign.messages[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
                         }
 
                         event.getPlayer().openEditSign((SignTileEntity) te);

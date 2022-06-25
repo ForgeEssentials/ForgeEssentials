@@ -34,7 +34,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -83,7 +82,7 @@ public class VoteReceiver extends Thread
             }
             catch (UnknownHostException var3)
             {
-                FMLLog.severe("Unable to determine local host IP, please set server-ip/hostname in the servervote config : " + var3.getMessage());
+                LoggingHandler.felog.fatal("Unable to determine local host IP, please set server-ip/hostname in the servervote config : " + var3.getMessage());
             }
         }
 
@@ -103,9 +102,9 @@ public class VoteReceiver extends Thread
         }
         catch (Exception ex)
         {
-            FMLLog.severe("Error initializing vote receiver. Please verify that the configured");
-            FMLLog.severe("IP address and port are not already in use. This is a common problem");
-            FMLLog.severe("with hosting services and, if so, you should check with your hosting provider." + ex);
+            LoggingHandler.felog.fatal("Error initializing vote receiver. Please verify that the configured");
+            LoggingHandler.felog.fatal("IP address and port are not already in use. This is a common problem");
+            LoggingHandler.felog.fatal("with hosting services and, if so, you should check with your hosting provider." + ex);
             throw new Exception(ex);
         }
     }
@@ -126,7 +125,7 @@ public class VoteReceiver extends Thread
         }
         catch (Exception ex)
         {
-            FMLLog.severe("Unable to shut down vote receiver cleanly.");
+            LoggingHandler.felog.fatal("Unable to shut down vote receiver cleanly.");
         }
         System.gc();
     }
@@ -209,19 +208,19 @@ public class VoteReceiver extends Thread
             }
             catch (SocketException ex)
             {
-                FMLLog.severe("Protocol error. Ignoring packet");
+                LoggingHandler.felog.fatal("Protocol error. Ignoring packet");
             }
             catch (BadPaddingException ex)
             {
-                FMLLog.severe("Unable to decrypt vote record. Make sure that that your public key matches the one you gave the server list.");
+                LoggingHandler.felog.fatal("Unable to decrypt vote record. Make sure that that your public key matches the one you gave the server list.");
             }
             catch (IOException ex)
             {
-                FMLLog.severe("Exception caught while receiving a vote notification");
+                LoggingHandler.felog.fatal("Exception caught while receiving a vote notification");
             }
             catch (GeneralSecurityException e)
             {
-                FMLLog.severe("Unable to decode vote");
+                LoggingHandler.felog.fatal("Unable to decode vote");
             }
         }
 
