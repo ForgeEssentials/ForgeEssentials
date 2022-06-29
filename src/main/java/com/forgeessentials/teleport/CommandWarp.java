@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -42,12 +41,6 @@ public class CommandWarp extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "warp";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/warp <name> [set|delete]: Set/delete/teleport to a warp point";
     }
 
     @Override
@@ -89,7 +82,6 @@ public class CommandWarp extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm("/warp list: List warps");
-            arguments.confirm(getUsage(arguments.sender));
             return;
         }
 

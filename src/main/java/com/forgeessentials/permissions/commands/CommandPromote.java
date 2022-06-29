@@ -2,9 +2,7 @@ package com.forgeessentials.permissions.commands;
 
 import java.util.ArrayList;
 
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -27,12 +25,6 @@ public class CommandPromote extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "promote";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/promote <player> <group>: Promote a user to another group";
     }
 
     @Override

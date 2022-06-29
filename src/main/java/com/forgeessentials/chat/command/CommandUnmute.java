@@ -27,12 +27,6 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/unmute <player>: Unmutes the specified player.";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return "fe.chat.mute";

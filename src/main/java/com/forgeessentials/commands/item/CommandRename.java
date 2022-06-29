@@ -20,12 +20,6 @@ public class CommandRename extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/rename <new name> Renames the item you are currently holding.";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

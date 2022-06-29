@@ -44,7 +44,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
                 return;
             }
 
-            if (ModuleAuth.isRegistered(sender.getPersistentID()))
+            if (ModuleAuth.isRegistered(sender.getUUID()))
             {
                 if (ModuleAuth.isAuthenticated(sender))
                 {
@@ -97,7 +97,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             if (args[0].equalsIgnoreCase("login"))
             {
                 if (!ModuleAuth.isRegistered(sender.getUUID()))
-                    throw new TranslatedCommandException("Player %s is not registered!", sender.getPersistentID());
+                    throw new TranslatedCommandException("Player %s is not registered!", sender.getUUID());
 
                 if (PasswordManager.checkPassword(sender.getUUID(), args[1]))
                 {
@@ -119,7 +119,7 @@ public class CommandAuth extends ForgeEssentialsCommandBase
             else if (args[0].equalsIgnoreCase("register"))
             {
                 if (ModuleAuth.isRegistered(sender.getUUID()))
-                    throw new TranslatedCommandException("Player %s is already registered!", sender.getPersistentID());
+                    throw new TranslatedCommandException("Player %s is already registered!", sender.getUUID());
 
                 if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineRegistration)
                     throw new TranslatedCommandException("Registrations have been disabled.");
@@ -364,21 +364,6 @@ public class CommandAuth extends ForgeEssentialsCommandBase
     public String getPermissionNode()
     {
         return "fe.auth";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        String s = "/auth help";
-        if (sender instanceof PlayerEntity)
-        {
-            s = s + " Manages your authentication profile.";
-        }
-        else
-        {
-            s = s + " Controls the authentication module.";
-        }
-        return s;
     }
 
     @Override

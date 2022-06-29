@@ -42,12 +42,6 @@ public class CommandAFK extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/afk: Mark yourself as away.";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

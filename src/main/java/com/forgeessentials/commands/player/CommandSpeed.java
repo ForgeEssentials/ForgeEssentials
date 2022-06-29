@@ -1,10 +1,9 @@
 package com.forgeessentials.commands.player;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.FloatNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -19,12 +18,6 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "speed";
-    }
-
-    @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/speed <speed> Set or change the player's speed.";
     }
 
     @Override
@@ -57,12 +50,12 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
             {
                 ChatOutputHandler.chatNotification(player, "Resetting speed to regular walking speed.");
                 // NetworkUtils.netHandler.sendTo(new Packet6Speed(0.0F), player);
-                NBTTagCompound tagCompound = new NBTTagCompound();
+                CompoundNBT tagCompound = new CompoundNBT();
                 player.capabilities.writeCapabilitiesToNBT(tagCompound);
-                tagCompound.getCompoundTag("abilities").setTag("flySpeed", new NBTTagFloat(0.05F));
-                tagCompound.getCompoundTag("abilities").setTag("walkSpeed", new NBTTagFloat(0.1F));
-                player.capabilities.readCapabilitiesFromNBT(tagCompound);
-                player.sendPlayerAbilities();
+                tagCompound.getCompound("abilities").put("flySpeed", new FloatNBT(0.05F));
+                tagCompound.getCompound("abilities").put("walkSpeed", new FloatNBT(0.1F));
+                player.abilities.readCapabilitiesFromNBT(tagCompound);
+                player.onUpdateAbilities();
                 return;
             }
 
@@ -76,12 +69,12 @@ public class CommandSpeed extends ForgeEssentialsCommandBase
                 multiplier = 10;
             }
             speed = speed * multiplier;
-            NBTTagCompound tagCompound = new NBTTagCompound();
+            CompoundNBT tagCompound = new CompoundNBT();
             player.capabilities.writeCapabilitiesToNBT(tagCompound);
-            tagCompound.getCompoundTag("abilities").setTag("flySpeed", new NBTTagFloat(speed));
-            tagCompound.getCompoundTag("abilities").setTag("walkSpeed", new NBTTagFloat(speed));
+            tagCompound.getCompound("abilities").put("flySpeed", new FloatNBT(speed));
+            tagCompound.getCompound("abilities").put("walkSpeed", new FloatNBT(speed));
             player.capabilities.readCapabilitiesFromNBT(tagCompound);
-            player.sendPlayerAbilities();
+            player.onUpdateAbilities();
 
             ChatOutputHandler.chatNotification(player, "Walk/fly speed set to " + speed);
             // NetworkUtils.netHandler.sendTo(new Packet6Speed(speed), player);

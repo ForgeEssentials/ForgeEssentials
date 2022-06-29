@@ -33,12 +33,6 @@ public class CommandDrop extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender par1ICommandSender)
-    {
-        return "/drop <X> <Y> <Z> <ItemID> <Meta> <Qty>";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;

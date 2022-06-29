@@ -3,15 +3,11 @@ package com.forgeessentials.teleport;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -34,13 +30,6 @@ public class CommandBed extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "bed";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-
-        return "/bed [player]: Teleport you or another player to the bed last used.";
     }
 
     @Override

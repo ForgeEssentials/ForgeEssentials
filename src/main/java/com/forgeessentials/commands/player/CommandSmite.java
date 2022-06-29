@@ -3,14 +3,10 @@ package com.forgeessentials.commands.player;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -27,19 +23,6 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "smite";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/smite [me|player] Smite yourself, another player, or the spot you are looking at.";
-        }
-        else
-        {
-            return "/smite <player> Smite someone.";
-        }
     }
 
     @Override
@@ -124,8 +107,6 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
-        else
-            throw new TranslatedCommandException(getUsage(sender));
     }
 
     @Override

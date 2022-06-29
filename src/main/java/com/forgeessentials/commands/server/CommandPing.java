@@ -1,10 +1,8 @@
 package com.forgeessentials.commands.server;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
@@ -20,12 +18,6 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     public String getPrimaryAlias()
     {
         return "ping";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/ping Ping the server.";
     }
 
     @Override

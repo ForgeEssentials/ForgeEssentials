@@ -50,12 +50,6 @@ public class CommandPm extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(CommandSource p_71518_1_)
-    {
-        return "/pm <player>: Sticky private message mode";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return "fe.chat.pm";

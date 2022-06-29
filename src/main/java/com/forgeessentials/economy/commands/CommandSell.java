@@ -1,7 +1,6 @@
 package com.forgeessentials.economy.commands;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -38,12 +37,6 @@ public class CommandSell extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/sell <item> <amount> [meta]";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -65,11 +58,11 @@ public class CommandSell extends ParserCommandBase
         if (arguments.isEmpty() || arguments.peek().equalsIgnoreCase("yes") || arguments.peek().equalsIgnoreCase("y"))
         {
             holdingItem = true;
-            itemStack = arguments.senderPlayer.getHeldItemMainhand();
+            itemStack = arguments.senderPlayer.getMainHandItem();
             if (itemStack == ItemStack.EMPTY)
                 throw new TranslatedCommandException("You need to hold an item first!");
             amount = itemStack.getCount();
-            meta = itemStack.getItemDamage();
+            meta = itemStack.getDamageValue();
         }
         else
         {
@@ -132,13 +125,13 @@ public class CommandSell extends ParserCommandBase
                 int removedAmount = 0;
                 if (holdingItem)
                 {
-                    ItemStack currentItemStack = arguments.senderPlayer.getHeldItemMainhand();
-                    if (currentItemStack.isItemEqual(itemStack))
+                    ItemStack currentItemStack = arguments.senderPlayer.getMainHandItem();
+                    if (currentItemStack.equals(itemStack))
                     {
                         removedAmount = Math.min(currentItemStack.getCount(), amount);
                         currentItemStack.setCount(currentItemStack.getCount() - removedAmount);
                         if (currentItemStack.getCount() <= 0)
-                            arguments.senderPlayer.inventory.mainInventory.set(arguments.senderPlayer.inventory.currentItem, ItemStack.EMPTY);
+                            arguments.senderPlayer.inventory.items.set(arguments.senderPlayer.inventory.selected, ItemStack.EMPTY);
                     }
                 }
                 if (removedAmount < amount)

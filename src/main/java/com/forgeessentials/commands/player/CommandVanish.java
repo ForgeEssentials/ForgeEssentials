@@ -5,12 +5,9 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.EntityTrackerEntry;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.server.SPacketSpawnPlayer;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -32,12 +29,6 @@ public class CommandVanish extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "vanish";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/vanish: Become invisible";
     }
 
     @Override
@@ -105,12 +96,12 @@ public class CommandVanish extends ParserCommandBase
     public static void vanish(UserIdent ident, boolean vanish)
     {
         ServerPlayerEntity player = ident.getPlayerMP();
-        WorldServer world = (WorldServer) player.world;
-        List<EntityPlayer> players = world.playerEntities;
+        ServerWorld world = (ServerWorld) player.getLevel();
+        List<PlayerEntity> players = world.players();
         if (vanish)
         {
             vanishedPlayers.add(ident);
-            EntityTrackerEntry tracker = world.getEntityTracker().trackedEntityHashTable.lookup(player.getEntityId());
+            EntityTrackerEntry tracker = world.getEntityTracker().trackedEntityHashTable.lookup(player.getId());
 
             Set<ServerPlayerEntity> tracked = new HashSet<>(tracker.trackingPlayers);
             world.getEntityTracker().untrack(player);

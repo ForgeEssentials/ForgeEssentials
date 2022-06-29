@@ -27,12 +27,6 @@ public class CommandPortal extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/portal delete|create|recreate|list|target [name] [x y z] [dim] Manage portals.";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -55,7 +49,7 @@ public class CommandPortal extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm(getUsage(arguments.sender));
+            
             return;
         }
 

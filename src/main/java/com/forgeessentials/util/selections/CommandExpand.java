@@ -201,7 +201,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
         }
         else
         {
-            throw new TranslatedCommandException(getUsage(player));
+
         }
     }
 
@@ -215,12 +215,6 @@ public class CommandExpand extends ForgeEssentialsCommandBase
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "//expand [direction] <number of blocks to expand> Expands the currently selected area.";
     }
 
     @Override

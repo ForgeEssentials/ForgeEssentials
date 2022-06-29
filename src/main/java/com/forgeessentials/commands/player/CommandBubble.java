@@ -36,12 +36,6 @@ public class CommandBubble extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/bubble [on|off]";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;

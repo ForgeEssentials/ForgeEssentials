@@ -28,12 +28,6 @@ public class CommandTPA extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/tpa [player] <player|<x> <y> <z>|accept|decline> Request to teleport yourself or another player.";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

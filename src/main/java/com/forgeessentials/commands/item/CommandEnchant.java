@@ -32,12 +32,6 @@ public class CommandEnchant extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/enchant (<name> [lvl])*: Enchants the current item";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

@@ -3,13 +3,9 @@ package com.forgeessentials.permissions.commands;
 import static com.forgeessentials.permissions.core.ItemPermissionManager.TAG_MODE;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -29,12 +25,6 @@ public class CommandItemPermission extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "permitem";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/permitem mode|perm|group|reset: Manage permission-items";
     }
 
     @Override

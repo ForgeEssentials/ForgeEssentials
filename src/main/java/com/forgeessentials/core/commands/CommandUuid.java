@@ -17,12 +17,6 @@ public class CommandUuid extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/uuid [player]: Display a player's UUID";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return "fe.commands.uuid";

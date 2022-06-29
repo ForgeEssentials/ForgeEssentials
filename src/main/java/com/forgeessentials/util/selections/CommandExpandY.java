@@ -48,12 +48,6 @@ public class CommandExpandY extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "//expandY: Expands the currently selected area from the top to the bottom of the world.";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.ALL;

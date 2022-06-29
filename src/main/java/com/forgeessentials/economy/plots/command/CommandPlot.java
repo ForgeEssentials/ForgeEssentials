@@ -96,12 +96,6 @@ public class CommandPlot extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/plot Manage plots.";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

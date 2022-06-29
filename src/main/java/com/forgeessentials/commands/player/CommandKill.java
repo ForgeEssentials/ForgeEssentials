@@ -3,6 +3,7 @@ package com.forgeessentials.commands.player;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -41,8 +42,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
         return DefaultPermissionLevel.OP;
     }
 
-    @Override
-    public String getUsage(ICommandSender sender)
+    public String getUsage(CommandSource sender)
     {
         return "/kill <player> Commit suicide or kill other players (with special permission).";
     }
@@ -67,7 +67,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
             ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                player.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+                player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
                 ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
             else
@@ -75,7 +75,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
         }
         else
         {
-            sender.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+            sender.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
             ChatOutputHandler.chatError(sender, Translator.translate("You were killed. You probably deserved it."));
         }
     }
@@ -88,14 +88,12 @@ public class CommandKill extends ForgeEssentialsCommandBase
             ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                player.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+                player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
                 ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
-        else
-            throw new TranslatedCommandException(getUsage(sender));
     }
 
     @Override

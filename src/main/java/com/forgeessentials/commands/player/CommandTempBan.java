@@ -3,7 +3,6 @@ package com.forgeessentials.commands.player;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -30,12 +29,6 @@ public class CommandTempBan extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "tempban";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/tempban <player> <duration>[s|m|h|d|w|months]: Tempban a player";
     }
 
     @Override

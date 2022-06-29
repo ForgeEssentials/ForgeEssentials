@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.player;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -16,12 +15,6 @@ public class CommandFly extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "fly";
-    }
-
-    @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/fly [true|false] Toggle flight mode.";
     }
 
     @Override
@@ -47,21 +40,21 @@ public class CommandFly extends ForgeEssentialsCommandBase
     {
         if (args.length == 0)
         {
-            if (!player.capabilities.allowFlying)
-                player.capabilities.allowFlying = true;
+            if (!player.abilities.mayfly)
+                player.abilities.mayfly = true;
             else
-                player.capabilities.allowFlying = false;
+                player.abilities.mayfly = false;
         }
         else
         {
-            player.capabilities.allowFlying = Boolean.parseBoolean(args[0]);
+            player.abilities.mayfly = Boolean.parseBoolean(args[0]);
         }
-        if (!player.onGround)
-            player.capabilities.isFlying = player.capabilities.allowFlying;
-        if (!player.capabilities.allowFlying)
+        if (!player.isOnGround())
+            player.abilities.flying = player.abilities.mayfly;
+        if (!player.abilities.mayfly)
             WorldUtil.placeInWorld(player);
-        player.sendPlayerAbilities();
-        ChatOutputHandler.chatNotification(player, "Flying " + (player.capabilities.allowFlying ? "enabled" : "disabled"));
+        player.onUpdateAbilities();
+        ChatOutputHandler.chatNotification(player, "Flying " + (player.abilities.mayfly ? "enabled" : "disabled"));
     }
 
 }

@@ -3,7 +3,6 @@ package com.forgeessentials.perftools;
 import java.text.DecimalFormat;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -53,12 +52,6 @@ public class CommandServerPerf extends ForgeEssentialsCommandBase
         return DefaultPermissionLevel.OP;
     }
 
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-
-        return "/perfstats Displays server performance stats (memory usage, average tick time).";
-    }
 
     private double func_120035_a(long[] p_120035_1_)
     {

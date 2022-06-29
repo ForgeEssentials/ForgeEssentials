@@ -27,20 +27,6 @@ public class CommandRepair extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        if (sender instanceof PlayerEntity)
-        {
-            return "/repair [player] Repairs the item you or another player is holding.";
-        }
-        else
-        {
-            return "/repair <player> Repairs the item the player is holding.";
-        }
-
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;

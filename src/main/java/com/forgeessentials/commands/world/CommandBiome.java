@@ -1,7 +1,6 @@
 package com.forgeessentials.commands.world;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -30,12 +29,6 @@ public class CommandBiome extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/febiome: Biome info tool";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -56,8 +49,8 @@ public class CommandBiome extends ParserCommandBase
     @Override
     public void parse(CommandParserArgs arguments) throws CommandException
     {
-        int x = (int) Math.floor(arguments.senderPlayer.posX);
-        int z = (int) Math.floor(arguments.senderPlayer.posZ);
+        int x = (int) Math.floor(arguments.senderPlayer.position().x);
+        int z = (int) Math.floor(arguments.senderPlayer.position().z);
         if (arguments.isEmpty())
         {
             if (arguments.isTabCompletion)

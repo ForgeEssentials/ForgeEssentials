@@ -1,9 +1,7 @@
 package com.forgeessentials.commands.server;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
@@ -34,12 +32,6 @@ public class CommandModlist extends ForgeEssentialsCommandBase
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.ALL;
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/modlist: Get a list of all mods running on this server.";
     }
 
     @Override

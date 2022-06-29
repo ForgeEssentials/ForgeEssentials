@@ -3,8 +3,6 @@ package com.forgeessentials.teleport;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -27,19 +25,6 @@ public class CommandHome extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "home";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/home [here|x, y, z] Set your home location.";
-        }
-        else
-        {
-            return null;
-        }
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.forgeessentials.util.questioner;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -44,15 +43,6 @@ public class CommandQuestioner extends ForgeEssentialsCommandBase
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.ALL;
-    }
-
-    @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        if (type)
-            return "/yes Reply yes to a question.";
-        else
-            return "/no Reply no to a question.";
     }
 
     @Override

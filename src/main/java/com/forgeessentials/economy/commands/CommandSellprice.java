@@ -56,12 +56,6 @@ public class CommandSellprice extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/sellprice save|set: Manage item sell prices";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;

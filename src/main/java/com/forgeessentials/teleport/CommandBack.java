@@ -1,7 +1,6 @@
 package com.forgeessentials.teleport;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -21,12 +20,6 @@ public class CommandBack extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "back";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/back: Teleport you to your last death or teleport location.";
     }
 
     @Override
@@ -50,7 +43,7 @@ public class CommandBack extends ForgeEssentialsCommandBase
     @Override
     public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
-        PlayerInfo pi = PlayerInfo.get(sender.getPersistentID());
+        PlayerInfo pi = PlayerInfo.get(sender.getUUID());
         WarpPoint point = null;
         if (PermissionAPI.hasPermission(sender, TeleportModule.PERM_BACK_ONDEATH))
             point = pi.getLastDeathLocation();

@@ -26,12 +26,6 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/noclip [true/false]";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

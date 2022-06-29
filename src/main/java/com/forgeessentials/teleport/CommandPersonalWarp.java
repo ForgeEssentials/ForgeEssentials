@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -43,12 +42,6 @@ public class CommandPersonalWarp extends ParserCommandBase
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "pw", "personalwarp" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/pwarp <name> [set|delete]: Set/delete/teleport to pers. warps";
     }
 
     @Override
@@ -92,7 +85,6 @@ public class CommandPersonalWarp extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm("/pwarp list: List personal warps");
-            arguments.confirm(getUsage(arguments.sender));
             return;
         }
 

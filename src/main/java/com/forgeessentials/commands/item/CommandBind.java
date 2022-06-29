@@ -43,12 +43,6 @@ public class CommandBind extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/bind <left|right>: Bind a command to an item";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

@@ -26,12 +26,6 @@ public class CommandMail extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/mail send|read: Send or read mails";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return "fe.chat.mail";

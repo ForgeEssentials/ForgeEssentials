@@ -6,16 +6,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
-import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -38,7 +34,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     private boolean running = false;
 
-    private WorldServer world;
+    private ServerWorld world;
 
     private AreaShape shape;
 
@@ -79,12 +75,6 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "filler" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/pregen start [dim]";
     }
 
     @Override

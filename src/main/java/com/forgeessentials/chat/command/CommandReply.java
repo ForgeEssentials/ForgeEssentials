@@ -47,12 +47,6 @@ public class CommandReply extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/r <message>: Reply to last player that sent you a message";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return ModuleChat.PERM + ".reply";

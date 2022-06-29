@@ -1,7 +1,6 @@
 package com.forgeessentials.economy.commands;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -45,12 +44,6 @@ public class CommandWallet extends ParserCommandBase
     {
         APIRegistry.perms.registerPermission(PERM_OTHERS, DefaultPermissionLevel.OP, "Allows viewing other player's wallets");
         APIRegistry.perms.registerPermission(PERM_MODIFY, DefaultPermissionLevel.OP, "Allows modifying wallets");
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/wallet: Check your wallet";
     }
 
     @Override

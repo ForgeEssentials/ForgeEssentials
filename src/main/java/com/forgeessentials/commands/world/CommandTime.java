@@ -5,15 +5,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -62,12 +58,6 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
     public String getPrimaryAlias()
     {
         return "time";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/time freeze|set|add [day|night|<t>]: Manipulate time.";
     }
 
     @Override

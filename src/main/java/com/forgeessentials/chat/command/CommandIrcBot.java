@@ -20,12 +20,6 @@ public class CommandIrcBot extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/ircbot [reconnect|disconnect] Connect or disconnect the IRC server bot.";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return "fe.chat.ircbot";

@@ -137,20 +137,6 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        // Needs elaboration.
-        if (sender instanceof PlayerEntity)
-        {
-            return "/rules [#|add|remove|move|change|help|book] Gets or sets the rules of the server.";
-        }
-        else
-        {
-            return "/rules [#|add|remove|move|change|help] Gets or sets the rules of the server.";
-        }
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;
@@ -288,8 +274,6 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             rules.set(index - 1, newRule);
             ChatOutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
         }
-        else
-            throw new TranslatedCommandException(getUsage(sender));
         saveRules();
     }
 
@@ -370,10 +354,6 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             newRule = ChatOutputHandler.formatColors(newRule);
             rules.set(index - 1, newRule);
             ChatOutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
-        }
-        else
-        {
-            throw new TranslatedCommandException(getUsage(sender));
         }
         saveRules();
     }

@@ -68,12 +68,6 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/timedmessage: Manage automatically sent messages";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return "fe.chat.timedmessage";

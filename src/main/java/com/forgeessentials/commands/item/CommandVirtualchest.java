@@ -33,12 +33,6 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/vchest Open a virtual chest";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

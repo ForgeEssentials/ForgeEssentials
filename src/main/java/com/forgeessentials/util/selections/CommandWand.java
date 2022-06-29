@@ -3,7 +3,6 @@ package com.forgeessentials.util.selections;
 //Depreciated
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
@@ -91,12 +90,6 @@ public class CommandWand extends ForgeEssentialsCommandBase
     public String getPermissionNode()
     {
         return "fe.core.pos.wand";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/" + getPrimaryAlias() + " [rebind|unbind|ITEM] Toggles the wand";
     }
 
     @Override

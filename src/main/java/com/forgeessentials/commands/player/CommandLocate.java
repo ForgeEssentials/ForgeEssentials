@@ -46,12 +46,6 @@ public class CommandLocate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/locate <player> Locates a player.";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return ModuleCommands.PERM + ".locate";
@@ -61,7 +55,7 @@ public class CommandLocate extends ForgeEssentialsCommandBase
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length != 1)
-            throw new TranslatedCommandException(getUsage(sender));
+ 
 
         ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
@@ -70,7 +64,7 @@ public class CommandLocate extends ForgeEssentialsCommandBase
         WorldPoint point = new WorldPoint(player);
         ChatOutputHandler.chatConfirmation(sender, Translator.format("%s is at %d, %d, %d in dim %d with gamemode %s", //
                 player.getName(), point.getX(), point.getY(), point.getZ(), point.getDimension(), //
-                player.interactionManager.getGameType().getName()));
+                player.gameMode.getGameModeForPlayer().getName()));
     }
 
     @Override

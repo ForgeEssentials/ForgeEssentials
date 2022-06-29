@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -113,7 +114,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
     public void setGameMode(ICommandSender sender, String target)
     {
-        EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
+        PlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, target);
         if (player == null)
         {
             ChatOutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
@@ -124,7 +125,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
 
     public void setGameMode(ICommandSender sender, String target, GameType mode)
     {
-        EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
+        PlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, target);
         if (player == null)
         {
             ChatOutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
@@ -133,9 +134,9 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
         setGameMode(sender, player, mode);
     }
 
-    public void setGameMode(ICommandSender sender, EntityPlayer target, GameType mode)
+    public void setGameMode(ICommandSender sender, PlayerEntity target, GameType mode)
     {
-        target.setGameType(mode);
+        target.setGameMode(mode);
         target.fallDistance = 0.0F;
         String modeName = I18n.translateToLocal("gameMode." + mode.getName());
         ChatOutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getName(), modeName));
@@ -183,19 +184,6 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/gamemode [gamemode] [player(s)] Change a player's gamemode.";
-        }
-        else
-        {
-            return "/gamemode [gamemode] <player(s)> Change a player's gamemode.";
-        }
     }
 
     @Override

@@ -57,12 +57,6 @@ public class CommandFaction extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/faction: Manage factions";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;

@@ -25,12 +25,6 @@ public class CommandMapper extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/mapper: Manage mapper settings";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return "fe.mapper.command";

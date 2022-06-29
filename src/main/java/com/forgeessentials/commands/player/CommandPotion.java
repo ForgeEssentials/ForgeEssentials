@@ -56,12 +56,6 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/potion <player> <effect> <duration> [ampl] Give the specified player a potion effect.";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;
@@ -98,7 +92,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
         }
         else if (args.length != 3)
         {
-            throw new TranslatedCommandException(getUsage(sender));
+
         }
 
         if (!names.containsKey(args[1]))

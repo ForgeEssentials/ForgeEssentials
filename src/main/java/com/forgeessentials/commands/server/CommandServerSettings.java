@@ -4,16 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.WorldSettings;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameType;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -40,12 +39,6 @@ public class CommandServerSettings extends ParserCommandBase
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "ss" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/serversettings [option] [value]: View or change server settings (server.properties)";
     }
 
     @Override
@@ -76,16 +69,16 @@ public class CommandServerSettings extends ParserCommandBase
 
     public void setProperty(String id, Object value)
     {
-        if (FMLCommonHandler.instance().getSide() == Side.SERVER)
+        if (FMLEnvironment.dist == Dist.DEDICATED_SERVER)
             doSetProperty(id, value);
     }
 
     @Override
     public void parse(CommandParserArgs arguments) throws CommandException
     {
-        if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
+        if (!FMLEnvironment.dist.isDedicatedServer())
             arguments.error("You can use this command only on dedicated servers");
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 
         if (arguments.isEmpty())
         {
@@ -103,48 +96,48 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 boolean allowFlight = arguments.parseBoolean();
-                server.setAllowFlight(allowFlight);
+                server.setFlightAllowed(allowFlight);
                 setProperty("allow-flight", allowFlight);
                 arguments.confirm("Set allow-flight to %s", Boolean.toString(allowFlight));
             }
             break;
         case "allowpvp":
             if (arguments.isEmpty())
-                arguments.confirm("Allow PvP: %s", Boolean.toString(server.isPVPEnabled()));
+                arguments.confirm("Allow PvP: %s", Boolean.toString(server.isPvpAllowed()));
             else
             {
                 boolean allowPvP = arguments.parseBoolean();
-                server.setAllowPvp(allowPvP);
+                server.setPvpAllowed(allowPvP);
                 setProperty("pvp", allowPvP);
                 arguments.confirm("Set pvp to %s", Boolean.toString(allowPvP));
             }
             break;
         case "buildlimit":
             if (arguments.isEmpty())
-                arguments.confirm("Set build limit to %d", server.getBuildLimit());
+                arguments.confirm("Set build limit to %d", server.getMaxBuildHeight());
             else
             {
                 int buildLimit = arguments.parseInt(0, Integer.MAX_VALUE);
-                server.setBuildLimit(buildLimit);
+                server.setMaxBuildHeight(buildLimit);
                 setProperty("max-build-height", buildLimit);
                 arguments.confirm("Set max-build-height to %d", buildLimit);
             }
             break;
         case "motd":
             if (arguments.isEmpty())
-                arguments.confirm("MotD = %s", server.getMOTD());
+                arguments.confirm("MotD = %s", server.getMotd());
             else
             {
                 String motd = ScriptArguments.process(arguments.toString(), null);
                 server.getServerStatusResponse().setServerDescription(new StringTextComponent(ChatOutputHandler.formatColors(motd)));
-                server.setMOTD(motd);
+                server.setMotd(motd);
                 setProperty("motd", motd);
                 arguments.confirm("Set MotD to %s", motd);
             }
             break;
         case "spawnprotection":
             if (arguments.isEmpty())
-                arguments.confirm("Spawn protection size: %d", server.getSpawnProtectionSize());
+                arguments.confirm("Spawn protection size: %d", server.getSpawnProtectionRadius());
             else
             {
                 int spawnSize = arguments.parseInt(0, Integer.MAX_VALUE);
@@ -154,11 +147,11 @@ public class CommandServerSettings extends ParserCommandBase
             break;
         case "gamemode":
             if (arguments.isEmpty())
-                arguments.confirm("Default gamemode set to %s", server.getGameType().getName());
+                arguments.confirm("Default gamemode set to %s", server.getDefaultGameType().getName());
             else
             {
-                GameType gamemode = GameType.getByID(arguments.parseInt());
-                server.setGameType(gamemode);
+                GameType gamemode = GameType.byId(arguments.parseInt());
+                server.setDefaultGameType(gamemode);
                 setProperty("gamemode", gamemode.ordinal());
                 arguments.confirm("Set default gamemode to %s", gamemode.getName());
             }
@@ -168,8 +161,8 @@ public class CommandServerSettings extends ParserCommandBase
                 arguments.confirm("Difficulty set to %s", server.getDifficulty());
             else
             {
-                EnumDifficulty difficulty = EnumDifficulty.getDifficultyEnum(arguments.parseInt());
-                server.setDifficultyForAllWorlds(difficulty);
+                Difficulty difficulty = Difficulty.byId(arguments.parseInt());
+                server.setDifficulty(difficulty, false);
                 setProperty("difficulty", difficulty.ordinal());
                 arguments.confirm("Set difficulty to %s", difficulty.name());
             }

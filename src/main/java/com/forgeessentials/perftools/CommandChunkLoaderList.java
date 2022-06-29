@@ -205,10 +205,4 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
     {
         return DefaultPermissionLevel.OP;
     }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/chunkloaderlist Lists all active chunk loaders.";
-    }
 }

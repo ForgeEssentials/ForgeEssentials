@@ -1,7 +1,6 @@
 package com.forgeessentials.commands.player;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
@@ -19,12 +18,6 @@ public class CommandReach extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "reach";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/reach <distance>: Set block reach distance";
     }
 
     @Override

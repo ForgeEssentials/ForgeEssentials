@@ -3,11 +3,9 @@ package com.forgeessentials.economy.commands;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -90,13 +88,6 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBase
         {
             return null;
         }
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-
-        return "/requestpayment <player> <amountRequested> Request a player to pay you a specified amount.";
     }
 
     @Override

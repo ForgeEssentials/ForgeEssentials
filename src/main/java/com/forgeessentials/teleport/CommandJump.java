@@ -1,9 +1,7 @@
 package com.forgeessentials.teleport;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -34,12 +32,6 @@ public class CommandJump extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "jump";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/jump Teleport to the location you are looking at";
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.forgeessentials.economy.commands;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -37,12 +36,6 @@ public class CommandPay extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/pay <player> <amount>: Pay another player from your wallet";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -75,7 +68,7 @@ public class CommandPay extends ParserCommandBase
         Wallet receiver = APIRegistry.economy.getWallet(player);
         receiver.add(amount);
         ChatOutputHandler.chatConfirmation(player.getPlayerMP(), Translator.format("You were paid %s from %s. You now have %s", //
-                APIRegistry.economy.toString(amount), arguments.sender.getName(), receiver.toString()));
+                APIRegistry.economy.toString(amount), arguments.sender.getTextName(), receiver.toString()));
     }
 
 }

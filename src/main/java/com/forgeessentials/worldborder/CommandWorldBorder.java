@@ -1,9 +1,7 @@
 package com.forgeessentials.worldborder;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -27,12 +25,6 @@ public class CommandWorldBorder extends ParserCommandBase
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "wb" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/wb: Configure worldborder";
     }
 
     @Override

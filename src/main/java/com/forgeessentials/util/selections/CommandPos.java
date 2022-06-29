@@ -60,7 +60,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
             }
             else
             {
-                throw new TranslatedCommandException(getUsage(player));
+
             }
         }
 
@@ -68,7 +68,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
         {
             if (args.length < 3)
             {
-                throw new TranslatedCommandException(getUsage(player));
+
             }
 
             try
@@ -79,7 +79,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
             }
             catch (NumberFormatException e)
             {
-                throw new TranslatedCommandException(getUsage(player));
+
             }
 
             if (type == 1)
@@ -131,13 +131,6 @@ public class CommandPos extends ForgeEssentialsCommandBase
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-
-        return "/" + getName() + " [<x> <y> <z] or [here] Sets selection positions";
     }
 
     @Override

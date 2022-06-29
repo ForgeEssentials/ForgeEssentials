@@ -1,7 +1,6 @@
 package com.forgeessentials.permissions.commands;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.context.AreaContext;
@@ -35,12 +34,6 @@ public class CommandZone extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "area";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/area: Manage permission areas";
     }
 
     @Override

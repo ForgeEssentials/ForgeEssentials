@@ -1,7 +1,6 @@
 package com.forgeessentials.core.commands;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,12 +20,6 @@ public class CommandFEInfo extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "feinfo";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/feinfo: Show info about and mange FE";
     }
 
     @Override

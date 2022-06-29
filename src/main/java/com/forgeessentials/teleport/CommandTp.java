@@ -131,7 +131,6 @@ public class CommandTp extends ForgeEssentialsCommandBase
         else
         {
             ChatOutputHandler.chatError(sender, Translator.translate("Improper syntax. Please try this instead:"));
-            ChatOutputHandler.chatNotification(sender, getUsage(sender));
         }
     }
 
@@ -139,12 +138,6 @@ public class CommandTp extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "tp";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/tp [player] <player|<x> <y> <z>> Teleport to a location.";
     }
 
     @Override

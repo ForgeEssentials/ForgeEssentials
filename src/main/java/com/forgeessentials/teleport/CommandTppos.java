@@ -31,13 +31,6 @@ public class CommandTppos extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-
-        return "/tppos <x y z>: Teleport to a position.";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -68,7 +61,7 @@ public class CommandTppos extends ForgeEssentialsCommandBase
         }
         else
         {
-            throw new TranslatedCommandException(getUsage(sender));
+
         }
     }
 

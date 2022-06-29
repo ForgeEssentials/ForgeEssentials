@@ -1,7 +1,6 @@
 package com.forgeessentials.protection.commands;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -18,12 +17,6 @@ public class CommandProtectionDebug extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "protectdebug";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/protectdebug: Toggles protection-module debug-mode";
     }
 
     @Override

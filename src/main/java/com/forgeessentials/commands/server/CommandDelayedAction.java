@@ -3,7 +3,6 @@ package com.forgeessentials.commands.server;
 import java.util.TimerTask;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -22,12 +21,6 @@ public class CommandDelayedAction extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "delayedaction";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/delayedaction [time] [command] Run a command after a specified timeout.";
     }
 
     @Override

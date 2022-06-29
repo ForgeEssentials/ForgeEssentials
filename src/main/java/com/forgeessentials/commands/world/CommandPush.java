@@ -13,6 +13,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,12 +26,6 @@ public class CommandPush extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "push";
-    }
-
-    @Override
-    public String getUsage(ICommandSender par1ICommandSender)
-    {
-        return "/push <X> <Y> <Z>: Push a button or pressureplate somewhere";
     }
 
     @Override
@@ -56,7 +51,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
     {
         if (args.length != 3)
         {
-            throw new TranslatedCommandException(getUsage(sender));
+
         }
         else
         {
@@ -67,16 +62,16 @@ public class CommandPush extends ForgeEssentialsCommandBase
 
             if (sender instanceof TileEntity)
             {
-                x = (int) this.func_82368_a(sender, ((TileEntity) sender).getPos().getX(), args[0]);
-                y = (int) this.func_82367_a(sender, ((TileEntity) sender).getPos().getY(), args[1], 0, 0);
-                z = (int) this.func_82368_a(sender, ((TileEntity) sender).getPos().getZ(), args[2]);
+                x = (int) this.func_82368_a(sender, ((TileEntity) sender).getBlockPos().getX(), args[0]);
+                y = (int) this.func_82367_a(sender, ((TileEntity) sender).getBlockPos().getY(), args[1], 0, 0);
+                z = (int) this.func_82368_a(sender, ((TileEntity) sender).getBlockPos().getZ(), args[2]);
                 world = ((TileEntity) sender).getLevel();
             }
             else if (sender instanceof ServerPlayerEntity)
             {
-                x = (int) this.func_82368_a(sender, ((ServerPlayerEntity) sender).posX, args[0]);
-                y = (int) this.func_82367_a(sender, ((ServerPlayerEntity) sender).posY, args[1], 0, 0);
-                z = (int) this.func_82368_a(sender, ((ServerPlayerEntity) sender).posZ, args[2]);
+                x = (int) this.func_82368_a(sender, ((ServerPlayerEntity) sender).position().x, args[0]);
+                y = (int) this.func_82367_a(sender, ((ServerPlayerEntity) sender).position().y, args[1], 0, 0);
+                z = (int) this.func_82368_a(sender, ((ServerPlayerEntity) sender).position().z, args[2]);
                 world = ((ServerPlayerEntity) sender).level;
             }
             else if (sender instanceof DedicatedServer)
@@ -96,7 +91,7 @@ public class CommandPush extends ForgeEssentialsCommandBase
             }
             else
             {
-                state.getBlock().onBlockActivated(world, pos, state, (PlayerEntity) null, EnumHand.MAIN_HAND, null, EnumFacing.DOWN.getIndex(), 0.0F, 0.0F);
+                state.getBlock().onBlockActivated(world, pos, state, (PlayerEntity) null, Hand.MAIN_HAND, null, Direction.DOWN.getIndex(), 0.0F, 0.0F);
                 ChatOutputHandler.chatConfirmation(sender, "Button/Lever Pushed");
             }
         }

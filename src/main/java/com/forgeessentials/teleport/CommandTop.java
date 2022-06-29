@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -25,12 +24,6 @@ public class CommandTop extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "top";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/top <player> Teleport you or another player to the top of the world.";
     }
 
     @Override

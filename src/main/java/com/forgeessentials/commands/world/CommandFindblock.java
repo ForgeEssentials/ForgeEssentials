@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -51,12 +49,6 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/fb <block> [meta] [max distance] [amount of blocks] [speed] Finds a block.";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -79,7 +71,7 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     {
         if (args.length < 1)
         {
-            throw new TranslatedCommandException(getUsage(sender));
+
         }
         String id = args[0];
         int meta = (args.length < 2) ? 0 : parseInt(args[1]);

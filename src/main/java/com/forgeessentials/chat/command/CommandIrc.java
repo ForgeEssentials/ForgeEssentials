@@ -21,11 +21,6 @@ public class CommandIrc extends ForgeEssentialsCommandBase
         return "irc";
     }
 
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/irc <message...>: Send a message to a client on IRC.";
-    }
 
     @Override
     public String getPermissionNode()

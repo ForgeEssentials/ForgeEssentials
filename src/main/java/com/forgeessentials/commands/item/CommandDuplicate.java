@@ -22,12 +22,6 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender par1ICommandSender)
-    {
-        return "/duplicate [amount]: Duplicates your current item";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

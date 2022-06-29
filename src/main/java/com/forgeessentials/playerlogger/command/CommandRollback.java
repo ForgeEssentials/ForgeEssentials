@@ -9,7 +9,6 @@ import java.util.Timer;
 import java.util.UUID;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.Zone;
@@ -45,12 +44,6 @@ public class CommandRollback extends ParserCommandBase
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "rb" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/rb: Rollback changes in the world with playerlogger";
     }
 
     @Override

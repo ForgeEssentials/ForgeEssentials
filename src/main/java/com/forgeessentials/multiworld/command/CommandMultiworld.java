@@ -3,9 +3,7 @@ package com.forgeessentials.multiworld.command;
 import java.util.Random;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.WorldType;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -26,12 +24,6 @@ public class CommandMultiworld extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "mw";
-    }
-
-    @Override
-    public String getUsage(ICommandSender commandSender)
-    {
-        return "/mw: Multiworld management command";
     }
 
     @Override

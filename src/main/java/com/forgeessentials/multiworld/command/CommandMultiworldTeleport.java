@@ -30,12 +30,6 @@ public class CommandMultiworldTeleport extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender commandSender)
-    {
-        return "/mwtp <world> [player] [x y z]";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return ModuleMultiworld.PERM_TELEPORT;

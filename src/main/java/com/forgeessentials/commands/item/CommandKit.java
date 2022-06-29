@@ -55,12 +55,6 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/kit [name] [set|del] [cooldown]: Use and modify item kits";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

@@ -35,12 +35,6 @@ public class CommandNickname extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/nick <username> [nickname|del> Edit a player's nickname.";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;

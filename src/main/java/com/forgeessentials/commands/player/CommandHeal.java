@@ -3,12 +3,10 @@ package com.forgeessentials.commands.player;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -28,10 +26,9 @@ public class CommandHeal extends ForgeEssentialsCommandBase
         return "heal";
     }
 
-    @Override
-    public String getUsage(ICommandSender sender)
+    public String getUsage(ServerPlayerEntity sender)
     {
-        if (sender instanceof EntityPlayer)
+        if (sender instanceof PlayerEntity)
         {
             return "/heal <player> Heal yourself or other players (if you have permission).";
         }
@@ -86,7 +83,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
         }
         else
         {
-            throw new TranslatedCommandException(getUsage(sender));
+
         }
     }
 
@@ -104,15 +101,15 @@ public class CommandHeal extends ForgeEssentialsCommandBase
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-            throw new TranslatedCommandException(getUsage(sender));
+
     }
 
-    public void heal(EntityPlayer target)
+    public void heal(PlayerEntity target)
     {
         float toHealBy = target.getMaxHealth() - target.getHealth();
         target.heal(toHealBy);
-        target.extinguish();
-        target.getFoodStats().addStats(20, 1.0F);
+        target.clearFire();;
+        target.getFoodData().eat(20, 1.0F);
         ChatOutputHandler.chatConfirmation(target, "You were healed.");
     }
 

@@ -23,12 +23,6 @@ public class CommandBackup extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/febackup [dim]: Do a backup now";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return "fe.backup.command";

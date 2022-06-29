@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -60,12 +58,6 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "feconfig" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/fesettings [id] [value]: Change FE settings";
     }
 
     @Override
@@ -151,12 +143,6 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
         this.config = config;
         if (isReload)
             loadSettings();
-    }
-
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return false;
     }
 
 }

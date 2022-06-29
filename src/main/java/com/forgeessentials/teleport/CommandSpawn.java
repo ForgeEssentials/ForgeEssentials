@@ -3,12 +3,9 @@ package com.forgeessentials.teleport;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -29,19 +26,6 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "spawn";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/spawn [player] Teleport you or another player to their spawn point.";
-        }
-        else
-        {
-            return "/spawn <player> Teleport a player to their spawn point.";
-        }
     }
 
     @Override

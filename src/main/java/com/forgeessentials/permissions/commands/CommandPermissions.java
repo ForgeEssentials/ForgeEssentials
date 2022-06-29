@@ -1,7 +1,6 @@
 package com.forgeessentials.permissions.commands;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.ParserCommandBase;
@@ -32,12 +31,6 @@ public class CommandPermissions extends ParserCommandBase
     public String getPermissionNode()
     {
         return PermissionCommandParser.PERM;
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/feperm Configure FE permissions.";
     }
 
     @Override

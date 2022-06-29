@@ -53,12 +53,6 @@ public class CommandHelp extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/help <page|text>: List or search for commands";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;

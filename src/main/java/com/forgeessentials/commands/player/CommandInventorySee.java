@@ -8,6 +8,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -30,12 +31,6 @@ public class CommandInventorySee extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "invsee";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/invsee See a player's inventory.";
     }
 
     @Override
@@ -62,7 +57,7 @@ public class CommandInventorySee extends ForgeEssentialsCommandBase
         if (args[0] == null)
             throw new TranslatedCommandException("You need to specify a player!");
 
-        if (!FMLCommonHandler.instance().getEffectiveSide().isServer())
+        if (!FMLEnvironment.dist.isDedicatedServer())
         {
             return;
         }
@@ -73,9 +68,9 @@ public class CommandInventorySee extends ForgeEssentialsCommandBase
 
         if (player.openContainer != player.inventoryContainer)
         {
-            player.closeScreen();
+            player.closeContainer();;
         }
-        player.getNextWindowId();
+        player.nextContainerCounter();;
 
         PlayerInvChest chest = new PlayerInvChest(victim, sender);
         player.displayGUIChest(chest);

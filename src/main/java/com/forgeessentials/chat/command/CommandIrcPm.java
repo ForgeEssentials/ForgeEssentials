@@ -26,11 +26,6 @@ public class CommandIrcPm extends ForgeEssentialsCommandBase
         return "ircpm";
     }
 
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/ircpm <name> <message...>: Send a message to a client on IRC.";
-    }
 
     @Override
     public String getPermissionNode()

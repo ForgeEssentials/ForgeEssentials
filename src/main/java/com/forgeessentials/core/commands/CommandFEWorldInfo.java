@@ -25,12 +25,6 @@ public class CommandFEWorldInfo extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/feworldinfo Display the names of all world providers";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;

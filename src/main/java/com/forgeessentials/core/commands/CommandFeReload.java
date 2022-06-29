@@ -1,6 +1,5 @@
 package com.forgeessentials.core.commands;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -22,12 +21,6 @@ public class CommandFeReload extends ForgeEssentialsCommandBase
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "reload" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/fereload: Reload FE configuration";
     }
 
     @Override

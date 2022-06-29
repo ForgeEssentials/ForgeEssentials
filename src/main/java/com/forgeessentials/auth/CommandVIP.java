@@ -42,12 +42,6 @@ public class CommandVIP extends ForgeEssentialsCommandBase
         return "fe.auth.vipcmd";
     }
 
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-
-        return "/vip [add|remove} <player> Adds or removes a player from the VIP list";
-    }
 
     @Override
     public DefaultPermissionLevel getPermissionLevel()

@@ -33,12 +33,6 @@ public class CommandDechant extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/dechant <name>: Removes an enchantment from the current item";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;

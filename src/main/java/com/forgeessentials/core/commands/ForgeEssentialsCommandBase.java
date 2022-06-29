@@ -37,8 +37,6 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
     // ------------------------------------------------------------
     // Command alias
 
-    @Override
-    public abstract String getUsage(ICommandSender sender);
 
     @Override
     public List<String> getAliases()

@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import javax.persistence.TypedQuery;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -45,12 +46,6 @@ public class CommandPlayerlogger extends ParserCommandBase
     public boolean canConsoleUseCommand()
     {
         return true;
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/pl stats";
     }
 
     @Override
@@ -185,7 +180,7 @@ public class CommandPlayerlogger extends ParserCommandBase
                     catch (TranslatedCommandException e)
                     {
                         arguments.args.addFirst(next);
-                        EntityPlayer pl = arguments.parsePlayer(true, true).getPlayer();
+                        PlayerEntity pl = arguments.parsePlayer(true, true).getPlayer();
                         p = new WorldPoint(pl.getEntityWorld(), pl.getPosition());
                     }
                 }
