@@ -14,6 +14,8 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
+
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.TickEvent;
@@ -24,6 +26,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import java.util.ArrayList;
@@ -114,9 +117,12 @@ public class ModuleAfterlife extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerDeathDropEvent(LivingDropsEvent event)
     {
-        Grave grave = Grave.createGrave(event.getEntityPlayer(), event.getDrops());
-        if (grave != null)
-            event.setCanceled(true);
+        if(event.getEntity() instanceof PlayerEntity)
+        {
+            Grave grave = Grave.createGrave((PlayerEntity)event.getEntity(), event.getDrops());
+            if (grave != null)
+                event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
@@ -124,7 +130,7 @@ public class ModuleAfterlife extends ServerEventHandler
     {
         if (event.phase == Phase.END)
             return;
-        if (FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld().getWorldInfo().getWorldTotalTime() % 20 == 0)
+        if (ServerLifecycleHooks.getCurrentServer().getEntityWorld().getWorldInfo().getWorldTotalTime() % 20 == 0)
         {
             for (Grave grave : new ArrayList<Grave>(Grave.graves.values()))
                 grave.updateBlocks();

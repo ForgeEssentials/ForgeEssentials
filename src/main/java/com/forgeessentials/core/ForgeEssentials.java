@@ -454,7 +454,7 @@ public class ForgeEssentials
         if (logCommandsToConsole)
         {
             LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"/%s %s\"", event.getParseResults().getContext().getSource().getPlayerOrException().getName().getString(),
-                    perm ? "used" : "tried to use", event.getParseResults().getContext().getCommand(), StringUtils.join(event.getParameters(), " ")));
+                    perm ? "used" : "tried to use", event.getParseResults().getContext().getNodes().get(0).getNode().getName(), StringUtils.join(event.getParseResults().getContext().getNodes().iterator().toString(), " ")));
         }
 
         if (!perm) {

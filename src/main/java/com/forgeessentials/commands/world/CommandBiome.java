@@ -3,6 +3,7 @@ package com.forgeessentials.commands.world;
 import net.minecraft.command.CommandException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -55,8 +56,8 @@ public class CommandBiome extends ParserCommandBase
         {
             if (arguments.isTabCompletion)
                 return;
-            Biome biome = arguments.senderPlayer.world.getBiome(new BlockPos(x, 0, z));
-            arguments.confirm("Current biome: " + biome.biomeName);
+            Biome biome = arguments.senderPlayer.level.getBiome(new BlockPos(x, 0, z));
+            arguments.confirm("Current biome: " + biome.toString());
             arguments.confirm("  " + biome.getClass().getName());
             arguments.notify("/febiome list: Show all registered biomes");
             return;
@@ -71,7 +72,7 @@ public class CommandBiome extends ParserCommandBase
                 return;
             arguments.confirm("Listing registered biomes:");
             boolean skip = false;
-            Iterator<Biome> itor = Biome.REGISTRY.iterator();
+            Iterator<Biome> itor = ForgeRegistries.BIOMES.iterator();
             while (itor.hasNext())
             {
                 Biome biome = itor.next();
@@ -85,7 +86,7 @@ public class CommandBiome extends ParserCommandBase
                     skip = false;
                     arguments.notify("----");
                 }
-                arguments.confirm(" #" + Biome.REGISTRY.getIDForObject(biome) + ": " + biome.biomeName);
+                arguments.confirm(" #" + ForgeRegistries.BIOMES.getKey(biome) + ": " + biome.toString());
             }
             break;
         case "dict":

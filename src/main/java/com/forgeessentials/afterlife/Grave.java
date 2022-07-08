@@ -17,13 +17,20 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ChestContainer;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SOpenWindowPacket;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import java.util.*;
+import static java.util.stream.Collectors.toList;
+
 
 public class Grave implements Loadable
 {
@@ -55,7 +62,7 @@ public class Grave implements Loadable
     @Expose(serialize = false)
     private BlockState blockState = block.defaultBlockState();
 
-    public static Grave createGrave(PlayerEntity player, List<ItemEntity> drops)
+    public static Grave createGrave(PlayerEntity player, Collection<ItemEntity> drops)
     {
         if (!PermissionAPI.hasPermission(player, ModuleAfterlife.PERM_DEATHCHEST))
             return null;
@@ -78,7 +85,7 @@ public class Grave implements Loadable
         return grave;
     }
 
-    public Grave(PlayerEntity player, List<ItemEntity> drops, int xp)
+    public Grave(PlayerEntity player, Collection<ItemEntity> drops, int xp)
     {
         this.xp = xp;
         this.owner = player.getUUID();
@@ -87,8 +94,9 @@ public class Grave implements Loadable
         this.protTime = ServerUtil.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_SAFETIME), 0);
         if (protTime <= 0)
             isProtected = false;
-        for (int i = 0; i < drops.size(); i++)
-            inventory.add(drops.get(i).getItem().copy());
+        List<ItemEntity> newList = drops.stream().collect(toList());
+        for (int i = 0; i < newList.size(); i++)
+            inventory.add(newList.get(i).getItem().copy());
 
         // Get grave block
         String blockName = APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_BLOCK);
@@ -125,8 +133,9 @@ public class Grave implements Loadable
     public void updateBlocks()
     {
         if (point.getDimension() == null)
-        {
-            if (!DimensionManager.isDimensionRegistered(point.getDimension())) {
+        {//!DimensionManager.isDimensionRegistered(point.getDimension())
+            ServerWorld dworld = ServerLifecycleHooks.getCurrentServer().getLevel(point.getDimension());
+            if (dworld.isLoaded(point.getBlockPos())) {
                 DataManager.getInstance().delete(Grave.class, point.toString());
                 graves.remove(point);
             }
@@ -147,11 +156,11 @@ public class Grave implements Loadable
             // Grave is destroyed - repair if protection is still active
             if (isProtected)
             {
-                point.getWorld().setBlockState(point.getBlockPos(), blockState);
+                point.getWorld().setBlockAndUpdate(point.getBlockPos(), blockState);
                 if (blockState.getBlock() == block)
                 {
                     TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
-                    point.getWorld().setTileEntity(point.getBlockPos(), skull);
+                    point.getWorld().setBlockEntity(point.getBlockPos(), skull);
                 }
             }
             else
@@ -163,7 +172,7 @@ public class Grave implements Loadable
         {
             BlockPos fencePos = new BlockPos(point.getX(), point.getY() - 1, point.getZ());
             if (point.getWorld().getBlockState(fencePos) != Blocks.OAK_FENCE.defaultBlockState())
-                point.getWorld().setBlockState(fencePos, Blocks.OAK_FENCE.defaultBlockState());
+                point.getWorld().setBlockAndUpdate(fencePos, Blocks.OAK_FENCE.defaultBlockState());
         }
     }
 
@@ -211,14 +220,14 @@ public class Grave implements Loadable
 
         InventoryGrave invGrave = new InventoryGrave(this);
 
-        if (player.openContainer != player.inventoryContainer)
-            player.closeScreen();
-        player.getNextWindowId();
-        player.connection.sendPacket(new SPacketOpenWindow(player.currentWindowId, "minecraft:chest", invGrave.getDisplayName(), invGrave
-                .getSizeInventory()));
-        player.openContainer = new ContainerChest(player.inventory, invGrave, player);
-        player.openContainer.windowId = player.currentWindowId;
-        player.openContainer.addListener(player);
+        if (player.containerMenu != player.inventoryMenu)
+            player.closeContainer();
+        player.nextContainerCounter();
+        //new SPacketOpenWindow(player.containerCounter, "minecraft:chest", invGrave.getDisplayName(), invGrave.getSizeInventory())
+        player.connection.send(new SOpenWindowPacket(player.containerCounter,ContainerType.GENERIC_9x6, invGrave.getDisplayName()));
+        player.containerMenu = new ChestContainer(ContainerType.GENERIC_9x6, player.containerCounter, player.inventory,invGrave,6);
+        player.containerMenu.containerId = player.containerCounter;// Needed?
+        player.containerMenu.addSlotListener(player);
     }
 
     protected void dropItems()
@@ -238,12 +247,12 @@ public class Grave implements Loadable
         if (dropItems)
             dropItems();
 
-        point.getWorld().setBlockToAir(point.getBlockPos());
+        point.getWorld().removeBlock(point.getBlockPos(), false);
         if (hasFencePost)
         {
             BlockPos fencePos = new BlockPos(point.getX(), point.getY() - 1, point.getZ());
             if (point.getWorld().getBlockState(fencePos) == Blocks.OAK_FENCE.defaultBlockState())
-                point.getWorld().setBlockToAir(fencePos);
+                point.getWorld().removeBlock(fencePos, false);
         }
 
         DataManager.getInstance().delete(Grave.class, point.toString());

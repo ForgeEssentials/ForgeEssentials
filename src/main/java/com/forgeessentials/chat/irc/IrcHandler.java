@@ -56,7 +56,6 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.ParseResults;
 
 public class IrcHandler extends ListenerAdapter

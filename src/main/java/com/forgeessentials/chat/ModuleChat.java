@@ -357,7 +357,7 @@ public class ModuleChat
                 if (header == null)
                     header = component;
                 else
-                    header.appendSibling(component);
+                    header.copy().append(component);
             }
         }
         return header;
@@ -379,7 +379,7 @@ public class ModuleChat
             int end = matcher.end();
 
             // Append the previous left overs.
-            ichat.appendText(text.substring(lastEnd, start));
+            ichat.copy().append(text.substring(lastEnd, start));
             lastEnd = end;
             String url = text.substring(start, end);
             ITextComponent link = new StringTextComponent(url);
@@ -394,18 +394,18 @@ public class ModuleChat
             catch (URISyntaxException e)
             {
                 // Bad syntax bail out!
-                ichat.appendText(url);
+                ichat.copy().append(url);
                 continue;
             }
 
             // Set the click event and append the link.
             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
             link.getStyle().withClickEvent(click);
-            ichat.appendSibling(link);
+            ichat.copy().append(link);
         }
 
         // Append the rest of the message.
-        ichat.appendText(text.substring(lastEnd));
+        ichat.copy().append(text.substring(lastEnd));
         return ichat;
     }
 
@@ -539,18 +539,18 @@ public class ModuleChat
             groupName = group;
 
         ITextComponent msg;
-        PlayerEntity player = sender.getPlayerOrException() instanceof PlayerEntity ? (PlayerEntity) sender.getPlayerOrException() : null;
-        msg = player != null ? getChatHeader(UserIdent.get((PlayerEntity) sender.getPlayerOrException())) : new TranslationTextComponent("SERVER ");
+        PlayerEntity player = sender.getEntity() instanceof PlayerEntity ? (PlayerEntity) sender.getEntity() : null;
+        msg = player != null ? getChatHeader(UserIdent.get((PlayerEntity) sender.getEntity())) : new TranslationTextComponent("SERVER ");
         String censored = censor.filter(message, player);
         String formatted = processChatReplacements(sender, censored, formatColors);
 
         ITextComponent msgGroup = new StringTextComponent("@" + groupName + "@ ");
         msgGroup.getStyle().withColor(TextFormatting.GRAY).withItalic(true);
-        msg.appendSibling(msgGroup);
+        msg.copy().append(msgGroup);
 
         ITextComponent msgBody = new StringTextComponent(formatted);
         msgBody.getStyle().withColor(TextFormatting.GRAY);
-        msg.appendSibling(msgBody);
+        msg.copy().append(msgBody);
 
         for (ServerPlayerEntity p : ServerUtil.getPlayerList())
         {

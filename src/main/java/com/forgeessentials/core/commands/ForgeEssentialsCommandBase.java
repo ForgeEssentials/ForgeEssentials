@@ -123,7 +123,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
         throw new TranslatedCommandException("This command cannot be used as player");
     }
 
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(MinecraftServer server, CommandSource sender, String[] args) throws CommandException
     {
         throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
@@ -218,7 +218,7 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
             return true;
         if (sender.source instanceof MinecraftServer || sender.source instanceof CommandBlockLogic)
             return true;
-        return PermissionAPI.hasPermission(UserIdent.get(sender.getPlayerOrException().getUUID(), getPermissionNode()).getGameProfile());
+        return PermissionAPI.hasPermission(UserIdent.get(sender.getPlayerOrException()).getPlayer(),getPermissionNode());
     }
 
     // ------------------------------------------------------------
@@ -241,7 +241,12 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
     {
         return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
     }*/
-
+    
+    public static boolean doesStringStartWith(String original, String region)
+    {
+        return region.regionMatches(true, 0, original, 0, original.length());
+    }
+    
     public static List<String> getListOfStringsMatchingLastWord(String arg, String... possibleMatches)
     {
         List<String> arraylist = new ArrayList<>();
@@ -290,7 +295,18 @@ public abstract class ForgeEssentialsCommandBase extends CommandBase
             return parseInt(string);
         }
     }
-
+    
+    public static int parseInt(String input) throws NumberFormatException
+    {
+        try
+        {
+            return Integer.parseInt(input);
+        }
+        catch (NumberFormatException var2)
+        {
+            throw new NumberFormatException();
+        }
+    }
     /**
      * Parse double with support for relative values.
      *

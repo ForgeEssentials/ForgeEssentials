@@ -114,7 +114,7 @@ public class WorldPoint extends Point
     {
         return (WorldPoint) super.setZ(z);
     }
-/*
+
     public World getWorld()
     {
         if (world != null && world.dimension() != dim)
@@ -122,7 +122,7 @@ public class WorldPoint extends Point
         world = DimensionManager.getWorld(dim);
         return world;
     }
-
+/*
     public WarpPoint toWarpPoint(float rotationPitch, float rotationYaw)
     {
         return new WarpPoint(this, rotationPitch, rotationYaw);
