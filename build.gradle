@@ -38,6 +38,7 @@ plugins {
 }
 
 apply plugin: 'jacoco'
+apply plugin: 'eclipse'
 
 sonarqube {
     properties {
