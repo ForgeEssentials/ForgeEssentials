@@ -10,7 +10,6 @@
 /forge/*
 /jars/*
 /logs/*
-/old gradle/*
 /reobf/*
 /runtime/*
 /temp/*
