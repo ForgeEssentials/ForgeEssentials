@@ -223,8 +223,8 @@ dependencies {
     compileOnly ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
         exclude group: "org.spongepowered", module: "mixin"
     }
-    compileOnly "com.feed_the_beast.mods:FTBLib:5.4.7.2"
-    compileOnly "com.feed_the_beast.mods:FTBUtilities:5.4.1.131"
+    //compileOnly "com.feed_the_beast.mods:FTBLib:5.4.7.2"
+    //compileOnly "com.feed_the_beast.mods:FTBUtilities:5.4.1.131"
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
