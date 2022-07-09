@@ -1,5 +1,6 @@
 package com.forgeessentials.core.commands;
 
+import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -47,7 +48,7 @@ public class CommandFeReload extends ForgeEssentialsCommandBase
         reload(sender);
     }
 
-    public static void reload(ICommandSender sender)
+    public static void reload(CommandSource sender)
     {
         ModuleLauncher.instance.reloadConfigs();
         ChatOutputHandler.chatConfirmation(sender, Translator.translate("Reloaded configs. (may not work for all settings)"));
