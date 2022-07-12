@@ -2,12 +2,16 @@ package com.forgeessentials.commons.selections;
 
 import java.util.regex.Pattern;
 
+import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.google.gson.annotations.Expose;
 
@@ -16,7 +20,7 @@ import com.google.gson.annotations.Expose;
  */
 public class WorldPoint extends Point
 {
-
+	protected String dimS;
     protected RegistryKey<World> dim;
 
     @Expose(serialize = false)
@@ -74,12 +78,12 @@ public class WorldPoint extends Point
     {
         this(other.getDimension(), other.getBlockX(), other.getBlockY(), other.getBlockZ());
     }
-/*
+
     public WorldPoint(BlockEvent event)
     {
         this(event.getWorld(), event.getPos());
     }
-*/
+
     public static WorldPoint create(CommandSource sender)
     {
         return new WorldPoint(sender.getLevel().dimension(), sender.getPosition());
@@ -119,10 +123,10 @@ public class WorldPoint extends Point
     {
         if (world != null && world.dimension() != dim)
             return world;
-        world = DimensionManager.getWorld(dim);
+        world = ServerLifecycleHooks.getCurrentServer().getLevel(dim);
         return world;
     }
-/*
+
     public WarpPoint toWarpPoint(float rotationPitch, float rotationYaw)
     {
         return new WarpPoint(this, rotationPitch, rotationYaw);
@@ -137,7 +141,7 @@ public class WorldPoint extends Point
     {
         return getWorld().getBlockEntity(getBlockPos());
     }
-*/
+
     // ------------------------------------------------------------
 
     @Override

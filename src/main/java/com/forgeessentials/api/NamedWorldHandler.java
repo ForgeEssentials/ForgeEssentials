@@ -42,7 +42,7 @@ public interface NamedWorldHandler
             {
                 try
                 {
-                    return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(Integer.parseInt(name));
+                    return ServerLifecycleHooks.getCurrentServer().getWorld(Integer.parseInt(name));
                 }
                 catch (NumberFormatException e)
                 {

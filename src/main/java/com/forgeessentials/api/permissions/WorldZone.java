@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
@@ -57,7 +56,7 @@ public class WorldZone extends Zone implements Loadable
     @Override
     public boolean isPlayerInZone(PlayerEntity player)
     {
-        return player.dimension == dimensionID;
+        return player.level.dimension() == dimensionID;
     }
 
     @Override
@@ -69,13 +68,13 @@ public class WorldZone extends Zone implements Loadable
     @Override
     public boolean isInZone(WorldArea area)
     {
-        return area.getDimension() == dimensionID;
+        return area.getDimension().dimension() == dimensionID;
     }
 
     @Override
     public boolean isPartOfZone(WorldArea area)
     {
-        return area.getDimension() == dimensionID;
+        return area.getDimension().dimension() == dimensionID;
     }
 
     @Override

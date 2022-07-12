@@ -297,7 +297,7 @@ public class ModuleBackup extends ConfigLoaderBase
         // Save world
         if (!saveWorld(world))
         {
-            notify(String.format("Backup of dim %s failed: Could not save world", world.provider.getDimension()));
+            notify(String.format("Backup of dim %s failed: Could not save world", world.dimension().getRegistryName()));
             return;
         }
 
@@ -308,7 +308,7 @@ public class ModuleBackup extends ConfigLoaderBase
         if (!backupDir.exists())
             if (!backupDir.mkdirs())
             {
-                notify(String.format("Backup of dim %s failed: Could not create backup directory", world.provider.getDimension()));
+                notify(String.format("Backup of dim %s failed: Could not create backup directory", world.dimension().getRegistryName()));
                 return;
             }
 
@@ -316,7 +316,7 @@ public class ModuleBackup extends ConfigLoaderBase
         try (FileOutputStream fileStream = new FileOutputStream(backupFile); //
                 ZipOutputStream zipStream = new ZipOutputStream(fileStream);)
         {
-            LoggingHandler.felog.info(String.format("Listing files for backup of world %d", world.provider.getDimension()));
+            LoggingHandler.felog.info(String.format("Listing files for backup of world %d", world.dimension().getRegistryName()));
             for (File file : enumWorldFiles(world, world.getChunkSaveLocation(), null))
             {
                 String relativePath = baseUri.relativize(file.toURI()).getPath();
@@ -335,10 +335,10 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         catch (Exception ex)
         {
-            LoggingHandler.felog.error(String.format("Severe error during backup of dim %d", world.provider.getDimension()));
+            LoggingHandler.felog.error(String.format("Severe error during backup of dim %d", world.dimension().getRegistryName()));
             ex.printStackTrace();
             if (notify)
-                notify(String.format("Error during backup of dim %d", world.provider.getDimension()));
+                notify(String.format("Error during backup of dim %d", world.dimension().getRegistryName()));
         }
 
         if (notify)
@@ -359,8 +359,8 @@ public class ModuleBackup extends ConfigLoaderBase
             }
 
             // Exclude directories of other worlds
-            for (ServerWorld otherWorld : DimensionManager.getWorlds())
-                if (otherWorld.provider.getDimension() != world.provider.getDimension() && otherWorld.getChunkSaveLocation().equals(file))
+            for (ServerWorld otherWorld : ServerLifecycleHooks.getCurrentServer().getWorlds())
+                if (otherWorld.dimension() != world.dimension() && otherWorld.getChunkSaveLocation().equals(file))
                     continue mainLoop;
             for (Pattern pattern : exludePatterns)
                 if (pattern.matcher(file.getName()).matches())
@@ -373,23 +373,23 @@ public class ModuleBackup extends ConfigLoaderBase
     private static File getBackupFile(ServerWorld world)
     {
         return new File(baseFolder, String.format("%s/DIM_%d/%s.zip", //
-                world.getWorldInfo().getWorldName(), //
-                world.provider.getDimension(), //
+                world.getLevelData().getWorldName(), //
+                world.dimension(), //
                 FILE_FORMAT.format(new Date())));
     }
 
     private static boolean saveWorld(ServerWorld world)
     {
-        boolean oldLevelSaving = world.disableLevelSaving;
-        world.disableLevelSaving = false;
+        boolean oldLevelSaving = world.noSave;
+        world.noSave = false;
         try
         {
-            world.saveAllChunks(true, (IProgressUpdate) null);
+            world.save((IProgressUpdate) null, oldLevelSaving, oldLevelSaving);.saveAllChunks(true, (IProgressUpdate) null);
             return true;
         }
         catch (MinecraftException e)
         {
-            LoggingHandler.felog.error(String.format("Could not save world %d", world.provider.getDimension()));
+            LoggingHandler.felog.error(String.format("Could not save world %d", world.dimension()));
             return false;
         }
         catch (Exception e)
@@ -399,7 +399,7 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         finally
         {
-            world.disableLevelSaving = oldLevelSaving;
+            world.noSave = oldLevelSaving;
         }
     }
 
