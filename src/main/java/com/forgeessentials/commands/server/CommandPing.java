@@ -3,6 +3,7 @@ package com.forgeessentials.commands.server;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
@@ -13,6 +14,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandPing extends ForgeEssentialsCommandBase implements ConfigurableCommand
 {
     public String response = "Pong! %time";
+    static ForgeConfigSpec.ConfigValue<String> FEresponse;
 
     @Override
     public String getPrimaryAlias()
@@ -51,9 +53,11 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
     }
 
     @Override
-    public void loadConfig(Configuration config, String category)
+    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
     {
-        response = config.get(category, "response", "Pong! %time").getString();
+    	BUILDER.push(category);
+    	FEresponse = BUILDER.comment("Response Format for command must include %time.").define("response", "Pong! %time");
+    	BUILDER.pop();
     }
 
     @Override
@@ -62,4 +66,9 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
         /* do nothing */
     }
 
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+    	response = FEresponse.get();
+    }
 }

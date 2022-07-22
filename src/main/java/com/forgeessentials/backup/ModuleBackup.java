@@ -384,7 +384,7 @@ public class ModuleBackup extends ConfigLoaderBase
         world.noSave = false;
         try
         {
-            world.save((IProgressUpdate) null, oldLevelSaving, oldLevelSaving);.saveAllChunks(true, (IProgressUpdate) null);
+            world.save((IProgressUpdate) null, oldLevelSaving, oldLevelSaving);
             return true;
         }
         catch (MinecraftException e)

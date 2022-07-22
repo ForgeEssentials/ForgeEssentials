@@ -25,6 +25,7 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -389,11 +390,13 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         }
     }
 
+    static ForgeConfigSpec.ConfigValue<String> name;
     @Override
-    public void loadConfig(Configuration config, String category)
+    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
     {
-        rulesFile = new File(ForgeEssentials.getFEDirectory(), config.get(category, "filename", "rules.txt").getString());
-        rules = loadRules();
+    	BUILDER.push(category);
+    	name = BUILDER.comment("Name for rules file").define("filename", "rules.txt");
+    	BUILDER.pop();
     }
 
     @Override
@@ -402,4 +405,10 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         /* do nothing */
     }
 
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+    	rulesFile = new File(ForgeEssentials.getFEDirectory(), name.get());
+    	rules = loadRules();
+    }
 }

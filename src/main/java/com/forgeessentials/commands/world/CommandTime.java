@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -259,9 +260,14 @@ public class CommandTime extends ParserCommandBase implements ConfigurableComman
     }
 
     @Override
-    public void loadConfig(Configuration config, String category)
+    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
     {
         /* do nothing */
     }
 
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+    	/* do nothing */
+    }
 }

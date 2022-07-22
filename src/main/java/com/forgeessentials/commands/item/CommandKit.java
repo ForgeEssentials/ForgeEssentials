@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -15,10 +14,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.auth.AuthEventHandler;
+import com.forgeessentials.auth.EncryptionHelper;
+import com.forgeessentials.auth.PasswordManager;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.Kit;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
@@ -39,6 +42,7 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     public static final String PERM_ADMIN = ModuleCommands.PERM + ".admin";
     public static final String PERM_BYPASS_COOLDOWN = PERM + ".bypasscooldown";
 
+    static ForgeConfigSpec.ConfigValue<String> FEkitForNewPlayers;
     public static String kitForNewPlayers;
 
     public static Map<String, Kit> kits = new HashMap<>();
@@ -168,10 +172,17 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public void loadConfig(Configuration config, String category)
+    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
     {
-        kitForNewPlayers = config.get(category, "kitForNewPlayers", "", "Name of kit to issue to new players. If this is left blank, it will be ignored.")
-                .getString();
+    	BUILDER.push(category);
+    	FEkitForNewPlayers = BUILDER.comment("Name of kit to issue to new players. If this is left blank, it will be ignored.").define("kitForNewPlayers", "");
+    	BUILDER.pop();
+    }
+    
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+    	kitForNewPlayers = FEkitForNewPlayers.get();
     }
 
     @Override

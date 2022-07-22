@@ -1,12 +1,12 @@
 package com.forgeessentials.commands.item;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
+import com.electronwill.nightconfig.core.io.CharsWrapper.Builder;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.VirtualChest;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
@@ -18,7 +18,10 @@ import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 public class CommandVirtualchest extends ForgeEssentialsCommandBase implements ConfigurableCommand
 {
     public static int size = 54;
+    static ForgeConfigSpec.IntValue FEsize;
+    
     public static String name = "Vault 13";
+    static ForgeConfigSpec.ConfigValue<String> FEname;
 
     @Override
     public String getPrimaryAlias()
@@ -63,12 +66,15 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
         VirtualChest chest = new VirtualChest(player);
         player.displayGUIChest(chest);
     }
-
+    
+    
     @Override
-    public void loadConfig(Configuration config, String category)
+    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
     {
-        size = config.get(category, "VirtualChestRows", 6, "1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").getInt(6) * 9;
-        name = config.get(category, "VirtualChestName", "Vault 13", "Don't use special stuff....").getString();
+    	BUILDER.push(category);
+    	FEsize = BUILDER.comment("1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").defineInRange("VirtualChestRows", 6, 1, 6);
+    	FEname = BUILDER.comment("Don't use special stuff....").define("VirtualChestName", "Vault 13");
+    	BUILDER.pop();
     }
 
     @Override
@@ -76,5 +82,12 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBase implements C
     {
         /* do nothing */
     }
+
+	@Override
+	public void bakeConfig(boolean reload) {
+		size = FEsize.get() * 9;
+		name = FEname.get();
+		
+	}
 
 }
