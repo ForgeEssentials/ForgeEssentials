@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -13,13 +11,12 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public interface NamedWorldHandler
 {
 
-    static final String WORLD_NAME_END = "end";
-    static final String WORLD_NAME_NETHER = "nether";
-    static final String WORLD_NAME_OVERWORLD = "surface";
+    static final String WORLD_NAME_END = "the_end";
+    static final String WORLD_NAME_NETHER = "the_nether";
+    static final String WORLD_NAME_OVERWORLD = "overworld";
 
     ServerWorld getWorld(String name);
 
-    String getWorldName(RegistryKey<World> dimension);
 
     List<String> getWorldNames();
 
@@ -42,7 +39,7 @@ public interface NamedWorldHandler
             {
                 try
                 {
-                    return ServerLifecycleHooks.getCurrentServer().getWorld(Integer.parseInt(name));
+                    return ServerLifecycleHooks.getCurrentServer().getLevel(null);
                 }
                 catch (NumberFormatException e)
                 {
@@ -56,22 +53,6 @@ public interface NamedWorldHandler
         public List<String> getWorldNames()
         {
             return new ArrayList<>(Arrays.asList(WORLD_NAME_OVERWORLD, WORLD_NAME_NETHER, WORLD_NAME_END));
-        }
-
-        @Override
-        public String getWorldName(RegistryKey<World> dimension)
-        {
-            switch (dimension)
-            {
-            case 0:
-                return WORLD_NAME_OVERWORLD;
-            case -1:
-                return WORLD_NAME_NETHER;
-            case 1:
-                return WORLD_NAME_END;
-            default:
-                return Integer.toString(dimId);
-            }
         }
 
     }

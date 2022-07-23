@@ -229,6 +229,7 @@ public class JsFEServer
      * @param callbackMethod
      * @return
      */
+    /*
     public JsInteractionObject<InteractionObject> getMenuChest(final String name, final String displayName, final JsInventory<IInventory> inventory,
             final String callbackMethod)
     {
@@ -314,5 +315,5 @@ public class JsFEServer
         };
 
         return new JsInteractionObject<>(menuChest);
-    }
+    }*/
 }

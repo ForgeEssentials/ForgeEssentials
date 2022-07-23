@@ -61,11 +61,6 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     protected Map<String, Multiworld> worlds = new HashMap<>();
 
     /**
-     * Registered multiworlds by dimension
-     */
-    protected Map<Integer, Multiworld> worldsByDim = new HashMap<>();
-
-    /**
      * Mapping from provider classnames to IDs
      */
     protected Map<String, Integer> worldProviderClasses = new HashMap<>();
@@ -154,16 +149,6 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         return ImmutableMap.copyOf(worlds);
     }
 
-    public Set<Integer> getDimensions()
-    {
-        return worldsByDim.keySet();
-    }
-
-    public Multiworld getMultiworld(int dimensionId)
-    {
-        return worldsByDim.get(dimensionId);
-    }
-
     public Multiworld getMultiworld(String name)
     {
         return worlds.get(name);
@@ -181,15 +166,6 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             return mw.getWorldServer();
 
         return null;
-    }
-
-    @Override
-    public String getWorldName(int dimId)
-    {
-        Multiworld mw = getMultiworld(dimId);
-        if (mw != null)
-            return mw.getName();
-        return parentNamedWorldHandler.getWorldName(dimId);
     }
 
     @Override

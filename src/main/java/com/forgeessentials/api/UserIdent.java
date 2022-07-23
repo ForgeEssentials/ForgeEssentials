@@ -253,7 +253,7 @@ public class UserIdent
         }
         else
         {
-            return UserIdent.getNpc(sender.getName());
+            return UserIdent.getNpc(null);
         }
     }
 
@@ -313,7 +313,7 @@ public class UserIdent
         return ident;
     }
 
-    public static synchronized UserIdent get(String uuidOrUsername, ICommandSource sender, boolean mustExist)
+    public static synchronized UserIdent get(String uuidOrUsername, CommandSource sender, boolean mustExist)
     {
         PlayerEntity player = sender != null ? UserIdent.getPlayerByMatchOrUsername(sender, uuidOrUsername) : //
                 UserIdent.getPlayerByUsername(uuidOrUsername);
@@ -349,14 +349,14 @@ public class UserIdent
         }
     }
 
-    public static synchronized UserIdent get(String uuidOrUsername, ICommandSource sender)
+    public static synchronized UserIdent get(String uuidOrUsername, CommandSource sender)
     {
         return get(uuidOrUsername, sender, false);
     }
 
     public static synchronized UserIdent get(String uuidOrUsername, boolean mustExist)
     {
-        return get(uuidOrUsername, (ICommandSource) null, mustExist);
+        return get(uuidOrUsername, (CommandSource) null, mustExist);
     }
 
     public static synchronized UserIdent get(String uuidOrUsername)
@@ -717,11 +717,11 @@ public class UserIdent
         return configurationManager == null ? null : configurationManager.getPlayerByName(username);
     }
 
-    public static PlayerEntity getPlayerByMatchOrUsername(ICommandSource sender, String match)
+    public static PlayerEntity getPlayerByMatchOrUsername(CommandSource sender, String match)
     {
         try
         {
-            PlayerEntity player = EntitySelector.matchOnePlayer(sender, match);
+            PlayerEntity player = EntitySelector.findSinglePlayer(sender);
             if (player != null)
                 return player;
             return getPlayerByUsername(match);
