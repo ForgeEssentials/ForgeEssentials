@@ -1,9 +1,9 @@
 package com.forgeessentials.tickets;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-
 import com.forgeessentials.commons.selections.WarpPoint;
+
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class Ticket
 {
@@ -18,13 +18,13 @@ public class Ticket
 
     public WarpPoint point;
 
-    public Ticket(ICommandSender sender, String category, String message)
+    public Ticket(CommandSource sender, String category, String message)
     {
         id = ModuleTickets.getNextID();
-        creator = sender.getName();
-        if (sender instanceof EntityPlayer)
+        creator = sender.getTextName();
+        if (sender.getEntity() instanceof PlayerEntity)
         {
-            point = new WarpPoint((EntityPlayer) sender);
+            point = new WarpPoint((PlayerEntity) sender.getEntity());
         }
         this.category = category;
         this.message = message;
