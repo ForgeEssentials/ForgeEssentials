@@ -16,7 +16,6 @@ import org.apache.commons.io.FileUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.mcstats.Metrics.Plotter;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
@@ -98,13 +97,6 @@ public class ModulePermissions
         FECommandManager.registerCommand(new CommandPromote());
         FECommandManager.registerCommand(new CommandItemPermission());
 
-        ForgeEssentials.getMcStatsGeneralGraph().addPlotter(new Plotter("Areas") {
-            @Override
-            public int getValue()
-            {
-                return permissionHelper.getZones().size() - permissionHelper.getServerZone().getWorldZones().size() - 2;
-            }
-        });
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
