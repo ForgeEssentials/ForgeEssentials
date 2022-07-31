@@ -1,8 +1,5 @@
 package com.forgeessentials.playerlogger;
 
-
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class PlayerLoggerConfig

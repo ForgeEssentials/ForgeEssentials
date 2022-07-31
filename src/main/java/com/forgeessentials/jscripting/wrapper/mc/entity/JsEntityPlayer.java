@@ -109,7 +109,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
      */
     public boolean isUsingItem()
     {
-        return that.isHandActive();
+        return that.isUsingItem();
     }
 
     /**
@@ -155,7 +155,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
      */
     public boolean canHarvestBlock(JsBlock block)
     {
-        return that.canHarvestBlock(block.getThat().defaultBlockState());
+        return that.hasCorrectToolForDrops(block.getThat().defaultBlockState());
     }
 
     public float getEyeHeight()
@@ -207,7 +207,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
      */
     public JsItemStack getCurrentEquippedItem()
     {
-        return JsItemStack.get(that.getActiveItemStack());
+        return JsItemStack.get(that.getUseItem());
     }
 
     /**

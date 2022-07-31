@@ -2,6 +2,8 @@ package com.forgeessentials.playerlogger.event;
 
 import java.sql.Blob;
 
+import javax.persistence.EntityManager;
+
 import net.minecraftforge.event.world.BlockEvent;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;

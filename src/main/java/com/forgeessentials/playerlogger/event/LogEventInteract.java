@@ -28,7 +28,7 @@ public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
             return;
         Action01Block action = new Action01Block();
         action.time = new Date();
-        action.player = getPlayer(event.getEntityPlayer());
+        action.player = getPlayer(event.getPlayer());
         action.world = getWorld(event.getWorld().provider.getDimension());
         // action.block = getBlock(block);
         // action.metadata = metadata;

@@ -35,7 +35,7 @@ public class JsBlock extends JsWrapper<Block>
 
     public static JsBlock get(String name)
     {
-        Block block = Block.getBlockFromName(name);
+        Block block = ForgeRegistries.BLOCKS.getBlockFromName(name);
         return block == null ? null : JsBlock.get(block);
     }
 

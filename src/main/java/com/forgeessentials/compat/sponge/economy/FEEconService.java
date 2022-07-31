@@ -1,13 +1,10 @@
 package com.forgeessentials.compat.sponge.economy;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import org.spongepowered.api.service.context.ContextCalculator;
 import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
@@ -24,15 +21,7 @@ public class FEEconService implements EconomyService
     {
         return new FECurrency();
     }
-/*
-    @Override
-    public Set<Currency> getCurrencies()
-    {
-        Set<Currency> list = new HashSet();
-        list.add(new FECurrency());
-        return list;
-    }
-*/
+    
     @Override
     public boolean hasAccount(UUID uuid)
     {

@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntity;
@@ -76,7 +77,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public boolean blockExists(int x, int y, int z)
     {
-        return !that.isAirBlock(new BlockPos(x, y, z));
+        return !that.isEmptyBlock(new BlockPos(x, y, z));
     }
 
     public JsBlock getBlock(int x, int y, int z)
@@ -86,17 +87,17 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public void setBlock(int x, int y, int z, JsBlock block)
     {
-        that.setBlockState(new BlockPos(x, y, z), block.getThat().getDefaultState(), 3);
+        that.setBlock(new BlockPos(x, y, z), block.getThat().defaultBlockState(), 3);
     }
 
     public void setBlock(int x, int y, int z, JsBlock block, int meta)
     {
-        that.setBlockState(new BlockPos(x, y, z), block.getThat().getStateFromMeta(meta), 3);
+        that.setBlock(new BlockPos(x, y, z), block.getThat().stateById(meta), 3);
     }
 
     public JsTileEntity<?> getTileEntity(int x, int y, int z)
     {
-        TileEntity tileEntity = that.getTileEntity(new BlockPos(x, y, z));
+        TileEntity tileEntity = that.getBlockEntity(new BlockPos(x, y, z));
         if (tileEntityCache.containsKey(tileEntity))
             return tileEntityCache.get(tileEntity);
         JsTileEntity<?> jsTileEntity = new JsTileEntity<>(tileEntity);
@@ -106,17 +107,17 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public JsWorldServer asWorldServer()
     {
-        return that instanceof WorldServer ? new JsWorldServer((WorldServer) that) : null;
+        return that instanceof ServerWorld ? new JsWorldServer((ServerWorld) that) : null;
     }
 
     public long getWorldTime()
     {
-        return that.getWorldTime();
+        return that.getDayTime();
     }
 
     public long getTotalWorldTime()
     {
-        return that.getTotalWorldTime();
+        return that.getGameTime();
     }
 
     /**
@@ -137,12 +138,12 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public boolean canMineBlock(JsEntityPlayer player, int x, int y, int z)
     {
-        return that.canMineBlockBody(player.getThat(), new BlockPos(x, y, z));
+        return that.mayInteract(player.getThat(), new BlockPos(x, y, z));
     }
 
     public float getWeightedThunderStrength(float weight)
     {
-        return that.getThunderStrength(weight);
+        return that.getThunderLevel(weight);
     }
 
     /**
@@ -150,7 +151,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public float getRainStrength(float strength)
     {
-        return that.getRainStrength(strength);
+        return that.getRainLevel(strength);
     }
 
     /**
@@ -179,7 +180,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public boolean isBlockHighHumidity(int x, int y, int z)
     {
-        return that.isBlockinHighHumidity(new BlockPos(x, y, z));
+        return that.isHumidAt(new BlockPos(x, y, z));
     }
 
     /**
@@ -195,7 +196,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public int getActualHeight()
     {
-        return that.getActualHeight();
+        return that.getMaxBuildHeight();
     }
 
     public JsBlock getTopBlock(int x, int z)
@@ -208,7 +209,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public boolean isAirBlock(int x, int y, int z)
     {
-        return that.isAirBlock(new BlockPos(x, y, z));
+        return that.isEmptyBlock(new BlockPos(x, y, z));
     }
 
     /**
@@ -216,15 +217,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public boolean canBlockSeeTheSky(int x, int y, int z)
     {
-        return that.canBlockSeeSky(new BlockPos(x, y, z));
-    }
-
-    /**
-     * Does the same as getBlockLightValue_do but without checking if its not a normal block
-     */
-    public int getFullBlockLightValue(int x, int y, int z)
-    {
-        return that.getBlockLightOpacity(new BlockPos(x, y, z));
+        return that.canSeeSky(new BlockPos(x, y, z));
     }
 
     /**
@@ -232,7 +225,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public int getBlockLightValue(int x, int y, int z)
     {
-        return that.getLight(new BlockPos(x, y, z));
+        return that.getMaxLocalRawBrightness(new BlockPos(x, y, z));
     }
 
     /**
@@ -257,7 +250,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public float getLightBrightness(int x, int y, int z)
     {
-        return that.getLightBrightness(new BlockPos(x, y, z));
+        return that.getBrightness(new BlockPos(x, y, z));
     }
 
     /**
@@ -265,7 +258,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public boolean isDaytime()
     {
-        return that.isDaytime();
+        return that.isDay();
     }
 
     /**
@@ -273,7 +266,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public float getCelestialAngle(float arg1)
     {
-        return that.getCelestialAngle(arg1);
+        return that.getSunAngle(arg1);
     }
 
     /**
@@ -281,12 +274,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public float getCurrentMoonPhaseFactor()
     {
-        return that.getCurrentMoonPhaseFactor();
-    }
-
-    public float getCurrentMoonPhaseFactorBody()
-    {
-        return that.getCurrentMoonPhaseFactorBody();
+        return that.getMoonPhase();
     }
 
     /**
@@ -294,7 +282,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public float getCelestialAngleRadians(float arg1)
     {
-        return that.getCelestialAngleRadians(arg1);
+        return that.getSunAngle(arg1) * (float)( 2 * Math.PI);
     }
 
     /**
@@ -302,7 +290,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public JsEntityPlayer getClosestPlayerToEntity(JsEntity<?> entity, double dist)
     {
-        return JsEntityPlayer.get(that.getClosestPlayerToEntity(entity.getThat(), dist));
+        return JsEntityPlayer.get(that.getNearestPlayer(entity.getThat(), dist));
     }
 
     /**
@@ -310,7 +298,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public JsEntityPlayer getClosestPlayer(double x, double y, double z, double dist)
     {
-        return JsEntityPlayer.get(that.getClosestPlayer(x, y, z, dist, false));
+        return JsEntityPlayer.get(that.getNearestPlayer(x, y, z, dist, false));
     }
 
     /**
@@ -318,7 +306,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public long getSeed()
     {
-        return that.seed;
+        return ServerLifecycleHooks.getCurrentServer().getWorldData().worldGenSettings().seed();
     }
 
     // /**

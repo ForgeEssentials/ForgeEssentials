@@ -406,7 +406,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             if (tileEntity == null)
                 return null;
             CompoundNBT nbt = new CompoundNBT();
-            tileEntity.writeToNBT(nbt);
+            tileEntity.save(nbt);
             nbt.putString("ENTITY_CLASS", tileEntity.getClass().getName());
             ByteBuf buf = Unpooled.buffer();
             ByteBufUtils.writeTag(buf, nbt);
@@ -681,7 +681,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             for (BlockSnapshot snapshot : ((EntityMultiPlaceEvent) event).getReplacedBlockSnapshots())
                 changes.put(snapshot.getPos(), snapshot);
             for (BlockSnapshot snapshot : changes.values())
-                eventQueue.add(new LogEventPlace(new EntityPlaceEvent(snapshot, event.getPlacedAgainst(), event.getPlayer(), event.getHand())));
+                eventQueue.add(new LogEventPlace(new EntityPlaceEvent(snapshot, event.getPlacedAgainst(), event.getEntity())));
             startThread();
         }
         else
