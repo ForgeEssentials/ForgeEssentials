@@ -18,6 +18,8 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -55,7 +57,7 @@ public class ModuleAfterlife extends ServerEventHandler
     public static final String PERM_DEATHCHEST_BYPASS = PERM_DEATHCHEST + ".bypass";
 
     @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent e)
+    public void load(final RegistryEvent.Register<TileEntityType<?>> event)
     {
         TileEntity.register("FESkull", TileEntitySkullGrave.class);
     }

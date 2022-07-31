@@ -69,7 +69,7 @@ public class CommandWorldBorder extends ParserCommandBase
         }
         else
         {
-            worldToUse = arguments.senderPlayer.world;
+            worldToUse = arguments.senderPlayer.level;
         }
 
         WorldBorder border = ModuleWorldBorder.getInstance().getBorder(worldToUse);

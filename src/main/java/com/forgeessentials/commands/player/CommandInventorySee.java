@@ -66,7 +66,7 @@ public class CommandInventorySee extends ForgeEssentialsCommandBase
         if (victim == null)
             throw new TranslatedCommandException("Player %s not found.", args[0]);
 
-        if (player.openContainer != player.inventoryContainer)
+        if (player.containerMenu != player.inventoryMenu)
         {
             player.closeContainer();;
         }

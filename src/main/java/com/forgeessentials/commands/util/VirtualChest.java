@@ -25,14 +25,14 @@ public class VirtualChest extends InventoryBasic
     @Override
     public void openInventory(PlayerEntity player)
     {
-        loadInventoryFromNBT(PlayerUtil.getPersistedTag(owner, false).getTagList(VIRTUALCHEST_TAG, 10));
+        loadInventoryFromNBT(PlayerUtil.getPersistedTag(owner, false).getList(VIRTUALCHEST_TAG, 10));
         super.openInventory(player);
     }
 
     @Override
     public void closeInventory(PlayerEntity player)
     {
-        PlayerUtil.getPersistedTag(owner, true).setTag(VIRTUALCHEST_TAG, saveInventoryToNBT());
+        PlayerUtil.getPersistedTag(owner, true).put(VIRTUALCHEST_TAG, saveInventoryToNBT());
         super.closeInventory(player);
     }
 
@@ -40,14 +40,14 @@ public class VirtualChest extends InventoryBasic
     public void markDirty()
     {
         super.markDirty();
-        PlayerUtil.getPersistedTag(owner, true).setTag(VIRTUALCHEST_TAG, saveInventoryToNBT());
+        PlayerUtil.getPersistedTag(owner, true).put(VIRTUALCHEST_TAG, saveInventoryToNBT());
     }
 
     public void loadInventoryFromNBT(ListNBT tag)
     {
         for (int slotIndex = 0; slotIndex < getSizeInventory(); ++slotIndex)
             setInventorySlotContents(slotIndex, (ItemStack) ItemStack.EMPTY);
-        for (int tagIndex = 0; tagIndex < tag.tagCount(); ++tagIndex)
+        for (int tagIndex = 0; tagIndex < tag.size(); ++tagIndex)
         {
             CompoundNBT tagSlot = tag.getCompound(tagIndex);
             int var4 = tagSlot.getByte("Slot") & 255;
@@ -68,8 +68,8 @@ public class VirtualChest extends InventoryBasic
             {
                 CompoundNBT var4 = new CompoundNBT();
                 var4.putByte("Slot", (byte) var2);
-                var3.writeToNBT(var4);
-                var1.appendTag(var4);
+                var3.save(var4);
+                var1.add(var4);
             }
         }
 

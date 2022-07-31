@@ -91,7 +91,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     @SubscribeEvent
     public void playerMoveEvent(PlayerMoveEvent event)
     {
-        ServerPlayerEntity player = event.getPlayer();
+        ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
         WorldBorder border = getBorder(event.after.getWorld());
         if (border != null && border.isEnabled())
         {

@@ -237,7 +237,7 @@ public class Grave implements Loadable
             if (is == ItemStack.EMPTY)
                 continue;
             ItemEntity entity = new ItemEntity(point.getWorld(), point.getX(), point.getY(), point.getZ(), is);
-            point.getWorld().spawnEntity(entity);
+            point.getWorld().addFreshEntity(entity);
         }
         inventory.clear();
     }

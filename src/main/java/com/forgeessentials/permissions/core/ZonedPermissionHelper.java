@@ -20,6 +20,7 @@ import java.util.WeakHashMap;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.RegistryKey;
@@ -101,7 +102,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     private boolean disableDebug;
 
-    public Set<ICommandSender> permissionDebugUsers = Collections.newSetFromMap(new WeakHashMap<ICommandSender, Boolean>());
+    public Set<CommandSource> permissionDebugUsers = Collections.newSetFromMap(new WeakHashMap<CommandSource, Boolean>());
 
     public List<String> permissionDebugFilters = new ArrayList<>();
 
@@ -450,9 +451,9 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
                 msg2 = new TranslationTextComponent("  zone %s user %s", msgZone, msgUser);
             }
         }
-        for (ICommandSender sender : permissionDebugUsers)
+        for (CommandSource sender : permissionDebugUsers)
         {
-            if (point != null && sender instanceof Entity && new WorldPoint((Entity) sender).distance(point) > 32)
+            if (point != null && sender.getEntity() instanceof Entity && new WorldPoint((Entity) sender.getEntity()).distance(point) > 32)
                 continue;
             ChatOutputHandler.sendMessage(sender, msg1);
             ChatOutputHandler.sendMessage(sender, msg2);
@@ -548,7 +549,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent
     public void playerLoggedOut(PlayerLoggedOutEvent e)
     {
-        permissionDebugUsers.remove(e.getPlayer());
+        permissionDebugUsers.remove(e.getPlayer().createCommandSourceStack());
     }
 
     @SubscribeEvent
