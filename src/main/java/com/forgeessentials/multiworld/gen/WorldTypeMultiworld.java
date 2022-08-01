@@ -5,9 +5,9 @@ import net.minecraft.world.server.ServerWorld;
 
 import com.forgeessentials.multiworld.WorldServerMultiworld;
 
-public class WorldTypeMultiworld extends WorldType
+public class WorldTypeMultiworld //extends WorldType
 {
-
+/*
     private WorldServerMultiworld currentMultiworld;
     private WorldType world;
 
@@ -25,11 +25,11 @@ public class WorldTypeMultiworld extends WorldType
     public WorldType getWorldTypeForGeneratorVersion(int version)
     {
         return world.getWorldTypeForGeneratorVersion(version);
-    }
+    }*/
 
     /**
      * Returns true if this world Type has a version associated with it.
-     */
+     *//*
     public boolean isVersioned()
     {
         return world.isVersioned();
@@ -68,44 +68,44 @@ public class WorldTypeMultiworld extends WorldType
     public boolean handleSlimeSpawnReduction(java.util.Random random, World world)
     {
         return this.world.handleSlimeSpawnReduction(random, world);
-    }
+    }*/
 
     /**
      * Called when 'Create New World' button is pressed before starting game
      */
-    public void onGUICreateWorldPress()
-    {
-    }
+    //public void onGUICreateWorldPress()
+    //{
+    //}
 
     /**
      * Gets the spawn fuzz for players who join the world. Useful for void world types.
      * 
      * @return Fuzz for entity initial spawn in blocks.
      */
-    public int getSpawnFuzz(ServerWorld world, net.minecraft.server.MinecraftServer server)
-    {
-        return this.world.getSpawnFuzz(world, server);
-    }
+    //public int getSpawnFuzz(ServerWorld world, net.minecraft.server.MinecraftServer server)
+    //{
+    //    return this.world.getSpawnFuzz(world, server);
+    //}
 
     /**
      * Should world creation GUI show 'Customize' button for this world type?
      * 
      * @return if this world type has customization parameters
      */
-    public boolean isCustomizable()
-    {
-        return this.world.isCustomizable();
-    }
+    //public boolean isCustomizable()
+    //{
+    //    return this.world.isCustomizable();
+    //}
 
     /**
      * Get the height to render the clouds for this world type
      * 
      * @return The height to render clouds at
      */
-    public float getCloudHeight()
-    {
-        return world.getCloudHeight();
-    }
+    //public float getCloudHeight()
+    //{
+    //    return world.getCloudHeight();
+    //}
 
     /**
      * Creates the GenLayerBiome used for generating the world with the specified ChunkProviderSettings JSON String *IF AND ONLY IF* this WorldType == WorldType.CUSTOMIZED.
@@ -119,14 +119,14 @@ public class WorldTypeMultiworld extends WorldType
      *            The JSON string to use when initializing ChunkProviderSettings.Factory
      * @return A GenLayer that will return ints representing the Biomes to be generated, see GenLayerBiome
      */
-    public GenLayer getBiomeLayer(long worldSeed, GenLayer parentLayer, String chunkProviderSettingsJson)
-    {
-        return getBiomeLayer(worldSeed, parentLayer, ChunkGeneratorSettings.Factory.jsonToFactory(chunkProviderSettingsJson).build());
-    }
+    //public GenLayer getBiomeLayer(long worldSeed, GenLayer parentLayer, String chunkProviderSettingsJson)
+    //{
+    //    return getBiomeLayer(worldSeed, parentLayer, ChunkGeneratorSettings.Factory.jsonToFactory(chunkProviderSettingsJson).build());
+    //}
 
-    public GenLayer getBiomeLayer(long worldSeed, GenLayer parentLayer, ChunkGeneratorSettings chunkProviderSettings)
-    {
-        return this.world.getBiomeLayer(worldSeed, parentLayer, chunkProviderSettings);
-    }
+    //public GenLayer getBiomeLayer(long worldSeed, GenLayer parentLayer, ChunkGeneratorSettings chunkProviderSettings)
+    //{
+    //    return this.world.getBiomeLayer(worldSeed, parentLayer, chunkProviderSettings);
+    //}
 
 }

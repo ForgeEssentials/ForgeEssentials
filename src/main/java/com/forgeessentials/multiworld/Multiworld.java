@@ -26,7 +26,7 @@ import com.google.gson.annotations.Expose;
  */
 public class Multiworld
 {
-
+/*
     protected String name;
 
     protected RegistryKey<World> dimensionId;
@@ -207,33 +207,33 @@ public class Multiworld
     protected void delete()
     {
         DataManager.getInstance().delete(this.getClass(), name);
-    }
+    }*/
 
     /**
      * Teleport the player to the multiworld
      * 
      * @throws CommandException
      */
-    public void teleport(ServerPlayerEntity player, boolean instant) throws CommandException
-    {
-        teleport(player, getWorldServer(), instant);
-    }
+    //public void teleport(ServerPlayerEntity player, boolean instant) throws CommandException
+    //{
+    //    teleport(player, getWorldServer(), instant);
+    //}
 
     /**
      * Teleport the player to the multiworld
      * 
      * @throws CommandException
      */
-    public static void teleport(ServerPlayerEntity player, ServerWorld world, boolean instant) throws CommandException
-    {
-        teleport(player, world, player.position().x, player.position().y, player.position().x, instant);
-    }
+    //public static void teleport(ServerPlayerEntity player, ServerWorld world, boolean instant) throws CommandException
+    //{
+    //    teleport(player, world, player.position().x, player.position().y, player.position().x, instant);
+    //}
 
     /**
      * Teleport the player to the multiworld
      * 
      * @throws CommandException
-     */
+     *//*
     public static void teleport(ServerPlayerEntity player, ServerWorld world, double x, double y, double z, boolean instant) throws CommandException
     {
         boolean worldChange = player.level.dimension() != world.dimension();
@@ -269,6 +269,6 @@ public class Multiworld
         // if (player.dimension > 1 || player.dimension < -1)
         // msg += " (#" + player.dimension + ")";
         // ChatOutputHandler.sendMessage(player, new ChatComponentText(msg));
-    }
+    }*/
 
 }

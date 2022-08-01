@@ -4,11 +4,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraft.world.DimensionType;
-import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
-import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
-import net.minecraftforge.fml.common.network.FMLOutboundHandler;
-import net.minecraftforge.fml.common.network.NetworkHandshakeEstablished;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 /**
  * 
@@ -16,7 +11,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
  */
 public class MultiworldEventHandler extends ChannelInboundHandlerAdapter
 {
-
+/*
     private MultiworldManager manager;
 
     public MultiworldEventHandler(MultiworldManager manager)
@@ -44,5 +39,5 @@ public class MultiworldEventHandler extends ChannelInboundHandlerAdapter
         }
 
         ctx.fireUserEventTriggered(evt);
-    }
+    }*/
 }

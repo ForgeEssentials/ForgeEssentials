@@ -37,14 +37,13 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.ImmutableMap;
 
-import static net.minecraftforge.common.DimensionManager.getRegisteredDimensions;
 
 /**
  * 
  * @author Olee
  * @author gnif
  */
-public class MultiworldManager extends ServerEventHandler implements NamedWorldHandler
+public class MultiworldManager //extends ServerEventHandler implements NamedWorldHandler
 {
 
     public static final String PERM_PROP_MULTIWORLD = FEPermissions.FE_INTERNAL + ".multiworld";
@@ -68,7 +67,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     /**
      * Mapping from worldType names to WorldType objects
      */
-    protected Map<String, WorldType> worldTypes = new HashMap<>();
+    //protected Map<String, WorldType> worldTypes = new HashMap<>();
 
     /**
      * List of worlds that have been marked for deletion
@@ -83,12 +82,12 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     /**
      * Event handler for new clients that need to know about our worlds
      */
-    protected MultiworldEventHandler eventHandler = new MultiworldEventHandler(this);
+    //protected MultiworldEventHandler eventHandler = new MultiworldEventHandler(this);
 
-    private NamedWorldHandler parentNamedWorldHandler;
+    //private NamedWorldHandler parentNamedWorldHandler;
 
     // ============================================================
-
+/*
     public MultiworldManager()
     {
         parentNamedWorldHandler = APIRegistry.namedWorldHandler;
@@ -174,24 +173,24 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
         List<String> names = parentNamedWorldHandler.getWorldNames();
         names.addAll(worlds.keySet());
         return names;
-    }
+    }*/
 
     /**
      * Register and load a multiworld. If the world fails to load, it won't be registered
      */
-    public void addWorld(Multiworld world) throws MultiworldException
-    {
-        if (worlds.containsKey(world.getName()))
-            throw new MultiworldException(Type.ALREADY_EXISTS);
-        registerWorld(world);
-        loadWorld(world);
-        worlds.put(world.getName(), world);
-        world.save();
-    }
+    //public void addWorld(Multiworld world) throws MultiworldException
+    //{
+    //    if (worlds.containsKey(world.getName()))
+    //        throw new MultiworldException(Type.ALREADY_EXISTS);
+    //    registerWorld(world);
+    //    loadWorld(world);
+    //    worlds.put(world.getName(), world);
+    //    world.save();
+    //}
 
     /**
      * Get a free dimensionID for a new multiworld - minimum dim-id is 10
-     */
+     *//*
     public static int getFreeDimensionId()
     {
         int id = 10;
@@ -220,11 +219,11 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
 
         // Allow the world to unload
         DimensionManager.getProviderType(world.dimensionId).setLoadSpawn(false);
-    }
+    }*/
 
     /**
      * Loads a multiworld
-     */
+     *//*
     protected void loadWorld(Multiworld world) throws MultiworldException
     {
         if (world.worldLoaded)
@@ -293,11 +292,11 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 throw new MultiworldException(Type.NO_PROVIDER);
             return providerId;
         }
-    }
+    }*/
 
     /**
      * Checks the WorldZone permissions for multiworlds and moves them to the correct dimension if it changed
-     */
+     *//*
     private static void checkMultiworldPermissions(Multiworld world)
     {
         for (WorldZone zone : APIRegistry.perms.getServerZone().getWorldZones().values())
@@ -316,7 +315,7 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             }
         }
     }
-
+*/
     // ============================================================
 
     /**
@@ -324,54 +323,54 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
      * 
      * @param world
      */
-    public void unloadWorld(Multiworld world)
-    {
-        world.worldLoaded = false;
-        world.removeAllPlayersFromWorld();
-        DimensionManager.unloadWorld(world.getDimensionId());
-        worldsToRemove.add(DimensionManager.getWorld(world.getDimensionId()));
-        worldsByDim.remove(world.getDimensionId());
-        worlds.remove(world.getName());
-    }
+    //public void unloadWorld(Multiworld world)
+    //{
+    //    world.worldLoaded = false;
+    //    world.removeAllPlayersFromWorld();
+    //    DimensionManager.unloadWorld(world.getDimensionId());
+    //    worldsToRemove.add(DimensionManager.getWorld(world.getDimensionId()));
+    //    worldsByDim.remove(world.getDimensionId());
+    //    worlds.remove(world.getName());
+    //}
 
     /**
      * Unload world and delete it's data once onloaded
      * 
      * @param world
      */
-    public void deleteWorld(Multiworld world)
-    {
-        unloadWorld(world);
-        worldsToDelete.add(world.getWorldServer());
-        world.delete();
-    }
+    //public void deleteWorld(Multiworld world)
+    //{
+    //    unloadWorld(world);
+    //    worldsToDelete.add(world.getWorldServer());
+    //    world.delete();
+    //}
 
     /**
      * Remove dimensions and clear multiworld-data when server stopped
      * 
      * (for integrated server)
      */
-    public void serverStopped()
-    {
-        saveAll();
-        for (Multiworld world : worlds.values())
-        {
-            world.worldLoaded = false;
-            DimensionManager.unregisterDimension(world.getDimensionId());
-        }
-        worldsByDim.clear();
-        worlds.clear();
-    }
+    //public void serverStopped()
+    //{
+    //    saveAll();
+    //    for (Multiworld world : worlds.values())
+    //    {
+    //        world.worldLoaded = false;
+    //        DimensionManager.unregisterDimension(world.getDimensionId());
+    //    }
+    //    worldsByDim.clear();
+    //    worlds.clear();
+    //}
 
     // ============================================================
 
     /**
      * Forge DimensionManager stores used dimension IDs and does not assign them again, unless they are cleared manually.
      */
-    public void clearDimensionMap()
-    {
-        DimensionManager.loadDimensionDataMap(null);
-    }
+    //public void clearDimensionMap()
+    //{
+    //    DimensionManager.loadDimensionDataMap(null);
+    //}
 
     // ============================================================
     // Unloading and deleting of worlds
@@ -379,16 +378,16 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     /**
      * When a world is unloaded and marked as to-be-unregistered, remove it now when it is not needed any more
      */
-    @SubscribeEvent
-    public void serverTickEvent(ServerTickEvent event)
-    {
-        unregisterDimensions();
-        deleteDimensions();
-    }
+    //@SubscribeEvent
+    //public void serverTickEvent(ServerTickEvent event)
+    //{
+    //    unregisterDimensions();
+    //    deleteDimensions();
+    //}
 
     /**
      * Load global world data
-     */
+     *//*
     @SubscribeEvent
     public void worldPreLoadEvent(WorldPreLoadEvent event)
     {
@@ -406,22 +405,22 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 throw new RuntimeException(e);
             }
         }
-    }
+    }*/
 
     /**
      * Load global world data
      */
-    @SubscribeEvent
-    public void worldUnloadEvent(WorldEvent.Unload event)
-    {
-        Multiworld mw = getMultiworld(event.getWorld());
-        if (mw != null)
-            mw.worldLoaded = false;
-    }
+    //@SubscribeEvent
+    //public void worldUnloadEvent(WorldEvent.Unload event)
+    //{
+    //    Multiworld mw = getMultiworld(event.getWorld());
+    //    if (mw != null)
+    //        mw.worldLoaded = false;
+    //}
 
     /**
      * Unregister all worlds that have been marked for removal
-     */
+     *//*
     protected void unregisterDimensions()
     {
         for (Iterator<ServerWorld> it = worldsToRemove.iterator(); it.hasNext();)
@@ -435,11 +434,11 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 it.remove();
             }
         }
-    }
+    }*/
 
     /**
      * Delete all worlds that have been marked for deletion
-     */
+     *//*
     protected void deleteDimensions()
     {
         for (Iterator<ServerWorld> it = worldsToDelete.iterator(); it.hasNext();)
@@ -465,14 +464,14 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
                 }
             }
         }
-    }
+    }*/
 
     // ============================================================
     // WorldProvider management
 
     /**
      * Use reflection to load the registered WorldProviders
-     */
+     *//*
     public void loadWorldProviders()
     {
         try
@@ -505,52 +504,52 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
     public Map<String, Integer> getWorldProviders()
     {
         return worldProviderClasses;
-    }
+    }*/
 
     // ============================================================
     // WorldType management
 
     /**
      * Returns the WorldType for a given worldType string
-     */
+     *//*
     public WorldType getWorldTypeByName(String worldType) throws MultiworldException
     {
         WorldType type = worldTypes.get(worldType.toUpperCase());
         if (type == null)
             throw new MultiworldException(Type.NO_WORLDTYPE);
         return type;
-    }
+    }*/
 
     /**
      * Builds the map of valid worldTypes
      */
-    public void loadWorldTypes()
-    {
-        for (int i = 0; i < WorldType.WORLD_TYPES.length; ++i)
-        {
-            WorldType type = WorldType.WORLD_TYPES[i];
-            if (type == null)
-                continue;
+    //public void loadWorldTypes()
+    //{
+    //    for (int i = 0; i < WorldType.WORLD_TYPES.length; ++i)
+    //    {
+    //        WorldType type = WorldType.WORLD_TYPES[i];
+    //        if (type == null)
+    //            continue;
 
-            String name = type.getName().toUpperCase();
+    //        String name = type.getName().toUpperCase();
 
             /*
              * MC does not allow creation of this worldType, so we should not either
              */
-            if (name.equals("DEFAULT_1_1"))
-                continue;
+    //        if (name.equals("DEFAULT_1_1"))
+    //            continue;
 
-            worldTypes.put(name, type);
-        }
+    //        worldTypes.put(name, type);
+    //    }
 
-        LoggingHandler.felog.debug("[Multiworld] Available world types:");
-        for (String worldType : worldTypes.keySet())
-            LoggingHandler.felog.debug("# " + worldType);
-    }
+    //    LoggingHandler.felog.debug("[Multiworld] Available world types:");
+    //    for (String worldType : worldTypes.keySet())
+    //        LoggingHandler.felog.debug("# " + worldType);
+    //}
 
-    public Map<String, WorldType> getWorldTypes()
-    {
-        return worldTypes;
-    }
+    //public Map<String, WorldType> getWorldTypes()
+    //{
+    //    return worldTypes;
+    //}
 
 }

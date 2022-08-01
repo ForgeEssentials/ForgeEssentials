@@ -6,28 +6,16 @@ import java.io.FileOutputStream;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.MinecraftException;
-import net.minecraft.world.WorldProvider;
-import net.minecraft.world.chunk.storage.AnvilChunkLoader;
-import net.minecraft.world.chunk.storage.IChunkLoader;
-import net.minecraft.world.gen.structure.template.TemplateManager;
-import net.minecraft.world.storage.IPlayerFileData;
-import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.gen.feature.template.TemplateManager;
 import net.minecraft.world.storage.IWorldInfo;
-import net.minecraft.world.storage.SaveHandler;
-import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.StartupQuery;
 
 /**
  * 
  * @author Olee
  */
-public class MultiworldSaveHandler implements ISaveHandler
+public class MultiworldSaveHandler //implements ISaveHandler
 {
-
+/*
     private SaveHandler parent;
 
     private Multiworld world;
@@ -180,5 +168,5 @@ public class MultiworldSaveHandler implements ISaveHandler
     {
         return parent.getStructureTemplateManager();
     }
-
+*/
 }

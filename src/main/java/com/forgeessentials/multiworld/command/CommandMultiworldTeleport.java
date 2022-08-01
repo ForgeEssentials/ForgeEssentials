@@ -20,9 +20,9 @@ import com.forgeessentials.multiworld.Multiworld;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandMultiworldTeleport extends ParserCommandBase
+public class CommandMultiworldTeleport //extends ParserCommandBase
 {
-
+/*
     @Override
     public String getPrimaryAlias()
     {
@@ -119,6 +119,6 @@ public class CommandMultiworldTeleport extends ParserCommandBase
         msg = Translator.format(msg + " at [%.0f, %.0f, %.0f]", x, y, z);
         ChatOutputHandler.chatConfirmation(player.createCommandSourceStack(), msg);
         Multiworld.teleport(player, world, x, y, z, false);
-    }
+    }*/
 
 }

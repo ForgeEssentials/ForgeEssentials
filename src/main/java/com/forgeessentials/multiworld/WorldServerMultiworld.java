@@ -7,9 +7,9 @@ import net.minecraft.world.server.ServerWorld;
 
 import com.forgeessentials.core.misc.TeleportHelper.SimpleTeleporter;
 
-public class WorldServerMultiworld extends ServerWorld
+public class WorldServerMultiworld// extends ServerWorld
 {
-
+/*
     private SimpleTeleporter worldTeleporter;
 
     public WorldServerMultiworld(MinecraftServer mcServer, ISaveHandler saveHandler, WorldInfo info, int dimensionId, ServerWorld worldServer,
@@ -39,5 +39,5 @@ public class WorldServerMultiworld extends ServerWorld
     {
         return this.saveHandler.getWorldDirectory();
     }
-
+*/
 }
