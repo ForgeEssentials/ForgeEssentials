@@ -130,7 +130,7 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (point.getWorld() == null)
         {
-            FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(point.getDimension());
+            ServerLifecycleHooks.getCurrentServer().getLevel(point.getDimension());
             if (point.getWorld() == null)
             {
                 ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target dimension does not exist"));
@@ -144,7 +144,7 @@ public class TeleportHelper extends ServerEventHandler
             throw new TranslatedCommandException("You are not allowed to teleport from here.");
         if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_TO))
             throw new TranslatedCommandException("You are not allowed to teleport to that location.");
-        if (player.dimension != point.getDimension())
+        if (player.level.dimension() != point.getDimension())
         {
             if (!APIRegistry.perms.checkPermission(player, TELEPORT_CROSSDIM_FROM))
                 throw new TranslatedCommandException("You are not allowed to teleport from this dimension.");
@@ -195,10 +195,10 @@ public class TeleportHelper extends ServerEventHandler
         BlockPos blockPos2 = new BlockPos(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
         Block block1 = point.getWorld().getBlockState(blockPos1).getBlock();
         Block block2 = point.getWorld().getBlockState(blockPos2).getBlock();
-        AxisAlignedBB blockBounds1 = block1.getCollisionBoundingBox(block1.getDefaultState(), point.getWorld(), blockPos1);
-        AxisAlignedBB blockBounds2 = block2.getCollisionBoundingBox(block2.getDefaultState(), point.getWorld(), blockPos2);
-        boolean block1Free = !block1.getMaterial(block1.getDefaultState()).isSolid() || blockBounds1 == null || blockBounds1.maxX < 1 || blockBounds1.maxY > 0;
-        boolean block2Free = !block2.getMaterial(block2.getDefaultState()).isSolid() || blockBounds2 == null || blockBounds2.maxX < 1 || blockBounds2.maxY > 0;
+        AxisAlignedBB blockBounds1 = block1.getCollisionBoundingBox(block1.defaultBlockState(), point.getWorld(), blockPos1);
+        AxisAlignedBB blockBounds2 = block2.getCollisionBoundingBox(block2.defaultBlockState(), point.getWorld(), blockPos2);
+        boolean block1Free = !block1.getMaterial(block1.defaultBlockState()).isSolid() || blockBounds1 == null || blockBounds1.maxX < 1 || blockBounds1.maxY > 0;
+        boolean block2Free = !block2.getMaterial(block2.defaultBlockState()).isSolid() || blockBounds2 == null || blockBounds2.maxX < 1 || blockBounds2.maxY > 0;
         return block1Free && block2Free;
     }
 
@@ -234,7 +234,7 @@ public class TeleportHelper extends ServerEventHandler
         player.stopRiding();
         ;
 
-        if (player.dimension != point.getDimension())
+        if (player.level.dimension() != point.getDimension())
         {
             SimpleTeleporter teleporter = new SimpleTeleporter(point.getWorld());
             MinecraftServer mcServer = ServerLifecycleHooks.getCurrentServer();
@@ -250,7 +250,7 @@ public class TeleportHelper extends ServerEventHandler
             doTeleport((PlayerEntity) entity, point);
             return;
         }
-        if (entity.dimension != point.getDimension())
+        if (entity.level.dimension() != point.getDimension())
             entity.changeDimension(point.getDimension());
         entity.setLocationAndAngles(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
@@ -285,7 +285,7 @@ public class TeleportHelper extends ServerEventHandler
             e.setCanceled(true);
         if (!APIRegistry.perms.checkUserPermission(ident, pointTo, TELEPORT_PORTALTO))
             e.setCanceled(true);
-        if (e.world.dimension() != e.targetDimension)
+        if (e.world.dimension() != e.targetDimension.dimension())
         {
             if (!APIRegistry.perms.checkUserPermission(ident, pointFrom, TELEPORT_CROSSDIM_PORTALFROM))
                 e.setCanceled(true);
@@ -301,9 +301,9 @@ public class TeleportHelper extends ServerEventHandler
         World oldDim = player.level;
         MinecraftServer mcServer = ServerLifecycleHooks.getCurrentServer();
 
-        WorldSettings oldWorld = mcServer.getWorld(player.level);
+        WorldSettings oldWorld = mcServer.getLevel(player.level);
         player.dimension = dimension;
-        WorldServer newWorld = mcServer.getWorld(player.dimension);
+        ServerWorld newWorld = mcServer.getLevel(player.level.dimension());
         player.connection.sendPacket(new SPacketRespawn(player.dimension, newWorld.getDifficulty(),
                 newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType())); // Forge: Use new dimensions information
         oldWorld.removeEntityDangerously(player);

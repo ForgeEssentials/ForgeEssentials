@@ -13,7 +13,9 @@ import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.HashMultimap;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class CommandSetChecker
 {
@@ -23,7 +25,7 @@ public class CommandSetChecker
     public static void remove()
     {
         LoggingHandler.felog.debug("Running duplicate command removal process!");
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 
         if (server.getCommandManager() instanceof CommandHandler)
         {
@@ -32,7 +34,7 @@ public class CommandSetChecker
                 HashMap<String, ICommand> initials = new HashMap<String, ICommand>();
                 HashMultimap<String, ICommand> duplicates = HashMultimap.create();
 
-                Set<ICommand> cmdList = ReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), FIELDNAME);
+                Set<ICommand> cmdList = ObfuscationReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), FIELDNAME);
                 LoggingHandler.felog.debug("commandSet size: " + cmdList.size());
 
                 ICommand keep;
@@ -102,7 +104,7 @@ public class CommandSetChecker
 
                 cmdList.removeAll(toRemove);
                 LoggingHandler.felog.debug("commandSet size: " + cmdList.size());
-                ReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, FIELDNAME);
+                ObfuscationReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, FIELDNAME);
             }
             catch (Exception e)
             {

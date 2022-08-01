@@ -47,7 +47,7 @@ public class BlockPortalSize
 
         if (i >= 0)
         {
-            this.field_150861_f = p_i45694_2_.offset(this.field_150863_d, i);
+            this.field_150861_f = p_i45694_2_.of(BlockPos.offset((long) i, this.field_150863_d));
             this.field_150868_h = this.func_180120_a(this.field_150861_f, this.field_150866_c);
 
             if (this.field_150868_h < 2 || this.field_150868_h > 21)
@@ -69,7 +69,7 @@ public class BlockPortalSize
 
         for (i = 0; i < 22; ++i)
         {
-            BlockPos blockpos1 = p_180120_1_.offset(p_180120_2_, i);
+            BlockPos blockpos1 = p_180120_1_.of(BlockPos.offset((long) i, p_180120_2_));
 
             if (!this.func_150857_a(this.field_150867_a.getBlockState(blockpos1).getBlock())
                     || this.field_150867_a.getBlockState(blockpos1.below()).getBlock() != Blocks.OBSIDIAN)
@@ -78,7 +78,7 @@ public class BlockPortalSize
             }
         }
 
-        Block block = this.field_150867_a.getBlockState(p_180120_1_.offset(p_180120_2_, i)).getBlock();
+        Block block = this.field_150867_a.getBlockState(p_180120_1_.of(BlockPos.offset((long) i, p_180120_2_))).getBlock();
         return block == Blocks.OBSIDIAN ? i : 0;
     }
 
@@ -91,7 +91,7 @@ public class BlockPortalSize
         {
             for (i = 0; i < this.field_150868_h; ++i)
             {
-                BlockPos blockpos = this.field_150861_f.offset(this.field_150866_c, i).above(this.field_150862_g);
+                BlockPos blockpos = this.field_150861_f.of(BlockPos.offset((long) i, this.field_150866_c)).above(this.field_150862_g);
                 Block block = this.field_150867_a.getBlockState(blockpos).getBlock();
 
                 if (!this.func_150857_a(block))
@@ -160,7 +160,7 @@ public class BlockPortalSize
     {
         for (int i = 0; i < this.field_150868_h; ++i)
         {
-            BlockPos blockpos = this.field_150861_f.offset(this.field_150866_c, i);
+            BlockPos blockpos = this.field_150861_f.of(BlockPos.offset((long) i, this.field_150866_c));
 
             for (int j = 0; j < this.field_150862_g; ++j)
             {

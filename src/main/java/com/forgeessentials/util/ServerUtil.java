@@ -29,6 +29,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.server.ServerLifecycleEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -108,7 +109,7 @@ public abstract class ServerUtil
     {
         boolean isRelative = value.startsWith("~");
         if (isRelative && Double.isNaN(relative))
-            throw new NumberInvalidException("commands.generic.num.invalid", new Object[] { Double.valueOf(relative) });
+            throw new NumberFormatException("commands.generic.num.invalid" + Double.valueOf(relative));
         double d1 = isRelative ? relative : 0.0D;
         if (!isRelative || value.length() > 1)
         {
@@ -425,8 +426,8 @@ public abstract class ServerUtil
         try
         {
             CommandHandler commandHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
-            Map<String, ICommand> commandMap = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, "commandMap", "a", "field_71562_a");
-            Set<ICommand> commandSet = ReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, CommandSetChecker.FIELDNAME);
+            Map<String, ICommand> commandMap = ObfuscationReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, "commandMap", "a", "field_71562_a");
+            Set<ICommand> commandSet = ObfuscationReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, CommandSetChecker.FIELDNAME);
             for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();)
             {
                 Entry<String, ICommand> command = it.next();
