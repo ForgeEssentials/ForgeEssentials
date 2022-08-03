@@ -21,6 +21,7 @@ import com.forgeessentials.util.output.LoggingHandler;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -40,7 +41,7 @@ public class ModuleTickets
     public void load(FEModuleCommonSetupEvent e)
     {
         FECommandManager.registerCommand(new CommandTicket());
-        FMLCommonHandler.instance().bus().register(this);
+        FMLJavaModLoadingContext.get().getModEventBus().register(this);
         // Config ForgeEssentials.getConfigManager().registerLoader("Tickets", new ConfigTickets());
     }
 

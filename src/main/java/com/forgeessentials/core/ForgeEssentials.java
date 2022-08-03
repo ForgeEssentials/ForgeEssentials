@@ -18,6 +18,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
@@ -209,8 +210,6 @@ public class ForgeEssentials
     @SubscribeEvent
     public void load(FMLCommonSetupEvent e)
     {
-        registerCommands();
-
         LoggingHandler.felog
                 .info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
         if (BuildInfo.isOutdated())
@@ -230,7 +229,6 @@ public class ForgeEssentials
     @SubscribeEvent
     public void postLoad(FMLCommonSetupEvent e)
     {
-        APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
         commandManager = new FECommandManager();
     }
 
@@ -241,6 +239,7 @@ public class ForgeEssentials
         configManager = new ConfigBase(new File(ServerUtil.getBaseDir(), "/ForgeEssentials"));
         FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials"), "ForgeEssentials");
 
+        ConfigBase.getModuleConfig().loadModuleConfig();
         ConfigBase.settupConfigs();
         ConfigBase.registerConfigAutomatic();
         ConfigBase.BakeConfigs(false);
@@ -257,8 +256,9 @@ public class ForgeEssentials
         NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::decode);
 
     }
-
-    private void registerCommands()
+    
+    @SubscribeEvent
+    private void registerCommands(final RegisterCommandsEvent event)
     {
         FECommandManager.registerCommand(new CommandFEInfo());
         FECommandManager.registerCommand(new CommandFeReload());
@@ -427,9 +427,18 @@ public class ForgeEssentials
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void commandEvent(CommandEvent event)
+    public void commandEvent(CommandEvent event) throws CommandSyntaxException
     {
-        boolean perm = checkPerms(event.getParseResults().getContext().getCommand(), event.getParseResults().getContext().getSource().getPlayerOrException().createCommandSourceStack());
+        boolean perm = false;
+        try
+        {
+            perm = checkPerms(event.getParseResults().getContext().getCommand(), event.getParseResults().getContext().getSource().getPlayerOrException().createCommandSourceStack());
+        }
+        catch (CommandSyntaxException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         if (logCommandsToConsole)
         {

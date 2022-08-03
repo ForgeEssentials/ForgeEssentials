@@ -1,7 +1,6 @@
 package com.forgeessentials.core.moduleLauncher;
 
 import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -13,10 +12,9 @@ import com.google.common.collect.HashMultimap;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModContainer;
 
-@SuppressWarnings({ "unchecked" })
 public class CallableMap
 {
 
@@ -50,10 +48,10 @@ public class CallableMap
             for (Method m : c.getDeclaredMethods())
             {
             	
-                if (m.isAnnotationPresent(Dist.class))
+                if (m.isAnnotationPresent(OnlyIn.class))
                 {
-                    Dist annot = m.getAnnotation(Dist.class);
-                    if (!annot.values().equals(FMLEnvironment.dist.isDedicatedServer()))
+                    OnlyIn annot = m.getAnnotation(OnlyIn.class);
+                    if (!annot.value().equals(FMLEnvironment.dist))
                     {
                         continue;
                     }
@@ -94,15 +92,14 @@ public class CallableMap
 
             for (Method m : c.getDeclaredMethods())
             {
-            	/*
-                if (m.isAnnotationPresent(Dist.class))
+                if (m.isAnnotationPresent(OnlyIn.class))
                 {
-                	Dist annot = m.getAnnotation(Dist.class);
-                    if (!annot.values().equals(FMLEnvironment.dist))
+                    OnlyIn annot = m.getAnnotation(OnlyIn.class);
+                    if (!annot.value().equals(FMLEnvironment.dist))
                     {
                         continue;
                     }
-                }*/
+                }
 
                 if (!Modifier.isStatic(m.getModifiers()))
                 {
@@ -214,11 +211,13 @@ public class CallableMap
             return method.invoke(instance, args);
         }
 
+        @SuppressWarnings("unchecked")
         public Annotation getAnnotation(Class annot)
         {
             return method.getAnnotation(annot);
         }
 
+        @SuppressWarnings("unchecked")
         public Annotation getClassAnnotation(Class annot)
         {
             return method.getDeclaringClass().getAnnotation(annot);

@@ -5,9 +5,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.moduleLauncher.FEModule.Container;
 import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
@@ -18,13 +20,9 @@ import com.forgeessentials.util.output.LoggingHandler;
 import net.minecraft.command.ICommandSource;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.moddiscovery.ModFile;
-import net.minecraftforge.fml.loading.moddiscovery.ModFileInfo;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
-import net.minecraftforge.forgespi.language.IModFileInfo;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
-@SuppressWarnings("rawtypes")
 public class ModuleContainer implements Comparable
 {
 
@@ -50,7 +48,7 @@ public class ModuleContainer implements Comparable
     {
         // get the class....
         Class c = null;
-        className = (String)data.getAnnotationData().get("value");
+        className = (String)data.getAnnotationData().getClass().getName();
 
         try
         {
@@ -82,7 +80,7 @@ public class ModuleContainer implements Comparable
 
         if (annot.canDisable())
         {
-            if (!ForgeEssentials.getConfigManager().getMainConfig().get("Core.Modules", name, annot.defaultModule()).getBoolean(true))
+            if (!ConfigBase.getModuleConfig().get(name, annot.defaultModule()));
             {
                 LoggingHandler.felog.info("Requested to disable module " + name);
                 isLoadable = false;
@@ -300,7 +298,8 @@ public class ModuleContainer implements Comparable
         Object obj = null;
 
         ModContainer contain = null;
-        for (ModContainer c : ModList.mods)
+        List<ModContainer> modList = ObfuscationReflectionHelper.getPrivateValue(ModList.class, (ModList) ModList.get(), "mods");
+        for (ModContainer c : modList)
         {
             if (c.getMod() != null && c.getMod().getClass().equals(modClass))
             {

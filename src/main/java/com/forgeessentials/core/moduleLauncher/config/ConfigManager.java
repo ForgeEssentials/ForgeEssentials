@@ -1,5 +1,5 @@
 package com.forgeessentials.core.moduleLauncher.config;
-
+/*
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,10 +12,10 @@ import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.file.FileConfig;
 import com.forgeessentials.util.output.LoggingHandler;
-
+*/
 public class ConfigManager
 {
-
+/*
     private static class ConfigFile
     {
 
@@ -149,5 +149,5 @@ public class ConfigManager
     {
         return getConfig(mainConfigName);
     }
-
+*/
 }

@@ -251,7 +251,7 @@ public class TeleportHelper extends ServerEventHandler
             return;
         }
         if (entity.level.dimension() != point.getDimension())
-            entity.changeDimension(point.getDimension());
+            entity.changeDimension(point.getWorld());
         entity.setLocationAndAngles(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
 

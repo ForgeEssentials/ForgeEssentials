@@ -40,6 +40,8 @@ import net.minecraftforge.fml.common.Mod;
 public class ConfigBase
 {
 
+    protected static ModuleConfig moduleConfig;
+    
     private static final ForgeConfigSpec.Builder MAIN_BUILDER = new ForgeConfigSpec.Builder();
     private static final ForgeConfigSpec.Builder AUTH_BUILDER = new ForgeConfigSpec.Builder();
     private static final ForgeConfigSpec.Builder PERMISSIONS_BUILDER = new ForgeConfigSpec.Builder();
@@ -201,16 +203,24 @@ public class ConfigBase
         ModuleTickets.save();
     }
 
-    public static void registerConfigManual(ForgeConfigSpec spec, Path path)
+    public static void registerConfigManual(ForgeConfigSpec spec, Path path, boolean autoSave)
     {
-        final CommentedFileConfig configData = CommentedFileConfig.builder(path)
-                .sync()
-                .autosave()
-                .writingMode(WritingMode.REPLACE)
-                .build();
-
-        configData.load();
-        spec.setConfig(configData);
+        if (autoSave) {
+            final CommentedFileConfig configData = CommentedFileConfig.builder(path)
+                    .sync()
+                    .autosave()
+                    .writingMode(WritingMode.REPLACE)
+                    .build();
+            configData.load();
+            spec.setConfig(configData);
+        }else {
+            final CommentedFileConfig configData = CommentedFileConfig.builder(path)
+                    .sync()
+                    .writingMode(WritingMode.REPLACE)
+                    .build();
+            configData.load();
+            spec.setConfig(configData);
+        }
     }
     
     public static void registerConfigAutomatic()
@@ -232,6 +242,11 @@ public class ConfigBase
     public String getMainConfigName()
     {
         return "main";
+    }
+
+    public static ModuleConfig getModuleConfig()
+    {
+        return moduleConfig;
     }
 
     /*

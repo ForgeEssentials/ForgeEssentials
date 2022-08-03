@@ -15,6 +15,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerRespawnEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -54,7 +55,7 @@ public class RespawnHandler
         if (doDefaultSpawn)
             return null;
         else
-            return new WarpPoint(0, player.level.getSpawnPoint(), player.yRot, player.xRot);
+            return new WarpPoint(((ServerPlayerEntity)player).getRespawnDimension(), ((ServerPlayerEntity)player).getRespawnPosition(), player.yRot, player.xRot);
     }
 
     public static WarpPoint getSpawn(PlayerEntity player, WarpPoint location)
@@ -69,9 +70,8 @@ public class RespawnHandler
         boolean bedEnabled = APIRegistry.perms.checkUserPermission(ident, FEPermissions.SPAWN_BED);
         if (bedEnabled)
         {
-            BlockPos spawn = player.getBedLocation(player.level);
-            if (spawn != null)
-                spawn = PlayerEntity.getBedSpawnLocation(player.level, spawn, true);
+            ServerPlayerEntity entity = (ServerPlayerEntity) player;
+            BlockPos spawn = entity.getRespawnPosition();
             if (spawn != null)
             {
                 // Bed seems OK, so just return null to let default MC code handle respawn

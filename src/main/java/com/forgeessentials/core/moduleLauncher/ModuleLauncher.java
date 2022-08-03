@@ -1,14 +1,9 @@
 package com.forgeessentials.core.moduleLauncher;
 
-import java.lang.annotation.ElementType;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -25,12 +20,11 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.Maps;
 
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.forgespi.language.ModFileScanData;
-import net.minecraftforge.registries.ObjectHolder;
 
 import static net.minecraftforge.registries.ForgeRegistry.REGISTRIES;
 
@@ -51,26 +45,24 @@ public class ModuleLauncher
     {
         LoggingHandler.felog.info("Discovering and loading modules...");
 
-        final List<ModFileScanData.AnnotationData> annotations = ModList.get().getAllScanData().stream()
+        final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
                 .map(ModFileScanData::getAnnotations)
                 .flatMap(Collection::stream)
                 .filter(a -> MOD.equals(a.getAnnotationType()))
                 .collect(Collectors.toList());
 
         Map<Type, String> classModIds = Maps.newHashMap();
-        Map<Type, Class<?>> classCache = Maps.newHashMap();
 
         // Gather all @FEModule classes
-        annotations.stream().filter(a -> MOD.equals(a.getAnnotationType())).forEach(data -> classModIds.put(data.getClassType(), (String)data.getAnnotationData().get("value")));
-
-            LoggingHandler.felog.info(REGISTRIES,"Found {} ObjectHolder annotations", annotations.size());
+        data.stream().filter(a -> MOD.equals(a.getAnnotationType())).forEach(info -> classModIds.put(info.getClassType(), (String)info.getAnnotationData().get("value")));
+        LoggingHandler.felog.info(REGISTRIES,"Found {} FEModule annotations", data.size());
             
         // started ASM handling for the module loading
         //Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
         
         // LOAD THE MODULES!
         ModuleContainer temp, other;
-        for (ModFileScanData.AnnotationData asm : annotations)
+        for (ModFileScanData.AnnotationData asm : data)
         {
             temp = new ModuleContainer(asm);
             if (temp.isLoadable && !APIRegistry.FE_EVENTBUS.post(new ModuleRegistrationEvent(temp)))
@@ -103,15 +95,19 @@ public class ModuleLauncher
 
         CallableMap map = new CallableMap();
 
-        data = e.getAsmData().getAll(ForgeEssentialsRegistrar.class.getName());
+       
+        // Gather all @FEModule classes
+        data.stream().filter(a -> Type.getType(ForgeEssentialsRegistrar.class).equals(a.getAnnotationType())).forEach(info -> classModIds.put(info.getClassType(), (String)info.getAnnotationData().get("value")));
+        LoggingHandler.felog.info(REGISTRIES,"Found {} ForgeEssentialsRegistrar annotations", data.size());
+
         Class<?> c;
         Object obj = null;
-        for (ASMData asm : data)
+        for (ModFileScanData.AnnotationData asm : data)
         {
             try
             {
                 obj = null;
-                c = Class.forName(asm.getClassName());
+                c = Class.forName((String) asm.getAnnotationData().getClass().getName());
 
                 try
                 {
@@ -135,7 +131,8 @@ public class ModuleLauncher
             }
         }
 
-        for (ModContainer container : ModList.mods)
+        List<ModContainer> modList = ObfuscationReflectionHelper.getPrivateValue(ModList.class, (ModList) ModList.get(), "mods");
+        for (ModContainer container :modList)
             if (container.getMod() != null)
                 map.scanObject(container);
 
@@ -146,16 +143,16 @@ public class ModuleLauncher
         // Register modules with configuration manager
         for (ModuleContainer module : containerMap.values())
         {
-            /* TODO Not usable until dynamic configs are re-added
+            // TODO Not usable until dynamic configs are re-added
             if (module.module instanceof ConfigLoader)
             {
-                LoggingHandler.felog.debug("Registering configuration for FE module " + module.name);
-                ForgeEssentials.getConfigManager().registerLoader(module.name, (ConfigLoader) module.module, false);
+                //LoggingHandler.felog.debug("Registering configuration for FE module " + module.name);
+                //ForgeEssentials.getConfigManager().registerLoader(module.name, (ConfigLoader) module.module, false);
             }
             else
             {
-                LoggingHandler.felog.debug("No configuration for FE module " + module.name);
-            }*/
+                //LoggingHandler.felog.debug("No configuration for FE module " + module.name);
+            }
         }
 
         APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
@@ -169,7 +166,6 @@ public class ModuleLauncher
     {
         // TODO Check if this works
         ConfigBase.BakeConfigs(true);
-        // ForgeEssentials.getConfigManager().load(true);
         APIRegistry.getFEEventBus().post(new ConfigReloadEvent());
     }
 

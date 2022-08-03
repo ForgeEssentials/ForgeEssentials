@@ -9,7 +9,6 @@ public class FEConfig
 
     public static final String CONFIG_MAIN_CORE = "Core";
     public static final String CONFIG_MAIN_MISC = "Misc";
-    public static final String CONFIG_MAIN_MODULES = "Modules";
 
     public static boolean mcStats;
 
@@ -53,9 +52,6 @@ public class FEConfig
                 .define("format_time_seconds", "HH:mm:ss");
         FEmodlistLocation = BUILDER.comment("Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.")
                 .define("modlistLocation", "modlist.txt");
-        BUILDER.pop();
-
-        BUILDER.comment("Enable/disable modules here.").push(CONFIG_MAIN_MODULES);
         BUILDER.pop();
 
         BUILDER.push(CONFIG_MAIN_MISC);

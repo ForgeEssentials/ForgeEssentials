@@ -35,7 +35,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
     {
         instache = this;
         APIRegistry.getFEEventBus().register(this);
-        ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
+        // CONFIG ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
     }
 
     public static CommandFeSettings getInstance()

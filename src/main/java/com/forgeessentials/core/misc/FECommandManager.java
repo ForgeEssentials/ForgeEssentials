@@ -80,7 +80,7 @@ public class FECommandManager
         if (command instanceof ConfigurableCommand)
             ((ConfigurableCommand) command).loadConfig(configBuilder, category);
         FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials/CommandSettings"), "ForgeEssentials/CommandSettings");
-        ConfigBase.registerConfigManual(configBuilder.build(), Paths.get(ForgeEssentials.getFEDirectory()+"/CommandSettings/"+command.getName()+".toml"));
+        ConfigBase.registerConfigManual(configBuilder.build(), Paths.get(ForgeEssentials.getFEDirectory()+"/CommandSettings/"+command.getName()+".toml"),true);
     }
 
     public static void registerCommand(ForgeEssentialsCommandBase command)
