@@ -36,7 +36,6 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import org.pircbotx.dcc.Chat;
 
 public final class ScriptArguments
 {
@@ -347,7 +346,7 @@ public final class ScriptArguments
         {
             if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return Integer.toString(((ServerPlayerEntity) sender.getPlayerOrException()).level);
+            return ((ServerPlayerEntity) sender.getEntity()).level.dimension().location().getNamespace();
         }
 
         @Override
