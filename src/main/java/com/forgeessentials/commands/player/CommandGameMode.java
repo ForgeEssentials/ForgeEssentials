@@ -2,16 +2,14 @@ package com.forgeessentials.commands.player;
 
 import java.util.List;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.GameType;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -107,12 +105,12 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
         }
     }
 
-    public void setGameMode(EntityPlayer sender)
+    public void setGameMode(PlayerEntity sender)
     {
-        setGameMode(sender, sender, sender.capabilities.isCreativeMode ? GameType.SURVIVAL : GameType.CREATIVE);
+        setGameMode(sender.createCommandSourceStack(), sender, sender.isCreative() ? GameType.SURVIVAL : GameType.CREATIVE);
     }
 
-    public void setGameMode(ICommandSender sender, String target)
+    public void setGameMode(CommandSource sender, String target)
     {
         PlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, target);
         if (player == null)
@@ -120,10 +118,10 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
             ChatOutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
             return;
         }
-        setGameMode(sender, target, player.capabilities.isCreativeMode ? GameType.SURVIVAL : GameType.CREATIVE);
+        setGameMode(sender, target, player.isCreative() ? GameType.SURVIVAL : GameType.CREATIVE);
     }
 
-    public void setGameMode(ICommandSender sender, String target, GameType mode)
+    public void setGameMode(CommandSource sender, String target, GameType mode)
     {
         PlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, target);
         if (player == null)
@@ -134,11 +132,11 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
         setGameMode(sender, player, mode);
     }
 
-    public void setGameMode(ICommandSender sender, PlayerEntity target, GameType mode)
+    public void setGameMode(CommandSource sender, PlayerEntity target, GameType mode)
     {
         target.setGameMode(mode);
         target.fallDistance = 0.0F;
-        String modeName = I18n.translateToLocal("gameMode." + mode.getName());
+        String modeName = I18n.get("gameMode." + mode.getName());
         ChatOutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getName(), modeName));
     }
 
@@ -146,11 +144,11 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     {
         if (StringUtils.isNumeric(string))
         {
-            return GameType.getByID(Integer.parseInt(string));
+            return GameType.byId(Integer.parseInt(string));
         }
         else
         {
-            return GameType.parseGameTypeWithDefault(string, GameType.SURVIVAL);
+            return GameType.byName(string, GameType.SURVIVAL);
         }
     }
 

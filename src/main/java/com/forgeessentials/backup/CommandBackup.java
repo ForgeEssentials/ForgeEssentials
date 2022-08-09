@@ -1,7 +1,6 @@
 package com.forgeessentials.backup;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.ParserCommandBase;

@@ -1,9 +1,7 @@
 package com.forgeessentials.chat.command;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -51,7 +49,7 @@ public class CommandIrc extends ForgeEssentialsCommandBase
         }
         else
         {
-            ITextComponent message = getChatComponentFromNthArg(sender, args, 0, !(sender instanceof EntityPlayer));
+            ITextComponent message = getChatComponentFromNthArg(sender, args, 0, !(sender instanceof PlayerEntity));
             IrcHandler.getInstance().sendPlayerMessage(sender, message);
         }
     }

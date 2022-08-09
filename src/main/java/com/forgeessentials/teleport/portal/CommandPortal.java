@@ -3,7 +3,6 @@ package com.forgeessentials.teleport.portal;
 import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Point;

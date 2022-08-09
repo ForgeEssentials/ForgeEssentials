@@ -1,7 +1,7 @@
 package com.forgeessentials.chat.command;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -102,7 +102,7 @@ public class CommandMail extends ParserCommandBase
         }
     }
 
-    public static void readMail(ICommandSender sender, Mail mail)
+    public static void readMail(CommandSource sender, Mail mail)
     {
         ChatOutputHandler.chatNotification(sender,
                 Translator.format("Mail from %s on the %s", mail.sender.getUsernameOrUuid(), FEConfig.FORMAT_DATE_TIME.format(mail.timestamp)));

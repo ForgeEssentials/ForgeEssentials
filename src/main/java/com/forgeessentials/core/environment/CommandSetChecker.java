@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.HashMultimap;
+import com.mojang.brigadier.Command;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -115,7 +116,7 @@ public class CommandSetChecker
     }
 
     // 0 = vanilla. 1 = fe. 2 = other mods
-    private static int getCommandPriority(ICommand cmd)
+    private static int getCommandPriority(Command cmd)
     {
         try
         {

@@ -3,11 +3,9 @@ package com.forgeessentials.chat.command;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -53,7 +51,7 @@ public class CommandMute extends ForgeEssentialsCommandBase
             if (receiver == null)
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
 
-            PlayerUtil.getPersistedTag(receiver, true).setBoolean("mute", true);
+            PlayerUtil.getPersistedTag(receiver, true).putBoolean("mute", true);
             ChatOutputHandler.chatError(sender, Translator.format("You muted %s.", args[0]));
             ChatOutputHandler.chatError(receiver, Translator.format("You were muted by %s.", sender.getName()));
         }

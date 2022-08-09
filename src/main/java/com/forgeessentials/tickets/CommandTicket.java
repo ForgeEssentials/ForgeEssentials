@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -113,7 +115,7 @@ public class CommandTicket extends ForgeEssentialsCommandBase
 
             // notify any ticket-admins that are online
             ITextComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", sender.getName()));
-            if (!server.isServerStopped())
+            if (!server.isStopped())
                 for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                     if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
                         ChatOutputHandler.sendMessage(player.createCommandSourceStack(), messageComponent);
@@ -183,11 +185,11 @@ public class CommandTicket extends ForgeEssentialsCommandBase
         return null;
     }
 
-    public boolean permcheck(ICommandSender sender, String perm)
+    public boolean permcheck(CommandSource sender, String perm)
     {
-        if (sender instanceof EntityPlayer)
+        if (sender.getEntity() instanceof PlayerEntity)
         {
-            return PermissionAPI.hasPermission((EntityPlayer) sender, ModuleTickets.PERMBASE + "." + perm);
+            return PermissionAPI.hasPermission((PlayerEntity) sender.getEntity(), ModuleTickets.PERMBASE + "." + perm);
         }
         else
         {
