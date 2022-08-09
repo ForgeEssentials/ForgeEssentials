@@ -9,20 +9,25 @@ import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.ModFileScanData;
 
 import org.apache.commons.codec.binary.Hex;
+import org.objectweb.asm.Type;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -34,13 +39,13 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
 
@@ -108,17 +113,32 @@ public class ModuleRemote implements RemoteManager
 
     protected boolean mcServerStarted;
 
+    private static final Type MOD = Type.getType(FERemoteHandler.class);
+
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
     public void getASMDataTable(FEModuleCommonSetupEvent event)
     {
-        ASMDataTable asmdata = ((FMLCommonSetupEvent) event.getFMLEvent()).getAsmData();
-        for (ASMData asm : asmdata.getAll(FERemoteHandler.class.getName()))
+        //ASMDataTable asmdata = ((FMLCommonSetupEvent) event.getFMLEvent()).getAsmData();
+        
+        final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
+                .map(ModFileScanData::getAnnotations)
+                .flatMap(Collection::stream)
+                .filter(a -> MOD.equals(a.getAnnotationType()))
+                .collect(Collectors.toList());
+
+        Map<Type, String> classModIds = Maps.newHashMap();
+
+        // Gather all @FEModule classes
+        data.stream().filter(a -> MOD.equals(a.getAnnotationType())).forEach(info -> classModIds.put(info.getClassType(), (String)info.getAnnotationData().get("value")));
+        LoggingHandler.felog.info("Found {} FERemoteHandler annotations", data.size());
+        
+        for (ModFileScanData.AnnotationData asm : data)
         {
             try
             {
-                Class<?> clazz = Class.forName(asm.getClassName());
+                Class<?> clazz = Class.forName(asm.getClass().getName());
                 if (RemoteHandler.class.isAssignableFrom(clazz))
                 {
                     RemoteHandler handler = (RemoteHandler) clazz.newInstance();
@@ -128,7 +148,7 @@ public class ModuleRemote implements RemoteManager
             }
             catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
             {
-                LoggingHandler.felog.debug("Could not load FERemoteHandler " + asm.getClassName());
+                LoggingHandler.felog.debug("Could not load FERemoteHandler " + asm.getClass());
             }
         }
     }
