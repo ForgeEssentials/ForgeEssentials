@@ -59,12 +59,6 @@ public class TeleportHelper extends ServerEventHandler
         }
 
         @Override
-        public void removeStalePortalLocations(long totalWorldTime)
-        {
-            /* do nothing */
-        }
-
-        @Override
         public boolean placeInExistingPortal(Entity entity, float yaw)
         {
             placeInPortal(entity, yaw);
@@ -197,8 +191,8 @@ public class TeleportHelper extends ServerEventHandler
         Block block2 = point.getWorld().getBlockState(blockPos2).getBlock();
         AxisAlignedBB blockBounds1 = block1.getCollisionBoundingBox(block1.defaultBlockState(), point.getWorld(), blockPos1);
         AxisAlignedBB blockBounds2 = block2.getCollisionBoundingBox(block2.defaultBlockState(), point.getWorld(), blockPos2);
-        boolean block1Free = !block1.getMaterial(block1.defaultBlockState()).isSolid() || blockBounds1 == null || blockBounds1.maxX < 1 || blockBounds1.maxY > 0;
-        boolean block2Free = !block2.getMaterial(block2.defaultBlockState()).isSolid() || blockBounds2 == null || blockBounds2.maxX < 1 || blockBounds2.maxY > 0;
+        boolean block1Free = !block1.isPossibleToRespawnInThis() || blockBounds1 == null || blockBounds1.maxX < 1 || blockBounds1.maxY > 0;
+        boolean block2Free = !block2.isPossibleToRespawnInThis() || blockBounds2 == null || blockBounds2.maxX < 1 || blockBounds2.maxY > 0;
         return block1Free && block2Free;
     }
 
@@ -240,7 +234,7 @@ public class TeleportHelper extends ServerEventHandler
             MinecraftServer mcServer = ServerLifecycleHooks.getCurrentServer();
             mcServer.getPlayerList().transferPlayerToDimension(player, point.getDimension(), teleporter);
         }
-        player.connection.setPlayerLocation(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
+        player.absMoveTo(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
 
     public static void doTeleportEntity(Entity entity, WarpPoint point)
@@ -328,27 +322,24 @@ public class TeleportHelper extends ServerEventHandler
         FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDim, dimension);
     }
 
-    public static void transferEntityToWorld(Entity entity, int oldDim, WorldServer oldWorld, WorldServer newWorld, Teleporter teleporter)
+    public static void transferEntityToWorld(Entity entity, int oldDim, ServerWorld oldWorld, ServerWorld newWorld, Teleporter teleporter)
     {
-        WorldProvider pOld = oldWorld.provider;
-        WorldProvider pNew = newWorld.provider;
-        double moveFactor = pOld.getMovementFactor() / pNew.getMovementFactor();
-        double d0 = entity.posX * moveFactor;
-        double d1 = entity.posZ * moveFactor;
-        double d3 = entity.posX;
-        double d4 = entity.posY;
-        double d5 = entity.posZ;
-        float f = entity.rotationYaw;
+        double d0 = entity.position().x;
+        double d1 = entity.position().z;
+        double d3 = entity.position().x;
+        double d4 = entity.position().y;
+        double d5 = entity.position().z;
+        float f = entity.yRotO;
         d0 = MathHelper.clamp((int) d0, -29999872, 29999872);
         d1 = MathHelper.clamp((int) d1, -29999872, 29999872);
-        if (entity.isEntityAlive())
+        if (entity.isAlive())
         {
-            entity.setLocationAndAngles(d0, entity.posY, d1, entity.rotationYaw, entity.rotationPitch);
+            entity.absMoveTo(d0, entity.position().y, d1, entity.yRotO, entity.xRotO);
             teleporter.placeInPortal(entity, f);
-            newWorld.spawnEntity(entity);
-            newWorld.updateEntityWithOptionalForce(entity, false);
+            newWorld.addFreshEntity(entity);
+            newWorld.updateChunkPos(entity);
         }
-        entity.setWorld(newWorld);
+        entity.setLevel(newWorld);
     }
 
 }
