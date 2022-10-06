@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.*;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -18,7 +19,11 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.text.StringEscapeUtils;
 
-public final class ChatOutputHandler
+import com.forgeessentials.core.FEConfig;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
+
+public final class ChatOutputHandler extends ConfigLoaderBase
 {
 
     public static final char COLOR_FORMAT_CHARACTER = '\u00a7';
@@ -508,7 +513,8 @@ public final class ChatOutputHandler
     static ForgeConfigSpec.ConfigValue<String> FEchatNotificationColor;
     static ForgeConfigSpec.ConfigValue<String> FEchatWarningColor;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.comment(
                 "This controls the colors of the various chats output by ForgeEssentials." + "\nValid output colors are as follows:"
@@ -526,12 +532,18 @@ public final class ChatOutputHandler
         BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean isReload)
+	@Override
+	public void bakeConfig(boolean reload)
     {
         setConfirmationColor(FEchatConfirmationColor.get());
         setErrorColor(FEchatErrorColor.get());
         setNotificationColor(FEchatNotificationColor.get());
         setWarningColor(FEchatWarningColor.get());
     }
+
+	@Override
+	public ConfigData returnData() {
+		return FEConfig.data;
+	}
 
 }

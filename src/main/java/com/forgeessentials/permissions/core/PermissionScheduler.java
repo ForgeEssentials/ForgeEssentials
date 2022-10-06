@@ -10,6 +10,9 @@ import java.util.TimeZone;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.ServerUtil;
@@ -19,11 +22,12 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.annotations.Expose;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class PermissionScheduler extends ServerEventHandler
+public class PermissionScheduler extends ServerEventHandler implements ConfigLoader
 {
 
     public static final int CHECK_INTERVAL = 1000;
@@ -77,7 +81,7 @@ public class PermissionScheduler extends ServerEventHandler
 
     public PermissionScheduler()
     {
-        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+        ForgeEssentials.getConfigManager().registerSpecs(ForgeEssentials.getConfigManager().getMainConfigName(), this);
     }
 
     @SubscribeEvent
@@ -178,14 +182,16 @@ public class PermissionScheduler extends ServerEventHandler
 
     static ForgeConfigSpec.BooleanValue FEenabled;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.push("PermissionScheduler");
         FEenabled = BUILDER.comment(HELP).define("enabled", false);
         BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean reload)
+	@Override
+	public void bakeConfig(boolean reload)
     {
         enabled = FEenabled.get();
 
@@ -202,4 +208,9 @@ public class PermissionScheduler extends ServerEventHandler
             }
         }
     }
+
+	@Override
+	public ConfigData returnData() {
+		return ModulePermissions.data;
+	}
 }

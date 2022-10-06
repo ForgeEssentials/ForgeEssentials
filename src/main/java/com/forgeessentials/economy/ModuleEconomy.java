@@ -7,6 +7,8 @@ import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
@@ -33,6 +35,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -54,9 +57,11 @@ import java.util.UUID;
  * Handles wallets for each player, transactions and plot management.
  */
 @FEModule(name = "Economy", parentMod = ForgeEssentials.class)
-public class ModuleEconomy extends ServerEventHandler implements Economy
+public class ModuleEconomy extends ServerEventHandler implements Economy, ConfigLoader
 {
-
+    private static ForgeConfigSpec ECONOMY_CONFIG;
+	public static final ConfigData data = new ConfigData("Economy", ECONOMY_CONFIG, new ForgeConfigSpec.Builder());
+	
     public static final UserIdent ECONOMY_IDENT = UserIdent.getServer("fefefefe-fefe-fefe-fefe-fefefefefeec", "$FE_ECONOMY");
 
     public static final String PERM = "fe.economy";
@@ -343,7 +348,8 @@ public class ModuleEconomy extends ServerEventHandler implements Economy
         APIRegistry.perms.registerPermissionProperty(getItemPricePermission(itemStack), Long.toString(price));
     }
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
         if (config.hasCategory("ItemTables"))
         {
@@ -365,7 +371,17 @@ public class ModuleEconomy extends ServerEventHandler implements Economy
         for (Entry<String, Property> entry : category.entrySet())
             APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString(entry.getValue().getInt(DEFAULT_ITEM_PRICE)));
     }
-
+	
+	@Override
+	public void bakeConfig(boolean reload) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
     /* ------------------------------------------------------------ */
 
     public static class CantAffordException extends TranslatedCommandException
@@ -375,5 +391,4 @@ public class ModuleEconomy extends ServerEventHandler implements Economy
             super("You can't afford that");
         }
     }
-
 }

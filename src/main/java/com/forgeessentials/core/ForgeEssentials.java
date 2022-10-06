@@ -16,6 +16,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -70,6 +71,8 @@ import com.forgeessentials.core.commands.CommandFeReload;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandUuid;
 import com.forgeessentials.core.config.ConfigBase;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -79,8 +82,6 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.DoAsCommandSender;
@@ -110,7 +111,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
  */
 @Mod(ForgeEssentials.MODID)
 @Mod.EventBusSubscriber(modid = ForgeEssentials.MODID, bus = Bus.MOD,value = Dist.DEDICATED_SERVER)
-public class ForgeEssentials
+public class ForgeEssentials extends ConfigLoaderBase
 {
 
     public static final String MODID = "forgeessentials";
@@ -240,9 +241,9 @@ public class ForgeEssentials
         FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials"), "ForgeEssentials");
 
         ConfigBase.getModuleConfig().loadModuleConfig();
-        ConfigBase.settupConfigs();
-        ConfigBase.registerConfigAutomatic();
-        ConfigBase.BakeConfigs(false);
+        configManager.registerSpecs(configManager.getMainConfigName(), this);
+        configManager.registerSpecs(configManager.getMainConfigName(), new FEConfig());
+        configManager.registerSpecs(configManager.getMainConfigName(), new ChatOutputHandler());
     }
 
     private void registerNetworkMessages()
@@ -467,7 +468,8 @@ public class ForgeEssentials
     static ForgeConfigSpec.BooleanValue FEhideWorldEditCommands;
     static ForgeConfigSpec.BooleanValue FElogCommandsToConsole;
 	
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
     	BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
         FEcheckVersion = BUILDER.comment("Check for newer versions of ForgeEssentials on load?").define("versionCheck", true);
@@ -484,8 +486,9 @@ public class ForgeEssentials
         //BuildInfo.startVersionChecks();
         BUILDER.pop();
     }
-    public static void bakeConfig(boolean isReload) {
-    	if (isReload)
+	@Override
+	public void bakeConfig(boolean reload) {
+    	if (reload)
             Translator.translations.clear();
         Translator.load();
         if (!FEcheckVersion.get())
@@ -497,6 +500,11 @@ public class ForgeEssentials
         logCommandsToConsole = FElogCommandsToConsole.get();
         BuildInfo.startVersionChecks();
     }
+	
+	@Override
+	public ConfigData returnData() {
+		return FEConfig.data;
+	}
     /* ------------------------------------------------------------ */
 
     public static ConfigBase getConfigManager()
@@ -518,5 +526,4 @@ public class ForgeEssentials
     {
         return safeMode;
     }
-
 }

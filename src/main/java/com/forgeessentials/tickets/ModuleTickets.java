@@ -9,6 +9,8 @@ import net.minecraft.util.text.TextFormatting;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
@@ -19,6 +21,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -26,9 +29,11 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 @FEModule(name = "Tickets", parentMod = ForgeEssentials.class)
-public class ModuleTickets
+public class ModuleTickets implements ConfigSaver
 {
-
+	private static ForgeConfigSpec TICKETS_CONFIG;
+	private static final ConfigData data = new ConfigData("Tickets", TICKETS_CONFIG, new ForgeConfigSpec.Builder());
+	
     public static final String PERMBASE = "fe.tickets";
 
     public static ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
@@ -42,7 +47,6 @@ public class ModuleTickets
     {
         FECommandManager.registerCommand(new CommandTicket());
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
-        // Config ForgeEssentials.getConfigManager().registerLoader("Tickets", new ConfigTickets());
     }
 
     @SubscribeEvent
@@ -117,25 +121,29 @@ public class ModuleTickets
     static ForgeConfigSpec.ConfigValue<String[]> FEcategories;
     static ForgeConfigSpec.IntValue FEcurrentID;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
-    {
+	@Override
+	public void load(Builder BUILDER, boolean isReload) {
         LoggingHandler.felog.debug("Loading Tickets Config");
         BUILDER.push("Tickets");
         FEcategories = BUILDER.define("categories", new String[] { "griefing", "overflow", "dispute" });
         FEcurrentID = BUILDER.comment("Don't change anythign in there.").defineInRange("currentID", 0, 0, Integer.MAX_VALUE);
         BUILDER.pop();
-    }
+	}
 
-    public static void bakeConfig(boolean reload)
-    {
-        ModuleTickets.categories = Arrays.asList(FEcategories.get());
+	@Override
+	public void bakeConfig(boolean reload) {
+		ModuleTickets.categories = Arrays.asList(FEcategories.get());
         ModuleTickets.currentID = FEcurrentID.get();
-    }
+	}
 
-    public static void save()
-    {
-        FEcategories.set(ModuleTickets.categories.toArray(new String[0]));
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
+
+	@Override
+	public void save(boolean reload) {
+		FEcategories.set(ModuleTickets.categories.toArray(new String[0]));
         FEcurrentID.set(ModuleTickets.currentID);
-    }
-
+	}
 }

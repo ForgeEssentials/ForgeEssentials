@@ -18,6 +18,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -52,13 +53,16 @@ import com.forgeessentials.chat.irc.command.CommandHelp;
 import com.forgeessentials.chat.irc.command.CommandListPlayers;
 import com.forgeessentials.chat.irc.command.CommandMessage;
 import com.forgeessentials.chat.irc.command.CommandReply;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.ParseResults;
 
-public class IrcHandler extends ListenerAdapter
+public class IrcHandler extends ListenerAdapter implements ConfigLoader
 {
 
     private static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + "_IRC";
@@ -123,7 +127,7 @@ public class IrcHandler extends ListenerAdapter
 
     public IrcHandler()
     {
-        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        ForgeEssentials.getConfigManager().registerSpecs(ModuleChat.CONFIG_FILE, this);
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.getFEEventBus().register(this);
 
@@ -255,8 +259,9 @@ public class IrcHandler extends ListenerAdapter
     static ForgeConfigSpec.ConfigValue<String[]> FEadmins;
     static ForgeConfigSpec.BooleanValue FEenable;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
-    {
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
+	{
         BUILDER.comment("Configure the built-in IRC bot here").push(CATEGORY);
         FEserver = BUILDER.comment("Server address").define("server", "irc.something.com");
         FEport = BUILDER.comment("Server port").defineInRange("port", 5555, 0, 65535);
@@ -282,8 +287,9 @@ public class IrcHandler extends ListenerAdapter
         FEenable = BUILDER.comment("Enable IRC interoperability?").define("enable", false);
     }
 
-    public static void bakeConfig(boolean reload)
-    {
+	@Override
+	public void bakeConfig(boolean reload)
+	{
         ModuleChat.instance.ircHandler.server = FEserver.get();
         ModuleChat.instance.ircHandler.port = FEport.get();
         ModuleChat.instance.ircHandler.botName = FEbotName.get();
@@ -625,4 +631,9 @@ public class IrcHandler extends ListenerAdapter
         this.sendMessages = sendMessages;
     }
 
+
+	@Override
+	public ConfigData returnData() {
+		return ModuleChat.data;
+	}
 }

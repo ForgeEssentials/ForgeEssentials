@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
@@ -20,13 +21,16 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartE
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class)
 public class ModulePlayerLogger
 {
-
+    private static ForgeConfigSpec PLAYERLOGGER_CONFIG;
+	public static final ConfigData data = new ConfigData("PlayerLogger", PLAYERLOGGER_CONFIG, new ForgeConfigSpec.Builder());
+	
     public static final String PERM = "fe.pl";
     public static final String PERM_WAND = PERM + ".wand";
     public static final String PERM_COMMAND = PERM + ".cmd";
@@ -81,7 +85,7 @@ public class ModulePlayerLogger
         
         logger = new PlayerLogger();
         eventHandler = new PlayerLoggerEventHandler();
-        //CONFIG ForgeEssentials.getConfigManager().registerLoader("PlayerLogger", new PlayerLoggerConfig());
+        ForgeEssentials.getConfigManager().registerSpecs("PlayerLogger", new PlayerLoggerConfig());
 
         FECommandManager.registerCommand(new CommandRollback());
         FECommandManager.registerCommand(new CommandPlayerlogger());

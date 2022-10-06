@@ -3,6 +3,7 @@ package com.forgeessentials.remote;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
@@ -20,6 +21,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -36,6 +38,8 @@ import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -50,9 +54,11 @@ import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
-public class ModuleRemote implements RemoteManager
+public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 {
-
+	private static ForgeConfigSpec REMOTE_CONFIG;
+	private static final ConfigData data = new ConfigData("Remote", REMOTE_CONFIG, new ForgeConfigSpec.Builder());
+	
     public static class PasskeyMap extends HashMap<UserIdent, String>
     {
         private static final long serialVersionUID = -8268113844467318789L; /* default */
@@ -141,7 +147,7 @@ public class ModuleRemote implements RemoteManager
                 Class<?> clazz = Class.forName(asm.getClass().getName());
                 if (RemoteHandler.class.isAssignableFrom(clazz))
                 {
-                    RemoteHandler handler = (RemoteHandler) clazz.newInstance();
+                    RemoteHandler handler = (RemoteHandler) clazz.getDeclaredConstructor().newInstance();
                     FERemoteHandler annot = handler.getClass().getAnnotation(FERemoteHandler.class);
                     registerHandler(handler, annot.id());
                 }
@@ -149,7 +155,19 @@ public class ModuleRemote implements RemoteManager
             catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
             {
                 LoggingHandler.felog.debug("Could not load FERemoteHandler " + asm.getClass());
-            }
+            } catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
 
@@ -195,8 +213,9 @@ public class ModuleRemote implements RemoteManager
     static ForgeConfigSpec.BooleanValue FEuseSSL;
     static ForgeConfigSpec.IntValue FEpasskeyLength;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
-    {
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
+	{
         BUILDER.push(CONFIG_CAT);
         FElocalhostOnly = BUILDER.comment("Allow connections from the web").define("localhostOnly", true);
         FEhostname = BUILDER.comment("Hostname of your server. Used for QR code generation.").define("hostname", "localhost");
@@ -207,8 +226,9 @@ public class ModuleRemote implements RemoteManager
         BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean reload)
-    {
+	@Override
+	public void bakeConfig(boolean reload)
+	{
         getInstance().localhostOnly = FElocalhostOnly.get();
         getInstance().hostname = FEhostname.get();
         getInstance().port = FEport.get();
@@ -217,6 +237,12 @@ public class ModuleRemote implements RemoteManager
         if (getInstance().mcServerStarted)
             getInstance().startServer();
     }
+	
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
+	
     /* ------------------------------------------------------------ */
 
     /**
@@ -455,5 +481,4 @@ public class ModuleRemote implements RemoteManager
     {
         return instance;
     }
-
 }

@@ -180,7 +180,6 @@ public class CommandRemote extends ParserCommandBase
             passkey = passkey.replaceAll(".", "*");
         String connectString = ModuleRemote.getInstance().getConnectString(ident);
         String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-        ITextComponent msg = new StringTextComponent("Remote passkey = " + passkey + " ");
 
         ITextComponent qrLink = new StringTextComponent("[QR code]");
         if (ident.hasUuid() && PlayerInfo.get(ident.getUuid()).getHasFEClient())
@@ -189,7 +188,7 @@ public class CommandRemote extends ParserCommandBase
             qrLink.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
         qrLink.getStyle().withColor(TextFormatting.RED);
         qrLink.getStyle().setUnderlined(true);
-        msg.appendSibling(qrLink);
+        ITextComponent msg = new StringTextComponent("Remote passkey = " + passkey + " ").append(qrLink);
 
         ChatOutputHandler.sendMessage(args.sender, msg);
         ChatOutputHandler.sendMessage(args.sender, new StringTextComponent("Port = " + ModuleRemote.getInstance().getPort()));

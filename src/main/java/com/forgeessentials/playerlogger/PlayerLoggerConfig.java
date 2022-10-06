@@ -1,8 +1,12 @@
 package com.forgeessentials.playerlogger;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigSaver;
 
-public class PlayerLoggerConfig
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+
+public class PlayerLoggerConfig implements ConfigSaver
 {
 
     private static final String CAT = "PlayerLogger";
@@ -24,7 +28,8 @@ public class PlayerLoggerConfig
     static ForgeConfigSpec.IntValue FElogDuration;
     static ForgeConfigSpec.IntValue FEplayerPositionInterval;
     
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
     	BUILDER.comment("PlayerLogger config").push(CAT);
     	
@@ -37,7 +42,8 @@ public class PlayerLoggerConfig
     	BUILDER.pop();
     }
 
-	public static void bakeConfig(boolean reload) {
+	@Override
+	public void bakeConfig(boolean reload) {
 		databaseType = FEdatabaseType.get();
         databaseUrl = FEdatabaseUrl.get();
         databaseUsername = FEdatabaseUsername.get();
@@ -49,15 +55,19 @@ public class PlayerLoggerConfig
         if (ModulePlayerLogger.getLogger().getEntityManager() != null)
             ModulePlayerLogger.getLogger().loadDatabase();
 	}
-	/*
-    public void save()
+	
+	@Override
+	public void save(boolean reload)
     {
-        config.addCustomCategoryComment(CAT, "Configure the backup system.");
-        config.get(CAT, "DB_type", "h2", "Database type. Available types are h2 and mysql.").set(databaseType);
-        config.get(CAT, "DB_url", "ForgeEssentials/playerlogger", "Database url. Filename for H2 or server address for MySql.").set(databaseUrl);
-        config.get(CAT, "DB_user", "forgeessentials", "Database user.").set(databaseUsername);
-        config.get(CAT, "DB_password", "forgeessentials", "Database password.").set(databasePassword);
-        config.get(CAT, "daystokeepdata", 0, "Days to keep data saved in the database. Set to 0 to keep all data indefinitely.").set(logDuration);
-    }*/
+		FEdatabaseType.set(databaseType);
+		FEdatabaseUrl.set(databaseUrl);
+		FEdatabaseUsername.set(databaseUsername);
+		FEdatabaseUsername.set(databasePassword);
+		FElogDuration.set(logDuration);
+    }
 
+	@Override
+	public ConfigData returnData() {
+		return ModulePlayerLogger.data;
+	}
 }

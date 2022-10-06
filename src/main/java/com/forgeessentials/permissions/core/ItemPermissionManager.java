@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -15,12 +16,16 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.PermissionCheckEvent;
+import com.forgeessentials.core.FEConfig;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
-public class ItemPermissionManager extends ServerEventHandler
+public class ItemPermissionManager extends ServerEventHandler implements ConfigLoader
 {
 
     public static final String HELP = "Enable the item permission manager";
@@ -46,7 +51,7 @@ public class ItemPermissionManager extends ServerEventHandler
 
     public ItemPermissionManager()
     {
-        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+        ForgeEssentials.getConfigManager().registerSpecs(ForgeEssentials.getConfigManager().getMainConfigName(), this);
     }
 
     @Override
@@ -189,14 +194,16 @@ public class ItemPermissionManager extends ServerEventHandler
 
     static ForgeConfigSpec.BooleanValue FEenabled;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.push("ItemPermissions");
         FEenabled = BUILDER.comment(HELP).define("enabled", false);
         BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean reload)
+	@Override
+	public void bakeConfig(boolean reload)
     {
         enabled = FEenabled.get();
 
@@ -208,5 +215,10 @@ public class ItemPermissionManager extends ServerEventHandler
                 ModulePermissions.getItemPermissionManager().unregister();
         }
     }
+
+	@Override
+	public ConfigData returnData() {
+		return FEConfig.data;
+	}
 
 }

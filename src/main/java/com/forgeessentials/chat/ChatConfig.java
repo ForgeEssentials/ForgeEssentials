@@ -5,10 +5,13 @@ import java.util.IllegalFormatException;
 import java.util.Set;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.util.output.LoggingHandler;
 
-public class ChatConfig
+public class ChatConfig extends ConfigLoaderBase
 {
 
     private static final String CATEGORY = ModuleChat.CONFIG_CATEGORY;
@@ -50,7 +53,8 @@ public class ChatConfig
     static ForgeConfigSpec.BooleanValue FELogChat;
     static ForgeConfigSpec.ConfigValue<String[]> FEmutedCommands;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.comment("Chat configuration").push(CATEGORY);
         FEchatFormat = BUILDER.comment(CHAT_FORMAT_HELP).define("ChatFormat", "%s%s<%s>%s%s ");
@@ -71,7 +75,8 @@ public class ChatConfig
         BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean reload)
+	@Override
+	public void bakeConfig(boolean reload)
     {
         try
         {
@@ -98,5 +103,9 @@ public class ChatConfig
         ModuleChat.instance.setChatLogging(FELogChat.get());
 
     }
+	@Override
+	public ConfigData returnData() {
+		return ModuleChat.data;
+	}
 
 }

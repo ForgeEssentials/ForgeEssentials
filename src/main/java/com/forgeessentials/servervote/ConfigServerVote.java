@@ -15,12 +15,18 @@ import java.security.spec.X509EncodedKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.servervote.Votifier.VoteReceiver;
 import com.forgeessentials.util.output.LoggingHandler;
 
-public class ConfigServerVote
+public class ConfigServerVote extends ConfigLoaderBase
 {
+	private static ForgeConfigSpec SERVERVOTE_CONFIG;
+	private static final ConfigData data = new ConfigData("ServerVote", SERVERVOTE_CONFIG, new ForgeConfigSpec.Builder());
+	
     private static final String category = "ServerVote";
     private static final String subcat = category + "_Votifier";
 
@@ -43,8 +49,9 @@ public class ConfigServerVote
     static ForgeConfigSpec.ConfigValue<String> FEmsgAll;
     static ForgeConfigSpec.ConfigValue<String> FEmsgVoter;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
-    {
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
+	{
         BUILDER.push(category);
         FEallowOfflineVotes = BUILDER.comment("If false, votes of offline players will be canceled.").define("allowOfflineVotes", true);
         FEmsgAll = BUILDER.comment("You can use color codes (&), %player and %service").define("msgAll", "%player has voted for this server on %service.");
@@ -57,9 +64,9 @@ public class ConfigServerVote
         BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean reload)
-    {
-
+	@Override
+	public void bakeConfig(boolean reload)
+	{
         hostname = FEhostname.get();
         port = FEport.get();
 
@@ -156,4 +163,8 @@ public class ConfigServerVote
         }
     }
 
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
 }

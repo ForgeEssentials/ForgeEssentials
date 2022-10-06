@@ -23,6 +23,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -51,6 +52,7 @@ import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptArguments;
@@ -68,7 +70,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class)
 public class ModuleChat
 {
-
+	private static ForgeConfigSpec CHAT_CONFIG;
+	public static final ConfigData data = new ConfigData("Chat", CHAT_CONFIG, new ForgeConfigSpec.Builder());
+	
     public static final String CONFIG_FILE = "Chat";
 
     public static final String CONFIG_CATEGORY = "Chat";

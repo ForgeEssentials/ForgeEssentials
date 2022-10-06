@@ -22,6 +22,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
@@ -39,6 +40,9 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
@@ -52,7 +56,7 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.reflect.TypeToken;
 
-public class ShopManager extends ServerEventHandler
+public class ShopManager extends ServerEventHandler implements ConfigLoader
 {
 
     public static final String PERM_BASE = ModuleEconomy.PERM + ".shop";
@@ -81,7 +85,7 @@ public class ShopManager extends ServerEventHandler
     public ShopManager()
     {
         shopTags.add("[FEShop]");
-        // CONFIG ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
+        ForgeEssentials.getConfigManager().registerSpecs(CONFIG_FILE, this);
     }
 
     @Override
@@ -375,7 +379,8 @@ public class ShopManager extends ServerEventHandler
     static ForgeConfigSpec.BooleanValue FEuseStock;
     static ForgeConfigSpec.ConfigValue<String[]> FEshopTags;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.push(CONFIG_FILE);
         FEuseStock = BUILDER.comment(STOCK_HELP).define("use_stock", false);
@@ -383,7 +388,8 @@ public class ShopManager extends ServerEventHandler
         BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean reload)
+	@Override
+	public void bakeConfig(boolean reload)
     {
 
         useStock = FEuseStock.get();
@@ -392,4 +398,9 @@ public class ShopManager extends ServerEventHandler
         for (String tag : tags)
             shopTags.add(tag);
     }
+
+	@Override
+	public ConfigData returnData() {
+		return ModuleEconomy.data;
+	}
 }

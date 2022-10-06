@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,9 +14,10 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
@@ -35,7 +37,7 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
     {
         instache = this;
         APIRegistry.getFEEventBus().register(this);
-        // CONFIG ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, this);
+        ForgeEssentials.getConfigManager().registerSpecs(CONFIG_FILE, this);
     }
 
     public static CommandFeSettings getInstance()
@@ -137,12 +139,25 @@ public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
         config.save();
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
         this.config = config;
         if (isReload)
             loadSettings();
     }
+
+
+	@Override
+	public void bakeConfig(boolean reload) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ConfigData returnData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -8,11 +8,15 @@ import java.util.regex.Pattern;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
+import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Strings;
 
-public class Censor
+public class Censor extends ConfigLoaderBase
 {
 
     private static final String CONFIG_CATEGORY = "Censor";
@@ -51,7 +55,7 @@ public class Censor
 
     public Censor()
     {
-        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        ForgeEssentials.getConfigManager().registerSpecs(ModuleChat.CONFIG_FILE, this);
     }
 
     static ForgeConfigSpec.BooleanValue FEenabled;
@@ -59,8 +63,9 @@ public class Censor
     static ForgeConfigSpec.ConfigValue<String> FEcensorSymbol;
     static ForgeConfigSpec.ConfigValue<String[]> FEfilterList;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
-    {
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
+	{
         BUILDER.push(CONFIG_CATEGORY);
         FEenabled = BUILDER.comment("Enable Chat Censor?").define("enable", true);
         FEcensorSlap = BUILDER.comment("Damage to a player when he uses a censored word").defineInRange("slapDamage", 1, 0, Integer.MAX_VALUE);
@@ -69,8 +74,9 @@ public class Censor
         BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean reload)
-    {
+	@Override
+	public void bakeConfig(boolean reload)
+	{
         enabled = FEenabled.get();
         censorSlap = FEcensorSlap.get();
         censorSymbol = FEcensorSymbol.get();
@@ -129,5 +135,15 @@ public class Censor
         }
         return message;
     }
+
+	@Override
+	public ConfigData returnData() {
+		return ModuleChat.data;
+	}
+
+	@Override
+	public void setSpec(ForgeConfigSpec spec) {
+		ModuleChat.data.setSpec(spec);
+	}
 
 }

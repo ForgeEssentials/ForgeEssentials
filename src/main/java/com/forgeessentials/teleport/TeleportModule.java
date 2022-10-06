@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity.SleepResult;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -15,9 +16,10 @@ import java.util.Optional;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.teleport.portal.CommandPortal;
 import com.forgeessentials.teleport.portal.PortalManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
@@ -25,8 +27,11 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 @FEModule(name = "Teleport", parentMod = ForgeEssentials.class)
-public class TeleportModule
+public class TeleportModule extends ConfigLoaderBase
 {
+
+	private static ForgeConfigSpec TELEPORT_CONFIG;
+	private static final ConfigData data = new ConfigData("Teleport", TELEPORT_CONFIG, new ForgeConfigSpec.Builder());
 
     public static final String PERM_TP = "fe.teleport.tp";
     public static final String PERM_TP_OTHERS = "fe.teleport.tp.others";
@@ -132,18 +137,23 @@ public class TeleportModule
 
     static ForgeConfigSpec.ConfigValue<String> FEportalBlock;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
-    {
-        BUILDER.push("General");
+	@Override
+	public void load(Builder BUILDER, boolean isReload) {
+		BUILDER.push("General");
         FEportalBlock = BUILDER.comment("Name of the block to use as material for new portals.\n"
                 + "Does not override vanilla nether/end portals.\nSetting this to 'minecraft:portal' is currently not supported.")
                 .define("portalBlock", "minecraft:glass_pane");
         BUILDER.pop();
-    }
+	}
 
-    public static void bakeConfig(boolean reload)
-    {
-        String portalBlockId = FEportalBlock.get();
+	@Override
+	public void bakeConfig(boolean reload) {
+		String portalBlockId = FEportalBlock.get();
         PortalManager.portalBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(portalBlockId));
-    }
+	}
+
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
 }

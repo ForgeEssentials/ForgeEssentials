@@ -31,7 +31,7 @@ import com.forgeessentials.util.output.LoggingHandler;
 @FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false)
 public class ModuleServerVote
 {
-
+	
     @ModuleDir
     public static File moduleDir;
 
@@ -49,7 +49,7 @@ public class ModuleServerVote
     @SubscribeEvent
     public void init(FEModuleCommonSetupEvent e)
     {
-        // CONFIG ForgeEssentials.getConfigManager().registerLoader("ServerVote", new ConfigServerVote());
+        ForgeEssentials.getConfigManager().registerSpecs("ServerVote", new ConfigServerVote());
         APIRegistry.scripts.addScriptType(scriptKey);
     }
 
@@ -193,5 +193,4 @@ public class ModuleServerVote
 
         APIRegistry.scripts.runEventScripts(scriptKey, player.createCommandSourceStack());
     }
-
 }

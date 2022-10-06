@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.FileUtils;
 
@@ -14,11 +15,14 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.config.ConfigBase;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigSaver;
 
-public class FECommandManager
+public class FECommandManager implements ConfigSaver
 {
-
+    private static ForgeConfigSpec COMMAND_CONFIG;
+	private static final ConfigData data = new ConfigData("Commands", COMMAND_CONFIG, new ForgeConfigSpec.Builder());
+	
     public static interface ConfigurableCommand
     {
 
@@ -42,19 +46,21 @@ public class FECommandManager
 
     public FECommandManager()
     {
-        // CONFIG ForgeEssentials.getConfigManager().registerLoader("Commands", this);
+        ForgeEssentials.getConfigManager().registerSpecs("Commands", this);
     }
 
     static ForgeConfigSpec.IntValue FECversion;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.push("CommandsConfig");
         FECversion = BUILDER.defineInRange("version", COMMANDS_VERSION, 0, Integer.MAX_VALUE);
         BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean reload)
+	@Override
+	public void bakeConfig(boolean reload)
     {
         if (FECversion.get() < COMMANDS_VERSION)
         {
@@ -65,13 +71,24 @@ public class FECommandManager
             loadCommandConfig(command);
     }
 
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
+
+	@Override
+	public void save(boolean reload) {
+		// TODO Auto-generated method stub
+		
+	}
+
     private static void loadCommandConfig(ForgeEssentialsCommandBase command)
     {
 
         ForgeConfigSpec.Builder configBuilder;
     	
         String category = "Commands_" + command.getName();
-        //Property aliasesProperty = config.get(category, "aliases", command.getDefaultAliases());
+        Property aliasesProperty = config.get(category, "aliases", command.getDefaultAliases());
 
         if (newMappings)
             aliasesProperty.set(command.getDefaultAliases());
@@ -124,5 +141,4 @@ public class FECommandManager
     {
         registeredCommands.clear();
     }
-
 }

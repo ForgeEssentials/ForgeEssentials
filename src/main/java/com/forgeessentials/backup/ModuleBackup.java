@@ -26,6 +26,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -40,11 +41,12 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
@@ -524,5 +526,4 @@ public class ModuleBackup extends ConfigLoaderBase
                     ChatOutputHandler.sendMessage(player.createCommandSourceStack(), messageComponent);
         ChatOutputHandler.sendMessage(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), messageComponent);
     }
-
 }

@@ -13,8 +13,7 @@ import org.objectweb.asm.Type;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.config.ConfigBase;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
+import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -111,7 +110,7 @@ public class ModuleLauncher
 
                 try
                 {
-                    obj = c.newInstance();
+                    obj = c.getDeclaredConstructor().newInstance();
                     map.scanObject(obj);
                     // this works?? skip everything else and go on to the next one.
                     continue;
@@ -143,29 +142,29 @@ public class ModuleLauncher
         // Register modules with configuration manager
         for (ModuleContainer module : containerMap.values())
         {
-            // TODO Not usable until dynamic configs are re-added
             if (module.module instanceof ConfigLoader)
             {
-                //LoggingHandler.felog.debug("Registering configuration for FE module " + module.name);
-                //ForgeEssentials.getConfigManager().registerLoader(module.name, (ConfigLoader) module.module, false);
+                LoggingHandler.felog.debug("Registering configuration for FE module " + module.name);
+                ForgeEssentials.getConfigManager().registerSpecs(module.name, (ConfigLoader) module.module);
             }
             else
             {
-                //LoggingHandler.felog.debug("No configuration for FE module " + module.name);
+                LoggingHandler.felog.debug("No configuration for FE module " + module.name);
             }
         }
 
-        APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
 
         // TODO Check if this works
-        ConfigBase.BakeConfigs(false);
-        // ForgeEssentials.getConfigManager().load(false);
+        ForgeEssentials.getConfigManager().loadAllRegisteredConfigs();
+        // TODO Check if this works
+        ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs();
+        APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
     }
 
     public void reloadConfigs()
     {
         // TODO Check if this works
-        ConfigBase.BakeConfigs(true);
+        ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs();
         APIRegistry.getFEEventBus().post(new ConfigReloadEvent());
     }
 

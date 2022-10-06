@@ -2,11 +2,17 @@ package com.forgeessentials.core;
 
 import java.text.SimpleDateFormat;
 
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
+
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
-public class FEConfig
+public class FEConfig extends ConfigLoaderBase
 {
-
+    private static ForgeConfigSpec CORE_CONFIG;
+	public static final ConfigData data = new ConfigData("main", CORE_CONFIG, new ForgeConfigSpec.Builder());
+	
     public static final String CONFIG_MAIN_CORE = "Core";
     public static final String CONFIG_MAIN_MISC = "Misc";
 
@@ -37,7 +43,8 @@ public class FEConfig
     static ForgeConfigSpec.IntValue FEmajoritySleep;
     static ForgeConfigSpec.BooleanValue FEcheckSpacesInNames;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.comment("Configure ForgeEssentials Core.").push(CONFIG_MAIN_CORE);
         FEFORMAT_DATE = BUILDER.comment("Date-only format")
@@ -63,7 +70,8 @@ public class FEConfig
         BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean reload)
+	@Override
+	public void bakeConfig(boolean reload)
     {
         FORMAT_DATE = new SimpleDateFormat(FEFORMAT_DATE.get());
         FORMAT_DATE_TIME = new SimpleDateFormat(FEFORMAT_DATE_TIME.get());
@@ -75,5 +83,10 @@ public class FEConfig
         majoritySleep = FEmajoritySleep.get();
         checkSpacesInNames = FEcheckSpacesInNames.get();
     }
+
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
 
 }

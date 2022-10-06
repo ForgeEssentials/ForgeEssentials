@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -16,9 +17,10 @@ import org.apache.commons.io.FileUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.permissions.commands.CommandItemPermission;
 import com.forgeessentials.permissions.commands.CommandPermissions;
 import com.forgeessentials.permissions.commands.CommandPromote;
@@ -42,9 +44,11 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent
 import com.forgeessentials.util.output.LoggingHandler;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)
-public class ModulePermissions
+public class ModulePermissions extends ConfigLoaderBase
 {
-
+    private static ForgeConfigSpec PERMISSIONS_CONFIG;
+	public static final ConfigData data = new ConfigData("Permissions", PERMISSIONS_CONFIG, new ForgeConfigSpec.Builder());
+	
     public static final String CONFIG_CAT = "Permissions";
 
     private static final String PERSISTENCE_HELP = "Choose a permission persistence backend (flatfile, sql, json, singlejson). DO NOT use SQL, unless you really need to use it.";
@@ -216,21 +220,28 @@ public class ModulePermissions
     static ForgeConfigSpec.ConfigValue<String> FEpersistenceBackend;
     static ForgeConfigSpec.BooleanValue FEfakePlayerIsSpecialBunny;
     
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
     	BUILDER.push(CONFIG_CAT);
     	FEpersistenceBackend = BUILDER.comment(PERSISTENCE_HELP).define("persistenceBackend", "singlejson");
     	FEfakePlayerIsSpecialBunny = BUILDER.comment("Should we force override UUID for fake players? This is by default true because mods are randomly generating UUID each boot!").define("fakePlayerIsSpecialBunny", true);
     	BUILDER.pop();
-        dbConnector.loadOrGenerate(config, CONFIG_CAT + "_SQL");
-
     }
 
-	public static void bakeConfig(boolean reload) { 
+	@Override
+	public void bakeConfig(boolean reload)
+	{
 		persistenceBackend = FEpersistenceBackend.get();
 		fakePlayerIsSpecialBunny = FEfakePlayerIsSpecialBunny.get();
         dbConnector.loadOrGenerate(config, CONFIG_CAT + ".SQL");
 	}
+
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
+
 	
     public DBConnector getDbConnector()
     {
@@ -243,5 +254,4 @@ public class ModulePermissions
 	public static PermissionScheduler getPermissionScheduler(){
         return permissionScheduler;
     }
-
 }

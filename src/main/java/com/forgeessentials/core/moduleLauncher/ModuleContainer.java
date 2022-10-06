@@ -110,7 +110,7 @@ public class ModuleContainer implements Comparable
 
                 try
                 {
-                    if (!(boolean) m.invoke(c.newInstance()))
+                    if (!(boolean) m.invoke(c.getDeclaredConstructor().newInstance()))
                     {
                         LoggingHandler.felog.debug("Disabled module " + name);
                         isLoadable = false;
@@ -120,7 +120,16 @@ public class ModuleContainer implements Comparable
                 catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
                 {
                     LoggingHandler.felog.error(String.format("Exception Raised when testing preconditions for module: %s", name), e);
-                }
+                } catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         }
 
@@ -162,7 +171,8 @@ public class ModuleContainer implements Comparable
         }
     }
 
-    protected void createAndPopulate()
+    @SuppressWarnings("unchecked")
+	protected void createAndPopulate()
     {
         Field f;
         Class c;
@@ -170,7 +180,7 @@ public class ModuleContainer implements Comparable
         try
         {
             c = Class.forName(className);
-            module = c.newInstance();
+            module = c.getDeclaredConstructor().newInstance();
         }
         catch (Throwable e)
         {

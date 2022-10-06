@@ -14,6 +14,8 @@ import com.forgeessentials.commons.network.packets.Packet0Handshake;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
 import com.forgeessentials.commons.network.packets.Packet7Remote;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -24,14 +26,17 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.mojang.brigadier.Command;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "AuthLogin", parentMod = ForgeEssentials.class, defaultModule = false)
-public class ModuleAuth
+public class ModuleAuth extends ConfigLoaderBase
 {
+    private static ForgeConfigSpec AUTH_CONFIG;
+	private static final ConfigData data = new ConfigData("main", AUTH_CONFIG, new ForgeConfigSpec.Builder());
 
     public static final String CONFIG_CATEGORY = "Auth";
     public static final String CONFIG_CATEGORY_LISTS = "Authlists";
@@ -203,7 +208,8 @@ public class ModuleAuth
     static ForgeConfigSpec.ConfigValue<String> FEplayerBannedMessage;
     static ForgeConfigSpec.ConfigValue<String> FEnonVipKickMessage;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.comment("AuthModule configuration").push(CONFIG_CATEGORY);
         FEalgorithm = BUILDER.comment(CFG_DESC_encryption).define("encryptionAlgorithm", "SHA1");
@@ -227,7 +233,8 @@ public class ModuleAuth
         BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean reload)
+	@Override
+	public void bakeConfig(boolean reload)
     {
         EncryptionHelper.algorithm = FEalgorithm.get();
         canMoveWithoutLogin = FEcanMoveWithoutLogin.get();
@@ -250,4 +257,9 @@ public class ModuleAuth
             TaskRegistry.remove(mojangServiceChecker);
     }
 
+
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
 }

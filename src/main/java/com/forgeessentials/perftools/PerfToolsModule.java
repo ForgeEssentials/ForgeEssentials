@@ -2,6 +2,8 @@ package com.forgeessentials.perftools;
 
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
@@ -9,13 +11,17 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 @FEModule(name = "perftools", parentMod = ForgeEssentials.class, defaultModule = false)
-public class PerfToolsModule
+public class PerfToolsModule extends ConfigLoaderBase
 {
+    private static ForgeConfigSpec PERF_CONFIG;
+	private static final ConfigData data = new ConfigData("perftools", PERF_CONFIG, new ForgeConfigSpec.Builder());
+	
     private MemoryWatchdog watchdog;
 
     protected static final String PERM_WARN = "fe.core.memUsageMsg";
@@ -45,7 +51,8 @@ public class PerfToolsModule
     static ForgeConfigSpec.IntValue FEpercentageWarn;
     static ForgeConfigSpec.IntValue FEcheckInterval;
 
-    public static void load(ForgeConfigSpec.Builder SERVER_BUILDER)
+    @Override
+	public void load(Builder SERVER_BUILDER, boolean isReload)
     {
         SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
         FEwarn = SERVER_BUILDER.comment("Warn server ops when we detect high memory usage.")
@@ -57,10 +64,16 @@ public class PerfToolsModule
         SERVER_BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean b)
+	@Override
+	public void bakeConfig(boolean reload)
     {
         warn = FEwarn.get();
         percentageWarn = FEpercentageWarn.get();
         checkInterval = FEcheckInterval.get();
     }
+
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
 }

@@ -10,6 +10,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -18,15 +19,16 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.moduleLauncher.config.ConfigSaver;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.JsonParseException;
 
-public class CommandTimedMessages extends ParserCommandBase implements Runnable
+public class CommandTimedMessages extends ParserCommandBase implements ConfigSaver, Runnable
 {
 
     public static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + "_TimedMessage";
@@ -50,7 +52,7 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
 
     public CommandTimedMessages()
     {
-        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        ForgeEssentials.getConfigManager().registerSpecs(ModuleChat.CONFIG_FILE, this);
     }
 
     @Override
@@ -138,7 +140,7 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
         arguments.confirm("Added new message:");
         arguments.sendMessage(formatMessage(message));
         // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
-        save();
+        save(false);
     }
 
     public void parseList(CommandParserArgs arguments)
@@ -165,7 +167,7 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
         messages.remove(index);
         arguments.confirm("Removed message");
         // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
-        save();
+        save(false);
     }
 
     public void parseSend(CommandParserArgs arguments) throws CommandException
@@ -194,7 +196,7 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
         }
         setInterval(arguments.parseInt());
         // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
-        save();
+        save(false);
     }
 
     public void parseShuffle(CommandParserArgs arguments) throws CommandException
@@ -212,7 +214,7 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
             shuffle = newShuffle;
             initMessageOrder();
             // ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
-            save();
+            save(false);
         }
     }
 
@@ -288,7 +290,8 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
     static ForgeConfigSpec.BooleanValue FEshuffle;
     static ForgeConfigSpec.ConfigValue<String[]> FEmessages;
 
-    public static void load(ForgeConfigSpec.Builder BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.comment("Automated spam").push(CATEGORY);
         FEinverval = BUILDER.comment("Interval in seconds. 0 to disable").defineInRange("inverval", 60, 0, Integer.MAX_VALUE);
@@ -298,7 +301,8 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
         BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean reload)
+	@Override
+	public void bakeConfig(boolean reload)
     {
         setInterval(FEinverval.get());
         enabled = FEenabled.get();
@@ -307,10 +311,16 @@ public class CommandTimedMessages extends ParserCommandBase implements Runnable
         initMessageOrder();
     }
 
-    public void save()
+	@Override
+	public void save(boolean reload)
     {
         FEinverval.set(interval);
         FEshuffle.set(shuffle);
         FEmessages.set(messages.toArray(new String[messages.size()]));
     }
+
+	@Override
+	public ConfigData returnData() {
+		return ModuleChat.data;
+	}
 }

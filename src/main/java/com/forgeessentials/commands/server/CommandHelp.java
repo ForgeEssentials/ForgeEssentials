@@ -17,17 +17,20 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandHelp extends ParserCommandBase
+public class CommandHelp extends ParserCommandBase implements ConfigLoader
 {
 
     private static String[] messages;
@@ -37,7 +40,7 @@ public class CommandHelp extends ParserCommandBase
     public CommandHelp()
     {
         fixer = new HelpFixer();
-        // CONFIG ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+        ForgeEssentials.getConfigManager().registerSpecs(ForgeEssentials.getConfigManager().getMainConfigName(), this);
     }
 
     @Override
@@ -169,16 +172,23 @@ public class CommandHelp extends ParserCommandBase
 
     static ForgeConfigSpec.ConfigValue<String[]> FEmessages;
 
-    public static void load(ForgeConfigSpec.Builder SERVER_BUILDER)
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
-        SERVER_BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
-        FEmessages = SERVER_BUILDER.comment("Add custom messages here that will appear when /help is run")
+        BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
+        FEmessages = BUILDER.comment("Add custom messages here that will appear when /help is run")
                 .define("custom_help", new String[] {});
-        SERVER_BUILDER.pop();
+        BUILDER.pop();
     }
 
-    public static void bakeConfig(boolean reload)
+	@Override
+	public void bakeConfig(boolean reload)
     {
         messages = FEmessages.get();
     }
+
+	@Override
+	public ConfigData returnData() {
+		return FEConfig.data;
+	}
 }
