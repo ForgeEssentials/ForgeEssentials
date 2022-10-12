@@ -8,7 +8,6 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntity;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsWorldServer;
-import com.forgeessentials.teleport.CommandWarp.Warp;
 
 public class JsWarpPoint extends JsWrapper<WarpPoint>
 {

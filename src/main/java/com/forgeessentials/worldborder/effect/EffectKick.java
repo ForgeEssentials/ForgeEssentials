@@ -2,7 +2,6 @@ package com.forgeessentials.worldborder.effect;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;

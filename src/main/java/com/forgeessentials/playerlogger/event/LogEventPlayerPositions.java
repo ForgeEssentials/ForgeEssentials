@@ -7,7 +7,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;

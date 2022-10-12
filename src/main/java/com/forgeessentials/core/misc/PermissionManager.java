@@ -5,7 +5,6 @@ import java.util.WeakHashMap;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;

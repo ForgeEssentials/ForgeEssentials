@@ -20,7 +20,6 @@ import org.spongepowered.api.text.Text;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.economy.ModuleEconomy;
 
 public class AccountWrapper implements UniqueAccount, VirtualAccount

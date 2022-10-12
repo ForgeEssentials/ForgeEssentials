@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
 import com.forgeessentials.util.CommandParserArgs;

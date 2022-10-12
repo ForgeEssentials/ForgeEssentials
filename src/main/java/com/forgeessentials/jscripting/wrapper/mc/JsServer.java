@@ -3,21 +3,15 @@ package com.forgeessentials.jscripting.wrapper.mc;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
