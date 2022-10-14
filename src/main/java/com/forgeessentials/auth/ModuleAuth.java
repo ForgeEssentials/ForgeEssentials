@@ -175,10 +175,10 @@ public class ModuleAuth extends ConfigLoaderBase
      * @param command
      * @return
      */
-    public static boolean isGuestCommand(Command command)
+    public static boolean isGuestCommand(Command<CommandSource>  command)
     {
-        return command instanceof CommandAuth || //
-                command instanceof HelpCommand;
+        
+        return command instanceof CommandAuth || command instanceof HelpCommand;
     }
 
     private static final String CFG_DESC_forceEnable = "Forces the authentication server to be loaded regardless of Minecraft auth services";

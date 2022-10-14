@@ -54,6 +54,16 @@ public final class Translator
         return new StringTextComponent(text);
     }
 
+    public static ITextComponent translateITC(String text, Object[] args)
+    {
+        String translated = translations.get(text);
+        if (translated != null)
+            return new StringTextComponent(translated + args.toString());
+        translations.put(text, null);
+        save();
+        return new StringTextComponent(text + args.toString());
+    }
+
     public static void save()
     {
         File file = new File(ForgeEssentials.getFEDirectory(), TRANSLATOR_FILE);

@@ -12,6 +12,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.FileUtils;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.config.ConfigBase;
@@ -82,7 +83,7 @@ public class FECommandManager implements ConfigSaver
 		
 	}
 
-    private static void loadCommandConfig(ForgeEssentialsCommandBase command)
+    private static void loadCommandConfig(BaseCommand command)
     {
 
         ForgeConfigSpec.Builder configBuilder;
@@ -105,7 +106,7 @@ public class FECommandManager implements ConfigSaver
         registerCommand(command, false);
     }
 
-    public static void registerCommand(ForgeEssentialsCommandBase command, boolean registerNow)
+    public static void registerCommand(BaseCommand command, boolean registerNow)
     {
         commands.put(command.getName(), command);
         if (useSingleConfigFile = false)
@@ -126,7 +127,7 @@ public class FECommandManager implements ConfigSaver
     public static void registerCommands()
     {
     	bakeConfig(true);
-        for (ForgeEssentialsCommandBase command : commands.values())
+        for (BaseCommand command : commands.values())
             if (!registeredCommands.contains(command))
             {
                 registeredCommands.add(command);

@@ -50,8 +50,8 @@ public class CommandParserArgs
         this.command = command;
         this.args = new LinkedList<>(Arrays.asList(args));
         this.sender = sender;
-        this.senderPlayer = (sender.getPlayerOrException() instanceof ServerPlayerEntity) ? (ServerPlayerEntity) sender.getPlayerOrException() : null;
-        this.ident = (senderPlayer == null) ? (sender instanceof DoAsCommandSender ? ((DoAsCommandSender) sender).getUserIdent() : null) : UserIdent.get(senderPlayer);
+        this.senderPlayer = (sender.getEntity() instanceof ServerPlayerEntity) ? (ServerPlayerEntity) sender.getEntity() : null;
+        this.ident = (senderPlayer == null) ? (CommandUtils.GetSource(sender) instanceof DoAsCommandSender ? ((DoAsCommandSender) CommandUtils.GetSource(sender)).getUserIdent() : null) : UserIdent.get(senderPlayer);
         this.isTabCompletion = isTabCompletion;
         if (isTabCompletion)
             tabCompletion = new ArrayList<>();
@@ -182,13 +182,13 @@ public class CommandParserArgs
         Set<String> result = new TreeSet<>();
         for (UserIdent knownPlayerIdent : APIRegistry.perms.getServerZone().getKnownPlayers())
         {
-            if (CommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
+            if (ForgeEssentialsCommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
                 result.add(knownPlayerIdent.getUsernameOrUuid());
         }
         for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
-            if (CommandBase.doesStringStartWith(arg, player.getName()))
-                result.add(player.getName());
+            if (ForgeEssentialsCommandBase.doesStringStartWith(arg, player.getName().getString()))
+                result.add(player.getName().getString());
         }
         return new ArrayList<>(result);
     }
@@ -240,7 +240,7 @@ public class CommandParserArgs
                 int nodeIndex = perm.indexOf('.', permission.length());
                 if (nodeIndex >= 0)
                     perm = perm.substring(0, nodeIndex);
-                if (CommandBase.doesStringStartWith(permission, perm))
+                if (ForgeEssentialsCommandBase.doesStringStartWith(permission, perm))
                     result.add(perm);
             }
             tabCompletion = new ArrayList<>(result);
@@ -375,7 +375,7 @@ public class CommandParserArgs
     public double parseDouble() throws CommandException
     {
         checkTabCompletion();
-        return CommandBase.parseDouble(remove());
+        return CommandUtils.parseDouble(remove());
     }
 
     public boolean parseBoolean() throws CommandException

@@ -1,349 +1,58 @@
 package com.forgeessentials.core.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockLogic;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.CommandUtils;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public abstract class ForgeEssentialsCommandBase extends CommandBase
+public class ForgeEssentialsCommandBase extends CommandUtils
 {
-
-    public List<String> aliases = new ArrayList<>();
-
-    protected final static String PREFIX="fe";
-
-    // ------------------------------------------------------------
-    // Command alias
-
-
-    @Override
-    public List<String> getAliases()
-    {
-        return aliases;
-    }
-
-    /**
-     * @deprecated Use {@link #getPrimaryAlias()} instead for downstream classes     *
-     */
-    @Override
-    public String getName() {
-        String name = getPrimaryAlias();
-        if (name.startsWith(PREFIX)) {
-            return name;
-        } else
-        {
-            if (name.startsWith("/"))
-            {
-                   String newname = name.substring(1);
-                if (newname.startsWith(PREFIX)) {
-                    return name;
-                } else {
-                    return "/" + PREFIX + newname;
-                }
-            } else
-            {
-                return PREFIX + name;
-            }
-        }
-    }
-
-    /**
-     * @deprecated Use {@link ForgeEssentialsCommandBase#getDefaultSecondaryAliases()} in downstream classes
-     * Returns a list of default aliases, that will be added to the configuration on first run
-     */
-    public String[] getDefaultAliases()
-    {
-        List<String> list = new ArrayList<>();
-        String name = getPrimaryAlias();
-        if (!name.startsWith(PREFIX))
-        {
-            list.add(name);
-        }
-        list.addAll(Arrays.asList(getDefaultSecondaryAliases()));
-        return list.toArray(new String[]{});
-    }
-
-    public void setAliases(String[] aliases)
-    {
-        if (aliases == null)
-            setAliases(new ArrayList<String>());
-        else
-            setAliases(Arrays.asList(aliases));
-    }
-
-    public void setAliases(List<String> aliases)
-    {
-        this.aliases = aliases;
-    }
-
     // ------------------------------------------------------------
     // Command processing
 
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+	public LiteralArgumentBuilder<CommandSource> setExecution()
+	{
+    	return null;
+	}
+
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (sender instanceof ServerPlayerEntity)
+    	ICommandSource source = CommandUtils.GetSource(ctx.getSource());
+        if (source instanceof ServerPlayerEntity)
         {
-            processCommandPlayer(server, (ServerPlayerEntity) sender, args);
+            processCommandPlayer(ctx, params);
         }
-        else if (sender instanceof CommandBlockLogic)
+        else if (source instanceof CommandBlockLogic)
         {
-            processCommandBlock(server, (CommandBlockLogic) sender, args);
+            processCommandBlock(ctx, params);
         }
         else
         {
-            processCommandConsole(server, sender, args);
+            processCommandConsole(ctx, params);
         }
+		return Command.SINGLE_SUCCESS;
     }
 
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         throw new TranslatedCommandException("This command cannot be used as player");
     }
 
-    public void processCommandConsole(MinecraftServer server, CommandSource sender, String[] args) throws CommandException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
 
-    public void processCommandBlock(MinecraftServer server, CommandBlockLogic block, String[] args) throws CommandException
+    public int processCommandBlock(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        processCommandConsole(server, block, args);
-    }
-
-    // ------------------------------------------------------------
-    // Command usage
-
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
-    {
-        if (!canConsoleUseCommand() && !(sender instanceof PlayerEntity))
-            return false;
-        return this.checkCommandPermission(sender);
-    }
-
-    public abstract boolean canConsoleUseCommand();
-
-    // ------------------------------------------------------------
-    // Permissions
-
-    /**
-     * Registers this command and it's permission node
-     */
-    public void register()
-    {
-        if (ServerLifecycleHooks.getCurrentServer() == null)
-            return;
-
-        Map<String, ICommand> commandMap = ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).getCommands();
-        if (commandMap.containsKey(getName()))
-            LoggingHandler.felog.error(String.format("Command %s registered twice", getName()));
-
-        if (getAliases() != null && !getAliases().isEmpty())
-        {
-            for (String alias : getAliases())
-                if (alias != null && commandMap.containsKey(alias))
-                {
-                    LoggingHandler.felog.error(String.format("Command alias %s of command %s registered twice", alias, getName()));
-                    ICommand old = commandMap.get(alias);
-                    LoggingHandler.felog.error(String.format("Old Class: %s has been removed from commandMap!", old.getClass().getCanonicalName()));
-                    commandMap.remove(alias);
-                }
-        }
-
-        ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).registerCommand(this);
-        PermissionManager.registerCommandPermission(this, this.getPermissionNode(), this.getPermissionLevel());
-        registerExtraPermissions();
-    }
-
-    @SuppressWarnings("unchecked")
-    public void deregister()
-    {
-        if (ServerLifecycleHooks.getCurrentServer() == null)
-            return;
-        CommandHandler cmdHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
-        Map<String, ICommand> commandMap = cmdHandler.getCommands();
-        Set<ICommand> commandSet = cmdHandler.commandSet;
-
-        String commandName = getName();
-        List<String> commandAliases = getAliases();
-        commandSet.remove(this);
-        if (commandName != null)
-            commandMap.remove(commandName);
-        if (commandAliases != null && !commandAliases.isEmpty())
-        {
-            for (String alias : commandAliases)
-            {
-                commandMap.remove(alias);
-            }
-        }
-    }
-
-    /**
-     * Registers additional permissions
-     */
-    public void registerExtraPermissions()
-    {
-        /* do nothing */
-    }
-
-    /**
-     * Check, if the sender has permissions to use this command
-     */
-    public boolean checkCommandPermission(CommandSource sender)
-    {
-        if (getPermissionNode() == null || getPermissionNode().isEmpty())
-            return true;
-        if (sender.source instanceof MinecraftServer || sender.source instanceof CommandBlockLogic)
-            return true;
-        return PermissionAPI.hasPermission(UserIdent.get(sender.getPlayerOrException()).getPlayer(),getPermissionNode());
-    }
-
-    // ------------------------------------------------------------
-    // Utilities
-
-    public static List<String> getListOfStringsMatchingLastWord(String arg, Collection<String> possibleMatches)
-    {
-        List<String> arraylist = new ArrayList<>();
-        for (String s2 : possibleMatches)
-        {
-            if (doesStringStartWith(arg, s2))
-            {
-                arraylist.add(s2);
-            }
-        }
-        return arraylist;
-    }
-
-    /*public static List<String> getListOfStringsMatchingLastWord(String[] args, Collection<?> possibleMatches)
-    {
-        return getListOfStringsMatchingLastWord(args[args.length - 1], possibleMatches);
-    }*/
-    
-    public static boolean doesStringStartWith(String original, String region)
-    {
-        return region.regionMatches(true, 0, original, 0, original.length());
-    }
-    
-    public static List<String> getListOfStringsMatchingLastWord(String arg, String... possibleMatches)
-    {
-        List<String> arraylist = new ArrayList<>();
-        int i = possibleMatches.length;
-        for (int j = 0; j < i; ++j)
-        {
-            String s2 = possibleMatches[j];
-            if (doesStringStartWith(arg, s2))
-            {
-                arraylist.add(s2);
-            }
-        }
-        return arraylist;
-    }
-
-    public static List<String> completePlayername(String arg)
-    {
-        List<String> arraylist = new ArrayList<>();
-        for (UserIdent s2 : APIRegistry.perms.getServerZone().getKnownPlayers())
-        {
-            if (doesStringStartWith(arg, s2.getUsernameOrUuid()))
-            {
-                arraylist.add(s2.getUsernameOrUuid());
-            }
-        }
-        return arraylist;
-    }
-
-    /**
-     * Parse int with support for relative int.
-     *
-     * @param string
-     * @param relativeStart
-     * @return
-     * @throws NumberInvalidException
-     */
-    public static int parseInt(String string, int relativeStart) throws NumberFormatException
-    {
-        if (string.startsWith("~"))
-        {
-            string = string.substring(1);
-            return relativeStart + parseInt(string);
-        }
-        else
-        {
-            return parseInt(string);
-        }
-    }
-    
-    public static int parseInt(String input) throws NumberFormatException
-    {
-        try
-        {
-            return Integer.parseInt(input);
-        }
-        catch (NumberFormatException var2)
-        {
-            throw new NumberFormatException();
-        }
-    }
-    /**
-     * Parse double with support for relative values.
-     *
-     * @param string
-     * @param relativeStart
-     * @return
-     */
-    public static double parseDouble(String string, double relativeStart) throws NumberFormatException
-    {
-        if (string.startsWith("~"))
-        {
-            string = string.substring(1);
-            return relativeStart + parseInt(string);
-        }
-        else
-        {
-            return parseInt(string);
-        }
-    }
-
-    /**
-     * formerly of PermissionObject
-     */
-    public abstract String getPermissionNode();
-
-    public abstract DefaultPermissionLevel getPermissionLevel();
-
-    public List<String> matchToPlayers(String[] args)
-    {
-        return getListOfStringsMatchingLastWord(args, ServerLifecycleHooks.getCurrentServer().getPlayerNames());
-    }
-
-    @Nonnull
-    protected abstract String getPrimaryAlias();
-
-    @Nonnull
-    protected String[] getDefaultSecondaryAliases() {
-        return new String[] {};
+        return processCommandConsole(ctx, params);
     }
 }

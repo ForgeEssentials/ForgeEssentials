@@ -110,6 +110,8 @@ public class ModuleChat
 
     public Mailer mailer;
 
+    public static TimedMessages timedMessages;
+
     public IrcHandler ircHandler;
 
     /* ------------------------------------------------------------ */
@@ -119,10 +121,11 @@ public class ModuleChat
     {
         MinecraftForge.EVENT_BUS.register(this);
 
-        // ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, new ChatConfig());
+        ForgeEssentials.getConfigManager().registerSpecs(CONFIG_FILE, new ChatConfig());
 
         ircHandler = new IrcHandler();
         censor = new Censor();
+        timedMessages = new TimedMessages();
         mailer = new Mailer();
 
         setupChatReplacements();
@@ -194,7 +197,7 @@ public class ModuleChat
     @SubscribeEvent
     public void serverStarted(FEModuleServerStartedEvent e)
     {
-        ServerUtil.replaceCommand(MessageCommand.class, new CommandMessageReplacement());
+        //ServerUtil.replaceCommand(MessageCommand.class, new CommandMessageReplacement());
     }
 
     @SubscribeEvent
@@ -505,6 +508,13 @@ public class ModuleChat
         return nickname;
     }
 
+    public static boolean doesPlayerHaveNickname(PlayerEntity player)
+    {
+        String nickname = PlayerUtil.getPersistedTag(player, false).getString("nickname");
+        if (nickname == null || nickname.isEmpty())
+           return false;
+        return true;
+    }
     /* ------------------------------------------------------------ */
 
     public static void tell(CommandSource sender, ITextComponent message, CommandSource target)

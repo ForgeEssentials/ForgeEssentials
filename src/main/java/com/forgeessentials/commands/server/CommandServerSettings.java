@@ -11,6 +11,7 @@ import net.minecraft.world.WorldSettings;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameType;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -59,10 +60,10 @@ public class CommandServerSettings extends ParserCommandBase
         return ModuleCommands.PERM + ".serversettings";
     }
 
-    @SideOnly(Side.SERVER)
+    @OnlyIn(Dist.DEDICATED_SERVER)
     public void doSetProperty(String id, Object value)
     {
-        DedicatedServer server = (DedicatedServer) FMLCommonHandler.instance().getMinecraftServerInstance();
+        DedicatedServer server = (DedicatedServer) ServerLifecycleHooks.getCurrentServer().getSessionService();
         server.setProperty(id, value);
         server.saveProperties();
     }
@@ -129,7 +130,7 @@ public class CommandServerSettings extends ParserCommandBase
             else
             {
                 String motd = ScriptArguments.process(arguments.toString(), null);
-                server.getServerStatusResponse().setServerDescription(new StringTextComponent(ChatOutputHandler.formatColors(motd)));
+                server.getStatus().setDescription(new StringTextComponent(ChatOutputHandler.formatColors(motd)));
                 server.setMotd(motd);
                 setProperty("motd", motd);
                 arguments.confirm("Set MotD to %s", motd);
@@ -158,7 +159,7 @@ public class CommandServerSettings extends ParserCommandBase
             break;
         case "difficulty":
             if (arguments.isEmpty())
-                arguments.confirm("Difficulty set to %s", server.getDifficulty());
+                arguments.confirm("Difficulty set to %s", server.getWorldData().getDifficulty());
             else
             {
                 Difficulty difficulty = Difficulty.byId(arguments.parseInt());

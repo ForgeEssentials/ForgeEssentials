@@ -38,6 +38,7 @@ import com.forgeessentials.permissions.persistence.JsonProvider;
 import com.forgeessentials.permissions.persistence.SingleFileProvider;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -89,7 +90,7 @@ public class PermissionCommandParser
     {
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseMainArgs);
+            arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseMainArgs);
             return;
         }
         if (arguments.args.isEmpty())
@@ -201,7 +202,7 @@ public class PermissionCommandParser
         if (arguments.isTabCompletion)
         {
             if (arguments.args.size() == 1)
-                arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseListArgs);
+                arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseListArgs);
             return;
         }
         if (arguments.args.isEmpty())
@@ -216,10 +217,10 @@ public class PermissionCommandParser
             case "zones":
                 if (arguments.senderPlayer == null)
                     throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-                listZones(arguments.senderPlayer, new WorldPoint(arguments.senderPlayer));
+                listZones(arguments.senderPlayer.createCommandSourceStack(), new WorldPoint(arguments.senderPlayer));
                 break;
             case "worlds":
-                listWorlds(arguments.senderPlayer);
+                listWorlds(arguments.senderPlayer.createCommandSourceStack());
                 break;
             case "perms":
                 if (arguments.senderPlayer == null)
@@ -246,15 +247,15 @@ public class PermissionCommandParser
 
         if (arguments.isTabCompletion)
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserArgs);
+            arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserArgs);
             for (Zone zone : APIRegistry.perms.getZones())
             {
-                if (CommandBase.doesStringStartWith(arguments.args.peek(), zone.getName()))
+                if (CommandUtils.doesStringStartWith(arguments.args.peek(), zone.getName()))
                     arguments.tabCompletion.add(zone.getName());
             }
             for (String perm : APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions())
             {
-                if (CommandBase.doesStringStartWith(arguments.args.peek(), perm))
+                if (CommandUtils.doesStringStartWith(arguments.args.peek(), perm))
                     arguments.tabCompletion.add(perm);
             }
             return;
@@ -340,7 +341,7 @@ public class PermissionCommandParser
         // TAB-complete command
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserArgs);
+            arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserArgs);
             if (zone != null)
                 arguments.tabCompletion.remove("zone");
             return;
@@ -531,7 +532,7 @@ public class PermissionCommandParser
         if (arguments.isTabCompletion)
         {
             if (arguments.args.size() == 1)
-                arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseSpawnArgs);
+                arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseSpawnArgs);
             return;
         }
 
@@ -571,10 +572,10 @@ public class PermissionCommandParser
                 throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             try
             {
-                int x = CommandBase.parseInt(loc);
-                int y = CommandBase.parseInt(arguments.args.remove());
-                int z = CommandBase.parseInt(arguments.args.remove());
-                int dimension = CommandBase.parseInt(arguments.args.remove());
+                int x = CommandUtils.parseInt(loc);
+                int y = CommandUtils.parseInt(arguments.args.remove());
+                int z = CommandUtils.parseInt(arguments.args.remove());
+                int dimension = CommandUtils.parseInt(arguments.args.remove());
                 point = new WarpPoint(dimension, x, y, z, 0, 0);
             }
             catch (NumberFormatException e)
@@ -601,7 +602,7 @@ public class PermissionCommandParser
     {
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserGroupArgs);
+            arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserGroupArgs);
             return;
         }
         if (arguments.args.isEmpty())
@@ -632,7 +633,7 @@ public class PermissionCommandParser
                     arguments.tabCompletion = new ArrayList<>();
                     for (String group : APIRegistry.perms.getServerZone().getGroups())
                     {
-                        if (CommandBase.doesStringStartWith(arguments.args.peek(), group))
+                        if (CommandUtils.doesStringStartWith(arguments.args.peek(), group))
                             arguments.tabCompletion.add(group);
                     }
                 }
@@ -709,7 +710,7 @@ public class PermissionCommandParser
         {
             if (arguments.isTabCompletion && arguments.args.size() == 1)
             {
-                arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), "create");
+                arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), "create");
                 return;
             }
             if (arguments.args.isEmpty())
@@ -767,7 +768,7 @@ public class PermissionCommandParser
         // TAB-complete command
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseGroupArgs);
+            arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseGroupArgs);
             if (zone != null)
                 arguments.tabCompletion.remove("zone");
             return;
@@ -965,7 +966,7 @@ public class PermissionCommandParser
         if (arguments.isTabCompletion)
         {
             if (arguments.args.size() == 1)
-                arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseSpawnArgs);
+                arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseSpawnArgs);
             return;
         }
 
@@ -1005,10 +1006,10 @@ public class PermissionCommandParser
                 throw new TranslatedCommandException("Too few arguments!");
             try
             {
-                int x = CommandBase.parseInt(loc);
-                int y = CommandBase.parseInt(arguments.args.remove());
-                int z = CommandBase.parseInt(arguments.args.remove());
-                int dimension = CommandBase.parseInt(arguments.args.remove());
+                int x = CommandUtils.parseInt(loc);
+                int y = CommandUtils.parseInt(arguments.args.remove());
+                int z = CommandUtils.parseInt(arguments.args.remove());
+                int dimension = CommandUtils.parseInt(arguments.args.remove());
                 point = new WarpPoint(dimension, x, y, z, 0, 0);
             }
             catch (NumberFormatException e)
@@ -1058,7 +1059,7 @@ public class PermissionCommandParser
         arguments.checkPermission(PERM_GROUP_PERMS);
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.args.peek(), parseGroupIncludeArgs);
+            arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseGroupIncludeArgs);
             return;
         }
 
@@ -1099,7 +1100,7 @@ public class PermissionCommandParser
                 arguments.tabCompletion = new ArrayList<>();
                 for (String g : APIRegistry.perms.getServerZone().getGroups())
                 {
-                    if (CommandBase.doesStringStartWith(arguments.args.peek(), g))
+                    if (CommandUtils.doesStringStartWith(arguments.args.peek(), g))
                         arguments.tabCompletion.add(g);
                 }
             }
@@ -1138,7 +1139,7 @@ public class PermissionCommandParser
             int nodeIndex = perm.indexOf('.', permission.length());
             if (nodeIndex >= 0)
                 perm = perm.substring(0, nodeIndex);
-            if (CommandBase.doesStringStartWith(permission, perm))
+            if (CommandUtils.doesStringStartWith(permission, perm))
                 result.add(perm);
         }
         return new ArrayList<>(result);
