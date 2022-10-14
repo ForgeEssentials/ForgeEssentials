@@ -1,7 +1,11 @@
 package com.forgeessentials.chat.command;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.command.arguments.MessageArgument;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -10,14 +14,22 @@ import com.forgeessentials.chat.Mailer;
 import com.forgeessentials.chat.Mailer.Mail;
 import com.forgeessentials.chat.Mailer.Mails;
 import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandMail extends ParserCommandBase
+public class CommandMail extends BaseCommand
 {
+
+    public CommandMail(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -42,64 +54,77 @@ public class CommandMail extends ParserCommandBase
     {
         return true;
     }
-
+    
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
+        return builder
+                .then(Commands.literal("read")
+                        .executes(CommandContext -> execute(CommandContext, "read")
+                                )
+                        )
+                .then(Commands.literal("readall")
+                        .executes(CommandContext -> execute(CommandContext, "readall")
+                                )
+                        )
+                .then(Commands.literal("send")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.argument("message", MessageArgument.message())
+                                        .executes(CommandContext -> execute(CommandContext, "send")
+                                                )
+                                        )
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "blank")
+                        )
+                ;
+    }
+
+    @SuppressWarnings("unlikely-arg-type")
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        if (params.equals("blank"))
         {
-            arguments.confirm("/mail read: Read next mail");
-            arguments.confirm("/mail readall: Read all mails");
-            arguments.confirm("/mail send <player> <msg...>: Send a mail");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/mail read: Read next mail"));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/mail readall: Read all mails"));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/mail send <player> <msg...>: Send a mail"));
+            return Command.SINGLE_SUCCESS;
         }
 
-        arguments.tabComplete("read", "readall", "send");
-        String subArg = arguments.remove().toLowerCase();
-        switch (subArg)
+        if (params.equals("read"))
         {
-        case "read":
-        {
-            if (arguments.senderPlayer == null)
+            if (!(ctx.getSource().getEntity() instanceof PlayerEntity))
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-            if (arguments.isTabCompletion)
-                return;
-            Mails mailBag = Mailer.getMailBag(arguments.ident);
+            Mails mailBag = Mailer.getMailBag(UserIdent.get(ctx.getSource()));
             if (mailBag.mails.isEmpty())
                 throw new TranslatedCommandException("You have no mails to read");
-            readMail(arguments.sender, mailBag.mails.remove(0));
-            Mailer.saveMails(arguments.ident, mailBag);
-            break;
+            readMail(ctx.getSource(), mailBag.mails.remove(0));
+            Mailer.saveMails(getUserIdent(ctx.getSource(), getServerPlayer(ctx.getSource())), mailBag);
+            return Command.SINGLE_SUCCESS;
         }
-        case "readall":
+        if (params.equals("readall"))
         {
-            if (arguments.senderPlayer == null)
+            if (!(ctx.getSource().getEntity() instanceof PlayerEntity))
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-            if (arguments.isTabCompletion)
-                return;
-            Mails mailBag = Mailer.getMailBag(arguments.ident);
+            Mails mailBag = Mailer.getMailBag(UserIdent.get(ctx.getSource()));
             if (mailBag.mails.isEmpty())
                 throw new TranslatedCommandException("You have no mails to read");
             for (Mail mail : mailBag.mails)
-                readMail(arguments.sender, mail);
+                readMail(ctx.getSource(), mail);
             mailBag.mails.clear();
-            Mailer.saveMails(arguments.ident, mailBag);
-            break;
+            Mailer.saveMails(getUserIdent(ctx.getSource(), getServerPlayer(ctx.getSource())), mailBag);
+            return Command.SINGLE_SUCCESS;
         }
-        case "send":
+        if (params.equals("send"))
         {
-            UserIdent receiver = arguments.parsePlayer(false, false);
-            if (arguments.isTabCompletion)
-                return;
-            if (arguments.isEmpty())
-                throw new TranslatedCommandException("No message specified");
-            Mailer.sendMail(arguments.ident, receiver, arguments.toString());
-            arguments.confirm("You sent a mail to %s", receiver.getUsernameOrUuid());
-            break;
+            PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            UserIdent receiver = UserIdent.get(player);
+            ITextComponent message = MessageArgument.getMessage(ctx, "message");
+            Mailer.sendMail(getUserIdent(ctx.getSource(), getServerPlayer(ctx.getSource())), receiver,message.toString());
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("You sent a mail to %s", receiver.getUsernameOrUuid()));
+            return Command.SINGLE_SUCCESS;
         }
-        default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subArg);
-        }
+        return Command.SINGLE_SUCCESS;
     }
 
     public static void readMail(CommandSource sender, Mail mail)
@@ -108,5 +133,4 @@ public class CommandMail extends ParserCommandBase
                 Translator.format("Mail from %s on the %s", mail.sender.getUsernameOrUuid(), FEConfig.FORMAT_DATE_TIME.format(mail.timestamp)));
         ChatOutputHandler.chatConfirmation(sender, ChatOutputHandler.formatColors(mail.message));
     }
-
 }

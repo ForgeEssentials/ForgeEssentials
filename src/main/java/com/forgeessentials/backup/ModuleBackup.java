@@ -113,7 +113,7 @@ public class ModuleBackup extends ConfigLoaderBase
     public void load(FEModuleCommonSetupEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
-        FECommandManager.registerCommand(new CommandBackup());
+        FECommandManager.registerCommand(new CommandBackup("backup", 4, true));//TODO fix perms
     }
 
     @SubscribeEvent
@@ -167,6 +167,27 @@ public class ModuleBackup extends ConfigLoaderBase
             });
             thread.start();
         }
+    }
+
+    @Override
+    public void load(Builder BUILDER, boolean isReload)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public ConfigData returnData()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -251,14 +272,14 @@ public class ModuleBackup extends ConfigLoaderBase
         backupThread.start();
     }
 
-    public static void backup(int dimension)
+    public static void backup(ServerWorld dimension)
     {
         if (backupThread != null)
         {
             ModuleBackup.notify("Backup still in progress");
             return;
         }
-        final ServerWorld world = DimensionManager.getWorld(dimension);
+        final ServerWorld world = dimension;
         if (world == null)
         {
             ModuleBackup.notify(Translator.format("Dimension %d does not exist or is not loaded", dimension));

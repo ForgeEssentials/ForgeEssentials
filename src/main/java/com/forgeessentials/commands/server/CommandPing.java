@@ -1,8 +1,8 @@
 package com.forgeessentials.commands.server;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -10,6 +10,8 @@ import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 
 public class CommandPing extends ForgeEssentialsCommandBase implements ConfigurableCommand
 {
@@ -40,16 +42,21 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
         return ModuleCommands.PERM + ".ping";
     }
 
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+	{
+
+	}
+
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public void processCommandPlayer(CommandContext<CommandSource> ctx, String[] args) throws CommandException
     {
-        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
+        ChatOutputHandler.chatNotification(ctx.getSource(), response.replaceAll("%time", ((ServerPlayerEntity) ctx.getSource().getEntity()).latency + "ms."));
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public void processCommandConsole(CommandContext<CommandSource> ctx, String[] args) throws CommandException
     {
-        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
+        ChatOutputHandler.chatNotification(ctx.getSource(), response.replaceAll("%time", ""));
     }
 
     @Override

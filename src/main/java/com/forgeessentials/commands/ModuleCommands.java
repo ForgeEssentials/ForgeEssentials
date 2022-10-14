@@ -81,7 +81,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandDechant());
         FECommandManager.registerCommand(new CommandLocate());
         FECommandManager.registerCommand(new CommandRules());
-        FECommandManager.registerCommand(new CommandModlist());
+        FECommandManager.registerCommand(new CommandModlist("modlist", 0, true));
         FECommandManager.registerCommand(new CommandButcher());
         FECommandManager.registerCommand(new CommandRemove());
         FECommandManager.registerCommand(new CommandAFK());

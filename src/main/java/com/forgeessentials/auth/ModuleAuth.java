@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.impl.HelpCommand;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -75,8 +76,8 @@ public class ModuleAuth extends ConfigLoaderBase
     @SubscribeEvent
     public void load(FEModuleCommonSetupEvent e)
     {
-        FECommandManager.registerCommand(new CommandAuth());
-        FECommandManager.registerCommand(new CommandVIP());
+        FECommandManager.registerCommand(new CommandAuth("auth", 0, true));
+        FECommandManager.registerCommand(new CommandVIP("vip", 4, true));// TODO PERMS
         NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
 
     }

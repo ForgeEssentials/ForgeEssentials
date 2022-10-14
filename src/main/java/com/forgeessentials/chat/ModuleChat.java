@@ -173,17 +173,17 @@ public class ModuleChat
     @SubscribeEvent
     public void serverStarting(FEModuleServerStartingEvent e)
     {
-        FECommandManager.registerCommand(new CommandMute());
-        FECommandManager.registerCommand(new CommandNickname());
-        FECommandManager.registerCommand(new CommandPm());
-        FECommandManager.registerCommand(new CommandReply());
-        FECommandManager.registerCommand(new CommandTimedMessages());
-        FECommandManager.registerCommand(new CommandUnmute());
-        FECommandManager.registerCommand(new CommandGroupMessage());
+        FECommandManager.registerCommand(new CommandMute("mute", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandNickname("nickname", 0, true));
+        FECommandManager.registerCommand(new CommandPm("pm", 0, true));
+        FECommandManager.registerCommand(new CommandReply("reply", 0, true));
+        FECommandManager.registerCommand(new CommandTimedMessages("timedmessage", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandUnmute("unmute", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandGroupMessage("gmsg", 0, true));
 
-        FECommandManager.registerCommand(new CommandIrc());
-        FECommandManager.registerCommand(new CommandIrcPm());
-        FECommandManager.registerCommand(new CommandIrcBot());
+        FECommandManager.registerCommand(new CommandIrc("irc", 0, true));
+        FECommandManager.registerCommand(new CommandIrcPm("ircpm", 0, true));
+        FECommandManager.registerCommand(new CommandIrcBot("ircbot", 4, true));//TODO fix perms
 
         APIRegistry.perms.registerPermissionDescription(PERM, "Chat permissions");
         APIRegistry.perms.registerPermission(PERM_CHAT, DefaultPermissionLevel.ALL, "Allow players to use the public chat");
