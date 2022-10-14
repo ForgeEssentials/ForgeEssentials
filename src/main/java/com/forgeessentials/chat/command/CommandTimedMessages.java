@@ -104,7 +104,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             return;
         }
 
-        arguments.tabComplete("add", "list", "delete", "interval", "random");
+        arguments.tabComplete("add", "list", "delete", "send", "interval", "shuffle");
         String sumCmd = arguments.remove().toLowerCase();
         switch (sumCmd)
         {
