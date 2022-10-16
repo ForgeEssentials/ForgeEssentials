@@ -1,7 +1,6 @@
 package com.forgeessentials.core.preloader.mixin.item.crafting;
 
 import java.util.Iterator;
-import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
@@ -13,7 +12,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
 
 import com.forgeessentials.protection.ModuleProtection;
 

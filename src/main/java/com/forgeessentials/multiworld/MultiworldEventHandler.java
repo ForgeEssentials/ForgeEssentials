@@ -4,7 +4,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import net.minecraftforge.common.DimensionManager;
-import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.network.ForgeMessage.DimensionRegisterMessage;
 import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
 import net.minecraftforge.fml.common.network.FMLOutboundHandler;

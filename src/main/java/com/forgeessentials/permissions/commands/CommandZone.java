@@ -2,7 +2,6 @@ package com.forgeessentials.permissions.commands;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.context.AreaContext;
 

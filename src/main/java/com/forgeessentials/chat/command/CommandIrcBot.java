@@ -5,10 +5,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandIrcBot extends ParserCommandBase
 {

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -98,7 +99,7 @@ public class TsdGenerator extends Doclet
                 indention = 0;
                 try (FileInputStream is = new FileInputStream(headerFile))
                 {
-                    write(IOUtils.toString(is));
+                    write(IOUtils.toString(is, Charset.defaultCharset()));
                 }
 
                 List<PackageDoc> packages = new ArrayList<>(Arrays.asList(root.specifiedPackages()));

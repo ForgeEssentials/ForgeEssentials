@@ -34,7 +34,6 @@ import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.ImmutableMap;
-import org.pircbotx.dcc.Chat;
 
 public final class ScriptArguments
 {

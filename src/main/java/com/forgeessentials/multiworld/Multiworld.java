@@ -6,11 +6,9 @@ import java.util.Random;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.commons.selections.WarpPoint;

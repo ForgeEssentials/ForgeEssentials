@@ -9,7 +9,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.EnumDifficulty;
-import net.minecraft.world.WorldSettings;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.relauncher.Side;

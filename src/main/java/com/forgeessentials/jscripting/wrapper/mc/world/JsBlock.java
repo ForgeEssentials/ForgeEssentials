@@ -7,7 +7,6 @@ import net.minecraft.block.Block;
 //import net.minecraftforge.fml.common.registry.GameData;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
-import net.minecraftforge.registries.GameData;
 
 /**
  * @tsd.static Block
