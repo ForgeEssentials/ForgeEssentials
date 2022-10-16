@@ -49,7 +49,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.zip.GZIPOutputStream;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;

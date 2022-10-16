@@ -5,9 +5,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 

@@ -1,7 +1,5 @@
 package com.forgeessentials.commands.world;
 
-import java.io.IOException;
-
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 

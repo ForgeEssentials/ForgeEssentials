@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;

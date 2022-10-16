@@ -4,13 +4,10 @@ import java.util.UUID;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentUtils;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;

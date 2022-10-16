@@ -4,7 +4,6 @@ import java.util.TimerTask;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;

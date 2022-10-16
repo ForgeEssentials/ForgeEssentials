@@ -39,3 +39,4 @@ modlist.txt
 /src/*/generated/
 /jscripting/tsconfig.json
 /src/utils/java/com/forgeessentials/commons/BuildInfo.java
+lib/forgeessentials-1.12.2-annonations.jar

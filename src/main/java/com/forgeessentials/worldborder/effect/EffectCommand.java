@@ -2,10 +2,7 @@ package com.forgeessentials.worldborder.effect;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.scripting.ScriptArguments;

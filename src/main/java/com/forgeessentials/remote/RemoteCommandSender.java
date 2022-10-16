@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
