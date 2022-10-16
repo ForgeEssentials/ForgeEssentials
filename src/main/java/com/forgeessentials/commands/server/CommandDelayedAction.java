@@ -2,20 +2,28 @@ package com.forgeessentials.commands.server;
 
 import java.util.TimerTask;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.MessageArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandDelayedAction extends ParserCommandBase
+public class CommandDelayedAction extends BaseCommand
 {
+
+    public CommandDelayedAction(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -42,21 +50,30 @@ public class CommandDelayedAction extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        long time = arguments.parseTimeReadable();
-        final String execute = StringUtils.join(arguments.args.iterator(), " ");
-        if (arguments.isTabCompletion)
-            return;
+        return builder
+                .then(Commands.argument("time", MessageArgument.message())
+                        .then(Commands.argument("command", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext)
+                                        )
+                                )
+                        );
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        long time = parseTimeReadable(MessageArgument.getMessage(ctx, "time").getString());
+        final String execute = MessageArgument.getMessage(ctx, "command").getString();
         TaskRegistry.schedule(new TimerTask() {
             @Override
             public void run()
             {
-                arguments.server.getCommandManager().executeCommand(arguments.sender, execute);
+                ctx.getSource().getServer().getCommands().performCommand(ctx.getSource(), execute);
             }
         }, time);
-        arguments.notify("Timer set to run command '%s' in %s", execute, ChatOutputHandler.formatTimeDurationReadableMilli(time, true));
-
+        ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format(execute, ChatOutputHandler.formatTimeDurationReadableMilli(time, true)));
+        return Command.SINGLE_SUCCESS;
     }
-
 }

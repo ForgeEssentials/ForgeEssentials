@@ -20,7 +20,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandFeSettings extends ParserCommandBase implements ConfigLoader
+public class CommandFeSettings extends BaseCommand implements ConfigLoader
 {
 
     public static final String CONFIG_FILE = "Settings";

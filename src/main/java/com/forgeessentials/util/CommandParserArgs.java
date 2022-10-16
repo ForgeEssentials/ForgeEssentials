@@ -327,7 +327,6 @@ public class CommandParserArgs
 
     public int parseInt() throws CommandException
     {
-        checkTabCompletion();
         String value = remove();
         try
         {
@@ -341,7 +340,6 @@ public class CommandParserArgs
 
     public int parseInt(int min, int max) throws CommandException
     {
-        checkTabCompletion();
         String strValue = remove();
         try
         {
@@ -360,7 +358,6 @@ public class CommandParserArgs
 
     public long parseLong() throws CommandException
     {
-        checkTabCompletion();
         String value = remove();
         try
         {
@@ -374,13 +371,11 @@ public class CommandParserArgs
 
     public double parseDouble() throws CommandException
     {
-        checkTabCompletion();
         return CommandUtils.parseDouble(remove());
     }
 
     public boolean parseBoolean() throws CommandException
     {
-        checkTabCompletion();
         String value = remove().toLowerCase();
         switch (value)
         {
@@ -397,140 +392,6 @@ public class CommandParserArgs
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_INVALID_ARGUMENT, value);
         }
-    }
-
-    public static final Pattern timeFormatPattern = Pattern.compile("(\\d+)(\\D+)?");
-
-    private static double mcHour = 1000;
-    private static double mcMinute = 1000.0 / 60;
-    private static double mcSecond = 1000.0 / 60 / 60;
-
-    /**
-     * Parses a Time string in Minecraft time format.
-     * 
-     * @return
-     * @throws CommandException
-     */
-    public Long mcParseTimeReadable() throws CommandException
-    {
-        if (isEmpty())
-        {
-            checkTabCompletion();
-            return null;
-        }
-        String timeStr = remove();
-
-        Matcher m = timeFormatPattern.matcher(timeStr);
-        if (!m.find())
-        {
-            throw new TranslatedCommandException("Invalid time format: %s", timeStr);
-        }
-
-        double resultPart = Double.parseDouble(m.group(1));
-
-        String unit = m.group(2);
-        if (unit != null)
-        {
-            switch (unit)
-            {
-            case "s":
-            case "second":
-            case "seconds":
-                resultPart *= mcSecond;
-                break;
-            case "m":
-            case "minute":
-            case "minutes":
-                resultPart *= mcMinute;
-                break;
-            case "h":
-            case "hour":
-            case "hours":
-                resultPart *= mcHour;
-                break;
-            default:
-                throw new TranslatedCommandException("Invalid time format: %s", timeStr);
-            }
-        }
-        return Math.round(resultPart);
-    }
-
-    public long parseTimeReadable() throws CommandException
-    {
-        checkTabCompletion();
-        String value = remove();
-        Matcher m = timeFormatPattern.matcher(value);
-        if (!m.find())
-        {
-            throw new TranslatedCommandException("Invalid time format: %s", value);
-        }
-
-        long result = 0;
-
-        do
-        {
-            long resultPart = Long.parseLong(m.group(1));
-
-            String unit = m.group(2);
-            if (unit != null)
-            {
-                switch (unit)
-                {
-                case "s":
-                case "second":
-                case "seconds":
-                    resultPart *= 1000;
-                    break;
-                case "m":
-                case "minute":
-                case "minutes":
-                    resultPart *= 1000 * 60;
-                    break;
-                case "h":
-                case "hour":
-                case "hours":
-                    resultPart *= 1000 * 60 * 60;
-                    break;
-                case "d":
-                case "day":
-                case "days":
-                    resultPart *= 1000 * 60 * 60 * 24;
-                    break;
-                case "w":
-                case "week":
-                case "weeks":
-                    resultPart *= 1000 * 60 * 60 * 24 * 7;
-                    break;
-                case "month":
-                case "months":
-                    resultPart *= (long) 1000 * 60 * 60 * 24 * 30;
-                    break;
-                default:
-                    throw new TranslatedCommandException("Invalid time format: %s", value);
-                }
-            }
-
-            result += resultPart;
-        }
-        while (m.find());
-
-        return result;
-    }
-
-    public void checkTabCompletion() throws CommandException
-    {
-        if (isTabCompletion && size() == 1)
-            throw new CancelParsingException();
-    }
-
-    public static class CancelParsingException extends CommandException
-    {
-
-        public CancelParsingException()
-        {
-            super(null);
-        }
-
     }
 
     public void requirePlayer() throws CommandException

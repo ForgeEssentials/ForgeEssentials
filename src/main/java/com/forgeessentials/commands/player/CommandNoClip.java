@@ -1,9 +1,9 @@
 package com.forgeessentials.commands.player;
 
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -15,9 +15,19 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandNoClip extends BaseCommand
 {
+
+    public CommandNoClip(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -44,31 +54,37 @@ public class CommandNoClip extends BaseCommand
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity player, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
+        return builder
+                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                        .executes(CommandContext -> execute(CommandContext)
+                                )
+                        );
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        boolean toggle = BoolArgumentType.getBool(ctx, "toggle");
+        ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
         if (!PlayerInfo.get(player).getHasFEClient())
         {
-            ChatOutputHandler.chatError(player, "You need the FE client addon to use this command.");
-            ChatOutputHandler.chatError(player, "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information.");
-            return;
+            ChatOutputHandler.chatError(ctx.getSource(), "You need the FE client addon to use this command.");
+            ChatOutputHandler.chatError(ctx.getSource(), "Please visit https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/FE-Client-mod for more information.");
+            return Command.SINGLE_SUCCESS;
         }
 
         if (!player.abilities.flying && !player.noPhysics)
             throw new TranslatedCommandException("You must be flying.");
 
         PlayerInfo pi = PlayerInfo.get(player);
-        if (args.length == 0)
-        {
-            pi.setNoClip(!pi.isNoClip());
-        }
-        else
-        {
-            pi.setNoClip(Boolean.parseBoolean(args[0]));
-        }
+        pi.setNoClip(toggle);
         if (!pi.isNoClip())
             WorldUtil.placeInWorld(player);
         NetworkUtils.sendTo(new Packet5Noclip(pi.isNoClip()), player);
         ChatOutputHandler.chatConfirmation(player, "Noclip " + (pi.isNoClip() ? "enabled" : "disabled"));
+        return Command.SINGLE_SUCCESS;
     }
 
     public static void checkClip(PlayerEntity player)
@@ -88,5 +104,4 @@ public class CommandNoClip extends BaseCommand
             }
         }
     }
-
 }

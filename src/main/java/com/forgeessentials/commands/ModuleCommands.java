@@ -90,7 +90,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandVirtualchest());
         FECommandManager.registerCommand(new CommandCapabilities());
         FECommandManager.registerCommand(new CommandCraft());
-        FECommandManager.registerCommand(new CommandPing());
+        FECommandManager.registerCommand(new CommandPing("ping", 0, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandInventorySee());
         FECommandManager.registerCommand(new CommandSmite());
         FECommandManager.registerCommand(new CommandBurn());
@@ -109,19 +109,19 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandPush());
         FECommandManager.registerCommand(new CommandDrop());
         FECommandManager.registerCommand(new CommandFindblock());
-        FECommandManager.registerCommand(new CommandNoClip());
+        FECommandManager.registerCommand(new CommandNoClip("noclip", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandBubble());
         FECommandManager.registerCommand(new CommandSpeed());
         FECommandManager.registerCommand(new CommandSeen());
         FECommandManager.registerCommand(new CommandTempBan());
-        FECommandManager.registerCommand(new CommandFly());
+        FECommandManager.registerCommand(new CommandFly("fly", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandHelp());
         FECommandManager.registerCommand(new CommandPregen());
         FECommandManager.registerCommand(new CommandBiome());
         FECommandManager.registerCommand(new CommandReach("reach", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandVanish());
         FECommandManager.registerCommand(new CommandDuplicate("duplicate", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandDelayedAction());
+        FECommandManager.registerCommand(new CommandDelayedAction("delayedaction", 4, true));//TODO fixperms
 
         APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
     }

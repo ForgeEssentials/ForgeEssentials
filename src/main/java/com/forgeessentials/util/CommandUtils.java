@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.google.common.base.Functions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -282,5 +285,117 @@ public class CommandUtils {
         }
 
         return itextcomponent;
+    }
+    
+    public static final Pattern timeFormatPattern = Pattern.compile("(\\d+)(\\D+)?");
+
+    private static double mcHour = 1000;
+    private static double mcMinute = 1000.0 / 60;
+    private static double mcSecond = 1000.0 / 60 / 60;
+
+    /**
+     * Parses a Time string in Minecraft time format.
+     * 
+     * @return
+     * @throws CommandException
+     */
+    public Long mcParseTimeReadable(String mcTime) throws CommandException
+    {
+        String timeStr = mcTime;
+
+        Matcher m = timeFormatPattern.matcher(timeStr);
+        if (!m.find())
+        {
+            throw new TranslatedCommandException("Invalid time format: %s", timeStr);
+        }
+
+        double resultPart = Double.parseDouble(m.group(1));
+
+        String unit = m.group(2);
+        if (unit != null)
+        {
+            switch (unit)
+            {
+            case "s":
+            case "second":
+            case "seconds":
+                resultPart *= mcSecond;
+                break;
+            case "m":
+            case "minute":
+            case "minutes":
+                resultPart *= mcMinute;
+                break;
+            case "h":
+            case "hour":
+            case "hours":
+                resultPart *= mcHour;
+                break;
+            default:
+                throw new TranslatedCommandException("Invalid time format: %s", timeStr);
+            }
+        }
+        return Math.round(resultPart);
+    }
+
+    public long parseTimeReadable(String time) throws CommandException
+    {
+        String value = time;
+        Matcher m = timeFormatPattern.matcher(value);
+        if (!m.find())
+        {
+            throw new TranslatedCommandException("Invalid time format: %s", value);
+        }
+
+        long result = 0;
+
+        do
+        {
+            long resultPart = Long.parseLong(m.group(1));
+
+            String unit = m.group(2);
+            if (unit != null)
+            {
+                switch (unit)
+                {
+                case "s":
+                case "second":
+                case "seconds":
+                    resultPart *= 1000;
+                    break;
+                case "m":
+                case "minute":
+                case "minutes":
+                    resultPart *= 1000 * 60;
+                    break;
+                case "h":
+                case "hour":
+                case "hours":
+                    resultPart *= 1000 * 60 * 60;
+                    break;
+                case "d":
+                case "day":
+                case "days":
+                    resultPart *= 1000 * 60 * 60 * 24;
+                    break;
+                case "w":
+                case "week":
+                case "weeks":
+                    resultPart *= 1000 * 60 * 60 * 24 * 7;
+                    break;
+                case "month":
+                case "months":
+                    resultPart *= (long) 1000 * 60 * 60 * 24 * 30;
+                    break;
+                default:
+                    throw new TranslatedCommandException("Invalid time format: %s", value);
+                }
+            }
+
+            result += resultPart;
+        }
+        while (m.find());
+
+        return result;
     }
 }

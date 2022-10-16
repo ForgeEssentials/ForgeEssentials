@@ -1,6 +1,5 @@
 package com.forgeessentials.commands.server;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -10,11 +9,18 @@ import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandPing extends BaseCommand implements ConfigurableCommand
 {
+    public CommandPing(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     public String response = "Pong! %time";
     static ForgeConfigSpec.ConfigValue<String> FEresponse;
 
@@ -44,19 +50,23 @@ public class CommandPing extends BaseCommand implements ConfigurableCommand
 
     public LiteralArgumentBuilder<CommandSource> setExecution()
 	{
-
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
 	}
 
     @Override
-    public void processCommandPlayer(CommandContext<CommandSource> ctx, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatNotification(ctx.getSource(), response.replaceAll("%time", ((ServerPlayerEntity) ctx.getSource().getEntity()).latency + "ms."));
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
-    public void processCommandConsole(CommandContext<CommandSource> ctx, String[] args) throws CommandException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatNotification(ctx.getSource(), response.replaceAll("%time", ""));
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override

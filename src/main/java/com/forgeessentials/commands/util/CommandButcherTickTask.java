@@ -74,10 +74,10 @@ public class CommandButcherTickTask implements TickTask
         if (radius > -1)
         {
             this.aabb = aabb;
-            minChunkX = MathHelper.floor((aabb.minX - World.MAX_ENTITY_RADIUS) / 16.0D);
-            maxChunkX = MathHelper.floor((aabb.maxX + World.MAX_ENTITY_RADIUS) / 16.0D);
-            minChunkZ = MathHelper.floor((aabb.minZ - World.MAX_ENTITY_RADIUS) / 16.0D);
-            maxChunkZ = MathHelper.floor((aabb.maxZ + World.MAX_ENTITY_RADIUS) / 16.0D);
+            minChunkX = MathHelper.floor((aabb.minX - world.getMaxEntityRadius()) / 16.0D);
+            maxChunkX = MathHelper.floor((aabb.maxX + world.getMaxEntityRadius()) / 16.0D);
+            minChunkZ = MathHelper.floor((aabb.minZ - world.getMaxEntityRadius()) / 16.0D);
+            maxChunkZ = MathHelper.floor((aabb.maxZ + world.getMaxEntityRadius()) / 16.0D);
         }
     }
 
@@ -86,7 +86,7 @@ public class CommandButcherTickTask implements TickTask
         this(sender, world, CommandButcherTickTask.ButcherMobType.valueOf(mobType.toUpperCase()), aabb, radius);
     }
 
-    public static void schedule(ICommandSource sender, World world, String mobType, AxisAlignedBB aabb, int radius) throws CommandException
+    public static void schedule(CommandSource sender, World world, String mobType, AxisAlignedBB aabb, int radius) throws CommandException
     {
         try
         {
@@ -123,7 +123,7 @@ public class CommandButcherTickTask implements TickTask
                     if (world.getChunk(chunkX, chunkZ) != null)
                     {
                         List<LivingEntity> list = new LinkedList<>();
-                        world.getChunk(chunkX, chunkZ).getEntitiesOfTypeWithinAABB(LivingEntity.class, aabb, list, null);
+                        world.getChunk(chunkX, chunkZ).getEntitiesOfClass(LivingEntity.class, aabb, list, null);
                         for (LivingEntity entity : list)
                         {
                             checkEntity(entity);
