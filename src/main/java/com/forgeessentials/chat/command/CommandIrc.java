@@ -1,17 +1,28 @@
 package com.forgeessentials.chat.command;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.TranslatedCommandException.WrongUsageException;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandIrc extends ForgeEssentialsCommandBase
+public class CommandIrc extends BaseCommand
 {
+
+    public CommandIrc(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
 
     @Override
     public String getPrimaryAlias()
@@ -39,19 +50,29 @@ public class CommandIrc extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return builder
+                .then(Commands.argument("message", MessageArgument.message())
+                        .executes(CommandContext -> execute(CommandContext)
+                                )
+                        );
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (!IrcHandler.getInstance().isConnected())
             throw new TranslatedCommandException("Not connected to IRC!");
-        if (args.length < 1)
+        ITextComponent message = MessageArgument.getMessage(ctx, "message");
+        if (message.getString() == null || message.getString() == "")
         {
             throw new WrongUsageException("commands.message.usage");
         }
         else
         {
-            ITextComponent message = getChatComponentFromNthArg(sender, args, 0, !(sender instanceof PlayerEntity));
-            IrcHandler.getInstance().sendPlayerMessage(sender, message);
+            IrcHandler.getInstance().sendPlayerMessage(ctx.getSource(), message);
         }
+        return Command.SINGLE_SUCCESS;
     }
-
 }

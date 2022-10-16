@@ -81,12 +81,12 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandDechant());
         FECommandManager.registerCommand(new CommandLocate());
         FECommandManager.registerCommand(new CommandRules());
-        FECommandManager.registerCommand(new CommandModlist());
+        FECommandManager.registerCommand(new CommandModlist("modlist", 0, true));
         FECommandManager.registerCommand(new CommandButcher());
         FECommandManager.registerCommand(new CommandRemove());
         FECommandManager.registerCommand(new CommandAFK());
         FECommandManager.registerCommand(new CommandKit());
-        FECommandManager.registerCommand(new CommandEnderchest());
+        FECommandManager.registerCommand(new CommandEnderchest("enderchest", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandVirtualchest());
         FECommandManager.registerCommand(new CommandCapabilities());
         FECommandManager.registerCommand(new CommandCraft());
@@ -118,9 +118,9 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandHelp());
         FECommandManager.registerCommand(new CommandPregen());
         FECommandManager.registerCommand(new CommandBiome());
-        FECommandManager.registerCommand(new CommandReach());
+        FECommandManager.registerCommand(new CommandReach("reach", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandVanish());
-        FECommandManager.registerCommand(new CommandDuplicate());
+        FECommandManager.registerCommand(new CommandDuplicate("duplicate", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandDelayedAction());
 
         APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");

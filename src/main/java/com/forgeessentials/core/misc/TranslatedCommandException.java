@@ -14,7 +14,7 @@ public class TranslatedCommandException extends CommandException
 
     public TranslatedCommandException(String message, Object... args)
     {
-        super(Translator.translateITC(message));//, args);
+        super(Translator.translateITC(message, args));
     }
 
     public static class PlayerNotFoundException extends TranslatedCommandException

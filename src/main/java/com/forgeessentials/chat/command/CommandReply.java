@@ -6,16 +6,26 @@ import java.util.WeakHashMap;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.MessageArgument;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.Translator;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandReply extends ForgeEssentialsCommandBase
+public class CommandReply extends BaseCommand
 {
+
+    public CommandReply(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static Map<CommandSource, WeakReference<CommandSource>> replyMap = new WeakHashMap<>();
 
@@ -65,19 +75,27 @@ public class CommandReply extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length < 1)
-            throw new CommandException("commands.message.usage", new Object[0]);
-
-        CommandSource target = getReplyTarget(sender);
+        return builder
+                .then(Commands.argument("message", MessageArgument.message())
+                        .executes(CommandContext -> execute(CommandContext, "message")
+                                )
+                        );
+    }
+    
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        ITextComponent message = MessageArgument.getMessage(ctx, "message");
+        CommandSource target = getReplyTarget(ctx.getSource());
         if (target == null)
             throw new CommandException(Translator.translateITC("No reply target found"));
 
-        if (target == sender)
-            throw new CommandException("commands.message.sameTarget", new Object[0]);
+        if (target == ctx.getSource())
+            throw new CommandException(Translator.translateITC("commands.message.sameTarget"));
 
-        ModuleChat.tell(sender, getChatComponentFromNthArg(sender, args, 0, !(sender instanceof PlayerEntity)), target);
+        ModuleChat.tell(ctx.getSource(), message, target);
+        return Command.SINGLE_SUCCESS;
     }
-
 }

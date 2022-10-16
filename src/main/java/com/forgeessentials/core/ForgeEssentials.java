@@ -261,12 +261,12 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent
     private void registerCommands(final RegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandFEInfo());
-        FECommandManager.registerCommand(new CommandFeReload());
+        FECommandManager.registerCommand(new CommandFEInfo("feinfo", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandFeReload("fereload", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandFeSettings());
         FECommandManager.registerCommand(new CommandWand());
-        FECommandManager.registerCommand(new CommandUuid());
-        FECommandManager.registerCommand(new CommandFEWorldInfo());
+        FECommandManager.registerCommand(new CommandUuid("uuid", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandFEWorldInfo("feworldinfo", 4, true));//TODO fix perms
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
             FECommandManager.registerCommand(new CommandPos(1));

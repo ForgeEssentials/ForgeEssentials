@@ -4,30 +4,39 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandPm extends ParserCommandBase
+public class CommandPm extends BaseCommand
 {
 
-    public static Map<ICommandSender, WeakReference<ICommandSender>> targetMap = new WeakHashMap<>();
-
-    public static void setTarget(ICommandSender sender, ICommandSender target)
+    public CommandPm(String name, int permissionLevel, boolean enabled)
     {
-        targetMap.put(sender, new WeakReference<ICommandSender>(target));
+        super(name, permissionLevel, enabled);
     }
 
-    public static void clearTarget(ICommandSender sender)
+    public static Map<CommandSource, WeakReference<CommandSource>> targetMap = new WeakHashMap<>();
+
+    public static void setTarget(CommandSource sender, CommandSource target)
+    {
+        targetMap.put(sender, new WeakReference<CommandSource>(target));
+    }
+
+    public static void clearTarget(CommandSource sender)
     {
         targetMap.remove(sender);
     }
@@ -67,36 +76,44 @@ public class CommandPm extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        ICommandSender target = getTarget(arguments.sender);
-        if (target == null)
+        return builder
+                .then(Commands.literal("setTarget")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(CommandContext -> execute(CommandContext, "setTarget")
+                                        )
+                                )
+                        )
+                .then(Commands.argument("message", MessageArgument.message())
+                        .executes(CommandContext -> execute(CommandContext, "message")
+                                )
+                        );
+    }
+    
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        CommandSource target = EntityArgument.getPlayer(ctx, "player").createCommandSourceStack();
+        if (params.toString() == "setTarget")
         {
-            if (arguments.size() != 1)
-                throw new TranslatedCommandException("You must first select a target with /pm <player>");
-            UserIdent player = arguments.parsePlayer(true, true);
-            if (arguments.isTabCompletion)
-                return;
-            if (arguments.sender == player.getPlayer())
+            if (ctx.getSource() == target)
                 throw new PlayerNotFoundException("commands.message.sameTarget");
-            setTarget(arguments.sender, player.getPlayer());
-            arguments.confirm("Set PM target to %s", player.getUsernameOrUuid());
+            setTarget(ctx.getSource(), target);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set PM target to %s", target.getTextName()));
+            return Command.SINGLE_SUCCESS;
+        }
+        ITextComponent message = MessageArgument.getMessage(ctx, "message");
+        if (message.getString().isEmpty())
+        {
+            clearTarget(ctx.getSource());
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),("Cleared PM target"));
+            return Command.SINGLE_SUCCESS;
         }
         else
         {
-            if (arguments.isTabCompletion)
-                return;
-            if (arguments.isEmpty())
-            {
-                clearTarget(arguments.sender);
-                arguments.confirm("Cleared PM target");
-            }
-            else
-            {
-                ITextComponent message = getChatComponentFromNthArg(arguments.sender, arguments.toArray(), 0, !(arguments.sender instanceof PlayerEntity));
-                ModuleChat.tell(arguments.sender, message, target);
-            }
+            ModuleChat.tell(ctx.getSource(), message, target);
         }
+        return Command.SINGLE_SUCCESS;
     }
-
 }

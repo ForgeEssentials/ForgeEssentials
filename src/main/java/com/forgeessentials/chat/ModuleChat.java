@@ -110,6 +110,8 @@ public class ModuleChat
 
     public Mailer mailer;
 
+    public static TimedMessages timedMessages;
+
     public IrcHandler ircHandler;
 
     /* ------------------------------------------------------------ */
@@ -119,10 +121,11 @@ public class ModuleChat
     {
         MinecraftForge.EVENT_BUS.register(this);
 
-        // ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, new ChatConfig());
+        ForgeEssentials.getConfigManager().registerSpecs(CONFIG_FILE, new ChatConfig());
 
         ircHandler = new IrcHandler();
         censor = new Censor();
+        timedMessages = new TimedMessages();
         mailer = new Mailer();
 
         setupChatReplacements();
@@ -170,17 +173,17 @@ public class ModuleChat
     @SubscribeEvent
     public void serverStarting(FEModuleServerStartingEvent e)
     {
-        FECommandManager.registerCommand(new CommandMute());
-        FECommandManager.registerCommand(new CommandNickname());
-        FECommandManager.registerCommand(new CommandPm());
-        FECommandManager.registerCommand(new CommandReply());
-        FECommandManager.registerCommand(new CommandTimedMessages());
-        FECommandManager.registerCommand(new CommandUnmute());
-        FECommandManager.registerCommand(new CommandGroupMessage());
+        FECommandManager.registerCommand(new CommandMute("mute", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandNickname("nickname", 0, true));
+        FECommandManager.registerCommand(new CommandPm("pm", 0, true));
+        FECommandManager.registerCommand(new CommandReply("reply", 0, true));
+        FECommandManager.registerCommand(new CommandTimedMessages("timedmessage", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandUnmute("unmute", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandGroupMessage("gmsg", 0, true));
 
-        FECommandManager.registerCommand(new CommandIrc());
-        FECommandManager.registerCommand(new CommandIrcPm());
-        FECommandManager.registerCommand(new CommandIrcBot());
+        FECommandManager.registerCommand(new CommandIrc("irc", 0, true));
+        FECommandManager.registerCommand(new CommandIrcPm("ircpm", 0, true));
+        FECommandManager.registerCommand(new CommandIrcBot("ircbot", 4, true));//TODO fix perms
 
         APIRegistry.perms.registerPermissionDescription(PERM, "Chat permissions");
         APIRegistry.perms.registerPermission(PERM_CHAT, DefaultPermissionLevel.ALL, "Allow players to use the public chat");
@@ -194,7 +197,7 @@ public class ModuleChat
     @SubscribeEvent
     public void serverStarted(FEModuleServerStartedEvent e)
     {
-        ServerUtil.replaceCommand(MessageCommand.class, new CommandMessageReplacement());
+        //ServerUtil.replaceCommand(MessageCommand.class, new CommandMessageReplacement());
     }
 
     @SubscribeEvent
@@ -505,6 +508,13 @@ public class ModuleChat
         return nickname;
     }
 
+    public static boolean doesPlayerHaveNickname(PlayerEntity player)
+    {
+        String nickname = PlayerUtil.getPersistedTag(player, false).getString("nickname");
+        if (nickname == null || nickname.isEmpty())
+           return false;
+        return true;
+    }
     /* ------------------------------------------------------------ */
 
     public static void tell(CommandSource sender, ITextComponent message, CommandSource target)

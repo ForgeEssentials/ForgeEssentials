@@ -1,19 +1,26 @@
 package com.forgeessentials.commands.item;
 
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EnderChestInventory;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  * Opens your enderchest.
  */
-public class CommandEnderchest extends ForgeEssentialsCommandBase
+public class CommandEnderchest extends BaseCommand
 {
+    public CommandEnderchest(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     @Override
     public String getPrimaryAlias()
     {
@@ -27,9 +34,9 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        ServerPlayerEntity player = sender;
+        ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
         if (player.containerMenu != player.inventoryMenu)
         {
             player.closeContainer();
@@ -38,6 +45,7 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
 
         //chest.setChestTileEntity(null);
         player.getEnderChestInventory().startOpen(player);
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
@@ -56,6 +64,14 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
     public String getPermissionNode()
     {
         return ModuleCommands.PERM + ".enderchest";
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
     }
 
 }

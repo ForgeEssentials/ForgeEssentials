@@ -86,12 +86,12 @@ public class ConfigBase
         LoggingHandler.felog.debug("Finished building configuration files");
     }
 
-    public void bakeAllRegisteredConfigs()
+    public void bakeAllRegisteredConfigs(boolean reload)
     {
         LoggingHandler.felog.debug("Baking configuration files");
         for (ConfigLoader loader : loaders)
         {
-            loader.bakeConfig(false);
+            loader.bakeConfig(reload);
         }
         
         LoggingHandler.felog.debug("Finished baking configuration files");

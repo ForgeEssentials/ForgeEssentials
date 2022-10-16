@@ -140,10 +140,4 @@ public class Censor extends ConfigLoaderBase
 	public ConfigData returnData() {
 		return ModuleChat.data;
 	}
-
-	@Override
-	public void setSpec(ForgeConfigSpec spec) {
-		ModuleChat.data.setSpec(spec);
-	}
-
 }

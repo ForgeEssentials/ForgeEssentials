@@ -26,7 +26,7 @@ public class Mailer extends ServerEventHandler
     public Mailer()
     {
         super();
-        FECommandManager.registerCommand(new CommandMail());
+        FECommandManager.registerCommand(new CommandMail("mail", 0, true));
     }
 
     public static class Mail

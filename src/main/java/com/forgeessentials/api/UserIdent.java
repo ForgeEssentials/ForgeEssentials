@@ -19,13 +19,16 @@ import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.CommandBlockLogic;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.permissions.ModulePermissions;
+import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.UserIdentUtils;
@@ -229,31 +232,32 @@ public class UserIdent
         return new UserIdent(uuid, null, UserIdent.getPlayerByUuid(uuid));
     }
 
-    public static synchronized UserIdent get(ICommandSource sender)
+    public static synchronized UserIdent get(CommandSource sender)
     {
-        if (sender instanceof DoAsCommandSender)
+    	ICommandSource source = CommandUtils.GetSource(sender);
+        if (source instanceof DoAsCommandSender)
         {
-            return ((DoAsCommandSender) sender).getIdent();
+            return ((DoAsCommandSender) source).getIdent();
         }
-        else if (sender instanceof MinecraftServer)
+        else if (source instanceof MinecraftServer)
         {
             return APIRegistry.IDENT_SERVER;
         }
-        else if (sender instanceof RConConsoleSource)
+        else if (source instanceof RConConsoleSource)
         {
             return APIRegistry.IDENT_RCON;
         }
-        else if (sender instanceof CommandBlockLogic)
+        else if (source instanceof CommandBlockLogic)
         {
             return APIRegistry.IDENT_CMDBLOCK;
         }
-        else if (sender instanceof PlayerEntity)
+        else if (source instanceof PlayerEntity)
         {
-            return get((PlayerEntity) sender);
+            return get((PlayerEntity) sender.getEntity());
         }
         else
         {
-            return UserIdent.getNpc(null);
+            return UserIdent.getNpc(sender.getTextName());
         }
     }
 
@@ -336,7 +340,9 @@ public class UserIdent
             {
                 try
                 {
-                    Entity entity = CommandBase.getEntity(sender.getServer(), sender, uuidOrUsername);
+                	for (World world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
+                    //Entity entity = CommandBase.getEntity(sender.getServer(), sender, uuidOrUsername);
+                	//world.getEntities(sender.getEntity(), null); ?
                     return get(entity);
                 }
                 catch (CommandException ignored)

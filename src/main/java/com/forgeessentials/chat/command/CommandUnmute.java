@@ -1,22 +1,28 @@
 package com.forgeessentials.chat.command;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandUnmute extends ForgeEssentialsCommandBase
+public class CommandUnmute extends BaseCommand
 {
+
+    public CommandUnmute(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -43,31 +49,25 @@ public class CommandUnmute extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length == 1)
-        {
-            ServerPlayerEntity receiver = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (receiver == null)
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-
-            PlayerUtil.getPersistedTag(receiver, false).remove("mute");
-            ChatOutputHandler.chatError(sender, Translator.format("You unmuted %s.", args[0]));
-            ChatOutputHandler.chatError(receiver, Translator.format("You were unmuted by %s.", sender.getName()));
-        }
+        return builder
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(CommandContext -> execute(CommandContext)
+                                )
+                        );
     }
-
+    
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length == 1)
-        {
-            return matchToPlayers(args);
-        }
-        else
-        {
-            return null;
-        }
-    }
+        ServerPlayerEntity receiver = EntityArgument.getPlayer(ctx, "player");
+        if (receiver.hasDisconnected())
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", receiver.getName().getString());
 
+        PlayerUtil.getPersistedTag(receiver, false).remove("mute");
+        ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You unmuted %s.", receiver.getName().getString()));
+        ChatOutputHandler.chatError(receiver, Translator.format("You were unmuted by %s.", ctx.getSource().getEntity().getName().getString()));
+        return Command.SINGLE_SUCCESS;
+    }
 }
