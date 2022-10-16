@@ -89,11 +89,10 @@ public class CommandAuth extends BaseCommand
                 .executes(CommandContext -> execute(CommandContext, "blank"));
 	}
 
-    @SuppressWarnings("unlikely-arg-type")
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (params.equals("blank"))
+        if (params.toString() == "blank")
         {
             if (!ModuleAuth.isEnabled())
             {
@@ -123,7 +122,7 @@ public class CommandAuth extends BaseCommand
         boolean hasAdmin = PermissionAPI.hasPermission((PlayerEntity) ctx.getSource().getEntity(), getPermissionNode() + ".admin");
 
         // help.
-        if (params.equals("help"))
+        if (params.toString() == "help")
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), " - /auth register <password>");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), " - /auth login <password>");
@@ -141,7 +140,7 @@ public class CommandAuth extends BaseCommand
         }
 
         // parse login
-        if (params.equals("login"))
+        if (params.toString() == "login")
         {
             if (!ModuleAuth.isRegistered(((PlayerEntity) ctx.getSource().getEntity()).getUUID()))
                 throw new TranslatedCommandException("Player %s is not registered!", ((PlayerEntity) ctx.getSource().getEntity()).getUUID());
@@ -164,7 +163,7 @@ public class CommandAuth extends BaseCommand
         }
 
         // parse register
-        if (params.equals("register"))
+        if (params.toString() == "register")
         {
             if (ModuleAuth.isRegistered(((PlayerEntity) ctx.getSource().getEntity()).getUUID()))
                 throw new TranslatedCommandException("Player %s is already registered!", ((PlayerEntity) ctx.getSource().getEntity()).getUUID());
@@ -192,7 +191,7 @@ public class CommandAuth extends BaseCommand
         }
 
         // parse ./auth kick
-        if (params.equals("kick"))
+        if (params.toString() == "kick")
         {
             if (!hasAdmin)
             {
@@ -214,7 +213,7 @@ public class CommandAuth extends BaseCommand
         }
 
         // parse ./auth unregister
-        if (params.equals("unregister"))
+        if (params.toString() == "unregister")
         {
             if (!hasAdmin)
                 throw new PermissionDeniedException();
@@ -232,7 +231,7 @@ public class CommandAuth extends BaseCommand
             throw new TranslatedCommandException("Login required. Try /auth help.");
 
         // parse changePass
-        if (params.equals("changepass"))
+        if (params.toString() == "changepass")
         {
             
             if (MessageArgument.getMessage(ctx, "passwordOld").getString().equals(MessageArgument.getMessage(ctx, "passwordNew").getString()))
@@ -257,7 +256,7 @@ public class CommandAuth extends BaseCommand
         }
 
         // parse setPass
-        if (params.equals("setPass"))
+        if (params.toString() == "setPass")
         {
             if (!hasAdmin)
                 throw new PermissionDeniedException();
@@ -267,17 +266,16 @@ public class CommandAuth extends BaseCommand
         return Command.SINGLE_SUCCESS;
     }
 
-    @SuppressWarnings("unlikely-arg-type")
     @Override
     public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (params.equals("blank") || params.equals("login") || params.equals("register") || params.equals("changepass"))
+        if (params.toString() == "blank" || params.toString() == "login" || params.toString() == "register" || params.toString() == "changepass")
         {
             throw new TranslatedCommandException("/auth help");
         }
 
         // help.
-        if (params.equals("help"))
+        if (params.toString() == "help")
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), " - /auth kick <player>  - forces the player to login again");
             ChatOutputHandler.chatNotification(ctx.getSource(), " - /auth setpass <player> <password>  - sets the players password to the specified");
@@ -296,7 +294,7 @@ public class CommandAuth extends BaseCommand
         }
 
         // parse ./auth kick
-        if (params.equals("kick"))
+        if (params.toString() == "kick")
         {
             if (!isLogged)
             {
@@ -313,7 +311,7 @@ public class CommandAuth extends BaseCommand
             }
         }
 
-        if (params.equals("unregister"))
+        if (params.toString() == "unregister")
         {
             if (!ModuleAuth.isRegistered(player.getUUID()))
                 throw new TranslatedCommandException("message.auth.error.notregisterred", player.getName());
@@ -322,7 +320,7 @@ public class CommandAuth extends BaseCommand
         }
 
         // pasre setPass
-        if (params.equals("setPass"))
+        if (params.toString() == "setPass")
         {
             PasswordManager.setPassword(player.getUUID(), MessageArgument.getMessage(ctx, "passwordNew").getString());
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Password set for %s", player.getName()));

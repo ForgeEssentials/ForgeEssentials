@@ -243,7 +243,7 @@ public class CommandUtils {
         return (player == null) ? (CommandUtils.GetSource(source) instanceof DoAsCommandSender ? ((DoAsCommandSender) CommandUtils.GetSource(source)).getUserIdent() : null) : UserIdent.get(player);
     }
 
-    public static ITextComponent getChatComponentFromNthArg(CommandSource sender, String[] args, int index) throws CommandException, 
+    public static ITextComponent getChatComponentFromNthArg(CommandSource sender, String[] args, int index) throws CommandException
     {
         return getChatComponentFromNthArg(sender, args, index, false);
     }

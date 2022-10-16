@@ -89,7 +89,7 @@ public abstract class PlayerUtil
                         continue;
                     }
                     // player.addEffect(null);
-                    player.addPotionEffect(new Effect(Potion.getPotionById(potionID), effectDuration * 20, amplifier));
+                    player.addEffect((new Effect(Effect.byId(potionID), effectDuration * 20, amplifier));
                 }
                 catch (NumberFormatException e)
                 {
@@ -107,9 +107,9 @@ public abstract class PlayerUtil
      */
     public static CompoundNBT getPersistedTag(PlayerEntity player, boolean createIfMissing)
     {
-        CompoundNBT tag = player.getEntityData().getCompoundTag(PlayerEntity.PERSISTED_NBT_TAG);
-        if (createIfMissing)
-            player.getEntityData().set(PlayerEntity.PERSISTED_NBT_TAG, tag);
+        CompoundNBT tag = player.getPersistentData();
+        if (createIfMissing)//?
+            player.getPersistentData();
         return tag;
     }
 
@@ -144,7 +144,7 @@ public abstract class PlayerUtil
                 player.position().z);
         Vector3d pos1 = playerPos.add(0, player.getEyeHeight(), 0);
         Vector3d pos2 = pos1.add(lookAt.x * maxDistance, lookAt.y * maxDistance, lookAt.z * maxDistance);
-        return player.world.rayTraceBlocks(pos1, pos2);
+        return player.level.rayTraceBlocks(pos1, pos2);
     }
 
 }

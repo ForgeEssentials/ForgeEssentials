@@ -68,17 +68,16 @@ public class CommandBackup extends BaseCommand
                 );
     }
 
-    @SuppressWarnings("unlikely-arg-type")
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (params.equals("all"))
+        if (params.toString() == "all")
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Starting forced backup..."));
             ModuleBackup.backupAll();
             return Command.SINGLE_SUCCESS;
         }
-        else if (params.equals("dim"))
+        else if (params.toString() == "dim")
         {
             ServerWorld world = DimensionArgument.getDimension(ctx, "dim");
             ModuleBackup.backup(world);

@@ -100,17 +100,16 @@ public class CommandNickname extends BaseCommand
                         );
     }
 
-    @SuppressWarnings("unlikely-arg-type")
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (params.equals("delS"))
+        if (params.toString() == "delS")
         {
             ModuleChat.setPlayerNickname((PlayerEntity) ctx.getSource().getEntity(), null);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Nickname removed.");
             return Command.SINGLE_SUCCESS;
         }
-        if(params.equals("setS"))
+        if(params.toString() == "setS")
         {
             ITextComponent name = MessageArgument.getMessage(ctx, "name");
             ModuleChat.setPlayerNickname((PlayerEntity) ctx.getSource().getEntity(), name.getString());
@@ -122,13 +121,13 @@ public class CommandNickname extends BaseCommand
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (params.equals("delO"))
+        if (params.toString() == "delO")
         {
             ModuleChat.setPlayerNickname(player, null);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Removed nickname of %s", player));
             return Command.SINGLE_SUCCESS;
         }
-        if(params.equals("setO"))
+        if(params.toString() == "setO")
         {
             ITextComponent name = MessageArgument.getMessage(ctx, "name");
             ModuleChat.setPlayerNickname(player, name.getString());
@@ -141,20 +140,20 @@ public class CommandNickname extends BaseCommand
     @Override
     public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (params.equals("delS") || params.equals("setS"))
+        if (params.toString() == "delS" || params.toString() == "setS")
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Console can only modify player nicknames!"));
             return Command.SINGLE_SUCCESS;
         }
 
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (params.equals("delO"))
+        if (params.toString() == "delO")
         {
             ModuleChat.setPlayerNickname(player, null);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Removed nickname of %s", player));
             return Command.SINGLE_SUCCESS;
         }
-        if(params.equals("setO"))
+        if(params.toString() == "setO")
         {
             ITextComponent name = MessageArgument.getMessage(ctx, "name");
             ModuleChat.setPlayerNickname(player, name.getString());

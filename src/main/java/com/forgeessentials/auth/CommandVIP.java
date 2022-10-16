@@ -44,7 +44,6 @@ public class CommandVIP extends BaseCommand
                         );
 	}
 
-    @SuppressWarnings("unlikely-arg-type")
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
@@ -58,11 +57,11 @@ public class CommandVIP extends BaseCommand
         {
             e.printStackTrace();
         }
-        if (params.equals("add"))
+        if (params.toString() == "add")
         {
             APIRegistry.perms.setPlayerPermission(UserIdent.get(arg), "fe.auth.vip", true);
         }
-        else if (params.equals("remove"))
+        else if (params.toString() == "remove")
         {
             APIRegistry.perms.setPlayerPermission(UserIdent.get(arg), "fe.auth.vip", false);
         }

@@ -91,12 +91,11 @@ public class CommandPm extends BaseCommand
                         );
     }
     
-    @SuppressWarnings("unlikely-arg-type")
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         CommandSource target = EntityArgument.getPlayer(ctx, "player").createCommandSourceStack();
-        if (params.equals("setTarget"))
+        if (params.toString() == "setTarget")
         {
             if (ctx.getSource() == target)
                 throw new PlayerNotFoundException("commands.message.sameTarget");

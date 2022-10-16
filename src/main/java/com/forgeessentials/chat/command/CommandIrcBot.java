@@ -65,24 +65,24 @@ public class CommandIrcBot extends BaseCommand
                         );
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (params.equals("connect"))
+        if (params.toString() == "connect")
         {
             //IDK this was empty in the 1.12.2 code
         }
-        if (params.equals("reconnect"))
+        if (params.toString() == "reconnect")
         {
             IrcHandler.getInstance().connect();
             return Command.SINGLE_SUCCESS;
         }
-        if (params.equals("disconnect"))
+        if (params.toString() == "disconnect")
         {
             IrcHandler.getInstance().disconnect();
             return Command.SINGLE_SUCCESS;
         }
-        if (params.equals("info"))
+        if (params.toString() == "info")
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("IRC bot is ", (IrcHandler.getInstance().isConnected() ? "online" : "offline")));
             return Command.SINGLE_SUCCESS;

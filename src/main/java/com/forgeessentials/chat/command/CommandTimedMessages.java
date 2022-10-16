@@ -102,11 +102,10 @@ public class CommandTimedMessages extends BaseCommand
                         );
     }
 
-    @SuppressWarnings("unlikely-arg-type")
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (params.equals("help"))
+        if (params.toString() == "help")
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tm add <message>: Add a message");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tm list: List all messages");

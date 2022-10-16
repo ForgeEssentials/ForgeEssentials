@@ -80,10 +80,10 @@ public class CommandMail extends BaseCommand
                 ;
     }
 
-    @SuppressWarnings("unlikely-arg-type")
+    @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (params.equals("blank"))
+        if (params.toString() == "blank")
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/mail read: Read next mail"));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/mail readall: Read all mails"));
@@ -91,7 +91,7 @@ public class CommandMail extends BaseCommand
             return Command.SINGLE_SUCCESS;
         }
 
-        if (params.equals("read"))
+        if (params.toString() == "read")
         {
             if (!(ctx.getSource().getEntity() instanceof PlayerEntity))
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
@@ -102,7 +102,7 @@ public class CommandMail extends BaseCommand
             Mailer.saveMails(getUserIdent(ctx.getSource(), getServerPlayer(ctx.getSource())), mailBag);
             return Command.SINGLE_SUCCESS;
         }
-        if (params.equals("readall"))
+        if (params.toString() == "readall")
         {
             if (!(ctx.getSource().getEntity() instanceof PlayerEntity))
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
@@ -115,7 +115,7 @@ public class CommandMail extends BaseCommand
             Mailer.saveMails(getUserIdent(ctx.getSource(), getServerPlayer(ctx.getSource())), mailBag);
             return Command.SINGLE_SUCCESS;
         }
-        if (params.equals("send"))
+        if (params.toString() == "send")
         {
             PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             UserIdent receiver = UserIdent.get(player);

@@ -157,14 +157,14 @@ public class ModuleLauncher
         // TODO Check if this works
         ForgeEssentials.getConfigManager().loadAllRegisteredConfigs();
         // TODO Check if this works
-        ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs();
+        ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs(false);
         APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
     }
 
     public void reloadConfigs()
     {
         // TODO Check if this works
-        ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs();
+        ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs(true);
         APIRegistry.getFEEventBus().post(new ConfigReloadEvent());
     }
 
