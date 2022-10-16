@@ -14,7 +14,6 @@ import net.minecraftforge.fml.loading.FileUtils;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.commands.CommandFeSettings;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigSaver;
@@ -37,9 +36,9 @@ public class FECommandManager implements ConfigSaver
 
     public static final int COMMANDS_VERSION = 4;
 
-    protected static Map<String, ForgeEssentialsCommandBase> commands = new HashMap<>();
+    protected static Map<String, BaseCommand> commands = new HashMap<>();
 
-    protected static Set<ForgeEssentialsCommandBase> registeredCommands = new HashSet<>();
+    protected static Set<BaseCommand> registeredCommands = new HashSet<>();
 
     protected static boolean useSingleConfigFile = false;
     
@@ -68,7 +67,7 @@ public class FECommandManager implements ConfigSaver
             newMappings = true;
             FECversion.set(COMMANDS_VERSION);
         }
-        for (ForgeEssentialsCommandBase command : commands.values())
+        for (BaseCommand command : commands.values())
             loadCommandConfig(command);
     }
 
@@ -101,7 +100,7 @@ public class FECommandManager implements ConfigSaver
         ConfigBase.registerConfigManual(configBuilder.build(), Paths.get(ForgeEssentials.getFEDirectory()+"/CommandSettings/"+command.getName()+".toml"),true);
     }
 
-    public static void registerCommand(ForgeEssentialsCommandBase command)
+    public static void registerCommand(BaseCommand command)
     {
         registerCommand(command, false);
     }
@@ -119,7 +118,7 @@ public class FECommandManager implements ConfigSaver
 
     public static void deegisterCommand(String name)
     {
-        ForgeEssentialsCommandBase command = commands.remove(name);
+        BaseCommand command = commands.remove(name);
         if (command != null)
             command.deregister();
     }
