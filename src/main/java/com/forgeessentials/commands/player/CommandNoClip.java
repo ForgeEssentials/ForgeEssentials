@@ -10,13 +10,13 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet5Noclip;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandNoClip extends ForgeEssentialsCommandBase
+public class CommandNoClip extends BaseCommand
 {
 
     @Override

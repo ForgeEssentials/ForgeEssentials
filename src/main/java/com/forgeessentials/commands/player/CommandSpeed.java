@@ -8,10 +8,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandSpeed extends ForgeEssentialsCommandBase
+public class CommandSpeed extends BaseCommand
 {
 
     @Override

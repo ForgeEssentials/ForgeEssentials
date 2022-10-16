@@ -18,11 +18,10 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.HashMultimap;
 
-public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
+public class CommandChunkLoaderList extends BaseCommand
 {
     @Override
     public String getPermissionNode()

@@ -14,11 +14,10 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandFindblock extends ForgeEssentialsCommandBase implements ConfigurableCommand
+public class CommandFindblock extends BaseCommand implements ConfigurableCommand
 {
 
     public static final int defaultCount = 1;

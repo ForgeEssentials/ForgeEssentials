@@ -13,11 +13,10 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandTop extends ForgeEssentialsCommandBase
+public class CommandTop extends BaseCommand
 {
 
     @Override

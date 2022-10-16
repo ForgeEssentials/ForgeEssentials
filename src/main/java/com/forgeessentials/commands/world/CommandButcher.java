@@ -18,10 +18,9 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.CommandButcherTickTask.ButcherMobType;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandButcher extends ForgeEssentialsCommandBase
+public class CommandButcher extends BaseCommand
 {
 
     public static List<String> typeList = ButcherMobType.getNames();

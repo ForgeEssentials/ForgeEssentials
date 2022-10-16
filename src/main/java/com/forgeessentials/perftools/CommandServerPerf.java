@@ -6,10 +6,9 @@ import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandServerPerf extends ForgeEssentialsCommandBase
+public class CommandServerPerf extends BaseCommand
 {
 
     private static final DecimalFormat formatNumbers = new DecimalFormat("########0.000");

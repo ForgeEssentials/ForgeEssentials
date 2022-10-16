@@ -4,9 +4,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-
-public class CommandQuestioner extends ForgeEssentialsCommandBase
+public class CommandQuestioner extends BaseCommand
 {
     private final boolean type;
 

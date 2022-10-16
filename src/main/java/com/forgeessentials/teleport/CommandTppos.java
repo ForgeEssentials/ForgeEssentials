@@ -11,12 +11,11 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.ServerUtil;
 
-public class CommandTppos extends ForgeEssentialsCommandBase
+public class CommandTppos extends BaseCommand
 {
 
     /**

@@ -12,13 +12,12 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.PlayerInvChest;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
 /**
  * Opens other player inventory.
  */
-public class CommandInventorySee extends ForgeEssentialsCommandBase
+public class CommandInventorySee extends BaseCommand
 {
 
     public CommandInventorySee()

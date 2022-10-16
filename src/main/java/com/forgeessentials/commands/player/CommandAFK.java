@@ -7,14 +7,14 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.commands.CommandFeSettings;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandAFK extends ForgeEssentialsCommandBase
+public class CommandAFK extends BaseCommand
 {
 
     public static final String PERM = "fe.commands.afk";

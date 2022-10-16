@@ -5,7 +5,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -182,12 +182,12 @@ public class CommandParserArgs
         Set<String> result = new TreeSet<>();
         for (UserIdent knownPlayerIdent : APIRegistry.perms.getServerZone().getKnownPlayers())
         {
-            if (ForgeEssentialsCommandBase.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
+            if (BaseCommand.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
                 result.add(knownPlayerIdent.getUsernameOrUuid());
         }
         for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
-            if (ForgeEssentialsCommandBase.doesStringStartWith(arg, player.getName().getString()))
+            if (BaseCommand.doesStringStartWith(arg, player.getName().getString()))
                 result.add(player.getName().getString());
         }
         return new ArrayList<>(result);
@@ -240,7 +240,7 @@ public class CommandParserArgs
                 int nodeIndex = perm.indexOf('.', permission.length());
                 if (nodeIndex >= 0)
                     perm = perm.substring(0, nodeIndex);
-                if (ForgeEssentialsCommandBase.doesStringStartWith(permission, perm))
+                if (BaseCommand.doesStringStartWith(permission, perm))
                     result.add(perm);
             }
             tabCompletion = new ArrayList<>(result);
@@ -275,7 +275,7 @@ public class CommandParserArgs
     {
         if (!isTabCompletion || args.size() != 1)
             return;
-        tabCompletion.addAll(ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList));
+        tabCompletion.addAll(BaseCommand.getListOfStringsMatchingLastWord(args.peek(), completionList));
         throw new CancelParsingException();
     }
 
@@ -283,7 +283,7 @@ public class CommandParserArgs
     {
         if (!isTabCompletion || args.size() != 1)
             return;
-        tabCompletion.addAll(ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), completionList));
+        tabCompletion.addAll(BaseCommand.getListOfStringsMatchingLastWord(args.peek(), completionList));
         throw new CancelParsingException();
     }
 
@@ -299,7 +299,7 @@ public class CommandParserArgs
     {
         if (isTabCompletion && size() == 1)
         {
-            tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), APIRegistry.namedWorldHandler.getWorldNames());
+            tabCompletion = BaseCommand.getListOfStringsMatchingLastWord(args.peek(), APIRegistry.namedWorldHandler.getWorldNames());
             throw new CancelParsingException();
         }
         if (isEmpty())

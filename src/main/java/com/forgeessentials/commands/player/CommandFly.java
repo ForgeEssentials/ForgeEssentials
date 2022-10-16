@@ -5,11 +5,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandFly extends ForgeEssentialsCommandBase
+public class CommandFly extends BaseCommand
 {
     @Override
     public String getPrimaryAlias()

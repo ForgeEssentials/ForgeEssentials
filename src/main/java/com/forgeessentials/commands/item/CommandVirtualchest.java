@@ -9,13 +9,12 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.electronwill.nightconfig.core.io.CharsWrapper.Builder;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.VirtualChest;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 
 /**
  * Opens a configurable virtual chest
  */
-public class CommandVirtualchest extends ForgeEssentialsCommandBase implements ConfigurableCommand
+public class CommandVirtualchest extends BaseCommand implements ConfigurableCommand
 {
     public static int size = 54;
     static ForgeConfigSpec.IntValue FEsize;

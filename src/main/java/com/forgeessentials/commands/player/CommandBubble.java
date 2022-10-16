@@ -14,11 +14,10 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandBubble extends ForgeEssentialsCommandBase
+public class CommandBubble extends BaseCommand
 {
 
     public static String BUBBLE_GROUP = "command_bubble";

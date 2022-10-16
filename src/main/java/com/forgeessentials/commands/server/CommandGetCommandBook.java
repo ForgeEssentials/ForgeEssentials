@@ -20,10 +20,10 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.PermissionManager;
 
-public class CommandGetCommandBook extends ForgeEssentialsCommandBase
+public class CommandGetCommandBook extends BaseCommand
 {
 
     public static String joinAliases(Object[] par0ArrayOfObj)

@@ -2,7 +2,6 @@ package com.forgeessentials.commands.world;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import net.minecraft.block.*;
@@ -19,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandPush extends ForgeEssentialsCommandBase
+public class CommandPush extends BaseCommand
 {
 
     @Override

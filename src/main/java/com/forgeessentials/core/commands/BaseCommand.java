@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-public abstract class BaseCommand extends ForgeEssentialsCommandBase{
+public abstract class BaseCommand extends CommandProcessing{
 	protected LiteralArgumentBuilder<CommandSource> builder;
 	boolean enabled;
 
@@ -119,7 +119,7 @@ public abstract class BaseCommand extends ForgeEssentialsCommandBase{
     }
 
     /**
-     * @deprecated Use {@link ForgeEssentialsCommandBase#getDefaultSecondaryAliases()} in downstream classes
+     * @deprecated Use {@link BaseCommand#getDefaultSecondaryAliases()} in downstream classes
      * Returns a list of default aliases, that will be added to the configuration on first run
      */
     public String[] getDefaultAliases()

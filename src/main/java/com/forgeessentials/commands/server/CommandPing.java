@@ -7,13 +7,13 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 
-public class CommandPing extends ForgeEssentialsCommandBase implements ConfigurableCommand
+public class CommandPing extends BaseCommand implements ConfigurableCommand
 {
     public String response = "Pong! %time";
     static ForgeConfigSpec.ConfigValue<String> FEresponse;

@@ -1,5 +1,5 @@
 package com.forgeessentials.multiworld.command;
-
+/*
 import java.util.Random;
 
 import net.minecraft.command.CommandException;
@@ -7,8 +7,6 @@ import net.minecraft.world.GameRules;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
@@ -16,7 +14,7 @@ import com.forgeessentials.multiworld.MultiworldException;
 import com.forgeessentials.multiworld.MultiworldManager;
 import com.forgeessentials.multiworld.WorldServerMultiworld;
 import com.forgeessentials.util.CommandParserArgs;
-
+*/
 public class CommandMultiworld //extends ParserCommandBase
 {
 /*
@@ -102,7 +100,7 @@ public class CommandMultiworld //extends ParserCommandBase
         String provider = MultiworldManager.PROVIDER_NORMAL;
         if (arguments.isTabCompletion && arguments.size() == 1)
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
+            arguments.tabCompletion = BaseCommand.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
                     .getWorldProviders().keySet());
             return;
         }
@@ -113,7 +111,7 @@ public class CommandMultiworld //extends ParserCommandBase
         String worldType = WorldType.DEFAULT.getName();
         if (arguments.isTabCompletion && arguments.size() == 1)
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
+            arguments.tabCompletion = BaseCommand.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
                     .getWorldTypes().keySet());
             return;
         }

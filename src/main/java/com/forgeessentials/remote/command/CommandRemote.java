@@ -12,8 +12,7 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet7Remote;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
@@ -41,7 +40,7 @@ public class CommandRemote extends ParserCommandBase
     {
         if (args.isTabCompletion && args.size() == 1)
         {
-            args.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseMainArgs);
+            args.tabCompletion = BaseCommand.getListOfStringsMatchingLastWord(args.peek(), parseMainArgs);
             return;
         }
         if (args.isEmpty())

@@ -14,9 +14,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 
-public class CommandCraft extends ForgeEssentialsCommandBase
+public class CommandCraft extends BaseCommand
 {
 
     protected WeakReference<PlayerEntity> lastPlayer = new WeakReference<>(null);
