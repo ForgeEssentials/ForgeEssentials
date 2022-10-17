@@ -1,6 +1,7 @@
 package com.forgeessentials.commands;
 
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.forgeessentials.api.APIRegistry;
@@ -78,7 +79,7 @@ public class ModuleCommands
     {
         FECommandManager.registerCommand(new CommandTime());
         FECommandManager.registerCommand(new CommandEnchant());
-        FECommandManager.registerCommand(new CommandDechant());
+        FECommandManager.registerCommand(new CommandDechant("dechant", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandLocate());
         FECommandManager.registerCommand(new CommandRules());
         FECommandManager.registerCommand(new CommandModlist("modlist", 0, true));
@@ -89,7 +90,11 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandEnderchest("enderchest", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandVirtualchest());
         FECommandManager.registerCommand(new CommandCapabilities());
-        FECommandManager.registerCommand(new CommandCraft());
+
+        CommandCraft craft = new CommandCraft("craft", 4, true);//TODO fix perms
+        FECommandManager.registerCommand(craft);
+        MinecraftForge.EVENT_BUS.register(craft);
+
         FECommandManager.registerCommand(new CommandPing("ping", 0, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandInventorySee());
         FECommandManager.registerCommand(new CommandSmite());
@@ -99,7 +104,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandHeal());
         FECommandManager.registerCommand(new CommandKill());
         FECommandManager.registerCommand(new CommandGameMode());
-        FECommandManager.registerCommand(new CommandDoAs());
+        FECommandManager.registerCommand(new CommandDoAs("doas", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandServerSettings());
         FECommandManager.registerCommand(new CommandGetCommandBook());
         FECommandManager.registerCommand(new CommandWeather());
@@ -107,19 +112,19 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandRename());
         // FECommandManager.registerCommand(new CommandVanish());
         FECommandManager.registerCommand(new CommandPush());
-        FECommandManager.registerCommand(new CommandDrop());
+        FECommandManager.registerCommand(new CommandDrop("drop", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandFindblock());
         FECommandManager.registerCommand(new CommandNoClip("noclip", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandBubble());
-        FECommandManager.registerCommand(new CommandSpeed());
-        FECommandManager.registerCommand(new CommandSeen());
+        FECommandManager.registerCommand(new CommandSpeed("speed", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandSeen("seen", 0, true));
         FECommandManager.registerCommand(new CommandTempBan());
         FECommandManager.registerCommand(new CommandFly("fly", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandHelp());
         FECommandManager.registerCommand(new CommandPregen());
         FECommandManager.registerCommand(new CommandBiome());
         FECommandManager.registerCommand(new CommandReach("reach", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandVanish());
+        FECommandManager.registerCommand(new CommandVanish("vanish", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandDuplicate("duplicate", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandDelayedAction("delayedaction", 4, true));//TODO fixperms
 

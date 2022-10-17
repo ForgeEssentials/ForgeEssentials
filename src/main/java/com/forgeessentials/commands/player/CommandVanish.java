@@ -12,12 +12,18 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandVanish extends ParserCommandBase
+public class CommandVanish extends BaseCommand
 {
+
+    public CommandVanish(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String PERM = "fe.commands.vanish";
 
@@ -97,7 +103,7 @@ public class CommandVanish extends ParserCommandBase
     {
         ServerPlayerEntity player = ident.getPlayerMP();
         ServerWorld world = (ServerWorld) player.getLevel();
-        List<PlayerEntity> players = world.players();
+        List<ServerPlayerEntity> players = world.players();
         if (vanish)
         {
             vanishedPlayers.add(ident);

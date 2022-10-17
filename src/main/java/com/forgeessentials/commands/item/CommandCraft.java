@@ -3,6 +3,7 @@ package com.forgeessentials.commands.item;
 import java.lang.ref.WeakReference;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.WorkbenchContainer;
@@ -15,15 +16,19 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.util.CommandUtils;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandCraft extends BaseCommand
 {
 
     protected WeakReference<PlayerEntity> lastPlayer = new WeakReference<>(null);
 
-    public CommandCraft()
+    public CommandCraft(String name, int permissionLevel, boolean enabled)
     {
-        MinecraftForge.EVENT_BUS.register(this);
+        super(name, permissionLevel, enabled);
     }
 
     @Override
@@ -60,10 +65,16 @@ public class CommandCraft extends BaseCommand
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity player, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        lastPlayer = new WeakReference<>(player);
-        player.displayGui(new WorkbenchContainer.InterfaceCraftingTable(player.level, player.getPosition()));
+        // TODO Auto-generated method stub
+        return null;
     }
 
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        lastPlayer = new WeakReference<>(CommandUtils.getServerPlayer(ctx.getSource()));
+        CommandUtils.getServerPlayer(ctx.getSource()).openMenu(new WorkbenchContainer.InterfaceCraftingTable(player.level, player.getPosition()));
+    }
 }

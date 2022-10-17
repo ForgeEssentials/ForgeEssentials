@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
@@ -17,12 +18,20 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandDechant extends ParserCommandBase
+public class CommandDechant extends BaseCommand
 {
+    public CommandDechant(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     private static final String PERM = ModuleCommands.PERM + ".dechant";
 
     @Override
@@ -50,7 +59,14 @@ public class CommandDechant extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         ItemStack stack = arguments.senderPlayer.getMainHandItem();
         if (stack == ItemStack.EMPTY)
@@ -70,15 +86,6 @@ public class CommandDechant extends ParserCommandBase
                 validEnchantments.put(name.toLowerCase(), enchantment);
             }
         }
-
-        if (arguments.isEmpty())
-        {
-            if (arguments.isTabCompletion)
-                return;
-            arguments.confirm("Possible dechantments: %s", StringUtils.join(validEnchantmentNames, ", "));
-            return;
-        }
-
         while (!arguments.isEmpty())
         {
             arguments.tabComplete(validEnchantmentNames);
@@ -90,5 +97,4 @@ public class CommandDechant extends ParserCommandBase
         }
         EnchantmentHelper.setEnchantments(enchantments, stack);
     }
-
 }
