@@ -45,7 +45,7 @@ public class ModuleTickets implements ConfigSaver
     @SubscribeEvent
     public void load(FEModuleCommonSetupEvent e)
     {
-        FECommandManager.registerCommand(new CommandTicket());
+        FECommandManager.registerCommand(new CommandTicket("ticket", 0, true));
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
     }
 
