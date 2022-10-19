@@ -28,8 +28,8 @@ public class Questioner extends ServerEventHandler
     public Questioner()
     {
         super();
-        FECommandManager.registerCommand(new CommandQuestioner(true));
-        FECommandManager.registerCommand(new CommandQuestioner(false));
+        FECommandManager.registerCommand(new CommandQuestionerYes("yes", 0, true));
+        FECommandManager.registerCommand(new CommandQuestionerNo("no", 0, true));
     }
 
     public static synchronized void add(QuestionData question) throws QuestionerStillActiveException
