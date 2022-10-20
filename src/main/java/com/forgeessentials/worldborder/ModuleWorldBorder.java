@@ -43,7 +43,6 @@ public class ModuleWorldBorder extends ServerEventHandler
 
     private static ModuleWorldBorder instance;
 
-    // TODO: Consider changing the key type to World so the code is not tightly coupled to internal Minecraft logic
     private Map<ServerWorld, WorldBorder> borders = new HashMap<>();
 
     public ModuleWorldBorder()
@@ -61,7 +60,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     @SubscribeEvent
     public void moduleInitEvent(FEModuleCommonSetupEvent event)
     {
-        FECommandManager.registerCommand(new CommandWorldBorder());
+        FECommandManager.registerCommand(new CommandWorldBorder("worldborder", 4, true));//TODO fix perms
     }
 
     @SubscribeEvent
@@ -76,8 +75,8 @@ public class ModuleWorldBorder extends ServerEventHandler
     {
         if (FMLEnvironment.dist.isClient())
             return;
-        borders.put((ServerWorld) event.getWorld(), WorldBorder.load(event.getWorld()));
-        getBorder(event.getWorld());
+        borders.put((ServerWorld) event.getWorld(), WorldBorder.load((World) event.getWorld()));
+        getBorder((World) event.getWorld());
     }
 
     @SubscribeEvent

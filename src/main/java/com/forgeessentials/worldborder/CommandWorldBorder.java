@@ -1,19 +1,30 @@
 package com.forgeessentials.worldborder;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.world.World;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.commons.selections.Point;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandWorldBorder extends ParserCommandBase
+public class CommandWorldBorder extends BaseCommand
 {
+
+    public CommandWorldBorder(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -46,7 +57,14 @@ public class CommandWorldBorder extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         Integer dim = null;
         if (!arguments.isEmpty())
@@ -76,82 +94,76 @@ public class CommandWorldBorder extends ParserCommandBase
 
         if (arguments.isEmpty())
         {
-            arguments.confirm("/wb enable|disable");
-            arguments.confirm("/wb center here: Set worldborder center");
-            arguments.confirm("/wb size <xz> [z]: Set worldborder size");
-            arguments.confirm("/wb shape box|ellipse: Set worldborder center");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/wb enable|disable");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/wb center here: Set worldborder center");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/wb size <xz> [z]: Set worldborder size");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/wb shape box|ellipse: Set worldborder center");
             if (border == null)
             {
-                arguments.error("No worldborder set for this world");
-                return;
+                ChatOutputHandler.chatError(ctx.getSource(),"No worldborder set for this world");
+                return Command.SINGLE_SUCCESS;
             }
-            arguments.notify("Worldborder info:");
-            arguments.notify("  center  = " + border.getCenter());
-            arguments.notify("  size    = " + border.getSize().getX() + " x " + border.getSize().getZ());
-            arguments.notify("  start   = " + border.getArea().getLowPoint());
-            arguments.notify("  end     = " + border.getArea().getHighPoint());
-            arguments.notify("  shape   = " + (border.getShape() == AreaShape.BOX ? "box" : "ellipse"));
+            ChatOutputHandler.chatNotification(ctx.getSource(),"Worldborder info:");
+            ChatOutputHandler.chatNotification(ctx.getSource(),"  center  = " + border.getCenter());
+            ChatOutputHandler.chatNotification(ctx.getSource(),"  size    = " + border.getSize().getX() + " x " + border.getSize().getZ());
+            ChatOutputHandler.chatNotification(ctx.getSource(),"  start   = " + border.getArea().getLowPoint());
+            ChatOutputHandler.chatNotification(ctx.getSource(),"  end     = " + border.getArea().getHighPoint());
+            ChatOutputHandler.chatNotification(ctx.getSource(),"  shape   = " + (border.getShape() == AreaShape.BOX ? "box" : "ellipse"));
             if (border.isEnabled())
-                arguments.confirm("  enabled = true");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),"  enabled = true");
             else
-                arguments.error("  enabled = false");
-            return;
+                ChatOutputHandler.chatError(ctx.getSource(),"  enabled = false");
+            return Command.SINGLE_SUCCESS;
         }
 
-        arguments.tabComplete("center", "disable", "enable", "shape", "size", "effect");
+        //arguments.tabComplete("center", "disable", "enable", "shape", "size", "effect");
         String subCommand = arguments.remove().toLowerCase();
         switch (subCommand)
         {
         case "enable":
-            if (arguments.isTabCompletion)
-                return;
             border.setEnabled(true);
             border.save();
-            arguments.confirm("Worldborder enabled");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"Worldborder enabled");
             break;
         case "disable":
-            if (arguments.isTabCompletion)
-                return;
             border.setEnabled(false);
             border.save();
-            arguments.confirm("Worldborder disabled");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"Worldborder disabled");
             break;
         case "shape":
-            parseShape(arguments, border);
+            parseShape(ctx, border);
             break;
         case "center":
-            parseCenter(arguments, border);
+            parseCenter(ctx, border);
             break;
         case "size":
-            parseRadius(arguments, border);
+            parseRadius(ctx, border);
             break;
         case "effect":
-            parseEffect(arguments, border);
+            parseEffect(ctx, border);
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
         }
     }
 
-    public static void parseCenter(CommandParserArgs arguments, WorldBorder border) throws CommandException
+    public static void parseCenter(CommandContext<CommandSource> ctx, WorldBorder border, Object... params) throws CommandException
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm("Worldborder center at %s", border.getCenter());
-            arguments.confirm("/wb center here: Set worldborder center to player position");
-            arguments.confirm("/wb center X Z: Set worldborder center to coordinates");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("Worldborder center at %s", border.getCenter()));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/wb center here: Set worldborder center to player position");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/wb center X Z: Set worldborder center to coordinates");
             return;
         }
 
-        arguments.tabComplete("here");
-        if (arguments.isTabCompletion)
-            return;
+        //arguments.tabComplete("here");
 
         if (arguments.peek().equalsIgnoreCase("here"))
         {
             border.setCenter(new Point(arguments.senderPlayer));
             border.save();
-            arguments.confirm("Worldborder center set to current location");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"Worldborder center set to current location");
             return;
         }
 
@@ -159,15 +171,15 @@ public class CommandWorldBorder extends ParserCommandBase
         int z = arguments.parseInt();
         border.setCenter(new Point(x, 64, z));
         border.save();
-        arguments.confirm("Worldborder center set to [%d, %d]", x, z);
+        ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("Worldborder center set to [%d, %d]", x, z));
     }
 
-    public static void parseRadius(CommandParserArgs arguments, WorldBorder border) throws CommandException
+    public static void parseRadius(CommandContext<CommandSource> ctx, WorldBorder border, Object... params) throws CommandException
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm("Worldborder size: %d x %d", border.getSize().getX(), border.getSize().getZ());
-            arguments.confirm("/wb size <xz> [z]: Set worldborder size");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("Worldborder size: %d x %d", border.getSize().getX(), border.getSize().getZ()));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/wb size <xz> [z]: Set worldborder size");
             return;
         }
         int xSize = arguments.parseInt();
@@ -184,21 +196,19 @@ public class CommandWorldBorder extends ParserCommandBase
         }
         border.updateArea();
         border.save();
-        arguments.confirm("Worldborder size set to %d x %d", border.getSize().getX(), border.getSize().getZ());
+        ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("Worldborder size set to %d x %d", border.getSize().getX(), border.getSize().getZ()));
     }
 
-    public static void parseShape(CommandParserArgs arguments, WorldBorder border) throws CommandException
+    public static void parseShape(CommandContext<CommandSource> ctx, WorldBorder border, Object... params) throws CommandException
     {
         if (arguments.isEmpty())
         {
-            arguments.notify("Worldborder shape: %s", border.getShape() == AreaShape.BOX ? "box" : "ellipse");
-            arguments.confirm("/wb shape box|ellipse");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("Worldborder shape: %s", border.getShape() == AreaShape.BOX ? "box" : "ellipse"));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/wb shape box|ellipse");
             return;
         }
 
-        arguments.tabComplete("box", "ellipse");
-        if (arguments.isTabCompletion)
-            return;
+        //arguments.tabComplete("box", "ellipse");
 
         String subCommand = arguments.remove().toLowerCase();
         switch (subCommand)
@@ -206,39 +216,39 @@ public class CommandWorldBorder extends ParserCommandBase
         case "box":
             border.setShape(AreaShape.BOX);
             border.save();
-            arguments.confirm("Worldborder shape set to box");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"Worldborder shape set to box");
             break;
         case "ellipse":
             border.setShape(AreaShape.ELLIPSOID);
             border.save();
-            arguments.confirm("Worldborder shape set to ellipse");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"Worldborder shape set to ellipse");
             break;
         default:
             throw new TranslatedCommandException("Unknown shape type %s", subCommand);
         }
     }
 
-    public static void parseEffect(CommandParserArgs arguments, WorldBorder border) throws CommandException
+    public static void parseEffect(CommandContext<CommandSource> ctx, WorldBorder border, Object... params) throws CommandException
     {
         if (arguments.isEmpty())
         {
             if (!border.getEffects().isEmpty())
             {
-                arguments.notify("Effects applied on this worldborder:");
+                ChatOutputHandler.chatNotification(ctx.getSource(),"Effects applied on this worldborder:");
                 for (WorldBorderEffect effect : border.getEffects())
                 {
-                    arguments.notify(String.format("%d: %s", border.getEffects().indexOf(effect), effect.toString()));
+                    ChatOutputHandler.chatNotification(ctx.getSource(),String.format("%d: %s", border.getEffects().indexOf(effect), effect.toString()));
                 }
             }
             else
             {
-                arguments.notify("No effects are currently applied on this worldborder!");
+                ChatOutputHandler.chatNotification(ctx.getSource(),"No effects are currently applied on this worldborder!");
             }
-            arguments.confirm("/wb effect <add [command|damage|kick|knockback|message|potion|smite|block] <trigger> | remove <index>");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/wb effect <add [command|damage|kick|knockback|message|potion|smite|block] <trigger> | remove <index>");
             return;
         }
 
-        arguments.tabComplete("add", "remove");
+        //arguments.tabComplete("add", "remove");
 
         String subCommand = arguments.remove().toLowerCase();
         switch (subCommand)
@@ -247,36 +257,34 @@ public class CommandWorldBorder extends ParserCommandBase
             addEffect(border, arguments);
             break;
         case "remove":
-            if (arguments.isTabCompletion)
-                return;
             int index = Integer.parseInt(arguments.remove().toLowerCase());
             if (border.getEffects().size() >= index && border.getEffects().remove(border.getEffects().get(index)))
-                arguments.confirm("Removed effect");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),"Removed effect");
             else
             {
-                arguments.error("No such effect!");
-                arguments.error("Try using /wb effect to view all available effects.");
-                arguments.error("Each one is identified by a number, use that to identify the effect you want to remove.");
+                ChatOutputHandler.chatError(ctx.getSource(),"No such effect!");
+                ChatOutputHandler.chatError(ctx.getSource(),"Try using /wb effect to view all available effects.");
+                ChatOutputHandler.chatError(ctx.getSource(),"Each one is identified by a number, use that to identify the effect you want to remove.");
             }
             break;
         default:
-            arguments.error("Wrong syntax! Try /wb effect <add [command|damage|kick|knockback|message|potion|smite|block] <trigger> | remove <index>");
+            ChatOutputHandler.chatError(ctx.getSource(),"Wrong syntax! Try /wb effect <add [command|damage|kick|knockback|message|potion|smite|block] <trigger> | remove <index>");
         }
 
         border.save();
 
     }
 
-    public static void addEffect(WorldBorder border, CommandParserArgs arguments) throws CommandException
+    public static void addEffect(CommandContext<CommandSource> ctx, WorldBorder border, Object... params) throws CommandException
     {
         // Get effect type argument
         if (arguments.isEmpty())
         {
-            arguments.error("No effect provided! How about trying one of these:");
-            arguments.error("command, damage, kick, knockback, message, potion ,smite");
+            ChatOutputHandler.chatError(ctx.getSource(),"No effect provided! How about trying one of these:");
+            ChatOutputHandler.chatError(ctx.getSource(),"command, damage, kick, knockback, message, potion ,smite");
             return;
         }
-        arguments.tabComplete("command", "damage", "kick", "knockback", "message", "potion", "smite");
+        //arguments.tabComplete("command", "damage", "kick", "knockback", "message", "potion", "smite");
         String subCommand = arguments.remove().toLowerCase();
 
         // Get distance argument
@@ -284,21 +292,17 @@ public class CommandWorldBorder extends ParserCommandBase
             throw new TranslatedCommandException("Missing distance argument");
         int trigger = arguments.parseInt();
 
-        if (arguments.isTabCompletion)
-            return;
-
         WorldBorderEffect effect = WorldBorderEffects.valueOf(subCommand.toUpperCase()).get();
         if (effect == null)
         {
-            arguments.error(String.format("Could not find an effect with name %s, how about trying one of these:", subCommand));
-            arguments.error("command, damage, kick, knockback, message, potion ,smite");
+            ChatOutputHandler.chatError(ctx.getSource(),String.format("Could not find an effect with name %s, how about trying one of these:", subCommand));
+            ChatOutputHandler.chatError(ctx.getSource(),"command, damage, kick, knockback, message, potion ,smite");
             return;
         }
 
         effect.provideArguments(arguments);
         effect.triggerDistance = trigger;
         border.addEffect(effect);
-        arguments.confirm("Effect added!");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(),"Effect added!");
     }
-
 }

@@ -1,6 +1,7 @@
 package com.forgeessentials.permissions.commands;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.context.AreaContext;
@@ -12,15 +13,21 @@ import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.selections.SelectionHandler;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandZone extends ParserCommandBase
+public class CommandZone extends BaseCommand
 {
+
+    public CommandZone(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String PERM_NODE = "fe.perm.zone";
     public static final String PERM_ALL = PERM_NODE + Zone.ALL_PERMS;
@@ -359,6 +366,13 @@ public class CommandZone extends ParserCommandBase
             }
             throw new CommandParserArgs.CancelParsingException();
         }
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

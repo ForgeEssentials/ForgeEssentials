@@ -3,6 +3,7 @@ package com.forgeessentials.permissions.commands;
 import static com.forgeessentials.permissions.core.ItemPermissionManager.TAG_MODE;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -12,14 +13,20 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.permissions.core.ItemPermissionManager;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandItemPermission extends ParserCommandBase
+public class CommandItemPermission extends BaseCommand
 {
+
+    public CommandItemPermission(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -155,6 +162,13 @@ public class CommandItemPermission extends ParserCommandBase
         ListNBT settings = ItemPermissionManager.getSettingsTag(tag);
         tag.put(ItemPermissionManager.TAG_SETTINGS, settings);
         return settings;
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -96,10 +96,10 @@ public class ModulePermissions extends ConfigLoaderBase
 
         MinecraftForge.EVENT_BUS.register(this);
 
-        FECommandManager.registerCommand(new CommandZone());
-        FECommandManager.registerCommand(new CommandPermissions());
-        FECommandManager.registerCommand(new CommandPromote());
-        FECommandManager.registerCommand(new CommandItemPermission());
+        FECommandManager.registerCommand(new CommandZone("area", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandPermissions("perm", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandPromote("promote", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandItemPermission("permitem", 4, true));//TODO fix perms
 
     }
 

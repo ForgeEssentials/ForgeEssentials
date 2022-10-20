@@ -3,6 +3,7 @@ package com.forgeessentials.permissions.commands;
 import java.util.ArrayList;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -10,14 +11,20 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandPromote extends ParserCommandBase
+public class CommandPromote extends BaseCommand
 {
+
+    public CommandPromote(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String PERM_NODE = "fe.perm.promote";
 
@@ -95,6 +102,13 @@ public class CommandPromote extends ParserCommandBase
         if (ident.hasPlayer())
             ChatOutputHandler.chatConfirmation(ident.getPlayer().createCommandSourceStack(),
                     Translator.format("You have been added to the %s group", groupName));
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

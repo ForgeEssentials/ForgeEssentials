@@ -1,13 +1,20 @@
 package com.forgeessentials.permissions.commands;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.util.CommandParserArgs;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandPermissions extends ParserCommandBase
+public class CommandPermissions extends BaseCommand
 {
+
+    public CommandPermissions(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public final String getPrimaryAlias()
@@ -43,6 +50,13 @@ public class CommandPermissions extends ParserCommandBase
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         PermissionCommandParser.parseMain(arguments);
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
