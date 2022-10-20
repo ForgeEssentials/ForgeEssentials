@@ -2,14 +2,26 @@ package com.forgeessentials.perftools;
 
 import java.text.DecimalFormat;
 
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandServerPerf extends BaseCommand
 {
+
+    public CommandServerPerf(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
 
     private static final DecimalFormat formatNumbers = new DecimalFormat("########0.000");
 
@@ -20,17 +32,27 @@ public class CommandServerPerf extends BaseCommand
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        ChatOutputHandler.chatNotification(sender, "Memory usage:");
-        ChatOutputHandler.chatNotification(sender, "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
-        ChatOutputHandler.chatNotification(sender, "Total: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
-        ChatOutputHandler.chatNotification(sender, "Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Memory usage:");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Total: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
         long used = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        ChatOutputHandler.chatNotification(sender, "Used: " + (used / 1024 / 1024) + " MiB");
-        ChatOutputHandler.chatNotification(sender,
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Used: " + (used / 1024 / 1024) + " MiB");
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        ChatOutputHandler.chatNotification(ctx.getSource(),
                 "Average tick time: " + formatNumbers.format(this.func_120035_a(server.tickTimes) * 1.0E-6D) + " ms");
-        ChatOutputHandler.chatNotification(sender, "For TPS information, run /forge tps.");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "For TPS information, run /forge tps.");
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override

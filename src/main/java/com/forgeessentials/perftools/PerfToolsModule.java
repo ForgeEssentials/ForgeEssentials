@@ -32,8 +32,8 @@ public class PerfToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void load(FEModuleCommonSetupEvent e)
     {
-        FECommandManager.registerCommand(new CommandServerPerf());
-        FECommandManager.registerCommand(new CommandChunkLoaderList());
+        FECommandManager.registerCommand(new CommandServerPerf("perfstats", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandChunkLoaderList("chunkloaderlist", 4, true));//TODO fix perms
     }
 
     @SubscribeEvent

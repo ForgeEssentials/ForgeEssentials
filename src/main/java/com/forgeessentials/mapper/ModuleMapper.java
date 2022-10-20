@@ -6,9 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -25,29 +23,30 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.IntArrayNBT;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.server.ChunkHolder;
+import net.minecraft.world.server.ChunkManager;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.mapper.command.CommandMapper;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Iterables;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 
 @FEModule(name = "mapper", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
 public class ModuleMapper
@@ -96,7 +95,7 @@ public class ModuleMapper
     @SubscribeEvent
     public void load(FEModuleCommonSetupEvent event)
     {
-        FECommandManager.registerCommand(new CommandMapper());
+        FECommandManager.registerCommand(new CommandMapper("mapper", 4, true));//TODO fix perms
 
         InputStream is = Object.class.getResourceAsStream("/mapper_colorscheme.txt");
         if (is != null)
@@ -124,28 +123,30 @@ public class ModuleMapper
     {
         if (event.getWorld().isClientSide())
             return;
-        Chunk chunk = event.getChunk();
+        Chunk chunk = (Chunk) event.getChunk();
         if (!chunk.isUnsaved() && !modifiedChunks.contains(chunk))
         {
-            setChunkModified(chunk);
-            setRegionModified((ServerWorld) chunk.getLevel(), MapperUtil.chunkToRegion(chunk.x), MapperUtil.chunkToRegion(chunk.z));
+            setChunkModified(chunk, (ServerWorld) chunk.getLevel());
+            setRegionModified((ServerWorld) chunk.getLevel(), MapperUtil.chunkToRegion(chunk.getPos().x), MapperUtil.chunkToRegion(chunk.getPos().z));
         }
     }
 
     @SubscribeEvent
-    @SuppressWarnings("unchecked")
     public synchronized void worldTickEvent(WorldTickEvent event)
     {
         if (event.side.isClient())
             return;
         ServerWorld world = (ServerWorld) event.world;
-        List<ChunkHolder> list = Lists.newArrayList(world.getChunkSource().chunkMap.getChunks());
-        for (Chunk chunk : list)
+        Long2ObjectLinkedOpenHashMap<ChunkHolder> map = ObfuscationReflectionHelper.getPrivateValue(ChunkManager.class, world.getChunkSource().chunkMap, "visibleChunkMap");
+        Iterable<ChunkHolder> list = Iterables.unmodifiableIterable(map.values());
+        for (ChunkHolder chunkH : list) {
+            Chunk chunk = chunkH.getTickingChunk();
             if (chunk != null && !chunk.isUnsaved() && !modifiedChunks.contains(chunk))
             {
-                setChunkModified(chunk);
+                setChunkModified(chunk, world);
                 setRegionModified(world, MapperUtil.chunkToRegion(chunk.getPos().x), MapperUtil.chunkToRegion(chunk.getPos().z));
             }
+        }
     }
 
     // @SubscribeEvent
@@ -165,10 +166,10 @@ public class ModuleMapper
 
     /* ------------------------------------------------------------ */
 
-    public synchronized void setChunkModified(Chunk chunk)
+    public synchronized void setChunkModified(Chunk chunk, ServerWorld world)
     {
         modifiedChunks.add(chunk);
-        setChunkModified((ServerWorld) chunk.getLevel(), chunk.getPos().x, chunk.getPos().z);
+        setChunkModified((ServerWorld) world, chunk.getPos().x, chunk.getPos().z);
     }
 
     public synchronized void unsetChunkModified(Chunk chunk)

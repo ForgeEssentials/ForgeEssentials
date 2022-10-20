@@ -18,11 +18,20 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.HashMultimap;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandChunkLoaderList extends BaseCommand
 {
+    public CommandChunkLoaderList(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     @Override
     public String getPermissionNode()
     {
@@ -36,7 +45,7 @@ public class CommandChunkLoaderList extends BaseCommand
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         String key = "*";
         if (args.length != 0)
@@ -74,7 +83,7 @@ public class CommandChunkLoaderList extends BaseCommand
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         list(sender, "*");
     }
@@ -203,5 +212,12 @@ public class CommandChunkLoaderList extends BaseCommand
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
