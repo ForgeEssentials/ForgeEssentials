@@ -1,18 +1,15 @@
 package com.forgeessentials.util;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.WallSignBlock;
 import net.minecraft.entity.item.HangingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.SignTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -62,7 +59,8 @@ public final class ItemUtil
         if (te instanceof SignTileEntity)
         {
             SignTileEntity sign = (SignTileEntity) te;
-            return sign.signText;
+            ITextComponent[] imessage = ObfuscationReflectionHelper.getPrivateValue(SignTileEntity.class, sign, "messages");
+            return imessage;
         }
         return null;
     }

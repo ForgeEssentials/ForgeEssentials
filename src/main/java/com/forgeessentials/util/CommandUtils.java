@@ -25,7 +25,8 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class CommandUtils {
+public class CommandUtils 
+{
 	public static ICommandSource GetSource(CommandSource source) {
 		ICommandSource isource = ObfuscationReflectionHelper.getPrivateValue(CommandSource.class, source, "source");
 		return isource;

@@ -3,7 +3,6 @@ package com.forgeessentials.signtools;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -40,7 +39,7 @@ public class SignInfo
             }
             else if (event instanceof LeftClickBlock)
             {
-                this.hitVec = ((LeftClickBlock) event).getHitVec();
+                this.hitVec = null;
             }
         }
     }

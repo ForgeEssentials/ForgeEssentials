@@ -12,6 +12,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fe.event.world.SignEditEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -111,10 +112,12 @@ public class SignToolsModule extends ConfigLoaderBase
                             && event.getPlayer().getMainHandItem().getItem().equals(ItemTags.SIGNS))
                     {
                         // Convert Formatting back into FE format for easy use
-                        for (int i = 0; i < sign.messages.length; i++)
+                        ITextComponent[] imessage = ObfuscationReflectionHelper.getPrivateValue(SignTileEntity.class, sign, "messages");
+                        for (int i = 0; i < imessage.length; i++)
                         {
-                            sign.messages[i] = new StringTextComponent(
-                                    sign.messages[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
+                            imessage[i] = new StringTextComponent(
+                                    imessage[i].getContents().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
+                            ObfuscationReflectionHelper.setPrivateValue(SignTileEntity.class, sign, imessage, "messages");
                         }
 
                         event.getPlayer().openEditSign((SignTileEntity) te);
@@ -123,8 +126,8 @@ public class SignToolsModule extends ConfigLoaderBase
                 }
 
             }
-
-            String[] signText = getFormatted(sign.signText);
+            ITextComponent[] imessage = ObfuscationReflectionHelper.getPrivateValue(SignTileEntity.class, sign, "messages");
+            String[] signText = getFormatted(imessage);
 
             if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer().createCommandSourceStack(),
                     new SignInfo(event.getPlayer().dimension, event.getPos(), signText, event)))
@@ -154,7 +157,7 @@ public class SignToolsModule extends ConfigLoaderBase
         String[] out = new String[text.length];
         for (int i = 0; i < text.length; i++)
         {
-            out[i] = text[i].getFormattedText().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&');
+            out[i] = text[i].getContents().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&');
         }
         return out;
     }

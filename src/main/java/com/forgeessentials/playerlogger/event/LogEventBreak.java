@@ -18,7 +18,7 @@ public class LogEventBreak extends PlayerLoggerEvent<BlockEvent.BreakEvent>
     public LogEventBreak(BlockEvent.BreakEvent event)
     {
         super(event);
-        tileEntityBlob = getTileEntityBlob(event.getWorld().getTileEntity(event.getPos()));
+        tileEntityBlob = getTileEntityBlob(event.getWorld().getBlockEntity(event.getPos()));
     }
 
     @Override
