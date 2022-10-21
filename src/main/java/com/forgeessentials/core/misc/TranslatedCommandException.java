@@ -4,6 +4,7 @@ import net.minecraft.command.CommandException;
 
 import com.forgeessentials.api.UserIdent;
 
+@SuppressWarnings("serial")
 public class TranslatedCommandException extends CommandException
 {
 
@@ -20,9 +21,9 @@ public class TranslatedCommandException extends CommandException
     public static class PlayerNotFoundException extends TranslatedCommandException
     {
 
-        public PlayerNotFoundException(String playerName)
+        public PlayerNotFoundException(String playerName, Object... args)
         {
-            super("Player %s not found", playerName);
+            super("Player %s not found", playerName, args);
         }
 
         public PlayerNotFoundException(UserIdent ident)
@@ -40,9 +41,9 @@ public class TranslatedCommandException extends CommandException
             super("Invalid Syntax");
         }
 
-        public InvalidSyntaxException(String correctSyntax)
+        public InvalidSyntaxException(String correctSyntax, Object... args)
         {
-            super("Invalid Syntax. Instead use %s", correctSyntax);
+            super("Invalid Syntax. Instead use %s", correctSyntax, args);
         }
 
     }
@@ -54,9 +55,9 @@ public class TranslatedCommandException extends CommandException
             super("Invalid Syntax");
         }
 
-        public WrongUsageException(String correctSyntax)
+        public WrongUsageException(String correctSyntax, Object... args)
         {
-            super("Invalid Syntax. Instead use %s", correctSyntax);
+            super("Invalid Syntax. Instead use %s", correctSyntax, args);
         }
 
     }
