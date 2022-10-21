@@ -81,12 +81,16 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandEnchant());
         FECommandManager.registerCommand(new CommandDechant("dechant", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandLocate());
-        FECommandManager.registerCommand(new CommandRules());
+        FECommandManager.registerCommand(new CommandRules("rules", 0, true));
         FECommandManager.registerCommand(new CommandModlist("modlist", 0, true));
         FECommandManager.registerCommand(new CommandButcher());
         FECommandManager.registerCommand(new CommandRemove());
         FECommandManager.registerCommand(new CommandAFK());
-        FECommandManager.registerCommand(new CommandKit());
+        
+        CommandKit kit = new CommandKit("kit", 0, true);
+        FECommandManager.registerCommand(kit);
+        MinecraftForge.EVENT_BUS.register(kit);
+        
         FECommandManager.registerCommand(new CommandEnderchest("enderchest", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandVirtualchest());
         FECommandManager.registerCommand(new CommandCapabilities());
@@ -105,7 +109,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandKill());
         FECommandManager.registerCommand(new CommandGameMode());
         FECommandManager.registerCommand(new CommandDoAs("doas", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandServerSettings());
+        FECommandManager.registerCommand(new CommandServerSettings("serversettings", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandGetCommandBook());
         FECommandManager.registerCommand(new CommandWeather());
         FECommandManager.registerCommand(new CommandBind());
@@ -121,7 +125,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandTempBan());
         FECommandManager.registerCommand(new CommandFly("fly", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandHelp());
-        FECommandManager.registerCommand(new CommandPregen());
+        FECommandManager.registerCommand(new CommandPregen("pregen", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandBiome());
         FECommandManager.registerCommand(new CommandReach("reach", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandVanish("vanish", 4, true));//TODO fix perms

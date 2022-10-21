@@ -65,6 +65,7 @@ import com.forgeessentials.playerlogger.entity.Action02Command;
 import com.forgeessentials.playerlogger.entity.Action03PlayerEvent.PlayerEventType;
 import com.forgeessentials.playerlogger.entity.Action_;
 import com.forgeessentials.playerlogger.entity.BlockData;
+import com.forgeessentials.playerlogger.entity.BlockData_;
 import com.forgeessentials.playerlogger.entity.PlayerData;
 import com.forgeessentials.playerlogger.entity.PlayerData_;
 import com.forgeessentials.playerlogger.entity.WorldData;
@@ -445,7 +446,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             Class<TileEntity> teClazz = (Class<TileEntity>) clazz;
 
             TileEntity entity = teClazz.newInstance();
-            entity.readFromNBT(nbt);
+            entity.deserializeNBT(nbt);;
             return entity;
         }
         catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)

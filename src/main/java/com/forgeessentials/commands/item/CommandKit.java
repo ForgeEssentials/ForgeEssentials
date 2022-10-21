@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -19,7 +20,7 @@ import com.forgeessentials.auth.EncryptionHelper;
 import com.forgeessentials.auth.PasswordManager;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.Kit;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -30,13 +31,21 @@ import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  * Kit command with cooldown. Should also put armor in armor slots.
  */
 
-public class CommandKit extends ParserCommandBase implements ConfigurableCommand
+public class CommandKit extends BaseCommand implements ConfigurableCommand
 {
+
+    public CommandKit(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String PERM = ModuleCommands.PERM + ".kit";
     public static final String PERM_ADMIN = ModuleCommands.PERM + ".admin";
@@ -46,11 +55,6 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     public static String kitForNewPlayers;
 
     public static Map<String, Kit> kits = new HashMap<>();
-
-    public CommandKit()
-    {
-        APIRegistry.getFEEventBus().register(this);
-    }
 
     @Override
     public String getPrimaryAlias()
@@ -93,12 +97,18 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (arguments.isEmpty())
         {
-            if (!arguments.isTabCompletion)
-                arguments.confirm("Available kits: %s", StringUtils.join(getAvailableKits(arguments), ", "));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Available kits: %s", StringUtils.join(getAvailableKits(arguments), ", "));
             return;
         }
 
@@ -143,20 +153,20 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
                         }
                     addKit(new Kit(arguments.senderPlayer, kitName, cooldown));
                     if (cooldown < 0)
-                        arguments.confirm("Kit %s saved for one-time-use", kitName);
+                        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Kit %s saved for one-time-use", kitName));
                     else
-                        arguments.confirm("Kit %s saved with cooldown %s", kitName, ChatOutputHandler.formatTimeDurationReadable(cooldown, true));
+                        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Kit %s saved with cooldown %s", kitName, ChatOutputHandler.formatTimeDurationReadable(cooldown, true)));
                 }
             };
             if (kit == null)
                 callback.respond(true);
             else
-                Questioner.addChecked(arguments.sender, Translator.format("Overwrite kit %s?", kitName), callback);
+                Questioner.addChecked(ctx.getSource(), Translator.format("Overwrite kit %s?", kitName), callback);
             break;
         case "del":
         case "delete":
             removeKit(kit);
-            arguments.confirm("Deleted kit %s", kitName);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Deleted kit %s", kitName));
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
@@ -202,5 +212,4 @@ public class CommandKit extends ParserCommandBase implements ConfigurableCommand
         kits.put(kit.getName(), kit);
         DataManager.getInstance().save(kit, kit.getName());
     }
-
 }

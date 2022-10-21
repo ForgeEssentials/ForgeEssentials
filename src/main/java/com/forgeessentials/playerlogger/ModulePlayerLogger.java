@@ -88,7 +88,7 @@ public class ModulePlayerLogger
         ForgeEssentials.getConfigManager().registerSpecs("PlayerLogger", new PlayerLoggerConfig());
 
         FECommandManager.registerCommand(new CommandRollback());
-        FECommandManager.registerCommand(new CommandPlayerlogger());
+        FECommandManager.registerCommand(new CommandPlayerlogger("pl", 4, true));//TODO fix perms
         // FECommandManager.registerCommand(new CommandTestPlayerlogger());
     }
 

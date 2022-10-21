@@ -6,9 +6,10 @@ import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
@@ -131,7 +132,8 @@ public class PlayerLoggerChecker
             {
                 Action01Block change2 = (Action01Block) change;
                 String blockName = change2.block != null ? change2.block.name : "";
-                if (!fc.hasBlock((Block) Block.getBlockFromName(blockName)))
+                Block block = (Block) ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName));
+                if (fc.hasBlock(block))
                     continue;
 
                 if (blockName.contains(":"))
