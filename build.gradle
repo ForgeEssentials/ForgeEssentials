@@ -73,11 +73,6 @@ repositories {
 	}
 
     maven {
-        name = "LatMod"
-        url "https://maven.latmod.com/"
-    }
-
-    maven {
         name 'JEI'
         url "https://dvs1.progwml6.com/files/maven"
         content {
