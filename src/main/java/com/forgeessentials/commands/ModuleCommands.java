@@ -112,7 +112,11 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandServerSettings("serversettings", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandGetCommandBook());
         FECommandManager.registerCommand(new CommandWeather());
-        FECommandManager.registerCommand(new CommandBind());
+
+        CommandBind bind = new CommandBind("bind", 4, true);//TODO fix perms
+        FECommandManager.registerCommand(bind);
+        MinecraftForge.EVENT_BUS.register(bind);
+
         FECommandManager.registerCommand(new CommandRename());
         // FECommandManager.registerCommand(new CommandVanish());
         FECommandManager.registerCommand(new CommandPush());

@@ -15,7 +15,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.BaseCommand;
-import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
@@ -28,6 +27,7 @@ import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -110,13 +110,13 @@ public class CommandPlayerlogger extends BaseCommand
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm("/pl stats: Show playerlogger stats");
-            arguments.confirm("/pl filter: Sets the players FilterConfig");
-            arguments.confirm("/pl gfilter: Global /pl filter");
-            arguments.confirm("/pl lookup: Looks up playerlogger data");
-            arguments.confirm("/pl glookup: Global /pl lookup");
-            arguments.confirm("/pl purge: Purge old playerData");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl stats: Show playerlogger stats");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl filter: Sets the players FilterConfig");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl gfilter: Global /pl filter");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl lookup: Looks up playerlogger data");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl glookup: Global /pl lookup");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl purge: Purge old playerData");
+            return Command.SINGLE_SUCCESS;
         }
         arguments.tabComplete("stats", "gfilter", "filter", "glookup", "lookup", "purge");
         FilterConfig fc = null;
@@ -138,7 +138,7 @@ public class CommandPlayerlogger extends BaseCommand
             if (!global)
                 FilterConfig.perPlayerFilters.put(arguments.ident, fc);
 
-            ChatOutputHandler.sendMessage(arguments.sender,
+            ChatOutputHandler.sendMessage(ctx.getSource(),
                     ChatOutputHandler.formatColors((global ? "Global" : arguments.ident.getUsername() + "'s") + " Picker set: \n" + fc.toReadableString()));
 
             break;
@@ -147,7 +147,7 @@ public class CommandPlayerlogger extends BaseCommand
         case "lookup":
             if (!arguments.isEmpty() && arguments.peek().toLowerCase().equals("help"))
             {
-                arguments.confirm("/pl [glookup | lookup] [[[x] [y] [z] [dim]?] | [player]]?  [pageSize]? [filterConfig]?");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl [glookup | lookup] [[[x] [y] [z] [dim]?] | [player]]?  [pageSize]? [filterConfig]?");
                 break;
             }
             global = arguments.senderPlayer == null || global;
@@ -183,7 +183,7 @@ public class CommandPlayerlogger extends BaseCommand
                             }
                             catch (NoSuchElementException | TranslatedCommandException e)
                             {
-                                arguments.error("Point must be in the form [x] [y] [z] [dim]?");
+                                ChatOutputHandler.chatError(ctx.getSource(),"Point must be in the form [x] [y] [z] [dim]?");
                                 break;
                             }
                         }
@@ -198,7 +198,7 @@ public class CommandPlayerlogger extends BaseCommand
                     {
                         arguments.args.addFirst(next);
                         PlayerEntity pl = arguments.parsePlayer(true, true).getPlayer();
-                        p = new WorldPoint(pl.getEntityWorld(), pl.getPosition());
+                        p = new WorldPoint(pl.getEntityWorld(), pl.blockPosition());
                     }
                 }
             }
@@ -230,19 +230,17 @@ public class CommandPlayerlogger extends BaseCommand
                 fc = new FilterConfig();
                 fc.parse(arguments);
             }
-            // ChatOutputHandler.sendMessage(arguments.sender, ChatOutputHandler.formatColors("Looking up: \n" + fc.toReadableString()));
-            PlayerLoggerChecker.instance.CheckBlock(p, fc, arguments.sender, pageSize, newCheck);
+            ChatOutputHandler.sendMessage(ctx.getSource(), ChatOutputHandler.formatColors("Looking up: \n" + fc.toReadableString()));
+            PlayerLoggerChecker.instance.CheckBlock(p, fc, ctx.getSource(), pageSize, newCheck);
 
             break;
         case "stats":
-            if (arguments.isTabCompletion)
-                return;
-            showStats(arguments.sender);
+            showStats(ctx.getSource());
             break;
         case "purge":
             if (arguments.isEmpty())
             {
-                arguments.confirm("/pl purge <duration>: Purge all PL data that is older than <duration> in days");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl purge <duration>: Purge all PL data that is older than <duration> in days");
             }
             else
             {
@@ -257,10 +255,10 @@ public class CommandPlayerlogger extends BaseCommand
                     {
                         if (response == null || !response)
                         {
-                            arguments.error("Cancelled purging playerlogger");
+                            ChatOutputHandler.chatError(ctx.getSource(),"Cancelled purging playerlogger");
                             return;
                         }
-                        arguments.confirm("Purging all PL data before %s. Server could lag for a while!", startTimeStr);
+                        ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("Purging all PL data before %s. Server could lag for a while!", startTimeStr));
                         TaskRegistry.runLater(new Runnable() {
                             @Override
                             public void run()
@@ -270,10 +268,10 @@ public class CommandPlayerlogger extends BaseCommand
                         });
                     }
                 };
-                if (arguments.sender instanceof MinecraftServer)
+                if (GetSource(ctx.getSource()) instanceof MinecraftServer)
                     handler.respond(true);
                 else
-                    Questioner.addChecked(arguments.sender, Translator.format("Really purge all playerlogger data before %s?", startTimeStr), handler);
+                    Questioner.addChecked(ctx.getSource(), Translator.format("Really purge all playerlogger data before %s?", startTimeStr), handler);
             }
             break;
         default:
@@ -281,7 +279,7 @@ public class CommandPlayerlogger extends BaseCommand
         }
     }
 
-    public static void showStats(ICommandSender sender)
+    public static void showStats(CommandSource sender)
     {
         PlayerLogger logger;
         synchronized (logger = ModulePlayerLogger.getLogger())

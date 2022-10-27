@@ -1,25 +1,5 @@
 package com.forgeessentials.multiworld.command;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.multiworld.ModuleMultiworld;
-import com.forgeessentials.multiworld.Multiworld;
-import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.output.ChatOutputHandler;
-
 public class CommandMultiworldTeleport //extends ParserCommandBase
 {
 /*

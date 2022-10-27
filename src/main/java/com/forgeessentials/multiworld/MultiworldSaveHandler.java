@@ -1,14 +1,5 @@
 package com.forgeessentials.multiworld;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.world.gen.feature.template.TemplateManager;
-import net.minecraft.world.storage.IWorldInfo;
-
 /**
  * 
  * @author Olee

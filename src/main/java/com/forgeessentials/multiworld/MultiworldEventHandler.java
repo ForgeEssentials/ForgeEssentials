@@ -1,10 +1,6 @@
 package com.forgeessentials.multiworld;
 
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraft.world.DimensionType;
-
 /**
  * 
  * @author gnif

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -120,13 +121,13 @@ public class CommandKit extends BaseCommand implements ConfigurableCommand
         {
             if (kit == null)
                 throw new TranslatedCommandException("Kit %s does not exist", kitName);
-            if (!arguments.hasPermission(PERM + "." + kit.getName()))
+            if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),PERM + "." + kit.getName()))
                 throw new TranslatedCommandException("You are not allowed to use this kit");
-            kit.giveKit(arguments.senderPlayer);
+            kit.giveKit((PlayerEntity) ctx.getSource().getEntity());
             return;
         }
 
-        arguments.checkPermission(PERM_ADMIN);
+        APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),PERM_ADMIN);
 
         arguments.tabComplete("set", "del");
         String subCommand = arguments.remove().toLowerCase();
@@ -138,7 +139,7 @@ public class CommandKit extends BaseCommand implements ConfigurableCommand
                 public void respond(Boolean response)
                 {
                     if (response == null)
-                        arguments.error("Question timed out");
+                        ChatOutputHandler.chatError(ctx.getSource(), "Question timed out");
                     else if (!response)
                         return;
                     int cooldown = -1;
@@ -149,9 +150,9 @@ public class CommandKit extends BaseCommand implements ConfigurableCommand
                         }
                         catch (CommandException e)
                         {
-                            arguments.error(e.getMessage());
+                            ChatOutputHandler.chatError(ctx.getSource(), e.getMessage());
                         }
-                    addKit(new Kit(arguments.senderPlayer, kitName, cooldown));
+                    addKit(new Kit((PlayerEntity) ctx.getSource().getEntity(), kitName, cooldown));
                     if (cooldown < 0)
                         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Kit %s saved for one-time-use", kitName));
                     else

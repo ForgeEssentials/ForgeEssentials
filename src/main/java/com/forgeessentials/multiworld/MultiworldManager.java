@@ -1,42 +1,12 @@
 package com.forgeessentials.multiworld;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
-import it.unimi.dsi.fastutil.ints.IntSortedSet;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.WorldSettings;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent.ServerTickEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fe.event.world.WorldPreLoadEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-import org.apache.commons.io.FileUtils;
-
-import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.NamedWorldHandler;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.api.permissions.WorldZone;
-import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.multiworld.MultiworldException.Type;
-import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.collect.ImmutableMap;
 
+import net.minecraft.world.server.ServerWorld;
 
 /**
  * 

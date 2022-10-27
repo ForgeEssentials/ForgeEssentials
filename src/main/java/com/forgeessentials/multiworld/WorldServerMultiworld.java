@@ -1,12 +1,5 @@
 package com.forgeessentials.multiworld;
 
-import net.minecraft.profiler.Profiler;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.Teleporter;
-import net.minecraft.world.server.ServerWorld;
-
-import com.forgeessentials.core.misc.TeleportHelper.SimpleTeleporter;
-
 public class WorldServerMultiworld// extends ServerWorld
 {
 /*

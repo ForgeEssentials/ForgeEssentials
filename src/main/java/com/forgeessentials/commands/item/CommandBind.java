@@ -1,6 +1,8 @@
 package com.forgeessentials.commands.item;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -19,22 +21,28 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandBind extends ParserCommandBase
+public class CommandBind extends BaseCommand
 {
+
+    public CommandBind(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     private static final String TAG_NAME = "FEbinding";
 
     public static final String LORE_TEXT_TAG = TextFormatting.RESET.toString() + TextFormatting.AQUA;
-
-    public CommandBind()
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
 
     @Override
     public String getPrimaryAlias()
@@ -61,12 +69,19 @@ public class CommandBind extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (arguments.isEmpty())
         {
             arguments.confirm("/bind <left|right> <command...>: Bind command to an item");
-            return;
+            return Command.SINGLE_SUCCESS;
         }
 
         arguments.tabComplete("left", "right", "clear");
@@ -77,15 +92,15 @@ public class CommandBind extends ParserCommandBase
         {
             if (!arguments.isTabCompletion)
             {
-                ItemStack is = arguments.senderPlayer.inventory.getSelected();
+                ItemStack is = ((PlayerEntity) ctx.getSource().getEntity()).getMainHandItem();
                 if (is == ItemStack.EMPTY)
                     throw new TranslatedCommandException("You are not holding a valid item.");
                 CompoundNBT tag = is.getTag();
                 if (tag != null)
                     tag.remove(TAG_NAME);
-                arguments.confirm("Cleared bound commands from item");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Cleared bound commands from item");
             }
-            return;
+            return Command.SINGLE_SUCCESS;
         }
 
         // Get correct side
@@ -95,12 +110,12 @@ public class CommandBind extends ParserCommandBase
 
         if (arguments.isEmpty())
         {
-            arguments.confirm("/bind " + side + " <command...>: Bind command to an item");
-            arguments.confirm("/bind " + side + " none: Clear bound command");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/bind " + side + " <command...>: Bind command to an item"));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/bind " + side + " none: Clear bound command"));
+            return Command.SINGLE_SUCCESS;
         }
 
-        ItemStack is = arguments.senderPlayer.inventory.getSelected();
+        ItemStack is = ((PlayerEntity) ctx.getSource().getEntity()).getMainHandItem();
         if (is == ItemStack.EMPTY)
             throw new TranslatedCommandException("You are not holding a valid item.");
         CompoundNBT tag = ItemUtil.getTagCompound(is);
@@ -113,13 +128,13 @@ public class CommandBind extends ParserCommandBase
                     arguments.toString().startsWith("/") ? arguments.toString() : "/" + arguments.toString(), arguments.sender.getPosition(), false);
             if ("none".startsWith(arguments.peek()))
                 arguments.tabCompletion.add(0, "none");
-            return;
+            return Command.SINGLE_SUCCESS;
         }
         if (arguments.peek().equals("none"))
         {
             bindTag.remove(side);
             display.put("Lore", new ListNBT());
-            arguments.confirm("Cleared " + side + " bound command from item");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Cleared " + side + " bound command from item"));
         }
         else
         {
@@ -135,15 +150,16 @@ public class CommandBind extends ParserCommandBase
                 if (lore.getString(i).startsWith(loreStart))
                 {
                     lore.set(i, loreTag);
-                    arguments.confirm("Bound command to item");
-                    return;
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "Bound command to item");
+                    return Command.SINGLE_SUCCESS;
                 }
             }
             lore.add(loreTag);
             display.put("Lore", lore);
             tag.put("display", display);
         }
-        arguments.confirm("Bound command to item");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Bound command to item");
+        return Command.SINGLE_SUCCESS;
     }
 
     @SubscribeEvent
@@ -169,5 +185,4 @@ public class CommandBind extends ParserCommandBase
         ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(event.getPlayer().createCommandSourceStack(), command);
         event.setCanceled(true);
     }
-
 }
