@@ -6,7 +6,7 @@ To use ForgeEssentials and its powerful permission framework with from another m
 2. Run ForgeGradle setup
   (E.g., `./gradlew genEclipseRuns` when using eclipse)
 3. Configure the annotation processor as outlined [below](#Configuring-Annotation-Processing)
-4. Add ``-Dmixin.env.compatLevel=JAVA_7` to VM Options for both server and client
+4. Add ``-Dmixin.env.compatLevel=JAVA_8` to VM Options for both server and client
 5. Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --mixin mixins.forgeessentials.json` to the launch arguments of the server
 6. Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --mixin mixins.forgeessentials.json --tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.forgeessentials.client.json` to the launch arguments of the client
 
