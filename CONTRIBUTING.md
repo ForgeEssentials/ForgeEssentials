@@ -11,18 +11,17 @@ To use ForgeEssentials and its powerful permission framework with from another m
 6. Add `--tweakClass com.forgeessentials.core.preloader.FELaunchHandler --mixin mixins.forgeessentials.json --tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.forgeessentials.client.json` to the launch arguments of the client
 
 # Configuring Annotation Processing
-If you open ForgeEssentials in your IDE, you must turn on annotation processing, or your IDE will complain that it cannot find classes like `Action_`. You also might need to manually add `hibernate-jpamodelgen-4.3.7.jar` as annotation processor. Please refer to the respective IDE documentation on how to do this.
+If you open ForgeEssentials in your IDE, you must turn on annotation processing, or your IDE will complain that it cannot find classes like `Action_`. You also might need to manually add `hibernate-jpamodelgen-x.x.x.jar` as annotation processor. Please refer to the respective IDE documentation on how to do this.
 
 ### Eclipse
 - Go to `Project Properties` > `Java Compiler` > `Annotation processing`
   - Check `Enable annotation processing`
 - Go to `Project Properties` > `Java Compiler` > `Annotation processing` > `Factory Path`
-  - Add the `hibernate-jpamodelgen-4.3.7.jar`.  
+  - Add the `hibernate-jpamodelgen-x.x.x.jar`.  
     To find its location, check the referenced libraries in the project settings. It should be located somewhere in  
-    `$HOME/.gradle/caches/modules-2/files-2.1/org.hibernate/hibernate-jpamodelgen/4.3.7.Final`
+    `$HOME/.gradle/caches/modules-2/files-2.1/org.hibernate/hibernate-jpamodelgen/x.x.x.Final`
 
 ### IntelliJ IDEA
-![](http://files.forgeessentials.com/Idea_apt_settings.jpg)
 - Go to `Settings > Build, Execution and Deployment > Compiler > Annotation Processors`
  - Check `Enable annotation processing`
  - Check `Obtain processors from project classpath`
@@ -30,6 +29,10 @@ If you open ForgeEssentials in your IDE, you must turn on annotation processing,
  - Under `Annotation Processors`, add this fully qualified name: `org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor`
  - Run `Build > Rebuild Project`
  - Right click `.apt_generated` directory and select `Mark as > Source directory`
+
+### FALLBACK
+ - If none of the above options work for your IDEs, you can use do the following.
+   - Add `/misc/forgeessentials-1.16.5-annonations.jar` to your build path.
 
 # Notes
 1. Please consider squashing all commits before initially submitting pull requests
