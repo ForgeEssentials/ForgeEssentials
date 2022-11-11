@@ -441,7 +441,7 @@ reobf {
 
 // util.jar
 task Annotations(type: Jar) {
-	classifier = ".annotations"
+	classifier = "annotations"
 	appendix = project.minecraftVersion
 	
     from(sourceSets.main.output) {
