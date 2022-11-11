@@ -31,6 +31,10 @@ If you open ForgeEssentials in your IDE, you must turn on annotation processing,
  - Run `Build > Rebuild Project`
  - Right click `.apt_generated` directory and select `Mark as > Source directory`
 
+### FALLBACK
+ - If none of the above options work for your IDEs, you can use do the following.
+   - Add `/misc/forgeessentials-1.12.2-annonations.jar` to your build path.
+
 # Notes
 1. Please consider squashing all commits before initially submitting pull requests
 2. For a local `.gitignore` use `.git/info/exclude`

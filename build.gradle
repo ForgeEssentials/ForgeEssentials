@@ -436,6 +436,42 @@ reobf {
 }
 
 /************************************************************
+ * Configure Annotations for IDEs Jar
+ */
+
+// util.jar
+task Annotations(type: Jar) {
+	classifier = "annotations"
+	appendix = project.minecraftVersion
+	
+    from(sourceSets.main.output) {
+        include "com/forgeessentials/playerlogger/entity/**"
+        exclude "com/forgeessentials/playerlogger/entity/Action.class"
+        exclude "com/forgeessentials/playerlogger/entity/Action01Block\$ActionBlockType.class"
+        exclude "com/forgeessentials/playerlogger/entity/Action01Block.class"
+        exclude "com/forgeessentials/playerlogger/entity/Action02Command.class"
+        exclude "com/forgeessentials/playerlogger/entity/Action03PlayerEvent\$PlayerEventType.class"
+        exclude "com/forgeessentials/playerlogger/entity/Action03PlayerEvent.class"
+        exclude "com/forgeessentials/playerlogger/entity/Action04PlayerPosition.class"
+        exclude "com/forgeessentials/playerlogger/entity/BlockData.class"
+        exclude "com/forgeessentials/playerlogger/entity/PlayerData.class"
+        exclude "com/forgeessentials/playerlogger/entity/WorldData.class"
+        
+        doLast {
+        delete fileTree(dir:'misc', include: '**annotations.jar')
+        copy {
+            from files("build/libs/") {
+                include "**annotations.jar"
+            }
+            into "misc"
+            rename 'forgeessentials-'+project.minecraftVersion+"-"+project.version+'-annotations.jar', 'forgeessentials-'+project.minecraftVersion+'-annotations.jar'
+        }
+        delete fileTree(dir:'build/libs/', include: '**annotations.jar')
+        }
+    }  
+}
+
+/************************************************************
  * Others
  */
 
@@ -443,6 +479,7 @@ reobf {
 artifacts {
 	//archives deobfJar
 	archives clientJar
+	archives Annotations
 }
 
 /************************************************************
