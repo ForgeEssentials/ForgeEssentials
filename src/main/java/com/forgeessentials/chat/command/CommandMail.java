@@ -99,7 +99,7 @@ public class CommandMail extends BaseCommand
             if (mailBag.mails.isEmpty())
                 throw new TranslatedCommandException("You have no mails to read");
             readMail(ctx.getSource(), mailBag.mails.remove(0));
-            Mailer.saveMails(getUserIdent(ctx.getSource(), getServerPlayer(ctx.getSource())), mailBag);
+            Mailer.saveMails(getIdent(ctx.getSource()), mailBag);
             return Command.SINGLE_SUCCESS;
         }
         if (params.toString() == "readall")
@@ -112,7 +112,7 @@ public class CommandMail extends BaseCommand
             for (Mail mail : mailBag.mails)
                 readMail(ctx.getSource(), mail);
             mailBag.mails.clear();
-            Mailer.saveMails(getUserIdent(ctx.getSource(), getServerPlayer(ctx.getSource())), mailBag);
+            Mailer.saveMails(getIdent(ctx.getSource()), mailBag);
             return Command.SINGLE_SUCCESS;
         }
         if (params.toString() == "send")
@@ -120,7 +120,7 @@ public class CommandMail extends BaseCommand
             PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             UserIdent receiver = UserIdent.get(player);
             ITextComponent message = MessageArgument.getMessage(ctx, "message");
-            Mailer.sendMail(getUserIdent(ctx.getSource(), getServerPlayer(ctx.getSource())), receiver,message.toString());
+            Mailer.sendMail(getIdent(ctx.getSource()), receiver,message.toString());
             ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("You sent a mail to %s", receiver.getUsernameOrUuid()));
             return Command.SINGLE_SUCCESS;
         }

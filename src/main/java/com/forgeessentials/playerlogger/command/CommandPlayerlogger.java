@@ -136,10 +136,10 @@ public class CommandPlayerlogger extends BaseCommand
             fc = global ? FilterConfig.globalConfig : new FilterConfig();
             fc.parse(arguments);
             if (!global)
-                FilterConfig.perPlayerFilters.put(arguments.ident, fc);
+                FilterConfig.perPlayerFilters.put(getIdent(ctx.getSource()), fc);
 
             ChatOutputHandler.sendMessage(ctx.getSource(),
-                    ChatOutputHandler.formatColors((global ? "Global" : arguments.ident.getUsername() + "'s") + " Picker set: \n" + fc.toReadableString()));
+                    ChatOutputHandler.formatColors((global ? "Global" : getIdent(ctx.getSource()).getUsername() + "'s") + " Picker set: \n" + fc.toReadableString()));
 
             break;
         case "glookup":
@@ -221,7 +221,7 @@ public class CommandPlayerlogger extends BaseCommand
             if (arguments.isEmpty())
             {
                 if (!global)
-                    fc = FilterConfig.getDefaultPlayerConfig(arguments.ident);
+                    fc = FilterConfig.getDefaultPlayerConfig(getIdent(ctx.getSource()));
                 else
                     fc = FilterConfig.globalConfig;
             }

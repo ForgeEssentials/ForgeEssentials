@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
 import com.google.common.base.Functions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -21,8 +20,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -244,50 +241,6 @@ public class CommandUtils
     public static ServerPlayerEntity getServerPlayer(CommandSource source) {
         return (source.getEntity() instanceof ServerPlayerEntity) ? (ServerPlayerEntity) source.getEntity() : null;
     }
-    public static UserIdent getUserIdent(CommandSource source, ServerPlayerEntity player) {
-        return (player == null) ? (CommandUtils.GetSource(source) instanceof DoAsCommandSender ? ((DoAsCommandSender) CommandUtils.GetSource(source)).getUserIdent() : null) : UserIdent.get(player);
-    }
-
-    public static ITextComponent getChatComponentFromNthArg(CommandSource sender, String[] args, int index) throws CommandException
-    {
-        return getChatComponentFromNthArg(sender, args, index, false);
-    }
-
-    public static ITextComponent getChatComponentFromNthArg(CommandSource sender, String[] args, int index, boolean p_147176_3_) throws CommandException
-    {
-        ITextComponent itextcomponent = new StringTextComponent("");
-
-        for (int i = index; i < args.length; ++i)
-        {
-            if (i > index)
-            {
-                itextcomponent.appendText(" ");
-            }
-
-            ITextComponent itextcomponent1 = net.minecraftforge.common.ForgeHooks.newChatWithLinks(args[i]); // Forge: links for messages
-
-            if (p_147176_3_)
-            {
-                ITextComponent itextcomponent2 = EntitySelector.matchEntitiesToTextComponent(sender, args[i]);
-
-                if (itextcomponent2 == null)
-                {
-                    if (EntitySelector.isSelector(args[i]))
-                    {
-                        throw new PlayerNotFoundException("commands.generic.selector.notFound", new Object[] {args[i]});
-                    }
-                }
-                else
-                {
-                    itextcomponent1 = itextcomponent2;
-                }
-            }
-
-            itextcomponent.appendSibling(itextcomponent1);
-        }
-
-        return itextcomponent;
-    }
     
     public static final Pattern timeFormatPattern = Pattern.compile("(\\d+)(\\D+)?");
 
@@ -399,5 +352,10 @@ public class CommandUtils
         while (m.find());
 
         return result;
+    }
+    public static UserIdent getIdent(CommandSource sender) {
+        ServerPlayerEntity senderPlayer = getServerPlayer(sender);
+        UserIdent ident = (senderPlayer == null) ? (CommandUtils.GetSource(sender) instanceof DoAsCommandSender ? ((DoAsCommandSender) CommandUtils.GetSource(sender)).getUserIdent() : null) : UserIdent.get(senderPlayer);
+        return ident;
     }
 }

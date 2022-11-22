@@ -107,7 +107,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandRepair());
         FECommandManager.registerCommand(new CommandHeal());
         FECommandManager.registerCommand(new CommandKill());
-        FECommandManager.registerCommand(new CommandGameMode());
+        FECommandManager.registerCommand(new CommandGameMode("gamemode", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandDoAs("doas", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandServerSettings("serversettings", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandGetCommandBook());

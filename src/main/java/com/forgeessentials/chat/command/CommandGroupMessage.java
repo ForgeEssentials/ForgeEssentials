@@ -7,7 +7,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.commands.Arguments.FeGroupArgument;
@@ -68,9 +67,8 @@ public class CommandGroupMessage extends BaseCommand
         String group = FeGroupArgument.getString(ctx, "group");
         APIRegistry.perms.getServerZone().getGroups();
 
-        UserIdent ident = getUserIdent(ctx.getSource(), getServerPlayer(ctx.getSource()));
         ITextComponent msgComponent = MessageArgument.getMessage(ctx, "message");
-        ModuleChat.tellGroup(ctx.getSource(), msgComponent.getString(), group, ident.checkPermission(ModuleChat.PERM_COLOR));
+        ModuleChat.tellGroup(ctx.getSource(), msgComponent.getString(), group, getIdent(ctx.getSource()).checkPermission(ModuleChat.PERM_COLOR));
         return Command.SINGLE_SUCCESS;
     }
 }
