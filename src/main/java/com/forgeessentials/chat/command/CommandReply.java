@@ -5,29 +5,38 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.MessageArgument;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.misc.Translator;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandReply extends ForgeEssentialsCommandBase
+public class CommandReply extends BaseCommand
 {
 
-    public static Map<ICommandSender, WeakReference<ICommandSender>> replyMap = new WeakHashMap<>();
-
-    public static void messageSent(ICommandSender argFrom, ICommandSender argTo)
+    public CommandReply(String name, int permissionLevel, boolean enabled)
     {
-        replyMap.put(argTo, new WeakReference<ICommandSender>(argFrom));
+        super(name, permissionLevel, enabled);
     }
 
-    public static ICommandSender getReplyTarget(ICommandSender sender)
+    public static Map<CommandSource, WeakReference<CommandSource>> replyMap = new WeakHashMap<>();
+
+    public static void messageSent(CommandSource argFrom, CommandSource argTo)
     {
-        WeakReference<ICommandSender> replyTarget = replyMap.get(sender);
+        replyMap.put(argTo, new WeakReference<CommandSource>(argFrom));
+    }
+
+    public static CommandSource getReplyTarget(CommandSource sender)
+    {
+        WeakReference<CommandSource> replyTarget = replyMap.get(sender);
         if (replyTarget == null)
             return null;
         return replyTarget.get();
@@ -45,12 +54,6 @@ public class CommandReply extends ForgeEssentialsCommandBase
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "r" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/r <message>: Reply to last player that sent you a message";
     }
 
     @Override
@@ -72,19 +75,27 @@ public class CommandReply extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length < 1)
-            throw new WrongUsageException("commands.message.usage", new Object[0]);
-
-        ICommandSender target = getReplyTarget(sender);
-        if (target == null)
-            throw new PlayerNotFoundException("No reply target found");
-
-        if (target == sender)
-            throw new PlayerNotFoundException("commands.message.sameTarget", new Object[0]);
-
-        ModuleChat.tell(sender, getChatComponentFromNthArg(sender, args, 0, !(sender instanceof EntityPlayer)), target);
+        return builder
+                .then(Commands.argument("message", MessageArgument.message())
+                        .executes(CommandContext -> execute(CommandContext, "message")
+                                )
+                        );
     }
+    
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        ITextComponent message = MessageArgument.getMessage(ctx, "message");
+        CommandSource target = getReplyTarget(ctx.getSource());
+        if (target == null)
+            throw new CommandException(Translator.translateITC("No reply target found"));
 
+        if (target == ctx.getSource())
+            throw new CommandException(Translator.translateITC("commands.message.sameTarget"));
+
+        ModuleChat.tell(ctx.getSource(), message, target);
+        return Command.SINGLE_SUCCESS;
+    }
 }

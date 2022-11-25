@@ -1,7 +1,5 @@
 package com.forgeessentials.jscripting.fewrapper.fe.world;
 
-import java.util.WeakHashMap;
-
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.jscripting.fewrapper.fe.JsPoint;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
@@ -17,7 +15,8 @@ public class JsWorldBorder extends JsWrapper<WorldBorder>
         super(that);
     }
 
-    public static JsWorldBorder get(JsWorld<?> world) {
+    public static JsWorldBorder get(JsWorld<?> world)
+    {
         return new JsWorldBorder(ModuleWorldBorder.getInstance().getBorder(world.getThat()));
     }
 

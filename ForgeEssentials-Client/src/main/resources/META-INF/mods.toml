@@ -1,0 +1,34 @@
+modLoader="javafml" #mandatory
+loaderVersion="[36,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+# The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
+# Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
+license="GNU General Public License v3.0"
+# A URL to refer people to when problems occur with this mod
+#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+
+[[mods]]
+    modId="forgeessentialsclient"
+    version="12.3"
+    displayName="Forge Essentials Client Addon"
+    # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
+    #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
+    displayURL="https://github.com/ForgeEssentials/ForgeEssentials"
+    logoFile="logo.png"
+    credits="Thanks to everyone who has helped us so far."
+    authors="AbrarSyed, luacs1998, olee, dries007, Malkierian, And a few others"
+    description='''Client addon for ForgeEssentials (optional)'''
+
+# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
+[[dependencies.forgeessentialsclient]] #optional
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.forgeessentialsclient]]
+    modId="minecraft"
+    mandatory=true
+# This version range declares a minimum of the current minecraft version up to but not including the next major version
+    versionRange="[1.16.5,1.17)"
+    ordering="NONE"
+    side="BOTH"

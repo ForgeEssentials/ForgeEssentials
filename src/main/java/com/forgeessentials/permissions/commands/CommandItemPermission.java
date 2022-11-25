@@ -3,35 +3,35 @@ package com.forgeessentials.permissions.commands;
 import static com.forgeessentials.permissions.core.ItemPermissionManager.TAG_MODE;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.permissions.core.ItemPermissionManager;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandItemPermission extends ParserCommandBase
+public class CommandItemPermission extends BaseCommand
 {
+
+    public CommandItemPermission(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
     {
         return "permitem";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/permitem mode|perm|group|reset: Manage permission-items";
     }
 
     @Override
@@ -55,7 +55,7 @@ public class CommandItemPermission extends ParserCommandBase
     @Override
     public void parse(CommandParserArgs arguments) throws CommandException
     {
-        ItemStack stack = arguments.senderPlayer.getHeldItemMainhand();
+        ItemStack stack = arguments.senderPlayer.getMainHandItem();
         if (stack == ItemStack.EMPTY)
             throw new TranslatedCommandException("No item equipped!");
 
@@ -82,9 +82,9 @@ public class CommandItemPermission extends ParserCommandBase
             parseGroup(arguments, stack);
             break;
         case "reset":
-            NBTTagCompound stackTag = stack.getTagCompound();
+            CompoundNBT stackTag = stack.getTag();
             if (stackTag != null)
-                stackTag.removeTag(ItemPermissionManager.TAG_BASE);
+                stackTag.remove(ItemPermissionManager.TAG_BASE);
             arguments.confirm("Deleted permission item settings");
             break;
         default:
@@ -104,13 +104,13 @@ public class CommandItemPermission extends ParserCommandBase
         switch (subCmd)
         {
         case "inventory":
-            getOrCreatePermissionTag(stack).setByte(TAG_MODE, ItemPermissionManager.MODE_INVENTORY);
+            getOrCreatePermissionTag(stack).putByte(TAG_MODE, ItemPermissionManager.MODE_INVENTORY);
             break;
         case "equip":
-            getOrCreatePermissionTag(stack).setByte(TAG_MODE, ItemPermissionManager.MODE_EQUIP);
+            getOrCreatePermissionTag(stack).putByte(TAG_MODE, ItemPermissionManager.MODE_EQUIP);
             break;
         case "use":
-            getOrCreatePermissionTag(stack).setByte(TAG_MODE, ItemPermissionManager.MODE_USE);
+            getOrCreatePermissionTag(stack).putByte(TAG_MODE, ItemPermissionManager.MODE_USE);
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
@@ -130,7 +130,7 @@ public class CommandItemPermission extends ParserCommandBase
 
         if (arguments.isTabCompletion)
             return;
-        getSettingsTag(stack).appendTag(new NBTTagString(permission + "=" + value));
+        getSettingsTag(stack).add(new StringNBT(permission + "=" + value));
         arguments.confirm("Set permission %s=%s for item", permission, value);
     }
 
@@ -144,24 +144,31 @@ public class CommandItemPermission extends ParserCommandBase
 
         if (arguments.isTabCompletion)
             return;
-        getSettingsTag(stack).appendTag(new NBTTagString(group));
+        getSettingsTag(stack).add(new StringNBT(group));
         arguments.confirm("Added group %s to item", group);
     }
 
-    public static NBTTagCompound getOrCreatePermissionTag(ItemStack stack)
+    public static CompoundNBT getOrCreatePermissionTag(ItemStack stack)
     {
-        NBTTagCompound stackTag = ItemUtil.getTagCompound(stack);
-        NBTTagCompound tag = stackTag.getCompoundTag(ItemPermissionManager.TAG_BASE);
-        stackTag.setTag(ItemPermissionManager.TAG_BASE, tag);
+        CompoundNBT stackTag = ItemUtil.getTagCompound(stack);
+        CompoundNBT tag = stackTag.getCompound(ItemPermissionManager.TAG_BASE);
+        stackTag.put(ItemPermissionManager.TAG_BASE, tag);
         return tag;
     }
 
-    public static NBTTagList getSettingsTag(ItemStack stack)
+    public static ListNBT getSettingsTag(ItemStack stack)
     {
-        NBTTagCompound tag = getOrCreatePermissionTag(stack);
-        NBTTagList settings = ItemPermissionManager.getSettingsTag(tag);
-        tag.setTag(ItemPermissionManager.TAG_SETTINGS, settings);
+        CompoundNBT tag = getOrCreatePermissionTag(stack);
+        ListNBT settings = ItemPermissionManager.getSettingsTag(tag);
+        tag.put(ItemPermissionManager.TAG_SETTINGS, settings);
         return settings;
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -1,12 +1,11 @@
 package com.forgeessentials.util.events;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.Cancelable;
 
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.WarpPoint;
-
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 @Cancelable
 public class PlayerChangedZone extends PlayerEvent
@@ -16,7 +15,7 @@ public class PlayerChangedZone extends PlayerEvent
     public final WarpPoint afterPoint;
     public final WarpPoint beforePoint;
 
-    public PlayerChangedZone(EntityPlayer player, Zone beforeZone, Zone afterZone, WarpPoint beforePoint, WarpPoint afterPoint)
+    public PlayerChangedZone(PlayerEntity player, Zone beforeZone, Zone afterZone, WarpPoint beforePoint, WarpPoint afterPoint)
     {
         super(player);
         this.beforeZone = beforeZone;

@@ -1,9 +1,7 @@
 package com.forgeessentials.commands.world;
 
-import java.io.IOException;
-
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.chunk.AbstractChunkProvider;
 
 import io.github.opencubicchunks.cubicchunks.api.world.ICubeProviderServer;
 import io.github.opencubicchunks.cubicchunks.api.world.ICubeProviderServer.Requirement;
@@ -17,11 +15,11 @@ public class CCPregenCompat
         return world instanceof ICubicWorld && ((ICubicWorld) world).isCubicWorld();
     }
 
-    public static boolean genCube(World world, IChunkProvider provider, int x, int y, int z)
+    public static boolean genCube(World world, AbstractChunkProvider provider, int x, int y, int z)
     {
 
         ICubeProviderServer providerServer = (ICubeProviderServer) provider;
-        if (providerServer.isCubeGenerated(x,y,z))
+        if (providerServer.isCubeGenerated(x, y, z))
         {
             return false;
         }

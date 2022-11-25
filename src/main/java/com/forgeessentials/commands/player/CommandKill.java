@@ -3,24 +3,22 @@ package com.forgeessentials.commands.player;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandKill extends ForgeEssentialsCommandBase
+public class CommandKill extends BaseCommand
 {
 
     @Override
@@ -41,8 +39,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
         return DefaultPermissionLevel.OP;
     }
 
-    @Override
-    public String getUsage(ICommandSender sender)
+    public String getUsage(CommandSource sender)
     {
         return "/kill <player> Commit suicide or kill other players (with special permission).";
     }
@@ -60,14 +57,14 @@ public class CommandKill extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length >= 1 && PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                player.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+                player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
                 ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
             else
@@ -75,7 +72,7 @@ public class CommandKill extends ForgeEssentialsCommandBase
         }
         else
         {
-            sender.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+            sender.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
             ChatOutputHandler.chatError(sender, Translator.translate("You were killed. You probably deserved it."));
         }
     }
@@ -85,17 +82,15 @@ public class CommandKill extends ForgeEssentialsCommandBase
     {
         if (args.length >= 1)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
-                player.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
+                player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
                 ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
-        else
-            throw new TranslatedCommandException(getUsage(sender));
     }
 
     @Override

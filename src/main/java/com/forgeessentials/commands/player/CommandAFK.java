@@ -1,21 +1,20 @@
 package com.forgeessentials.commands.player;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.commands.CommandFeSettings;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandAFK extends ForgeEssentialsCommandBase
+public class CommandAFK extends BaseCommand
 {
 
     public static final String PERM = "fe.commands.afk";
@@ -39,12 +38,6 @@ public class CommandAFK extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "afk";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/afk: Mark yourself as away.";
     }
 
     @Override
@@ -75,7 +68,7 @@ public class CommandAFK extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         UserIdent ident = UserIdent.get(sender);
 
@@ -114,7 +107,7 @@ public class CommandAFK extends ForgeEssentialsCommandBase
             int autoTime = ServerUtil.parseIntDefault(ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME), 60 * 2);
             int warmup = ServerUtil.parseIntDefault(ident.getPermissionProperty(PERM_WARMUP), 0);
             PlayerInfo.get(sender).setActive(autoTime * 1000 - warmup * 1000);
-            ChatOutputHandler.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
+            ChatOutputHandler.chatConfirmation(sender.createCommandSourceStack(), Translator.format("Stand still for %d seconds.", warmup));
         }
     }
 

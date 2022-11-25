@@ -5,7 +5,9 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 public class JsPermissionLevel
 {
 
-    private JsPermissionLevel() {}
+    private JsPermissionLevel()
+    {
+    }
 
     public static final DefaultPermissionLevel TRUE = DefaultPermissionLevel.ALL;
     public static final DefaultPermissionLevel OP = DefaultPermissionLevel.OP;

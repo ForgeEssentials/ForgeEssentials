@@ -6,27 +6,32 @@ import java.util.HashSet;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.server.Ticket;
+import net.minecraftforge.common.world.ForgeChunkManager;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.HashMultimap;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
+public class CommandChunkLoaderList extends BaseCommand
 {
+    public CommandChunkLoaderList(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     @Override
     public String getPermissionNode()
     {
@@ -40,7 +45,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         String key = "*";
         if (args.length != 0)
@@ -78,12 +83,12 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         list(sender, "*");
     }
 
-    private void list(ICommandSender sender, String key)
+    private void list(CommandSource sender, String key)
     {
         for (int i : DimensionManager.getIDs())
         {
@@ -91,9 +96,9 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
         }
     }
 
-    private void list(ICommandSender sender, int dim, String key)
+    private void list(CommandSource sender, int dim, String key)
     {
-        WorldServer world = DimensionManager.getWorld(dim);
+        ServerWorld world = DimensionManager.getWorld(dim);
 
         HashMultimap<String, Ticket> modTickets = HashMultimap.create();
         HashMultimap<String, Ticket> playerTickets = HashMultimap.create();
@@ -210,8 +215,9 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return "/chunkloaderlist Lists all active chunk loaders.";
+        // TODO Auto-generated method stub
+        return null;
     }
 }

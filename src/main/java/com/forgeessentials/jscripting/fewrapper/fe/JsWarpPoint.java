@@ -1,6 +1,5 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
 
-
 import net.minecraft.entity.Entity;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
@@ -52,7 +51,7 @@ public class JsWarpPoint extends JsWrapper<WarpPoint>
         return that.getY();
     }
 
-    public  double getZ()
+    public double getZ()
     {
         return that.getZ();
     }

@@ -8,6 +8,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
@@ -22,7 +23,7 @@ public class QueueLogAppender extends AbstractAppender
 
     public QueueLogAppender(String name, Filter filter, Layout<? extends Serializable> layout, boolean ignoreExceptions, int maxCapacity)
     {
-        super(name, filter, layout, ignoreExceptions);
+        super(name, filter, layout, ignoreExceptions,Property.EMPTY_ARRAY);
         this.maxCapacity = maxCapacity;
     }
 

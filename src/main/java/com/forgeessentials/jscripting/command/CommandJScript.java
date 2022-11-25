@@ -3,7 +3,6 @@ package com.forgeessentials.jscripting.command;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -30,12 +29,6 @@ public class CommandJScript extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/fescript [list|reload]: Manage FE scripting";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;
@@ -58,7 +51,6 @@ public class CommandJScript extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm(getUsage(null));
             return;
         }
 

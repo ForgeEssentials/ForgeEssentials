@@ -14,7 +14,7 @@ public class LogEventWorldLoad extends PlayerLoggerEvent<WorldEvent.Load>
     {
         super(event);
     }
-    
+
     @Override
     public void process(EntityManager em)
     {
@@ -26,5 +26,5 @@ public class LogEventWorldLoad extends PlayerLoggerEvent<WorldEvent.Load>
             em.persist(world);
         }
     }
-    
+
 }

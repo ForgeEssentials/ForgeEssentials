@@ -12,14 +12,8 @@ import com.forgeessentials.worldborder.effect.EffectSmite;
 
 public enum WorldBorderEffects
 {
-    COMMAND(EffectCommand.class),
-    DAMAGE(EffectDamage.class),
-    KICK(EffectKick.class),
-    KNOCKBACK(EffectKnockback.class),
-    MESSAGE(EffectMessage.class),
-    POTION(EffectPotion.class),
-    SMITE(EffectSmite.class),
-    BLOCK(EffectBlock.class);
+    COMMAND(EffectCommand.class), DAMAGE(EffectDamage.class), KICK(EffectKick.class), KNOCKBACK(EffectKnockback.class), MESSAGE(EffectMessage.class), POTION(
+            EffectPotion.class), SMITE(EffectSmite.class), BLOCK(EffectBlock.class);
 
     public Class<?> clazz;
 

@@ -15,33 +15,41 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandRules extends ForgeEssentialsCommandBase implements ConfigurableCommand
+public class CommandRules extends BaseCommand implements ConfigurableCommand
 {
+
+    public CommandRules(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String[] autocomargs = { "add", "remove", "move", "change", "book" };
     public static ArrayList<String> rules;
@@ -139,20 +147,6 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        // Needs elaboration.
-        if (sender instanceof EntityPlayer)
-        {
-            return "/rules [#|add|remove|move|change|help|book] Gets or sets the rules of the server.";
-        }
-        else
-        {
-            return "/rules [#|add|remove|move|change|help] Gets or sets the rules of the server.";
-        }
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;
@@ -177,7 +171,13 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return null;
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (args.length == 0)
         {
@@ -189,8 +189,8 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         }
         else if (args[0].equalsIgnoreCase("book"))
         {
-            NBTTagCompound tag = new NBTTagCompound();
-            NBTTagList pages = new NBTTagList();
+            CompoundNBT tag = new CompoundNBT();
+            ListNBT pages = new ListNBT();
 
             HashMap<String, String> map = new HashMap<>();
 
@@ -202,16 +202,17 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             SortedSet<String> keys = new TreeSet<>(map.keySet());
             for (String name : keys)
             {
-                pages.appendTag(new NBTTagString(name + map.get(name)));
+                StringNBT s = StringNBT.valueOf(name + map.get(name));
+                pages.add(s);
             }
 
-            tag.setString("author", "ForgeEssentials");
-            tag.setString("title", "Rule Book");
-            tag.setTag("pages", pages);
+            tag.putString("author", "ForgeEssentials");
+            tag.putString("title", "Rule Book");
+            tag.put("pages", pages);
 
             ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
             is.setTagCompound(tag);
-            sender.inventory.addItemStackToInventory(is);
+            sender.inventory.add(is);
             return;
         }
         else if (args.length == 1)
@@ -289,13 +290,11 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             rules.set(index - 1, newRule);
             ChatOutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
         }
-        else
-            throw new TranslatedCommandException(getUsage(sender));
         saveRules();
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (args.length == 0)
         {
@@ -372,10 +371,6 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
             rules.set(index - 1, newRule);
             ChatOutputHandler.chatConfirmation(sender, Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
         }
-        else
-        {
-            throw new TranslatedCommandException(getUsage(sender));
-        }
         saveRules();
     }
 
@@ -410,11 +405,13 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         }
     }
 
+    static ForgeConfigSpec.ConfigValue<String> name;
     @Override
-    public void loadConfig(Configuration config, String category)
+    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
     {
-        rulesFile = new File(ForgeEssentials.getFEDirectory(), config.get(category, "filename", "rules.txt").getString());
-        rules = loadRules();
+    	BUILDER.push(category);
+    	name = BUILDER.comment("Name for rules file").define("filename", "rules.txt");
+    	BUILDER.pop();
     }
 
     @Override
@@ -423,4 +420,10 @@ public class CommandRules extends ForgeEssentialsCommandBase implements Configur
         /* do nothing */
     }
 
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+    	rulesFile = new File(ForgeEssentials.getFEDirectory(), name.get());
+    	rules = loadRules();
+    }
 }

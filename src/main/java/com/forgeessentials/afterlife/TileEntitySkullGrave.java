@@ -1,13 +1,13 @@
 package com.forgeessentials.afterlife;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.TileEntitySkull;
+import net.minecraft.block.Blocks;
+import net.minecraft.tileentity.SkullTileEntity;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.mojang.authlib.GameProfile;
 
-public class TileEntitySkullGrave extends TileEntitySkull
+public class TileEntitySkullGrave extends SkullTileEntity
 {
 
     public TileEntitySkullGrave()
@@ -35,7 +35,7 @@ public class TileEntitySkullGrave extends TileEntitySkull
             if (owner.hasPlayer())
             {
                 // createPlayerSkull(owner.getPlayer(), world, point.getX(), point.getY(), point.getZ());
-                world.setBlockState(pos, Blocks.CHEST.getDefaultState());
+                world.setBlockState(pos, Blocks.CHEST.defaultBlockState());
             }
         }
         else

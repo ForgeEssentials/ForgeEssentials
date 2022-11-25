@@ -3,7 +3,6 @@ package com.forgeessentials.teleport.portal;
 import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Point;
@@ -24,12 +23,6 @@ public class CommandPortal extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "portal";
-    }
-    
-    @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/portal delete|create|recreate|list|target [name] [x y z] [dim] Manage portals.";
     }
 
     @Override
@@ -55,7 +48,7 @@ public class CommandPortal extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm(getUsage(arguments.sender));
+            
             return;
         }
 

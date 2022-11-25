@@ -18,7 +18,7 @@ public class LogEventBurn extends PlayerLoggerEvent<FireEvent.Destroy>
     public LogEventBurn(FireEvent.Destroy event)
     {
         super(event);
-        tileEntityBlob = getTileEntityBlob(event.getWorld().getTileEntity(event.getPos()));
+        tileEntityBlob = getTileEntityBlob(event.getWorld().getBlockEntity(event.getPos()));
     }
 
     @Override

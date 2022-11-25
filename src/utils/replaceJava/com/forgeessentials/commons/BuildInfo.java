@@ -44,8 +44,7 @@ public abstract class BuildInfo
         if (checkVersion)
         {
             // Check for latest version asap
-            checkVersionThread = new Thread(new Runnable()
-            {
+            checkVersionThread = new Thread(new Runnable() {
                 @Override
                 public void run()
                 {
@@ -54,8 +53,7 @@ public abstract class BuildInfo
             });
             checkVersionThread.start();
 
-            checkBuildTypesThread = new Thread(new Runnable()
-            {
+            checkBuildTypesThread = new Thread(new Runnable() {
                 @Override
                 public void run()
                 {
@@ -101,7 +99,7 @@ public abstract class BuildInfo
     {
         try
         {
-            URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE-1.12.2/lastSuccessfulBuild/api/json");
+            URL buildInfoUrl = new URL("http://ci.forgeessentials.com/job/FE-1.16.5/lastSuccessfulBuild/api/json");
             URLConnection con = buildInfoUrl.openConnection();
             con.setConnectTimeout(6000);
             con.setReadTimeout(12000);

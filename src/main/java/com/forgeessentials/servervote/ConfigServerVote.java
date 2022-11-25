@@ -14,46 +14,69 @@ import java.security.spec.X509EncodedKeySpec;
 
 import javax.xml.bind.DatatypeConverter;
 
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.servervote.Votifier.VoteReceiver;
 import com.forgeessentials.util.output.LoggingHandler;
 
 public class ConfigServerVote extends ConfigLoaderBase
 {
+	private static ForgeConfigSpec SERVERVOTE_CONFIG;
+	private static final ConfigData data = new ConfigData("ServerVote", SERVERVOTE_CONFIG, new ForgeConfigSpec.Builder());
+	
     private static final String category = "ServerVote";
+    private static final String subcat = category + "_Votifier";
 
     public static boolean allowOfflineVotes;
     public static String msgAll = "";
     public static String msgVoter = "";
 
-    public File keyFolder;
+    public static File keyFolder;
 
-    public KeyPair keyPair;
+    public static KeyPair keyPair;
     public static PrivateKey privateKey;
-    public PublicKey publicKey;
+    public static PublicKey publicKey;
 
     public static String hostname;
     public static Integer port;
 
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
-        String subcat = category + ".Votifier";
-        config.addCustomCategoryComment(subcat, "This is for votifier compatibility only.");
+    static ForgeConfigSpec.ConfigValue<String> FEhostname;
+    static ForgeConfigSpec.IntValue FEport;
+    static ForgeConfigSpec.BooleanValue FEallowOfflineVotes;
+    static ForgeConfigSpec.ConfigValue<String> FEmsgAll;
+    static ForgeConfigSpec.ConfigValue<String> FEmsgVoter;
 
-        hostname = config.get(subcat, "hostname", "", "Set this to the hostname (or IP address) of your server.").getString();
-        port = config.get(subcat, "port", "8192", "The port which the vote receiver should listen on.").getInt();
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
+	{
+        BUILDER.push(category);
+        FEallowOfflineVotes = BUILDER.comment("If false, votes of offline players will be canceled.").define("allowOfflineVotes", true);
+        FEmsgAll = BUILDER.comment("You can use color codes (&), %player and %service").define("msgAll", "%player has voted for this server on %service.");
+        FEmsgVoter = BUILDER.comment("You can use color codes (&), %player and %service").define("msgVoter", "Thanks for voting for our server!");
+        BUILDER.pop();
 
-        allowOfflineVotes = config.get(category, "allowOfflineVotes", true, "If false, votes of offline players will be canceled.").getBoolean(true);
-        msgAll = config.get(category, "msgAll", "%player has voted for this server on %service.", "You can use color codes (&), %player and %service")
-                .getString();
-        msgVoter = config.get(category, "msgVoter", "Thanks for voting for our server!", "You can use color codes (&), %player and %service").getString();
+        BUILDER.comment("This is for votifier compatibility only.").push(subcat);
+        FEhostname = BUILDER.comment("Set this to the hostname (or IP address) of your server.").define("hostname", "");
+        FEport = BUILDER.comment("The port which the vote receiver should listen on.").defineInRange("port", 8192, 0, 65535);
+        BUILDER.pop();
+    }
+
+	@Override
+	public void bakeConfig(boolean reload)
+	{
+        hostname = FEhostname.get();
+        port = FEport.get();
+
+        allowOfflineVotes = FEallowOfflineVotes.get();
+        msgAll = FEmsgAll.get();
+        msgVoter = FEmsgVoter.get();
 
         loadKeys();
 
-        if (isReload)
+        if (reload)
         {
             try
             {
@@ -69,9 +92,9 @@ public class ConfigServerVote extends ConfigLoaderBase
         }
     }
 
-    private void loadKeys()
+    private static void loadKeys()
     {
-        keyFolder = new File(ModuleServerVote.moduleDir, "RSA");
+        ConfigServerVote.keyFolder = new File(ModuleServerVote.moduleDir, "RSA");
         File publicFile = new File(keyFolder, "public.key");
         File privateFile = new File(keyFolder, "private.key");
 
@@ -140,4 +163,8 @@ public class ConfigServerVote extends ConfigLoaderBase
         }
     }
 
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
 }

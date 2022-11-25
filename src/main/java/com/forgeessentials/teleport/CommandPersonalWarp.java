@@ -5,8 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -46,12 +45,6 @@ public class CommandPersonalWarp extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/pwarp <name> [set|delete]: Set/delete/teleport to pers. warps";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -78,7 +71,7 @@ public class CommandPersonalWarp extends ParserCommandBase
         APIRegistry.perms.registerPermissionPropertyOp(PERM_LIMIT, "false");
     }
 
-    public static PersonalWarp getWarps(EntityPlayerMP player)
+    public static PersonalWarp getWarps(ServerPlayerEntity player)
     {
         PersonalWarp warps = DataManager.getInstance().load(PersonalWarp.class, player.getPersistentID().toString());
         if (warps == null)
@@ -92,7 +85,6 @@ public class CommandPersonalWarp extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm("/pwarp list: List personal warps");
-            arguments.confirm(getUsage(arguments.sender));
             return;
         }
 

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -16,14 +15,14 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 public class FEPlayerEvent extends PlayerEvent
 {
 
-    public FEPlayerEvent(EntityPlayer player)
+    public FEPlayerEvent(PlayerEntity player)
     {
         super(player);
     }
 
-    public EntityPlayerMP getPlayer()
+    public PlayerEntity getPlayer()
     {
-        return (EntityPlayerMP) getEntityPlayer();
+        return (PlayerEntity) getPlayer();
     }
 
     /**
@@ -32,7 +31,7 @@ public class FEPlayerEvent extends PlayerEvent
     public static class NoPlayerInfoEvent extends FEPlayerEvent
     {
 
-        public NoPlayerInfoEvent(EntityPlayer player)
+        public NoPlayerInfoEvent(PlayerEntity player)
         {
             super(player);
         }
@@ -46,7 +45,7 @@ public class FEPlayerEvent extends PlayerEvent
     {
         public final boolean afk;
 
-        public PlayerAFKEvent(EntityPlayer player, boolean afk)
+        public PlayerAFKEvent(PlayerEntity player, boolean afk)
         {
             super(player);
             this.afk = afk;
@@ -55,7 +54,7 @@ public class FEPlayerEvent extends PlayerEvent
 
     public static class ClientHandshakeEstablished extends FEPlayerEvent
     {
-        public ClientHandshakeEstablished(EntityPlayer player)
+        public ClientHandshakeEstablished(PlayerEntity player)
         {
             super(player);
         }
@@ -69,7 +68,7 @@ public class FEPlayerEvent extends PlayerEvent
         String newInvGroupName;
         Map<String, List<ItemStack>> newInvGroup;
 
-        public InventoryGroupChange(EntityPlayer player, String newInvGroupName, Map newInvGroup)
+        public InventoryGroupChange(PlayerEntity player, String newInvGroupName, Map<String, List<ItemStack>> newInvGroup)
         {
             super(player);
             this.newInvGroup = newInvGroup;

@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.server.MinecraftServer;
 
 import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
 import com.forgeessentials.util.CommandParserArgs;
@@ -40,7 +39,7 @@ public class CommandListPlayers extends IrcCommandParser
     public void parse(CommandParserArgs arguments) throws CommandException
     {
         arguments.confirm("List of players:");
-        for (String username : arguments.server.getPlayerList().getOnlinePlayerNames())
+        for (String username : arguments.server.getPlayerNames())
             arguments.confirm(" - " + username);
     }
 

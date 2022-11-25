@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
@@ -14,19 +15,22 @@ import com.forgeessentials.playerlogger.command.CommandRollback;
 import com.forgeessentials.playerlogger.remote.serializer.BlockDataType;
 import com.forgeessentials.playerlogger.remote.serializer.PlayerDataType;
 import com.forgeessentials.playerlogger.remote.serializer.WorldDataType;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class)
 public class ModulePlayerLogger
 {
-
+    private static ForgeConfigSpec PLAYERLOGGER_CONFIG;
+	public static final ConfigData data = new ConfigData("PlayerLogger", PLAYERLOGGER_CONFIG, new ForgeConfigSpec.Builder());
+	
     public static final String PERM = "fe.pl";
     public static final String PERM_WAND = PERM + ".wand";
     public static final String PERM_COMMAND = PERM + ".cmd";
@@ -73,7 +77,7 @@ public class ModulePlayerLogger
     */
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModuleCommonSetupEvent e)
     {
         DataManager.addDataType(new WorldDataType());
         DataManager.addDataType(new PlayerDataType());
@@ -81,22 +85,22 @@ public class ModulePlayerLogger
         
         logger = new PlayerLogger();
         eventHandler = new PlayerLoggerEventHandler();
-        ForgeEssentials.getConfigManager().registerLoader("PlayerLogger", new PlayerLoggerConfig());
+        ForgeEssentials.getConfigManager().registerSpecs("PlayerLogger", new PlayerLoggerConfig());
 
         FECommandManager.registerCommand(new CommandRollback());
-        FECommandManager.registerCommand(new CommandPlayerlogger());
+        FECommandManager.registerCommand(new CommandPlayerlogger("pl", 4, true));//TODO fix perms
         // FECommandManager.registerCommand(new CommandTestPlayerlogger());
     }
 
     @SubscribeEvent
-    public void serverPreInit(FEModuleServerPreInitEvent e)
+    public void serverPreInit(FEModuleServerAboutToStartEvent e)
     {
         registerPermissions();
         logger.loadDatabase();
     }
 
     @SubscribeEvent
-    public void serverPostInit(FEModuleServerPostInitEvent e)
+    public void serverPostInit(FEModuleServerStartedEvent e)
     {
         if (PlayerLoggerConfig.logDuration > 0)
         {

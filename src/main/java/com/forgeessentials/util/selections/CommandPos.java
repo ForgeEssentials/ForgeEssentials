@@ -3,8 +3,7 @@ package com.forgeessentials.util.selections;
 //Depreciated
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -13,12 +12,11 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandPos extends ForgeEssentialsCommandBase
+public class CommandPos extends BaseCommand
 {
     private int type;
 
@@ -34,7 +32,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity player, String[] args) throws CommandException
     {
         int x, y, z;
 
@@ -61,7 +59,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
             }
             else
             {
-                throw new TranslatedCommandException(getUsage(player));
+
             }
         }
 
@@ -69,7 +67,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
         {
             if (args.length < 3)
             {
-                throw new TranslatedCommandException(getUsage(player));
+
             }
 
             try
@@ -80,7 +78,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
             }
             catch (NumberFormatException e)
             {
-                throw new TranslatedCommandException(getUsage(player));
+
             }
 
             if (type == 1)
@@ -105,7 +103,7 @@ public class CommandPos extends ForgeEssentialsCommandBase
         y = mop.getBlockPos().getY();
         z = mop.getBlockPos().getZ();
 
-        WorldPoint point = new WorldPoint(player.dimension, x, y, z);
+        WorldPoint point = new WorldPoint(player.level, x, y, z);
         if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point, getPermissionNode()))
             throw new TranslatedCommandException("Insufficient permissions.");
 
@@ -132,13 +130,6 @@ public class CommandPos extends ForgeEssentialsCommandBase
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-
-        return "/" + getName() + " [<x> <y> <z] or [here] Sets selection positions";
     }
 
     @Override

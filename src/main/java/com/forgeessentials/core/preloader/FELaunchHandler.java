@@ -87,10 +87,13 @@ public class FELaunchHandler implements ITweaker
         MixinBootstrap.init();
         MixinEnvironment.setCompatibilityLevel(CompatibilityLevel.JAVA_8);
 
-        try {
+        try
+        {
             URI uri = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
             MixinBootstrap.getPlatform().addContainer(new ContainerHandleURI(uri));
-        } catch (URISyntaxException e) {
+        }
+        catch (URISyntaxException e)
+        {
             launchLog.error(e);
         }
 
@@ -142,7 +145,7 @@ public class FELaunchHandler implements ITweaker
         try
         {
             File versionFile = new File(libDirectory, "version.txt");
-            String version = FileUtils.readFileToString(versionFile);
+            String version = FileUtils.readFileToString(versionFile, "UTF-8");
             return !FE_LIB_VERSION.equals(version);
         }
         catch (IOException e)

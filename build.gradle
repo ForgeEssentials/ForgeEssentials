@@ -1,6 +1,7 @@
 // Build repositories
 buildscript {
 	repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
 		maven {
 			name = "forge"
 			url = "https://files.minecraftforge.net/maven"
@@ -23,7 +24,7 @@ buildscript {
 
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:4.+"
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
@@ -32,17 +33,18 @@ buildscript {
 }
 
 plugins {
-    id 'org.spongepowered.plugin' version '0.6'
+//    id 'org.spongepowered.plugin' version '0.6'
     id 'org.sonarqube' version '2.5'
 }
 
 apply plugin: 'jacoco'
+apply plugin: 'eclipse'
 
 sonarqube {
     properties {
         properties['sonar.projectKey'] = "com.forgeessentials:forgeessentials"
-        properties['sonar.projectName'] = project.name
-        properties['sonar.projectVersion'] = project.version
+        properties['sonar.projectName'] = project.mod_name
+        properties['sonar.projectVersion'] = project.mod_version
     }
 }
 
@@ -71,13 +73,11 @@ repositories {
 	}
 
     maven {
-        name = "LatMod"
-        url "https://maven.latmod.com/"
-    }
-
-    maven {
-        name = "JEI"
-        url "http://dvs1.progwml6.com/files/maven"
+        name 'JEI'
+        url "https://dvs1.progwml6.com/files/maven"
+        content {
+            includeGroup 'mezz.jei'
+        }
     }
 	maven {
 		name = "sk89q"
@@ -114,30 +114,19 @@ def repo = Grgit.open(project.file("."))
 ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
-version = "$baseVersion.$buildNumber"
+version = "$mod_version.$buildNumber"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+//java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 // Set up forge options
 minecraft {
-    mappings channel: 'snapshot', version: "20180304-1.12"
+	mappings channel: 'official', version: '1.16.5'
     accessTransformer = file('src/main/resources/META-INF/forgeessentials_at.cfg')
     runs {
-        client {
-            workingDirectory project.file('rundir')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-
-            mods {
-            }
-        }
-
         server {
             workingDirectory project.file('rundir')
 
@@ -182,9 +171,8 @@ ext.serverManifest = manifest {
 configurations {
 	includeMod
 	shade
-	shadeClient
 	serverLib
-	compile.extendsFrom shade, shadeClient, serverLib
+	compile.extendsFrom shade, serverLib
     mavenDeps
 }
 
@@ -194,8 +182,8 @@ configurations {
 dependencies {
 
     minecraft "net.minecraftforge:forge:$project.minecraftVersion-$project.forgeVersion"
-	// IRC
-	serverLib("org.pircbotx:pircbotx:2.0.1") {
+	 // IRC
+	serverLib("org.pircbotx:pircbotx:2.1") {
         // these are all packaged with the minecraft server jar
         exclude module: 'guava'
         exclude module: 'commons-lang3'
@@ -203,10 +191,7 @@ dependencies {
     }
 
     // Shade Mixin library
-    shade (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
-        exclude group: 'org.ow2.asm', module: 'asm-tree'
-    }
-    shadeClient (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
+    shade (group: "org.spongepowered", name: "mixin", version: "0.8.5-SNAPSHOT") {
         exclude group: 'org.ow2.asm', module: 'asm-tree'
     }
 
@@ -219,19 +204,22 @@ dependencies {
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
-    compile "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
-    compile "com.sk89q.worldedit:worldedit-forge-mc1.10.2:6.1.5"
-    compile "baubles:Baubles:1.12:1.5.2"
+    compile "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
+    compile ("com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5") {
+		exclude group: "net.minecraftforge", module: "forge"
+	}
+    compile "baubles:baubles:1.8.7.1:1.16.5"
     //deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
-    mavenDeps "com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT"
+    mavenDeps "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
 
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
-	compileOnly 'org.spongepowered:spongeapi:6.0.0'
+	compileOnly 'org.spongepowered:spongeapi:8.0.0'
+	implementation 'net.kyori:adventure-api:4.11.0'
     compileOnly ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
         exclude group: "org.spongepowered", module: "mixin"
     }
-    compileOnly "com.feed_the_beast.mods:FTBLib:5.4.7.2"
-    compileOnly "com.feed_the_beast.mods:FTBUtilities:5.4.1.131"
+    //compileOnly "com.feed_the_beast.mods:FTBLib:5.4.7.2"
+    //compileOnly "com.feed_the_beast.mods:FTBUtilities:5.4.1.131"
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
@@ -245,7 +233,7 @@ dependencies {
 sourceSets {
     def deps = [
 		configurations.minecraft,
-        configurations.compileOnly
+        configurations.compileOnly.setCanBeResolved(true)
 	]
 	utils {
 		compileClasspath = files(configurations.compile)
@@ -256,23 +244,13 @@ sourceSets {
 		compileClasspath += files deps
         refMap = "mixins.forgeessentials.refmap.json"
 	}
-	client {
-		compileClasspath = files(configurations.compile, sourceSets.utils.output)
-		compileClasspath += files deps
-        refMap = "mixins.forgeessentials.client.refmap.json"
-	}
-
-    test {
-        compileClasspath = files(configurations.compile, sourceSets.utils.output, sourceSets.main.output)
-        compileClasspath += files deps
-    }
 }
 
 project.compileUtilsJava {
     doFirst {
         copy {
             from ('src/utils/replaceJava') {
-                filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.baseVersion])
+                filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.mod_version])
             }
             into 'src/utils/java'
         }
@@ -281,21 +259,13 @@ project.compileUtilsJava {
 // Configure server resource processing
 project.processResources {
 	from (sourceSets.main.resources.srcDirs) {
-		include "mcmod.info"
+		include 'META-INF/mods.toml'
 		expand (
-			"version": project.version, 
-			"mcversion": project.minecraftVersion,
-		)
-	}
-}
-
-// Configure client resource processing
-project.processClientResources {
-	from (sourceSets.client.resources.srcDirs) {
-		include "mcmod.info"
-		expand (
-			"version": project.version, 
-			"mcversion": project.minecraftVersion,
+			'version': project.version,
+			'mod_name': mod_name, 
+			'mod_download': mod_download,
+			'buildHash': gitCommitHash,
+			'buildNumber': buildNumber,
 		)
 	}
 }
@@ -360,33 +330,10 @@ jar {
 }
 
 /************************************************************
- * Configure client jar
- */
-
-task clientJar (dependsOn: "clientClasses", type: Jar) {
-	classifier = "client"
-	appendix = project.minecraftVersion
-	
-	from sourceSets.client.output
-	from sourceSets.utils.output
-	configurations.shadeClient.copyRecursive().setTransitive(false).each { artifact ->
-		from (zipTree(artifact))
-	}
-	
-	manifest {
-		from sharedManifest
-		attributes (
-			"MixinConfigs": "mixins.forgeessentials.client.json",
-            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
-		)
-	}
-}
-
-/************************************************************
  * Deobfuscated server jar
  * Dependency name for maven = com.forgeessentials:forgeessentials:<version>:
  * */
-
+/*
 task deobfJar(dependsOn: "classes", type: Jar) {
 	classifier = "dev"
 	appendix = project.minecraftVersion
@@ -401,7 +348,7 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 	manifest {
 		from serverManifest
 	}
-}
+}*/
 //
 //task sourceJar(type: Jar) {
 //	classifier = "sources"
@@ -418,7 +365,7 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 /************************************************************
  * Configure API javadoc
  */
-
+/*
 javadoc {
 	include "com/forgeessentials/api/**"
 	classpath = sourceSets.main.compileClasspath + sourceSets.main.output
@@ -432,77 +379,18 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 	from javadoc.destinationDir
 	
 	manifest { from sharedManifest }
-}
+}*/
 
-reobf {
-    clientJar {
-        classpath = sourceSets.main.compileClasspath
-    }
-}
-
+//reobf {
+//    clientJar { classpath.from(sourceSets.main.compileClasspath) }
+//}
+jar.finalizedBy('reobfJar') 
 /************************************************************
  * Others
  */
 
 // Add default artifacts for task "build"
-artifacts {
-	//archives deobfJar
-	archives clientJar
-}
-
-/************************************************************
- * Configure maven publishing
- */
-
-apply plugin: "maven-publish"
-
-publishing {
-	//tasks.publish.dependsOn "deobfJar"
-
-	publications {
-		mavenJava (MavenPublication) {
-			groupId "com.forgeessentials"
-			artifactId "forgeessentials"
-			version baseVersion + "-SNAPSHOT"
-			if (System.getenv("PUBLISH_RELEASE"))
-				version baseVersion
-
-			artifact deobfJar
-			//artifact sourceJar
-			artifact javadocJar
-
-			pom.withXml {
-				def dependenciesNode = asNode().appendNode("dependencies")
-				def allDeps = configurations.mavenDeps.allDependencies +
-					configurations.serverLib.allDependencies + 
-					configurations.shade.allDependencies
-				allDeps.each {
-					def dependencyNode = dependenciesNode.appendNode("dependency")
-					dependencyNode.appendNode("groupId", it.group)
-					dependencyNode.appendNode("artifactId", it.name)
-					dependencyNode.appendNode("version", it.version)
-					//if (it.group == "com.sk89q.worldedit") // Hack to get classifier for worldedit attached (bug https://issues.gradle.org/browse/GRADLE-3030)
-						//dependencyNode.appendNode("classifier", "dev")
-				}
-			}
-		}
-	}
-
-	repositories {
-		if (project.hasProperty("forgemaven_user") && project.hasProperty("forgemaven_password")) {
-			maven {
-				credentials {
-					username project.forgemaven_user
-					password project.forgemaven_password
-				}
-				url "https://files.minecraftforge.net/maven/manage/upload"
-			}
-		} else {
-			maven { url "file://${project.projectDir}/build/repo" }
-		}
-	}
-}
-
-task publishAndClean(type: Delete, dependsOn: "publish") {
-    delete javadocJar
-}
+//artifacts {
+//	//archives deobfJar
+//	archives clientJar
+//}

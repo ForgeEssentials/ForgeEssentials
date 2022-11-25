@@ -1,8 +1,7 @@
 package com.forgeessentials.teleport;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -26,12 +25,6 @@ public class CommandTPA extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "tpa";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/tpa [player] <player|<x> <y> <z>|accept|decline> Request to teleport yourself or another player.";
     }
 
     @Override
@@ -77,9 +70,9 @@ public class CommandTPA extends ParserCommandBase
             try
             {
                 arguments.confirm(Translator.format("Waiting for response by %s", player.getUsernameOrUuid()));
-                Questioner.addChecked(player.getPlayer(), Translator.format("Allow teleporting %s to your location?", arguments.sender.getDisplayName().getUnformattedText()),
-                        new QuestionerCallback()
-                        {
+                Questioner.addChecked(player.getPlayer().createCommandSourceStack(),
+                        Translator.format("Allow teleporting %s to your location?", arguments.sender.getDisplayName().getString()),
+                        new QuestionerCallback() {
                             @Override
                             public void respond(Boolean response)
                             {
@@ -88,14 +81,14 @@ public class CommandTPA extends ParserCommandBase
                                 else if (response == false)
                                     arguments.error("TPA declined");
                                 else
-                                try
-                                {
-                                    TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
-                                }
-                                catch (CommandException e)
-                                {
-                                    arguments.error(e.getMessage());
-                                }
+                                    try
+                                    {
+                                        TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
+                                    }
+                                    catch (CommandException e)
+                                    {
+                                        arguments.error(e.getMessage());
+                                    }
                             }
                         }, 20);
             }
@@ -114,15 +107,15 @@ public class CommandTPA extends ParserCommandBase
         {
             arguments.checkPermission(PERM_HERE);
             point = new WarpPoint(arguments.senderPlayer);
-            locationName = arguments.sender.getName();
+            locationName = arguments.sender.getDisplayName().getString();
             arguments.remove();
         }
         else
         {
             arguments.checkPermission(PERM_LOCATION);
-            point = new WarpPoint((WorldServer) arguments.senderPlayer.world, //
+            point = new WarpPoint((ServerWorld) arguments.senderPlayer.getLevel(), //
                     arguments.parseDouble(), arguments.parseDouble(), arguments.parseDouble(), //
-                    player.getPlayer().rotationPitch, player.getPlayer().rotationYaw);
+                    player.getPlayer().yRot, player.getPlayer().xRot);
             locationName = point.toReadableString();
         }
 
@@ -130,8 +123,7 @@ public class CommandTPA extends ParserCommandBase
             return;
         try
         {
-            Questioner.addChecked(player.getPlayer(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback()
-            {
+            Questioner.addChecked(player.getPlayer().createCommandSourceStack(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback() {
                 @Override
                 public void respond(Boolean response)
                 {

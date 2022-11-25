@@ -3,42 +3,26 @@ package com.forgeessentials.commands.player;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandBurn extends ForgeEssentialsCommandBase
+public class CommandBurn extends BaseCommand
 {
 
     @Override
     public String getPrimaryAlias()
     {
         return "burn";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/burn <me|player> Set a player on fire.";
-        }
-        else
-        {
-            return "/burn <player> Set a player on fire.";
-        }
     }
 
     @Override
@@ -60,22 +44,22 @@ public class CommandBurn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
             if (args[0].toLowerCase().equals("me"))
             {
-                sender.setFire(15);
+                sender.setSecondsOnFire(15);
                 ChatOutputHandler.chatError(sender, "Ouch! Hot!");
             }
             else if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
             {
-                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+                ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
                     ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
-                    player.setFire(15);
+                    player.setSecondsOnFire(15);
                 }
                 else
                     throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -85,15 +69,15 @@ public class CommandBurn extends ForgeEssentialsCommandBase
         {
             if (args[0].toLowerCase().equals("me"))
             {
-                sender.setFire(parseInt(args[1]));
+                sender.setSecondsOnFire(parseInt(args[1]));
                 ChatOutputHandler.chatError(sender, "Ouch! Hot!");
             }
             else if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
             {
-                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+                ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
-                    player.setFire(parseInt(args[1], 0, Integer.MAX_VALUE));
+                    player.setSecondsOnFire(parseInt(args[1], 0, Integer.MAX_VALUE));
                     ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
                 }
                 else
@@ -102,7 +86,7 @@ public class CommandBurn extends ForgeEssentialsCommandBase
         }
         else
         {
-            throw new TranslatedCommandException(getUsage(sender));
+
         }
     }
 
@@ -114,10 +98,10 @@ public class CommandBurn extends ForgeEssentialsCommandBase
         {
             time = parseInt(args[1], 0, Integer.MAX_VALUE);
         }
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player != null)
         {
-            player.setFire(time);
+            player.setSecondsOnFire(time);
             ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
         }
         else

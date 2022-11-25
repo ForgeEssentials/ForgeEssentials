@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.launchwrapper.IClassNameTransformer;
-import net.minecraft.launchwrapper.Launch;
-
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -21,7 +18,6 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeAnnotationNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 
 public final class ASMUtil
@@ -351,7 +347,7 @@ public final class ASMUtil
             }
             catch (ClassNotFoundException e)
             {
-                throw Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         }
 
@@ -373,7 +369,7 @@ public final class ASMUtil
             }
             catch (ClassNotFoundException e)
             {
-                throw Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         }
 

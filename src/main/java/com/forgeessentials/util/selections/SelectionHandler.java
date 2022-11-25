@@ -1,7 +1,13 @@
 package com.forgeessentials.util.selections;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.Packet1SelectionUpdate;
+import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
@@ -13,14 +19,10 @@ import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class SelectionHandler extends ServerEventHandler
 {
@@ -34,7 +36,7 @@ public class SelectionHandler extends ServerEventHandler
             @Override
             public void run()
             {
-                sendUpdate(e.getPlayer());
+                sendUpdate((ServerPlayerEntity) e.getPlayer());
             }
         });
     }
@@ -43,37 +45,36 @@ public class SelectionHandler extends ServerEventHandler
     public void playerInteractEvent(PlayerInteractEvent.LeftClickBlock event)
     {
         // Only handle server events
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLEnvironment.dist.isClient())
             return;
 
         // get info now rather than later
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
         PlayerInfo info = PlayerInfo.get(player);
 
         if (!info.isWandEnabled())
             return;
 
         // Check if wand should activate
-        if (player.getHeldItemMainhand() == null)
+        if (player.getMainHandItem() == null)
         {
             if (!info.getWandID().equals("hands"))
                 return;
         }
         else
         {
-            if (!(player.getHeldItemMainhand().getItem().getUnlocalizedName().equals(info.getWandID())))
+            if (!(player.getMainHandItem().getItem().getName(player.getMainHandItem()).toString().equals(info.getWandID())))
                 return;
-            if (player.getHeldItemMainhand().getItemDamage() != info.getWandDmg())
+            if (player.getMainHandItem().getDamageValue() != info.getWandDmg())
                 return;
         }
 
-        WorldPoint point = new WorldPoint(player.dimension, event.getPos());
+        WorldPoint point = new WorldPoint(player.level, event.getPos());
 
-        SelectionHandler.setStart((EntityPlayerMP) event.getEntityPlayer(), point);
-        SelectionHandler.setDimension((EntityPlayerMP) event.getEntityPlayer(), point.getDimension());
-
+        SelectionHandler.setStart((ServerPlayerEntity) event.getPlayer(), point);
+        SelectionHandler.setDimension((ServerPlayerEntity) event.getPlayer(), point.getDimension());
         String message = Translator.format("Pos1 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
-        ChatOutputHandler.sendMessage(player, message, TextFormatting.DARK_PURPLE);
+        ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);
     }
 
@@ -81,11 +82,11 @@ public class SelectionHandler extends ServerEventHandler
     public void playerInteractEvent(PlayerInteractEvent.RightClickBlock event)
     {
         // Only handle server events
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+        if (FMLEnvironment.dist.isClient())
             return;
 
         // get info now rather than later
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
         PlayerInfo info = PlayerInfo.get(player);
 
         if (!info.isWandEnabled() || event.getHand() == EnumHand.OFF_HAND) {
@@ -93,37 +94,36 @@ public class SelectionHandler extends ServerEventHandler
         }
 
         // Check if wand should activate
-        if (player.getHeldItemMainhand() == null)
+        if (player.getMainHandItem() == null)
         {
             if (!info.getWandID().equals("hands"))
                 return;
         }
         else
         {
-            if (!(player.getHeldItemMainhand().getItem().getUnlocalizedName().equals(info.getWandID())))
+            if (!(player.getMainHandItem().getItem().getName(player.getMainHandItem()).toString().equals(info.getWandID())))
                 return;
-            if (player.getHeldItemMainhand().getItemDamage() != info.getWandDmg())
+            if (player.getMainHandItem().getDamageValue() != info.getWandDmg())
                 return;
         }
 
-        WorldPoint point = new WorldPoint(player.dimension, event.getPos());
+        WorldPoint point = new WorldPoint(player.level, event.getPos());
 
-        SelectionHandler.setEnd((EntityPlayerMP) event.getEntityPlayer(), point);
-        SelectionHandler.setDimension((EntityPlayerMP) event.getEntityPlayer(), point.getDimension());
-
+        SelectionHandler.setEnd((ServerPlayerEntity) event.getPlayer(), point);
+        SelectionHandler.setDimension((ServerPlayerEntity) event.getEntityPlayer(), point.getDimension());
         String message = Translator.format("Pos2 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
-        ChatOutputHandler.sendMessage(player, message, TextFormatting.DARK_PURPLE);
+        ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);
 
     }
 
-    public static void sendUpdate(EntityPlayerMP player)
+    public static void sendUpdate(ServerPlayerEntity player)
     {
         if (PlayerInfo.get(player).getHasFEClient())
         {
             try
             {
-                NetworkUtils.netHandler.sendTo(new Packet1SelectionUpdate(selectionProvider.getSelection(player)), player);
+                NetworkUtils.HANDLER.sendTo(new Packet1SelectionUpdate(selectionProvider.getSelection(player)), player);
             }
             catch (NullPointerException e)
             {
@@ -132,27 +132,27 @@ public class SelectionHandler extends ServerEventHandler
         }
     }
 
-    public static Selection getSelection(EntityPlayerMP player)
+    public static Selection getSelection(ServerPlayerEntity player)
     {
         return selectionProvider.getSelection(player);
     }
 
-    public static void setDimension(EntityPlayerMP player, int dim)
+    public static void setDimension(ServerPlayerEntity player, World dim)
     {
         selectionProvider.setDimension(player, dim);
     }
 
-    public static void setStart(EntityPlayerMP player, Point start)
+    public static void setStart(ServerPlayerEntity player, Point start)
     {
         selectionProvider.setStart(player, start);
     }
 
-    public static void setEnd(EntityPlayerMP player, Point end)
+    public static void setEnd(ServerPlayerEntity player, Point end)
     {
         selectionProvider.setEnd(player, end);
     }
 
-    public static void select(EntityPlayerMP player, int dimension, AreaBase area)
+    public static void select(ServerPlayerEntity player, World dimension, AreaBase area)
     {
         selectionProvider.select(player, dimension, area);
     }

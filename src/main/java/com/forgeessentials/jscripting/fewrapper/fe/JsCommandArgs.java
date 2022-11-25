@@ -43,10 +43,10 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
         return that.toString();
     }
 
-    //public void sendMessage(IChatComponent message)
-    //{
-    //    that.sendMessage(message);
-    //}
+    // public void sendMessage(IChatComponent message)
+    // {
+    // that.sendMessage(message);
+    // }
 
     public void confirm(String message, Object... args)
     {
@@ -82,31 +82,33 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
     {
         return that.peek();
     }
-    
+
     public String get(int index)
     {
         return that.get(index);
     }
-    
+
     public String getAllArgs()
     {
-    	if (that.args.isEmpty())
-    	{
-    	    return "";
+        if (that.args.isEmpty())
+        {
+            return "";
         }
-    	String x = "";
-    	for (int j = 0; j < that.args.size(); j++)
+        String x = "";
+        for (int j = 0; j < that.args.size(); j++)
         {
             x = x.concat(that.args.get(j) + " ");
         }
         return x.trim();
     }
 
-    public String removeAllArgs() {
+    public String removeAllArgs()
+    {
         String args = getAllArgs();
         clear();
         return args;
     }
+
     public boolean isEmpty()
     {
         return that.isEmpty();
@@ -236,7 +238,8 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
         that.needsPlayer();
     }
 
-    public void clear() {
+    public void clear()
+    {
         that.args.clear();
     }
 

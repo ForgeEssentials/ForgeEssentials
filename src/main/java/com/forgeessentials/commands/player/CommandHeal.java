@@ -3,23 +3,21 @@ package com.forgeessentials.commands.player;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandHeal extends ForgeEssentialsCommandBase
+public class CommandHeal extends BaseCommand
 {
 
     @Override
@@ -28,10 +26,9 @@ public class CommandHeal extends ForgeEssentialsCommandBase
         return "heal";
     }
 
-    @Override
-    public String getUsage(ICommandSender sender)
+    public String getUsage(ServerPlayerEntity sender)
     {
-        if (sender instanceof EntityPlayer)
+        if (sender instanceof PlayerEntity)
         {
             return "/heal <player> Heal yourself or other players (if you have permission).";
         }
@@ -66,7 +63,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -74,7 +71,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
         }
         else if (args.length == 1 && PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 heal(player);
@@ -86,7 +83,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
         }
         else
         {
-            throw new TranslatedCommandException(getUsage(sender));
+
         }
     }
 
@@ -95,7 +92,7 @@ public class CommandHeal extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 heal(player);
@@ -104,15 +101,15 @@ public class CommandHeal extends ForgeEssentialsCommandBase
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
         else
-            throw new TranslatedCommandException(getUsage(sender));
+
     }
 
-    public void heal(EntityPlayer target)
+    public void heal(PlayerEntity target)
     {
         float toHealBy = target.getMaxHealth() - target.getHealth();
         target.heal(toHealBy);
-        target.extinguish();
-        target.getFoodStats().addStats(20, 1.0F);
+        target.clearFire();;
+        target.getFoodData().eat(20, 1.0F);
         ChatOutputHandler.chatConfirmation(target, "You were healed.");
     }
 

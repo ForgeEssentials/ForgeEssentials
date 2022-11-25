@@ -6,8 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -55,12 +54,6 @@ public class CommandFaction extends ParserCommandBase
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.ALL;
-    }
-
-    @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/faction: Manage factions";
     }
 
     @Override
@@ -241,15 +234,15 @@ public class CommandFaction extends ParserCommandBase
             }
         };
 
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
             UserIdent playerIdent = UserIdent.get(player);
             if (ModuleFactions.isInFaction(playerIdent, faction) && playerIdent.checkPermission(ModuleFactions.PERM_INVITE))
             {
                 try
                 {
-                    Questioner.add(player, message, callback);
-                    arguments.confirm("Requested %s to accept your join request", player.getDisplayNameString());
+                    Questioner.add(player.createCommandSourceStack(), message, callback);
+                    arguments.confirm("Requested %s to accept your join request", player.getDisplayName());
                     return;
                 }
                 catch (QuestionerStillActiveException e)
@@ -380,7 +373,8 @@ public class CommandFaction extends ParserCommandBase
                 for (Entry<UserIdent, Set<String>> player : APIRegistry.perms.getServerZone().getPlayerGroups().entrySet())
                 {
                     if (player.getValue().remove(factionGroup) && player.getKey().hasPlayer())
-                        ChatOutputHandler.chatNotification(player.getKey().getPlayer(), Translator.format("Faction %s has been deleted", faction));
+                        ChatOutputHandler.chatNotification(player.getKey().getPlayer().createCommandSourceStack(),
+                                Translator.format("Faction %s has been deleted", faction));
                     for (Iterator<String> it = player.getValue().iterator(); it.hasNext();)
                         if (it.next().startsWith(ModuleFactions.RANK_PREFIX))
                             it.remove();

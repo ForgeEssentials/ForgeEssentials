@@ -3,21 +3,19 @@ package com.forgeessentials.util.selections;
 //Depreciated
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandWand extends ForgeEssentialsCommandBase
+public class CommandWand extends BaseCommand
 {
 
     @Override
@@ -27,7 +25,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
@@ -40,12 +38,12 @@ public class CommandWand extends ForgeEssentialsCommandBase
         Item wandItem;
         String wandId, wandName;
         int wandDmg = 0;
-        if (sender.getHeldItemMainhand() != null)
+        if (sender.getMainHandItem() != null)
         {
-            wandName = sender.getHeldItemMainhand().getDisplayName();
-            wandItem = sender.getHeldItemMainhand().getItem();
-            wandDmg = sender.getHeldItemMainhand().getItemDamage();
-            wandId = wandItem.getUnlocalizedName();
+            wandName = sender.getMainHandItem().getDisplayName().getString();
+            wandItem = sender.getMainHandItem().getItem();
+            wandDmg = sender.getMainHandItem().getDamageValue();
+            wandId = wandItem.getRegistryName().getNamespace();
             if (wandDmg == -1)
             {
                 wandDmg = 0;
@@ -57,7 +55,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
             wandId = "hands";
         }
 
-        PlayerInfo info = PlayerInfo.get(sender.getPersistentID());
+        PlayerInfo info = PlayerInfo.get(sender.getUUID());
 
         // Check for rebind
         boolean rebind = args.length > 0 && args[0].equalsIgnoreCase("rebind");
@@ -65,7 +63,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
         // Check for unbind
         if (!rebind && ((info.isWandEnabled() && info.getWandID().equals(wandId)) | (args.length > 0 && args[0].equalsIgnoreCase("unbind"))))
         {
-            ChatOutputHandler.sendMessage(sender, TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
+            ChatOutputHandler.sendMessage(sender.createCommandSourceStack(), TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
             info.setWandEnabled(false);
             return;
         }
@@ -78,7 +76,7 @@ public class CommandWand extends ForgeEssentialsCommandBase
         info.setWandEnabled(true);
         info.setWandID(wandId);
         info.setWandDmg(wandDmg);
-        ChatOutputHandler.chatConfirmation(sender, "Wand bound to " + wandName);
+        ChatOutputHandler.chatConfirmation(sender.createCommandSourceStack(), "Wand bound to " + wandName);
     }
 
     @Override
@@ -91,12 +89,6 @@ public class CommandWand extends ForgeEssentialsCommandBase
     public String getPermissionNode()
     {
         return "fe.core.pos.wand";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/" + getPrimaryAlias() + " [rebind|unbind|ITEM] Toggles the wand";
     }
 
     @Override

@@ -1,11 +1,11 @@
 package com.forgeessentials.protection.effect;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 public abstract class ZoneEffect
 {
 
-    protected EntityPlayerMP player;
+    protected ServerPlayerEntity player;
 
     protected int interval;
 
@@ -13,7 +13,7 @@ public abstract class ZoneEffect
 
     protected boolean lethal;
 
-    public ZoneEffect(EntityPlayerMP player, int interval, boolean lethal)
+    public ZoneEffect(ServerPlayerEntity player, int interval, boolean lethal)
     {
         this.player = player;
         this.interval = interval;
@@ -36,7 +36,7 @@ public abstract class ZoneEffect
 
     public abstract void execute();
 
-    public EntityPlayerMP getPlayer()
+    public ServerPlayerEntity getPlayer()
     {
         return player;
     }

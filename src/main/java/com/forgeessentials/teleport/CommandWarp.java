@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -45,12 +44,6 @@ public class CommandWarp extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/warp <name> [set|delete]: Set/delete/teleport to a warp point";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -75,7 +68,7 @@ public class CommandWarp extends ParserCommandBase
         APIRegistry.perms.registerPermission(PERM_DELETE, DefaultPermissionLevel.OP, "Allow deleting warps");
         APIRegistry.perms.registerPermissionProperty(PERM_LIMIT, "10", "Maximal warp count");
         APIRegistry.perms.registerPermissionPropertyOp(PERM_LIMIT, "false");
-        APIRegistry.perms.registerPermission(PERM_WARP + ".*",DefaultPermissionLevel.OP, "Allows permission to use all warps");
+        APIRegistry.perms.registerPermission(PERM_WARP + ".*", DefaultPermissionLevel.OP, "Allows permission to use all warps");
     }
 
     public static Map<String, Warp> getWarps()
@@ -89,7 +82,6 @@ public class CommandWarp extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm("/warp list: List warps");
-            arguments.confirm(getUsage(arguments.sender));
             return;
         }
 

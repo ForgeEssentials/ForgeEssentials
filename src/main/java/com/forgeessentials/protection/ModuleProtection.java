@@ -7,47 +7,50 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.boss.EntityWither;
-import net.minecraft.entity.monster.EntityBlaze;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityGiantZombie;
-import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntitySilverfish;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySnowman;
-import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.monster.EntityWitch;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityMooshroom;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntitySquid;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.inventory.ContainerWorkbench;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.SlotCrafting;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.boss.WitherEntity;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
+import net.minecraft.entity.monster.BlazeEntity;
+import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.monster.EndermanEntity;
+import net.minecraft.entity.monster.GiantEntity;
+import net.minecraft.entity.monster.SilverfishEntity;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.SpiderEntity;
+import net.minecraft.entity.monster.WitchEntity;
+import net.minecraft.entity.monster.ZombieEntity;
+import net.minecraft.entity.monster.piglin.PiglinEntity;
+import net.minecraft.entity.passive.ChickenEntity;
+import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.passive.IronGolemEntity;
+import net.minecraft.entity.passive.MooshroomEntity;
+import net.minecraft.entity.passive.OcelotEntity;
+import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.entity.passive.SnowGolemEntity;
+import net.minecraft.entity.passive.SquidEntity;
+import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.passive.fish.CodEntity;
+import net.minecraft.entity.passive.fish.SalmonEntity;
+import net.minecraft.entity.passive.fish.TropicalFishEntity;
+import net.minecraft.entity.passive.horse.HorseEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.CraftingResultSlot;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.inventory.container.WorkbenchContainer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -60,9 +63,9 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -114,36 +117,36 @@ public class ModuleProtection
 
     private static final Class<?>[] damageEntityClasses = new Class<?>[] {
             // EntityAgeable
-            EntityVillager.class,
+            VillagerEntity.class,
             // EntityAnimal
-            EntityChicken.class, EntityCow.class, EntityMooshroom.class, EntityHorse.class, EntityPig.class,
+            ChickenEntity.class, CowEntity.class, MooshroomEntity.class, HorseEntity.class, PigEntity.class,
             // EntityTameable
-            EntityOcelot.class, EntityWolf.class,
+            OcelotEntity.class, WolfEntity.class,
             // EntityMob
-            EntityBlaze.class, EntityCreeper.class, EntityEnderman.class, EntityGiantZombie.class, EntitySilverfish.class, EntitySkeleton.class,
-            EntitySpider.class, EntityWitch.class, EntityWither.class, EntityZombie.class, EntityPigZombie.class,
+            BlazeEntity.class, CreeperEntity.class, EndermanEntity.class, GiantEntity.class, SilverfishEntity.class, SkeletonEntity.class,
+            SpiderEntity.class, WitchEntity.class, WitherEntity.class, ZombieEntity.class, PiglinEntity.class,
             // EntityGolem
-            EntityIronGolem.class, EntitySnowman.class,
+            IronGolemEntity.class, SnowGolemEntity.class,
             // EntityWaterMob
-            EntitySquid.class,
+            SquidEntity.class, SalmonEntity.class, TropicalFishEntity.class, CodEntity.class,
             /* -- end of list -- */
     };
 
     private static final DamageSource[] damageByTypes = new DamageSource[] {
-        DamageSource.ANVIL,
-        DamageSource.CACTUS,
-        DamageSource.DROWN,
-        DamageSource.FALL,
-        DamageSource.FALLING_BLOCK,
-        DamageSource.GENERIC,
-        DamageSource.IN_FIRE,
-        DamageSource.IN_WALL,
-        DamageSource.LAVA,
-        DamageSource.MAGIC,
-        DamageSource.ON_FIRE,
-        DamageSource.OUT_OF_WORLD,
-        DamageSource.STARVE,
-        DamageSource.WITHER,
+            DamageSource.ANVIL,
+            DamageSource.CACTUS,
+            DamageSource.DROWN,
+            DamageSource.FALL,
+            DamageSource.FALLING_BLOCK,
+            DamageSource.GENERIC,
+            DamageSource.IN_FIRE,
+            DamageSource.IN_WALL,
+            DamageSource.LAVA,
+            DamageSource.MAGIC,
+            DamageSource.ON_FIRE,
+            DamageSource.OUT_OF_WORLD,
+            DamageSource.STARVE,
+            DamageSource.WITHER,
     };
 
     public static Map<UUID, String> debugModePlayers = new HashMap<>();
@@ -154,7 +157,7 @@ public class ModuleProtection
     private ProtectionEventHandler protectionHandler;
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModuleCommonSetupEvent e)
     {
         protectionHandler = new ProtectionEventHandler();
 
@@ -167,16 +170,16 @@ public class ModuleProtection
     {
         try
         {
-            return item.getItemStackDisplayName(new ItemStack(item));
+            return item.getName(new ItemStack(item)).toString();
         }
         catch (Exception | NoClassDefFoundError e)
         {
-            return item.getUnlocalizedName();
+            return item.getRegistryName().toString();
         }
     }
 
     @SubscribeEvent
-    public void registerPermissions(FEModuleServerInitEvent event)
+    public void registerPermissions(FEModuleServerStartingEvent event)
     {
         // ----------------------------------------
         // Other
@@ -216,8 +219,8 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "(global) Allow forced spawning of mobs (mob-spawners)");
 
-        for (Entry<ResourceLocation, EntityEntry> e : ForgeRegistries.ENTITIES.getEntries())
-            if (EntityLiving.class.isAssignableFrom(e.getValue().getEntityClass()))
+        for (Entry<ResourceLocation, Entity> e : ForgeRegistries.ENTITIES.getEntries())
+            if (LivingEntity.class.isAssignableFrom(e.getValue().getClass()))
             {
                 APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey(), DefaultPermissionLevel.ALL, "");
                 APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + e.getKey(), DefaultPermissionLevel.ALL, "");
@@ -240,7 +243,7 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_CRAFT + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "Allow crafting of items. Not necessarily works with modded crafting tables");
         for (Item item : ForgeRegistries.ITEMS.getValues())
-            if (!(item instanceof ItemBlock))
+            if (!(item instanceof BlockItem))
             {
                 String itemPerm = "." + ServerUtil.getItemPermission(item) + Zone.ALL_PERMS;
                 String itemName = getItemName(item);
@@ -256,23 +259,24 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_PLACE + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow placing blocks");
         APIRegistry.perms.registerPermission(PERM_TRAMPLE + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow trampling on blocks");
         APIRegistry.perms.registerPermission(PERM_EXPLODE + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "(global) Allows blocks to explode");
-        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow interacting with blocks (button, chest, workbench)");
+        APIRegistry.perms.registerPermission(PERM_INTERACT + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
+                "Allow interacting with blocks (button, chest, workbench)");
         for (Block block : ForgeRegistries.BLOCKS.getValues())
         {
             String blockPerm = "." + ServerUtil.getBlockPermission(block) + Zone.ALL_PERMS;
             String blockName;
             try
             {
-                blockName = block.getLocalizedName();
+                blockName = block.getName().toString();
             } catch (Throwable e) {
-                blockName = block.getUnlocalizedName();
+                blockName = block.getRegistryName().toString();
             }
             APIRegistry.perms.registerPermission(PERM_BREAK + blockPerm, DefaultPermissionLevel.ALL, "BREAK " + blockName);
             APIRegistry.perms.registerPermission(PERM_PLACE + blockPerm, DefaultPermissionLevel.ALL, "PLACE " + blockName);
             APIRegistry.perms.registerPermission(PERM_TRAMPLE + blockPerm, DefaultPermissionLevel.ALL, "PLACE " + blockName);
             APIRegistry.perms.registerPermission(PERM_INTERACT + blockPerm, DefaultPermissionLevel.ALL, "INTERACT " + blockName);
             APIRegistry.perms.registerPermission(PERM_EXPLODE + blockPerm, DefaultPermissionLevel.ALL, "EXPLODE " + blockName);
-    }
+        }
 
         // ----------------------------------------
         // Register zone permissions
@@ -293,47 +297,47 @@ public class ModuleProtection
     }
 
     @SubscribeEvent
-    public void postServerStart(FEModuleServerPostInitEvent e)
+    public void postServerStart(FEModuleServerStartedEvent e)
     {
         TaskRegistry.scheduleRepeated(new TimerTask() {
             @Override
             public void run()
             {
-                for (EntityPlayerMP p : ServerUtil.getPlayerList())
+                for (ServerPlayerEntity p : ServerUtil.getPlayerList())
                     if (!APIRegistry.perms.checkPermission(p, PERM_NEEDSFOOD))
-                        p.getFoodStats().addStats(20, 1.0F);
+                        p.getFoodData().eat(20, 1.0F);
             }
         }, 60 * 1000);
     }
 
     /* ------------------------------------------------------------ */
 
-    public static void setDebugMode(EntityPlayer player, String commandBase)
+    public static void setDebugMode(PlayerEntity player, String commandBase)
     {
         if (commandBase != null)
-            debugModePlayers.put(player.getPersistentID(), commandBase);
+            debugModePlayers.put(player.getUUID(), commandBase);
         else
-            debugModePlayers.remove(player.getPersistentID());
+            debugModePlayers.remove(player.getUUID());
     }
 
-    public static boolean isDebugMode(EntityPlayer player)
+    public static boolean isDebugMode(PlayerEntity player)
     {
-        return debugModePlayers.containsKey(player.getPersistentID());
+        return debugModePlayers.containsKey(player.getUUID());
     }
 
-    public static void debugPermission(EntityPlayer player, String permission)
+    public static void debugPermission(PlayerEntity player, String permission)
     {
         if (player == null)
             return;
-        String cmdBase = debugModePlayers.get(player.getPersistentID());
+        String cmdBase = debugModePlayers.get(player.getUUID());
         if (cmdBase == null)
             return;
 
-        TextComponentTranslation msg = new TextComponentTranslation(permission);
-        msg.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
-        msg.getStyle().setColor(ChatOutputHandler.chatNotificationColor);
+        TranslationTextComponent msg = new TranslationTextComponent(permission);
+        msg.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
+        msg.getStyle().withColor(ChatOutputHandler.chatNotificationColor);
         msg.getStyle().setUnderlined(true);
-        ChatOutputHandler.sendMessage(player, msg);
+        ChatOutputHandler.sendMessage(player.createCommandSourceStack(), msg);
     }
 
     /* ------------------------------------------------------------ */
@@ -346,32 +350,32 @@ public class ModuleProtection
             return ServerUtil.getBlockPermission(block) + "." + meta;
     }
 
-    public static String getBlockPermission(IBlockState blockState)
+    public static String getBlockPermission(BlockState blockState)
     {
         return getBlockPermission(blockState.getBlock(), blockState.getBlock().getMetaFromState(blockState));
     }
 
-    public static String getBlockBreakPermission(IBlockState blockState)
+    public static String getBlockBreakPermission(BlockState blockState)
     {
         return ModuleProtection.PERM_BREAK + "." + getBlockPermission(blockState);
     }
 
-    public static String getBlockTramplePermission(IBlockState blockState)
+    public static String getBlockTramplePermission(BlockState blockState)
     {
         return PERM_TRAMPLE + "." + getBlockPermission(blockState);
     }
 
-    public static String getBlockPlacePermission(IBlockState blockState)
+    public static String getBlockPlacePermission(BlockState blockState)
     {
         return ModuleProtection.PERM_PLACE + "." + getBlockPermission(blockState);
     }
 
-    public static String getBlockInteractPermission(IBlockState blockState)
+    public static String getBlockInteractPermission(BlockState blockState)
     {
         return ModuleProtection.PERM_INTERACT + "." + getBlockPermission(blockState);
     }
 
-    public static String getBlockExplosionPermission(IBlockState blockState)
+    public static String getBlockExplosionPermission(BlockState blockState)
     {
         return ModuleProtection.PERM_EXPLODE + "." + getBlockPermission(blockState);
     }
@@ -407,7 +411,7 @@ public class ModuleProtection
     {
         try
         {
-            int dmg = stack.getItemDamage();
+            int dmg = stack.getDamageValue();
             if (!checkMeta || dmg == 0 || dmg == 32767)
                 return ServerUtil.getItemPermission(stack.getItem());
             else
@@ -419,7 +423,8 @@ public class ModuleProtection
             if (stack == ItemStack.EMPTY)
                 msg = "Error getting item permission. Stack item is null. Please report this error (except for TF) and try enabling FE safe-mode.";
             else
-                msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.", stack.getItem().getClass().getName());
+                msg = String.format("Error getting item permission for item %s. Please report this error and try enabling FE safe-mode.",
+                        stack.getItem().getClass().getName());
             if (!ForgeEssentials.isSafeMode())
                 throw new RuntimeException(msg, e);
             LoggingHandler.felog.error(msg);
@@ -449,18 +454,18 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    public static EntityPlayer getCraftingPlayer(InventoryCrafting inventory)
+    public static PlayerEntity getCraftingPlayer(CraftingInventory inventory)
     {
 
         Container abstractContainer = inventory.eventHandler;
-        if (abstractContainer instanceof ContainerPlayer)
+        if (abstractContainer instanceof PlayerContainer)
         {
-            ContainerPlayer container = (ContainerPlayer) abstractContainer;
+            PlayerContainer container = (PlayerContainer) abstractContainer;
             return container.player;
         }
-        else if (abstractContainer instanceof ContainerWorkbench)
+        else if (abstractContainer instanceof WorkbenchContainer)
         {
-            SlotCrafting slot = (SlotCrafting) abstractContainer.getSlot(0);
+            CraftingResultSlot slot = (CraftingResultSlot) abstractContainer.getSlot(0);
             return slot.player;
         }
         return null;
@@ -471,7 +476,7 @@ public class ModuleProtection
         return PERM_CRAFT + "." + getItemPermission(stack, true);
     }
 
-    public static boolean canCraft(EntityPlayer player, ItemStack result)
+    public static boolean canCraft(PlayerEntity player, ItemStack result)
     {
         if (player == null || result == null)
             return true;

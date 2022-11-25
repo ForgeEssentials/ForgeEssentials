@@ -3,18 +3,16 @@ package com.forgeessentials.util.selections;
 //Depreciated
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandExpand extends ForgeEssentialsCommandBase
+public class CommandExpand extends BaseCommand
 {
 
     public CommandExpand()
@@ -29,7 +27,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity player, String[] args) throws CommandException
     {
         Selection sel = SelectionHandler.getSelection(player);
         if (sel == null)
@@ -202,7 +200,7 @@ public class CommandExpand extends ForgeEssentialsCommandBase
         }
         else
         {
-            throw new TranslatedCommandException(getUsage(player));
+
         }
     }
 
@@ -216,12 +214,6 @@ public class CommandExpand extends ForgeEssentialsCommandBase
     public boolean canConsoleUseCommand()
     {
         return false;
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "//expand [direction] <number of blocks to expand> Expands the currently selected area.";
     }
 
     @Override

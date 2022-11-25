@@ -3,8 +3,6 @@ package com.forgeessentials.economy.commands;
 import java.util.Arrays;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -13,14 +11,13 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException.InvalidSyntaxException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandPaidCommand extends ForgeEssentialsCommandBase
+public class CommandPaidCommand extends BaseCommand
 {
     @Override
     public String getPrimaryAlias()
@@ -47,12 +44,6 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/paidcommand <player> <amount> <command...>";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;
@@ -65,7 +56,6 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBase
     public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 3)
-            throw new InvalidSyntaxException(getUsage(sender));
 
         UserIdent ident = UserIdent.get(args[0], sender);
         if (!ident.hasPlayer())

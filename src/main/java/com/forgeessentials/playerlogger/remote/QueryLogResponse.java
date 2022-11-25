@@ -47,15 +47,15 @@ public class QueryLogResponse<T extends Action>
                 blockSet.add(((Action01Block) action).block);
             }
         }
-        
+
         playerSet.remove(null);
         for (PlayerData playerData : playerSet)
             players.put(playerData.id, new RemotePlayerData(playerData));
-        
+
         worldSet.remove(null);
         for (WorldData worldData : worldSet)
             worlds.put(worldData.id, new RemoteWorldData(worldData));
-        
+
         if (blockSet != null)
         {
             blockSet.remove(null);

@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -18,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -27,7 +24,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
  * Allows you to modify a bunch of interesting stuff...
  */
 
-public class CommandCapabilities extends ForgeEssentialsCommandBase
+public class CommandCapabilities extends BaseCommand
 {
     public static ArrayList<String> names;
 
@@ -45,12 +42,6 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "capabilities";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/capabilities [player] [capability] [value|default] Allows you to modify player capabilities.";
     }
 
     @Override
@@ -82,7 +73,7 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
     {
         if (args.length > 3)
         {
-            throw new TranslatedCommandException(getUsage(sender));
+
         }
 
         if (args.length == 0)
@@ -92,15 +83,15 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
         }
         else if (args.length == 1)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 ChatOutputHandler.chatNotification(sender, Translator.format("Capabilities for %s:", player.getName()));
-                ChatOutputHandler.chatNotification(sender, names.get(0) + " = " + player.capabilities.disableDamage);
-                ChatOutputHandler.chatNotification(sender, names.get(1) + " = " + player.capabilities.isFlying);
-                ChatOutputHandler.chatNotification(sender, names.get(2) + " = " + player.capabilities.allowFlying);
-                ChatOutputHandler.chatNotification(sender, names.get(3) + " = " + player.capabilities.isCreativeMode);
-                ChatOutputHandler.chatNotification(sender, names.get(4) + " = " + player.capabilities.allowEdit);
+                ChatOutputHandler.chatNotification(sender, names.get(0) + " = " + player.abilities.invulnerable);
+                ChatOutputHandler.chatNotification(sender, names.get(1) + " = " + player.abilities.flying);
+                ChatOutputHandler.chatNotification(sender, names.get(2) + " = " + player.abilities.mayfly);
+                ChatOutputHandler.chatNotification(sender, names.get(3) + " = " + player.gameMode.isCreative());
+                ChatOutputHandler.chatNotification(sender, names.get(4) + " = " + player.abilities.mayBuild);
             }
             else
             {
@@ -109,10 +100,10 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
         }
         else if (args.length == 2)
         {
-            if (sender instanceof EntityPlayer && !PermissionAPI.hasPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
+            if (sender instanceof PlayerEntity && !PermissionAPI.hasPermission((PlayerEntity) sender, getPermissionNode() + ".others"))
                 throw new TranslatedCommandException("You don't have permissions for that.");
 
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))
@@ -141,40 +132,40 @@ public class CommandCapabilities extends ForgeEssentialsCommandBase
         }
         else if (args.length == 3)
         {
-            if (sender instanceof EntityPlayer && !PermissionAPI.hasPermission((EntityPlayer) sender, getPermissionNode() + ".others"))
+            if (sender instanceof PlayerEntity && !PermissionAPI.hasPermission((PlayerEntity) sender, getPermissionNode() + ".others"))
                 throw new TranslatedCommandException("You don't have permissions for that.");
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 if (args[1].equalsIgnoreCase(names.get(0)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
-                    player.capabilities.disableDamage = bln;
-                    ChatOutputHandler.chatNotification(sender, names.get(0) + " = " + player.capabilities.disableDamage);
+                    player.abilities.invulnerable = bln;
+                    ChatOutputHandler.chatNotification(sender, names.get(0) + " = " + player.abilities.invulnerable);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(1)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
-                    player.capabilities.isFlying = bln;
-                    ChatOutputHandler.chatNotification(sender, names.get(1) + " = " + player.capabilities.isFlying);
+                    player.abilities.flying = bln;
+                    ChatOutputHandler.chatNotification(sender, names.get(1) + " = " + player.abilities.flying);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(2)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
-                    player.capabilities.allowFlying = bln;
-                    ChatOutputHandler.chatNotification(sender, names.get(2) + " = " + player.capabilities.allowFlying);
+                    player.abilities.mayfly = bln;
+                    ChatOutputHandler.chatNotification(sender, names.get(2) + " = " + player.abilities.mayfly);
                 }
                 else if (args[1].equalsIgnoreCase(names.get(3)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
                     player.capabilities.isCreativeMode = bln;
-                    ChatOutputHandler.chatNotification(sender, names.get(3) + " = " + player.capabilities.isCreativeMode);
+                    ChatOutputHandler.chatNotification(sender, names.get(3) + " = " + player.gameMode.isCreative());
                 }
                 else if (args[1].equalsIgnoreCase(names.get(4)))
                 {
                     boolean bln = Boolean.parseBoolean(args[2]);
-                    player.capabilities.allowEdit = bln;
-                    ChatOutputHandler.chatNotification(sender, names.get(4) + " = " + player.capabilities.allowEdit);
+                    player.abilities.mayBuild = bln;
+                    ChatOutputHandler.chatNotification(sender, names.get(4) + " = " + player.abilities.mayBuild);
                 }
                 else
                     throw new CommandException("command.capabilities.capabilityUnknown", args[1]);

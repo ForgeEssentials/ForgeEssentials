@@ -16,7 +16,6 @@ import com.forgeessentials.jscripting.fewrapper.fe.JsAreaShape;
 import com.forgeessentials.jscripting.fewrapper.fe.JsFEServer;
 import com.forgeessentials.jscripting.fewrapper.fe.JsPermissions;
 import com.forgeessentials.jscripting.fewrapper.fe.JsZone;
-import com.google.common.base.Throwables;
 
 /**
  * @tsd.namespace mc
@@ -30,11 +29,11 @@ public class ScriptExtensionRoot implements ScriptExtension
     {
         try
         {
-            INIT_SCRIPT = IOUtils.toString(ScriptExtensionRoot.class.getResource("init.js"));
+            INIT_SCRIPT = IOUtils.toString(ScriptExtensionRoot.class.getResource("init.js"), "UTF-8");
         }
         catch (IOException e)
         {
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

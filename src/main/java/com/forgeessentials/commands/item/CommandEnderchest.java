@@ -1,20 +1,26 @@
 package com.forgeessentials.commands.item;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.InventoryEnderChest;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  * Opens your enderchest.
  */
-public class CommandEnderchest extends ForgeEssentialsCommandBase
+public class CommandEnderchest extends BaseCommand
 {
+    public CommandEnderchest(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     @Override
     public String getPrimaryAlias()
     {
@@ -28,18 +34,18 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        EntityPlayerMP player = sender;
-        if (player.openContainer != player.inventoryContainer)
+        ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
+        if (player.containerMenu != player.inventoryMenu)
         {
-            player.closeScreen();
+            player.closeContainer();
         }
-        player.getNextWindowId();
+        player.nextContainerCounter();
 
-        InventoryEnderChest chest = player.getInventoryEnderChest();
-        chest.setChestTileEntity(null);
-        player.displayGUIChest(chest);
+        //chest.setChestTileEntity(null);
+        player.getEnderChestInventory().startOpen(player);
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
@@ -61,9 +67,11 @@ public class CommandEnderchest extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return "/enderchest Opens your enderchest.";
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
     }
 
 }

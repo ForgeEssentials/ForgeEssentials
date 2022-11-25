@@ -3,9 +3,10 @@ package com.forgeessentials.util;
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -47,15 +48,16 @@ public abstract class WorldUtil
      * @param h
      * @return y value
      */
-    public static boolean isSafeToReplace(World world, int x, int y, int z, int h, boolean replaceRock) {
+    public static boolean isSafeToReplace(World world, int x, int y, int z, int h, boolean replaceRock)
+    {
         int testedH = 0;
         for (int i = 0; i < h; i++)
         {
             BlockPos pos = new BlockPos(x, y + i, z);
-            IBlockState state = world.getBlockState(pos);
+            BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             float hardness = block.getBlockHardness(state, world, pos);
-            boolean replaceable = replaceRock && (state.getMaterial() == Material.ROCK
+            boolean replaceable = replaceRock && (state.getMaterial() == Material.STONE
                     && hardness >= 0 && hardness <= 3
                     && world.getTileEntity(pos) == null);
             if (block.isPassable(world, pos) || replaceable)
@@ -68,9 +70,8 @@ public abstract class WorldUtil
     }
 
     /**
-     * Returns a free spot of height h in the world at the coordinates [x,z] near y. If the blocks at [x,y,z] are free,
-     * it returns the next location that is on the ground. If the blocks at [x,y,z] are not free, it goes up until it
-     * finds a free spot.
+     * Returns a free spot of height h in the world at the coordinates [x,z] near y. If the blocks at [x,y,z] are free, it returns the next location that is on the ground. If the
+     * blocks at [x,y,z] are not free, it goes up until it finds a free spot.
      * 
      * @param world
      * @param x
@@ -94,7 +95,7 @@ public abstract class WorldUtil
                     y = 0;
             }
             y++;
-            while (y + h < world.getHeight() && !isSafeToReplace(world, x, y, z, h, replaceRock) )
+            while (y + h < world.getHeight() && !isSafeToReplace(world, x, y, z, h, replaceRock))
                 y++;
         }
         if (y == 0)
@@ -103,9 +104,8 @@ public abstract class WorldUtil
     }
 
     /**
-     * Returns a free spot of height 2 in the world at the coordinates [x,z] near y. If the blocks at [x,y,z] are free,
-     * it returns the next location that is on the ground. If the blocks at [x,y,z] are not free, it goes up until it
-     * finds a free spot.
+     * Returns a free spot of height 2 in the world at the coordinates [x,z] near y. If the blocks at [x,y,z] are free, it returns the next location that is on the ground. If the
+     * blocks at [x,y,z] are not free, it goes up until it finds a free spot.
      * 
      * @param world
      * @param x
@@ -123,10 +123,10 @@ public abstract class WorldUtil
         return p.setY(placeInWorld(p.getWorld(), p.getX(), p.getY(), p.getZ()));
     }
 
-    public static void placeInWorld(EntityPlayer player)
+    public static void placeInWorld(PlayerEntity player)
     {
         WorldPoint p = placeInWorld(new WorldPoint(player));
-        player.setPositionAndUpdate(p.getX() + 0.5, p.getY(), p.getZ() + 0.5);
+        player.setPos(p.getX() + 0.5, p.getY(), p.getZ() + 0.5);
     }
 
     /* ------------------------------------------------------------ */

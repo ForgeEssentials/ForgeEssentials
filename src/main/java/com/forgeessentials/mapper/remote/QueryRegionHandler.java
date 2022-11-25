@@ -5,8 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.codec.binary.Base64;
@@ -37,7 +36,7 @@ public class QueryRegionHandler extends GenericRemoteHandler<Request>
     {
         if (request.data == null)
             error("missing data");
-        WorldServer world = DimensionManager.getWorld(request.data.dim);
+        ServerWorld world = DimensionManager.getWorld(request.data.dim);
         if (world == null)
             error("Invalid dimension");
         try

@@ -1,21 +1,5 @@
 package com.forgeessentials.afterlife;
 
-import java.util.ArrayList;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.event.entity.player.PlayerDropsEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -25,11 +9,29 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+
+import java.util.ArrayList;
 
 /**
  * Module to handle death-chest and respawn debuffs.
@@ -55,13 +57,13 @@ public class ModuleAfterlife extends ServerEventHandler
     public static final String PERM_DEATHCHEST_BYPASS = PERM_DEATHCHEST + ".bypass";
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(final RegistryEvent.Register<TileEntityType<?>> event)
     {
         TileEntity.register("FESkull", TileEntitySkullGrave.class);
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    public void serverStarting(FEModuleServerStartingEvent e)
     {
         Grave.loadAll();
 
@@ -90,7 +92,7 @@ public class ModuleAfterlife extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void serverStopping(FEModuleServerStoppingEvent e)
     {
         Grave.saveAll();
     }
@@ -98,28 +100,31 @@ public class ModuleAfterlife extends ServerEventHandler
     @SubscribeEvent
     public void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent e)
     {
-        if (e.player.world.isRemote)
+        if (e.getPlayer().level.isClientSide)
             return;
 
-        String potionEffects = APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.player), ModuleAfterlife.PERM_DEBUFFS);
+        String potionEffects = APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.getPlayer()), ModuleAfterlife.PERM_DEBUFFS);
         if (potionEffects != null)
-            PlayerUtil.applyPotionEffects(e.player, potionEffects);
+            PlayerUtil.applyPotionEffects(e.getPlayer(), potionEffects);
 
-        Integer respawnHP = ServerUtil.tryParseInt(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.player), ModuleAfterlife.PERM_HP));
+        Integer respawnHP = ServerUtil.tryParseInt(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.getPlayer()), ModuleAfterlife.PERM_HP));
         if (respawnHP != null)
-            e.player.setHealth(respawnHP);
+            e.getPlayer().setHealth(respawnHP);
 
-        Integer respawnFood = ServerUtil.tryParseInt(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.player), ModuleAfterlife.PERM_FOOD));
+        Integer respawnFood = ServerUtil.tryParseInt(APIRegistry.perms.getUserPermissionProperty(UserIdent.get(e.getPlayer()), ModuleAfterlife.PERM_FOOD));
         if (respawnFood != null)
-            e.player.getFoodStats().addStats(-1 * (20 - respawnFood), 0);
+            e.getPlayer().getFoodData().eat(-1 * (20 - respawnFood), 0);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerDeathDropEvent(PlayerDropsEvent event)
+    public void playerDeathDropEvent(LivingDropsEvent event)
     {
-        Grave grave = Grave.createGrave(event.getEntityPlayer(), event.getDrops());
-        if (grave != null)
-            event.setCanceled(true);
+        if(event.getEntity() instanceof PlayerEntity)
+        {
+            Grave grave = Grave.createGrave((PlayerEntity)event.getEntity(), event.getDrops());
+            if (grave != null)
+                event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
@@ -127,7 +132,7 @@ public class ModuleAfterlife extends ServerEventHandler
     {
         if (event.phase == Phase.END)
             return;
-        if (FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld().getWorldInfo().getWorldTotalTime() % 20 == 0)
+        if (ServerLifecycleHooks.getCurrentServer().getEntityWorld().getWorldInfo().getWorldTotalTime() % 20 == 0)
         {
             for (Grave grave : new ArrayList<Grave>(Grave.graves.values()))
                 grave.updateBlocks();
@@ -137,22 +142,22 @@ public class ModuleAfterlife extends ServerEventHandler
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent.RightClickBlock event)
     {
-        if (event.getEntity().world.isRemote)
+        if (event.getEntity().level.isClientSide)
             return;
 
-        WorldPoint point = new WorldPoint(event.getEntity().world, event.getPos());
+        WorldPoint point = new WorldPoint(event.getEntity().level, event.getPos());
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
 
-        grave.interact((EntityPlayerMP) event.getEntityPlayer());
+        grave.interact((ServerPlayerEntity) event.getPlayer());
         event.setCanceled(true);
     }
 
     @SubscribeEvent
     public void blockBreakEvent(BreakEvent event)
     {
-        if (event.getWorld().isRemote)
+        if (event.getWorld().isClientSide())
             return;
 
         WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
@@ -169,7 +174,7 @@ public class ModuleAfterlife extends ServerEventHandler
         if (grave.isProtected)
         {
             event.setCanceled(true);
-            ChatOutputHandler.chatError(event.getPlayer(), Translator.translate("You may not defile the grave of a player"));
+            ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), Translator.translate("You may not defile the grave of a player"));
             return;
         }
         if (grave.canOpen(event.getPlayer()))

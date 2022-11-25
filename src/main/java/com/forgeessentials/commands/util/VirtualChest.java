@@ -1,11 +1,10 @@
 package com.forgeessentials.commands.util;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 
 import com.forgeessentials.commands.item.CommandVirtualchest;
 import com.forgeessentials.util.PlayerUtil;
@@ -15,25 +14,25 @@ public class VirtualChest extends InventoryBasic
 
     public static final String VIRTUALCHEST_TAG = "VirtualChestItems";
 
-    private EntityPlayerMP owner;
+    private ServerPlayerEntity owner;
 
-    public VirtualChest(EntityPlayerMP player)
+    public VirtualChest(ServerPlayerEntity player)
     {
         super(CommandVirtualchest.name, false, CommandVirtualchest.size);
         owner = player;
     }
 
     @Override
-    public void openInventory(EntityPlayer player)
+    public void openInventory(PlayerEntity player)
     {
-        loadInventoryFromNBT(PlayerUtil.getPersistedTag(owner, false).getTagList(VIRTUALCHEST_TAG, 10));
+        loadInventoryFromNBT(PlayerUtil.getPersistedTag(owner, false).getList(VIRTUALCHEST_TAG, 10));
         super.openInventory(player);
     }
 
     @Override
-    public void closeInventory(EntityPlayer player)
+    public void closeInventory(PlayerEntity player)
     {
-        PlayerUtil.getPersistedTag(owner, true).setTag(VIRTUALCHEST_TAG, saveInventoryToNBT());
+        PlayerUtil.getPersistedTag(owner, true).put(VIRTUALCHEST_TAG, saveInventoryToNBT());
         super.closeInventory(player);
     }
 
@@ -41,25 +40,25 @@ public class VirtualChest extends InventoryBasic
     public void markDirty()
     {
         super.markDirty();
-        PlayerUtil.getPersistedTag(owner, true).setTag(VIRTUALCHEST_TAG, saveInventoryToNBT());
+        PlayerUtil.getPersistedTag(owner, true).put(VIRTUALCHEST_TAG, saveInventoryToNBT());
     }
 
-    public void loadInventoryFromNBT(NBTTagList tag)
+    public void loadInventoryFromNBT(ListNBT tag)
     {
         for (int slotIndex = 0; slotIndex < getSizeInventory(); ++slotIndex)
             setInventorySlotContents(slotIndex, (ItemStack) ItemStack.EMPTY);
-        for (int tagIndex = 0; tagIndex < tag.tagCount(); ++tagIndex)
+        for (int tagIndex = 0; tagIndex < tag.size(); ++tagIndex)
         {
-            NBTTagCompound tagSlot = tag.getCompoundTagAt(tagIndex);
+            CompoundNBT tagSlot = tag.getCompound(tagIndex);
             int var4 = tagSlot.getByte("Slot") & 255;
             if (var4 >= 0 && var4 < getSizeInventory())
                 setInventorySlotContents(var4, new ItemStack(tagSlot));
         }
     }
 
-    public NBTTagList saveInventoryToNBT()
+    public ListNBT saveInventoryToNBT()
     {
-        NBTTagList var1 = new NBTTagList();
+        ListNBT var1 = new ListNBT();
 
         for (int var2 = 0; var2 < getSizeInventory(); ++var2)
         {
@@ -67,10 +66,10 @@ public class VirtualChest extends InventoryBasic
 
             if (var3 != null)
             {
-                NBTTagCompound var4 = new NBTTagCompound();
-                var4.setByte("Slot", (byte) var2);
-                var3.writeToNBT(var4);
-                var1.appendTag(var4);
+                CompoundNBT var4 = new CompoundNBT();
+                var4.putByte("Slot", (byte) var2);
+                var3.save(var4);
+                var1.add(var4);
             }
         }
 

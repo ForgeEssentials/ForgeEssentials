@@ -3,11 +3,10 @@ package com.forgeessentials.commands.player;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -15,11 +14,10 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandBubble extends ForgeEssentialsCommandBase
+public class CommandBubble extends BaseCommand
 {
 
     public static String BUBBLE_GROUP = "command_bubble";
@@ -33,12 +31,6 @@ public class CommandBubble extends ForgeEssentialsCommandBase
     public String getPrimaryAlias()
     {
         return "bubble";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/bubble [on|off]";
     }
 
     @Override

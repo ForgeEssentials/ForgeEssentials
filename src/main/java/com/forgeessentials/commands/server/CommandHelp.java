@@ -9,24 +9,23 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoader;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -34,16 +33,14 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandHelp extends ParserCommandBase implements ConfigLoader
 {
 
-    private static final String CONFIG_HELP = "Add custom messages here that will appear when /help is run";
-
-    private String[] messages;
+    private static String[] messages;
 
     private HelpFixer fixer;
 
     public CommandHelp()
     {
         fixer = new HelpFixer();
-        ForgeEssentials.getConfigManager().registerLoader(ForgeEssentials.getConfigManager().getMainConfigName(), this);
+        ForgeEssentials.getConfigManager().registerSpecs(ForgeEssentials.getConfigManager().getMainConfigName(), this);
     }
 
     @Override
@@ -56,12 +53,6 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "?" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/help <page|text>: List or search for commands";
     }
 
     @Override
@@ -105,7 +96,8 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
             {
                 if (arguments.isTabCompletion)
                 {
-                    arguments.tabCompletion = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getTabCompletions(arguments.sender, name, BlockPos.ORIGIN);
+                    arguments.tabCompletion = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getTabCompletions(arguments.sender,
+                            name, BlockPos.ORIGIN);
                     return;
                 }
 
@@ -118,7 +110,8 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
                         return a.getName().compareTo(b.getName());
                     }
                 });
-                Set<Map.Entry<String, ICommand>> commands = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().entrySet();
+                Set<Map.Entry<String, ICommand>> commands = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands()
+                        .entrySet();
                 for (Entry<String, ICommand> cmd : commands)
                 {
                     String usage = cmd.getValue().getUsage(arguments.sender);
@@ -153,9 +146,9 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
 
     public void sendCommandUsageMessage(ICommandSender sender, ICommand command, TextFormatting color)
     {
-        ITextComponent chatMsg = new TextComponentTranslation(command.getUsage(sender));
-        chatMsg.getStyle().setColor(color);
-        chatMsg.getStyle().setClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getName() + " "));
+        ITextComponent chatMsg = new TranslationTextComponent(command.getUsage(sender));
+        chatMsg.getStyle().withColor(color);
+        chatMsg.getStyle().withClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getName() + " "));
         ChatOutputHandler.sendMessage(sender, chatMsg);
     }
 
@@ -177,16 +170,25 @@ public class CommandHelp extends ParserCommandBase implements ConfigLoader
         return fixer.getSortedPossibleCommands(sender, server);
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    static ForgeConfigSpec.ConfigValue<String[]> FEmessages;
+
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
-        messages = config.get(FEConfig.CONFIG_CAT, "custom_help", new String[] {}, CONFIG_HELP).getStringList();
+        BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
+        FEmessages = BUILDER.comment("Add custom messages here that will appear when /help is run")
+                .define("custom_help", new String[] {});
+        BUILDER.pop();
     }
 
-    @Override
-    public boolean supportsCanonicalConfig()
+	@Override
+	public void bakeConfig(boolean reload)
     {
-        return true;
+        messages = FEmessages.get();
     }
 
+	@Override
+	public ConfigData returnData() {
+		return FEConfig.data;
+	}
 }

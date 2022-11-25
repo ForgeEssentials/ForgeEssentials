@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -23,12 +22,6 @@ public class CommandItemPermission extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "itemperm";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/itemperm [break|place|inventory|exist] [allow|deny|clear]: Show / control item permissions";
     }
 
     @Override
@@ -52,7 +45,7 @@ public class CommandItemPermission extends ParserCommandBase
     @Override
     public void parse(CommandParserArgs arguments) throws CommandException
     {
-        ItemStack stack = arguments.senderPlayer.getHeldItemMainhand();
+        ItemStack stack = arguments.senderPlayer.getMainHandItem();
 
         if (arguments.isEmpty())
         {

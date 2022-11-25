@@ -16,17 +16,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.common.config.Property.Type;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -59,12 +53,6 @@ public class CommandSellprice extends ParserCommandBase
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/sellprice save|set: Manage item sell prices";
     }
 
     @Override
@@ -128,9 +116,8 @@ public class CommandSellprice extends ParserCommandBase
         /*
          * Map<Item, Double> priceMap = new TreeMap<>(new Comparator<Item>() {
          * 
-         * @Override public int compare(Item a, Item b) { try { String aId =
-         * Item.REGISTRY.getNameForObject(a); String bId = Item.REGISTRY.getNameForObject(b);
-         * return aId.compareTo(bId); } catch (Exception e) { return 0; } } });
+         * @Override public int compare(Item a, Item b) { try { String aId = Item.REGISTRY.getNameForObject(a); String bId = Item.REGISTRY.getNameForObject(b); return
+         * aId.compareTo(bId); } catch (Exception e) { return 0; } } });
          */
         Map<String, Double> priceMap = loadPriceList(arguments);
         Map<String, Double> priceMapFull = new TreeMap<>();
@@ -155,7 +142,8 @@ public class CommandSellprice extends ParserCommandBase
                         continue;
                     }
                     craftRecipes
-                            .write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()), ItemUtil.getItemDamage(recipe.getRecipeOutput())));
+                            .write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
+                                    ItemUtil.getItemDamage(recipe.getRecipeOutput())));
                     for (Ingredient ingredient : recipeItems)
                     {
                         if (ingredient != null)
@@ -250,8 +238,10 @@ public class CommandSellprice extends ParserCommandBase
                             if (resultPrice == null || outPrice < resultPrice)
                             {
                                 priceMap.put(ItemUtil.getItemIdentifier(recipe.getValue()), outPrice);
-                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", ServerUtil.getItemName(recipe.getValue().getItem()), ItemUtil.getItemDamage(
-                                        recipe.getValue()), resultPrice == null ? 0 : resultPrice, (int) outPrice, ServerUtil.getItemName(recipe.getKey().getItem())));
+                                writer.write(String.format("%s:%d = %.0f -> %d\n  %s\n", ServerUtil.getItemName(recipe.getValue().getItem()),
+                                        ItemUtil.getItemDamage(
+                                                recipe.getValue()),
+                                        resultPrice == null ? 0 : resultPrice, (int) outPrice, ServerUtil.getItemName(recipe.getKey().getItem())));
                                 changedPrice = true;
                             }
                         }
@@ -269,7 +259,7 @@ public class CommandSellprice extends ParserCommandBase
 
         writeMap(priceMap, priceFile);
 
-        for (Item item : Item.REGISTRY)
+        for (Item item : ForgeRegistries.ITEMS)
         {
             String id = ServerUtil.getItemName(item);
             if (!priceMapFull.containsKey(id))
@@ -458,8 +448,10 @@ public class CommandSellprice extends ParserCommandBase
             {
                 Double itemPrice = null;
                 ItemStack[] stacks = ingredient.getMatchingStacks();
-                for (ItemStack stack : stacks) {
-                    if (stack == ItemStack.EMPTY) {
+                for (ItemStack stack : stacks)
+                {
+                    if (stack == ItemStack.EMPTY)
+                    {
                         continue;
                     }
                     String id = ItemUtil.getItemIdentifier(stack);

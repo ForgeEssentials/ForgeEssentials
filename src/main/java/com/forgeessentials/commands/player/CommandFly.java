@@ -1,27 +1,31 @@
 package com.forgeessentials.commands.player;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandFly extends ForgeEssentialsCommandBase
+public class CommandFly extends BaseCommand
 {
+    public CommandFly(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     @Override
     public String getPrimaryAlias()
     {
         return "fly";
-    }
-
-    @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/fly [true|false] Toggle flight mode.";
     }
 
     @Override
@@ -42,26 +46,29 @@ public class CommandFly extends ForgeEssentialsCommandBase
         return ModuleCommands.PERM + ".fly";
     }
 
-    @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args)
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length == 0)
-        {
-            if (!player.capabilities.allowFlying)
-                player.capabilities.allowFlying = true;
-            else
-                player.capabilities.allowFlying = false;
-        }
-        else
-        {
-            player.capabilities.allowFlying = Boolean.parseBoolean(args[0]);
-        }
-        if (!player.onGround)
-            player.capabilities.isFlying = player.capabilities.allowFlying;
-        if (!player.capabilities.allowFlying)
-            WorldUtil.placeInWorld(player);
-        player.sendPlayerAbilities();
-        ChatOutputHandler.chatNotification(player, "Flying " + (player.capabilities.allowFlying ? "enabled" : "disabled"));
+        return builder
+                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                        .executes(CommandContext -> execute(CommandContext)
+                                )
+                        );
     }
 
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        boolean toggle = BoolArgumentType.getBool(ctx, "toggle");
+        ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
+        
+        player.abilities.mayfly = toggle;
+        
+        if (!player.isOnGround())
+            player.abilities.flying = player.abilities.mayfly;
+        if (!player.abilities.mayfly)
+            WorldUtil.placeInWorld(player);
+        player.onUpdateAbilities();
+        ChatOutputHandler.chatNotification(player, "Flying " + (player.abilities.mayfly ? "enabled" : "disabled"));
+        return Command.SINGLE_SUCCESS;
+    }
 }

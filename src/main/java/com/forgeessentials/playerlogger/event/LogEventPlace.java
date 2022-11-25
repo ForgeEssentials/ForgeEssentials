@@ -10,10 +10,10 @@ import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
 
-public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.PlaceEvent>
+public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.EntityPlaceEvent>
 {
 
-    public LogEventPlace(BlockEvent.PlaceEvent event)
+    public LogEventPlace(BlockEvent.EntityPlaceEvent event)
     {
         super(event);
     }

@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,12 +28,6 @@ public class CommandEnchant extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "enchant";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/enchant (<name> [lvl])*: Enchants the current item";
     }
 
     @Override
@@ -57,13 +51,13 @@ public class CommandEnchant extends ParserCommandBase
     @Override
     public void parse(CommandParserArgs arguments) throws CommandException
     {
-        ItemStack stack = arguments.senderPlayer.getHeldItemMainhand();
+        ItemStack stack = arguments.senderPlayer.getMainHandItem();
         if (stack == ItemStack.EMPTY)
             throw new TranslatedCommandException("You are not holding a valid item");
 
         List<String> validEnchantmentNames = new ArrayList<>();
         Map<String, Enchantment> validEnchantments = new HashMap<>();
-        for (Enchantment enchantment : Enchantment.REGISTRY)
+        for (Enchantment enchantment : ForgeRegistries.ENCHANTMENTS)
             if (enchantment != null && enchantment.canApplyAtEnchantingTable(stack))
             {
                 String name = I18n.translateToLocal(enchantment.getName()).replaceAll(" ", "");

@@ -4,38 +4,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandFindblock extends ForgeEssentialsCommandBase implements ConfigurableCommand
+public class CommandFindblock extends BaseCommand implements ConfigurableCommand
 {
 
     public static final int defaultCount = 1;
     public static int defaultRange = 20 * 16;
     public static int defaultSpeed = 16 * 16;
+    ForgeConfigSpec.IntValue FEdefaultRange;
+    ForgeConfigSpec.IntValue FEdefaultSpeed;
 
     @Override
-    public void loadConfig(Configuration config, String category)
+    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
     {
-        defaultRange = config.get(category, "defaultRange", defaultRange, "Default max distance used.").getInt();
-        defaultSpeed = config.get(category, "defaultSpeed", defaultSpeed, "Default speed used.").getInt();
+    	BUILDER.push(category);
+    	FEdefaultRange = BUILDER.comment("Default max distance used.").defineInRange("defaultRange", defaultRange, 0, Integer.MAX_VALUE);
+    	FEdefaultSpeed = BUILDER.comment("Default speed used.").defineInRange("defaultSpeed", defaultSpeed, 0, Integer.MAX_VALUE);
+        BUILDER.pop();
     }
 
     @Override
     public void loadData()
     {
+    	
+    }
+
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+    	defaultRange = FEdefaultRange.get();
+    	defaultSpeed= FEdefaultSpeed.get();
     }
 
     @Override
@@ -48,12 +58,6 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "fb" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/fb <block> [meta] [max distance] [amount of blocks] [speed] Finds a block.";
     }
 
     @Override
@@ -75,11 +79,11 @@ public class CommandFindblock extends ForgeEssentialsCommandBase implements Conf
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length < 1)
         {
-            throw new TranslatedCommandException(getUsage(sender));
+
         }
         String id = args[0];
         int meta = (args.length < 2) ? 0 : parseInt(args[1]);

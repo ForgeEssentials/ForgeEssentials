@@ -10,12 +10,11 @@ import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.HashMultimap;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.ModContainer;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class CallableMap
 {
 
@@ -48,10 +47,11 @@ public class CallableMap
 
             for (Method m : c.getDeclaredMethods())
             {
-                if (m.isAnnotationPresent(SideOnly.class))
+            	
+                if (m.isAnnotationPresent(OnlyIn.class))
                 {
-                    SideOnly annot = m.getAnnotation(SideOnly.class);
-                    if (!annot.value().equals(FMLCommonHandler.instance().getSide()))
+                    OnlyIn annot = m.getAnnotation(OnlyIn.class);
+                    if (!annot.value().equals(FMLEnvironment.dist))
                     {
                         continue;
                     }
@@ -92,10 +92,10 @@ public class CallableMap
 
             for (Method m : c.getDeclaredMethods())
             {
-                if (m.isAnnotationPresent(SideOnly.class))
+                if (m.isAnnotationPresent(OnlyIn.class))
                 {
-                    SideOnly annot = m.getAnnotation(SideOnly.class);
-                    if (!annot.value().equals(FMLCommonHandler.instance().getSide()))
+                    OnlyIn annot = m.getAnnotation(OnlyIn.class);
+                    if (!annot.value().equals(FMLEnvironment.dist))
                     {
                         continue;
                     }
@@ -169,7 +169,7 @@ public class CallableMap
             Class<?> c = m.getDeclaringClass();
             if (c.isAnnotationPresent(Mod.class))
             {
-                ident = c.getAnnotation(Mod.class).modid();
+                ident = c.getAnnotation(Mod.class).value();
             }
             else if (c.isAnnotationPresent(FEModule.class))
             {
@@ -211,11 +211,13 @@ public class CallableMap
             return method.invoke(instance, args);
         }
 
+        @SuppressWarnings("unchecked")
         public Annotation getAnnotation(Class annot)
         {
             return method.getAnnotation(annot);
         }
 
+        @SuppressWarnings("unchecked")
         public Annotation getClassAnnotation(Class annot)
         {
             return method.getDeclaringClass().getAnnotation(annot);

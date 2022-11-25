@@ -2,15 +2,14 @@ package com.forgeessentials.commands.player;
 
 import java.util.List;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.GameType;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,12 +17,20 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandGameMode extends ForgeEssentialsCommandBase
+public class CommandGameMode extends BaseCommand
 {
+    public CommandGameMode(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     @Override
     public String getPrimaryAlias()
     {
@@ -37,7 +44,14 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         GameType gm;
         switch (args.length)
@@ -71,7 +85,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         GameType gm;
         switch (args.length)
@@ -106,25 +120,25 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
         }
     }
 
-    public void setGameMode(EntityPlayer sender)
+    public void setGameMode(PlayerEntity sender)
     {
-        setGameMode(sender, sender, sender.capabilities.isCreativeMode ? GameType.SURVIVAL : GameType.CREATIVE);
+        setGameMode(sender.createCommandSourceStack(), sender, sender.isCreative() ? GameType.SURVIVAL : GameType.CREATIVE);
     }
 
-    public void setGameMode(ICommandSender sender, String target)
+    public void setGameMode(CommandSource sender, String target)
     {
-        EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
+        PlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, target);
         if (player == null)
         {
             ChatOutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
             return;
         }
-        setGameMode(sender, target, player.capabilities.isCreativeMode ? GameType.SURVIVAL : GameType.CREATIVE);
+        setGameMode(sender, target, player.isCreative() ? GameType.SURVIVAL : GameType.CREATIVE);
     }
 
-    public void setGameMode(ICommandSender sender, String target, GameType mode)
+    public void setGameMode(CommandSource sender, String target, GameType mode)
     {
-        EntityPlayer player = UserIdent.getPlayerByMatchOrUsername(sender, target);
+        PlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, target);
         if (player == null)
         {
             ChatOutputHandler.chatError(sender, Translator.format("Unable to find player: %1$s.", target));
@@ -133,23 +147,23 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
         setGameMode(sender, player, mode);
     }
 
-    public void setGameMode(ICommandSender sender, EntityPlayer target, GameType mode)
+    public void setGameMode(CommandSource sender, PlayerEntity target, GameType mode)
     {
-        target.setGameType(mode);
+        target.setGameMode(mode);
         target.fallDistance = 0.0F;
-        String modeName = I18n.translateToLocal("gameMode." + mode.getName());
+        String modeName = I18n.get("gameMode." + mode.getName());
         ChatOutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getName(), modeName));
     }
 
     private GameType getGameTypeFromString(String string)
     {
-        if(StringUtils.isNumeric(string))
+        if (StringUtils.isNumeric(string))
         {
-            return GameType.getByID(Integer.parseInt(string));
+            return GameType.byId(Integer.parseInt(string));
         }
         else
         {
-            return GameType.parseGameTypeWithDefault(string, GameType.SURVIVAL);
+            return GameType.byName(string, GameType.SURVIVAL);
         }
     }
 
@@ -186,21 +200,9 @@ public class CommandGameMode extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/gamemode [gamemode] [player(s)] Change a player's gamemode.";
-        }
-        else
-        {
-            return "/gamemode [gamemode] <player(s)> Change a player's gamemode.";
-        }
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return ModuleCommands.PERM + "." + getName();
     }
+
 }
