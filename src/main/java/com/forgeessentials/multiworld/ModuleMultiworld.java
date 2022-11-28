@@ -7,7 +7,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
  * 
  * @author Olee
  */
-@FEModule(name = "Multiworld", parentMod = ForgeEssentials.class, canDisable = true)
+//@FEModule(name = "Multiworld", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleMultiworld// extends ConfigLoaderBase
 {
 
