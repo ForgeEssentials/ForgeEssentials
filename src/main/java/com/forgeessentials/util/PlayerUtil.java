@@ -89,7 +89,7 @@ public abstract class PlayerUtil
                         continue;
                     }
                     // player.addEffect(null);
-                    player.addEffect((new Effect(Effect.byId(potionID), effectDuration * 20, amplifier));
+                    player.addEffect((new Effect(Effect.byId(potionID), effectDuration * 20, amplifier)));
                 }
                 catch (NumberFormatException e)
                 {

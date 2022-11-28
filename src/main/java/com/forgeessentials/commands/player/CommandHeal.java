@@ -83,7 +83,7 @@ public class CommandHeal extends BaseCommand
         }
         else
         {
-
+            throw new TranslatedCommandException(getUsage(sender));
         }
     }
 
@@ -98,9 +98,14 @@ public class CommandHeal extends BaseCommand
                 heal(player);
             }
             else
+            {
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+            }
         }
         else
+        {
+            throw new TranslatedCommandException(getUsage(sender));
+        }
 
     }
 

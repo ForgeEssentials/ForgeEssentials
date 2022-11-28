@@ -2,6 +2,7 @@ package com.forgeessentials.economy.commands;
 
 import java.util.Arrays;
 
+import com.forgeessentials.core.commands.BaseCommand;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -46,6 +47,11 @@ public class CommandSellCommand extends BaseCommand
         return DefaultPermissionLevel.OP;
     }
 
+    public String getUsage(ICommandSender sender)
+    {
+        return "/sellcommand <player> <item> <amount> <meta> <command...>";
+    }
+
     @Override
     public boolean canConsoleUseCommand()
     {
@@ -59,7 +65,9 @@ public class CommandSellCommand extends BaseCommand
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 5)
-
+        {
+            throw new InvalidSyntaxException(getUsage(sender));
+        }
         UserIdent ident = UserIdent.get(args[0], sender);
         ServerPlayerEntity player = ident.getPlayerMP();
         if (player == null)

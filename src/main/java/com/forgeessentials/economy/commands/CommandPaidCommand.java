@@ -2,6 +2,7 @@ package com.forgeessentials.economy.commands;
 
 import java.util.Arrays;
 
+import com.forgeessentials.core.commands.BaseCommand;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -43,6 +44,11 @@ public class CommandPaidCommand extends BaseCommand
         return DefaultPermissionLevel.NONE;
     }
 
+    public String getUsage(ICommandSender sender)
+    {
+        return "/paidcommand <player> <amount> <command...>";
+    }
+
     @Override
     public boolean canConsoleUseCommand()
     {
@@ -56,7 +62,9 @@ public class CommandPaidCommand extends BaseCommand
     public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         if (args.length < 3)
-
+        {
+            throw new InvalidSyntaxException(getUsage(sender));
+        }
         UserIdent ident = UserIdent.get(args[0], sender);
         if (!ident.hasPlayer())
             throw new PlayerNotFoundException("commands.generic.player.notFound");
