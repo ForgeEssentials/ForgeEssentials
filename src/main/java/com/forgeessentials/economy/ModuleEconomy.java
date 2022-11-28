@@ -80,7 +80,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public static final String PERM_BOUNTY_MESSAGE = PERM_BOUNTY + ".message";
 
     public static final String CONFIG_CATEGORY = "Economy";
-    public static final String CATEGORY_ITEM = CONFIG_CATEGORY + Configuration.CATEGORY_SPLITTER + "ItemPrices";
+    public static final String CATEGORY_ITEM = CONFIG_CATEGORY + "-" + "ItemPrices";
 
     public static final int DEFAULT_ITEM_PRICE = 0;
 
