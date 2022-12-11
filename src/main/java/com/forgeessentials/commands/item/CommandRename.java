@@ -1,17 +1,27 @@
 package com.forgeessentials.commands.item;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandRename extends BaseCommand
 {
+
+    public CommandRename(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -38,21 +48,25 @@ public class CommandRename extends BaseCommand
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length == 0)
-            throw new TranslatedCommandException(getUsage(sender));
+        return builder
+                .then(Commands.argument("name", MessageArgument.message())
+                        .executes(CommandContext -> execute(CommandContext)
+                                )
+                );
+    }
 
-        ItemStack is = sender.inventory.getSelected();
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+
+        ItemStack is = getServerPlayer(ctx.getSource()).getMainHandItem();
         if (is == ItemStack.EMPTY)
             throw new TranslatedCommandException("You are not holding a valid item.");
 
-        StringBuilder sb = new StringBuilder();
-        for (String arg : args)
-        {
-            sb.append(arg + " ");
-        }
-        is.setStackDisplayName(sb.toString().trim());
+        String nameS = MessageArgument.getMessage(ctx, "name").getString().trim();
+        is.setHoverName(new StringTextComponent(nameS));
+        return Command.SINGLE_SUCCESS;
     }
-
 }

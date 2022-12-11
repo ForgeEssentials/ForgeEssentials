@@ -1,27 +1,31 @@
 package com.forgeessentials.commands.item;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EnchantmentArgument;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.CommandParserArgs;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandEnchant extends ParserCommandBase
+public class CommandEnchant extends BaseCommand
 {
+    public CommandEnchant(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     private static final String PERM = ModuleCommands.PERM + ".enchant";
 
     @Override
@@ -49,47 +53,44 @@ public class CommandEnchant extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        ItemStack stack = arguments.senderPlayer.getMainHandItem();
+        return builder
+                .then(Commands.argument("name", EnchantmentArgument.enchantment())
+                        .then(Commands.literal("maxlevel")
+                                .executes(CommandContext -> execute(CommandContext, "maxlevel")
+                                        )
+                                )
+                        )
+                        .then(Commands.argument("level", IntegerArgumentType.integer(1, Integer.MAX_VALUE))
+                                .then(Commands.literal("custom")
+                                        .executes(CommandContext -> execute(CommandContext, "level")
+                                                )
+                                )
+                        );
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
         if (stack == ItemStack.EMPTY)
             throw new TranslatedCommandException("You are not holding a valid item");
 
-        List<String> validEnchantmentNames = new ArrayList<>();
-        Map<String, Enchantment> validEnchantments = new HashMap<>();
-        for (Enchantment enchantment : ForgeRegistries.ENCHANTMENTS)
-            if (enchantment != null && enchantment.canApplyAtEnchantingTable(stack))
-            {
-                String name = I18n.translateToLocal(enchantment.getName()).replaceAll(" ", "");
-                validEnchantmentNames.add(name);
-                validEnchantments.put(name.toLowerCase(), enchantment);
-            }
-
-        if (arguments.isEmpty())
-        {
-            if (arguments.isTabCompletion)
-                return;
-            arguments.confirm("Possible enchantments: %s", StringUtils.join(validEnchantmentNames, ", "));
-            return;
-        }
-
         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
-        while (!arguments.isEmpty())
-        {
-            arguments.tabComplete(validEnchantmentNames);
-            String name = arguments.remove();
-            Enchantment enchantment = validEnchantments.get(name.toLowerCase());
-            if (enchantment == null)
-                throw new TranslatedCommandException("Invalid enchantment name %s!", name);
 
-            if (arguments.isEmpty())
-            {
-                enchantments.put(enchantment, enchantment.getMaxLevel());
-                break;
-            }
-            enchantments.put(enchantment, Math.min(enchantment.getMaxLevel(), arguments.parseInt()));
+        Enchantment enchantment = EnchantmentArgument.getEnchantment(ctx, "name");
+        if (enchantment == null | !enchantment.canApplyAtEnchantingTable(stack))
+            throw new TranslatedCommandException("Invalid enchantment %s!", enchantment);
+
+        if (params.toString() == "maxlevel")
+        {
+            enchantments.put(enchantment, enchantment.getMaxLevel());
+        }else 
+        {
+        enchantments.put(enchantment, Math.min(enchantment.getMaxLevel(), IntegerArgumentType.getInteger(ctx, "level")));
         }
         EnchantmentHelper.setEnchantments(enchantments, stack);
+        return Command.SINGLE_SUCCESS;
     }
-
 }

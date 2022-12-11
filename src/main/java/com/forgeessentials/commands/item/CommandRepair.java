@@ -1,23 +1,30 @@
 package com.forgeessentials.commands.item;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandRepair extends BaseCommand
 {
+
+    public CommandRepair(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -50,67 +57,102 @@ public class CommandRepair extends BaseCommand
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length == 0)
-        {
-            ItemStack item = sender.getMainHandItem();
-            if (item == null)
-                throw new TranslatedCommandException("You are not holding a reparable item.");
-            item.setDamageValue(0);
-        }
-        else if (args.length == 1 && PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
-        {
-            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player == null)
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-
-            ItemStack item = player.getMainHandItem();
-            if (item != null)
-                item.setDamageValue(0);
-        }
-        else
-        {
-            throw new TranslatedCommandException(getUsage(sender));
-        }
+        return builder
+                .then(Commands.literal("self")
+                        .then(Commands.literal("Custom")
+                                .then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                        .executes(CommandContext -> execute(CommandContext, "Custom","Self")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("MaxValue")
+                                .executes(CommandContext -> execute(CommandContext, "Max", "Self")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("others")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .then(Commands.literal("Custom")
+                                        .then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                                .executes(CommandContext -> execute(CommandContext, "Custom","Others")
+                                                        )
+                                                )
+                                        )
+                                
+                                .then(Commands.literal("MaxValue")
+                                        .executes(CommandContext -> execute(CommandContext, "Max", "Others")
+                                                )
+                                        )
+                                )
+                        );
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length == 1)
+        if (params[1].toString() =="self")
         {
-            // PlayerSelector.matchPlayers(sender, args[0])
-            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
+            if(params[0].toString() == "Max") 
             {
-
-                ItemStack item = player.getMainHandItem();
-
-                if (item != null)
-                {
-                    item.setDamageValue(0);
-                }
-
+                ItemStack item = getServerPlayer(ctx.getSource()).getMainHandItem();
+                if (item == null)
+                    throw new TranslatedCommandException("You are not holding a reparable item.");
+                item.setDamageValue(0);
             }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+            else if (params[0].toString() == "Custom") 
+            {
+                ItemStack item = getServerPlayer(ctx.getSource()).getMainHandItem();
+                if (item == null)
+                    throw new TranslatedCommandException("You are not holding a reparable item.");
+                item.setDamageValue(IntegerArgumentType.getInteger(ctx, "amount"));
+            } 
         }
-        else
-            throw new TranslatedCommandException(getUsage(sender));
+        else if (params[1].toString() =="others" && PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
+        {
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if(params[0].toString() == "Max") 
+            {
+                ItemStack item = player.getMainHandItem();
+                if (item != null)
+                    item.setDamageValue(0);
+            }
+            else if (params[0].toString() == "Custom") 
+            {
+                ItemStack item = player.getMainHandItem();
+                if (item != null)
+                item.setDamageValue(IntegerArgumentType.getInteger(ctx, "amount"));
+            } 
+        }
+        return Command.SINGLE_SUCCESS;
+
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length == 1)
+        if (params[1].toString() =="others")
         {
-            return matchToPlayers(args);
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if(params[0].toString() == "Max") 
+            {
+                ItemStack item = player.getMainHandItem();
+                if (item != null)
+                    item.setDamageValue(0);
+            }
+            else if (params[0].toString() == "Custom") 
+            {
+                ItemStack item = player.getMainHandItem();
+                if (item != null)
+                item.setDamageValue(IntegerArgumentType.getInteger(ctx, "amount"));
+            }
         }
-        else
+        else //params[1].toString() =="self"
         {
-            return null;
-        }
-    }
+            throw new TranslatedCommandException("You must select a player!");
 
+        }
+        return Command.SINGLE_SUCCESS;
+    }
 }

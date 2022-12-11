@@ -32,6 +32,7 @@ import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -110,7 +111,7 @@ public class CommandKit extends BaseCommand implements ConfigurableCommand
         if (arguments.isEmpty())
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Available kits: %s", StringUtils.join(getAvailableKits(arguments), ", "));
-            return;
+            return Command.SINGLE_SUCCESS;
         }
 
         arguments.tabComplete(getAvailableKits(arguments));
@@ -124,7 +125,7 @@ public class CommandKit extends BaseCommand implements ConfigurableCommand
             if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),PERM + "." + kit.getName()))
                 throw new TranslatedCommandException("You are not allowed to use this kit");
             kit.giveKit((PlayerEntity) ctx.getSource().getEntity());
-            return;
+            return Command.SINGLE_SUCCESS;
         }
 
         APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),PERM_ADMIN);
@@ -172,6 +173,7 @@ public class CommandKit extends BaseCommand implements ConfigurableCommand
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     @SubscribeEvent

@@ -271,7 +271,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandFEInfo("feinfo", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandFeReload("fereload", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandFeSettings());
-        FECommandManager.registerCommand(new CommandWand());
+        FECommandManager.registerCommand(new CommandWand("/fewand", 0, true));
         FECommandManager.registerCommand(new CommandUuid("uuid", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandFEWorldInfo("feworldinfo", 4, true));//TODO fix perms
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))

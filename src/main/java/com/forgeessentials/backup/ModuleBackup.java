@@ -27,6 +27,7 @@ import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -170,13 +171,6 @@ public class ModuleBackup extends ConfigLoaderBase
     }
 
     @Override
-    public void load(Builder BUILDER, boolean isReload)
-    {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public void bakeConfig(boolean reload)
     {
         // TODO Auto-generated method stub
@@ -191,7 +185,7 @@ public class ModuleBackup extends ConfigLoaderBase
     }
 
     @Override
-    public void load(Configuration config, boolean isReload)
+    public void load(ForgeConfigSpec.Builder BUILDER, boolean isReload)
     {
         backupDefault = config.get(CONFIG_CAT, "backup_default", true, "Backup all worlds by default").getBoolean();
         backupInterval = config.get(CONFIG_CAT, "backup_interval", 60, "Automatic backup interval in minutes (0 to disable)").getInt();

@@ -78,7 +78,7 @@ public class ModuleCommands
     public void load(FEModuleCommonSetupEvent event)
     {
         FECommandManager.registerCommand(new CommandTime());
-        FECommandManager.registerCommand(new CommandEnchant());
+        FECommandManager.registerCommand(new CommandEnchant("enchant", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandDechant("dechant", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandLocate());
         FECommandManager.registerCommand(new CommandRules("rules", 0, true));
@@ -104,7 +104,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandSmite());
         FECommandManager.registerCommand(new CommandBurn());
         FECommandManager.registerCommand(new CommandPotion());
-        FECommandManager.registerCommand(new CommandRepair());
+        FECommandManager.registerCommand(new CommandRepair("repair", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandHeal());
         FECommandManager.registerCommand(new CommandKill());
         FECommandManager.registerCommand(new CommandGameMode("gamemode", 4, true));//TODO fix perms
@@ -117,7 +117,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(bind);
         MinecraftForge.EVENT_BUS.register(bind);
 
-        FECommandManager.registerCommand(new CommandRename());
+        FECommandManager.registerCommand(new CommandRename("rename", 4, true));//TODO fix perms
         // FECommandManager.registerCommand(new CommandVanish());
         FECommandManager.registerCommand(new CommandPush());
         FECommandManager.registerCommand(new CommandDrop("drop", 4, true));//TODO fix perms
