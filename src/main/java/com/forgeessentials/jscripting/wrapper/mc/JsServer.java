@@ -10,6 +10,7 @@ import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -224,7 +225,11 @@ public class JsServer
         try
         {
             ITextComponent component = ITextComponent.Serializer.fromJson(msg);
-            server.getPlayerList().sendMessage(component);
+
+            for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+            {
+                server.getPlayerList().broadcastMessage(component, ChatType.CHAT, p.getUUID());
+            }
         }
         catch (JsonParseException jsonparseexception)
         {

@@ -2,10 +2,11 @@ package com.forgeessentials.core.preloader.mixin.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.FireBlock;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.b3d.B3DModel.Face;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.world.FireEvent;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,7 +30,7 @@ public class MixinBlockFire
             ),
             cancellable = true,
             remap = false)
-    public void handleTryCatchFire(World world, BlockPos pos, int chance, Random random, int argValue1, Face face, CallbackInfo ci)
+    public void handleTryCatchFire(World world, BlockPos pos, int chance, Random random, int argValue1, Direction face, CallbackInfo ci)
     {
         // System.out.println("Mixin : Fire destroyed block and spread to below block");
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))
@@ -38,11 +39,11 @@ public class MixinBlockFire
         }
         else
         {
-            BlockPos source = pos.add(face.getFrontOffsetX(), face.getFrontOffsetY(), face.getFrontOffsetZ());
+            BlockPos source = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ());
             if (MinecraftForge.EVENT_BUS.post(new FireEvent.Spread(world, pos, source)))
             {
                 // System.out.println("Injector: Fire destroyed but could not spread to block below");
-                world.setBlockToAir(pos);
+                world.setBlock(pos, Blocks.AIR.defaultBlockState(), 1);
                 ci.cancel();
             }
         }
@@ -55,7 +56,7 @@ public class MixinBlockFire
                     target = "Lnet/minecraft/world/World;setBlockToAir(Lnet/minecraft/util/math/BlockPos;)Z"),
             cancellable = true,
             remap = false)
-    public void handleTryCatchFireAir(World world, BlockPos pos, int chance, Random random, int argValue1, Face face, CallbackInfo ci)
+    public void handleTryCatchFireAir(World world, BlockPos pos, int chance, Random random, int argValue1, Direction face, CallbackInfo ci)
     {
         // System.out.println("Mixin : Fire destroyed block");
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))

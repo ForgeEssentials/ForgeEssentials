@@ -1,13 +1,17 @@
 package com.forgeessentials.jscripting.wrapper.mc.world;
 
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -62,10 +66,15 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         return that.getDifficulty().ordinal();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "null" })
     public JsEntityPlayerList getPlayerEntities()
     {
-        return new JsEntityPlayerList(that.playerEntities);
+        List<PlayerEntity> players = null;
+        for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+        {
+            players.add((PlayerEntity) player);
+        }
+        return new JsEntityPlayerList(players);
     }
 
     // TODO: this should take an entity type somehow
@@ -201,7 +210,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public JsBlock getTopBlock(int x, int z)
     {
-        return JsBlock.get(that.getBlockState(that.getTopSolidOrLiquidBlock(new BlockPos(x, 0, z))).getBlock());
+        return JsBlock.get(that.getBlockState(new BlockPos(x,getHeightValue(x,z), z)).getBlock());
     }
 
     /**
@@ -234,15 +243,15 @@ public class JsWorld<T extends World> extends JsWrapper<T>
      */
     public int getBlockLightValue_do(int x, int y, int z, boolean isHalfBlock)
     {
-        return that.getLight(new BlockPos(x, y, z), isHalfBlock);
-    }
+        return that.getLightEmission(new BlockPos(x, y, z));//, isHalfBlock);
+    }//Half Slabs have no different properties anymore?
 
     /**
      * Returns the y coordinate with a block in it at this x, z coordinate
      */
     public int getHeightValue(int x, int z)
     {
-        return that.getHeight(new BlockPos(x, 0, z)).getY();
+        return that.getHeight(Heightmap.Type.WORLD_SURFACE_WG, x, z);
     }
 
     /**

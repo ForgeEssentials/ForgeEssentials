@@ -2,7 +2,6 @@ package com.forgeessentials.jscripting.wrapper.mc.item;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 import com.forgeessentials.data.v2.DataManager;
@@ -19,37 +18,38 @@ public class JsItemStack extends JsWrapper<ItemStack> // ItemStack is final
      */
     public static JsItemStack get(ItemStack itemStack)
     {
-        return itemStack == ItemStack.EMPTY ? EMPTY : new JsItemStack(itemStack);
+        return itemStack == ItemStack.EMPTY ? EMPTY : new JsItemStack(itemStack,-1);
     }
 
-    public static final JsItemStack EMPTY = new JsItemStack(ItemStack.EMPTY);
+    public static final JsItemStack EMPTY = new JsItemStack(ItemStack.EMPTY,-1);
 
-    private JsItemStack(ItemStack that)
+    private JsItemStack(ItemStack that,int damage)
     {
         super(that);
+        if(damage!=-1) {
+            setDamage(damage);
+        }
         this.item = JsItem.get(that.getItem());
     }
 
     public JsItemStack(JsBlock block, int stackSize)
     {
-        this(new ItemStack(block.getThat(), stackSize));
+        this(new ItemStack(block.getThat(), stackSize),-1);
     }
 
     public JsItemStack(JsBlock block, int stackSize, int damage)
     {
-        this(new ItemStack(block.getThat(), stackSize, damage));
+        this(new ItemStack(block.getThat(), stackSize), damage);
     }
 
     public JsItemStack(JsItem item, int stackSize)
     {
-        this(new ItemStack(item.getThat(), stackSize));
+        this(new ItemStack(item.getThat(), stackSize),-1);
     }
 
     public JsItemStack(JsItem item, int stackSize, int damage)
     {
-        //CompoundNBT c = new CompoundNBT().putInt("Damage", Math.max(0, damage));
-        
-        this(new ItemStack(item.getThat(), stackSize, damage));
+        this(new ItemStack(item.getThat(), stackSize), damage);
     }
 
     public JsItem getItem()

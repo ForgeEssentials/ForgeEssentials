@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
@@ -51,17 +52,13 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
 
     public void setPosition(double x, double y, double z)
     {
-        that.position().x = x;
-        that.position().y = y;
-        that.position().z = z;
+        that.setPos(x, x, z);
         ((ServerPlayerEntity) that).connection.teleport(x, y, z, that.yRot, that.xRot);
     }
 
     public void setPosition(double x, double y, double z, float yaw, float pitch)
     {
-        that.position().x = x;
-        that.position().y = y;
-        that.position().z = z;
+        that.setPos(x, x, z);
         ((ServerPlayerEntity) that).connection.teleport(x, y, z, yaw, pitch);
     }
 
@@ -179,10 +176,10 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
     /**
      * When searching for vulnerable players, if a player is invisible, the return value of this is the chance of seeing them anyway.
      */
-    public float getArmorVisibility()
-    {
-        return that.getArmorVisibility();
-    }
+    //public float getArmorVisibility()
+    //{
+    //    return that.getArmorVisibility();
+    //} //NOT A THING ANYMORE
 
     public boolean interactWith(JsEntity<?> entity)
     {
@@ -215,7 +212,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
      */
     public void destroyCurrentEquippedItem()
     {
-        that.resetActiveHand();
+        that.setItemInHand(Hand.MAIN_HAND, ItemStack.EMPTY);;
     }
 
     /**

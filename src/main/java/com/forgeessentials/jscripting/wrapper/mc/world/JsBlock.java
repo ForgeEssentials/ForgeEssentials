@@ -4,12 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
-//import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraft.util.ResourceLocation;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.GameData;
 
 /**
  * @tsd.static Block
@@ -35,7 +34,7 @@ public class JsBlock extends JsWrapper<Block>
 
     public static JsBlock get(String name)
     {
-        Block block = ForgeRegistries.BLOCKS.getBlockFromName(name);
+        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(name));
         return block == null ? null : JsBlock.get(block);
     }
 
