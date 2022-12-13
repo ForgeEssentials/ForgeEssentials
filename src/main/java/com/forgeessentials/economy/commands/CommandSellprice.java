@@ -25,15 +25,20 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
 
-public class CommandSellprice extends ParserCommandBase
+public class CommandSellprice extends BaseCommand
 {
+
+    public CommandSellprice(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     private static File priceFile = new File(ForgeEssentials.getFEDirectory(), "prices.txt");
 

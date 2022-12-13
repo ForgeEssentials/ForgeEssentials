@@ -16,13 +16,13 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.world.CommandWeather.WeatherData;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandTime extends ParserCommandBase implements ConfigurableCommand
+public class CommandTime extends BaseCommand implements ConfigurableCommand
 {
 
     public static final int dayTimeStart = 1;

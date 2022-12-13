@@ -6,15 +6,20 @@ import net.minecraft.command.CommandException;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.ScriptUpgrader;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandJScript extends ParserCommandBase
+public class CommandJScript extends BaseCommand
 {
+
+    public CommandJScript(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()

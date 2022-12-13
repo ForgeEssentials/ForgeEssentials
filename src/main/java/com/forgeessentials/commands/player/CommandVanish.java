@@ -13,7 +13,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.BaseCommand;
-import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
 

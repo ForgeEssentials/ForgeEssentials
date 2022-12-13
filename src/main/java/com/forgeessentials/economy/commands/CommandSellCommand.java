@@ -23,6 +23,11 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class CommandSellCommand extends BaseCommand
 {
 
+    public CommandSellCommand(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     @Override
     public String getPrimaryAlias()
     {

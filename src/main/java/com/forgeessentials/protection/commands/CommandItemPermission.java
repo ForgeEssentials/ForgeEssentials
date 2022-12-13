@@ -10,12 +10,12 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandItemPermission extends ParserCommandBase
+public class CommandItemPermission extends BaseCommand
 {
 
     @Override

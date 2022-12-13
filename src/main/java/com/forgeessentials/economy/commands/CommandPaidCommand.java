@@ -20,6 +20,11 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandPaidCommand extends BaseCommand
 {
+    public CommandPaidCommand(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     @Override
     public String getPrimaryAlias()
     {

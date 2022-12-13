@@ -8,13 +8,13 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
 
 import java.util.Iterator;
 
-public class CommandBiome extends ParserCommandBase
+public class CommandBiome extends BaseCommand
 {
 
     @Override

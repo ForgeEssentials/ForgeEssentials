@@ -23,14 +23,14 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandHelp extends ParserCommandBase implements ConfigLoader
+public class CommandHelp extends BaseCommand implements ConfigLoader
 {
 
     private static String[] messages;

@@ -12,18 +12,17 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.CommandParserArgs.CancelParsingException;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 
-public class CommandFaction extends ParserCommandBase
+public class CommandFaction extends BaseCommand
 {
 
     public static final String MSG_FACTION_REQUIRED = "You need to be in a faction to use this command";

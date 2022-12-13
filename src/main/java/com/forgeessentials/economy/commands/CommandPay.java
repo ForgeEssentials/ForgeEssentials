@@ -6,7 +6,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
@@ -14,8 +14,13 @@ import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandPay extends ParserCommandBase
+public class CommandPay extends BaseCommand
 {
+
+    public CommandPay(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()

@@ -14,14 +14,14 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 
-public class CommandRollback extends ParserCommandBase
+public class CommandRollback extends BaseCommand
 {
 
     public static final String PERM = ModulePlayerLogger.PERM_COMMAND + ".rollback";

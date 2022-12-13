@@ -7,15 +7,20 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
 
-public class CommandWallet extends ParserCommandBase
+public class CommandWallet extends BaseCommand
 {
+
+    public CommandWallet(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String PERM = ModuleEconomy.PERM_COMMAND + ".wallet";
     public static final String PERM_OTHERS = PERM + ".others";

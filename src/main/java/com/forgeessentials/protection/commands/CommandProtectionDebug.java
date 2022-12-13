@@ -5,12 +5,12 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandProtectionDebug extends ParserCommandBase
+public class CommandProtectionDebug extends BaseCommand
 {
 
     @Override

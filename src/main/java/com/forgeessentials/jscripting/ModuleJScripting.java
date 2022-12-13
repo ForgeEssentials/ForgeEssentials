@@ -111,7 +111,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void load(FEModuleCommonSetupEvent event)
     {
-        FECommandManager.registerCommand(new CommandJScript());
+        FECommandManager.registerCommand(new CommandJScript("fescript", 4, true));//TODO fix perms
         try
         {
             copyResourceFileIfNotExists("mc.d.ts");

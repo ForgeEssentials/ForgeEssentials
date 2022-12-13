@@ -20,8 +20,13 @@ import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandRemote extends ParserCommandBase
+public class CommandRemote extends BaseCommand
 {
+
+    public CommandRemote(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()

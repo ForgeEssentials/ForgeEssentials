@@ -7,14 +7,14 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.NamedWorldArea;
 import com.forgeessentials.util.NamedWorldPoint;
 import com.forgeessentials.util.selections.SelectionHandler;
 
-public class CommandPortal extends ParserCommandBase
+public class CommandPortal extends BaseCommand
 {
 
     public static final String PERM = "fe.teleport.portal";

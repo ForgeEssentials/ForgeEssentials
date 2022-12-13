@@ -9,11 +9,11 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandSetSpawn extends ParserCommandBase
+public class CommandSetSpawn extends BaseCommand
 {
 
     public static final String PERM_SETSPAWN = "fe.perm.setspawn";

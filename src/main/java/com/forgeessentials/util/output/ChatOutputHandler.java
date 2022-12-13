@@ -93,8 +93,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void broadcast(String message)
     {
-        broadcast(new StringTextComponent(message));
-        ;
+        broadcast(new StringTextComponent(message));;
     }
 
     /**

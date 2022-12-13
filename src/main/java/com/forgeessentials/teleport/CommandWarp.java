@@ -13,14 +13,14 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
 
-public class CommandWarp extends ParserCommandBase
+public class CommandWarp extends BaseCommand
 {
 
     public static class Warp extends WarpPoint
