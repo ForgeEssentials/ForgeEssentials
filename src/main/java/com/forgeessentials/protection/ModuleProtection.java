@@ -133,20 +133,27 @@ public class ModuleProtection
     };
 
     private static final DamageSource[] damageByTypes = new DamageSource[] {
-            DamageSource.ANVIL,
-            DamageSource.CACTUS,
-            DamageSource.DROWN,
-            DamageSource.FALL,
-            DamageSource.FALLING_BLOCK,
-            DamageSource.GENERIC,
             DamageSource.IN_FIRE,
-            DamageSource.IN_WALL,
-            DamageSource.LAVA,
-            DamageSource.MAGIC,
+            DamageSource.LIGHTNING_BOLT,
             DamageSource.ON_FIRE,
-            DamageSource.OUT_OF_WORLD,
+            DamageSource.LAVA,
+            DamageSource.HOT_FLOOR,
+            DamageSource.IN_WALL,
+            DamageSource.CRAMMING,
+            DamageSource.DROWN,
             DamageSource.STARVE,
+            DamageSource.CACTUS,
+            DamageSource.FALL,
+            DamageSource.FLY_INTO_WALL,
+            DamageSource.OUT_OF_WORLD,
+            DamageSource.GENERIC,
+            DamageSource.MAGIC,
             DamageSource.WITHER,
+            DamageSource.ANVIL,
+            DamageSource.FALLING_BLOCK,
+            DamageSource.DRAGON_BREATH,
+            DamageSource.DRY_OUT,
+            DamageSource.SWEET_BERRY_BUSH,
     };
 
     public static Map<UUID, String> debugModePlayers = new HashMap<>();
@@ -207,7 +214,7 @@ public class ModuleProtection
         }
         for (DamageSource dmgType : damageByTypes)
         {
-            APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + dmgType.getDamageType(), DefaultPermissionLevel.ALL, "");
+            APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + dmgType.msgId, DefaultPermissionLevel.ALL, "");
         }
         APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + ".explosion", DefaultPermissionLevel.ALL, "");
 
