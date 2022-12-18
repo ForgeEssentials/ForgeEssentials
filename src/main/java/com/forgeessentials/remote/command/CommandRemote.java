@@ -1,6 +1,7 @@
 package com.forgeessentials.remote.command;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -19,6 +20,9 @@ import com.forgeessentials.remote.ModuleRemote;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandRemote extends BaseCommand
 {
@@ -36,12 +40,15 @@ public class CommandRemote extends BaseCommand
 
     private static final String[] parseMainArgs = { "regen", "setkey", "kick", "start", "stop", "block", "qr" };
 
-    /**
-     * @param args
-     * @throws CommandException
-     */
     @Override
-    public void parse(CommandParserArgs args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (args.isTabCompletion && args.size() == 1)
         {
@@ -215,5 +222,4 @@ public class CommandRemote extends BaseCommand
     {
         return DefaultPermissionLevel.ALL;
     }
-
 }

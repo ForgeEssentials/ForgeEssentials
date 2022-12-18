@@ -1,6 +1,7 @@
 package com.forgeessentials.economy.commands;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -14,6 +15,9 @@ import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandSell extends BaseCommand
 {
@@ -54,7 +58,14 @@ public class CommandSell extends BaseCommand
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         final boolean holdingItem;
         final ItemStack itemStack;
@@ -157,5 +168,4 @@ public class CommandSell extends BaseCommand
         }
         Questioner.addChecked(arguments.sender, message, handler, 20);
     }
-
 }

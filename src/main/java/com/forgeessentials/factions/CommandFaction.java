@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -21,9 +22,18 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandFaction extends BaseCommand
 {
+
+    public CommandFaction(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String MSG_FACTION_REQUIRED = "You need to be in a faction to use this command";
     public static final String MSG_UNKNOWN_FACTION = "Faction %s does not exist";
@@ -62,13 +72,20 @@ public class CommandFaction extends BaseCommand
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (arguments.isEmpty())
         {
             if (arguments.hasPermission(ModuleFactions.PERM_LIST))
                 arguments.confirm("/faction list");
-            return;
+            return Command.SINGLE_SUCCESS;
         }
 
         String faction = null;
@@ -397,5 +414,4 @@ public class CommandFaction extends BaseCommand
         arguments.confirm("/faction " + msg);
         throw new CancelParsingException();
     }
-
 }

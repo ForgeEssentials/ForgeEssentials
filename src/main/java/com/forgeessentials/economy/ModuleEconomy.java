@@ -102,14 +102,14 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         plotManager = new PlotManager();
         shopManager = new ShopManager();
 
-        FECommandManager.registerCommand(new CommandWallet());
-        FECommandManager.registerCommand(new CommandPay());
-        FECommandManager.registerCommand(new CommandSell());
-        FECommandManager.registerCommand(new CommandPaidCommand());
-        FECommandManager.registerCommand(new CommandSellCommand());
-        FECommandManager.registerCommand(new CommandTrade());
-        FECommandManager.registerCommand(new CommandSellprice());
-        FECommandManager.registerCommand(new CommandRequestPayment());
+        FECommandManager.registerCommand(new CommandWallet("wallet", 0, true));
+        FECommandManager.registerCommand(new CommandPay("pay", 0, true));
+        FECommandManager.registerCommand(new CommandSell("sell", 0, true));
+        FECommandManager.registerCommand(new CommandPaidCommand("paidcommand", 0, true));
+        FECommandManager.registerCommand(new CommandSellCommand("sellcommand", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandTrade("trade", 0, true));
+        FECommandManager.registerCommand(new CommandSellprice("sellprice", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandRequestPayment("requestpayment", 4, true));//TODO fix perms
     }
 
     @SuppressWarnings("unchecked")

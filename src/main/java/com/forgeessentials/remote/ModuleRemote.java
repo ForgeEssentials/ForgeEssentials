@@ -183,7 +183,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP,
                 "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
 
-        FECommandManager.registerCommand(new CommandRemote("remote", 4, true));
+        FECommandManager.registerCommand(new CommandRemote("remote", 0, true));
     }
 
     /**

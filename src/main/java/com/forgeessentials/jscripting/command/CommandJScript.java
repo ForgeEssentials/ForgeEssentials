@@ -3,6 +3,7 @@ package com.forgeessentials.jscripting.command;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -12,6 +13,9 @@ import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.ScriptUpgrader;
 import com.forgeessentials.util.CommandParserArgs;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandJScript extends BaseCommand
 {
@@ -52,12 +56,15 @@ public class CommandJScript extends BaseCommand
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
-        {
-            return;
-        }
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
 
         arguments.tabComplete("list", "reload", "upgrade");
         String subcmd = arguments.remove().toLowerCase();
@@ -114,5 +121,4 @@ public class CommandJScript extends BaseCommand
             }
         }
     }
-
 }

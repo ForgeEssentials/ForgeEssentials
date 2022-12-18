@@ -161,8 +161,8 @@ public class ModuleProtection
     {
         protectionHandler = new ProtectionEventHandler();
 
-        FECommandManager.registerCommand(new CommandItemPermission());
-        FECommandManager.registerCommand(new CommandProtectionDebug());
+        FECommandManager.registerCommand(new CommandItemPermission("itemperm", 0, true));
+        FECommandManager.registerCommand(new CommandProtectionDebug("protectdebug", 0, true));
         // FECommandManager.registerCommand(new CommandPlaceblock());
     }
 

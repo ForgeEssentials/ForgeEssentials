@@ -73,7 +73,7 @@ public class ModuleFactions
     @SubscribeEvent
     public void load(FEModuleCommonSetupEvent event)
     {
-        FECommandManager.registerCommand(new CommandFaction());
+        FECommandManager.registerCommand(new CommandFaction("faction", 0, true));
 
         APIRegistry.perms.registerPermissionDescription(PERM_DATA_NAME,
                 "Faction name (if this permission is set and the group name starts with \"faction_\", a group is considered a faction)");

@@ -9,6 +9,7 @@ import java.util.Timer;
 import java.util.UUID;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.Zone;
@@ -20,9 +21,17 @@ import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandRollback extends BaseCommand
 {
+
+    public CommandRollback(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String PERM = ModulePlayerLogger.PERM_COMMAND + ".rollback";
     public static final String PERM_ALL = PERM + Zone.ALL_PERMS;
@@ -65,7 +74,14 @@ public class CommandRollback extends BaseCommand
     }
 
     @Override
-    public void parse(CommandParserArgs args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (args.isEmpty())
         {
@@ -245,7 +261,7 @@ public class CommandRollback extends BaseCommand
         ChatOutputHandler.chatConfirmation(args.sender, "Stopped playback");
     }
 
-    private static void help(ICommandSender sender)
+    private static void help(CommandSource sender)
     {
         ChatOutputHandler.chatConfirmation(sender, "/rollback: Start rollback");
         ChatOutputHandler.chatConfirmation(sender, "/rollback start [time]: Start rollback at specified time");
@@ -256,5 +272,4 @@ public class CommandRollback extends BaseCommand
         ChatOutputHandler.chatConfirmation(sender, "/rollback confirm: Confirm changes");
         ChatOutputHandler.chatConfirmation(sender, "/rollback cancel: Cancel rollback");
     }
-
 }

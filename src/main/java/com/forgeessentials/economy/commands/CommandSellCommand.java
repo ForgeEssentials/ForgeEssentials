@@ -4,10 +4,12 @@ import java.util.Arrays;
 
 import com.forgeessentials.core.commands.BaseCommand;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +21,10 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandSellCommand extends BaseCommand
 {
@@ -52,11 +58,6 @@ public class CommandSellCommand extends BaseCommand
         return DefaultPermissionLevel.OP;
     }
 
-    public String getUsage(ICommandSender sender)
-    {
-        return "/sellcommand <player> <item> <amount> <meta> <command...>";
-    }
-
     @Override
     public boolean canConsoleUseCommand()
     {
@@ -66,17 +67,19 @@ public class CommandSellCommand extends BaseCommand
     /*
      * Expected structure: "/sellcommand <player> <item> <amount> <meta> <command...>"
      */
+
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length < 5)
-        {
-            throw new InvalidSyntaxException(getUsage(sender));
-        }
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
         UserIdent ident = UserIdent.get(args[0], sender);
         ServerPlayerEntity player = ident.getPlayerMP();
-        if (player == null)
-            throw new PlayerNotFoundException("commands.generic.player.notFound");
 
         String itemName = args[1];
         int amount = parseInt(args[2]);
@@ -97,14 +100,14 @@ public class CommandSellCommand extends BaseCommand
         if (foundStacks < amount)
         {
             ChatOutputHandler.chatError(player, Translator.format("You do not have enough %s to afford this", itemStack.getDisplayName()));
-            return;
+            return Command.SINGLE_SUCCESS;
         }
 
         ChatOutputHandler.chatConfirmation(player, Translator.format("You paid %d x %s", //
                 amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(UserIdent.get(player)).toString()));
 
         args = Arrays.copyOfRange(args, 4, args.length);
-        server.getCommandManager().executeCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player), StringUtils.join(args, " "));
+        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player), StringUtils.join(args, " "));
 
         for (int slot = 0; slot < player.inventory.items.size(); slot++)
         {
@@ -121,5 +124,4 @@ public class CommandSellCommand extends BaseCommand
             }
         }
     }
-
 }
