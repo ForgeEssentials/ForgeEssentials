@@ -1,10 +1,8 @@
 package com.forgeessentials.protection.effect;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.ArrayUtils;
 

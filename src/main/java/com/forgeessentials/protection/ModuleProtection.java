@@ -11,30 +11,73 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.WitherEntity;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
+import net.minecraft.entity.merchant.villager.WanderingTraderEntity;
 import net.minecraft.entity.monster.BlazeEntity;
+import net.minecraft.entity.monster.CaveSpiderEntity;
 import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.monster.DrownedEntity;
+import net.minecraft.entity.monster.ElderGuardianEntity;
 import net.minecraft.entity.monster.EndermanEntity;
+import net.minecraft.entity.monster.EndermiteEntity;
+import net.minecraft.entity.monster.EvokerEntity;
+import net.minecraft.entity.monster.GhastEntity;
 import net.minecraft.entity.monster.GiantEntity;
+import net.minecraft.entity.monster.GuardianEntity;
+import net.minecraft.entity.monster.HoglinEntity;
+import net.minecraft.entity.monster.HuskEntity;
+import net.minecraft.entity.monster.IllusionerEntity;
+import net.minecraft.entity.monster.MagmaCubeEntity;
+import net.minecraft.entity.monster.PhantomEntity;
+import net.minecraft.entity.monster.PillagerEntity;
+import net.minecraft.entity.monster.RavagerEntity;
+import net.minecraft.entity.monster.ShulkerEntity;
 import net.minecraft.entity.monster.SilverfishEntity;
 import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.SlimeEntity;
 import net.minecraft.entity.monster.SpiderEntity;
+import net.minecraft.entity.monster.StrayEntity;
+import net.minecraft.entity.monster.VexEntity;
+import net.minecraft.entity.monster.VindicatorEntity;
 import net.minecraft.entity.monster.WitchEntity;
+import net.minecraft.entity.monster.ZoglinEntity;
 import net.minecraft.entity.monster.ZombieEntity;
+import net.minecraft.entity.monster.ZombieVillagerEntity;
+import net.minecraft.entity.monster.ZombifiedPiglinEntity;
+import net.minecraft.entity.monster.piglin.PiglinBruteEntity;
 import net.minecraft.entity.monster.piglin.PiglinEntity;
+import net.minecraft.entity.passive.BatEntity;
+import net.minecraft.entity.passive.BeeEntity;
+import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.passive.DolphinEntity;
+import net.minecraft.entity.passive.FoxEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MooshroomEntity;
 import net.minecraft.entity.passive.OcelotEntity;
+import net.minecraft.entity.passive.PandaEntity;
+import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.entity.passive.PolarBearEntity;
+import net.minecraft.entity.passive.RabbitEntity;
+import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.passive.SnowGolemEntity;
 import net.minecraft.entity.passive.SquidEntity;
+import net.minecraft.entity.passive.StriderEntity;
+import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.passive.fish.CodEntity;
+import net.minecraft.entity.passive.fish.PufferfishEntity;
 import net.minecraft.entity.passive.fish.SalmonEntity;
 import net.minecraft.entity.passive.fish.TropicalFishEntity;
+import net.minecraft.entity.passive.horse.DonkeyEntity;
 import net.minecraft.entity.passive.horse.HorseEntity;
+import net.minecraft.entity.passive.horse.LlamaEntity;
+import net.minecraft.entity.passive.horse.MuleEntity;
+import net.minecraft.entity.passive.horse.SkeletonHorseEntity;
+import net.minecraft.entity.passive.horse.ZombieHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
@@ -116,19 +159,32 @@ public class ModuleProtection
     public static final String MSG_ZONE_DENIED = "You are not allowed to enter this area!";
 
     private static final Class<?>[] damageEntityClasses = new Class<?>[] {
-            // EntityAgeable
-            VillagerEntity.class,
+            // EntityTradable
+            VillagerEntity.class, WanderingTraderEntity.class,
             // EntityAnimal
-            ChickenEntity.class, CowEntity.class, MooshroomEntity.class, HorseEntity.class, PigEntity.class,
+            ChickenEntity.class, CowEntity.class, MooshroomEntity.class, PigEntity.class, 
+            SheepEntity.class, RabbitEntity.class, PolarBearEntity.class, PandaEntity.class, FoxEntity.class,
+            BeeEntity.class, BatEntity.class,
+            // EntityRidable
+            StriderEntity.class, HorseEntity.class, DonkeyEntity.class, LlamaEntity.class, MuleEntity.class,
+            SkeletonHorseEntity.class, ZombieHorseEntity.class,
             // EntityTameable
-            OcelotEntity.class, WolfEntity.class,
+            OcelotEntity.class, WolfEntity.class, ParrotEntity.class, CatEntity.class,
             // EntityMob
-            BlazeEntity.class, CreeperEntity.class, EndermanEntity.class, GiantEntity.class, SilverfishEntity.class, SkeletonEntity.class,
-            SpiderEntity.class, WitchEntity.class, WitherEntity.class, ZombieEntity.class, PiglinEntity.class,
+            BlazeEntity.class, CreeperEntity.class, EndermanEntity.class, GiantEntity.class, SilverfishEntity.class, 
+            SkeletonEntity.class, SpiderEntity.class, WitchEntity.class, WitherEntity.class, ZombieEntity.class, 
+            PiglinEntity.class, PiglinBruteEntity.class, CaveSpiderEntity.class, DrownedEntity.class, ElderGuardianEntity.class,
+            EndermiteEntity.class, EvokerEntity.class, GhastEntity.class, GuardianEntity.class, HoglinEntity.class,
+            HuskEntity.class, IllusionerEntity.class, MagmaCubeEntity.class, PhantomEntity.class, PillagerEntity.class,
+            RavagerEntity.class, ShulkerEntity.class, SlimeEntity.class, StrayEntity.class, VexEntity.class, VindicatorEntity.class,
+            ZoglinEntity.class, ZombieEntity.class, ZombieVillagerEntity.class, ZombifiedPiglinEntity.class,
             // EntityGolem
             IronGolemEntity.class, SnowGolemEntity.class,
             // EntityWaterMob
-            SquidEntity.class, SalmonEntity.class, TropicalFishEntity.class, CodEntity.class,
+            SquidEntity.class, SalmonEntity.class, TropicalFishEntity.class, CodEntity.class, TurtleEntity.class,
+            DolphinEntity.class, PufferfishEntity.class,
+            // BossEntity
+            WitherEntity.class, EnderDragonEntity.class,
             /* -- end of list -- */
     };
 
