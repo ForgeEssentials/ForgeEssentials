@@ -23,6 +23,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.teleport.portal.CommandPortal;
 import com.forgeessentials.teleport.portal.PortalManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -81,10 +82,8 @@ public class TeleportModule extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerStartingEvent event)
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        portalManager.load();
-
         FECommandManager.registerCommand(new CommandBack());
         FECommandManager.registerCommand(new CommandBed());
         FECommandManager.registerCommand(new CommandHome());
@@ -98,6 +97,12 @@ public class TeleportModule extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandPortal());
         FECommandManager.registerCommand(new CommandSetSpawn());
         FECommandManager.registerCommand(new CommandJump());
+    }
+
+    @SubscribeEvent
+    public void serverStarting(FEModuleServerStartingEvent event)
+    {
+        portalManager.load();
 
         APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
 

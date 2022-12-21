@@ -21,6 +21,7 @@ import com.forgeessentials.protection.ProtectionEventHandler;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -101,7 +102,11 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         APIRegistry.economy = this;
         plotManager = new PlotManager();
         shopManager = new ShopManager();
+    }
 
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
         FECommandManager.registerCommand(new CommandWallet("wallet", 0, true));
         FECommandManager.registerCommand(new CommandPay("pay", 0, true));
         FECommandManager.registerCommand(new CommandSell("sell", 0, true));

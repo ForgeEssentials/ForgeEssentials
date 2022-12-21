@@ -14,6 +14,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class Questioner extends ServerEventHandler
@@ -28,6 +29,11 @@ public class Questioner extends ServerEventHandler
     public Questioner()
     {
         super();
+    }
+    
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
         FECommandManager.registerCommand(new CommandQuestionerYes("yes", 0, true));
         FECommandManager.registerCommand(new CommandQuestionerNo("no", 0, true));
     }

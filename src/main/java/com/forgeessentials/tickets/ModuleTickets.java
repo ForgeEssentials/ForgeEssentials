@@ -15,6 +15,7 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -45,8 +46,13 @@ public class ModuleTickets implements ConfigSaver
     @SubscribeEvent
     public void load(FEModuleCommonSetupEvent e)
     {
-        FECommandManager.registerCommand(new CommandTicket("ticket", 0, true));
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
+    }
+
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandTicket("ticket", 0, true));
     }
 
     @SubscribeEvent

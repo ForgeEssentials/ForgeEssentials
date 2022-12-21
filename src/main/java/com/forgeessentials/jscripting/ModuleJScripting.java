@@ -34,6 +34,7 @@ import com.forgeessentials.jscripting.wrapper.ScriptExtensionRoot;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -111,7 +112,6 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void load(FEModuleCommonSetupEvent event)
     {
-        FECommandManager.registerCommand(new CommandJScript("fescript", 4, true));//TODO fix perms
         try
         {
             copyResourceFileIfNotExists("mc.d.ts");
@@ -125,6 +125,12 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
         ScriptCompiler.registerExtension(new ScriptExtensionRoot());
         ScriptCompiler.registerExtension(new com.forgeessentials.jscripting.fewrapper.ScriptExtensionRoot());
+    }
+
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandJScript("fescript", 4, true));//TODO fix perms
     }
 
     private void copyResourceFileIfNotExists(String fileName) throws IOException

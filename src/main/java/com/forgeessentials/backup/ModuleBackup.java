@@ -50,6 +50,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -114,7 +115,13 @@ public class ModuleBackup extends ConfigLoaderBase
     public void load(FEModuleCommonSetupEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
         FECommandManager.registerCommand(new CommandBackup("backup", 4, true));//TODO fix perms
+
     }
 
     @SubscribeEvent

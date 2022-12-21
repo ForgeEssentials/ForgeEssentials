@@ -57,6 +57,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 
 @FEModule(name = "Commands", parentMod = ForgeEssentials.class)
 public class ModuleCommands
@@ -77,6 +78,12 @@ public class ModuleCommands
     @SubscribeEvent
     public void load(FEModuleCommonSetupEvent event)
     {
+        APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
+    }
+
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
         FECommandManager.registerCommand(new CommandTime());
         FECommandManager.registerCommand(new CommandEnchant("enchant", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandDechant("dechant", 4, true));//TODO fix perms
@@ -89,15 +96,15 @@ public class ModuleCommands
         
         CommandKit kit = new CommandKit("kit", 0, true);
         FECommandManager.registerCommand(kit);
-        MinecraftForge.EVENT_BUS.register(kit);
+        APIRegistry.getFEEventBus().register(kit);
         
         FECommandManager.registerCommand(new CommandEnderchest("enderchest", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandVirtualchest());
         FECommandManager.registerCommand(new CommandCapabilities());
-
+        //Craft
         CommandCraft craft = new CommandCraft("craft", 4, true);//TODO fix perms
         FECommandManager.registerCommand(craft);
-        MinecraftForge.EVENT_BUS.register(craft);
+        APIRegistry.getFEEventBus().register(craft);
 
         FECommandManager.registerCommand(new CommandPing("ping", 0, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandInventorySee());
@@ -112,10 +119,10 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandServerSettings("serversettings", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandGetCommandBook());
         FECommandManager.registerCommand(new CommandWeather());
-
+        //Bind
         CommandBind bind = new CommandBind("bind", 4, true);//TODO fix perms
         FECommandManager.registerCommand(bind);
-        MinecraftForge.EVENT_BUS.register(bind);
+        APIRegistry.getFEEventBus().register(bind);
 
         FECommandManager.registerCommand(new CommandRename("rename", 4, true));//TODO fix perms
         // FECommandManager.registerCommand(new CommandVanish());
@@ -134,9 +141,6 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandReach("reach", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandVanish("vanish", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandDuplicate("duplicate", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandDelayedAction("delayedaction", 4, true));//TODO fixperms
-
-        APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
+        FECommandManager.registerCommand(new CommandDelayedAction("delayedaction", 4, true));//TODO fix perms
     }
-
 }

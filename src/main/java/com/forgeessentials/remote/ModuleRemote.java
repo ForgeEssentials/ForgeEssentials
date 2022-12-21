@@ -46,6 +46,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -182,7 +183,11 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows login to remote module");
         APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP,
                 "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
+    }
 
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
         FECommandManager.registerCommand(new CommandRemote("remote", 0, true));
     }
 

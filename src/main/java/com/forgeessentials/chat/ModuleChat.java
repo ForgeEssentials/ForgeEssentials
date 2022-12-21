@@ -60,6 +60,7 @@ import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
@@ -173,6 +174,18 @@ public class ModuleChat
     @SubscribeEvent
     public void serverStarting(FEModuleServerStartingEvent e)
     {
+        APIRegistry.perms.registerPermissionDescription(PERM, "Chat permissions");
+        APIRegistry.perms.registerPermission(PERM_CHAT, DefaultPermissionLevel.ALL, "Allow players to use the public chat");
+        APIRegistry.perms.registerPermission(PERM_COLOR, DefaultPermissionLevel.ALL, "Allow players to use colors in the public chat");
+        APIRegistry.perms.registerPermission(PERM_URL, DefaultPermissionLevel.ALL, "Allow players to post clickable links in public chat.");
+        APIRegistry.perms.registerPermissionProperty(PERM_TEXTFORMAT, "", "Textformat colors. USE ONLY THE COLOR CHARACTERS AND NO &");
+        APIRegistry.perms.registerPermissionProperty(PERM_PLAYERFORMAT, "", "Text to show in front of the player name in chat messages");
+        APIRegistry.perms.registerPermissionProperty(PERM_RANGE, "", "Send chat messages only to players in this range of the sender");
+    }
+
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
         FECommandManager.registerCommand(new CommandMute("mute", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandNickname("nickname", 0, true));
         FECommandManager.registerCommand(new CommandPm("pm", 0, true));
@@ -184,14 +197,6 @@ public class ModuleChat
         FECommandManager.registerCommand(new CommandIrc("irc", 0, true));
         FECommandManager.registerCommand(new CommandIrcPm("ircpm", 0, true));
         FECommandManager.registerCommand(new CommandIrcBot("ircbot", 4, true));//TODO fix perms
-
-        APIRegistry.perms.registerPermissionDescription(PERM, "Chat permissions");
-        APIRegistry.perms.registerPermission(PERM_CHAT, DefaultPermissionLevel.ALL, "Allow players to use the public chat");
-        APIRegistry.perms.registerPermission(PERM_COLOR, DefaultPermissionLevel.ALL, "Allow players to use colors in the public chat");
-        APIRegistry.perms.registerPermission(PERM_URL, DefaultPermissionLevel.ALL, "Allow players to post clickable links in public chat.");
-        APIRegistry.perms.registerPermissionProperty(PERM_TEXTFORMAT, "", "Textformat colors. USE ONLY THE COLOR CHARACTERS AND NO &");
-        APIRegistry.perms.registerPermissionProperty(PERM_PLAYERFORMAT, "", "Text to show in front of the player name in chat messages");
-        APIRegistry.perms.registerPermissionProperty(PERM_RANGE, "", "Send chat messages only to players in this range of the sender");
     }
 
     @SubscribeEvent

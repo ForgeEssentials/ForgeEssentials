@@ -38,6 +38,7 @@ import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
@@ -95,12 +96,15 @@ public class ModulePermissions extends ConfigLoaderBase
         itemPermissionManager = new ItemPermissionManager();
 
         MinecraftForge.EVENT_BUS.register(this);
+    }
 
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
         FECommandManager.registerCommand(new CommandZone("area", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandPermissions("perm", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandPromote("promote", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandItemPermission("permitem", 4, true));//TODO fix perms
-
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

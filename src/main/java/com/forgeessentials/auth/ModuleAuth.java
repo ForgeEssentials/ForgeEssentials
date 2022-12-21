@@ -23,6 +23,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.mojang.brigadier.Command;
 
@@ -74,10 +75,15 @@ public class ModuleAuth extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent e)
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
         FECommandManager.registerCommand(new CommandAuth("auth", 0, true));
         FECommandManager.registerCommand(new CommandVIP("vip", 4, true));// TODO PERMS
+    }
+
+    @SubscribeEvent
+    public void load(FEModuleCommonSetupEvent e)
+    {
         NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
 
     }

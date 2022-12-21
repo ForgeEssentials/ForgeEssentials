@@ -94,9 +94,7 @@ import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -172,8 +170,10 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public ForgeEssentials()
     {
+        //Custom Command Arguments
         ArgumentTypes.register("FeGroup", FeGroupArgument.class, new ArgumentSerializer<>(FeGroupArgument::group));
         ArgumentTypes.register("FeIrcPlayer", FeIrcPlayerArgument.class, new ArgumentSerializer<>(FeIrcPlayerArgument::player));
+        //Set mod as server only
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         // new TestClass().test();
     	LoggingHandler.init();
@@ -231,7 +231,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
 
-        APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleCommonSetupEvent(e));
     }
 
     @SubscribeEvent
@@ -266,7 +266,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     }
     
     @SubscribeEvent
-    private void registerCommands(final RegisterCommandsEvent event)
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
         FECommandManager.registerCommand(new CommandFEInfo("feinfo", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandFeReload("fereload", 4, true));//TODO fix perms
@@ -291,7 +291,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
-        APIRegistry.getFEEventBus().post(new FEModuleServerAboutToStartEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerAboutToStartEvent(e));
         new BaublesCompat();
     }
 
@@ -345,12 +345,18 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         try
         {
-            APIRegistry.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
+            APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStoppedEvent(e));
             FECommandManager.clearRegisteredCommands();
             Translator.save();
         } catch (RuntimeException ex) {
             LoggingHandler.felog.fatal("Caught Runtime Exception During Server Stop event! Suppressing Fire!", ex);
         }
+    }
+
+    @SubscribeEvent
+    public void registerCommandEvent(RegisterCommandsEvent event) 
+    {
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleRegisterCommandsEvent(event));
     }
 
     protected void registerPermissions()

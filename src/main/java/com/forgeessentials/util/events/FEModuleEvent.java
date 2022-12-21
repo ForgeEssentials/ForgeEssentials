@@ -7,6 +7,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.event.server.ServerLifecycleEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.Event;
 
 public class FEModuleEvent extends Event
@@ -14,6 +15,7 @@ public class FEModuleEvent extends Event
 
     protected ServerLifecycleEvent event;
     protected FMLCommonSetupEvent event2;
+    protected RegisterCommandsEvent event3;
 
     public FMLCommonSetupEvent getFMLEvent()
     {
@@ -27,7 +29,14 @@ public class FEModuleEvent extends Event
             this.event2 = event;
         }
     }
-
+    
+    public static class FEModuleRegisterCommandsEvent extends FEModuleEvent
+    {
+        public FEModuleRegisterCommandsEvent(RegisterCommandsEvent event)
+        {
+            this.event3 = event;
+        }
+    }
     public static class FEModuleServerAboutToStartEvent extends FEModuleEvent
     {
         public FEModuleServerAboutToStartEvent(FMLServerAboutToStartEvent event)

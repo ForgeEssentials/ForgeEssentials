@@ -19,7 +19,7 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -58,7 +58,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     }
 
     @SubscribeEvent
-    public void moduleInitEvent(FEModuleCommonSetupEvent event)
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
         FECommandManager.registerCommand(new CommandWorldBorder("worldborder", 4, true));//TODO fix perms
     }

@@ -19,6 +19,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 
@@ -73,8 +74,6 @@ public class ModuleFactions
     @SubscribeEvent
     public void load(FEModuleCommonSetupEvent event)
     {
-        FECommandManager.registerCommand(new CommandFaction("faction", 0, true));
-
         APIRegistry.perms.registerPermissionDescription(PERM_DATA_NAME,
                 "Faction name (if this permission is set and the group name starts with \"faction_\", a group is considered a faction)");
         APIRegistry.perms.registerPermission(PERM_DATA_LOCKED, DefaultPermissionLevel.NONE, "Locks a faction so players can only join on invitation");
@@ -105,6 +104,13 @@ public class ModuleFactions
         APIRegistry.perms.setGroupPermission(GROUP_OP, PERM_INVITE, true);
         APIRegistry.perms.setGroupPermission(GROUP_OP, PERM_ALLY, true);
         APIRegistry.perms.setGroupPermission(GROUP_OP, PERM_FF, true);
+    }
+
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandFaction("faction", 0, true));
+
     }
 
     @SubscribeEvent

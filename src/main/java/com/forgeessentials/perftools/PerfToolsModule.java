@@ -7,7 +7,7 @@ import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -30,7 +30,7 @@ public class PerfToolsModule extends ConfigLoaderBase
     protected static boolean warn;
 
     @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent e)
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
         FECommandManager.registerCommand(new CommandServerPerf("perfstats", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandChunkLoaderList("chunkloaderlist", 4, true));//TODO fix perms

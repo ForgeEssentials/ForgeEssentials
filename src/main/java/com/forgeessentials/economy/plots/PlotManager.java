@@ -10,6 +10,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.plots.command.CommandPlot;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -20,12 +21,18 @@ public class PlotManager extends ServerEventHandler
 
     public PlotManager()
     {
-        FECommandManager.registerCommand(new CommandPlot());
     }
 
     public static void serverStarting()
     {
         Plot.registerPermissions();
+    }
+    
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandPlot("plot", 0, true));
+
     }
 
     /* ------------------------------------------------------------ */

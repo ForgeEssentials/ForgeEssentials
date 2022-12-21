@@ -107,6 +107,7 @@ import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -223,7 +224,11 @@ public class ModuleProtection
     public void load(FEModuleCommonSetupEvent e)
     {
         protectionHandler = new ProtectionEventHandler();
+    }
 
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
         FECommandManager.registerCommand(new CommandItemPermission("itemperm", 0, true));
         FECommandManager.registerCommand(new CommandProtectionDebug("protectdebug", 0, true));
         // FECommandManager.registerCommand(new CommandPlaceblock());
