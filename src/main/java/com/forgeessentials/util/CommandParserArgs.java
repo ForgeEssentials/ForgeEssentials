@@ -271,21 +271,6 @@ public class CommandParserArgs
         return false;
     }
 
-    public void tabComplete(String... completionList) throws CancelParsingException
-    {
-        if (!isTabCompletion || args.size() != 1)
-            return;
-        tabCompletion.addAll(BaseCommand.getListOfStringsMatchingLastWord(args.peek(), completionList));
-        throw new CancelParsingException();
-    }
-
-    public void tabComplete(Collection<String> completionList) throws CancelParsingException
-    {
-        if (!isTabCompletion || args.size() != 1)
-            return;
-        tabCompletion.addAll(BaseCommand.getListOfStringsMatchingLastWord(args.peek(), completionList));
-        throw new CancelParsingException();
-    }
 
     public void tabCompleteWord(String completion)
     {
