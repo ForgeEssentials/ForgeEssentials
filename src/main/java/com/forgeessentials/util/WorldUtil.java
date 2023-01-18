@@ -1,11 +1,8 @@
 package com.forgeessentials.util;
 
-import java.util.ArrayList;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -32,7 +29,7 @@ public abstract class WorldUtil
         for (int i = 0; i < h; i++)
         {
             Block block = world.getBlockState(new BlockPos(x, y + i, z)).getBlock();
-            if (block.isPassable(world, new BlockPos(x, y + i, z)))
+            if (block.isPossibleToRespawnInThis())
                 testedH++;
         }
         return testedH == h;
@@ -56,11 +53,11 @@ public abstract class WorldUtil
             BlockPos pos = new BlockPos(x, y + i, z);
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
-            float hardness = block.getBlockHardness(state, world, pos);
+            float hardness = block.getExplosionResistance();//.getBlockHardness(state, world, pos);
             boolean replaceable = replaceRock && (state.getMaterial() == Material.STONE
                     && hardness >= 0 && hardness <= 3
-                    && world.getTileEntity(pos) == null);
-            if (block.isPassable(world, pos) || replaceable)
+                    && world.getBlockEntity(pos) == null);
+            if (block.isPossibleToRespawnInThis() || replaceable)
             {
                 testedH++;
             }

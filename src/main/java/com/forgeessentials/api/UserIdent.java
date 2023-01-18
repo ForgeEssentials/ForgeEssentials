@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
-import net.minecraft.command.arguments.EntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -24,7 +23,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.permissions.ModulePermissions;
@@ -341,11 +339,16 @@ public class UserIdent
                 try
                 {
                 	for (World world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
-                    //Entity entity = CommandBase.getEntity(sender.getServer(), sender, uuidOrUsername);
-                	//world.getEntities(sender.getEntity(), null); ?
-                    return get(entity);
+                	{
+                	    for (Entity entity : world.players()) {
+                	        if (entity.equals(sender.getEntity())) {
+                	            return get(sender);
+                	        }
+                	    }
+                	}
+                    //return get(sender);
                 }
-                catch (CommandException ignored)
+                catch (Exception ignored)
                 {
 
                 }
@@ -727,7 +730,7 @@ public class UserIdent
     {
         try
         {
-            PlayerEntity player = EntitySelector.findSinglePlayer(sender);
+            PlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(sender.getEntity().getUUID());
             if (player != null)
                 return player;
             return getPlayerByUsername(match);

@@ -13,6 +13,7 @@ import net.minecraftforge.server.permission.PermissionAPI;
 /**
  * Transition class to the new Permissions API
  */
+@SuppressWarnings("rawtypes")
 public class PermissionManager
 {
     protected static Map<Command, String> commandPermissions = new WeakHashMap<>();
@@ -84,8 +85,7 @@ public class PermissionManager
      */
     public static void registerCommandPermissions()
     {
-        @SuppressWarnings("unchecked")
-        Map<String, Command> commands = ServerLifecycleHooks.getCurrentServer().getCommands();
+        Map<String, Command> commands = ServerLifecycleHooks.getCurrentServer();
         for (Command command : commands.values())
             if (!commandPermissions.containsKey(command))
                 registerCommandPermission(command);

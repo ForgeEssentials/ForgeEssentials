@@ -73,7 +73,7 @@ public class ShopData
     public ShopData(WorldPoint point, ItemFrameEntity frame)
     {
         this.pos = point;
-        this.itemFrameId = frame.getPersistentID();
+        this.itemFrameId = frame.getUUID();
         this.itemFrame = new WeakReference<ItemFrameEntity>(frame);
     }
 
@@ -85,7 +85,7 @@ public class ShopData
 
         // if (!ItemUtil.isSign(signPosition.getBlock())) return;
         ITextComponent[] text = ItemUtil.getSignText(pos);
-        if (text == null || text.length < 2 || !ShopManager.shopTags.contains(text[0].getUnformattedText()))
+        if (text == null || text.length < 2 || !ShopManager.shopTags.contains(text[0].plainCopy().getContents()))
         {
             error = Translator.translate("Sign header missing");
             return;
@@ -110,7 +110,7 @@ public class ShopData
         amount = 1;
         for (int i = 1; i < text.length; i++)
         {
-            Matcher matcher = PATTERN_BUY.matcher(text[i].getUnformattedText());
+            Matcher matcher = PATTERN_BUY.matcher(text[i].plainCopy().getContents());
             if (matcher.matches())
             {
                 if (buyPrice != -1)
@@ -121,7 +121,7 @@ public class ShopData
                 buyPrice = ServerUtil.parseIntDefault(matcher.group(1), -1);
                 continue;
             }
-            matcher = PATTERN_SELL.matcher(text[i].getUnformattedText());
+            matcher = PATTERN_SELL.matcher(text[i].plainCopy().getContents());
             if (matcher.matches())
             {
                 if (sellPrice != -1)
@@ -132,7 +132,7 @@ public class ShopData
                 sellPrice = ServerUtil.parseIntDefault(matcher.group(1), -1);
                 continue;
             }
-            matcher = PATTERN_AMOUNT.matcher(text[i].getUnformattedText());
+            matcher = PATTERN_AMOUNT.matcher(text[i].plainCopy().getContents());
             if (matcher.matches())
             {
                 if (amount != 1)
@@ -227,10 +227,9 @@ public class ShopData
         return entities.get(0);
     }
 
-    @SuppressWarnings("unchecked")
     public static <T extends Entity> List<T> getEntitiesWithinAABB(World world, Class<? extends T> clazz, AxisAlignedBB aabb)
     {
-        return world.getEntities(clazz, aabb);
+        return world.getEntitiesOfClass(clazz, aabb);
     }
 
     public static AxisAlignedBB getSignAABB(WorldPoint p)

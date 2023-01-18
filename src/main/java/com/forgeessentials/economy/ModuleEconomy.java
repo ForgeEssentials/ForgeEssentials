@@ -131,7 +131,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         APIRegistry.perms.registerPermissionDescription(PERM_BOUNTY, "Bounty for killing entities (ex.: fe.economy.bounty.Skeleton = 5)");
         APIRegistry.perms.registerPermission(PERM_BOUNTY_MESSAGE, DefaultPermissionLevel.ALL, "Whether to show a message if a bounty is given");
         for (Entry<ResourceLocation, Entity> e : ForgeRegistries.ENTITIES.getEntries())
-            if (LivingEntity.class.isAssignableFrom(e.getValue().getEntityClass()))
+            if (LivingEntity.class.isAssignableFrom(e.getValue().getClass()))
                 APIRegistry.perms.registerPermissionProperty(PERM_BOUNTY + "." + e.getKey(), "0");
 
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHTOLL, "",
