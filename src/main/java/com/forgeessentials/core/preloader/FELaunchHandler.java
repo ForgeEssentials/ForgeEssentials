@@ -7,10 +7,13 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -24,6 +27,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
+import org.spongepowered.asm.launch.platform.MixinPlatformManager;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.MixinEnvironment.Phase;
 
@@ -85,8 +89,18 @@ public class FELaunchHandler implements ITweaker
 
         try {
             URI uri = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-            MixinBootstrap.getPlatform().addContainer(uri);
-        } catch (URISyntaxException e) {
+            try {
+                MixinBootstrap.getPlatform().addContainer(uri);
+            } catch (NoSuchMethodError e) {
+                launchLog.warn("Mixin 8.x detecting, applying counter-measures!", e);
+                Class containerHandleURI = Class.forName("org.spongepowered.asm.launch.platform.container.ContainerHandleURI");
+                Class IContainerHandle = Class.forName("org.spongepowered.asm.launch.platform.container.IContainerHandle");
+
+                Method addContainer = MixinBootstrap.getPlatform().getClass().getDeclaredMethod("addContainer", IContainerHandle);
+                Object handleURI = containerHandleURI.getConstructor(new Class[]{URI.class}).newInstance(uri);
+                addContainer.invoke(MixinBootstrap.getPlatform(), handleURI);
+            }
+        } catch (URISyntaxException | ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             launchLog.error(e);
         }
 
