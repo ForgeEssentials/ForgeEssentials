@@ -14,10 +14,12 @@ import com.google.common.base.Functions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -357,5 +359,21 @@ public class CommandUtils
         ServerPlayerEntity senderPlayer = getServerPlayer(sender);
         UserIdent ident = (senderPlayer == null) ? (CommandUtils.GetSource(sender) instanceof DoAsCommandSender ? ((DoAsCommandSender) CommandUtils.GetSource(sender)).getUserIdent() : null) : UserIdent.get(senderPlayer);
         return ident;
+    }
+
+    public boolean hasPermission(CommandSource sender, String perm)
+    {
+        try
+        {
+            if (sender.getPlayerOrException() instanceof PlayerEntity)
+                return APIRegistry.perms.checkPermission(getServerPlayer(sender), perm);
+            else
+                return true;
+        }
+        catch (CommandSyntaxException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

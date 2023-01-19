@@ -255,23 +255,6 @@ public class CommandParserArgs
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
     }
 
-    public boolean hasPermission(String perm)
-    {
-        try
-        {
-            if (sender.getPlayerOrException() instanceof PlayerEntity)
-                return APIRegistry.perms.checkPermission(senderPlayer, perm);
-            else
-                return true;
-        }
-        catch (CommandSyntaxException e)
-        {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-
     public void tabCompleteWord(String completion)
     {
         if (!isTabCompletion || args.size() != 1 || completion == null || completion.isEmpty())
