@@ -38,7 +38,6 @@ import com.forgeessentialsclient.utils.commons.BuildInfo;
 import com.forgeessentialsclient.utils.commons.network.NetworkUtils;
 import com.forgeessentialsclient.utils.commons.network.packets.Packet0Handshake;
 import com.forgeessentialsclient.utils.commons.network.packets.Packet1SelectionUpdate;
-import com.forgeessentialsclient.utils.commons.network.packets.Packet2Reach;
 import com.forgeessentialsclient.utils.commons.network.packets.Packet3PlayerPermissions;
 import com.forgeessentialsclient.utils.commons.network.packets.Packet5Noclip;
 import com.forgeessentialsclient.utils.commons.network.packets.Packet6AuthLogin;
@@ -157,8 +156,9 @@ public class ForgeEssentialsClient
         // Register network messages
         NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::decode);
         NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::decode);
-		NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
+		//NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
         NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::decode);
+		//NetworkUtils.registerServerToClient(2, Packet4Economy.class, Packet4Economy::decode); //heck why not add something to space 4
         NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::decode);
         NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
         NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::decode);
