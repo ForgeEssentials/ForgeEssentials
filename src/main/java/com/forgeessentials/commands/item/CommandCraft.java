@@ -2,13 +2,9 @@ package com.forgeessentials.commands.item;
 
 import java.lang.ref.WeakReference;
 
-import net.minecraft.command.CommandException;
+import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.WorkbenchContainer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,6 +13,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.util.CommandUtils;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -58,7 +55,7 @@ public class CommandCraft extends BaseCommand
     @SubscribeEvent
     public void playerOpenContainerEvent(PlayerContainerEvent.Open event)
     {
-        if (event.getContainer().canInteractWith(event.getPlayer()) == false && lastPlayer.get() == event.getPlayer())
+        if (event.getContainer().stillValid(event.getPlayer()) == false && lastPlayer.get() == event.getPlayer())
         {
             event.setResult(Result.ALLOW);
         }
@@ -67,14 +64,16 @@ public class CommandCraft extends BaseCommand
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .executes(CommandContext -> execute(CommandContext));
     }
 
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         lastPlayer = new WeakReference<>(CommandUtils.getServerPlayer(ctx.getSource()));
-        CommandUtils.getServerPlayer(ctx.getSource()).openMenu(new WorkbenchContainer.InterfaceCraftingTable(player.level, player.getPosition()));
+        CraftingTableBlock craftingTableBlock = new CraftingTableBlock(null);
+        getServerPlayer(ctx.getSource()).openMenu(craftingTableBlock.getMenuProvider(null, getServerPlayer(ctx.getSource()).getCommandSenderWorld(), getServerPlayer(ctx.getSource()).blockPosition()));
+        return Command.SINGLE_SUCCESS;
     }
 }
