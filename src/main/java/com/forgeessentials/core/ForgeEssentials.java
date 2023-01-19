@@ -60,7 +60,6 @@ import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
 import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
-import com.forgeessentials.commons.network.packets.Packet2Reach;
 import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.packets.Packet5Noclip;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
@@ -260,8 +259,9 @@ public class ForgeEssentials extends ConfigLoaderBase
         // Load network packages
         NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::decode);
         NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::decode);
-		NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
+		//NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
         NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::decode);
+        //NetworkUtils.registerServerToClient(2, Packet4Economy.class, Packet4Economy::decode); old times
         NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::decode);
         NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::decode);
 
