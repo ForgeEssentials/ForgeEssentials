@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,23 +17,20 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.auth.AuthEventHandler;
-import com.forgeessentials.auth.EncryptionHelper;
-import com.forgeessentials.auth.PasswordManager;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.Kit;
 import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.Arguments.FeKitArgument;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -89,11 +87,11 @@ public class CommandKit extends BaseCommand implements ConfigurableCommand
         APIRegistry.perms.registerPermission(PERM_BYPASS_COOLDOWN, DefaultPermissionLevel.OP, "Bypass kit cooldown");
     }
 
-    public List<String> getAvailableKits(CommandParserArgs arguments)
+    public List<String> getAvailableKits(CommandSource source)
     {
         List<String> availableKits = new ArrayList<>();
         for (Kit kit : kits.values())
-            if (arguments.hasPermission(PERM + "." + kit.getName()))
+            if (hasPermission(source, PERM + "." + kit.getName()))
                 availableKits.add(kit.getName());
         return availableKits;
     }
@@ -101,24 +99,44 @@ public class CommandKit extends BaseCommand implements ConfigurableCommand
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .then(Commands.literal("select")
+                        .then(Commands.argument("kit", FeKitArgument.kit())
+                                .executes(CommandContext -> execute(CommandContext, "select")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("listAvaiable")
+                        .executes(CommandContext -> execute(CommandContext, "listAvaiable")
+                                )
+                        )
+                .then(Commands.literal("modify")
+                        .then(Commands.literal("set")
+                                .then(Commands.argument("cooldown", IntegerArgumentType.integer(0))
+                                        .executes(CommandContext -> execute(CommandContext, "set")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("delete")
+                                .executes(CommandContext -> execute(CommandContext, "listAvaiable")
+                                        )
+                                )
+                        );
     }
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (arguments.isEmpty())
+        if (params.toString() == "listAvaiable")
         {
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Available kits: %s", StringUtils.join(getAvailableKits(arguments), ", "));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Available kits: %s", StringUtils.join(getAvailableKits(ctx.getSource()), ", ")));
             return Command.SINGLE_SUCCESS;
         }
 
-        arguments.tabComplete(getAvailableKits(arguments));
-        final String kitName = arguments.remove().toLowerCase();
+        final String kitName = FeKitArgument.getKit(ctx, "kit");
         Kit kit = kits.get(kitName);
 
-        if (arguments.isEmpty())
+        if (params.toString() == "select")
         {
             if (kit == null)
                 throw new TranslatedCommandException("Kit %s does not exist", kitName);
@@ -130,8 +148,7 @@ public class CommandKit extends BaseCommand implements ConfigurableCommand
 
         APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),PERM_ADMIN);
 
-        arguments.tabComplete("set", "del");
-        String subCommand = arguments.remove().toLowerCase();
+        String subCommand = params.toString();
         switch (subCommand)
         {
         case "set":
@@ -144,10 +161,10 @@ public class CommandKit extends BaseCommand implements ConfigurableCommand
                     else if (!response)
                         return;
                     int cooldown = -1;
-                    if (!arguments.isEmpty())
+                    if (true)//!arguments.isEmpty()) idk todo here
                         try
                         {
-                            cooldown = arguments.parseInt();
+                            cooldown = IntegerArgumentType.getInteger(ctx, "cooldown");
                         }
                         catch (CommandException e)
                         {
@@ -165,7 +182,6 @@ public class CommandKit extends BaseCommand implements ConfigurableCommand
             else
                 Questioner.addChecked(ctx.getSource(), Translator.format("Overwrite kit %s?", kitName), callback);
             break;
-        case "del":
         case "delete":
             removeKit(kit);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Deleted kit %s", kitName));

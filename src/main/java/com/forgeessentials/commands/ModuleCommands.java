@@ -117,7 +117,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandBurn("burn", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandPotion());
         FECommandManager.registerCommand(new CommandRepair("repair", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandHeal());
+        FECommandManager.registerCommand(new CommandHeal("heal", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandKill());
         FECommandManager.registerCommand(new CommandGameMode("gamemode", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandDoAs("doas", 4, true));//TODO fix perms
@@ -142,7 +142,7 @@ public class ModuleCommands
         
         FECommandManager.registerCommand(new CommandSpeed("speed", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandSeen("seen", 0, true));
-        FECommandManager.registerCommand(new CommandTempBan());
+        FECommandManager.registerCommand(new CommandTempBan("tempban", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandFly("fly", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandHelp());
         FECommandManager.registerCommand(new CommandPregen("pregen", 4, true));//TODO fix perms

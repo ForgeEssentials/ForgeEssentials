@@ -1,24 +1,30 @@
 package com.forgeessentials.commands.player;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandHeal extends BaseCommand
 {
+
+    public CommandHeal(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -63,50 +69,65 @@ public class CommandHeal extends BaseCommand
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length == 0)
-        {
-            heal(sender);
-        }
-        else if (args.length == 1 && PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
-        {
-            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
-            {
-                heal(player);
-            }
-            else
-            {
-                ChatOutputHandler.chatError(sender, String.format("Player %s does not exist, or is not online.", args[0]));
-            }
-        }
-        else
-        {
-            throw new TranslatedCommandException(getUsage(sender));
-        }
+        return builder
+                .then(Commands.literal("others")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(CommandContext -> execute(CommandContext, "others")
+                                        )
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "blank")
+                        );
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length == 1)
+        if (params.toString() == "blank")
         {
-            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            heal(ctx.getSource().getPlayerOrException());
+        }
+        else if (params.toString() == "others" && PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
+        {
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             if (player != null)
             {
                 heal(player);
             }
             else
             {
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+                ChatOutputHandler.chatError(ctx.getSource(), String.format("Player %s does not exist, or is not online.", player.getDisplayName()));
             }
         }
         else
         {
-            throw new TranslatedCommandException(getUsage(sender));
+            throw new TranslatedCommandException(getUsage(ctx.getSource().getPlayerOrException()));
         }
+        return Command.SINGLE_SUCCESS;
+    }
 
+    @Override
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        if (params.toString() == "others")
+        {
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if (player != null)
+            {
+                heal(player);
+            }
+            else
+            {
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+            }
+        }
+        else
+        {
+            throw new TranslatedCommandException(getUsage(ctx.getSource().getPlayerOrException()));
+        }
+        return Command.SINGLE_SUCCESS;
     }
 
     public void heal(PlayerEntity target)
@@ -117,18 +138,4 @@ public class CommandHeal extends BaseCommand
         target.getFoodData().eat(20, 1.0F);
         ChatOutputHandler.chatConfirmation(target, "You were healed.");
     }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
-    {
-        if (args.length == 1)
-        {
-            return matchToPlayers(args);
-        }
-        else
-        {
-            return null;
-        }
-    }
-
 }
