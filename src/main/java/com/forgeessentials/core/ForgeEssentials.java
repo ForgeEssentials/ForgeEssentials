@@ -75,6 +75,7 @@ import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandUuid;
 import com.forgeessentials.core.commands.Arguments.FeGroupArgument;
 import com.forgeessentials.core.commands.Arguments.FeIrcPlayerArgument;
+import com.forgeessentials.core.commands.Arguments.FeKitArgument;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
@@ -173,6 +174,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         //Custom Command Arguments
         ArgumentTypes.register("FeGroup", FeGroupArgument.class, new ArgumentSerializer<>(FeGroupArgument::group));
         ArgumentTypes.register("FeIrcPlayer", FeIrcPlayerArgument.class, new ArgumentSerializer<>(FeIrcPlayerArgument::player));
+        ArgumentTypes.register("FeKit", FeKitArgument.class, new ArgumentSerializer<>(FeKitArgument::kit));
         //Set mod as server only
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         // new TestClass().test();
