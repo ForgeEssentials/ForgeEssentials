@@ -92,22 +92,35 @@ public class CommandUtils
     {
         return parseInt(input, min, Integer.MAX_VALUE);
     }
+    /*
+     * Argument to pass: 
+     * int to test
+     * min value
+     * max value
+     */
+    public static int parseInt(int input, int min, int max) throws NumberFormatException
+    {
+        return parseIntT(input, min, max);
+    }
 
     public static int parseInt(String input, int min, int max) throws NumberFormatException
     {
-        int i = parseInt(input);
+        return parseIntT(parseInt(input), min, max);
+    }
 
-        if (i < min)
+    private static int parseIntT(int input, int min, int max) throws NumberFormatException
+    {
+        if (input < min)
         {
             throw new NumberFormatException();
         }
-        else if (i > max)
+        else if (input > max)
         {
             throw new NumberFormatException();
         }
         else
         {
-            return i;
+            return input;
         }
     }
 

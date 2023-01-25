@@ -2,7 +2,6 @@ package com.forgeessentials.commands.item;
 
 import java.lang.ref.WeakReference;
 
-import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
@@ -12,7 +11,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.BaseCommand;
-import com.forgeessentials.util.CommandUtils;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -71,9 +70,9 @@ public class CommandCraft extends BaseCommand
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        lastPlayer = new WeakReference<>(CommandUtils.getServerPlayer(ctx.getSource()));
-        CraftingTableBlock craftingTableBlock = new CraftingTableBlock(null);
-        getServerPlayer(ctx.getSource()).openMenu(craftingTableBlock.getMenuProvider(null, getServerPlayer(ctx.getSource()).getCommandSenderWorld(), getServerPlayer(ctx.getSource()).blockPosition()));
+        ChatOutputHandler.chatNotification(ctx.getSource(),"This feature is currently unimplimented");
+        ChatOutputHandler.chatNotification(ctx.getSource(),"as forge made it impossable to make a custom");
+        ChatOutputHandler.chatNotification(ctx.getSource(),"crafting gui without modifications on the client.");
         return Command.SINGLE_SUCCESS;
     }
 }

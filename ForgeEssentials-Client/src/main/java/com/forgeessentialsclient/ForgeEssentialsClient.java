@@ -86,7 +86,7 @@ public class ForgeEssentialsClient
     /* ------------------------------------------------------------ */
     
     public ForgeEssentialsClient(){
-    	//Set mod as client sdie only
+    	//Set mod as client side only
     	MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
     	MOD_CONTAINER.registerExtensionPoint(ExtensionPoint.DISPLAYTEST, ()->Pair.of(
   		      ()->"anything. i don't care", // if i'm actually on the server, this string is sent but i'm a client only mod, so it won't be
