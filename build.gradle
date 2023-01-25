@@ -37,6 +37,8 @@ plugins {
     id 'org.sonarqube' version '2.5'
 }
 
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 
@@ -89,9 +91,6 @@ repositories {
         url = "https://files.minecraftforge.net/maven"
     }
 }
-
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
 
 
 import org.ajoberstar.grgit.Grgit
@@ -393,4 +392,9 @@ jar.finalizedBy('reobfJar')
 //artifacts {
 //	//archives deobfJar
 //	archives clientJar
+//}
+//eclipse {
+//    afterEvaluate {
+//        synchronizationTasks createSrgToMcp, createMcpToSrg, eclipseJdt
+//    }
 //}
