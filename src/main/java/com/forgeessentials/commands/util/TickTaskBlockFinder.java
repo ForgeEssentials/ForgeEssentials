@@ -8,9 +8,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -46,7 +44,7 @@ public class TickTaskBlockFinder implements TickTask
 
     ArrayList<Point> results = new ArrayList<Point>();
 
-    public TickTaskBlockFinder(PlayerEntity player, String id, int meta, int range, int amount, int speed)
+    public TickTaskBlockFinder(PlayerEntity player, BlockState blockstateT, int range, int amount, int speed)
     {
         this.player = player;
         this.targetRange = range;
@@ -55,33 +53,17 @@ public class TickTaskBlockFinder implements TickTask
         this.centerX = (int) player.position().x;
         this.centerZ = (int) player.position().z;
         world = player.level;
-
-        if (id.equalsIgnoreCase("air"))
+        if (blockstateT.getBlock().equals(Blocks.AIR))
         {
             block = Blocks.AIR;
         }
         else
         {
-            int intId = -1;
-            try
-            {
-                intId = Integer.parseInt(id);
-                block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(id));
-            }
-            catch (NumberFormatException e)
-            {
-                block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(id));
-            }
-
-            if (block == Blocks.AIR && intId != 0)
-            {
-                msg("Error: " + id + ":" + meta + " unkown.");
-                return;
-            }
+            block = blockstateT.getBlock();
         }
-        blockState = block.stateById(meta);
+        blockState = blockstateT;
 
-        stack = new ItemStack(block, 1, meta);
+        stack = new ItemStack(block, 1);
         blockName = !stack.isEmpty() ? stack.getDisplayName().toString() : ServerUtil.getBlockName(block);
 
         msg("Start the hunt for " + blockName);

@@ -133,7 +133,7 @@ public class ModuleCommands
         // FECommandManager.registerCommand(new CommandVanish());
         FECommandManager.registerCommand(new CommandPush());
         FECommandManager.registerCommand(new CommandDrop("drop", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandFindblock());
+        FECommandManager.registerCommand(new CommandFindblock("findblock", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandNoClip("noclip", 4, true));//TODO fix perms
         //Bubble
         CommandBubble bubble = new CommandBubble("bubble", 4, true);//TODO fix perms

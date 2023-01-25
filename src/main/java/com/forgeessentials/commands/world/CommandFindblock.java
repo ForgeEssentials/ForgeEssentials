@@ -1,24 +1,28 @@
 package com.forgeessentials.commands.world;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.block.BlockState;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.BlockStateArgument;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandFindblock extends BaseCommand implements ConfigurableCommand
 {
+
+    public CommandFindblock(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final int defaultCount = 1;
     public static int defaultRange = 20 * 16;
@@ -79,46 +83,25 @@ public class CommandFindblock extends BaseCommand implements ConfigurableCommand
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length < 1)
-        {
-
-        }
-        String id = args[0];
-        int meta = (args.length < 2) ? 0 : parseInt(args[1]);
-        int range = (args.length < 3) ? defaultRange : parseInt(args[2], 1, Integer.MAX_VALUE);
-        int amount = (args.length < 4) ? defaultCount : parseInt(args[3], 1, Integer.MAX_VALUE);
-        int speed = (args.length < 5) ? defaultSpeed : parseInt(args[4], 1, Integer.MAX_VALUE);
-
-        new TickTaskBlockFinder(sender, id, meta, range, amount, speed);
+        return builder
+                .then(Commands.argument("block", BlockStateArgument.block())
+                        .executes(CommandContext -> execute(CommandContext)
+                                )
+                        );
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length == 1)
-        {
-            List<String> names = new ArrayList<>();
-            for (Item i : GameRegistry.findRegistry(Item.class))
-            {
-                names.add(i.getUnlocalizedName());
-            }
-            return getListOfStringsMatchingLastWord(args, names);
-        }
-        else if (args.length == 2)
-        {
-            return getListOfStringsMatchingLastWord(args, defaultRange + "");
-        }
-        else if (args.length == 3)
-        {
-            return getListOfStringsMatchingLastWord(args, defaultCount + "");
-        }
-        else if (args.length == 4)
-        {
-            return getListOfStringsMatchingLastWord(args, defaultSpeed + "");
-        }
-        return null;
+        BlockState id = BlockStateArgument.getBlock(ctx, "block").getState();
+        //int range = (args.length < 3) ? defaultRange : parseInt(args[2], 1, Integer.MAX_VALUE);
+        //int amount = (args.length < 4) ? defaultCount : parseInt(args[3], 1, Integer.MAX_VALUE);
+        //int speed = (args.length < 5) ? defaultSpeed : parseInt(args[4], 1, Integer.MAX_VALUE);
+        //TODO add custom ranges
+        //new TickTaskBlockFinder(getServerPlayer(ctx.getSource()), id, range, amount, speed);
+        new TickTaskBlockFinder(getServerPlayer(ctx.getSource()), id, defaultRange, defaultCount, defaultSpeed);
+        return Command.SINGLE_SUCCESS;
     }
-
 }
