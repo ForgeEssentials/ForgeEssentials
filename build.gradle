@@ -230,7 +230,7 @@ dependencies {
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
-    compile files(System.getenv("JAVA_8_HOME") + "/lib/tools.jar")
+//    compile files(System.getenv("JAVA_8_HOME") + "/lib/tools.jar")
 
 	compile 'javax.xml.bind:jaxb-api:2.3.1'
 }
