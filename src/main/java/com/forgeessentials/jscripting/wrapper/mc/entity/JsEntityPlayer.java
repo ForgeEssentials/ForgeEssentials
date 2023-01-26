@@ -1,10 +1,12 @@
 package com.forgeessentials.jscripting.wrapper.mc.entity;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.util.EnumHand;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
 
@@ -17,7 +19,7 @@ import com.forgeessentials.jscripting.wrapper.mc.item.JsInventoryPlayer;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsItemStack;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
 
-public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
+public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
 {
     protected JsInventoryPlayer<?> inventory;
 
@@ -26,7 +28,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
     /**
      * @tsd.ignore
      */
-    public static JsEntityPlayer get(EntityPlayer player)
+    public static JsEntityPlayer get(PlayerEntity player)
     {
         return player == null ? null : new JsEntityPlayer(player);
     }
@@ -34,7 +36,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
     /**
      * @tsd.ignore
      */
-    private JsEntityPlayer(EntityPlayer that)
+    private JsEntityPlayer(PlayerEntity that)
     {
         super(that);
     }
@@ -42,7 +44,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
     /**
      * @tsd.ignore
      */
-    public JsEntityPlayer(EntityPlayer that, JsICommandSender commandSender)
+    public JsEntityPlayer(PlayerEntity that, JsICommandSender commandSender)
     {
         super(that);
         this.commandSender = commandSender;
@@ -50,23 +52,19 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 
     public void setPosition(double x, double y, double z)
     {
-        that.posX = x;
-        that.posY = y;
-        that.posZ = z;
-        ((EntityPlayerMP) that).connection.setPlayerLocation(x, y, z, that.cameraYaw, that.cameraPitch);
+        that.setPos(x, x, z);
+        ((ServerPlayerEntity) that).connection.teleport(x, y, z, that.yRot, that.xRot);
     }
 
     public void setPosition(double x, double y, double z, float yaw, float pitch)
     {
-        that.posX = x;
-        that.posY = y;
-        that.posZ = z;
-        ((EntityPlayerMP) that).connection.setPlayerLocation(x, y, z, yaw, pitch);
+        that.setPos(x, x, z);
+        ((ServerPlayerEntity) that).connection.teleport(x, y, z, yaw, pitch);
     }
 
     public JsICommandSender asCommandSender()
     {
-        if (commandSender != null || !(that instanceof EntityPlayer))
+        if (commandSender != null || !(that instanceof PlayerEntity))
             return commandSender;
         return commandSender = new JsICommandSender(that, this);
     }
@@ -80,15 +78,15 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 
     public JsPoint<?> getBedLocation(int dimension)
     {
-        BlockPos coord = EntityPlayer.getBedSpawnLocation(that.world, that.getBedLocation(dimension), false);
+        BlockPos coord = PlayerEntity.getBedSpawnLocation(that.level, that.getSleepingPos(), false);
         return coord != null ? new JsWorldPoint<>(new WorldPoint(dimension, coord)) : null;
     }
 
     public GameType getGameType()
     {
-        if (that instanceof EntityPlayerMP)
+        if (that instanceof ServerPlayerEntity)
         {
-            return ((EntityPlayerMP) that).interactionManager.getGameType();
+            return ((ServerPlayerEntity) that).gameMode.getGameModeForPlayer();
         }
         return GameType.NOT_SET;
     }
@@ -98,7 +96,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public void setGameType(GameType gameType)
     {
-        that.setGameType(gameType);
+        that.setGameMode(gameType);
     }
 
     // ----- CHECKED UNTIL HERE -----
@@ -108,7 +106,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public boolean isUsingItem()
     {
-        return that.isHandActive();
+        return that.isUsingItem();
     }
 
     /**
@@ -116,7 +114,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public boolean isBlocking()
     {
-        return that.isActiveItemStackBlocking();
+        return that.isBlocking() && !that.getMainHandItem().isEmpty();
     }
 
     public int getScore()
@@ -137,7 +135,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public void addScore(int score)
     {
-        that.addScore(score);
+        that.increaseScore(score);
     }
 
     /**
@@ -145,7 +143,8 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public float getBreakSpeed(JsBlock block, boolean cannotHarvestBlock, int meta, int x, int y, int z)
     {
-        return that.getDigSpeed(block.getThat().getStateFromMeta(meta), new BlockPos(x, y, z));
+        block.getThat();
+        return that.getDigSpeed(Block.stateById(meta), new BlockPos(x, y, z));
     }
 
     /**
@@ -153,7 +152,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public boolean canHarvestBlock(JsBlock block)
     {
-        return that.canHarvestBlock(block.getThat().getDefaultState());
+        return that.hasCorrectToolForDrops(block.getThat().defaultBlockState());
     }
 
     public float getEyeHeight()
@@ -163,7 +162,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 
     public boolean canAttackPlayer(JsEntityPlayer player)
     {
-        return that.canAttackPlayer(player.getThat());
+        return that.canAttack(player.getThat());
     }
 
     /**
@@ -171,26 +170,30 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public int getTotalArmorValue()
     {
-        return that.getTotalArmorValue();
+        return that.getArmorValue();
     }
 
     /**
-     * When searching for vulnerable players, if a player is invisible, the return value of this is the chance of seeing
-     * them anyway.
+     * When searching for vulnerable players, if a player is invisible, the return value of this is the chance of seeing them anyway.
      */
-    public float getArmorVisibility()
-    {
-        return that.getArmorVisibility();
-    }
+    //public float getArmorVisibility()
+    //{
+    //    return that.getArmorVisibility();
+    //} //NOT A THING ANYMORE
 
     public boolean interactWith(JsEntity<?> entity)
     {
-        switch(that.interactOn(entity.getThat(), EnumHand.MAIN_HAND)){
+        switch (that.interactOn(entity.getThat(), Hand.MAIN_HAND))
+        {
         case SUCCESS:
         case PASS:
             return true;
         case FAIL:
             return false;
+        case CONSUME:
+            break;
+        default:
+            break;
         }
 
         return false;
@@ -201,7 +204,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public JsItemStack getCurrentEquippedItem()
     {
-        return JsItemStack.get(that.getActiveItemStack());
+        return JsItemStack.get(that.getUseItem());
     }
 
     /**
@@ -209,7 +212,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public void destroyCurrentEquippedItem()
     {
-        that.resetActiveHand();
+        that.setItemInHand(Hand.MAIN_HAND, ItemStack.EMPTY);;
     }
 
     /**
@@ -218,7 +221,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public void attackTargetEntityWithCurrentItem(JsEntity<?> targetEntity)
     {
-        that.attackTargetEntityWithCurrentItem(targetEntity.getThat());
+        that.attack(targetEntity.getThat());
     }
 
     /**
@@ -226,7 +229,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public boolean isPlayerSleeping()
     {
-        return that.isPlayerSleeping();
+        return that.isSleeping();
     }
 
     /**
@@ -234,28 +237,29 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public boolean isPlayerFullyAsleep()
     {
-        return that.isPlayerFullyAsleep();
+        return that.isSleepingLongEnough();
     }
 
     public JsItemStack getCurrentArmor(int slot)
     {
-        EntityEquipmentSlot eeslot = EntityEquipmentSlot.MAINHAND;
-        switch (slot){
+        EquipmentSlotType eeslot = EquipmentSlotType.MAINHAND;
+        switch (slot)
+        {
         case 0:
-            eeslot = EntityEquipmentSlot.FEET;
+            eeslot = EquipmentSlotType.FEET;
             break;
         case 1:
-            eeslot = EntityEquipmentSlot.LEGS;
+            eeslot = EquipmentSlotType.LEGS;
             break;
         case 2:
-            eeslot = EntityEquipmentSlot.CHEST;
+            eeslot = EquipmentSlotType.CHEST;
             break;
         case 3:
-            eeslot = EntityEquipmentSlot.HEAD;
+            eeslot = EquipmentSlotType.HEAD;
             break;
 
         }
-        return JsItemStack.get(that.getItemStackFromSlot(eeslot));
+        return JsItemStack.get(that.getItemBySlot(eeslot));
     }
 
     /**
@@ -263,7 +267,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public void addExperience(int exp)
     {
-        that.addExperience(exp);
+        that.giveExperiencePoints(exp);
     }
 
     /**
@@ -271,7 +275,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public void addExperienceLevel(int levels)
     {
-        that.addExperienceLevel(levels);
+        that.giveExperienceLevels(levels);
     }
 
     /**
@@ -279,7 +283,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public void addExhaustion(float exhaustion)
     {
-        that.addExhaustion(exhaustion);
+        that.causeFoodExhaustion(exhaustion);
     }
 
     /**
@@ -287,7 +291,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public int getFoodLevel()
     {
-        return that.getFoodStats().getFoodLevel();
+        return that.getFoodData().getFoodLevel();
     }
 
     /**
@@ -295,12 +299,12 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public float getSaturationLevel()
     {
-        return that.getFoodStats().getSaturationLevel();
+        return that.getFoodData().getSaturationLevel();
     }
 
     public void addFoodStats(int foodLevel, float foodSaturationModifier)
     {
-        that.getFoodStats().addStats(foodLevel, foodSaturationModifier);
+        that.getFoodData().eat(foodLevel, foodSaturationModifier);
     }
 
     /**
@@ -308,7 +312,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public boolean needFood()
     {
-        return that.getFoodStats().needFood();
+        return that.getFoodData().needsFood();
     }
 
     public boolean canEat(boolean canEatWithoutHunger)
@@ -321,7 +325,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
      */
     public JsInventory<?> getInventoryEnderChest()
     {
-        return JsInventory.get(that.getInventoryEnderChest());
+        return JsInventory.get(that.getEnderChestInventory());
     }
 
     public void displayGUIChest(JsInventory<IInventory> inventory)
@@ -331,6 +335,6 @@ public class JsEntityPlayer extends JsEntityLivingBase<EntityPlayer>
 
     public void closeScreen()
     {
-        that.closeScreen();
+        that.closeContainer();
     }
 }

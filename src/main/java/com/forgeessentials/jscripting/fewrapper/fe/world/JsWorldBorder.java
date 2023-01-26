@@ -15,7 +15,8 @@ public class JsWorldBorder extends JsWrapper<WorldBorder>
         super(that);
     }
 
-    public static JsWorldBorder get(JsWorld<?> world) {
+    public static JsWorldBorder get(JsWorld<?> world)
+    {
         return new JsWorldBorder(ModuleWorldBorder.getInstance().getBorder(world.getThat()));
     }
 

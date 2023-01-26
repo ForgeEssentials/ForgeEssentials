@@ -6,29 +6,32 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.world.WorldServer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.mapper.MapperUtil;
 import com.forgeessentials.mapper.ModuleMapper;
-import com.forgeessentials.util.CommandParserArgs;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandMapper extends ParserCommandBase
+public class CommandMapper extends BaseCommand
 {
+
+    public CommandMapper(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
     {
         return "mapper";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/mapper: Manage mapper settings";
     }
 
     @Override
@@ -50,11 +53,20 @@ public class CommandMapper extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments)
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        int x = (int) Math.floor(arguments.senderPlayer.posX);
-        int z = (int) Math.floor(arguments.senderPlayer.posZ);
-        WorldServer world = (WorldServer) arguments.senderPlayer.world;
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
+        int x = (int) Math.floor(player.position().x);
+        int z = (int) Math.floor(player.position().z);
+        ServerWorld world = (ServerWorld) player.getLevel();
         BufferedImage img = ModuleMapper.getInstance().getRegionImage(world, MapperUtil.worldToRegion(x), MapperUtil.worldToRegion(z));
         try
         {
@@ -64,6 +76,6 @@ public class CommandMapper extends ParserCommandBase
         {
             e.printStackTrace();
         }
+        return Command.SINGLE_SUCCESS;
     }
-
 }

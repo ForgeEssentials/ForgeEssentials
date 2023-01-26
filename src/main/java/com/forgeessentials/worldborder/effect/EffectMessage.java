@@ -1,7 +1,7 @@
 package com.forgeessentials.worldborder.effect;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -34,14 +34,14 @@ public class EffectMessage extends WorldBorderEffect
     }
 
     @Override
-    public void activate(WorldBorder border, EntityPlayerMP player)
+    public void activate(WorldBorder border, ServerPlayerEntity player)
     {
         if (interval <= 0)
             doEffect(player);
     }
 
     @Override
-    public void tick(WorldBorder border, EntityPlayerMP player)
+    public void tick(WorldBorder border, ServerPlayerEntity player)
     {
         if (interval <= 0)
             return;
@@ -53,9 +53,9 @@ public class EffectMessage extends WorldBorderEffect
         }
     }
 
-    public void doEffect(EntityPlayerMP player)
+    public void doEffect(ServerPlayerEntity player)
     {
-        ChatOutputHandler.chatError(player, ModuleChat.processChatReplacements(player, message));
+        ChatOutputHandler.chatError(player.createCommandSourceStack(), ModuleChat.processChatReplacements(player.createCommandSourceStack(), message));
     }
 
     @Override

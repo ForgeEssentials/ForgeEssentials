@@ -1,15 +1,15 @@
 package com.forgeessentials.economy.commands;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
@@ -19,9 +19,17 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandTrade extends ParserCommandBase
+public class CommandTrade extends BaseCommand
 {
+
+    public CommandTrade(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -42,19 +50,20 @@ public class CommandTrade extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/trade <player> <price>: Trade item in hand for money";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments) throws net.minecraft.command.CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (arguments.isEmpty())
         {
@@ -69,7 +78,7 @@ public class CommandTrade extends ParserCommandBase
         // throw new TranslatedCommandException("Missing argument");
         // final int amount = arguments.parseInt();
 
-        final ItemStack itemStack = arguments.senderPlayer.getHeldItemMainhand();
+        final ItemStack itemStack = arguments.senderPlayer.getMainHandItem();
         if (itemStack == ItemStack.EMPTY)
             throw new TranslatedCommandException("You need to hold an item first!");
 
@@ -122,8 +131,8 @@ public class CommandTrade extends ParserCommandBase
                             return;
                         }
 
-                        ItemStack currentItemStack = arguments.senderPlayer.getHeldItemMainhand();
-                        if (!ItemStack.areItemStacksEqual(currentItemStack, itemStack) || !ItemStack.areItemStackTagsEqual(currentItemStack, itemStack))
+                        ItemStack currentItemStack = arguments.senderPlayer.getMainHandItem();
+                        if (!ItemStack.isSame(currentItemStack, itemStack) || !ItemStack.isSame(currentItemStack, itemStack))
                         {
                             ChatOutputHandler.chatError(buyer.getPlayerMP(), Translator.translate("Error in transaction"));
                             arguments.error(Translator.translate("You need to keep the item equipped until trade is finished!"));
@@ -137,8 +146,8 @@ public class CommandTrade extends ParserCommandBase
                         }
                         sellerWallet.add(price * itemStack.getCount());
 
-                        InventoryPlayer inventory = arguments.senderPlayer.inventory;
-                        inventory.mainInventory.set(inventory.currentItem, ItemStack.EMPTY);
+                        PlayerInventory inventory = arguments.senderPlayer.inventory;
+                        inventory.items.set(inventory.selected, ItemStack.EMPTY);
                         PlayerUtil.give(buyer.getPlayerMP(), currentItemStack);
 
                         String priceStr = APIRegistry.economy.toString(price);
@@ -160,12 +169,12 @@ public class CommandTrade extends ParserCommandBase
                     String message;
                     if (itemStack.getCount() == 1)
                         message = Translator.format("Buy one %s for %s from %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price),
-                                arguments.sender.getName());
+                                arguments.sender.getTextName());
                     else
                         message = Translator.format("Buy %d x %s each for %s (total: %s) from %s?", itemStack.getCount(), itemStack.getDisplayName(),
                                 APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.getCount()),
-                                arguments.sender.getName());
-                    Questioner.addChecked(buyer.getPlayerMP(), message, buyerHandler, 60);
+                                arguments.sender.getTextName());
+                    Questioner.addChecked(buyer.getPlayerMP().createCommandSourceStack(), message, buyerHandler, 60);
                     arguments.confirm(Translator.format("Waiting on %s...", buyer.getUsernameOrUuid()));
                 }
                 catch (QuestionerStillActiveException.CommandException e)
@@ -183,5 +192,4 @@ public class CommandTrade extends ParserCommandBase
                     APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.getCount()), buyer.getUsernameOrUuid());
         Questioner.addChecked(arguments.sender, message, sellerHandler, 20);
     }
-    
 }

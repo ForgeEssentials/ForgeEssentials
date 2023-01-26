@@ -12,9 +12,8 @@ public @interface FEModule
 {
 
     /**
-     * "Module" is not automatically ie: "WorldControlModule" "SnooperModule" etc.. this is what will show up in logs,
-     * especially about errors. This is similar to the ModuleID, it is the identifying mark.. and shouldn't have spaces.
-     * If an outside module overrides another module, they should have the same name.
+     * "Module" is not automatically ie: "WorldControlModule" "SnooperModule" etc.. this is what will show up in logs, especially about errors. This is similar to the ModuleID, it
+     * is the identifying mark.. and shouldn't have spaces. If an outside module overrides another module, they should have the same name.
      */
     String name();
 
@@ -45,8 +44,7 @@ public @interface FEModule
     boolean defaultModule() default true;
 
     /**
-     * For all built in modules, this had better be the ForgeEssentials class. For everyone else, this should be your @mod
-     * file.
+     * For all built in modules, this had better be the ForgeEssentials class. For everyone else, this should be your @mod file.
      *
      * @return
      */

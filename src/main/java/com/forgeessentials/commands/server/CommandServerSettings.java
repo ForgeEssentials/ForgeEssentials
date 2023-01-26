@@ -3,29 +3,42 @@ package com.forgeessentials.commands.server;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.EnumDifficulty;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameType;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandServerSettings extends ParserCommandBase
+public class CommandServerSettings extends BaseCommand
 {
+
+    public CommandServerSettings(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static List<String> options = Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MotD", "spawnProtection", "gamemode");
 
@@ -39,12 +52,6 @@ public class CommandServerSettings extends ParserCommandBase
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "ss" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/serversettings [option] [value]: View or change server settings (server.properties)";
     }
 
     @Override
@@ -65,118 +72,194 @@ public class CommandServerSettings extends ParserCommandBase
         return ModuleCommands.PERM + ".serversettings";
     }
 
-    @SideOnly(Side.SERVER)
+    @OnlyIn(Dist.DEDICATED_SERVER)
     public void doSetProperty(String id, Object value)
     {
-        DedicatedServer server = (DedicatedServer) FMLCommonHandler.instance().getMinecraftServerInstance();
-        server.setProperty(id, value);
-        server.saveProperties();
+        DedicatedServer server = (DedicatedServer) ServerLifecycleHooks.getCurrentServer();
+        server.getProperties();//TODO add a save to save values
     }
 
     public void setProperty(String id, Object value)
     {
-        if (FMLCommonHandler.instance().getSide() == Side.SERVER)
+        if (FMLEnvironment.dist == Dist.DEDICATED_SERVER)
             doSetProperty(id, value);
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (!FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
-            arguments.error("You can use this command only on dedicated servers");
-        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-
-        if (arguments.isEmpty())
-        {
-            arguments.notify("Options: %s", StringUtils.join(options, ", "));
-            return;
-        }
-
-        arguments.tabComplete(options);
-        String subCmd = arguments.remove().toLowerCase();
-        switch (subCmd)
-        {
-        case "allowflight":
-            if (arguments.isEmpty())
-                arguments.confirm("Allow flight: %s", Boolean.toString(server.isFlightAllowed()));
-            else
-            {
-                boolean allowFlight = arguments.parseBoolean();
-                server.setAllowFlight(allowFlight);
-                setProperty("allow-flight", allowFlight);
-                arguments.confirm("Set allow-flight to %s", Boolean.toString(allowFlight));
-            }
-            break;
-        case "allowpvp":
-            if (arguments.isEmpty())
-                arguments.confirm("Allow PvP: %s", Boolean.toString(server.isPVPEnabled()));
-            else
-            {
-                boolean allowPvP = arguments.parseBoolean();
-                server.setAllowPvp(allowPvP);
-                setProperty("pvp", allowPvP);
-                arguments.confirm("Set pvp to %s", Boolean.toString(allowPvP));
-            }
-            break;
-        case "buildlimit":
-            if (arguments.isEmpty())
-                arguments.confirm("Set build limit to %d", server.getBuildLimit());
-            else
-            {
-                int buildLimit = arguments.parseInt(0, Integer.MAX_VALUE);
-                server.setBuildLimit(buildLimit);
-                setProperty("max-build-height", buildLimit);
-                arguments.confirm("Set max-build-height to %d", buildLimit);
-            }
-            break;
-        case "motd":
-            if (arguments.isEmpty())
-                arguments.confirm("MotD = %s", server.getMOTD());
-            else
-            {
-                String motd = ScriptArguments.process(arguments.toString(), null);
-                server.getServerStatusResponse().setServerDescription(new TextComponentString(ChatOutputHandler.formatColors(motd)));
-                server.setMOTD(motd);
-                setProperty("motd", motd);
-                arguments.confirm("Set MotD to %s", motd);
-            }
-            break;
-        case "spawnprotection":
-            if (arguments.isEmpty())
-                arguments.confirm("Spawn protection size: %d", server.getSpawnProtectionSize());
-            else
-            {
-                int spawnSize = arguments.parseInt(0, Integer.MAX_VALUE);
-                setProperty("spawn-protection", spawnSize);
-                arguments.confirm("Set spawn-protection to %d", spawnSize);
-            }
-            break;
-        case "gamemode":
-            if (arguments.isEmpty())
-                arguments.confirm("Default gamemode set to %s", server.getGameType().getName());
-            else
-            {
-                GameType gamemode = GameType.getByID(arguments.parseInt());
-                server.setGameType(gamemode);
-                setProperty("gamemode", gamemode.ordinal());
-                arguments.confirm("Set default gamemode to %s", gamemode.getName());
-            }
-            break;
-        case "difficulty":
-            if (arguments.isEmpty())
-                arguments.confirm("Difficulty set to %s", server.getDifficulty());
-            else
-            {
-                EnumDifficulty difficulty = EnumDifficulty.getDifficultyEnum(arguments.parseInt());
-                server.setDifficultyForAllWorlds(difficulty);
-                setProperty("difficulty", difficulty.ordinal());
-                arguments.confirm("Set difficulty to %s", difficulty.name());
-            }
-            break;
-
-        default:
-            arguments.error(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
-        }
+        return builder
+                .then(Commands.literal("allowflight")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "allowflightT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "allowflightV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("allowpvp")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "allowpvpT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "allowpvpV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("buildlimit")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("buildlimit", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                        .executes(CommandContext -> execute(CommandContext, "buildlimitT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "buildlimitV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("difficulty")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("difficulity", IntegerArgumentType.integer(0, 3))
+                                        .executes(CommandContext -> execute(CommandContext, "difficultyT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "difficultyV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("gamemode")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("gamemode", IntegerArgumentType.integer(0, 3))
+                                        .executes(CommandContext -> execute(CommandContext, "gamemodeT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "gamemodeV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("motd")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("motd", MessageArgument.message())
+                                        .executes(CommandContext -> execute(CommandContext, "motdT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "motdV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("spawnprotection")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("radius", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                        .executes(CommandContext -> execute(CommandContext, "spawnprotectionT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "spawnprotectionV")
+                                        )
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "blank")
+                        );
     }
 
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        if (!FMLEnvironment.dist.isDedicatedServer())
+            ChatOutputHandler.chatError(ctx.getSource(), "You can use this command only on dedicated servers");
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+
+        if (params.toString() == "blank")
+        {
+            ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("Options: %s", StringUtils.join(options, ", ")));
+            return Command.SINGLE_SUCCESS;
+        }
+
+        String subCmd = params.toString();
+        switch (subCmd)
+        {
+        case "allowflightV":
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow flight: %s", Boolean.toString(server.isFlightAllowed())));
+            return Command.SINGLE_SUCCESS;
+        case "allowflightT":
+            boolean allowFlight = BoolArgumentType.getBool(ctx, "toggle");
+            server.setFlightAllowed(allowFlight);
+            setProperty("allow-flight", allowFlight);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set allow-flight to %s", Boolean.toString(allowFlight)));
+            return Command.SINGLE_SUCCESS;
+        case "allowpvpV":
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow PvP: %s", Boolean.toString(server.isPvpAllowed())));
+            return Command.SINGLE_SUCCESS;
+        case "allowpvpT":
+            boolean allowPvP = BoolArgumentType.getBool(ctx, "toggle");
+            server.setPvpAllowed(allowPvP);
+            setProperty("pvp", allowPvP);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set pvp to %s", Boolean.toString(allowPvP)));
+            return Command.SINGLE_SUCCESS;
+        case "buildlimitV":
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set build limit to %d", server.getMaxBuildHeight()));
+                return Command.SINGLE_SUCCESS;
+        case "buildlimitT":
+            int buildLimit = IntegerArgumentType.getInteger(ctx, "buildlimit");
+            server.setMaxBuildHeight(buildLimit);
+            setProperty("max-build-height", buildLimit);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set max-build-height to %d", buildLimit));
+            return Command.SINGLE_SUCCESS;
+        case "motdV":
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("MotD = %s", server.getMotd()));
+            return Command.SINGLE_SUCCESS;
+        case "motdT":
+            String motd = ScriptArguments.process(MessageArgument.getMessage(ctx, "motd").getString(), null);
+            server.getStatus().setDescription(new StringTextComponent(ChatOutputHandler.formatColors(motd)));
+            server.setMotd(motd);
+            setProperty("motd", motd);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set MotD to %s", motd));
+            return Command.SINGLE_SUCCESS;
+        case "spawnprotectionV":
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Spawn protection size: %d", server.getSpawnProtectionRadius()));
+            return Command.SINGLE_SUCCESS;
+        case "spawnprotectionT":
+            int spawnSize = IntegerArgumentType.getInteger(ctx, "radius");
+            setProperty("spawn-protection", spawnSize);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set spawn-protection to %d", spawnSize));
+            return Command.SINGLE_SUCCESS;
+        case "gamemodeV":
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Default gamemode set to %s", server.getDefaultGameType().getName()));
+            return Command.SINGLE_SUCCESS;
+        case "gamemodeT":
+            GameType gamemode = GameType.byId(IntegerArgumentType.getInteger(ctx, "gamemode"));
+            server.setDefaultGameType(gamemode);
+            setProperty("gamemode", gamemode.ordinal());
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set default gamemode to %s", gamemode.getName()));
+            return Command.SINGLE_SUCCESS;
+        case "difficultyV":
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Difficulty set to %s", server.getWorldData().getDifficulty()));
+            return Command.SINGLE_SUCCESS;
+        case "difficultyT":
+            Difficulty difficulty = Difficulty.byId(IntegerArgumentType.getInteger(ctx, "difficulity"));
+            server.setDifficulty(difficulty, false);
+            setProperty("difficulty", difficulty.ordinal());
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set difficulty to %s", difficulty.name()));
+            return Command.SINGLE_SUCCESS;
+
+        default:
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd));
+        }
+        return Command.SINGLE_SUCCESS;
+    }
 }

@@ -22,19 +22,17 @@ import java.util.regex.PatternSyntaxException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.MinecraftException;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.io.FilenameUtils;
@@ -44,14 +42,16 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
@@ -112,14 +112,20 @@ public class ModuleBackup extends ConfigLoaderBase
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModuleCommonSetupEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
-        FECommandManager.registerCommand(new CommandBackup());
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandBackup("backup", 4, true));//TODO fix perms
+
+    }
+
+    @SubscribeEvent
+    public void serverStarting(FEModuleServerStartingEvent e)
     {
         APIRegistry.perms.registerPermission(PERM_NOTIFY, DefaultPermissionLevel.OP, "Backup notification permission");
         registerBackupTask();
@@ -136,9 +142,9 @@ public class ModuleBackup extends ConfigLoaderBase
     @SubscribeEvent
     public void worldLoadEvent(WorldEvent.Load event)
     {
-        if (!FMLCommonHandler.instance().getEffectiveSide().isServer() || !backupOnLoad)
+        if (!FMLEnvironment.dist.isDedicatedServer() || !backupOnLoad)
             return;
-        final WorldServer world = (WorldServer) event.getWorld();
+        final ServerWorld world = (ServerWorld) event.getWorld();
         if (shouldBackup(world))
         {
             Thread thread = new Thread(new Runnable() {
@@ -155,9 +161,9 @@ public class ModuleBackup extends ConfigLoaderBase
     @SubscribeEvent
     public void worldUnloadEvent(WorldEvent.Unload event)
     {
-        if (!FMLCommonHandler.instance().getEffectiveSide().isServer() || !backupOnUnload)
+        if (!FMLEnvironment.dist.isDedicatedServer() || !backupOnUnload)
             return;
-        final WorldServer world = (WorldServer) event.getWorld();
+        final ServerWorld world = (ServerWorld) event.getWorld();
         if (shouldBackup(world))
         {
             Thread thread = new Thread(new Runnable() {
@@ -172,7 +178,21 @@ public class ModuleBackup extends ConfigLoaderBase
     }
 
     @Override
-    public void load(Configuration config, boolean isReload)
+    public void bakeConfig(boolean reload)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public ConfigData returnData()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void load(ForgeConfigSpec.Builder BUILDER, boolean isReload)
     {
         backupDefault = config.get(CONFIG_CAT, "backup_default", true, "Backup all worlds by default").getBoolean();
         backupInterval = config.get(CONFIG_CAT, "backup_interval", 60, "Automatic backup interval in minutes (0 to disable)").getInt();
@@ -214,7 +234,7 @@ public class ModuleBackup extends ConfigLoaderBase
             }
         }
 
-        if (FMLCommonHandler.instance().getMinecraftServerInstance() != null && FMLCommonHandler.instance().getMinecraftServerInstance().isServerRunning())
+        if (ServerLifecycleHooks.getCurrentServer() != null && ServerLifecycleHooks.getCurrentServer().isRunning())
             registerBackupTask();
     }
 
@@ -231,15 +251,15 @@ public class ModuleBackup extends ConfigLoaderBase
                 try
                 {
                     List<Integer> backupDims = new ArrayList<>();
-                    List<WorldServer> backupWorlds = new ArrayList<>();
-                    for (WorldServer world : DimensionManager.getWorlds())
+                    List<ServerWorld> backupWorlds = new ArrayList<>();
+                    for (ServerWorld world : DimensionManager.getWorlds())
                         if (shouldBackup(world))
                         {
                             backupDims.add(world.provider.getDimension());
                             backupWorlds.add(world);
                         }
                     ModuleBackup.notify(Translator.format("Starting backup of dimensions %s", StringUtils.join(backupDims, ", ")));
-                    for (WorldServer worldServer : backupWorlds)
+                    for (ServerWorld worldServer : backupWorlds)
                         backup(worldServer, false);
                     cleanBackups();
                     ModuleBackup.notify("Backup finished!");
@@ -253,14 +273,14 @@ public class ModuleBackup extends ConfigLoaderBase
         backupThread.start();
     }
 
-    public static void backup(int dimension)
+    public static void backup(ServerWorld dimension)
     {
         if (backupThread != null)
         {
             ModuleBackup.notify("Backup still in progress");
             return;
         }
-        final WorldServer world = DimensionManager.getWorld(dimension);
+        final ServerWorld world = dimension;
         if (world == null)
         {
             ModuleBackup.notify(Translator.format("Dimension %d does not exist or is not loaded", dimension));
@@ -284,7 +304,7 @@ public class ModuleBackup extends ConfigLoaderBase
         backupThread.start();
     }
 
-    protected static boolean shouldBackup(WorldServer world)
+    protected static boolean shouldBackup(ServerWorld world)
     {
         Boolean shouldBackup = backupOverrides.get(world.provider.getDimension());
         if (shouldBackup == null)
@@ -293,7 +313,7 @@ public class ModuleBackup extends ConfigLoaderBase
             return shouldBackup;
     }
 
-    private static synchronized void backup(WorldServer world, boolean notify)
+    private static synchronized void backup(ServerWorld world, boolean notify)
     {
         if (notify)
             notify(String.format("Starting backup of dim %d...", world.provider.getDimension()));
@@ -301,7 +321,7 @@ public class ModuleBackup extends ConfigLoaderBase
         // Save world
         if (!saveWorld(world))
         {
-            notify(String.format("Backup of dim %s failed: Could not save world", world.provider.getDimension()));
+            notify(String.format("Backup of dim %s failed: Could not save world", world.dimension().getRegistryName()));
             return;
         }
 
@@ -312,7 +332,7 @@ public class ModuleBackup extends ConfigLoaderBase
         if (!backupDir.exists())
             if (!backupDir.mkdirs())
             {
-                notify(String.format("Backup of dim %s failed: Could not create backup directory", world.provider.getDimension()));
+                notify(String.format("Backup of dim %s failed: Could not create backup directory", world.dimension().getRegistryName()));
                 return;
             }
 
@@ -320,7 +340,7 @@ public class ModuleBackup extends ConfigLoaderBase
         try (FileOutputStream fileStream = new FileOutputStream(backupFile); //
                 ZipOutputStream zipStream = new ZipOutputStream(fileStream);)
         {
-            LoggingHandler.felog.info(String.format("Listing files for backup of world %d", world.provider.getDimension()));
+            LoggingHandler.felog.info(String.format("Listing files for backup of world %d", world.dimension().getRegistryName()));
             for (File file : enumWorldFiles(world, world.getChunkSaveLocation(), null))
             {
                 String relativePath = baseUri.relativize(file.toURI()).getPath();
@@ -339,17 +359,17 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         catch (Exception ex)
         {
-            LoggingHandler.felog.error(String.format("Severe error during backup of dim %d", world.provider.getDimension()));
+            LoggingHandler.felog.error(String.format("Severe error during backup of dim %d", world.dimension().getRegistryName()));
             ex.printStackTrace();
             if (notify)
-                notify(String.format("Error during backup of dim %d", world.provider.getDimension()));
+                notify(String.format("Error during backup of dim %d", world.dimension().getRegistryName()));
         }
 
         if (notify)
             notify("Backup finished");
     }
 
-    private static List<File> enumWorldFiles(WorldServer world, File dir, List<File> files)
+    private static List<File> enumWorldFiles(ServerWorld world, File dir, List<File> files)
     {
         if (files == null)
             files = new ArrayList<>();
@@ -363,8 +383,8 @@ public class ModuleBackup extends ConfigLoaderBase
             }
 
             // Exclude directories of other worlds
-            for (WorldServer otherWorld : DimensionManager.getWorlds())
-                if (otherWorld.provider.getDimension() != world.provider.getDimension() && otherWorld.getChunkSaveLocation().equals(file))
+            for (ServerWorld otherWorld : ServerLifecycleHooks.getCurrentServer().getWorlds())
+                if (otherWorld.dimension() != world.dimension() && otherWorld.getChunkSaveLocation().equals(file))
                     continue mainLoop;
             for (Pattern pattern : exludePatterns)
                 if (pattern.matcher(file.getName()).matches())
@@ -374,26 +394,26 @@ public class ModuleBackup extends ConfigLoaderBase
         return files;
     }
 
-    private static File getBackupFile(WorldServer world)
+    private static File getBackupFile(ServerWorld world)
     {
         return new File(baseFolder, String.format("%s/DIM_%d/%s.zip", //
-                world.getWorldInfo().getWorldName(), //
-                world.provider.getDimension(), //
+                world.getLevelData().getWorldName(), //
+                world.dimension(), //
                 FILE_FORMAT.format(new Date())));
     }
 
-    private static boolean saveWorld(WorldServer world)
+    private static boolean saveWorld(ServerWorld world)
     {
-        boolean oldLevelSaving = world.disableLevelSaving;
-        world.disableLevelSaving = false;
+        boolean oldLevelSaving = world.noSave;
+        world.noSave = false;
         try
         {
-            world.saveAllChunks(true, (IProgressUpdate) null);
+            world.save((IProgressUpdate) null, oldLevelSaving, oldLevelSaving);
             return true;
         }
         catch (MinecraftException e)
         {
-            LoggingHandler.felog.error(String.format("Could not save world %d", world.provider.getDimension()));
+            LoggingHandler.felog.error(String.format("Could not save world %d", world.dimension()));
             return false;
         }
         catch (Exception e)
@@ -403,7 +423,7 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         finally
         {
-            world.disableLevelSaving = oldLevelSaving;
+            world.noSave = oldLevelSaving;
         }
     }
 
@@ -522,11 +542,10 @@ public class ModuleBackup extends ConfigLoaderBase
     private static void notify(String message)
     {
         ITextComponent messageComponent = ChatOutputHandler.notification(message);
-        if (!FMLCommonHandler.instance().getMinecraftServerInstance().isServerStopped())
-            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        if (!ServerLifecycleHooks.getCurrentServer().isShutdown())
+            for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                 if (UserIdent.get(player).checkPermission(PERM_NOTIFY))
-                    ChatOutputHandler.sendMessage(player, messageComponent);
-        ChatOutputHandler.sendMessage(FMLCommonHandler.instance().getMinecraftServerInstance(), messageComponent);
+                    ChatOutputHandler.sendMessage(player.createCommandSourceStack(), messageComponent);
+        ChatOutputHandler.sendMessage(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack(), messageComponent);
     }
-
 }

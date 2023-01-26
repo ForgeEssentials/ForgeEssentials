@@ -1,29 +1,31 @@
 package com.forgeessentials.protection.commands;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandProtectionDebug extends ParserCommandBase
+public class CommandProtectionDebug extends BaseCommand
 {
+
+    public CommandProtectionDebug(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
     {
         return "protectdebug";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/protectdebug: Toggles protection-module debug-mode";
     }
 
     @Override
@@ -45,12 +47,17 @@ public class CommandProtectionDebug extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isTabCompletion)
-            return;
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-        EntityPlayerMP player = arguments.senderPlayer;
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+
+        ServerPlayerEntity player = arguments.senderPlayer;
         if (player == null)
             throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
 
@@ -72,5 +79,4 @@ public class CommandProtectionDebug extends ParserCommandBase
             arguments.notify("Command: " + cmd + "<perm>");
         }
     }
-
 }

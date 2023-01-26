@@ -1,5 +1,7 @@
 package com.forgeessentials.core.commands;
 
+import com.forgeessentials.core.misc.Translator;
+
 import net.minecraft.command.CommandException;
 
 public class PermissionDeniedException extends CommandException
@@ -12,12 +14,7 @@ public class PermissionDeniedException extends CommandException
 
     public PermissionDeniedException()
     {
-        super("You don't have permissions for that.", new Object[] {});
-    }
-
-    public PermissionDeniedException(String par1Str, Object... par2ArrayOfObj)
-    {
-        super(par1Str, par2ArrayOfObj);
+        super(Translator.translateITC("You don't have permissions for that."));
     }
 
 }

@@ -6,14 +6,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -22,10 +20,10 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.PermissionManager;
 
-public class CommandGetCommandBook extends ForgeEssentialsCommandBase
+public class CommandGetCommandBook extends BaseCommand
 {
 
     public static String joinAliases(Object[] par0ArrayOfObj)
@@ -60,12 +58,6 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/commandbook: Get a command book listing all commands.";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -84,20 +76,20 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
 
-        if (sender.inventory.hasItemStack(new ItemStack(Items.WRITTEN_BOOK)))
+        if (sender.inventory.contains(new ItemStack(Items.WRITTEN_BOOK)))
         {
-            for (int i = 0; i < sender.inventory.mainInventory.size(); i++)
+            for (int i = 0; i < sender.inventory.items.size(); i++)
             {
-                ItemStack e = sender.inventory.mainInventory.get(i);
-                if (e != ItemStack.EMPTY && e.hasTagCompound() && e.getTagCompound().hasKey("title")
-                        && e.getTagCompound().hasKey("author")
-                        && e.getTagCompound().getString("title").equals("CommandBook")
-                        && e.getTagCompound().getString("author").equals("ForgeEssentials"))
+                ItemStack e = sender.inventory.items.get(i);
+                if (e != ItemStack.EMPTY && e.hasTag() && e.getTag().contains("title")
+                        && e.getTag().contains("author")
+                        && e.getTag().getString("title").equals("CommandBook")
+                        && e.getTag().getString("author").equals("ForgeEssentials"))
                 {
-                    sender.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
+                    sender.inventory.setItem(i, ItemStack.EMPTY);
                 }
             }
         }
@@ -126,18 +118,18 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBase
             pages.add(text);
         }
 
-        NBTTagList pagesNbt = new NBTTagList();
+        ListNBT pagesNbt = new ListNBT();
         for (String page : pages)
-            pagesNbt.appendTag(new NBTTagString(page));
+            pagesNbt.appendTag(new StringNBT(page));
 
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setString("author", "ForgeEssentials");
-        tag.setString("title", "CommandBook");
-        tag.setTag("pages", pagesNbt);
+        CompoundNBT tag = new CompoundNBT();
+        tag.putString("author", "ForgeEssentials");
+        tag.putString("title", "CommandBook");
+        tag.put("pages", pagesNbt);
 
         ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
         is.setTagCompound(tag);
-        sender.inventory.addItemStackToInventory(is);
+        sender.inventory.add(is);
     }
 
 }

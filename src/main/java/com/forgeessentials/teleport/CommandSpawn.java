@@ -3,9 +3,7 @@ package com.forgeessentials.teleport;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -14,33 +12,19 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandSpawn extends ForgeEssentialsCommandBase
+public class CommandSpawn extends BaseCommand
 {
 
     @Override
     public String getPrimaryAlias()
     {
         return "spawn";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/spawn [player] Teleport you or another player to their spawn point.";
-        }
-        else
-        {
-            return "/spawn <player> Teleport a player to their spawn point.";
-        }
     }
 
     @Override
@@ -62,7 +46,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length >= 1)
         {
@@ -70,7 +54,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
             {
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
             }
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player == null)
             {
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
@@ -83,7 +67,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
         }
         else if (args.length == 0)
         {
-            EntityPlayerMP player = sender;
+            ServerPlayerEntity player = sender;
 
             WarpPoint point = RespawnHandler.getSpawn(player, null);
             if (point == null)
@@ -104,7 +88,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBase
         {
             throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
         }
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
         if (player == null)
         {
             throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);

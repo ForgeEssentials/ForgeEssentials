@@ -1,9 +1,9 @@
 package com.forgeessentials.jscripting.wrapper.mc.entity;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 
-public class JsEntityLivingBase<T extends EntityLivingBase> extends JsEntity<T>
+public class JsEntityLivingBase<T extends LivingEntity> extends JsEntity<T>
 {
 
     public JsEntityLivingBase(T that)
@@ -28,12 +28,12 @@ public class JsEntityLivingBase<T extends EntityLivingBase> extends JsEntity<T>
 
     public int getTotalArmorValue()
     {
-        return that.getTotalArmorValue();
+        return that.getArmorValue();
     }
 
     public boolean canEntityBeSeen(JsEntity<Entity> other)
     {
-        return that.canEntityBeSeen(other.getThat());
+        return that.canSee(other.getThat());
     }
 
 }

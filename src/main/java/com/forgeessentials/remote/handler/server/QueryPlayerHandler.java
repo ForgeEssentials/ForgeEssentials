@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -56,7 +56,7 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
         Map<UUID, Map<String, JsonElement>> players = new HashMap<>();
         if (request.data == null || request.data.name == null)
         {
-            for (EntityPlayerMP player : ServerUtil.getPlayerList())
+            for (ServerPlayerEntity player : ServerUtil.getPlayerList())
             {
                 UserIdent ident = UserIdent.get(player);
                 players.put(ident.getUuid(), getPlayerInfoResponse(session, ident, request.data == null ? null : request.data.flags));
@@ -87,9 +87,9 @@ public class QueryPlayerHandler extends GenericRemoteHandler<QueryPlayerRequest>
                 break;
             case FLAG_DETAIL:
                 pi.put("health", new JsonPrimitive(ident.getPlayerMP().getHealth()));
-                pi.put("armor", new JsonPrimitive(ident.getPlayerMP().getTotalArmorValue()));
-                pi.put("hunger", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getFoodLevel()));
-                pi.put("saturation", new JsonPrimitive(ident.getPlayerMP().getFoodStats().getSaturationLevel()));
+                pi.put("armor", new JsonPrimitive(ident.getPlayerMP().getArmorValue()));
+                pi.put("hunger", new JsonPrimitive(ident.getPlayerMP().getFoodData().getFoodLevel()));
+                pi.put("saturation", new JsonPrimitive(ident.getPlayerMP().getFoodData().getSaturationLevel()));
                 break;
             }
         }

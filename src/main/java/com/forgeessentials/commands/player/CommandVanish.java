@@ -5,22 +5,24 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.EntityTrackerEntry;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketSpawnPlayer;
-import net.minecraft.world.WorldServer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandVanish extends ParserCommandBase
+public class CommandVanish extends BaseCommand
 {
+
+    public CommandVanish(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String PERM = "fe.commands.vanish";
 
@@ -32,12 +34,6 @@ public class CommandVanish extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "vanish";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/vanish: Become invisible";
     }
 
     @Override
@@ -104,15 +100,15 @@ public class CommandVanish extends ParserCommandBase
 
     public static void vanish(UserIdent ident, boolean vanish)
     {
-        EntityPlayerMP player = ident.getPlayerMP();
-        WorldServer world = (WorldServer) player.world;
-        List<EntityPlayer> players = world.playerEntities;
+        ServerPlayerEntity player = ident.getPlayerMP();
+        ServerWorld world = (ServerWorld) player.getLevel();
+        List<ServerPlayerEntity> players = world.players();
         if (vanish)
         {
             vanishedPlayers.add(ident);
-            EntityTrackerEntry tracker = world.getEntityTracker().trackedEntityHashTable.lookup(player.getEntityId());
+            EntityTrackerEntry tracker = world.getEntityTracker().trackedEntityHashTable.lookup(player.getId());
 
-            Set<EntityPlayerMP> tracked = new HashSet<>(tracker.trackingPlayers);
+            Set<ServerPlayerEntity> tracked = new HashSet<>(tracker.trackingPlayers);
             world.getEntityTracker().untrack(player);
             tracked.forEach(tP -> {
                 player.connection.sendPacket(new SPacketSpawnPlayer(tP));

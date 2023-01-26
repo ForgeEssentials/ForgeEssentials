@@ -10,8 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -140,7 +139,8 @@ public class PlayerInfo implements Loadable
                     }
                 }
             }
-            for (String name : groupsToRemove) {
+            for (String name : groupsToRemove)
+            {
 
                 inventoryGroups.remove(name);
             }
@@ -183,7 +183,7 @@ public class PlayerInfo implements Loadable
         }
 
         // Create new player info data
-        EntityPlayerMP player = UserIdent.get(uuid, username).getPlayerMP();
+        PlayerEntity player = UserIdent.get(uuid, username).getPlayerMP();
         info = new PlayerInfo(uuid);
         playerInfoMap.put(uuid, info);
         if (player != null)
@@ -191,9 +191,9 @@ public class PlayerInfo implements Loadable
         return info;
     }
 
-    public static PlayerInfo get(EntityPlayer player)
+    public static PlayerInfo get(PlayerEntity player)
     {
-        return get(player.getPersistentID(), player.getName());
+        return get(player.getUUID(), player.getName().getString());
     }
 
     public static PlayerInfo get(UserIdent ident)

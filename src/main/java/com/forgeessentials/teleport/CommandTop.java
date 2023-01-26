@@ -4,8 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -14,23 +13,16 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandTop extends ForgeEssentialsCommandBase
+public class CommandTop extends BaseCommand
 {
 
     @Override
     public String getPrimaryAlias()
     {
         return "top";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/top <player> Teleport you or another player to the top of the world.";
     }
 
     @Override
@@ -52,7 +44,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length == 0)
         {
@@ -60,7 +52,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
         }
         else if (args.length == 1 && PermissionAPI.hasPermission(sender, TeleportModule.PERM_TOP_OTHERS))
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 top(player);
@@ -77,7 +69,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
     {
         if (args.length == 1)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 top(player);
@@ -89,7 +81,7 @@ public class CommandTop extends ForgeEssentialsCommandBase
             throw new TranslatedCommandException("Improper syntax. Please try this instead: <player>");
     }
 
-    public void top(EntityPlayerMP player) throws CommandException
+    public void top(ServerPlayerEntity player) throws CommandException
     {
         WarpPoint point = new WarpPoint(player);
         int oldY = point.getBlockY();
@@ -97,15 +89,19 @@ public class CommandTop extends ForgeEssentialsCommandBase
 
         if (oldY != precY)
         {
-            if (!ForgeEssentials.isCubicChunksInstalled && precY == -1) {
+            if (!ForgeEssentials.isCubicChunksInstalled && precY == -1)
+            {
                 point.setY(0);
-                while (player.world.getBlockState(point.getBlockPos()).getMaterial() != Material.AIR) {
+                while (player.world.getBlockState(point.getBlockPos()).getMaterial() != Material.AIR)
+                {
                     point.setY(point.getY() + 1);
                 }
-                if (oldY == point.getBlockY()) {
+                if (oldY == point.getBlockY())
+                {
                     return;
                 }
-            } else
+            }
+            else
             {
                 point.setY(precY);
             }

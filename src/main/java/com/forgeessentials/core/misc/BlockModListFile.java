@@ -3,7 +3,9 @@ package com.forgeessentials.core.misc;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.util.Calendar;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -13,15 +15,16 @@ import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockModListFile
 {
 
     private static Calendar calen = Calendar.getInstance();
 
+    @SuppressWarnings("unchecked")
     public static void makeModList()
     {
         try
@@ -37,17 +40,22 @@ public class BlockModListFile
                 out.println("# Generated: " + calen.get(Calendar.DAY_OF_MONTH) + "-" + calen.get(Calendar.MONTH) + "-" + calen.get(Calendar.YEAR)
                         + " (Server time)");
                 out.println("# Build: " + BuildInfo.getBuildNumber());
-                out.println("# Change the location of this file in " + ForgeEssentials.getConfigManager().getMainConfigName() + ".cfg");
+                out.println("# Change the location of this file in " + ForgeEssentials.getConfigManager().getMainConfigName() + ".toml");
                 out.println();
 
-                for (ModContainer mod : Loader.instance().getModList())
+                ModList l = ModList.get();
+                Field f = ModList.class.getDeclaredField("mods");
+                f.setAccessible(true);
+                List<ModContainer> mods = (List<ModContainer>) f.get(l);
+
+                for (ModContainer mod : mods)
                 {
                     String url = "";
-                    if (!mod.getMetadata().url.isEmpty())
+                    if (mod.getModInfo().getUpdateURL().toString() != null)
                     {
-                        url = mod.getMetadata().url;
+                        url = mod.getModInfo().getUpdateURL().toString();
                     }
-                    out.println(mod.getName() + ";" + mod.getVersion() + ";" + mod.getSource().getName() + ";" + url);
+                    out.println(mod.getModInfo().getDisplayName() + ";" + mod.getModInfo().getVersion() + ";" + mod.getModInfo().getOwningFile() + ";" + url);
                 }
             }
         }
@@ -75,11 +83,11 @@ public class BlockModListFile
 
                 for (Item i : ForgeRegistries.ITEMS)
                 {
-                    out.println(i.getUnlocalizedName());
+                    out.println(i.getRegistryName());
                 }
                 for (Block b : ForgeRegistries.BLOCKS)
                 {
-                    out.println(b.getUnlocalizedName());
+                    out.println(b.getRegistryName());
                 }
             }
         }

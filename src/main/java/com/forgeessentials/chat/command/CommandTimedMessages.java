@@ -1,57 +1,29 @@
 package com.forgeessentials.chat.command;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.MessageArgument;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ParserCommandBase;
-import com.forgeessentials.core.misc.TaskRegistry;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.moduleLauncher.config.ConfigSaver;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
-import com.google.gson.JsonParseException;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandTimedMessages extends ParserCommandBase implements ConfigSaver, Runnable
+public class CommandTimedMessages extends BaseCommand
 {
 
-    public static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + ".TimedMessage";
-
-    public static final String MESSAGES_HELP = "Each line is 1 message. \nYou can use scripting arguments and color codes. "
-            + "\nUsing json messages (tellraw) is also supported";
-
-    public static final String[] MESSAGES_DEFAULT = new String[] { "This server runs ForgeEssentials server management mod" };
-
-    protected static List<String> messages = new ArrayList<>();
-
-    protected static int interval;
-
-    protected static boolean shuffle;
-
-    protected static boolean enabled;
-
-    protected List<Integer> messageOrder = new ArrayList<>();
-
-    protected int currentIndex;
-
-    public CommandTimedMessages()
+    public CommandTimedMessages(String name, int permissionLevel, boolean enabled)
     {
-        ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
+        super(name, permissionLevel, enabled);
     }
 
     @Override
@@ -64,12 +36,6 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "tm" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/timedmessage: Manage automatically sent messages";
     }
 
     @Override
@@ -91,224 +57,142 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
+        return builder
+                .then(Commands.literal("help")
+                        .executes(CommandContext -> execute(CommandContext, "help")
+                                )
+                        )
+                .then(Commands.literal("add")
+                        .then(Commands.argument("message", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "add")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("list")
+                        .executes(CommandContext -> execute(CommandContext, "list")
+                                )
+                        )
+                .then(Commands.literal("delete")
+                        .then(Commands.argument("number", IntegerArgumentType.integer(0, ModuleChat.timedMessages.getMessages().size()-1))
+                                .executes(CommandContext -> execute(CommandContext, "delete")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("send")
+                        .then(Commands.argument("number", IntegerArgumentType.integer(0,ModuleChat.timedMessages.getMessages().size()-1))
+                                .executes(CommandContext -> execute(CommandContext, "send")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("interval")
+                        .then(Commands.argument("number", IntegerArgumentType.integer())
+                                .executes(CommandContext -> execute(CommandContext, "interval")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("shuffle")
+                        .then(Commands.argument("bool", BoolArgumentType.bool())
+                                .executes(CommandContext -> execute(CommandContext, "shuffle")
+                                        )
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "help")
+                        );
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        if (params.toString() == "help")
         {
-            arguments.confirm("/tm add <message>: Add a message");
-            arguments.confirm("/tm list: List all messages");
-            arguments.confirm("/tm delete <id>: Delete a message");
-            arguments.confirm("/tm send <id>: Send a message");
-            arguments.confirm("/tm interval <sec>: Set message interval");
-            arguments.confirm("/tm shuffle <true|false>: Enable/disable shuffling of messages");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tm add <message>: Add a message");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tm list: List all messages");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tm delete <id>: Delete a timed message");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tm send <id>: Send a message");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tm interval <sec>: Set message interval");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tm shuffle <true|false>: Enable/disable shuffling of messages");
+            return Command.SINGLE_SUCCESS;
         }
 
-        arguments.tabComplete("add", "list", "delete", "send", "interval", "shuffle");
-        String sumCmd = arguments.remove().toLowerCase();
-        switch (sumCmd)
+        String option = params.toString();
+        switch (option)
         {
         case "add":
-            parseAdd(arguments);
+            parseAdd(ctx);
             break;
         case "list":
-            parseList(arguments);
+            parseList(ctx);
             break;
         case "delete":
-            parseDelete(arguments);
+            parseDelete(ctx);
             break;
         case "send":
-            parseSend(arguments);
+            parseSend(ctx);
             break;
         case "interval":
-            parseInterval(arguments);
+            parseInterval(ctx);
             break;
         case "shuffle":
-            parseShuffle(arguments);
+            parseShuffle(ctx);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, sumCmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, option);
         }
+        return Command.SINGLE_SUCCESS;
     }
 
-    public void parseAdd(CommandParserArgs arguments)
+    public void parseAdd(CommandContext<CommandSource> ctx) throws CommandSyntaxException
     {
-        if (arguments.isTabCompletion)
-            return;
-        if (arguments.isEmpty())
+        String message = MessageArgument.getMessage(ctx, "message").getString();
+        if (message.isEmpty())
         {
-            arguments.confirm("/timedmessage add <message...>: Add a timed message");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/timedmessage add <message...>: Add a timed message");
             return;
         }
-        String message = arguments.toString();
-        addMessage(message);
-        arguments.confirm("Added new message:");
-        arguments.sendMessage(formatMessage(message));
-        ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+        ModuleChat.timedMessages.addMessage(message);
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Added new message:");
+        ChatOutputHandler.sendMessage(ctx.getSource(),ModuleChat.timedMessages.formatMessage(message));
+        ModuleChat.timedMessages.save(false);
     }
 
-    public void parseList(CommandParserArgs arguments)
+    public void parseList(CommandContext<CommandSource> ctx) throws CommandSyntaxException
     {
-        if (arguments.isTabCompletion)
-            return;
-        arguments.confirm("List of messages:");
-        for (int i = 0; i < messages.size(); i++)
-            arguments.sendMessage(new TextComponentTranslation(String.format("%d: %s", i, formatMessage(messages.get(i)))));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "List of messages:");
+        for (int i = 0; i < ModuleChat.timedMessages.getMessages().size(); i++)
+            ChatOutputHandler.sendMessage(ctx.getSource(),new TranslationTextComponent(String.format("%d: %s", i, ModuleChat.timedMessages.formatMessage(ModuleChat.timedMessages.getMessages().get(i)))));
     }
 
-    public void parseDelete(CommandParserArgs arguments) throws CommandException
+    public void parseDelete(CommandContext<CommandSource> ctx) throws CommandSyntaxException
     {
-        if (arguments.isTabCompletion)
-            return;
-        if (arguments.isEmpty())
+        int num = IntegerArgumentType.getInteger(ctx, "number");
+        ModuleChat.timedMessages.getMessages().remove(num);
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Removed message");
+        ModuleChat.timedMessages.save(false);
+    }
+
+    public void parseSend(CommandContext<CommandSource> ctx) throws CommandSyntaxException
+    {
+        int index = IntegerArgumentType.getInteger(ctx, "number");
+        ModuleChat.timedMessages.broadcastMessage(index);
+    }
+
+    public void parseInterval(CommandContext<CommandSource> ctx) throws CommandSyntaxException
+    {
+        int index = IntegerArgumentType.getInteger(ctx, "number");
+        ModuleChat.timedMessages.setInterval(index);
+        ModuleChat.timedMessages.save(false);
+    }
+
+    public void parseShuffle(CommandContext<CommandSource> ctx) throws CommandSyntaxException
+    {
+        boolean newShuffle = BoolArgumentType.getBool(ctx, "bool");
+        if (newShuffle != ModuleChat.timedMessages.getShuffle())
         {
-            arguments.confirm("/timedmessage delete <index>: Delete a timed message");
-            return;
-        }
-        int index = arguments.parseInt();
-        if (index < 0 || index >= messages.size())
-            throw new TranslatedCommandException("Index out of bounds");
-        messages.remove(index);
-        arguments.confirm("Removed message");
-        ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
-    }
-
-    public void parseSend(CommandParserArgs arguments) throws CommandException
-    {
-        if (arguments.isTabCompletion)
-            return;
-        if (arguments.isEmpty())
-        {
-            arguments.confirm("/timedmessage send <index>: Send a timed message");
-            return;
-        }
-        int index = arguments.parseInt();
-        if (index < 0 || index >= messages.size())
-            throw new TranslatedCommandException("Index out of bounds");
-        broadcastMessage(index);
-    }
-
-    public void parseInterval(CommandParserArgs arguments) throws CommandException
-    {
-        if (arguments.isTabCompletion)
-            return;
-        if (arguments.isEmpty())
-        {
-            arguments.confirm("/tm interval <sec>: Set message interval (0 = disabled)");
-            return;
-        }
-        setInterval(arguments.parseInt());
-        ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
-    }
-
-    public void parseShuffle(CommandParserArgs arguments) throws CommandException
-    {
-        if (arguments.isEmpty())
-        {
-            arguments.confirm("/tm shuffle <true|false>: Enable/disable shuffling of messages");
-            return;
-        }
-        boolean newShuffle = arguments.parseBoolean();
-        if (arguments.isTabCompletion)
-            return;
-        if (newShuffle != shuffle)
-        {
-            shuffle = newShuffle;
-            initMessageOrder();
-            ForgeEssentials.getConfigManager().save(ModuleChat.CONFIG_FILE);
+            ModuleChat.timedMessages.setShuffle(newShuffle);
+            ModuleChat.timedMessages.initMessageOrder();
+            ModuleChat.timedMessages.save(false);
         }
     }
-
-    @Override
-    public void run()
-    {
-        if (messages.isEmpty() || !enabled)
-            return;
-        if (currentIndex >= messages.size())
-            currentIndex = 0;
-        broadcastMessage(messageOrder.get(currentIndex));
-        currentIndex++;
-    }
-
-    public void broadcastMessage(int index)
-    {
-        if (index >= 0 && index < messages.size())
-            ChatOutputHandler.broadcast(formatMessage(messages.get(index)));
-    }
-
-    public void addMessage(String message)
-    {
-        messages.add(message);
-        initMessageOrder();
-    }
-
-    public void initMessageOrder()
-    {
-        messageOrder.clear();
-        for (int i = 0; i < messages.size(); i++)
-            messageOrder.add(i);
-        if (shuffle)
-            Collections.shuffle(messageOrder);
-    }
-
-    public int getInterval()
-    {
-        return interval;
-    }
-
-    public void setInterval(int interval)
-    {
-        if (interval < 0)
-            interval = 0;
-        if (CommandTimedMessages.interval == interval)
-            return;
-        if (CommandTimedMessages.interval > 0)
-            TaskRegistry.remove(this);
-        CommandTimedMessages.interval = interval;
-        if (interval > 0)
-            TaskRegistry.scheduleRepeated(this, interval * 1000);
-    }
-
-    public static ITextComponent formatMessage(String message)
-    {
-        message = ModuleChat.processChatReplacements(null, message);
-        try
-        {
-            return ITextComponent.Serializer.jsonToComponent(message);
-        }
-        catch (JsonParseException e)
-        {
-            if (message.contains("{"))
-            {
-                LoggingHandler.felog.warn("Error in timedmessage format: " + ExceptionUtils.getRootCause(e).getMessage());
-            }
-            return new TextComponentString(message);
-        }
-    }
-
-    @Override
-    public boolean supportsCanonicalConfig()
-    {
-        return true;
-    }
-
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
-        config.addCustomCategoryComment(CATEGORY, "Automated spam");
-        setInterval(config.get(CATEGORY, "inverval", 60, "Interval in seconds. 0 to disable").getInt());
-        enabled = config.get(CATEGORY, "enabled", false).getBoolean();
-        shuffle = config.get(CATEGORY, "shuffle", false).getBoolean();
-        messages = new ArrayList<String>(Arrays.asList(config.get(CATEGORY, "messages", MESSAGES_DEFAULT, MESSAGES_HELP).getStringList()));
-        initMessageOrder();
-    }
-
-    @Override
-    public void save(Configuration config)
-    {
-        config.get(CATEGORY, "inverval", 60).set(interval);
-        config.get(CATEGORY, "shuffle", false).set(shuffle);
-        config.get(CATEGORY, "messages", MESSAGES_DEFAULT).set(messages.toArray(new String[messages.size()]));
-    }
-
 }

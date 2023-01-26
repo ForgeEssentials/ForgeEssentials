@@ -1,5 +1,15 @@
 package com.forgeessentials.util.output;
 
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.*;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -7,44 +17,34 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.apache.commons.text.StringEscapeUtils;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.core.FEConfig;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 
 public final class ChatOutputHandler extends ConfigLoaderBase
 {
 
     public static final char COLOR_FORMAT_CHARACTER = '\u00a7';
 
-    public static final String CONFIG_CAT = "Core.Output";
+    public static final String CONFIG_MAIN_OUTPUT = "Output";
 
     public static TextFormatting chatErrorColor, chatWarningColor, chatConfirmationColor, chatNotificationColor;
 
     /* ------------------------------------------------------------ */
 
     /**
-     * Sends a chat message to the given command sender (usually a player) with the given text and no special
-     * formatting.
+     * Sends a chat message to the given command sender (usually a player) with the given text and no special formatting.
      *
      * @param recipient
      *            The recipient of the chat message.
      * @param message
      *            The message to send.
      */
-    public static void sendMessage(ICommandSender recipient, String message)
+    public static void sendMessage(CommandSource recipient, String message)
     {
-        sendMessage(recipient, new TextComponentString(message));
+        sendMessage(recipient, new StringTextComponent(message));
     }
 
     /**
@@ -53,12 +53,13 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param recipient
      * @param message
      */
-    public static void sendMessage(ICommandSender recipient, ITextComponent message)
+    public static void sendMessage(CommandSource recipient, ITextComponent message)
     {
-        if (recipient instanceof FakePlayer && ((EntityPlayerMP) recipient).connection == null)
-            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", recipient.getName(), message.getUnformattedText()));
+        Entity entity = recipient.getEntity();
+        if (entity instanceof FakePlayer && ((ServerPlayerEntity) entity).connection.getConnection() == null)
+            LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", entity.getName(), message.plainCopy()));
         else
-            recipient.sendMessage(message);
+            recipient.getServer().getPlayerList().broadcastMessage(message, ChatType.CHAT, entity.getUUID());
     }
 
     /**
@@ -71,13 +72,13 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param color
      *            Color of text to format
      */
-    public static void sendMessage(ICommandSender recipient, String message, TextFormatting color)
+    public static void sendMessage(CommandSource recipient, String message, TextFormatting color)
     {
         message = formatColors(message);
-        if (recipient instanceof EntityPlayer)
+        if (recipient.getEntity() instanceof PlayerEntity)
         {
-            TextComponentString component = new TextComponentString(message);
-            component.getStyle().setColor(color);
+            TextComponent component = new StringTextComponent(message);
+            component.getStyle().withColor(color);
             sendMessage(recipient, component);
         }
         else
@@ -92,7 +93,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void broadcast(String message)
     {
-        broadcast(new TextComponentString(message));;
+        broadcast(new StringTextComponent(message));;
     }
 
     /**
@@ -103,29 +104,32 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void broadcast(ITextComponent message)
     {
-        FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(message);
+        for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+        {
+            ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT, p.getUUID());
+        }
     }
 
     /* ------------------------------------------------------------ */
 
     public static ITextComponent confirmation(String message)
     {
-        return setChatColor(new TextComponentString(formatColors(message)), chatConfirmationColor);
+        return setChatColor(new StringTextComponent(formatColors(message)), chatConfirmationColor);
     }
 
     public static ITextComponent notification(String message)
     {
-        return setChatColor(new TextComponentString(formatColors(message)), chatNotificationColor);
+        return setChatColor(new StringTextComponent(formatColors(message)), chatNotificationColor);
     }
 
     public static ITextComponent warning(String message)
     {
-        return setChatColor(new TextComponentString(formatColors(message)), chatWarningColor);
+        return setChatColor(new StringTextComponent(formatColors(message)), chatWarningColor);
     }
 
     public static ITextComponent error(String message)
     {
-        return setChatColor(new TextComponentString(formatColors(message)), chatErrorColor);
+        return setChatColor(new StringTextComponent(formatColors(message)), chatErrorColor);
     }
 
     /**
@@ -137,7 +141,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static ITextComponent setChatColor(ITextComponent message, TextFormatting color)
     {
-        message.getStyle().setColor(color);
+        message.getStyle().withColor(color);
         return message;
     }
 
@@ -151,9 +155,14 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param msg
      *            the message to be sent
      */
-    public static void chatError(ICommandSender sender, String msg)
+    public static void chatError(CommandSource sender, String msg)
     {
         sendMessage(sender, msg, chatErrorColor);
+    }
+
+    public static void chatError(PlayerEntity sender, String msg)
+    {
+        chatError(sender.createCommandSourceStack(), msg);
     }
 
     /**
@@ -164,9 +173,14 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param msg
      *            the message to be sent
      */
-    public static void chatConfirmation(ICommandSender sender, String msg)
+    public static void chatConfirmation(CommandSource sender, String msg)
     {
         sendMessage(sender, msg, chatConfirmationColor);
+    }
+
+    public static void chatConfirmation(PlayerEntity sender, String msg)
+    {
+        sendMessage(sender.createCommandSourceStack(), msg);
     }
 
     /**
@@ -177,9 +191,14 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param msg
      *            the message to be sent
      */
-    public static void chatWarning(ICommandSender sender, String msg)
+    public static void chatWarning(CommandSource sender, String msg)
     {
         sendMessage(sender, msg, chatWarningColor);
+    }
+
+    public static void chatWarning(PlayerEntity sender, String msg)
+    {
+        sendMessage(sender.createCommandSourceStack(), msg);
     }
 
     /**
@@ -189,11 +208,15 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      *            CommandSender to chat to.
      * @param msg
      */
-    public static void chatNotification(ICommandSender sender, String msg)
+    public static void chatNotification(CommandSource sender, String msg)
     {
         sendMessage(sender, msg, chatNotificationColor);
     }
 
+    public static void chatNotification(PlayerEntity sender, String msg)
+    {
+        sendMessage(sender.createCommandSourceStack(), msg);
+    }
     /* ------------------------------------------------------------ */
 
     /**
@@ -262,10 +285,10 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         switch (formatting)
         {
         case BOLD:
-            chatStyle.setBold(true);
+            chatStyle.withBold(true);
             break;
         case ITALIC:
-            chatStyle.setItalic(true);
+            chatStyle.withItalic(true);
             break;
         case OBFUSCATED:
             chatStyle.setObfuscated(true);
@@ -279,7 +302,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         case RESET:
             break;
         default:
-            chatStyle.setColor(formatting);
+            chatStyle.withColor(formatting);
             break;
         }
     }
@@ -310,72 +333,12 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     public static String getUnformattedMessage(ITextComponent message)
     {
-        StringBuilder sb = new StringBuilder();
-        for (Object msg : message)
-            sb.append(((ITextComponent) msg).getUnformattedComponentText());
-        return sb.toString();
+        return message.plainCopy().toString();
     }
 
     public static String getFormattedMessage(ITextComponent message)
     {
-        StringBuilder sb = new StringBuilder();
-        for (Object msg : message)
-            sb.append(((ITextComponent) msg).getFormattedText());
-        return sb.toString();
-    }
-
-    public static String formatHtml(ITextComponent message)
-    {
-        // TODO: HTML formatting function
-        StringBuilder sb = new StringBuilder();
-        for (Object msgObj : message)
-        {
-            ITextComponent msg = (ITextComponent) msgObj;
-            Style style = msg.getStyle();
-            if (!isStyleEmpty(style))
-            {
-                sb.append("<span class=\"");
-                TextFormatting color = style.getColor();
-                if (color != null)
-                {
-                    sb.append(" mcf");
-                    sb.append(FORMAT_CHARACTERS[color.ordinal()]);
-                }
-                if (style.getBold())
-                {
-                    sb.append(" mcf");
-                    sb.append(FORMAT_CHARACTERS[TextFormatting.BOLD.ordinal()]);
-                }
-                if (style.getItalic())
-                {
-                    sb.append(" mcf");
-                    sb.append(FORMAT_CHARACTERS[TextFormatting.ITALIC.ordinal()]);
-                }
-                if (style.getUnderlined())
-                {
-                    sb.append(" mcf");
-                    sb.append(FORMAT_CHARACTERS[TextFormatting.UNDERLINE.ordinal()]);
-                }
-                if (style.getObfuscated())
-                {
-                    sb.append(" mcf");
-                    sb.append(FORMAT_CHARACTERS[TextFormatting.OBFUSCATED.ordinal()]);
-                }
-                if (style.getStrikethrough())
-                {
-                    sb.append(" mcf");
-                    sb.append(FORMAT_CHARACTERS[TextFormatting.STRIKETHROUGH.ordinal()]);
-                }
-                sb.append("\">");
-                sb.append(formatHtml(msg.getUnformattedComponentText()));
-                sb.append("</span>");
-            }
-            else
-            {
-                sb.append(formatHtml(msg.getUnformattedComponentText()));
-            }
-        }
-        return sb.toString();
+        return message.copy().toString();
     }
 
     public static String formatHtml(String message)
@@ -411,21 +374,21 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     public static boolean isStyleEmpty(Style style)
     {
-        return !style.getBold() && !style.getItalic() && !style.getObfuscated() && !style.getStrikethrough() && !style.getUnderlined()
+        return !style.isBold() && !style.isItalic() && !style.isObfuscated() && !style.isStrikethrough() && !style.isUnderlined()
                 && style.getColor() == null;
     }
 
     public static enum ChatFormat
     {
 
-        PLAINTEXT, HTML, MINECRAFT, DETAIL;
+        PLAINTEXT, /* HTML, */ MINECRAFT, DETAIL;
 
         public Object format(ITextComponent message)
         {
             switch (this)
             {
-            case HTML:
-                return ChatOutputHandler.formatHtml(message);
+            // case HTML:
+            // return ChatOutputHandler.formatHtml(message);
             case MINECRAFT:
                 return ChatOutputHandler.getFormattedMessage(message);
             case DETAIL:
@@ -455,7 +418,8 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     /**
      * Gets a nice string with only needed elements. Max time is weeks
      *
-     * @param time in seconds
+     * @param time
+     *            in seconds
      * @return Time in string format
      */
     public static String formatTimeDurationReadable(long time, boolean showSeconds)
@@ -504,7 +468,8 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     /**
      * Gets a nice string with only needed elements. Max time is weeks
      *
-     * @param time in milliseconds
+     * @param time
+     *            in milliseconds
      * @return Time in string format
      */
     public static String formatTimeDurationReadableMilli(long time, boolean showSeconds)
@@ -516,44 +481,68 @@ public final class ChatOutputHandler extends ConfigLoaderBase
 
     public static void setConfirmationColor(String color)
     {
-        chatConfirmationColor = TextFormatting.getValueByName(color);
+        chatConfirmationColor = TextFormatting.getByName(color);
         if (chatConfirmationColor == null)
             chatConfirmationColor = TextFormatting.GREEN;
     }
 
     public static void setErrorColor(String color)
     {
-        chatErrorColor = TextFormatting.getValueByName(color);
+        chatErrorColor = TextFormatting.getByName(color);
         if (chatErrorColor == null)
             chatErrorColor = TextFormatting.RED;
     }
 
     public static void setNotificationColor(String color)
     {
-        chatNotificationColor = TextFormatting.getValueByName(color);
+        chatNotificationColor = TextFormatting.getByName(color);
         if (chatNotificationColor == null)
             chatNotificationColor = TextFormatting.AQUA;
     }
 
     public static void setWarningColor(String color)
     {
-        chatWarningColor = TextFormatting.getValueByName(color);
+        chatWarningColor = TextFormatting.getByName(color);
         if (chatWarningColor == null)
             chatWarningColor = TextFormatting.YELLOW;
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    static ForgeConfigSpec.ConfigValue<String> FEchatConfirmationColor;
+    static ForgeConfigSpec.ConfigValue<String> FEchatErrorColor;
+    static ForgeConfigSpec.ConfigValue<String> FEchatNotificationColor;
+    static ForgeConfigSpec.ConfigValue<String> FEchatWarningColor;
+
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
-        config.addCustomCategoryComment(CONFIG_CAT,
+        BUILDER.comment(
                 "This controls the colors of the various chats output by ForgeEssentials." + "\nValid output colors are as follows:"
                         + "\naqua, black, blue, dark_aqua, dark_blue, dark_gray, dark_green, dark_purple, dark_red"
-                        + "\ngold, gray, green, light_purple, red, white, yellow");
-
-        setConfirmationColor(config.get(CONFIG_CAT, "confirmationColor", "green", "Defaults to green.").getString());
-        setErrorColor(config.get(CONFIG_CAT, "errorOutputColor", "red", "Defaults to red.").getString());
-        setNotificationColor(config.get(CONFIG_CAT, "notificationOutputColor", "aqua", "Defaults to aqua.").getString());
-        setWarningColor(config.get(CONFIG_CAT, "warningOutputColor", "yellow", "Defaults to yellow.").getString());
+                        + "\ngold, gray, green, light_purple, red, white, yellow")
+                .push(CONFIG_MAIN_OUTPUT);
+        FEchatConfirmationColor = BUILDER.comment("Defaults to green.")
+                .define("confirmationColor", "green");
+        FEchatErrorColor = BUILDER.comment("Defaults to red.")
+                .define("errorOutputColor", "red");
+        FEchatNotificationColor = BUILDER.comment("Defaults to aqua.")
+                .define("notificationOutputColor", "aqua");
+        FEchatWarningColor = BUILDER.comment("Defaults to yellow.")
+                .define("warningOutputColor", "yellow");
+        BUILDER.pop();
     }
+
+	@Override
+	public void bakeConfig(boolean reload)
+    {
+        setConfirmationColor(FEchatConfirmationColor.get());
+        setErrorColor(FEchatErrorColor.get());
+        setNotificationColor(FEchatNotificationColor.get());
+        setWarningColor(FEchatWarningColor.get());
+    }
+
+	@Override
+	public ConfigData returnData() {
+		return FEConfig.data;
+	}
 
 }

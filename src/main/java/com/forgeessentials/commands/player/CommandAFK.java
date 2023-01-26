@@ -1,22 +1,32 @@
 package com.forgeessentials.commands.player;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.command.arguments.MessageArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.CommandFeSettings;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandAFK extends ForgeEssentialsCommandBase
+public class CommandAFK extends BaseCommand
 {
+
+    public CommandAFK(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String PERM = "fe.commands.afk";
 
@@ -28,23 +38,10 @@ public class CommandAFK extends ForgeEssentialsCommandBase
 
     public static final String PERM_AUTOKICK = PERM + ".autokick";
 
-    public CommandAFK()
-    {
-        CommandFeSettings.addAlias("Afk", "timeout", PERM_AUTOTIME);
-        CommandFeSettings.addAlias("Afk", "auto_kick", PERM_AUTOKICK);
-        CommandFeSettings.addAlias("Afk", "warmup", PERM_WARMUP);
-    }
-
     @Override
     public String getPrimaryAlias()
     {
         return "afk";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/afk: Mark yourself as away.";
     }
 
     @Override
@@ -75,47 +72,90 @@ public class CommandAFK extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        UserIdent ident = UserIdent.get(sender);
+        return builder
+                .then(Commands.literal("timeout")
+                        .then(Commands.literal("group")
+                                .then(Commands.argument("group", MessageArgument.message())
+                                        .then(Commands.argument("timeout", IntegerArgumentType.integer())
+                                                .executes(CommandContext -> execute(CommandContext, "timeout","G")
+                                                        )
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("player")
+                                .then(Commands.argument("player", EntityArgument.player())
+                                        .then(Commands.argument("timeout", IntegerArgumentType.integer())
+                                                .executes(CommandContext -> execute(CommandContext, "timeout","P")
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                .then(Commands.literal("autokick")
+                        .then(Commands.literal("group")
+                                .then(Commands.argument("group", MessageArgument.message())
+                                        .then(Commands.argument("yn", BoolArgumentType.bool())
+                                                .executes(CommandContext -> execute(CommandContext, "autokick","G")
+                                                        )
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("player")
+                                .then(Commands.argument("player", EntityArgument.player())
+                                        .then(Commands.argument("yn", BoolArgumentType.bool())
+                                                .executes(CommandContext -> execute(CommandContext, "autokick","P")
+                                                        )
+                                                )
+                                        )
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "afk")
+                        );
+    }
 
-        if (args.length >= 1)
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        UserIdent ident = UserIdent.get(ctx.getSource());
+
+     // expected syntax: /afk timeout <group|player> <timeout>
+        // to set custom afk timeout for yourself, replace <player> with your own username
+        if ((params[0]).toString()==("timeout"))
         {
-            // expected syntax: /afk timeout <group|player> <timeout>
-            // to set custom afk timeout for yourself, replace <player> with your own username
-            if (args[0].equalsIgnoreCase("timeout"))
+            Integer amount = IntegerArgumentType.getInteger(ctx, "timeout");
+            if ((params[0]).toString()==("P"))
             {
-                UserIdent applyTo = UserIdent.get(args[1], true);
-                if (applyTo != null)
-                {
-                    APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOTIME, args[2]);
-                }
-                else
-                {
-                    APIRegistry.perms.setGroupPermissionProperty(args[1], PERM_AUTOTIME, args[2]);
-                }
+                UserIdent applyTo = UserIdent.get(EntityArgument.getPlayer(ctx, "player").getUUID().toString(), true);
+                APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOTIME, amount.toString());
             }
-            // expected syntax: /afk timeout <group|player> [true|false}
-            else if (args[0].equalsIgnoreCase("autokick"))
+            else
             {
-                UserIdent applyTo = UserIdent.get(args[1], true);
-                if (applyTo != null)
-                {
-                    APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOKICK, args[2]);
-                }
-                else
-                {
-                    APIRegistry.perms.setGroupPermissionProperty(args[1], PERM_AUTOKICK, args[2]);
-                }
+                APIRegistry.perms.setGroupPermissionProperty(MessageArgument.getMessage(ctx, "group").getString(), PERM_AUTOTIME, amount.toString());
+            }
+        }
+        // expected syntax: /afk timeout <group|player> [true|false}
+        else if ((params[0]).toString()==("autokick"))
+        {
+            Boolean amount = BoolArgumentType.getBool(ctx, "yn");
+            if ((params[0]).toString()==("P"))
+            {
+                UserIdent applyTo = UserIdent.get(EntityArgument.getPlayer(ctx, "player").getUUID().toString(), true);
+                APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOKICK, amount.toString());
+            }
+            else
+            {
+                APIRegistry.perms.setGroupPermissionProperty(MessageArgument.getMessage(ctx, "group").getString(), PERM_AUTOKICK, amount.toString());
             }
         }
         else
         {
             int autoTime = ServerUtil.parseIntDefault(ident.getPermissionProperty(CommandAFK.PERM_AUTOTIME), 60 * 2);
             int warmup = ServerUtil.parseIntDefault(ident.getPermissionProperty(PERM_WARMUP), 0);
-            PlayerInfo.get(sender).setActive(autoTime * 1000 - warmup * 1000);
-            ChatOutputHandler.chatConfirmation(sender, Translator.format("Stand still for %d seconds.", warmup));
+            PlayerInfo.get(getServerPlayer(ctx.getSource())).setActive(autoTime * 1000 - warmup * 1000);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Stand still for %d seconds.", warmup));
         }
+        return Command.SINGLE_SUCCESS;
     }
-
 }

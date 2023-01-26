@@ -6,23 +6,21 @@ import java.util.List;
 import java.util.Queue;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.CommandBlockBaseLogic;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.tileentity.CommandBlockLogic;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.CommandButcherTickTask.ButcherMobType;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandButcher extends ForgeEssentialsCommandBase
+public class CommandButcher extends BaseCommand
 {
 
     public static List<String> typeList = ButcherMobType.getNames();
@@ -37,12 +35,6 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "butcher" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/butcher [radius|-1|world] [type] [x, y, z] Kills the type of mobs within the specified radius around the specified point in the specified world.";
     }
 
     @Override
@@ -78,13 +70,13 @@ public class CommandButcher extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         int radius = -1;
-        double x = sender.posX;
-        double y = sender.posY;
-        double z = sender.posZ;
-        World world = sender.world;
+        double x = sender.position().x;
+        double y = sender.position().y;
+        double z = sender.position().z;
+        World world = sender.level;
         String mobType = ButcherMobType.HOSTILE.toString();
 
         Queue<String> argsStack = new LinkedList<>(Arrays.asList(args));
@@ -104,9 +96,9 @@ public class CommandButcher extends ForgeEssentialsCommandBase
         {
             if (argsStack.size() < 3)
                 throw new TranslatedCommandException("Improper syntax: <radius> [type] [x y z] [world]", Integer.MAX_VALUE);
-            x = parseDouble(argsStack.remove(), sender.posX);
-            y = parseDouble(argsStack.remove(), sender.posY);
-            z = parseDouble(argsStack.remove(), sender.posZ);
+            x = parseDouble(argsStack.remove(), sender.position().x);
+            y = parseDouble(argsStack.remove(), sender.position().y);
+            z = parseDouble(argsStack.remove(), sender.position().z);
         }
 
         if (!argsStack.isEmpty())
@@ -154,17 +146,15 @@ public class CommandButcher extends ForgeEssentialsCommandBase
         }
         else
         {
-            if (sender instanceof CommandBlockBaseLogic)
+            if (sender instanceof CommandBlockLogic)
             {
-                CommandBlockBaseLogic cb = (CommandBlockBaseLogic) sender;
-                world = cb.getEntityWorld();
-                BlockPos coords = cb.getPosition();
-                x = coords.getX();
-                y = coords.getY();
-                z = coords.getZ();
+                CommandBlockLogic cb = (CommandBlockLogic) sender;
+                world = cb.getLevel();
+                Vector3d coords = cb.getPosition();
+                x = coords.x;
+                y = coords.y;
+                z = coords.z;
             }
-            else
-                throw new TranslatedCommandException(getUsage(sender));
         }
 
         if (!argsStack.isEmpty())

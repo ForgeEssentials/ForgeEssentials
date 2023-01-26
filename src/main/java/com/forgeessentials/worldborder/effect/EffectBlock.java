@@ -23,7 +23,7 @@ public class EffectBlock extends WorldBorderEffect
     @Override
     public void playerMove(WorldBorder border, PlayerMoveEvent event)
     {
-        ChatOutputHandler.chatWarning(event.getPlayer(), "You're not allowed to move past the world border!");
+        ChatOutputHandler.chatWarning(event.getPlayer().createCommandSourceStack(), "You're not allowed to move past the world border!");
         event.setCanceled(true);
     }
 }

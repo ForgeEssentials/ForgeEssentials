@@ -1,34 +1,71 @@
 package com.forgeessentials.auth;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandVIP extends ForgeEssentialsCommandBase
+public class CommandVIP extends BaseCommand
 {
 
-    @Override
+    public CommandVIP(String name, int permissionLevel, boolean enabled) {
+		super(name, permissionLevel, enabled);
+	}
+
+	@Override
     public String getPrimaryAlias()
     {
         return "vip";
     }
 
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+	{
+    	return builder
+    	        .then(Commands.literal("add")
+    	                .then(Commands.argument("player", EntityArgument.player())
+    	                        .executes(CommandContext -> execute(CommandContext, "add")
+    	                                )
+    	                        )
+    	                )
+    	        .then(Commands.literal("add")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(CommandContext -> execute(CommandContext, "remove")
+                                        )
+                                )
+                        );
+	}
+
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length >= 2 && args[0].equalsIgnoreCase("add"))
+        EntityArgument.getPlayer(ctx, "player").getName().getString();
+        PlayerEntity arg = null;
+        try
         {
-            APIRegistry.perms.setPlayerPermission(UserIdent.get(args[1], sender), "fe.auth.vip", true);
+            arg = EntityArgument.getPlayer(ctx,"player");
         }
-        else if (args.length >= 2 && args[0].equalsIgnoreCase("remove"))
+        catch (CommandSyntaxException e)
         {
-            APIRegistry.perms.setPlayerPermission(UserIdent.get(args[1], sender), "fe.auth.vip", false);
+            e.printStackTrace();
         }
+        if (params.toString() == "add")
+        {
+            APIRegistry.perms.setPlayerPermission(UserIdent.get(arg), "fe.auth.vip", true);
+        }
+        else if (params.toString() == "remove")
+        {
+            APIRegistry.perms.setPlayerPermission(UserIdent.get(arg), "fe.auth.vip", false);
+        }
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
@@ -43,12 +80,6 @@ public class CommandVIP extends ForgeEssentialsCommandBase
         return "fe.auth.vipcmd";
     }
 
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-
-        return "/vip [add|remove} <player> Adds or removes a player from the VIP list";
-    }
 
     @Override
     public DefaultPermissionLevel getPermissionLevel()

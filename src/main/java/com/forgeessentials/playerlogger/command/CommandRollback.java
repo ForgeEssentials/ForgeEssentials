@@ -9,21 +9,29 @@ import java.util.Timer;
 import java.util.UUID;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandRollback extends ParserCommandBase
+public class CommandRollback extends BaseCommand
 {
+
+    public CommandRollback(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String PERM = ModulePlayerLogger.PERM_COMMAND + ".rollback";
     public static final String PERM_ALL = PERM + Zone.ALL_PERMS;
@@ -48,12 +56,6 @@ public class CommandRollback extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/rb: Rollback changes in the world with playerlogger";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return PERM;
@@ -72,7 +74,14 @@ public class CommandRollback extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (args.isEmpty())
         {
@@ -121,7 +130,7 @@ public class CommandRollback extends ParserCommandBase
         if (args.isTabCompletion)
             return;
 
-        if (rollbacks.containsKey(args.senderPlayer.getPersistentID()))
+        if (rollbacks.containsKey(args.senderPlayer.getUUID()))
             cancelRollback(args);
 
         Selection area = SelectionHandler.getSelection(args.senderPlayer);
@@ -129,7 +138,8 @@ public class CommandRollback extends ParserCommandBase
             throw new TranslatedCommandException("No selection available. Please select a region first.");
 
         int step = -60;
-        if (!args.isEmpty()) {
+        if (!args.isEmpty())
+        {
             String time = args.remove();
             try
             {
@@ -140,7 +150,7 @@ public class CommandRollback extends ParserCommandBase
                 date.setSeconds(parsedDate.getSeconds());
                 date.setMinutes(parsedDate.getMinutes());
                 date.setHours(parsedDate.getHours());
-                step = (int)((date.getTime() - currentDate.getTime()) / 1000);
+                step = (int) ((date.getTime() - currentDate.getTime()) / 1000);
             }
             catch (ParseException e)
             {
@@ -149,7 +159,7 @@ public class CommandRollback extends ParserCommandBase
         }
 
         RollbackInfo rb = new RollbackInfo(args.senderPlayer, area);
-        rollbacks.put(args.senderPlayer.getPersistentID(), rb);
+        rollbacks.put(args.senderPlayer.getUUID(), rb);
         rb.step(step);
         rb.previewChanges();
 
@@ -166,7 +176,7 @@ public class CommandRollback extends ParserCommandBase
         if (args.isTabCompletion)
             return;
 
-        RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.get(args.senderPlayer.getUUID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
 
@@ -182,7 +192,7 @@ public class CommandRollback extends ParserCommandBase
         if (args.isTabCompletion)
             return;
 
-        RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.remove(args.senderPlayer.getUUID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
 
@@ -192,7 +202,7 @@ public class CommandRollback extends ParserCommandBase
 
     private void cancelRollback(CommandParserArgs args) throws CommandException
     {
-        RollbackInfo rb = rollbacks.remove(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.remove(args.senderPlayer.getUUID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress.");
 
@@ -215,7 +225,7 @@ public class CommandRollback extends ParserCommandBase
         if (args.isTabCompletion)
             return;
 
-        RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.get(args.senderPlayer.getUUID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
 
@@ -240,7 +250,7 @@ public class CommandRollback extends ParserCommandBase
         if (args.isTabCompletion)
             return;
 
-        RollbackInfo rb = rollbacks.get(args.senderPlayer.getPersistentID());
+        RollbackInfo rb = rollbacks.get(args.senderPlayer.getUUID());
         if (rb == null)
             throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
         if (rb.task == null)
@@ -251,7 +261,7 @@ public class CommandRollback extends ParserCommandBase
         ChatOutputHandler.chatConfirmation(args.sender, "Stopped playback");
     }
 
-    private static void help(ICommandSender sender)
+    private static void help(CommandSource sender)
     {
         ChatOutputHandler.chatConfirmation(sender, "/rollback: Start rollback");
         ChatOutputHandler.chatConfirmation(sender, "/rollback start [time]: Start rollback at specified time");
@@ -262,5 +272,4 @@ public class CommandRollback extends ParserCommandBase
         ChatOutputHandler.chatConfirmation(sender, "/rollback confirm: Confirm changes");
         ChatOutputHandler.chatConfirmation(sender, "/rollback cancel: Cancel rollback");
     }
-
 }

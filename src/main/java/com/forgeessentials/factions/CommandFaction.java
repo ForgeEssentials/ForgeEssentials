@@ -6,26 +6,34 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.CommandParserArgs.CancelParsingException;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandFaction extends ParserCommandBase
+public class CommandFaction extends BaseCommand
 {
+
+    public CommandFaction(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String MSG_FACTION_REQUIRED = "You need to be in a faction to use this command";
     public static final String MSG_UNKNOWN_FACTION = "Faction %s does not exist";
@@ -58,25 +66,26 @@ public class CommandFaction extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/faction: Manage factions";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (arguments.isEmpty())
         {
             if (arguments.hasPermission(ModuleFactions.PERM_LIST))
                 arguments.confirm("/faction list");
-            return;
+            return Command.SINGLE_SUCCESS;
         }
 
         String faction = null;
@@ -241,15 +250,15 @@ public class CommandFaction extends ParserCommandBase
             }
         };
 
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
             UserIdent playerIdent = UserIdent.get(player);
             if (ModuleFactions.isInFaction(playerIdent, faction) && playerIdent.checkPermission(ModuleFactions.PERM_INVITE))
             {
                 try
                 {
-                    Questioner.add(player, message, callback);
-                    arguments.confirm("Requested %s to accept your join request", player.getDisplayNameString());
+                    Questioner.add(player.createCommandSourceStack(), message, callback);
+                    arguments.confirm("Requested %s to accept your join request", player.getDisplayName());
                     return;
                 }
                 catch (QuestionerStillActiveException e)
@@ -380,7 +389,8 @@ public class CommandFaction extends ParserCommandBase
                 for (Entry<UserIdent, Set<String>> player : APIRegistry.perms.getServerZone().getPlayerGroups().entrySet())
                 {
                     if (player.getValue().remove(factionGroup) && player.getKey().hasPlayer())
-                        ChatOutputHandler.chatNotification(player.getKey().getPlayer(), Translator.format("Faction %s has been deleted", faction));
+                        ChatOutputHandler.chatNotification(player.getKey().getPlayer().createCommandSourceStack(),
+                                Translator.format("Faction %s has been deleted", faction));
                     for (Iterator<String> it = player.getValue().iterator(); it.hasNext();)
                         if (it.next().startsWith(ModuleFactions.RANK_PREFIX))
                             it.remove();
@@ -404,5 +414,4 @@ public class CommandFaction extends ParserCommandBase
         arguments.confirm("/faction " + msg);
         throw new CancelParsingException();
     }
-
 }

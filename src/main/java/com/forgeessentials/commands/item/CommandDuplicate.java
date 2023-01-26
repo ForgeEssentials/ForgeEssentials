@@ -1,30 +1,33 @@
 package com.forgeessentials.commands.item;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandDuplicate extends ForgeEssentialsCommandBase
+public class CommandDuplicate extends BaseCommand
 {
+
+    public CommandDuplicate(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
     {
         return "duplicate";
-    }
-
-    @Override
-    public String getUsage(ICommandSender par1ICommandSender)
-    {
-        return "/duplicate [amount]: Duplicates your current item";
     }
 
     @Override
@@ -42,25 +45,41 @@ public class CommandDuplicate extends ForgeEssentialsCommandBase
     @Override
     public String getPermissionNode()
     {
-        return ModuleCommands.PERM + "." + getName();
+        return ModuleCommands.PERM + "." + "duplicate";
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        ItemStack stack = player.getHeldItemMainhand();
+        return builder
+                .then(Commands.literal("size")
+                        .then(Commands.argument("size", IntegerArgumentType.integer(0, 64))
+                                .executes(CommandContext -> execute(CommandContext, "size")
+)
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext)
+                        );
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        PlayerEntity player = (PlayerEntity) ctx.getSource().getEntity();
+        ItemStack stack = player.getMainHandItem();
         if (stack == ItemStack.EMPTY)
             throw new TranslatedCommandException("No item equipped");
-
+ 
         int stackSize = 0;
-        if (args.length > 0)
-            stackSize = parseInt(args[0]);
-
+        if (params.toString() == "size")
+        {
+            stackSize = IntegerArgumentType.getInteger(ctx, "size");
+        }
         ItemStack newStack = stack.copy();
         if (stackSize > 0)
             newStack.setCount(stackSize);
 
         PlayerUtil.give(player, newStack);
+        return Command.SINGLE_SUCCESS;
     }
-
 }

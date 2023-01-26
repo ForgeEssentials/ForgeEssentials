@@ -3,19 +3,18 @@ package com.forgeessentials.teleport.portal;
 import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.NamedWorldArea;
 import com.forgeessentials.util.NamedWorldPoint;
 import com.forgeessentials.util.selections.SelectionHandler;
 
-public class CommandPortal extends ParserCommandBase
+public class CommandPortal extends BaseCommand
 {
 
     public static final String PERM = "fe.teleport.portal";
@@ -24,12 +23,6 @@ public class CommandPortal extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "portal";
-    }
-    
-    @Override
-    public String getUsage(ICommandSender p_71518_1_)
-    {
-        return "/portal delete|create|recreate|list|target [name] [x y z] [dim] Manage portals.";
     }
 
     @Override
@@ -55,7 +48,7 @@ public class CommandPortal extends ParserCommandBase
     {
         if (arguments.isEmpty())
         {
-            arguments.confirm(getUsage(arguments.sender));
+            
             return;
         }
 

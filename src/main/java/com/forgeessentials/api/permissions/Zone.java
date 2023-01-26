@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -187,7 +187,7 @@ public abstract class Zone
      * 
      * @param player
      */
-    public boolean isPlayerInZone(EntityPlayer player)
+    public boolean isPlayerInZone(PlayerEntity player)
     {
         return isInZone(new WorldPoint(player));
     }
@@ -310,7 +310,7 @@ public abstract class Zone
      * @param permissionNode
      * @return permission value or null, if not set
      */
-    public String getPlayerPermission(EntityPlayer player, String permissionNode)
+    public String getPlayerPermission(PlayerEntity player, String permissionNode)
     {
         return getPlayerPermission(UserIdent.get(player), permissionNode);
     }

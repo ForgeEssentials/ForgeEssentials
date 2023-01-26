@@ -5,14 +5,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 
 import com.forgeessentials.util.output.LoggingHandler;
-import com.google.common.base.Throwables;
 
 public class DBConnector
 {
@@ -31,8 +27,7 @@ public class DBConnector
      * @param name
      *            a name for the DB connector. to be used in Logging.
      * @param fallback
-     *            The DBConnector from which to take information for a given type if loading that type from this config
-     *            fails.
+     *            The DBConnector from which to take information for a given type if loading that type from this config fails.
      * @param dType
      *            the default database type to use
      * @param dbDefault
@@ -232,7 +227,7 @@ public class DBConnector
         catch (SQLException e)
         {
             LoggingHandler.felog.error("[FE+SQL] " + name + " CATASTROPHIC DATABASE CONNECTION FAILIURE!!!");
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
 
         return null;

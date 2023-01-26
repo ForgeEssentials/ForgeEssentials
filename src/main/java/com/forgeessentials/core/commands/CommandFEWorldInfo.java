@@ -1,35 +1,40 @@
 package com.forgeessentials.core.commands;
 
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandFEWorldInfo extends ParserCommandBase
+public class CommandFEWorldInfo extends BaseCommand
 {
-    
-    @Override
-    public void parse(CommandParserArgs arguments)
+
+    public CommandFEWorldInfo(String name, int permissionLevel, boolean enabled)
     {
-        arguments.notify("Showing all world provider names:");
-        for (World world : DimensionManager.getWorlds())
+        super(name, permissionLevel, enabled);
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Showing all world provider names:");
+        for (World world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
         {
-            arguments.notify("%s - %s", world.provider.getDimension(), world.provider.getClass().getName());
+            ChatOutputHandler.chatNotification(ctx.getSource(),Translator.format("%s - %s", world.dimension(), world.dimension().getRegistryName()));
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
     public String getPrimaryAlias()
     {
         return "feworldinfo";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/feworldinfo Display the names of all world providers";
     }
 
     @Override
@@ -48,5 +53,13 @@ public class CommandFEWorldInfo extends ParserCommandBase
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
     }
 }

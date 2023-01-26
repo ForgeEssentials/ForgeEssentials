@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -14,14 +13,14 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
 
-public class CommandWarp extends ParserCommandBase
+public class CommandWarp extends BaseCommand
 {
 
     public static class Warp extends WarpPoint
@@ -42,12 +41,6 @@ public class CommandWarp extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "warp";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/warp <name> [set|delete]: Set/delete/teleport to a warp point";
     }
 
     @Override
@@ -75,7 +68,7 @@ public class CommandWarp extends ParserCommandBase
         APIRegistry.perms.registerPermission(PERM_DELETE, DefaultPermissionLevel.OP, "Allow deleting warps");
         APIRegistry.perms.registerPermissionProperty(PERM_LIMIT, "10", "Maximal warp count");
         APIRegistry.perms.registerPermissionPropertyOp(PERM_LIMIT, "false");
-        APIRegistry.perms.registerPermission(PERM_WARP + ".*",DefaultPermissionLevel.OP, "Allows permission to use all warps");
+        APIRegistry.perms.registerPermission(PERM_WARP + ".*", DefaultPermissionLevel.OP, "Allows permission to use all warps");
     }
 
     public static Map<String, Warp> getWarps()
@@ -89,7 +82,6 @@ public class CommandWarp extends ParserCommandBase
         if (arguments.isEmpty())
         {
             arguments.confirm("/warp list: List warps");
-            arguments.confirm(getUsage(arguments.sender));
             return;
         }
 

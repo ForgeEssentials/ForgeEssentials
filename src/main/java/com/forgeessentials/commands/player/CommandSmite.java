@@ -3,10 +3,7 @@ package com.forgeessentials.commands.player;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -14,31 +11,17 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandSmite extends ForgeEssentialsCommandBase
+public class CommandSmite extends BaseCommand
 {
 
     @Override
     public String getPrimaryAlias()
     {
         return "smite";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/smite [me|player] Smite yourself, another player, or the spot you are looking at.";
-        }
-        else
-        {
-            return "/smite <player> Smite someone.";
-        }
     }
 
     @Override
@@ -60,7 +43,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         if (args.length == 1)
         {
@@ -71,7 +54,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             }
             else
             {
-                EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+                ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
                 if (player != null)
                 {
                     player.world.addWeatherEffect(new EntityLightningBolt(player.world, player.posX, player.posY, player.posZ, false));
@@ -114,7 +97,7 @@ public class CommandSmite extends ForgeEssentialsCommandBase
     {
         if (args.length >= 1)
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
             if (player != null)
             {
                 player.world.addWeatherEffect(new EntityLightningBolt(player.world, player.posX, player.posY, player.posZ, false));
@@ -123,8 +106,6 @@ public class CommandSmite extends ForgeEssentialsCommandBase
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
         }
-        else
-            throw new TranslatedCommandException(getUsage(sender));
     }
 
     @Override

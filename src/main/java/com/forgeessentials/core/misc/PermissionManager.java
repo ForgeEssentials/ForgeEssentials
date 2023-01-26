@@ -3,19 +3,22 @@ package com.forgeessentials.core.misc;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommand;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import com.mojang.brigadier.Command;
+
+import net.minecraft.command.Commands;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 /**
  * Transition class to the new Permissions API
  */
+@SuppressWarnings("rawtypes")
 public class PermissionManager
 {
-    protected static Map<ICommand, String> commandPermissions = new WeakHashMap<>();
-    public static String getCommandPermission(ICommand command)
+    protected static Map<Command, String> commandPermissions = new WeakHashMap<>();
+
+    public static String getCommandPermission(Command command)
     {
         if (command instanceof PermissionObject)
         {
@@ -29,7 +32,7 @@ public class PermissionManager
         return "command." + command.getName();
     }
 
-    public static DefaultPermissionLevel getCommandLevel(ICommand command)
+    public static DefaultPermissionLevel getCommandLevel(Command command)
     {
         if (command instanceof PermissionObject)
             return ((PermissionObject) command).getPermissionLevel();
@@ -44,33 +47,31 @@ public class PermissionManager
      *
      * @param command
      */
-    public static void registerCommandPermission(ICommand command)
+    public static void registerCommandPermission(Command command)
     {
         PermissionAPI.registerNode(getCommandPermission(command), getCommandLevel(command), "");
     }
 
     /**
-     * This method allows you to register permissions for commands that cannot implement the PermissionObject interface
-     * for any reason.
+     * This method allows you to register permissions for commands that cannot implement the PermissionObject interface for any reason.
      *
      * @param command
      * @param permission
      * @param permissionLevel
      */
-    public static void registerCommandPermission(ICommand command, String permission, DefaultPermissionLevel permissionLevel)
+    public static void registerCommandPermission(Command command, String permission, DefaultPermissionLevel permissionLevel)
     {
         commandPermissions.put(command, permission);
         PermissionAPI.registerNode(permission, permissionLevel, "");
     }
 
     /**
-     * This method allows you to register permissions for commands that cannot implement the PermissionObject interface
-     * for any reason.
+     * This method allows you to register permissions for commands that cannot implement the PermissionObject interface for any reason.
      *
      * @param command
      * @param permission
      */
-    public static void registerCommandPermission(ICommand command, String permission)
+    public static void registerCommandPermission(Command command, String permission)
     {
         registerCommandPermission(command, permission, getCommandLevel(command));
     }
@@ -79,13 +80,13 @@ public class PermissionManager
      * <b>FOR INTERNAL USE ONLY</b> <br>
      * TODO This method should be removed in the PR
      *
-     * @param command a command
+     * @param command
+     *            a command
      */
     public static void registerCommandPermissions()
     {
-        @SuppressWarnings("unchecked")
-        Map<String, ICommand> commands = FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands();
-        for (ICommand command : commands.values())
+        Map<String, Command> commands = ServerLifecycleHooks.getCurrentServer();
+        for (Command command : commands.values())
             if (!commandPermissions.containsKey(command))
                 registerCommandPermission(command);
     }
@@ -106,6 +107,7 @@ public class PermissionManager
         }
 
     }
+
     public interface PermissionObject
     {
         public String getPermissionNode();

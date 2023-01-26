@@ -65,11 +65,14 @@ public class JsServerZone<T extends ServerZone> extends JsZone<T>
         return new JsZone<>(zone);
     }
 
-    public void removeZone(JsZone<?> zone) throws UnsupportedOperationException {
+    public void removeZone(JsZone<?> zone) throws UnsupportedOperationException
+    {
         if (zone.getThat() instanceof AreaZone)
         {
             that.removeZone(zone.getThat());
-        } else {
+        }
+        else
+        {
             throw new UnsupportedOperationException("Can only remove zones of Type AreaZone via javascript!");
         }
     }

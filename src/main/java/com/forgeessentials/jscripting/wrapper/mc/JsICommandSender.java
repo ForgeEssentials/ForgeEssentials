@@ -3,9 +3,10 @@ package com.forgeessentials.jscripting.wrapper.mc;
 import java.util.UUID;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentUtils;
 
@@ -20,7 +21,7 @@ import com.google.gson.JsonParseException;
 /**
  *
  */
-public class JsICommandSender extends JsWrapper<ICommandSender>
+public class JsICommandSender extends JsWrapper<CommandSource>
 {
 
     private JsEntityPlayer player;
@@ -28,17 +29,17 @@ public class JsICommandSender extends JsWrapper<ICommandSender>
     /**
      * @tsd.ignore
      */
-    public static JsICommandSender get(ICommandSender sender)
+    public static JsICommandSender get(CommandSource sender)
     {
         return sender == null ? null : new JsICommandSender(sender);
     }
 
-    private JsICommandSender(ICommandSender that)
+    private JsICommandSender(CommandSource that)
     {
         super(that);
     }
 
-    public JsICommandSender(EntityPlayer that, JsEntityPlayer jsPlayer)
+    public JsICommandSender(CommandSource that, JsEntityPlayer jsPlayer)
     {
         super(that);
         this.player = jsPlayer;
@@ -46,14 +47,14 @@ public class JsICommandSender extends JsWrapper<ICommandSender>
 
     public String getName()
     {
-        return that.getName();
+        return that.getTextName();
     }
 
     public JsEntityPlayer getPlayer()
     {
-        if (player != null || !(that instanceof EntityPlayer))
+        if (player != null || !(that.getEntity() instanceof PlayerEntity))
             return player;
-        return player = new JsEntityPlayer((EntityPlayer) that, this);
+        return player = new JsEntityPlayer((PlayerEntity) that.getEntity(), this);
     }
 
     public JsICommandSender doAs(Object userIdOrPlayer, boolean hideChatOutput)
@@ -79,36 +80,39 @@ public class JsICommandSender extends JsWrapper<ICommandSender>
     {
         ChatOutputHandler.chatNotification(that, message);
     }
+
     public void chatError(String message)
     {
         ChatOutputHandler.chatError(that, message);
     }
+
     public void chatWarning(String message)
     {
         ChatOutputHandler.chatWarning(that, message);
     }
+
     public void tellRaw(String msg)
-    { 
-    	if (msg.isEmpty())
-    	{
-    	    return;
+    {
+        if (msg.isEmpty())
+        {
+            return;
         }
         try
         {
-            Entity senderEntity = this.that.getCommandSenderEntity();
+            Entity senderEntity = this.that.getEntityOrException();
             if (senderEntity != null)
             {
-                ITextComponent itextcomponent = ITextComponent.Serializer.jsonToComponent(msg);
+                ITextComponent itextcomponent = ITextComponent.Serializer.fromJson(msg);
                 this.that.sendMessage(TextComponentUtils.processComponent(this.that, itextcomponent, senderEntity));
             }
         }
         catch (JsonParseException jsonparseexception)
         {
-            this.chatError("There is an error in your JSON: "+jsonparseexception.getMessage());
-        } 
-        catch (CommandException e) 
+            this.chatError("There is an error in your JSON: " + jsonparseexception.getMessage());
+        }
+        catch (CommandException e)
         {
-            this.chatError("There is an error in your input: "+e.getMessage());
+            this.chatError("There is an error in your input: " + e.getMessage());
         }
     }
 

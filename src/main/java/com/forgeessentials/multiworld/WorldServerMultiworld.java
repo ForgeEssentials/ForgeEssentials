@@ -1,25 +1,15 @@
 package com.forgeessentials.multiworld;
 
-import net.minecraft.profiler.Profiler;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.MinecraftException;
-import net.minecraft.world.Teleporter;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.storage.ISaveHandler;
-import net.minecraft.world.storage.WorldInfo;
-
-import com.forgeessentials.core.misc.TeleportHelper.SimpleTeleporter;
-
-public class WorldServerMultiworld extends WorldServer
+public class WorldServerMultiworld// extends ServerWorld
 {
-
+/*
     private SimpleTeleporter worldTeleporter;
 
-    public WorldServerMultiworld(MinecraftServer mcServer, ISaveHandler saveHandler, WorldInfo info, int dimensionId, WorldServer worldServer,
+    public WorldServerMultiworld(MinecraftServer mcServer, ISaveHandler saveHandler, WorldInfo info, int dimensionId, ServerWorld worldServer,
             Profiler profilerIn, Multiworld world)
     {
         super(mcServer, saveHandler, info, dimensionId, profilerIn);
-        this.mapStorage = worldServer.getMapStorage();
+        this.mapStorage = worldServer.getDataStorage();
         this.worldScoreboard = worldServer.getScoreboard();
         this.worldTeleporter = new SimpleTeleporter(this);
     }
@@ -42,5 +32,5 @@ public class WorldServerMultiworld extends WorldServer
     {
         return this.saveHandler.getWorldDirectory();
     }
-
+*/
 }

@@ -1,63 +1,93 @@
 package com.forgeessentials.core.misc;
 
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.FileUtils;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.commands.CommandFeSettings;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.core.config.ConfigBase;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigSaver;
 
-public class FECommandManager extends ConfigLoaderBase
+public class FECommandManager implements ConfigSaver
 {
-
+    private static ForgeConfigSpec COMMAND_CONFIG;
+	private static final ConfigData data = new ConfigData("Commands", COMMAND_CONFIG, new ForgeConfigSpec.Builder());
+	
     public static interface ConfigurableCommand
     {
 
-        public void loadConfig(Configuration config, String category);
+        public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category);
 
         public void loadData();
 
+        public void bakeConfig(boolean reload);
+        
     }
 
     public static final int COMMANDS_VERSION = 4;
 
-    protected static Map<String, ForgeEssentialsCommandBase> commands = new HashMap<>();
+    protected static Map<String, BaseCommand> commands = new HashMap<>();
 
-    protected static Set<ForgeEssentialsCommandBase> registeredCommands = new HashSet<>();
+    protected static Set<BaseCommand> registeredCommands = new HashSet<>();
 
-    protected static Configuration config;
-
+    protected static boolean useSingleConfigFile = false;
+    
     protected static boolean newMappings;
 
     public FECommandManager()
     {
-        ForgeEssentials.getConfigManager().registerLoader("Commands", this);
+        ForgeEssentials.getConfigManager().registerSpecs("Commands", this);
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
+    static ForgeConfigSpec.IntValue FECversion;
+
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
-        FECommandManager.config = config;
-        if (config.get("CommandsConfig", "version", COMMANDS_VERSION).getInt() < COMMANDS_VERSION)
+        BUILDER.push("CommandsConfig");
+        FECversion = BUILDER.defineInRange("version", COMMANDS_VERSION, 0, Integer.MAX_VALUE);
+        BUILDER.pop();
+    }
+
+	@Override
+	public void bakeConfig(boolean reload)
+    {
+        if (FECversion.get() < COMMANDS_VERSION)
         {
             newMappings = true;
-            config.get("CommandsConfig", "version", COMMANDS_VERSION).set(COMMANDS_VERSION);
+            FECversion.set(COMMANDS_VERSION);
         }
-        for (ForgeEssentialsCommandBase command : commands.values())
+        for (BaseCommand command : commands.values())
             loadCommandConfig(command);
     }
 
-    private static void loadCommandConfig(ForgeEssentialsCommandBase command)
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
+
+	@Override
+	public void save(boolean reload) {
+		// TODO Auto-generated method stub
+		
+	}
+
+    private static void loadCommandConfig(BaseCommand command)
     {
-        if (config == null)
-            return;
-        String category = "Commands." + command.getName();
+
+        ForgeConfigSpec.Builder configBuilder;
+    	
+        String category = "Commands_" + command.getName();
         Property aliasesProperty = config.get(category, "aliases", command.getDefaultAliases());
 
         if (newMappings)
@@ -65,18 +95,20 @@ public class FECommandManager extends ConfigLoaderBase
         command.setAliases(aliasesProperty.getStringList());
 
         if (command instanceof ConfigurableCommand)
-            ((ConfigurableCommand) command).loadConfig(config, category);
+            ((ConfigurableCommand) command).loadConfig(configBuilder, category);
+        FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials/CommandSettings"), "ForgeEssentials/CommandSettings");
+        ConfigBase.registerConfigManual(configBuilder.build(), Paths.get(ForgeEssentials.getFEDirectory()+"/CommandSettings/"+command.getName()+".toml"),true);
     }
 
-    public static void registerCommand(ForgeEssentialsCommandBase command)
+    public static void registerCommand(BaseCommand command)
     {
         registerCommand(command, false);
     }
 
-    public static void registerCommand(ForgeEssentialsCommandBase command, boolean registerNow)
+    public static void registerCommand(BaseCommand command, boolean registerNow)
     {
         commands.put(command.getName(), command);
-        if (config != null)
+        if (useSingleConfigFile = false)
         {
             loadCommandConfig(command);
         }
@@ -86,15 +118,15 @@ public class FECommandManager extends ConfigLoaderBase
 
     public static void deegisterCommand(String name)
     {
-        ForgeEssentialsCommandBase command = commands.remove(name);
+        BaseCommand command = commands.remove(name);
         if (command != null)
             command.deregister();
     }
 
     public static void registerCommands()
     {
-        ForgeEssentials.getConfigManager().load("Commands");
-        for (ForgeEssentialsCommandBase command : commands.values())
+    	bakeConfig(true);
+        for (BaseCommand command : commands.values())
             if (!registeredCommands.contains(command))
             {
                 registeredCommands.add(command);
@@ -109,5 +141,4 @@ public class FECommandManager extends ConfigLoaderBase
     {
         registeredCommands.clear();
     }
-
 }

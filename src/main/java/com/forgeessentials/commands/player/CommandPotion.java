@@ -4,10 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -16,10 +14,9 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandPotion extends ForgeEssentialsCommandBase
+public class CommandPotion extends BaseCommand
 {
     public static HashMap<String, Integer> names;
 
@@ -55,12 +52,6 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/potion <player> <effect> <duration> [ampl] Give the specified player a potion effect.";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;
@@ -85,7 +76,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         int ID = 0;
         int dur = 0;
@@ -97,7 +88,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
         }
         else if (args.length != 3)
         {
-            throw new TranslatedCommandException(getUsage(sender));
+
         }
 
         if (!names.containsKey(args[1]))
@@ -113,7 +104,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
         }
         else if (PermissionAPI.hasPermission(sender, getPermissionNode() + ".others"))
         {
-            EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 
             if (player != null)
             {
@@ -141,7 +132,7 @@ public class CommandPotion extends ForgeEssentialsCommandBase
         dur = parseInt(args[2], 0, Integer.MAX_VALUE) * 20;
         PotionEffect eff = new PotionEffect(Potion.getPotionById(ID), dur, ampl);
 
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
 
         if (player != null)
         {

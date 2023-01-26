@@ -3,18 +3,17 @@ package com.forgeessentials.teleport;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.permissions.commands.PermissionCommandParser;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandSetSpawn extends ParserCommandBase
+public class CommandSetSpawn extends BaseCommand
 {
 
     public static final String PERM_SETSPAWN = "fe.perm.setspawn";
@@ -23,12 +22,6 @@ public class CommandSetSpawn extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return "setspawn";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/setspawn (here|x y z) | (bed enable|disable)";
     }
 
     @Override

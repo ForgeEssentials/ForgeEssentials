@@ -2,41 +2,35 @@ package com.forgeessentials.commands.item;
 
 import java.lang.ref.WeakReference;
 
-import net.minecraft.block.BlockWorkbench;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.Event.Result;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandCraft extends ForgeEssentialsCommandBase
+public class CommandCraft extends BaseCommand
 {
 
-    protected WeakReference<EntityPlayer> lastPlayer = new WeakReference<>(null);
+    protected WeakReference<PlayerEntity> lastPlayer = new WeakReference<>(null);
 
-    public CommandCraft()
+    public CommandCraft(String name, int permissionLevel, boolean enabled)
     {
-        MinecraftForge.EVENT_BUS.register(this);
+        super(name, permissionLevel, enabled);
     }
 
     @Override
     public String getPrimaryAlias()
     {
         return "craft";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/craft Open a crafting window.";
     }
 
     @Override
@@ -60,17 +54,25 @@ public class CommandCraft extends ForgeEssentialsCommandBase
     @SubscribeEvent
     public void playerOpenContainerEvent(PlayerContainerEvent.Open event)
     {
-        if (event.getContainer().canInteractWith(event.getEntityPlayer()) == false && lastPlayer.get() == event.getEntityPlayer())
+        if (event.getContainer().stillValid(event.getPlayer()) == false && lastPlayer.get() == event.getPlayer())
         {
             event.setResult(Result.ALLOW);
         }
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP player, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        lastPlayer = new WeakReference<>(player);
-        player.displayGui(new BlockWorkbench.InterfaceCraftingTable(player.world, player.getPosition()));
+        return builder
+                .executes(CommandContext -> execute(CommandContext));
     }
 
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        ChatOutputHandler.chatNotification(ctx.getSource(),"This feature is currently unimplimented");
+        ChatOutputHandler.chatNotification(ctx.getSource(),"as forge made it impossable to make a custom");
+        ChatOutputHandler.chatNotification(ctx.getSource(),"crafting gui without modifications on the client.");
+        return Command.SINGLE_SUCCESS;
+    }
 }

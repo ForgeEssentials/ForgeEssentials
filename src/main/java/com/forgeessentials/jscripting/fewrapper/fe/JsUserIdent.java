@@ -108,11 +108,14 @@ public class JsUserIdent extends JsWrapper<UserIdent>
         return new JsPlayerInfo(that.getUuid());
     }
 
-    public JsWallet getWallet() {
+    public JsWallet getWallet()
+    {
         if (APIRegistry.economy != null)
         {
             return new JsWallet(APIRegistry.economy.getWallet(that));
-        } else {
+        }
+        else
+        {
             return null;
         }
     }

@@ -1,11 +1,10 @@
 package com.forgeessentials.remote.handler.chat;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -16,6 +15,7 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.RemoteMessageID;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 @FERemoteHandler(id = RemoteMessageID.CHAT)
 public class SendChatHandler extends GenericRemoteHandler<String>
@@ -39,20 +39,20 @@ public class SendChatHandler extends GenericRemoteHandler<String>
         UserIdent ident = session.getUserIdent();
         if (ident != null)
         {
-            EntityPlayerMP player = ident.getFakePlayer();
-            TextComponentTranslation message = new TextComponentTranslation("chat.type.text", new Object[] { player.getDisplayName(),
+            ServerPlayerEntity player = ident.getPlayerMP();
+            TranslationTextComponent message = new TranslationTextComponent("chat.type.text", new Object[] { player.getDisplayName(),
                     ForgeHooks.newChatWithLinks(request.data) });
             ServerChatEvent event = new ServerChatEvent(player, request.data, message);
             if (MinecraftForge.EVENT_BUS.post(event))
                 return null;
             if (event.getComponent() != null)
-                FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(event.getComponent(), false);
+                ChatOutputHandler.broadcast(event.getComponent());
         }
         else
         {
-            TextComponentTranslation message = new TextComponentTranslation("chat.type.text", new Object[] { "anonymous",
+            TranslationTextComponent message = new TranslationTextComponent("chat.type.text", new Object[] { "anonymous",
                     ForgeHooks.newChatWithLinks(request.data) });
-            FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(message, false);
+            ChatOutputHandler.broadcast(message);
             QueryChatHandler.onMessage(message);
             PushChatHandler.onMessage(message, "anonymous");
         }

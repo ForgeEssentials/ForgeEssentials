@@ -1,6 +1,8 @@
 package com.forgeessentials.api.remote.data;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 
@@ -10,7 +12,7 @@ import com.forgeessentials.commons.selections.WarpPoint;
 public class DataFloatLocation
 {
 
-    public int dim;
+    public RegistryKey<World> dim;
 
     public double x;
 
@@ -18,7 +20,7 @@ public class DataFloatLocation
 
     public double z;
 
-    public DataFloatLocation(int dim, double x, double y, double z)
+    public DataFloatLocation(RegistryKey<World> dim, double x, double y, double z)
     {
         this.dim = dim;
         this.x = x;
@@ -28,10 +30,10 @@ public class DataFloatLocation
 
     public DataFloatLocation(Entity entity)
     {
-        dim = entity.dimension;
-        x = entity.posX;
-        y = entity.posY;
-        z = entity.posZ;
+        dim = entity.level.dimension();
+        x = entity.position().x;
+        y = entity.position().y;
+        z = entity.position().z;
     }
 
     public DataFloatLocation(WarpPoint point)

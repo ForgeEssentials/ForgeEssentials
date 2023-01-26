@@ -1,9 +1,8 @@
 package com.forgeessentials.protection.effect;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.MinecraftServer;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -16,7 +15,7 @@ public class CommandEffect extends ZoneEffect
 
     protected String command;
 
-    public CommandEffect(EntityPlayerMP player, int interval, String command)
+    public CommandEffect(ServerPlayerEntity player, int interval, String command)
     {
         super(player, interval, false);
         this.command = command;

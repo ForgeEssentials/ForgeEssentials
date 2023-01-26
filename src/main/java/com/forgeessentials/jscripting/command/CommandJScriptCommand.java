@@ -6,10 +6,9 @@ import java.util.regex.Pattern;
 import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
@@ -21,7 +20,7 @@ import com.forgeessentials.scripting.ScriptParser.SyntaxException;
 import com.forgeessentials.util.CommandParserArgs;
 import com.google.common.base.Preconditions;
 
-public class CommandJScriptCommand extends ParserCommandBase
+public class CommandJScriptCommand extends BaseCommand
 {
 
     public final ScriptInstance script;
@@ -48,12 +47,6 @@ public class CommandJScriptCommand extends ParserCommandBase
     public String getPrimaryAlias()
     {
         return options.name;
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return options.usage;
     }
 
     @Override
@@ -101,10 +94,13 @@ public class CommandJScriptCommand extends ParserCommandBase
         }
     }
 
-    public static void processArguments(CommandParserArgs args) {
-        for (int i = 0; i < args.size(); i++) {
+    public static void processArguments(CommandParserArgs args)
+    {
+        for (int i = 0; i < args.size(); i++)
+        {
             Matcher matcher = ARGUMENT_PATTERN.matcher(args.get(i));
-            if (!matcher.matches()) {
+            if (!matcher.matches())
+            {
                 continue;
             }
 

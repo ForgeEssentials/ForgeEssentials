@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.IPermissionHandler;
 
@@ -49,7 +49,7 @@ public interface IPermissionsHelper extends IPermissionHandler
      * @param player
      * @param permissionNode
      */
-    boolean checkPermission(EntityPlayer player, String permissionNode);
+    boolean checkPermission(PlayerEntity player, String permissionNode);
 
     /**
      * Gets a permission-property for a player
@@ -58,15 +58,14 @@ public interface IPermissionsHelper extends IPermissionHandler
      * @param permissionNode
      * @return property, if it exists, null otherwise
      */
-    String getPermissionProperty(EntityPlayer player, String permissionNode);
+    String getPermissionProperty(PlayerEntity player, String permissionNode);
 
     /**
      * Register a permission description
      * 
      * @param permissionNode
      * @param description
-     *            Description for the permission. Description will be stored as "permissionNode.$desc"
-     *            permission-property.
+     *            Description for the permission. Description will be stored as "permissionNode.$desc" permission-property.
      */
     void registerPermissionDescription(String permissionNode, String description);
 
@@ -79,13 +78,12 @@ public interface IPermissionsHelper extends IPermissionHandler
     String getPermissionDescription(String permissionNode);
 
     /**
-     * This is where permissions are registered with their default value. This function also allows to register a
-     * description.
+     * This is where permissions are registered with their default value. This function also allows to register a description.
      * 
      * @param permissionNode
      * @param level
-     *            Default level of the permission. This can be used to tell the underlying {@link IPermissionHandler}
-     *            whether a player should be allowed to access this permission by default, or as operator only.
+     *            Default level of the permission. This can be used to tell the underlying {@link IPermissionHandler} whether a player should be allowed to access this permission
+     *            by default, or as operator only.
      * @param description
      *            Description for the permission.
      */
@@ -421,8 +419,7 @@ public interface IPermissionsHelper extends IPermissionHandler
     String getPrimaryGroup(UserIdent ident);
 
     /**
-     * Get all groups the player belongs to, together with the system- and included groups. Groups are ordered by
-     * priority.
+     * Get all groups the player belongs to, together with the system- and included groups. Groups are ordered by priority.
      * 
      * @param ident
      */
