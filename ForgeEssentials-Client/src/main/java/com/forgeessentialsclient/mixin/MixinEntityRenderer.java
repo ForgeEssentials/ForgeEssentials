@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(GameRenderer.class)
 public abstract class MixinEntityRenderer implements ISelectiveResourceReloadListener
 {
-
+/*
     @Final
     private Minecraft minecraft;
 
@@ -82,5 +82,5 @@ public abstract class MixinEntityRenderer implements ISelectiveResourceReloadLis
            }
         }
      }
-
+*/
 }
