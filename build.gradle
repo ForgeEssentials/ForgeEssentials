@@ -33,6 +33,7 @@ buildscript {
 }
 
 plugins {
+    //id 'org.spongepowered.plugin' version '0.6'
     id 'org.sonarqube' version '2.5'
 }
 
@@ -116,8 +117,8 @@ ext.gitCommitHash = repo.log().find().abbreviatedId
 version = "$mod_version.$buildNumber"
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
-sourceCompatibility = 17
-targetCompatibility = 17
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 //java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
@@ -222,7 +223,7 @@ dependencies {
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
-//    compile files(System.getenv("JAVA_8_HOME") + "/lib/tools.jar")
+    compile files(System.getenv("JAVA_8_HOME") + "/lib/tools.jar")
 
 	compile 'javax.xml.bind:jaxb-api:2.3.1'
 }
@@ -390,6 +391,49 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 //    clientJar { classpath.from(sourceSets.main.compileClasspath) }
 //}
 jar.finalizedBy('reobfJar')
+
+/************************************************************
+ * Configure Annotations for IDEs Jar
+ */
+
+// util.jar
+task Annotations(type: Jar) {
+	classifier = "annotations"
+	appendix = project.minecraftVersion
+	
+    from(sourceSets.main.output) {
+        include "com/forgeessentials/playerlogger/entity/**"
+        exclude "com/forgeessentials/playerlogger/entity/Action.class"
+        exclude "com/forgeessentials/playerlogger/entity/Action01Block\$ActionBlockType.class"
+        exclude "com/forgeessentials/playerlogger/entity/Action01Block.class"
+        exclude "com/forgeessentials/playerlogger/entity/Action02Command.class"
+        exclude "com/forgeessentials/playerlogger/entity/Action03PlayerEvent\$PlayerEventType.class"
+        exclude "com/forgeessentials/playerlogger/entity/Action03PlayerEvent.class"
+        exclude "com/forgeessentials/playerlogger/entity/Action04PlayerPosition.class"
+        exclude "com/forgeessentials/playerlogger/entity/BlockData.class"
+        exclude "com/forgeessentials/playerlogger/entity/PlayerData.class"
+        exclude "com/forgeessentials/playerlogger/entity/WorldData.class"
+        
+        doLast {
+        delete fileTree(dir:'misc', include: '**annotations.jar')
+        copy {
+            from files("build/libs/") {
+                include "**annotations.jar"
+            }
+            into "misc"
+            rename 'forgeessentials-'+project.minecraftVersion+"-"+project.version+'-annotations.jar', 'forgeessentials-'+project.minecraftVersion+'-annotations.jar'
+        }
+        delete fileTree(dir:'build/libs/', include: '**annotations.jar')
+        }
+    }  
+}
+
 /************************************************************
  * Others
  */
+
+ // Add default artifacts for task "build"
+artifacts {
+	//archives deobfJar
+	archives Annotations
+}

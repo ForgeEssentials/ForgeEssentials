@@ -29,7 +29,6 @@ import com.forgeessentials.commands.player.CommandKill;
 import com.forgeessentials.commands.player.CommandLocate;
 import com.forgeessentials.commands.player.CommandNoClip;
 import com.forgeessentials.commands.player.CommandPotion;
-import com.forgeessentials.commands.player.CommandReach;
 import com.forgeessentials.commands.player.CommandSeen;
 import com.forgeessentials.commands.player.CommandSmite;
 import com.forgeessentials.commands.player.CommandSpeed;

@@ -4,7 +4,6 @@ import net.minecraft.command.CommandException;
 
 import com.forgeessentials.api.UserIdent;
 
-@SuppressWarnings("serial")
 public class TranslatedCommandException extends CommandException
 {
 
