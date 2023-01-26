@@ -225,7 +225,7 @@ dependencies {
     // compile files("$jdkHome/lib/tools.jar")
     compile files(System.getenv("JAVA_8_HOME") + "/lib/tools.jar")
 
-	compile 'javax.xml.bind:jaxb-api:2.3.1'
+	//compile 'javax.xml.bind:jaxb-api:2.3.1'
 }
 
 /************************************************************
@@ -313,7 +313,7 @@ jar.doLast {
 jar {
 	dependsOn "serverLibArchive"
 	//Disable TSD since it isn't compatible with Java 19
-    //dependsOn "tsd"
+    dependsOn "tsd"
 	classifier = "server"
 	appendix = project.minecraftVersion
 	
