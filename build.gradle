@@ -397,7 +397,6 @@ jar.finalizedBy('reobfJar')
 // Add default artifacts for task "build"
 artifacts {
 	//archives deobfJar
-	archives clientJar
 	archives Annotations
 }
 
