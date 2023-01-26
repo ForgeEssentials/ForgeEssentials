@@ -1,16 +1,14 @@
 package com.forgeessentials.util.selections;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandDeselect extends ForgeEssentialsCommandBase
+public class CommandDeselect extends BaseCommand
 {
 
     @Override
@@ -26,9 +24,9 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
-        PlayerInfo info = PlayerInfo.get(sender.getPersistentID());
+        PlayerInfo info = PlayerInfo.get(sender.getUUID());
         info.setSel1(null);
         info.setSel2(null);
         SelectionHandler.sendUpdate(sender);
@@ -45,12 +43,6 @@ public class CommandDeselect extends ForgeEssentialsCommandBase
     public String getPermissionNode()
     {
         return "fe.core.pos.deselect";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "//fedesel Deselects the selection";
     }
 
     @Override

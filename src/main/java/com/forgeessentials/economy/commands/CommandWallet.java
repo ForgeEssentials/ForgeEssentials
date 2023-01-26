@@ -1,22 +1,30 @@
 package com.forgeessentials.economy.commands;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandWallet extends ParserCommandBase
+public class CommandWallet extends BaseCommand
 {
+
+    public CommandWallet(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final String PERM = ModuleEconomy.PERM_COMMAND + ".wallet";
     public static final String PERM_OTHERS = PERM + ".others";
@@ -46,12 +54,6 @@ public class CommandWallet extends ParserCommandBase
         APIRegistry.perms.registerPermission(PERM_OTHERS, DefaultPermissionLevel.OP, "Allows viewing other player's wallets");
         APIRegistry.perms.registerPermission(PERM_MODIFY, DefaultPermissionLevel.OP, "Allows modifying wallets");
     }
-    
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/wallet: Check your wallet";
-    }
 
     @Override
     public boolean canConsoleUseCommand()
@@ -60,7 +62,14 @@ public class CommandWallet extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (arguments.isEmpty())
         {
@@ -73,14 +82,14 @@ public class CommandWallet extends ParserCommandBase
         UserIdent player = arguments.parsePlayer(true, false);
         if (!player.equals(arguments.ident))
             arguments.checkPermission(PERM_OTHERS);
-        
+
         Wallet wallet = APIRegistry.economy.getWallet(player);
         if (arguments.isEmpty())
         {
             arguments.confirm(Translator.format("Wallet of %s contains %s", player.getUsernameOrUuid(), wallet.toString()));
             return;
         }
-        
+
         arguments.tabComplete(new String[] { "set", "add", "remove" });
         String subCommand = arguments.remove().toLowerCase();
 
@@ -114,5 +123,4 @@ public class CommandWallet extends ParserCommandBase
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
         }
     }
-
 }

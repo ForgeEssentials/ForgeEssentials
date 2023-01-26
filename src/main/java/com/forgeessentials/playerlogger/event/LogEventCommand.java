@@ -2,8 +2,8 @@ package com.forgeessentials.playerlogger.event;
 
 import javax.persistence.EntityManager;
 
-import net.minecraft.tileentity.CommandBlockBaseLogic;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tileentity.CommandBlockLogic;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.CommandEvent;
 
@@ -29,18 +29,18 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         action.command = event.getCommand().getName();
         if (event.getParameters().length > 0)
             action.arguments = StringUtils.join(event.getParameters(), ' ');
-        if (event.getSender() instanceof EntityPlayer)
+        if (event.getSender() instanceof PlayerEntity)
         {
-            EntityPlayer player = ((EntityPlayer) event.getSender());
+            PlayerEntity player = ((PlayerEntity) event.getSender());
             action.player = getPlayer(player);
             action.world = getWorld(player.world.provider.getDimension());
             action.x = (int) player.posX;
             action.y = (int) player.posY;
             action.z = (int) player.posZ;
         }
-        else if (event.getSender() instanceof CommandBlockBaseLogic)
+        else if (event.getSender() instanceof CommandBlockLogic)
         {
-            CommandBlockBaseLogic block = ((CommandBlockBaseLogic) event.getSender());
+            CommandBlockLogic block = ((CommandBlockLogic) event.getSender());
             action.player = getPlayer(UserIdent.getVirtualPlayer("commandblock"));
             action.world = getWorld(block.getEntityWorld().provider.getDimension());
             BlockPos pos = block.getPosition();

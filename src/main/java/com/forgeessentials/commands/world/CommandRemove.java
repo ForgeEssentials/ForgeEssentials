@@ -3,42 +3,25 @@ package com.forgeessentials.commands.world;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandRemove extends ForgeEssentialsCommandBase
+public class CommandRemove extends BaseCommand
 {
 
     @Override
     public String getPrimaryAlias()
     {
         return "remove";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        if (sender instanceof EntityPlayer)
-        {
-            return "/remove <radius> [x, y, z] Removes all items within a specified radius from yourself or the given coordinates.";
-        }
-        else
-        {
-            return "/remove <radius> <x, y, z> Removes all items within a specified radius from the given coordinates.";
-        }
     }
 
     @Override
@@ -60,7 +43,7 @@ public class CommandRemove extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
     {
         int radius = 10;
         double centerX;
@@ -70,31 +53,31 @@ public class CommandRemove extends ForgeEssentialsCommandBase
         if (args.length == 1)
         {
             radius = parseInt(args[0], 0, Integer.MAX_VALUE);
-            centerX = sender.posX;
-            centerY = sender.posY;
-            centerZ = sender.posZ;
+            centerX = sender.position().x;
+            centerY = sender.position().y;
+            centerZ = sender.position().z;
         }
         else if (args.length == 4)
         {
             radius = parseInt(args[0], 0, Integer.MAX_VALUE);
-            centerX = parseDouble(args[1], sender.posX);
-            centerY = parseDouble(args[2], sender.posY);
-            centerZ = parseDouble(args[3], sender.posZ);
+            centerX = parseDouble(args[1], sender.position().x);
+            centerY = parseDouble(args[2], sender.position().y);
+            centerZ = parseDouble(args[3], sender.position().z);
         }
         else
         {
-            throw new TranslatedCommandException(getUsage(sender));
+
         }
 
-        List<EntityItem> entityList = sender.world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(centerX - radius, centerY - radius, centerZ
+        List<ItemEntity> entityList = sender.world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(centerX - radius, centerY - radius, centerZ
                 - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1));
 
         int counter = 0;
         for (int i = 0; i < entityList.size(); i++)
         {
-            EntityItem entity = entityList.get(i);
+            ItemEntity entity = entityList.get(i);
             counter++;
-            entity.setDead();
+            entity.remove();;
         }
         ChatOutputHandler.chatConfirmation(sender, Translator.format("%d items removed.", counter));
     }
@@ -116,20 +99,19 @@ public class CommandRemove extends ForgeEssentialsCommandBase
                 center.setDimension(parseInt(args[3]));
             }
         }
-        else
-            throw new TranslatedCommandException(getUsage(sender));
 
-        List<EntityItem> entityList = DimensionManager.getWorld(center.getDimension()).getEntitiesWithinAABB(
-                EntityItem.class,
+
+        List<ItemEntity> entityList = DimensionManager.getWorld(center.getDimension()).getEntitiesWithinAABB(
+                ItemEntity.class,
                 new AxisAlignedBB(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY() + radius
                         + 1, center.getZ() + radius + 1));
 
         int counter = 0;
         for (int i = 0; i < entityList.size(); i++)
         {
-            EntityItem entity = entityList.get(i);
+            ItemEntity entity = entityList.get(i);
             counter++;
-            entity.setDead();
+            entity.remove();
         }
         ChatOutputHandler.chatConfirmation(sender, Translator.format("%d items removed.", counter));
     }

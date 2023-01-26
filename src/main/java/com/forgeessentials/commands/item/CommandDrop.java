@@ -1,44 +1,47 @@
 package com.forgeessentials.commands.item;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ICommandSource;
+import net.minecraft.command.arguments.ItemArgument;
+import net.minecraft.command.arguments.Vec3Argument;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.tileentity.ChestTileEntity;
+import net.minecraft.tileentity.DispenserTileEntity;
+import net.minecraft.tileentity.DropperTileEntity;
+import net.minecraft.tileentity.HopperTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.tileentity.TileEntityDispenser;
-import net.minecraft.tileentity.TileEntityDropper;
-import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandDrop extends ForgeEssentialsCommandBase
+public class CommandDrop extends BaseCommand
 {
+
+    public CommandDrop(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
     {
         return "drop";
-    }
-
-    @Override
-    public String getUsage(ICommandSender par1ICommandSender)
-    {
-        return "/drop <X> <Y> <Z> <ItemID> <Meta> <Qty>";
     }
 
     @Override
@@ -59,148 +62,152 @@ public class CommandDrop extends ForgeEssentialsCommandBase
         return ModuleCommands.PERM + ".drop";
     }
 
-    @SuppressWarnings("deprecation")
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length != 6)
-        {
-            throw new TranslatedCommandException(getUsage(sender));
-        }
-        World world = null;
-        int x = (int) this.func_82368_a(sender, 0.0D, args[0]);
-        int y = (int) this.func_82367_a(sender, 0.0D, args[1], 0, 0);
-        int z = (int) this.func_82368_a(sender, 0.0D, args[2]);
+        return builder
+                .then(Commands.argument("pos", Vec3Argument.vec3())
+                        .then(Commands.argument("count", IntegerArgumentType.integer(0, 64))
+                                .then(Commands.argument("item", ItemArgument.item())
+                                        .executes(CommandContext -> execute(CommandContext))
+                                        )
+                                )
+                        );
+    }
 
-        if (sender instanceof DedicatedServer)
+    @SuppressWarnings("deprecation")
+    public void processCommand(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        Vector3d vector = Vec3Argument.getVec3(ctx, "pos");
+        ICommandSource source = CommandUtils.GetSource(ctx.getSource());
+        World world = null;
+        int x = (int) vector.x;
+        int y = (int) vector.y;
+        int z = (int) vector.z;
+
+        if (source instanceof DedicatedServer)
         {
-            world = ((DedicatedServer) sender).getWorld(0);
+            world = ((DedicatedServer) source).getLevel(World.OVERWORLD);
         }
-        else if (sender instanceof EntityPlayerMP)
+        else if (source instanceof ServerPlayerEntity)
         {
-            world = ((Entity) sender).world;
-            x = (int) this.func_82368_a(sender, ((Entity) sender).posX, args[0]);
-            y = (int) this.func_82367_a(sender, ((Entity) sender).posY, args[1], 0, 0);
-            z = (int) this.func_82368_a(sender, ((Entity) sender).posZ, args[2]);
+            world = ((Entity) ctx.getSource().getEntity()).level;
         }
-        else if (sender instanceof TileEntity)
+        else if (source instanceof TileEntity)
         {
-            world = ((TileEntity) sender).getWorld();
-            x = (int) this.func_82368_a(sender, ((TileEntity) sender).getPos().getX(), args[0]);
-            y = (int) this.func_82367_a(sender, ((TileEntity) sender).getPos().getY(), args[1], 0, 0);
-            z = (int) this.func_82368_a(sender, ((TileEntity) sender).getPos().getZ(), args[2]);
+            world = ((TileEntity) source).getLevel();
         }
         BlockPos pos = new BlockPos(x, y, z);
 
-        String var7 = args[3];
-        Item item = CommandBase.getItemByText(sender, var7);
-        int var8 = parseInt(args[4], 0, Integer.MAX_VALUE);
-        int var9 = parseInt(args[5], 1, Item.REGISTRY.getObject(new ResourceLocation(var7)).getItemStackLimit());
+        int count = IntegerArgumentType.getInteger(ctx, "count");
+        int j = Math.min(ItemArgument.getItem(ctx, "item").getItem().getMaxStackSize(), count);
+        ItemStack itemstack = ItemArgument.getItem(ctx, "item").createItemStack(j, false);
         ItemStack tmpStack;
 
-        TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof TileEntityChest)
+        TileEntity tileEntity = world.getBlockEntity(pos);
+        if (tileEntity instanceof ChestTileEntity)
         {
-            TileEntityChest var10 = (TileEntityChest) tileEntity;
+            ChestTileEntity var10 = (ChestTileEntity) tileEntity;
 
-            for (int slot = 0; slot < var10.getSizeInventory(); ++slot)
+            for (int slot = 0; slot < var10.getContainerSize(); ++slot)
             {
-                if (var10.getStackInSlot(slot) == ItemStack.EMPTY)
+                if (var10.getItem(slot) == ItemStack.EMPTY)
                 {
-                    var10.setInventorySlotContents(slot, new ItemStack(item, var9, var8));
+                    var10.setItem(slot, itemstack);
                     break;
                 }
 
-                if (var10.getStackInSlot(slot).getUnlocalizedName().equals(var7) && var10.getStackInSlot(slot).getItemDamage() == var8)
+                if (var10.getItem(slot).getDisplayName().equals(itemstack.getDisplayName()) && var10.getItem(slot).getDamageValue() == itemstack.getDamageValue())
                 {
-                    if (var10.getStackInSlot(slot).getMaxStackSize() - var10.getStackInSlot(slot).getCount() >= var9)
+                    if (var10.getItem(slot).getMaxStackSize() - var10.getItem(slot).getCount() >= count)
                     {
-                        tmpStack = var10.getStackInSlot(slot);
-                        tmpStack.setCount( tmpStack.getCount() + var9);
+                        tmpStack = var10.getItem(slot);
+                        tmpStack.setCount(tmpStack.getCount() + count);
                         break;
                     }
 
-                    var9 -= var10.getStackInSlot(slot).getMaxStackSize() - var10.getStackInSlot(slot).getCount();
-                    var10.getStackInSlot(slot).setCount(var10.getStackInSlot(slot).getMaxStackSize());
+                    count -= var10.getItem(slot).getMaxStackSize() - var10.getItem(slot).getCount();
+                    var10.getItem(slot).setCount(var10.getItem(slot).getMaxStackSize());
                 }
             }
         }
-        else if (tileEntity instanceof TileEntityDropper)
+        else if (tileEntity instanceof DropperTileEntity)
         {
-            TileEntityDropper var13 = (TileEntityDropper) tileEntity;
+            DropperTileEntity var13 = (DropperTileEntity) tileEntity;
 
-            for (int slot = 0; slot < var13.getSizeInventory(); ++slot)
+            for (int slot = 0; slot < var13.getContainerSize(); ++slot)
             {
-                if (var13.getStackInSlot(slot) == ItemStack.EMPTY)
+                if (var13.getItem(slot) == ItemStack.EMPTY)
                 {
-                    var13.setInventorySlotContents(slot, new ItemStack(item, var9, var8));
+                    var13.setItem(slot, itemstack);
                     break;
                 }
 
-                if (var13.getStackInSlot(slot).getUnlocalizedName().equals(var7) && var13.getStackInSlot(slot).getItemDamage() == var8)
+                if (var13.getItem(slot).getDisplayName().equals(itemstack.getDisplayName()) && var13.getItem(slot).getDamageValue() == itemstack.getDamageValue())
                 {
-                    if (var13.getStackInSlot(slot).getMaxStackSize() - var13.getStackInSlot(slot).getCount() >= var9)
+                    if (var13.getItem(slot).getMaxStackSize() - var13.getItem(slot).getCount() >= count)
                     {
-                        tmpStack = var13.getStackInSlot(slot);
-                        tmpStack.setCount( tmpStack.getCount() + var9);
+                        tmpStack = var13.getItem(slot);
+                        tmpStack.setCount(tmpStack.getCount() + count);
                         break;
                     }
 
-                    var9 -= var13.getStackInSlot(slot).getMaxStackSize() - var13.getStackInSlot(slot).getCount();
-                    var13.getStackInSlot(slot).setCount(var13.getStackInSlot(slot).getMaxStackSize());
+                    count -= var13.getItem(slot).getMaxStackSize() - var13.getItem(slot).getCount();
+                    var13.getItem(slot).setCount(var13.getItem(slot).getMaxStackSize());
                 }
             }
         }
-        else if (tileEntity instanceof TileEntityDispenser)
+        else if (tileEntity instanceof DispenserTileEntity)
         {
-            TileEntityDispenser var14 = (TileEntityDispenser) tileEntity;
+            DispenserTileEntity var14 = (DispenserTileEntity) tileEntity;
 
-            for (int slot = 0; slot < var14.getSizeInventory(); ++slot)
+            for (int slot = 0; slot < var14.getContainerSize(); ++slot)
             {
-                if (var14.getStackInSlot(slot) == ItemStack.EMPTY)
+                if (var14.getItem(slot) == ItemStack.EMPTY)
                 {
-                    var14.setInventorySlotContents(slot, new ItemStack(item, var9, var8));
+                    var14.setItem(slot, itemstack);
                     break;
                 }
 
-                if (var14.getStackInSlot(slot).getUnlocalizedName().equals(var7) && var14.getStackInSlot(slot).getItemDamage() == var8)
+                if (var14.getItem(slot).getDisplayName().equals(itemstack.getDisplayName()) && var14.getItem(slot).getDamageValue() == itemstack.getDamageValue())
                 {
-                    if (var14.getStackInSlot(slot).getMaxStackSize() - var14.getStackInSlot(slot).getCount() >= var9)
+                    if (var14.getItem(slot).getMaxStackSize() - var14.getItem(slot).getCount() >= count)
                     {
-                        tmpStack = var14.getStackInSlot(slot);
-                        tmpStack.setCount( tmpStack.getCount() + var9);
+                        tmpStack = var14.getItem(slot);
+                        tmpStack.setCount(tmpStack.getCount() + count);
                         break;
                     }
 
-                    var9 -= var14.getStackInSlot(slot).getMaxStackSize() - var14.getStackInSlot(slot).getCount();
-                    var14.getStackInSlot(slot).setCount(var14.getStackInSlot(slot).getMaxStackSize());
+                    count -= var14.getItem(slot).getMaxStackSize() - var14.getItem(slot).getCount();
+                    var14.getItem(slot).setCount(var14.getItem(slot).getMaxStackSize());
                 }
             }
         }
-        else if (tileEntity instanceof TileEntityHopper)
+        else if (tileEntity instanceof HopperTileEntity)
         {
-            TileEntityHopper var12 = (TileEntityHopper) tileEntity;
+            HopperTileEntity var12 = (HopperTileEntity) tileEntity;
 
-            for (int slot = 0; slot < var12.getSizeInventory(); ++slot)
+            for (int slot = 0; slot < var12.getContainerSize(); ++slot)
             {
-                if (var12.getStackInSlot(slot) == ItemStack.EMPTY)
+                if (var12.getItem(slot) == ItemStack.EMPTY)
                 {
-                    var12.setInventorySlotContents(slot, new ItemStack(item, var9, var8));
-                    var9 = 0;
+                    var12.setItem(slot, itemstack);
+                    count = 0;
                     break;
                 }
 
-                if (var12.getStackInSlot(slot).getUnlocalizedName().equals(var7) && var12.getStackInSlot(slot).getItemDamage() == var8)
+                if (var12.getItem(slot).getDisplayName().equals(itemstack.getDisplayName()) && var12.getItem(slot).getDamageValue() == itemstack.getDamageValue())
                 {
-                    if (var12.getStackInSlot(slot).getMaxStackSize() - var12.getStackInSlot(slot).getCount() >= var9)
+                    if (var12.getItem(slot).getMaxStackSize() - var12.getItem(slot).getCount() >= count)
                     {
-                        tmpStack = var12.getStackInSlot(slot);
-                        tmpStack.setCount(tmpStack.getCount() + var9);
-                        var9 = 0;
+                        tmpStack = var12.getItem(slot);
+                        tmpStack.setCount(tmpStack.getCount() + count);
+                        count = 0;
                         break;
                     }
 
-                    var9 -= var12.getStackInSlot(slot).getMaxStackSize() - var12.getStackInSlot(slot).getCount();
-                    var12.getStackInSlot(slot).setCount(var12.getStackInSlot(slot).getMaxStackSize());
+                    count -= var12.getItem(slot).getMaxStackSize() - var12.getItem(slot).getCount();
+                    var12.getItem(slot).setCount(var12.getItem(slot).getMaxStackSize());
                 }
             }
         }
@@ -208,67 +215,24 @@ public class CommandDrop extends ForgeEssentialsCommandBase
         {
             throw new TranslatedCommandException("No viable container found to put item in.");
         }
-        if (var9 > 0)
+        if (count > 0)
         {
             throw new TranslatedCommandException("Not enough room for items.");
         }
-        ChatOutputHandler.chatConfirmation(sender, "Items dropped into container.");
-    }
-
-    private double func_82368_a(ICommandSender par1ICommandSender, double par2, String par4Str) throws CommandException
-    {
-        return this.func_82367_a(par1ICommandSender, par2, par4Str, -30000000, 30000000);
-    }
-
-    private double func_82367_a(ICommandSender par1ICommandSender, double par2, String par4Str, int par5, int par6) throws CommandException
-    {
-        boolean flag = par4Str.startsWith("~");
-        double d1 = flag ? par2 : 0.0D;
-
-        if (!flag || par4Str.length() > 1)
-        {
-            boolean flag1 = par4Str.contains(".");
-
-            if (flag)
-            {
-                par4Str = par4Str.substring(1);
-            }
-
-            d1 += parseDouble(par4Str);
-
-            if (!flag1 && !flag)
-            {
-                d1 += 0.5D;
-            }
-        }
-
-        if (par5 != 0 || par6 != 0)
-        {
-            if (d1 < par5)
-            {
-                throw new NumberInvalidException("commands.generic.double.tooSmall", new Object[] { Double.valueOf(d1), Integer.valueOf(par5) });
-            }
-
-            if (d1 > par6)
-            {
-                throw new NumberInvalidException("commands.generic.double.tooBig", new Object[] { Double.valueOf(d1), Integer.valueOf(par6) });
-            }
-        }
-
-        return d1;
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Items dropped into container.");
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        EntityPlayerMP playermp = UserIdent.getPlayerByMatchOrUsername(sender, sender.getName());
-        processCommand(playermp, args);
+        processCommand(ctx, params);
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        processCommand(sender, args);
+        processCommand(ctx, params);
+        return Command.SINGLE_SUCCESS;
     }
-
 }

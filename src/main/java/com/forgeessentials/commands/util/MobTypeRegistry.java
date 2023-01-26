@@ -5,11 +5,11 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Set;
 
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.passive.EntityTameable;
-
 import com.forgeessentials.api.EnumMobType;
 import com.google.common.collect.HashMultimap;
+
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.TameableEntity;
 
 public class MobTypeRegistry
 {
@@ -38,17 +38,17 @@ public class MobTypeRegistry
      * @param mob
      * @return
      */
-    public static boolean isTamed(EntityLiving mob)
+    public static boolean isTamed(LivingEntity mob)
     {
-        if (mob instanceof EntityTameable)
+        if (mob instanceof TameableEntity)
         {
-            return ((EntityTameable) mob).isTamed();
+            return ((TameableEntity) mob).isTame();
         }
         else if (MobTypeRegistry.get(EnumMobType.TAMEABLE).contains(mob.getClass().getName()))
         {
             try
             {
-                Class<? extends EntityLiving> c = mob.getClass();
+                Class<? extends LivingEntity> c = mob.getClass();
                 String obj = tameableChecks.get(c.getName());
                 boolean isMethod = obj.endsWith("()");
                 obj = obj.replace("()", ""); // the () is just to mark it..

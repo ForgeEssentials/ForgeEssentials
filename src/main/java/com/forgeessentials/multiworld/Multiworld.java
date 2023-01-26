@@ -1,33 +1,15 @@
 package com.forgeessentials.multiworld;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.WorldType;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-
-import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.WorldUtil;
-import com.google.gson.annotations.Expose;
-
 /**
  * 
  * @author Olee
  */
 public class Multiworld
 {
-
+/*
     protected String name;
 
-    protected int dimensionId;
+    protected RegistryKey<World> dimensionId;
 
     protected String provider;
 
@@ -61,7 +43,8 @@ public class Multiworld
     @Expose(serialize = false)
     protected WorldType worldTypeObj;
 
-    public Multiworld(String name, String provider, String worldType, long seed) {
+    public Multiworld(String name, String provider, String worldType, long seed)
+    {
         this(name, provider, worldType, seed, "");
     }
 
@@ -86,13 +69,13 @@ public class Multiworld
 
     public void removeAllPlayersFromWorld()
     {
-        WorldServer overworld = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0);
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
+        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
-            if (player.dimension == dimensionId)
+            if (player.level.dimension() == dimensionId)
             {
-                BlockPos playerPos = player.getPosition();
-                int y = WorldUtil.placeInWorld(player.world, playerPos.getX(), playerPos.getY(), playerPos.getZ());
+                BlockPos playerPos = player.blockPosition();
+                int y = WorldUtil.placeInWorld(player.level, playerPos.getX(), playerPos.getY(), playerPos.getZ());
                 WarpPoint point = new WarpPoint(overworld, playerPos.getX(), y, playerPos.getZ(), 0, 0);
                 TeleportHelper.doTeleport(player, point);
             }
@@ -113,12 +96,12 @@ public class Multiworld
         return name;
     }
 
-    public WorldServer getWorldServer()
+    public ServerWorld getWorldServer()
     {
-        return FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dimensionId);
+        return ServerLifecycleHooks.getCurrentServer().getLevel(dimensionId);
     }
 
-    public int getDimensionId()
+    public RegistryKey<World> getDimensionId()
     {
         return dimensionId;
     }
@@ -204,40 +187,41 @@ public class Multiworld
     protected void delete()
     {
         DataManager.getInstance().delete(this.getClass(), name);
-    }
-
-    /**
-     * Teleport the player to the multiworld
-     * @throws CommandException 
-     */
-    public void teleport(EntityPlayerMP player, boolean instant) throws CommandException
-    {
-        teleport(player, getWorldServer(), instant);
-    }
+    }*/
 
     /**
      * Teleport the player to the multiworld
      * 
      * @throws CommandException
      */
-    public static void teleport(EntityPlayerMP player, WorldServer world, boolean instant) throws CommandException
-    {
-        teleport(player, world, player.posX, player.posY, player.posZ, instant);
-    }
+    //public void teleport(ServerPlayerEntity player, boolean instant) throws CommandException
+    //{
+    //    teleport(player, getWorldServer(), instant);
+    //}
 
     /**
      * Teleport the player to the multiworld
      * 
      * @throws CommandException
      */
-    public static void teleport(EntityPlayerMP player, WorldServer world, double x, double y, double z, boolean instant) throws CommandException
+    //public static void teleport(ServerPlayerEntity player, ServerWorld world, boolean instant) throws CommandException
+    //{
+    //    teleport(player, world, player.position().x, player.position().y, player.position().x, instant);
+    //}
+
+    /**
+     * Teleport the player to the multiworld
+     * 
+     * @throws CommandException
+     *//*
+    public static void teleport(ServerPlayerEntity player, ServerWorld world, double x, double y, double z, boolean instant) throws CommandException
     {
-        boolean worldChange = player.world.provider.getDimension() != world.provider.getDimension();
+        boolean worldChange = player.level.dimension() != world.dimension();
         if (worldChange)
             displayDepartMessage(player);
 
         y = WorldUtil.placeInWorld(world, (int) x, (int) y, (int) z);
-        WarpPoint target = new WarpPoint(world.provider.getDimension(), x, y, z, player.rotationPitch, player.rotationYaw);
+        WarpPoint target = new WarpPoint(world.dimension(), x, y, z, player.yRot, player.xRot);
         if (instant)
             TeleportHelper.checkedTeleport(player, target);
         else
@@ -247,7 +231,7 @@ public class Multiworld
             displayWelcomeMessage(player);
     }
 
-    public static void displayDepartMessage(EntityPlayerMP player)
+    public static void displayDepartMessage(ServerPlayerEntity player)
     {
         // String msg = player.world.provider.getDepartMessage();
         // if (msg == null)
@@ -257,7 +241,7 @@ public class Multiworld
         // ChatOutputHandler.sendMessage(player, new ChatComponentText(msg));
     }
 
-    public static void displayWelcomeMessage(EntityPlayerMP player)
+    public static void displayWelcomeMessage(ServerPlayerEntity player)
     {
         // String msg = player.world.provider.getWelcomeMessage();
         // if (msg == null)
@@ -265,6 +249,6 @@ public class Multiworld
         // if (player.dimension > 1 || player.dimension < -1)
         // msg += " (#" + player.dimension + ")";
         // ChatOutputHandler.sendMessage(player, new ChatComponentText(msg));
-    }
+    }*/
 
 }

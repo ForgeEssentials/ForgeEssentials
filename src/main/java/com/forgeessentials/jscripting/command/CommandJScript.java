@@ -3,19 +3,27 @@ package com.forgeessentials.jscripting.command;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.ScriptUpgrader;
 import com.forgeessentials.util.CommandParserArgs;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandJScript extends ParserCommandBase
+public class CommandJScript extends BaseCommand
 {
+
+    public CommandJScript(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -27,12 +35,6 @@ public class CommandJScript extends ParserCommandBase
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "script" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/fescript [list|reload]: Manage FE scripting";
     }
 
     @Override
@@ -54,13 +56,15 @@ public class CommandJScript extends ParserCommandBase
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
-        {
-            arguments.confirm(getUsage(null));
-            return;
-        }
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
 
         arguments.tabComplete("list", "reload", "upgrade");
         String subcmd = arguments.remove().toLowerCase();
@@ -117,5 +121,4 @@ public class CommandJScript extends ParserCommandBase
             }
         }
     }
-
 }

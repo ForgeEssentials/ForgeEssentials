@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
@@ -18,7 +19,7 @@ public class JsItem extends JsWrapper<Item>
 
     public static JsItem get(String name)
     {
-        Item item = Item.REGISTRY.getObject(new ResourceLocation(name));
+        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(name));
         return item == null ? null : JsItem.get(item);
     }
 
@@ -39,7 +40,7 @@ public class JsItem extends JsWrapper<Item>
 
     public String getName()
     {
-        return Item.REGISTRY.getNameForObject(that).toString();
+        return ForgeRegistries.ITEMS.getKey(that).toString();
     }
 
 }

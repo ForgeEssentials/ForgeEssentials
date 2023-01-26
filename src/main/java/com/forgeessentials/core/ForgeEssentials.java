@@ -1,58 +1,69 @@
 package com.forgeessentials.core;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.arguments.ArgumentSerializer;
+import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraft.command.arguments.ColorArgument;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.CommandEvent;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.FileUtils;
+import net.minecraftforge.fml.network.FMLNetworkConstants;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.UserIdent.NpcUserIdent;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.NetworkUtils.NullMessageHandler;
-import com.forgeessentials.commons.network.Packet0Handshake;
-import com.forgeessentials.commons.network.Packet1SelectionUpdate;
-import com.forgeessentials.commons.network.Packet2Reach;
-import com.forgeessentials.commons.network.Packet3PlayerPermissions;
-import com.forgeessentials.commons.network.Packet5Noclip;
-import com.forgeessentials.commons.network.Packet7Remote;
+import com.forgeessentials.commons.network.packets.Packet0Handshake;
+import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
+import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
+import com.forgeessentials.commons.network.packets.Packet5Noclip;
+import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
+import com.forgeessentials.commons.network.packets.Packet7Remote;
 import com.forgeessentials.compat.BaublesCompat;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.compat.HelpFixer;
@@ -61,10 +72,13 @@ import com.forgeessentials.core.commands.CommandFEWorldInfo;
 import com.forgeessentials.core.commands.CommandFeReload;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandUuid;
+import com.forgeessentials.core.commands.Arguments.FeGroupArgument;
+import com.forgeessentials.core.commands.Arguments.FeIrcPlayerArgument;
+import com.forgeessentials.core.commands.Arguments.FeKitArgument;
+import com.forgeessentials.core.config.ConfigBase;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.environment.Environment;
-import com.forgeessentials.core.mcstats.ConstantPlotter;
-import com.forgeessentials.core.mcstats.Metrics;
-import com.forgeessentials.core.mcstats.Metrics.Graph;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.PermissionManager;
@@ -73,16 +87,14 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
-import com.forgeessentials.core.moduleLauncher.config.ConfigManager;
 import com.forgeessentials.core.preloader.FELaunchHandler;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -93,19 +105,20 @@ import com.forgeessentials.util.selections.CommandExpandY;
 import com.forgeessentials.util.selections.CommandPos;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  * Main mod class
  */
-
-@Mod(modid = ForgeEssentials.MODID, name = "Forge Essentials", version = BuildInfo.BASE_VERSION, acceptableRemoteVersions = "*",
-        dependencies = BuildInfo.DEPENDENCIES + ";after:worldedit;before:ftblib")
+@Mod(ForgeEssentials.MODID)
+@Mod.EventBusSubscriber(modid = ForgeEssentials.MODID, bus = Bus.MOD,value = Dist.DEDICATED_SERVER)
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
     public static final String MODID = "forgeessentials";
 
-    @Instance(value = MODID)
     public static ForgeEssentials instance;
 
     public static Random rnd = new Random();
@@ -120,9 +133,9 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
     /* ForgeEssentials core submodules */
-
-    protected static ConfigManager configManager;
-
+    
+    protected static ConfigBase configManager;
+    
     protected static ModuleLauncher moduleLauncher;
 
     protected static TaskRegistry tasks = new TaskRegistry();
@@ -134,10 +147,6 @@ public class ForgeEssentials extends ConfigLoaderBase
     protected static Questioner questioner;
 
     protected static FECommandManager commandManager;
-
-    protected static Metrics mcStats;
-
-    protected static Graph mcStatsGeneralGraph;
 
     /* ------------------------------------------------------------ */
 
@@ -161,16 +170,24 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public ForgeEssentials()
     {
+        //Custom Command Arguments
+        ArgumentTypes.register("FeGroup", FeGroupArgument.class, new ArgumentSerializer<>(FeGroupArgument::group));
+        ArgumentTypes.register("FeIrcPlayer", FeIrcPlayerArgument.class, new ArgumentSerializer<>(FeIrcPlayerArgument::player));
+        ArgumentTypes.register("FeKit", FeKitArgument.class, new ArgumentSerializer<>(FeKitArgument::kit));
+        //Set mod as server only
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         // new TestClass().test();
+    	LoggingHandler.init();
         initConfiguration();
-        LoggingHandler.init();
         BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
         Environment.check();
         MinecraftForge.EVENT_BUS.register(this);
+        
+        
     }
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event)
+    @SubscribeEvent
+    public void preInit(FMLCommonSetupEvent event)
     {
         LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
         if (safeMode)
@@ -179,10 +196,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         }
 
         registerNetworkMessages();
-
-        // Init McStats
-        mcStats = new Metrics(MODID + "New", BuildInfo.BASE_VERSION);
-        mcStatsGeneralGraph = mcStats.createGraph("general");
 
         // Set up logger level
         if (debugMode)
@@ -203,18 +216,9 @@ public class ForgeEssentials extends ConfigLoaderBase
         moduleLauncher.preLoad(event);
     }
 
-    @EventHandler
-    public void load(FMLInitializationEvent e)
+    @SubscribeEvent
+    public void load(FMLCommonSetupEvent e)
     {
-        registerCommands();
-
-        // Init McStats
-        mcStats.createGraph("build_type").addPlotter(new ConstantPlotter(BuildInfo.getBuildType(), 1));
-        mcStats.createGraph("server_type").addPlotter(new ConstantPlotter(e.getSide() == Side.SERVER ? "server" : "client", 1));
-        Graph gModules = mcStats.createGraph("modules");
-        for (String module : ModuleLauncher.getModuleList())
-            gModules.addPlotter(new ConstantPlotter(module, 1));
-
         LoggingHandler.felog
                 .info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
         if (BuildInfo.isOutdated())
@@ -226,15 +230,14 @@ public class ForgeEssentials extends ConfigLoaderBase
             LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
         }
 
-        isCubicChunksInstalled = Loader.isModLoaded("cubicchunks");
+        isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
 
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleCommonSetupEvent(e));
     }
 
-    @EventHandler
-    public void postLoad(FMLPostInitializationEvent e)
+    @SubscribeEvent
+    public void postLoad(FMLCommonSetupEvent e)
     {
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModulePostInitEvent(e));
         commandManager = new FECommandManager();
     }
 
@@ -242,50 +245,37 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     private void initConfiguration()
     {
-        configDirectory = new File(ServerUtil.getBaseDir(), "/ForgeEssentials");
-        configManager = new ConfigManager(configDirectory, "main");
-        configManager.registerLoader(configManager.getMainConfigName(), this);
-        configManager.registerLoader(configManager.getMainConfigName(), new FEConfig());
-        configManager.registerLoader(configManager.getMainConfigName(), new ChatOutputHandler());
+        configManager = new ConfigBase(new File(ServerUtil.getBaseDir(), "/ForgeEssentials"));
+        FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials"), "ForgeEssentials");
+
+        ConfigBase.getModuleConfig().loadModuleConfig();
+        configManager.registerSpecs(configManager.getMainConfigName(), this);
+        configManager.registerSpecs(configManager.getMainConfigName(), new FEConfig());
+        configManager.registerSpecs(configManager.getMainConfigName(), new ChatOutputHandler());
     }
 
     private void registerNetworkMessages()
     {
         // Load network packages
-        NetworkUtils.registerMessage(new IMessageHandler<Packet0Handshake, IMessage>() {
-            @Override
-            public IMessage onMessage(Packet0Handshake message, MessageContext ctx)
-            {
-                PlayerInfo.get(ctx.getServerHandler().player).setHasFEClient(true);
-                return null;
-            }
-        }, Packet0Handshake.class, 0, Side.SERVER);
-        NetworkUtils.registerMessageProxy(Packet1SelectionUpdate.class, 1, Side.CLIENT, new NullMessageHandler<Packet1SelectionUpdate>() {
-            /* dummy */
-        });
-        NetworkUtils.registerMessageProxy(Packet2Reach.class, 2, Side.CLIENT, new NullMessageHandler<Packet2Reach>() {
-            /* dummy */
-        });
-        NetworkUtils.registerMessageProxy(Packet3PlayerPermissions.class, 3, Side.CLIENT, new NullMessageHandler<Packet3PlayerPermissions>() {
-            /* dummy */
-        });
-        NetworkUtils.registerMessageProxy(Packet5Noclip.class, 5, Side.CLIENT, new NullMessageHandler<Packet5Noclip>() {
-            /* dummy */
-        });
-        NetworkUtils.registerMessageProxy(Packet7Remote.class, 7, Side.CLIENT, new NullMessageHandler<Packet7Remote>() {
-            /* dummy */
-        });
+        NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::decode);
+        NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::decode);
+		//NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
+        NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::decode);
+        //NetworkUtils.registerServerToClient(2, Packet4Economy.class, Packet4Economy::decode); old times
+        NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::decode);
+        NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::decode);
 
     }
-
-    private void registerCommands()
+    
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandFEInfo());
-        FECommandManager.registerCommand(new CommandFeReload());
+        FECommandManager.registerCommand(new CommandFEInfo("feinfo", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandFeReload("fereload", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandFeSettings());
-        FECommandManager.registerCommand(new CommandWand());
-        FECommandManager.registerCommand(new CommandUuid());
-        FECommandManager.registerCommand(new CommandFEWorldInfo());
+        FECommandManager.registerCommand(new CommandWand("/fewand", 0, true));
+        FECommandManager.registerCommand(new CommandUuid("uuid", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandFEWorldInfo("feworldinfo", 4, true));//TODO fix perms
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
             FECommandManager.registerCommand(new CommandPos(1));
@@ -298,19 +288,18 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
 
-    @EventHandler
+    @SubscribeEvent
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
-        APIRegistry.getFEEventBus().post(new FEModuleServerPreInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerAboutToStartEvent(e));
         new BaublesCompat();
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void serverStarting(FMLServerStartingEvent e)
     {
-        mcStats.start();
         BlockModListFile.makeModList();
         BlockModListFile.dumpFMLRegistries();
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
@@ -319,13 +308,13 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         registerPermissions();
 
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStartingEvent(e));
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void serverStarted(FMLServerStartedEvent e)
     {
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerPostInitEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStartedEvent(e));
 
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         // CommandSetChecker.remove();
@@ -339,32 +328,37 @@ public class ForgeEssentials extends ConfigLoaderBase
     public static final class CommandPermissionRegistrationHandler
     {
         @SubscribeEvent
-        public void serverTickEvent(ServerTickEvent event)
+        public void serverTickEvent(TickEvent.ServerTickEvent event)
         {
             PermissionManager.registerCommandPermissions();
             MinecraftForge.EVENT_BUS.unregister(this);
         }
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void serverStopping(FMLServerStoppingEvent e)
     {
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStopEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStoppingEvent(e));
         PlayerInfo.discardAll();
     }
 
-    @EventHandler
+    @SubscribeEvent
     public void serverStopped(FMLServerStoppedEvent e)
     {
         try
         {
-            mcStats.stop();
-            APIRegistry.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
+            APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStoppedEvent(e));
             FECommandManager.clearRegisteredCommands();
             Translator.save();
         } catch (RuntimeException ex) {
             LoggingHandler.felog.fatal("Caught Runtime Exception During Server Stop event! Suppressing Fire!", ex);
         }
+    }
+
+    @SubscribeEvent
+    public void registerCommandEvent(RegisterCommandsEvent event) 
+    {
+        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleRegisterCommandsEvent(event));
     }
 
     protected void registerPermissions()
@@ -394,13 +388,13 @@ public class ForgeEssentials extends ConfigLoaderBase
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void playerLoggedInEvent(PlayerLoggedInEvent event)
+    public void playerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event)
     {
-        if (event.player instanceof EntityPlayerMP)
+        if (event.getEntity() instanceof PlayerEntity)
         {
-            EntityPlayerMP player = (EntityPlayerMP) event.player;
+        	PlayerEntity player = (PlayerEntity) event.getPlayer();
             UserIdent.login(player);
-            PlayerInfo.login(player.getPersistentID());
+            PlayerInfo.login(player.getUUID());
 
             if (FEConfig.checkSpacesInNames)
             {
@@ -408,100 +402,129 @@ public class ForgeEssentials extends ConfigLoaderBase
                 Matcher matcher = pattern.matcher(player.getGameProfile().getName());
                 if (matcher.find())
                 {
-                    String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.player.getName());
-                    ((EntityPlayerMP) event.player).connection.disconnect(new TextComponentTranslation(msg));
+                    String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.getPlayer().getName());
+                    Entity entity = event.getEntity();
+                    if (entity instanceof ServerPlayerEntity == false) {
+            			return;
+            		}
+            		
+            		ServerPlayerEntity serverplayer = (ServerPlayerEntity)entity;
+            		serverplayer.connection.disconnect(new StringTextComponent(msg));
                 }
             }
 
             // Show version notification
             if (BuildInfo.isOutdated() && UserIdent.get(player).checkPermission(PERM_VERSIONINFO))
-                ChatOutputHandler.chatWarning(player,
+                ChatOutputHandler.chatWarning(player.createCommandSourceStack(),
                         String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
                                 BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
         }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerLoggedOutEvent(PlayerLoggedOutEvent event)
+    public void playerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent  event)
     {
-        if (event.player instanceof EntityPlayerMP)
+        if (event.getEntity() instanceof PlayerEntity)
         {
-            PlayerInfo.logout(event.player.getPersistentID());
-            UserIdent.logout((EntityPlayerMP) event.player);
+            PlayerInfo.logout(event.getEntity().getUUID());
+            UserIdent.logout((PlayerEntity) event.getPlayer());
         }
     }
 
     @SubscribeEvent
-    public void playerRespawnEvent(PlayerRespawnEvent event)
+    public void playerRespawnEvent(PlayerEvent.PlayerRespawnEvent event)
     {
-        if (event.player instanceof EntityPlayerMP)
+        if (event.getEntity() instanceof PlayerEntity)
         {
-            UserIdent.get((EntityPlayerMP) event.player);
+            UserIdent.get((PlayerEntity) event.getPlayer());
         }
     }
 
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void commandEvent(CommandEvent event)
+    public void commandEvent(CommandEvent event) throws CommandSyntaxException
     {
-        boolean perm = checkPerms(event.getCommand(), event.getSender());
+        boolean perm = false;
+        try
+        {
+            perm = checkPerms(event.getParseResults().getContext().getCommand(), event.getParseResults().getContext().getSource().getPlayerOrException().createCommandSourceStack());
+        }
+        catch (CommandSyntaxException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         if (logCommandsToConsole)
         {
-            LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"/%s %s\"", event.getSender().getName(),
-                    perm ? "used" : "tried to use", event.getCommand().getName(), StringUtils.join(event.getParameters(), " ")));
+            LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"/%s %s\"", event.getParseResults().getContext().getSource().getPlayerOrException().getName().getString(),
+                    perm ? "used" : "tried to use", event.getParseResults().getContext().getNodes().get(0).getNode().getName(), StringUtils.join(event.getParseResults().getContext().getNodes().iterator().toString(), " ")));
         }
 
         if (!perm) {
             event.setCanceled(true);
-            TextComponentTranslation textcomponenttranslation2 = new TextComponentTranslation("commands.generic.permission", new Object[0]);
-            textcomponenttranslation2.getStyle().setColor(TextFormatting.RED);
-            event.getSender().sendMessage(textcomponenttranslation2);
+            TranslationTextComponent textcomponenttranslation2 = new TranslationTextComponent("commands.generic.permission", new Object[0]);
+            textcomponenttranslation2.getStyle().withColor(TextFormatting.RED);
+            event.getParseResults().getContext().getSource().getPlayerOrException().sendMessage(textcomponenttranslation2, event.getParseResults().getContext().getSource().getPlayerOrException().getUUID());
         }
     }
 
-    public boolean checkPerms(ICommand command, ICommandSender sender) {
+    public boolean checkPerms(Command command, CommandSource sender) throws CommandSyntaxException {
         String node = PermissionManager.getCommandPermission(command);
-        return APIRegistry.perms.checkUserPermission(UserIdent.get(sender),node);
+        return APIRegistry.perms.checkUserPermission(UserIdent.get(sender.getPlayerOrException().getGameProfile()),node);
     }
 
-    /* ------------------------------------------------------------ */
-
-    @Override
-    public void load(Configuration config, boolean isReload)
+   /* ------------------------------------------------------------ */
+    
+    static ForgeConfigSpec.BooleanValue FEcheckVersion;
+    static ForgeConfigSpec.BooleanValue FEdebugMode;
+    static ForgeConfigSpec.BooleanValue FEsafeMode;
+    static ForgeConfigSpec.BooleanValue FEhideWorldEditCommands;
+    static ForgeConfigSpec.BooleanValue FElogCommandsToConsole;
+	
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
     {
-        if (isReload)
+    	BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
+        FEcheckVersion = BUILDER.comment("Check for newer versions of ForgeEssentials on load?").define("versionCheck", true);
+        //configManager.setUseCanonicalConfig(SERVER_BUILDER.comment("For modules that support it, place their configs in this file.").define("canonicalConfigs", false).get());
+        FEdebugMode = BUILDER.comment("Activates developer debug mode. Spams your FML logs.")
+        		.define("debug", false);
+        FEsafeMode = BUILDER.comment("Activates safe mode with will ignore some errors which would normally crash the game."
+        		+"Please only enable this after being instructed to do so by FE team in response to an issue on GitHub!")
+        		.define("safeMode", false);
+        FEhideWorldEditCommands = BUILDER.comment("Hide WorldEdit commands from /help and only show them in //help command")
+        		.define("hide_worldedit_help", true);
+        FElogCommandsToConsole = BUILDER.comment("Log commands to console")
+        		.define("logCommands", false);
+        //BuildInfo.startVersionChecks();
+        BUILDER.pop();
+    }
+	@Override
+	public void bakeConfig(boolean reload) {
+    	if (reload)
             Translator.translations.clear();
         Translator.load();
-        if (!config.get(FEConfig.CONFIG_CAT, "versionCheck", true, "Check for newer versions of ForgeEssentials on load?").getBoolean())
+        if (!FEcheckVersion.get())
             BuildInfo.checkVersion = false;
-        configManager.setUseCanonicalConfig(
-                config.get(FEConfig.CONFIG_CAT, "canonicalConfigs", false, "For modules that support it, place their configs in this file.").getBoolean());
-        debugMode = config.get(FEConfig.CONFIG_CAT, "debug", false, "Activates developer debug mode. Spams your FML logs.").getBoolean();
-        safeMode = config.get(FEConfig.CONFIG_CAT, "safeMode", false, "Activates safe mode with will ignore some errors which would normally crash the game. "
-                + "Please only enable this after being instructed to do so by FE team in response to an issue on GitHub!").getBoolean();
-        HelpFixer.hideWorldEditCommands = config
-                .get(FEConfig.CONFIG_CAT, "hide_worldedit_help", true, "Hide WorldEdit commands from /help and only show them in //help command").getBoolean();
-        logCommandsToConsole = config.get(FEConfig.CONFIG_CAT, "logCommands", false, "Log commands to console").getBoolean();
+        //configManager.setUseCanonicalConfig(SERVER_BUILDER.comment("For modules that support it, place their configs in this file.").define("canonicalConfigs", false).get());
+        debugMode = FEdebugMode.get();
+        safeMode = FEsafeMode.get();
+        HelpFixer.hideWorldEditCommands = FEhideWorldEditCommands.get();
+        logCommandsToConsole = FElogCommandsToConsole.get();
         BuildInfo.startVersionChecks();
     }
-
+	
+	@Override
+	public ConfigData returnData() {
+		return FEConfig.data;
+	}
     /* ------------------------------------------------------------ */
 
-    public static ConfigManager getConfigManager()
+    public static ConfigBase getConfigManager()
     {
         return configManager;
-    }
-
-    public static Metrics getMcStats()
-    {
-        return mcStats;
-    }
-
-    public static Graph getMcStatsGeneralGraph()
-    {
-        return mcStatsGeneralGraph;
     }
 
     public static File getFEDirectory()
@@ -518,5 +541,4 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         return safeMode;
     }
-
 }

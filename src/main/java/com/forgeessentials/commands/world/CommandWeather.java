@@ -5,28 +5,26 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandWeather extends ParserCommandBase implements ConfigurableCommand
+public class CommandWeather extends BaseCommand implements ConfigurableCommand
 {
 
     public static enum WeatherType
@@ -97,12 +95,6 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     public String getPrimaryAlias()
     {
         return "weather";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/weather rain|storm [enable|disable|force]: Weather manipulation";
     }
 
     @Override
@@ -294,8 +286,15 @@ public class CommandWeather extends ParserCommandBase implements ConfigurableCom
     }
 
     @Override
-    public void loadConfig(Configuration config, String category)
+    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
     {
+        /* do nothing */
+    }
+
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+    	/* do nothing */
     }
 
 }

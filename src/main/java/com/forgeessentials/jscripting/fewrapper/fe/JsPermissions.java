@@ -26,7 +26,8 @@ public class JsPermissions
         return APIRegistry.perms.checkBooleanPermission(permissionValue);
     }
 
-    public static String getPermission(JsUserIdent ident, JsWorldPoint<?> point, JsWorldArea<?> area, String[] groups, String permissionNode, boolean isProperty)
+    public static String getPermission(JsUserIdent ident, JsWorldPoint<?> point, JsWorldArea<?> area, String[] groups, String permissionNode,
+            boolean isProperty)
     {
         return APIRegistry.perms.getPermission(ident.getThat(), point.getThat(), area.getThat(), Arrays.asList(groups), permissionNode, isProperty);
     }
@@ -196,7 +197,8 @@ public class JsPermissions
         Collection<Zone> zones = APIRegistry.perms.getZones();
         JsZone<?>[] jsZones = new JsZone<?>[zones.size()];
         int i = 0;
-        for (Zone zone : zones) {
+        for (Zone zone : zones)
+        {
             jsZones[i++] = JsZone.get(zone);
         }
         return jsZones;

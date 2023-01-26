@@ -1,11 +1,11 @@
 package net.minecraftforge.fe.event.player;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.b3d.B3DModel.Face;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 /**
@@ -18,15 +18,15 @@ public class PlayerPostInteractEvent extends PlayerEvent
 
     public final ItemStack stack;
 
-    public final IBlockState block;
+    public final BlockState block;
 
     public final BlockPos pos;
 
-    public final EnumFacing side;
+    public final Face side;
 
     public final float hitX, hitY, hitZ;
 
-    protected PlayerPostInteractEvent(EntityPlayer player, World world, IBlockState block, ItemStack stack, BlockPos pos, EnumFacing side, float hitX,
+    protected PlayerPostInteractEvent(PlayerEntity player, World world, BlockState block, ItemStack stack, BlockPos pos, Face side, float hitX,
             float hitY, float hitZ)
     {
         super(player);
@@ -40,12 +40,12 @@ public class PlayerPostInteractEvent extends PlayerEvent
         this.hitZ = hitZ;
     }
 
-    public PlayerPostInteractEvent(EntityPlayer player, World world, ItemStack stack, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+    public PlayerPostInteractEvent(PlayerEntity player, World world, ItemStack stack, BlockPos pos, Face side, float hitX, float hitY, float hitZ)
     {
         this(player, world, null, stack, pos, side, hitX, hitY, hitZ);
     }
 
-    public PlayerPostInteractEvent(EntityPlayer player, World world, IBlockState block, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ)
+    public PlayerPostInteractEvent(PlayerEntity player, World world, BlockState block, BlockPos pos, Face side, float hitX, float hitY, float hitZ)
     {
         this(player, world, block, null, pos, side, hitX, hitY, hitZ);
     }

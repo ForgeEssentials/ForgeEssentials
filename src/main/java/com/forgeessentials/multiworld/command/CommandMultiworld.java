@@ -1,16 +1,12 @@
 package com.forgeessentials.multiworld.command;
-
+/*
 import java.util.Random;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.WorldType;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.commands.ParserCommandBase;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.multiworld.ModuleMultiworld;
 import com.forgeessentials.multiworld.Multiworld;
@@ -18,20 +14,14 @@ import com.forgeessentials.multiworld.MultiworldException;
 import com.forgeessentials.multiworld.MultiworldManager;
 import com.forgeessentials.multiworld.WorldServerMultiworld;
 import com.forgeessentials.util.CommandParserArgs;
-
-public class CommandMultiworld extends ParserCommandBase
+*/
+public class CommandMultiworld //extends ParserCommandBase
 {
-
+/*
     @Override
     public String getPrimaryAlias()
     {
         return "mw";
-    }
-
-    @Override
-    public String getUsage(ICommandSender commandSender)
-    {
-        return "/mw: Multiworld management command";
     }
 
     @Override
@@ -87,12 +77,13 @@ public class CommandMultiworld extends ParserCommandBase
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
         }
-    }
+    }*/
 
     /**
      * Create a new multiworld
-     * @throws CommandException 
-     */
+     * 
+     * @throws CommandException
+     *//*
     public static void parseCreate(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(ModuleMultiworld.PERM_MANAGE);
@@ -109,7 +100,7 @@ public class CommandMultiworld extends ParserCommandBase
         String provider = MultiworldManager.PROVIDER_NORMAL;
         if (arguments.isTabCompletion && arguments.size() == 1)
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
+            arguments.tabCompletion = BaseCommand.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
                     .getWorldProviders().keySet());
             return;
         }
@@ -120,7 +111,7 @@ public class CommandMultiworld extends ParserCommandBase
         String worldType = WorldType.DEFAULT.getName();
         if (arguments.isTabCompletion && arguments.size() == 1)
         {
-            arguments.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
+            arguments.tabCompletion = BaseCommand.getListOfStringsMatchingLastWord(arguments.peek(), ModuleMultiworld.getMultiworldManager()
                     .getWorldTypes().keySet());
             return;
         }
@@ -154,7 +145,9 @@ public class CommandMultiworld extends ParserCommandBase
         if (arguments.isTabCompletion)
             return;
 
-        arguments.confirm("Creating a Multiworld named \"%s\", provided by \"%s\", with a world type of \"%s\", generator options set to \"%s\" and the seed set to \"%s\"", name, provider, worldType, generatorOptions, seed);
+        arguments.confirm(
+                "Creating a Multiworld named \"%s\", provided by \"%s\", with a world type of \"%s\", generator options set to \"%s\" and the seed set to \"%s\"",
+                name, provider, worldType, generatorOptions, seed);
         Multiworld world = new Multiworld(name, provider, worldType, seed, generatorOptions);
         try
         {
@@ -168,12 +161,13 @@ public class CommandMultiworld extends ParserCommandBase
         {
             throw new TranslatedCommandException(e.type.error);
         }
-    }
+    }*/
 
     /**
      * Delete a multiworld
-     * @throws CommandException 
-     */
+     * 
+     * @throws CommandException
+     *//*
     public static void parseDelete(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(ModuleMultiworld.PERM_DELETE);
@@ -202,7 +196,7 @@ public class CommandMultiworld extends ParserCommandBase
 
     /**
      * Print lists of multiworlds, available providers and available world-types
-     */
+     *//*
     public static void parseList(CommandParserArgs arguments) throws CommandException
     {
         arguments.checkPermission(ModuleMultiworld.PERM_LIST);
@@ -284,6 +278,6 @@ public class CommandMultiworld extends ParserCommandBase
         if (world == null)
             throw new TranslatedCommandException("Multiworld " + worldName + " does not exist!");
         return world;
-    }
+    }*/
 
 }

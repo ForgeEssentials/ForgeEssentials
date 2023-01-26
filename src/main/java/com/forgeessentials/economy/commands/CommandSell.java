@@ -1,23 +1,31 @@
 package com.forgeessentials.economy.commands;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandSell extends ParserCommandBase
+public class CommandSell extends BaseCommand
 {
+
+    public CommandSell(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -38,12 +46,6 @@ public class CommandSell extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/sell <item> <amount> [meta]";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return false;
@@ -56,7 +58,14 @@ public class CommandSell extends ParserCommandBase
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         final boolean holdingItem;
         final ItemStack itemStack;
@@ -65,11 +74,11 @@ public class CommandSell extends ParserCommandBase
         if (arguments.isEmpty() || arguments.peek().equalsIgnoreCase("yes") || arguments.peek().equalsIgnoreCase("y"))
         {
             holdingItem = true;
-            itemStack = arguments.senderPlayer.getHeldItemMainhand();
+            itemStack = arguments.senderPlayer.getMainHandItem();
             if (itemStack == ItemStack.EMPTY)
                 throw new TranslatedCommandException("You need to hold an item first!");
             amount = itemStack.getCount();
-            meta = itemStack.getItemDamage();
+            meta = itemStack.getDamageValue();
         }
         else
         {
@@ -132,13 +141,13 @@ public class CommandSell extends ParserCommandBase
                 int removedAmount = 0;
                 if (holdingItem)
                 {
-                    ItemStack currentItemStack = arguments.senderPlayer.getHeldItemMainhand();
-                    if (currentItemStack.isItemEqual(itemStack))
+                    ItemStack currentItemStack = arguments.senderPlayer.getMainHandItem();
+                    if (currentItemStack.equals(itemStack))
                     {
                         removedAmount = Math.min(currentItemStack.getCount(), amount);
                         currentItemStack.setCount(currentItemStack.getCount() - removedAmount);
                         if (currentItemStack.getCount() <= 0)
-                            arguments.senderPlayer.inventory.mainInventory.set(arguments.senderPlayer.inventory.currentItem, ItemStack.EMPTY);
+                            arguments.senderPlayer.inventory.items.set(arguments.senderPlayer.inventory.selected, ItemStack.EMPTY);
                     }
                 }
                 if (removedAmount < amount)
@@ -159,5 +168,4 @@ public class CommandSell extends ParserCommandBase
         }
         Questioner.addChecked(arguments.sender, message, handler, 20);
     }
-
 }

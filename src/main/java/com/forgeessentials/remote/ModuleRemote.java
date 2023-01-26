@@ -3,28 +3,33 @@ package com.forgeessentials.remote;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.ModFileScanData;
 
 import org.apache.commons.codec.binary.Hex;
+import org.objectweb.asm.Type;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -33,24 +38,28 @@ import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModulePreInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 {
-
+	private static ForgeConfigSpec REMOTE_CONFIG;
+	private static final ConfigData data = new ConfigData("Remote", REMOTE_CONFIG, new ForgeConfigSpec.Builder());
+	
     public static class PasskeyMap extends HashMap<UserIdent, String>
     {
         private static final long serialVersionUID = -8268113844467318789L; /* default */
@@ -111,28 +120,55 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 
     protected boolean mcServerStarted;
 
+    private static final Type MOD = Type.getType(FERemoteHandler.class);
+
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
-    public void getASMDataTable(FEModulePreInitEvent event)
+    public void getASMDataTable(FEModuleCommonSetupEvent event)
     {
-        ASMDataTable asmdata = ((FMLPreInitializationEvent) event.getFMLEvent()).getAsmData();
-        for (ASMData asm : asmdata.getAll(FERemoteHandler.class.getName()))
+        //ASMDataTable asmdata = ((FMLCommonSetupEvent) event.getFMLEvent()).getAsmData();
+        
+        final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
+                .map(ModFileScanData::getAnnotations)
+                .flatMap(Collection::stream)
+                .filter(a -> MOD.equals(a.getAnnotationType()))
+                .collect(Collectors.toList());
+
+        Map<Type, String> classModIds = Maps.newHashMap();
+
+        // Gather all @FEModule classes
+        data.stream().filter(a -> MOD.equals(a.getAnnotationType())).forEach(info -> classModIds.put(info.getClassType(), (String)info.getAnnotationData().get("value")));
+        LoggingHandler.felog.info("Found {} FERemoteHandler annotations", data.size());
+        
+        for (ModFileScanData.AnnotationData asm : data)
         {
             try
             {
-                Class<?> clazz = Class.forName(asm.getClassName());
+                Class<?> clazz = Class.forName(asm.getClass().getName());
                 if (RemoteHandler.class.isAssignableFrom(clazz))
                 {
-                    RemoteHandler handler = (RemoteHandler) clazz.newInstance();
+                    RemoteHandler handler = (RemoteHandler) clazz.getDeclaredConstructor().newInstance();
                     FERemoteHandler annot = handler.getClass().getAnnotation(FERemoteHandler.class);
                     registerHandler(handler, annot.id());
                 }
             }
             catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
             {
-                LoggingHandler.felog.debug("Could not load FERemoteHandler " + asm.getClassName());
-            }
+                LoggingHandler.felog.debug("Could not load FERemoteHandler " + asm.getClass());
+            } catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
 
@@ -141,21 +177,25 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
      */
     @SuppressWarnings("deprecation")
     @SubscribeEvent
-    public void load(FEModuleInitEvent event)
+    public void load(FEModuleCommonSetupEvent event)
     {
         APIRegistry.remoteManager = this;
         APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows login to remote module");
         APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP,
                 "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
+    }
 
-        FECommandManager.registerCommand(new CommandRemote());
+    @SubscribeEvent
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandRemote("remote", 0, true));
     }
 
     /**
      * Initialize passkeys, server and commands
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void serverStarting(FEModuleServerInitEvent event)
+    public void serverStarting(FEModuleServerStartingEvent event)
     {
         loadPasskeys();
         startServer();
@@ -166,27 +206,48 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
      * Stop remote server when the MC-server stops
      */
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent event)
+    public void serverStopping(FEModuleServerStoppingEvent event)
     {
         stopServer();
         mcServerStarted = false;
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
-        localhostOnly = config.get(CONFIG_CAT, "localhostOnly", true, "Allow connections from the web").getBoolean();
-        hostname = config.get(CONFIG_CAT, "hostname", "localhost", "Hostname of your server. Used for QR code generation.").getString();
-        port = config.get(CONFIG_CAT, "port", 27020, "Port to connect remotes to").getInt();
-        useSSL = config
-                .get(CONFIG_CAT, "use_ssl", false,
-                        "Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)")
-                .getBoolean();
-        passkeyLength = config.get(CONFIG_CAT, "passkey_length", 6, "Length of the randomly generated passkeys").getInt();
-        if (mcServerStarted)
-            startServer();
+    static ForgeConfigSpec.BooleanValue FElocalhostOnly;
+    static ForgeConfigSpec.ConfigValue<String> FEhostname;
+    static ForgeConfigSpec.IntValue FEport;
+    static ForgeConfigSpec.BooleanValue FEuseSSL;
+    static ForgeConfigSpec.IntValue FEpasskeyLength;
+
+	@Override
+	public void load(Builder BUILDER, boolean isReload)
+	{
+        BUILDER.push(CONFIG_CAT);
+        FElocalhostOnly = BUILDER.comment("Allow connections from the web").define("localhostOnly", true);
+        FEhostname = BUILDER.comment("Hostname of your server. Used for QR code generation.").define("hostname", "localhost");
+        FEport = BUILDER.comment("Port to connect remotes to").defineInRange("port", 27020, 0, 65535);
+        FEuseSSL = BUILDER.comment("Protect the communication against network sniffing by encrypting traffic with SSL (You don't really need it - believe me)")
+                .define("use_ssl", false);
+        FEpasskeyLength = BUILDER.comment("Length of the randomly generated passkeys").defineInRange("passkey_length", 6, 1, 256);
+        BUILDER.pop();
     }
 
+	@Override
+	public void bakeConfig(boolean reload)
+	{
+        getInstance().localhostOnly = FElocalhostOnly.get();
+        getInstance().hostname = FEhostname.get();
+        getInstance().port = FEport.get();
+        getInstance().useSSL = FEuseSSL.get();
+        passkeyLength = FEpasskeyLength.get();
+        if (getInstance().mcServerStarted)
+            getInstance().startServer();
+    }
+	
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
+	
     /* ------------------------------------------------------------ */
 
     /**
@@ -304,7 +365,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     {
         StringBuilder passkey = new StringBuilder();
         Random rnd;
-        try {
+        try
+        {
             rnd = SecureRandom.getInstanceStrong();
         }
         catch (NoSuchAlgorithmException e)
@@ -315,6 +377,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
             passkey.append(PASSKEY_CHARS[rnd.nextInt(PASSKEY_CHARS.length)]);
         return passkey.toString();
     }
+
     /**
      * Get stored passkey for user or generate a new one and save it
      * 
@@ -423,5 +486,4 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     {
         return instance;
     }
-
 }

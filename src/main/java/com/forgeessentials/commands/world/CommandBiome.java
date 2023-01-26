@@ -1,20 +1,20 @@
 package com.forgeessentials.commands.world;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandParserArgs;
 
 import java.util.Iterator;
 
-public class CommandBiome extends ParserCommandBase
+public class CommandBiome extends BaseCommand
 {
 
     @Override
@@ -27,12 +27,6 @@ public class CommandBiome extends ParserCommandBase
     public String[] getDefaultSecondaryAliases()
     {
         return new String[] { "biomeinfo" };
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/febiome: Biome info tool";
     }
 
     @Override
@@ -56,14 +50,14 @@ public class CommandBiome extends ParserCommandBase
     @Override
     public void parse(CommandParserArgs arguments) throws CommandException
     {
-        int x = (int) Math.floor(arguments.senderPlayer.posX);
-        int z = (int) Math.floor(arguments.senderPlayer.posZ);
+        int x = (int) Math.floor(arguments.senderPlayer.position().x);
+        int z = (int) Math.floor(arguments.senderPlayer.position().z);
         if (arguments.isEmpty())
         {
             if (arguments.isTabCompletion)
                 return;
-            Biome biome = arguments.senderPlayer.world.getBiome(new BlockPos(x, 0, z));
-            arguments.confirm("Current biome: " + biome.biomeName);
+            Biome biome = arguments.senderPlayer.level.getBiome(new BlockPos(x, 0, z));
+            arguments.confirm("Current biome: " + biome.toString());
             arguments.confirm("  " + biome.getClass().getName());
             arguments.notify("/febiome list: Show all registered biomes");
             return;
@@ -78,7 +72,7 @@ public class CommandBiome extends ParserCommandBase
                 return;
             arguments.confirm("Listing registered biomes:");
             boolean skip = false;
-            Iterator<Biome> itor = Biome.REGISTRY.iterator();
+            Iterator<Biome> itor = ForgeRegistries.BIOMES.iterator();
             while (itor.hasNext())
             {
                 Biome biome = itor.next();
@@ -92,7 +86,7 @@ public class CommandBiome extends ParserCommandBase
                     skip = false;
                     arguments.notify("----");
                 }
-                arguments.confirm(" #" + Biome.REGISTRY.getIDForObject(biome) + ": " + biome.biomeName);
+                arguments.confirm(" #" + ForgeRegistries.BIOMES.getKey(biome) + ": " + biome.toString());
             }
             break;
         case "dict":

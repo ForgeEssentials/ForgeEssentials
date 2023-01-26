@@ -1,20 +1,19 @@
 package com.forgeessentials.commands.util;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ContainerWorkbench;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ContainerCheatyWorkbench extends ContainerWorkbench
+public class ContainerCheatyWorkbench extends CraftingInventory
 {
     private World world;
 
-    public ContainerCheatyWorkbench(InventoryPlayer playerInventory, World world)
+    public ContainerCheatyWorkbench(Inventory playerInventory, World world)
     {
         super(playerInventory, world, BlockPos.ORIGIN);
         world = world;
@@ -33,7 +32,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
      * Callback for when the crafting gui is closed.
      */
     @Override
-    public void onContainerClosed(EntityPlayer par1EntityPlayer)
+    public void onContainerClosed(PlayerEntity par1EntityPlayer)
     {
         super.onContainerClosed(par1EntityPlayer);
 
@@ -45,14 +44,14 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
 
                 if (var3 != null)
                 {
-                    par1EntityPlayer.dropItem(var3, true);
+                    par1EntityPlayer.drop(var3, true);
                 }
             }
         }
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer par1EntityPlayer)
+    public boolean canInteractWith(PlayerEntity par1EntityPlayer)
     {
         return true;
     }
@@ -61,7 +60,7 @@ public class ContainerCheatyWorkbench extends ContainerWorkbench
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+    public ItemStack transferStackInSlot(PlayerEntity par1EntityPlayer, int par2)
     {
         ItemStack var3 = null;
         Slot var4 = inventorySlots.get(par2);

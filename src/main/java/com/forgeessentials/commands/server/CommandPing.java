@@ -1,31 +1,33 @@
 package com.forgeessentials.commands.server;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandPing extends ForgeEssentialsCommandBase implements ConfigurableCommand
+public class CommandPing extends BaseCommand implements ConfigurableCommand
 {
+    public CommandPing(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     public String response = "Pong! %time";
+    static ForgeConfigSpec.ConfigValue<String> FEresponse;
 
     @Override
     public String getPrimaryAlias()
     {
         return "ping";
-    }
-
-    @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/ping Ping the server.";
     }
 
     @Override
@@ -46,22 +48,33 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
         return ModuleCommands.PERM + ".ping";
     }
 
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+	{
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
+	}
+
     @Override
-    public void processCommandPlayer(MinecraftServer server, EntityPlayerMP sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", sender.ping + "ms."));
+        ChatOutputHandler.chatNotification(ctx.getSource(), response.replaceAll("%time", ((ServerPlayerEntity) ctx.getSource().getEntity()).latency + "ms."));
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        ChatOutputHandler.chatNotification(sender, response.replaceAll("%time", ""));
+        ChatOutputHandler.chatNotification(ctx.getSource(), response.replaceAll("%time", ""));
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
-    public void loadConfig(Configuration config, String category)
+    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
     {
-        response = config.get(category, "response", "Pong! %time").getString();
+    	BUILDER.push(category);
+    	FEresponse = BUILDER.comment("Response Format for command must include %time.").define("response", "Pong! %time");
+    	BUILDER.pop();
     }
 
     @Override
@@ -70,4 +83,9 @@ public class CommandPing extends ForgeEssentialsCommandBase implements Configura
         /* do nothing */
     }
 
+    @Override
+    public void bakeConfig(boolean reload)
+    {
+    	response = FEresponse.get();
+    }
 }

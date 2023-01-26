@@ -17,22 +17,10 @@ public class FilterConfig
 
     public enum ActionEnum
     {
-        blockPlace,
-        blockBreak,
-        blockDetonate,
-        blockUse_Left,
-        blockUse_Right,
-        blockBurn,
-        command,
-        playerLogin,
-        playerLogout,
-        playerRespawn,
-        playerChangeDim,
-        playerPosition,
-        other
+        blockPlace, blockBreak, blockDetonate, blockUse_Left, blockUse_Right, blockBurn, command, playerLogin, playerLogout, playerRespawn, playerChangeDim, playerPosition, other
     }
 
-    public static HashMap<UserIdent,FilterConfig> perPlayerFilters = new HashMap<>();
+    public static HashMap<UserIdent, FilterConfig> perPlayerFilters = new HashMap<>();
 
     public static FilterConfig globalConfig = new FilterConfig();
 
@@ -49,6 +37,7 @@ public class FilterConfig
     {
         return Bwhitelist == blocks.contains(b);
     }
+
     public static HashSet<String> keywords = new HashSet<>();
 
     public static ArrayList<String> actiontabs = new ArrayList<>();
@@ -60,7 +49,8 @@ public class FilterConfig
 
     public UserIdent player;
 
-    static {
+    static
+    {
         keywords.add("action");
         keywords.add("block");
         keywords.add("blockid");
@@ -109,6 +99,7 @@ public class FilterConfig
     {
         return new Date(System.currentTimeMillis() - before);
     }
+
     public void parse(final CommandParserArgs args) throws CommandException
     {
         if (args != null)
@@ -136,10 +127,10 @@ public class FilterConfig
                     parseRange(args);
                     break;
                 case "whitelist":
-                    parseWhitelist(args,true);
+                    parseWhitelist(args, true);
                     break;
                 case "blacklist":
-                    parseWhitelist(args,false);
+                    parseWhitelist(args, false);
                     break;
                 case "player":
                     player = args.parsePlayer(true, false);
@@ -160,7 +151,6 @@ public class FilterConfig
             Bwhitelist = !blocks.isEmpty();
         }
 
-
     }
 
     public void parseWhitelist(CommandParserArgs args, boolean enabled)
@@ -178,6 +168,7 @@ public class FilterConfig
             }
         }
     }
+
     public FilterConfig(FilterConfig c)
     {
         this();
@@ -190,6 +181,7 @@ public class FilterConfig
         player = c.player;
         pickerRange = c.pickerRange;
     }
+
     public FilterConfig()
     {
     }
@@ -210,7 +202,8 @@ public class FilterConfig
                 try
                 {
                     actions.add(ActionEnum.valueOf(arg));
-                } catch (IllegalArgumentException e)
+                }
+                catch (IllegalArgumentException e)
                 {
                     throw new TranslatedCommandException("Invalid Action");
                 }
@@ -256,6 +249,7 @@ public class FilterConfig
         else
             throw new TranslatedCommandException("A time must be specified here!");
     }
+
     public void parseAfter(CommandParserArgs args) throws CommandException
     {
         args.tabComplete("reset");
@@ -272,8 +266,8 @@ public class FilterConfig
                     after += args.parseTimeReadable();
             }
         }
-            else
-                throw new TranslatedCommandException("A time must be specified here!");
+        else
+            throw new TranslatedCommandException("A time must be specified here!");
     }
 
     public void parseRange(CommandParserArgs args) throws CommandException
@@ -285,6 +279,7 @@ public class FilterConfig
         else
             throw new TranslatedCommandException("A integer must be specified here!");
     }
+
     public String toReadableString()
     {
         return "Before: " + before + "\nAfter: " + after + "\nActions: " + actions + "\nBlocks: " + blocks + "\nWhitelist: " + Awhitelist;

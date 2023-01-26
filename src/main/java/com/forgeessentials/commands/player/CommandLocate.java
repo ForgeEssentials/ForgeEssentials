@@ -1,24 +1,29 @@
 package com.forgeessentials.commands.player;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandLocate extends ForgeEssentialsCommandBase
+public class CommandLocate extends BaseCommand
 {
+
+    public CommandLocate(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -45,41 +50,32 @@ public class CommandLocate extends ForgeEssentialsCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/locate <player> Locates a player.";
-    }
-
-    @Override
     public String getPermissionNode()
     {
         return ModuleCommands.PERM + ".locate";
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length != 1)
-            throw new TranslatedCommandException(getUsage(sender));
-
-        EntityPlayerMP player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-        if (player == null)
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-
-        WorldPoint point = new WorldPoint(player);
-        ChatOutputHandler.chatConfirmation(sender, Translator.format("%s is at %d, %d, %d in dim %d with gamemode %s", //
-                player.getName(), point.getX(), point.getY(), point.getZ(), point.getDimension(), //
-                player.interactionManager.getGameType().getName()));
+        return builder
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(CommandContext -> execute(CommandContext)
+                                )
+                        );
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length == 1)
-        {
-            return matchToPlayers(args);
-        }
-        return null;
-    }
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        if (player == null)
+            throw new TranslatedCommandException("Player does not exist, or is not online.");
 
+        WorldPoint point = new WorldPoint(player);
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s is at %d, %d, %d in dim %d with gamemode %s", //
+                player.getName(), point.getX(), point.getY(), point.getZ(), point.getDimension(), //
+                player.gameMode.getGameModeForPlayer().getName()));
+        return Command.SINGLE_SUCCESS;
+    }
 }

@@ -1,6 +1,7 @@
 package com.forgeessentials.tickets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -8,24 +9,32 @@ import net.minecraft.util.text.TextFormatting;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 @FEModule(name = "Tickets", parentMod = ForgeEssentials.class)
-public class ModuleTickets
+public class ModuleTickets implements ConfigSaver
 {
-
+	private static ForgeConfigSpec TICKETS_CONFIG;
+	private static final ConfigData data = new ConfigData("Tickets", TICKETS_CONFIG, new ForgeConfigSpec.Builder());
+	
     public static final String PERMBASE = "fe.tickets";
 
     public static ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
@@ -35,15 +44,19 @@ public class ModuleTickets
     public static int currentID;
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModuleCommonSetupEvent e)
     {
-        FECommandManager.registerCommand(new CommandTicket());
-        FMLCommonHandler.instance().bus().register(this);
-        ForgeEssentials.getConfigManager().registerLoader("Tickets", new ConfigTickets());
+        FMLJavaModLoadingContext.get().getModEventBus().register(this);
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent e)
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    {
+        FECommandManager.registerCommand(new CommandTicket("ticket", 0, true));
+    }
+
+    @SubscribeEvent
+    public void serverStarting(FEModuleServerStartingEvent e)
     {
         loadAll();
         APIRegistry.perms.registerPermission(PERMBASE + ".new", DefaultPermissionLevel.ALL, "Create new tickets");
@@ -54,7 +67,7 @@ public class ModuleTickets
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void serverStopping(FEModuleServerStoppingEvent e)
     {
         saveAll();
     }
@@ -101,13 +114,42 @@ public class ModuleTickets
     @SubscribeEvent
     public void loadData(PlayerEvent.PlayerLoggedInEvent e)
     {
-        if (PermissionAPI.hasPermission(e.player, ModuleTickets.PERMBASE + ".admin"))
+        if (PermissionAPI.hasPermission(e.getPlayer(), ModuleTickets.PERMBASE + ".admin"))
         {
             if (!ModuleTickets.ticketList.isEmpty())
             {
-                ChatOutputHandler.sendMessage(e.player, TextFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
+                ChatOutputHandler.sendMessage(e.getPlayer().createCommandSourceStack(),
+                        TextFormatting.DARK_AQUA + "There are " + ModuleTickets.ticketList.size() + " open tickets.");
             }
         }
     }
 
+    static ForgeConfigSpec.ConfigValue<String[]> FEcategories;
+    static ForgeConfigSpec.IntValue FEcurrentID;
+
+	@Override
+	public void load(Builder BUILDER, boolean isReload) {
+        LoggingHandler.felog.debug("Loading Tickets Config");
+        BUILDER.push("Tickets");
+        FEcategories = BUILDER.define("categories", new String[] { "griefing", "overflow", "dispute" });
+        FEcurrentID = BUILDER.comment("Don't change anythign in there.").defineInRange("currentID", 0, 0, Integer.MAX_VALUE);
+        BUILDER.pop();
+	}
+
+	@Override
+	public void bakeConfig(boolean reload) {
+		ModuleTickets.categories = Arrays.asList(FEcategories.get());
+        ModuleTickets.currentID = FEcurrentID.get();
+	}
+
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
+
+	@Override
+	public void save(boolean reload) {
+		FEcategories.set(ModuleTickets.categories.toArray(new String[0]));
+        FEcurrentID.set(ModuleTickets.currentID);
+	}
 }

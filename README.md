@@ -1,7 +1,11 @@
-ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentials.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentials)
+ForgeEssentials [![Build Status](https://travis-ci.org/ForgeEssentials/ForgeEssentials.svg?branch=develop)](https://travis-ci.org/ForgeEssentials/ForgeEssentials) 
+![GitHub repo size](https://img.shields.io/github/repo-size/maximuslotro/ForgeEssentials-1.16.5-PortAndRewrite?label=Repo%20size&logo=github&style=flat-square)
+[![](https://tokei.rs/b1/github/maximuslotro/ForgeEssentials-1.16.5-PortAndRewrite?category=lines)](https://tokei.ekzhang.com/b1/github/maximuslotro/ForgeEssentials-1.16.5-PortAndRewrite)
 ===================
 
-The code on this branch is for Minecraft 1.12.2.
+The code on this branch is for Minecraft 1.16.5.
+
+## This is an ongoing port of Forge Essentials for 1.16.5
 
 ## Forge Essentials Is now Officially Inactive!  We will no longer make code changes for the foreseeable future.
 With that said, however, we will still review and accept Pull Requests.

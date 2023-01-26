@@ -3,7 +3,7 @@ package net.minecraftforge.fe.event.world;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import net.minecraftforge.eventbus.api.Cancelable;
 
 public class FireEvent extends BlockEvent
 {

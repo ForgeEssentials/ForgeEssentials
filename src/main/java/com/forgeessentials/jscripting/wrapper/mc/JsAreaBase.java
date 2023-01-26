@@ -13,15 +13,18 @@ public class JsAreaBase<T extends AreaBase> extends JsWrapper<T>
     }
 
     @SuppressWarnings("unchecked")
-    public JsAreaBase(JsPoint<?> p1, JsPoint<?> p2) {
+    public JsAreaBase(JsPoint<?> p1, JsPoint<?> p2)
+    {
         this((T) new AreaBase(p1.getThat(), p2.getThat()));
     }
 
-    public JsPoint<?> getHighPoint() {
+    public JsPoint<?> getHighPoint()
+    {
         return new JsPoint<>(that.getHighPoint());
     }
 
-    public JsPoint<?> getLowPoint() {
+    public JsPoint<?> getLowPoint()
+    {
         return new JsPoint<>(that.getLowPoint());
     }
 

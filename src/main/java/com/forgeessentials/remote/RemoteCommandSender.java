@@ -3,12 +3,14 @@ package com.forgeessentials.remote;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 import java.util.WeakHashMap;
 
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteResponse;
@@ -75,13 +77,13 @@ public class RemoteCommandSender extends DoAsCommandSender
     }
 
     @Override
-    public void sendMessage(ITextComponent chatComponent)
+    public void sendMessage(ITextComponent chatComponent, UUID uuid)
     {
         // TODO: Instead of directly sending the messages to the client, cache them and send them all after the running
         // command finished (only if enabled)
-        ICommandSender receiver = FMLCommonHandler.instance().getMinecraftServerInstance();
+        CommandSource receiver = ServerLifecycleHooks.getCurrentServer().createCommandSourceStack();
         if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
-            receiver = session.getUserIdent().getPlayer();
+            receiver = session.getUserIdent().getPlayer().createCommandSourceStack();
         ChatOutputHandler.sendMessage(receiver, chatComponent);
 
         if (!session.isClosed())
@@ -89,7 +91,7 @@ public class RemoteCommandSender extends DoAsCommandSender
             try
             {
                 // TODO: Add second message WITH formatting
-                ChatResponse msg = new ChatResponse(null, ChatOutputHandler.stripFormatting(chatComponent.getUnformattedText()));
+                ChatResponse msg = new ChatResponse(null, ChatOutputHandler.stripFormatting(chatComponent.plainCopy().toString()));
                 session.sendMessage(new RemoteResponse<ChatResponse>(RemoteMessageID.CHAT, msg));
             }
             catch (IOException e)
@@ -98,7 +100,7 @@ public class RemoteCommandSender extends DoAsCommandSender
                 e.printStackTrace();
             }
         }
-        
+
         ModuleRemote.getInstance().getServer().cleanSessions();
     }
 

@@ -1,29 +1,38 @@
 package com.forgeessentials.teleport;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer.SleepResult;
+import net.minecraft.entity.player.PlayerEntity.SleepResult;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+
+import java.util.Optional;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.teleport.portal.CommandPortal;
 import com.forgeessentials.teleport.portal.PortalManager;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 @FEModule(name = "Teleport", parentMod = ForgeEssentials.class)
 public class TeleportModule extends ConfigLoaderBase
 {
+
+	private static ForgeConfigSpec TELEPORT_CONFIG;
+	private static final ConfigData data = new ConfigData("Teleport", TELEPORT_CONFIG, new ForgeConfigSpec.Builder());
 
     public static final String PERM_TP = "fe.teleport.tp";
     public static final String PERM_TP_OTHERS = "fe.teleport.tp.others";
@@ -65,7 +74,7 @@ public class TeleportModule extends ConfigLoaderBase
     private PortalManager portalManager;
 
     @SubscribeEvent
-    public void load(FEModuleInitEvent e)
+    public void load(FEModuleCommonSetupEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -73,10 +82,8 @@ public class TeleportModule extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent event)
+    private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        portalManager.load();
-
         FECommandManager.registerCommand(new CommandBack());
         FECommandManager.registerCommand(new CommandBed());
         FECommandManager.registerCommand(new CommandHome());
@@ -90,11 +97,18 @@ public class TeleportModule extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandPortal());
         FECommandManager.registerCommand(new CommandSetSpawn());
         FECommandManager.registerCommand(new CommandJump());
+    }
+
+    @SubscribeEvent
+    public void serverStarting(FEModuleServerStartingEvent event)
+    {
+        portalManager.load();
 
         APIRegistry.perms.registerPermissionProperty(PERM_TPA_TIMEOUT, "20", "Amount of sec a user has to accept a TPA request");
 
         APIRegistry.perms.registerPermission(PERM_BACK_ONDEATH, DefaultPermissionLevel.ALL, "Allow returning to the last death location with back-command");
-        APIRegistry.perms.registerPermission(PERM_BACK_ONTP, DefaultPermissionLevel.ALL, "Allow returning to the last location before teleport with back-command");
+        APIRegistry.perms.registerPermission(PERM_BACK_ONTP, DefaultPermissionLevel.ALL,
+                "Allow returning to the last location before teleport with back-command");
         APIRegistry.perms.registerPermission(PERM_BED_OTHERS, DefaultPermissionLevel.OP, "Allow teleporting to other player's bed location");
 
         APIRegistry.perms.registerPermission(PERM_HOME, DefaultPermissionLevel.ALL, "Allow usage of /home");
@@ -111,25 +125,40 @@ public class TeleportModule extends ConfigLoaderBase
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void playerSleepInBed(PlayerSleepInBedEvent e) {
-        if (e.getEntityPlayer().world.isRemote)
+    public void playerSleepInBed(PlayerSleepInBedEvent e)
+    {
+        if (e.getPlayer().level.isClientSide)
         {
             return;
         }
 
-        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(e.getEntityPlayer(), e.getPos()) || e.getEntityPlayer().isSneaking())
+        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(e.getPlayer(), e.getPos()) || (e.getPlayer().isCrouching()))
         {
-            e.getEntityPlayer().setSpawnPoint(e.getPos(), false);
-            ChatOutputHandler.chatConfirmation(e.getEntityPlayer(), "Bed Position Set!");
+            e.getPlayer().setSpawnPoint(e.getPos(), false);
+            ChatOutputHandler.chatConfirmation(e.getPlayer().createCommandSourceStack(), "Bed Position Set!");
             e.setResult(SleepResult.OTHER_PROBLEM);
         }
     }
 
-    @Override
-    public void load(Configuration config, boolean isReload)
-    {
-        String portalBlockId = config.get(Configuration.CATEGORY_GENERAL, "portalBlock", "minecraft:glass_pane", "Name of the block to use as material for new portals.\n"
-                + "Does not override vanilla nether/end portals.\nSetting this to 'minecraft:portal' is currently not supported.").getString();
-        PortalManager.portalBlock = Block.REGISTRY.getObject(new ResourceLocation(portalBlockId));
-    }
+    static ForgeConfigSpec.ConfigValue<String> FEportalBlock;
+
+	@Override
+	public void load(Builder BUILDER, boolean isReload) {
+		BUILDER.push("General");
+        FEportalBlock = BUILDER.comment("Name of the block to use as material for new portals.\n"
+                + "Does not override vanilla nether/end portals.\nSetting this to 'minecraft:portal' is currently not supported.")
+                .define("portalBlock", "minecraft:glass_pane");
+        BUILDER.pop();
+	}
+
+	@Override
+	public void bakeConfig(boolean reload) {
+		String portalBlockId = FEportalBlock.get();
+        PortalManager.portalBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(portalBlockId));
+	}
+
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
 }

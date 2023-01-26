@@ -1,13 +1,21 @@
 package com.forgeessentials.commands.world;
 
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.WorldServer;
+import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.storage.AnvilChunkLoader;
+import net.minecraft.world.chunk.storage.ChunkLoader;
 import net.minecraft.world.chunk.storage.RegionFileCache;
-import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraft.world.server.ServerChunkProvider;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -15,7 +23,7 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.TickTask;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -24,13 +32,19 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.worldborder.ModuleWorldBorder;
 import com.forgeessentials.worldborder.WorldBorder;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandPregen extends ParserCommandBase implements TickTask
+public class CommandPregen extends BaseCommand implements TickTask
 {
+
+    public CommandPregen(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     private boolean running = false;
 
-    private WorldServer world;
+    private ServerWorld world;
 
     private AreaShape shape;
 
@@ -74,12 +88,6 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/pregen start [dim]";
-    }
-
-    @Override
     public boolean canConsoleUseCommand()
     {
         return true;
@@ -95,6 +103,13 @@ public class CommandPregen extends ParserCommandBase implements TickTask
     public String getPermissionNode()
     {
         return ModuleCommands.PERM + ".pregen";
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -214,8 +229,8 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             arguments.error("No pregen running");
             return;
         }
-        ChunkProviderServer providerServer = world.getChunkProvider();
-        providerServer.queueUnloadAll();
+        ServerChunkProvider providerServer = world.getChunkSource();
+        providerServer.chunkMap.queueUnloadAll();
         arguments.confirm("Queued all chunks for unloading");
     }
 
@@ -226,8 +241,8 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             arguments.error("No pregen running");
             return;
         }
-        ChunkProviderServer providerServer = (ChunkProviderServer) world.getChunkProvider();
-        arguments.confirm("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ * 4, ServerUtil.getTPS(), providerServer.getLoadedChunkCount());
+        ServerChunkProvider providerServer = (ServerChunkProvider) world.getChunkSource();
+        arguments.confirm("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ * 4, ServerUtil.getTPS(), providerServer.getLoadedChunksCount());
     }
 
     @Override
@@ -247,11 +262,11 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
         totalTicks++;
 
-        ChunkProviderServer providerServer = world.getChunkProvider();
+        ServerChunkProvider providerServer = world.getChunkSource();
 
         if (totalTicks % 80 == 0)
             notifyPlayers(String.format("Pregen: %d/%d chunks, tps:%.1f, lc:%d", totalChunks, sizeX * sizeZ, tps,
-                    providerServer.getLoadedChunkCount()));
+                    providerServer.getLoadedChunksCount()));
         for (int i = 0; i < 1; i++)
         {
             int skippedChunks = 0;
@@ -267,7 +282,7 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
                 if (!ForgeEssentials.isCubicChunksInstalled || !CCPregenCompat.isCCWorld(world))
                 {
-                    if (RegionFileCache.createOrLoadRegionFile(world.getChunkSaveLocation(), x, z).chunkExists(x & 0x1F, z & 0x1F)
+                    if (RegionFileCache.getRegionFile(new ChunkPos( x, z)).doesChunkExist(new ChunkPos(x & 0x1F, z & 0x1F))
                             || (providerServer.chunkExists(x, z)))
                     {
                         skippedChunks++;
@@ -277,9 +292,9 @@ public class CommandPregen extends ParserCommandBase implements TickTask
                             continue;
                     }
 
-                    if (providerServer.getLoadedChunkCount() > 256)
+                    if (providerServer.getLoadedChunksCount() > 256)
                     {
-                        providerServer.saveChunks(true);
+                        providerServer.save(true);
                         providerServer.queueUnloadAll();
                     }
                     providerServer.provideChunk(x, z);
@@ -347,16 +362,16 @@ public class CommandPregen extends ParserCommandBase implements TickTask
 
     public void notifyPlayers(String message)
     {
-        for (EntityPlayerMP player : ServerUtil.getPlayerList())
+        for (ServerPlayerEntity player : ServerUtil.getPlayerList())
             if (APIRegistry.perms.checkPermission(player, getPermissionNode()))
                 ChatOutputHandler.chatNotification(player, message);
     }
 
     /* ------------------------------------------------------------ */
 
-    private static void saveChunk(ChunkProviderServer provider, Chunk chunk)
+    private static void saveChunk(ServerChunkProvider provider, Chunk chunk)
     {
-        AnvilChunkLoader loader = (AnvilChunkLoader) provider.chunkLoader;
+        ChunkLoader loader = (ChunkLoader) provider.chunkMap;
         try
         {
             loader.saveChunk(provider.world, chunk);
@@ -366,5 +381,4 @@ public class CommandPregen extends ParserCommandBase implements TickTask
             exception.printStackTrace();
         }
     }
-
 }

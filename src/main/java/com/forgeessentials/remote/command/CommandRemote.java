@@ -1,11 +1,10 @@
 package com.forgeessentials.remote.command;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -13,18 +12,25 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.Packet7Remote;
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBase;
-import com.forgeessentials.core.commands.ParserCommandBase;
+import com.forgeessentials.commons.network.packets.Packet7Remote;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandRemote extends ParserCommandBase
+public class CommandRemote extends BaseCommand
 {
+
+    public CommandRemote(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -34,16 +40,19 @@ public class CommandRemote extends ParserCommandBase
 
     private static final String[] parseMainArgs = { "regen", "setkey", "kick", "start", "stop", "block", "qr" };
 
-    /**
-     * @param args
-     * @throws CommandException 
-     */
     @Override
-    public void parse(CommandParserArgs args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (args.isTabCompletion && args.size() == 1)
         {
-            args.tabCompletion = ForgeEssentialsCommandBase.getListOfStringsMatchingLastWord(args.peek(), parseMainArgs);
+            args.tabCompletion = BaseCommand.getListOfStringsMatchingLastWord(args.peek(), parseMainArgs);
             return;
         }
         if (args.isEmpty())
@@ -160,7 +169,7 @@ public class CommandRemote extends ParserCommandBase
                 {
                     String connectString = ModuleRemote.getInstance().getConnectString(ident);
                     String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-                    NetworkUtils.netHandler.sendTo(new Packet7Remote(url), ident.getPlayerMP());
+                    NetworkUtils.sendTo(new Packet7Remote(url), ident.getPlayerMP());
                 }
                 return;
             }
@@ -182,19 +191,18 @@ public class CommandRemote extends ParserCommandBase
             passkey = passkey.replaceAll(".", "*");
         String connectString = ModuleRemote.getInstance().getConnectString(ident);
         String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
-        TextComponentTranslation msg = new TextComponentTranslation("Remote passkey = " + passkey + " ");
 
-        ITextComponent qrLink = new TextComponentString("[QR code]");
+        ITextComponent qrLink = new StringTextComponent("[QR code]");
         if (ident.hasUuid() && PlayerInfo.get(ident.getUuid()).getHasFEClient())
-            qrLink.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr"));
+            qrLink.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr"));
         else
-            qrLink.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
-        qrLink.getStyle().setColor(TextFormatting.RED);
+            qrLink.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        qrLink.getStyle().withColor(TextFormatting.RED);
         qrLink.getStyle().setUnderlined(true);
-        msg.appendSibling(qrLink);
+        ITextComponent msg = new StringTextComponent("Remote passkey = " + passkey + " ").append(qrLink);
 
         ChatOutputHandler.sendMessage(args.sender, msg);
-        ChatOutputHandler.sendMessage(args.sender, new TextComponentString("Port = " + ModuleRemote.getInstance().getPort()));
+        ChatOutputHandler.sendMessage(args.sender, new StringTextComponent("Port = " + ModuleRemote.getInstance().getPort()));
     }
 
     @Override
@@ -210,15 +218,8 @@ public class CommandRemote extends ParserCommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender sender)
-    {
-        return "/remoteqr: Prints a link remote access QR code";
-    }
-
-    @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.ALL;
     }
-
 }

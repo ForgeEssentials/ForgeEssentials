@@ -1,4 +1,4 @@
-@API(owner = "ForgeEssentials", provides = "ForgeEssentialsAPI|Remote", apiVersion = "2.0")
+// @API(owner = "ForgeEssentials", provides = "ForgeEssentialsAPI|Remote", apiVersion = "2.0")
 package com.forgeessentials.api.remote;
 
-import net.minecraftforge.fml.common.API;
+// import net.minecraftforge.fml.common.API;

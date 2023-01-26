@@ -37,7 +37,7 @@ import net.minecraft.util.math.BlockPos;
         @Index(columnList = "z", name = "z_idx"), //
 })
 @Inheritance(strategy = InheritanceType.JOINED)
-@AttributeOverride(name = "action", column = @Column(name = "action", nullable = false, length = 8, insertable = false, updatable = false) )
+@AttributeOverride(name = "action", column = @Column(name = "action", nullable = false, length = 8, insertable = false, updatable = false))
 @DiscriminatorColumn(name = "action", discriminatorType = DiscriminatorType.INTEGER)
 @DiscriminatorValue(value = "0")
 public abstract class Action

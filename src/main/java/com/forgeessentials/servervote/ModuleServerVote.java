@@ -7,31 +7,31 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketChat;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.play.server.SChatPacket;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.ChatType;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.servervote.Votifier.VoteReceiver;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 @FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false)
 public class ModuleServerVote
 {
-
+	
     @ModuleDir
     public static File moduleDir;
 
@@ -47,14 +47,14 @@ public class ModuleServerVote
     }
 
     @SubscribeEvent
-    public void init(FEModuleInitEvent e)
+    public void init(FEModuleCommonSetupEvent e)
     {
-        ForgeEssentials.getConfigManager().registerLoader("ServerVote", new ConfigServerVote());
+        ForgeEssentials.getConfigManager().registerSpecs("ServerVote", new ConfigServerVote());
         APIRegistry.scripts.addScriptType(scriptKey);
     }
 
     @SubscribeEvent
-    public void serverStarting(FEModuleServerInitEvent event)
+    public void serverStarting(FEModuleServerStartingEvent event)
     {
         try
         {
@@ -83,7 +83,7 @@ public class ModuleServerVote
     }
 
     @SubscribeEvent
-    public void serverStarted(FEModuleServerPostInitEvent event)
+    public void serverStarted(FEModuleServerStartedEvent event)
     {
         File file = new File(moduleDir, "offlineVoteList.txt");
         if (file.exists())
@@ -108,7 +108,7 @@ public class ModuleServerVote
     }
 
     @SubscribeEvent
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void serverStopping(FEModuleServerStoppingEvent e)
     {
         try
         {
@@ -153,7 +153,7 @@ public class ModuleServerVote
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void serverVoteEvent(VoteEvent vote)
     {
-        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(vote.player);
+        ServerPlayerEntity player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerByName(vote.player);
         if (player != null)
         {
             doPlayer(player, vote);
@@ -167,28 +167,30 @@ public class ModuleServerVote
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent e)
     {
-        if (offlineList.containsKey(e.player.getName()))
+        if (offlineList.containsKey(e.getPlayer().getName().getString()))
         {
-            doPlayer((EntityPlayerMP) e.player, offlineList.remove(e.player.getName()));
+            doPlayer((ServerPlayerEntity) e.getPlayer(), offlineList.remove(e.getPlayer().getName().getString()));
         }
     }
 
-    private static void doPlayer(EntityPlayerMP player, VoteEvent vote)
+    private static void doPlayer(ServerPlayerEntity player, VoteEvent vote)
     {
         log.println(String.format("Player %s voted on service %s on %s", vote.player, vote.serviceName, vote.timeStamp));
         if (!ConfigServerVote.msgAll.equals(""))
         {
-            FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendPacketToAllPlayers(new SPacketChat(new TextComponentString(
-                    ChatOutputHandler.formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)))));
+            ServerLifecycleHooks.getCurrentServer().getPlayerList()
+                    .broadcastAll(new SChatPacket(
+                            new StringTextComponent(ChatOutputHandler
+                                    .formatColors(ConfigServerVote.msgAll.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player))),
+                            ChatType.CHAT, player.getUUID()));
         }
 
         if (!ConfigServerVote.msgVoter.equals(""))
         {
-            ChatOutputHandler.sendMessage(player,
+            ChatOutputHandler.sendMessage(player.createCommandSourceStack(),
                     ChatOutputHandler.formatColors(ConfigServerVote.msgVoter.replaceAll("%service", vote.serviceName).replaceAll("%player", vote.player)));
         }
 
-        APIRegistry.scripts.runEventScripts(scriptKey, player);
+        APIRegistry.scripts.runEventScripts(scriptKey, player.createCommandSourceStack());
     }
-    
 }

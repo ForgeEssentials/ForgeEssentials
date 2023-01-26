@@ -6,7 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -106,7 +106,7 @@ public class Session implements Runnable, RemoteSession
             }
 
             // Check if user was banned
-            if (ident != null && FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getBannedPlayers().isBanned(ident.getGameProfile()))
+            if (ident != null && ServerLifecycleHooks.getCurrentServer().getPlayerList().getBans().isBanned(ident.getGameProfile()))
             {
                 close("banned", request);
                 return;
@@ -212,9 +212,7 @@ public class Session implements Runnable, RemoteSession
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * com.forgeessentials.api.remote.RemoteSession#transformRemoteRequest(com.forgeessentials.api.remote.RemoteRequest,
-     * java.lang.Class)
+     * @see com.forgeessentials.api.remote.RemoteSession#transformRemoteRequest(com.forgeessentials.api.remote.RemoteRequest, java.lang.Class)
      */
     @Override
     public <T> RemoteRequest<T> transformRemoteRequest(JsonRemoteRequest request, Class<T> clazz)
