@@ -249,11 +249,6 @@ public class CommandParserArgs
         return remove();
     }
 
-    public void checkPermission(String perm) throws CommandException
-    {
-        if (!isTabCompletion && sender != null && !hasPermission(perm))
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
-    }
 
     public void tabCompleteWord(String completion)
     {

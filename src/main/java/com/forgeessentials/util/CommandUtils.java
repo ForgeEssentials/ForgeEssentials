@@ -368,6 +368,10 @@ public class CommandUtils
 
         return result;
     }
+    public static UserIdent getIdent(ServerPlayerEntity senderPlayer) {
+        return getIdent(senderPlayer.createCommandSourceStack());
+    }
+
     public static UserIdent getIdent(CommandSource sender) {
         ServerPlayerEntity senderPlayer = getServerPlayer(sender);
         UserIdent ident = (senderPlayer == null) ? (CommandUtils.GetSource(sender) instanceof DoAsCommandSender ? ((DoAsCommandSender) CommandUtils.GetSource(sender)).getUserIdent() : null) : UserIdent.get(senderPlayer);

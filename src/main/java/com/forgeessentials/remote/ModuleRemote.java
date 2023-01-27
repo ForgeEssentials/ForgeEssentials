@@ -137,7 +137,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 
         Map<Type, String> classModIds = Maps.newHashMap();
 
-        // Gather all @FEModule classes
+        // Gather all @FERemoteHandler classes
         data.stream().filter(a -> MOD.equals(a.getAnnotationType())).forEach(info -> classModIds.put(info.getClassType(), (String)info.getAnnotationData().get("value")));
         LoggingHandler.felog.info("Found {} FERemoteHandler annotations", data.size());
         
