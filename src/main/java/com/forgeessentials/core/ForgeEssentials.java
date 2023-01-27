@@ -263,6 +263,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::decode);
         //NetworkUtils.registerServerToClient(2, Packet4Economy.class, Packet4Economy::decode); old times
         NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::decode);
+        // Packet6Auth is registered in the Auth Module
         NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::decode);
 
     }

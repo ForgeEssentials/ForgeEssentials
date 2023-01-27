@@ -13,5 +13,6 @@ public class NoClipHandler extends Packet5Noclip
 		Packet5Noclip packet5Noclip = new Packet5Noclip();
 		Minecraft instance = Minecraft.getInstance();
 		instance.player.noPhysics = packet5Noclip.noclip;
+		context.setPacketHandled(true);
 	}
 }

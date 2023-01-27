@@ -80,6 +80,7 @@ public class QRRenderer extends Packet7Remote
             instance.player.sendMessage(cmsg,instance.player.getUUID());
             e.printStackTrace();
         }
+    	context.setPacketHandled(true);
 	}
     
 }

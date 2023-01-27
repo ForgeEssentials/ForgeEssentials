@@ -39,6 +39,6 @@ public class PermissionHandler extends Packet3PlayerPermissions
                     }
             }
         }
-		
+		context.setPacketHandled(true);
 	}
 }

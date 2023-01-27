@@ -12,5 +12,6 @@ public class Packet0Handler extends Packet0Handshake
     public void handle(Context context)
     {
         PlayerInfo.get(context.getSender()).setHasFEClient(true);
+        context.setPacketHandled(true);
     }
 }

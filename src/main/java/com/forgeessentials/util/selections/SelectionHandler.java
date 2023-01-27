@@ -2,6 +2,7 @@ package com.forgeessentials.util.selections;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -89,7 +90,7 @@ public class SelectionHandler extends ServerEventHandler
         PlayerEntity player = event.getPlayer();
         PlayerInfo info = PlayerInfo.get(player);
 
-        if (!info.isWandEnabled() || event.getHand() == EnumHand.OFF_HAND) {
+        if (!info.isWandEnabled() || event.getHand() == Hand.OFF_HAND) {
             return;
         }
 
@@ -110,7 +111,7 @@ public class SelectionHandler extends ServerEventHandler
         WorldPoint point = new WorldPoint(player.level, event.getPos());
 
         SelectionHandler.setEnd((ServerPlayerEntity) event.getPlayer(), point);
-        SelectionHandler.setDimension((ServerPlayerEntity) event.getEntityPlayer(), point.getDimension());
+        SelectionHandler.setDimension((ServerPlayerEntity) event.getPlayer(), point.getDimension());
         String message = Translator.format("Pos2 set to %d, %d, %d", event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
         ChatOutputHandler.sendMessage(player.createCommandSourceStack(), message, TextFormatting.DARK_PURPLE);
         event.setCanceled(true);
@@ -123,7 +124,7 @@ public class SelectionHandler extends ServerEventHandler
         {
             try
             {
-                NetworkUtils.HANDLER.sendTo(new Packet1SelectionUpdate(selectionProvider.getSelection(player)), player);
+                NetworkUtils.sendTo(new Packet1SelectionUpdate(selectionProvider.getSelection(player)), player);
             }
             catch (NullPointerException e)
             {

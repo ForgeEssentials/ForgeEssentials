@@ -28,5 +28,6 @@ public class ClientAuthNetHandler extends Packet6AuthLogin
         default:
             break;
         }
+        context.setPacketHandled(true);
     }
 }

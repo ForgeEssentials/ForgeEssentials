@@ -33,6 +33,6 @@ public class AuthNetHandler extends Packet6AuthLogin
                 break;
 
             }
-        // return null;
+        context.setPacketHandled(true);
     }
 }
