@@ -39,39 +39,39 @@ public class ModulePlayerLogger
     @SuppressWarnings("unused")
     private PlayerLoggerEventHandler eventHandler;
 
-    @FEModule.Preconditions
-    public boolean checkLibraries()
-    {
-        String[] compulsoryLibs = { "antlr.Version", "org.dom4j.Text", "org.hibernate.annotations.common.Version", "org.hibernate.Version",
-                "org.hibernate.jpa.AvailableSettings", "javax.persistence.Version", "org.jboss.jandex.Main", "javassist.CtClass", "org.jboss.logging.Logger",
-                "org.jboss.logging.annotations.Message", "javax.transaction.Status" };
-        List<String> erroredLibs = new ArrayList<String>();
-        for (String clazz : compulsoryLibs)
-        {
-            try
-            {
-                Launch.classLoader.findClass(clazz);
-            }
-            catch (ClassNotFoundException cnfe)
-            {
-                erroredLibs.add(clazz);
-                cnfe.printStackTrace();
-            }
-        }
-        if (!erroredLibs.isEmpty())
-        {
-            LoggingHandler.felog.error("[ForgeEssentials] You are missing the following library files.");
-            for (Object error : erroredLibs.toArray())
-            {
-                System.err.println(error);
-            }
-
-            LoggingHandler.felog.error("[PlayerLogger] As the necessary files could not be loaded, PlayerLogger will be disabled.");
-            LoggingHandler.felog.error("[PlayerLogger] Please verify that the necessary files are present if you wish to use PlayerLogger.");
-            return false;
-        }
-        return true;
-    }
+//    @FEModule.Preconditions
+//    public boolean checkLibraries()
+//    {
+//        String[] compulsoryLibs = { "antlr.Version", "org.dom4j.Text", "org.hibernate.annotations.common.Version", "org.hibernate.Version",
+//                "org.hibernate.jpa.AvailableSettings", "javax.persistence.Version", "org.jboss.jandex.Main", "javassist.CtClass", "org.jboss.logging.Logger",
+//                "org.jboss.logging.annotations.Message", "javax.transaction.Status" };
+//        List<String> erroredLibs = new ArrayList<String>();
+//        for (String clazz : compulsoryLibs)
+//        {
+//            try
+//            {
+//                Launch.classLoader.findClass(clazz);
+//            }
+//            catch (ClassNotFoundException cnfe)
+//            {
+//                erroredLibs.add(clazz);
+//                cnfe.printStackTrace();
+//            }
+//        }
+//        if (!erroredLibs.isEmpty())
+//        {
+//            LoggingHandler.felog.error("[ForgeEssentials] You are missing the following library files.");
+//            for (Object error : erroredLibs.toArray())
+//            {
+//                System.err.println(error);
+//            }
+//
+//            LoggingHandler.felog.error("[PlayerLogger] As the necessary files could not be loaded, PlayerLogger will be disabled.");
+//            LoggingHandler.felog.error("[PlayerLogger] Please verify that the necessary files are present if you wish to use PlayerLogger.");
+//            return false;
+//        }
+//        return true;
+//    }
 
 
     @SubscribeEvent
