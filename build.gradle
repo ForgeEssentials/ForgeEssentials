@@ -236,7 +236,7 @@ task serverLibArchive(type: Zip) {
 
 jar.doLast {
 	delete (serverLibArchive.archivePath)
-//	delete (shadowJar.archivePath)
+	delete (shadowJar.archivePath)
 }
 
 def serverRefMap = "${tasks.compileJava.temporaryDir}" + File.separator + "mixins.forgeessentials.refmap.json"
