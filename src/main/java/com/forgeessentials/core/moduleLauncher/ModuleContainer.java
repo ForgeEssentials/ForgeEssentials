@@ -50,6 +50,7 @@ public class ModuleContainer implements Comparable
         Class c = null;
         className = data.getClassName();
 
+        LoggingHandler.felog.debug("Loading Module: " + className);
         try
         {
             c = Class.forName(className);
@@ -97,6 +98,7 @@ public class ModuleContainer implements Comparable
         {
             if (m.isAnnotationPresent(Preconditions.class))
             {
+                LoggingHandler.felog.debug("Checking Preconditions... " + m.getName());
                 params = m.getParameterTypes();
                 if (params.length != 0)
                 {
@@ -110,10 +112,12 @@ public class ModuleContainer implements Comparable
 
                 try
                 {
-                    if (!(boolean) m.invoke(c.newInstance()))
+                    Object inst = c.newInstance();
+                    if (!(boolean) m.invoke(inst))
                     {
                         LoggingHandler.felog.debug("Disabled module " + name);
                         isLoadable = false;
+                        APIRegistry.getFEEventBus().unregister(inst);
                         return;
                     }
                 }

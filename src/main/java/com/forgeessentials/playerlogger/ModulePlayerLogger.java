@@ -1,8 +1,11 @@
 package com.forgeessentials.playerlogger;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -36,8 +39,7 @@ public class ModulePlayerLogger
     @SuppressWarnings("unused")
     private PlayerLoggerEventHandler eventHandler;
 
-    /*
-    @Preconditions
+    @FEModule.Preconditions
     public boolean checkLibraries()
     {
         String[] compulsoryLibs = { "antlr.Version", "org.dom4j.Text", "org.hibernate.annotations.common.Version", "org.hibernate.Version",
@@ -70,7 +72,7 @@ public class ModulePlayerLogger
         }
         return true;
     }
-    */
+
 
     @SubscribeEvent
     public void load(FEModuleInitEvent e)

@@ -105,9 +105,6 @@ public class ScriptInstance
 
     private Invocable invocable;
 
-    @SuppressWarnings("unused")
-    private Bindings exports;
-
     private Set<String> illegalFunctions = new HashSet<>();
 
     private Map<Integer, TimerTask> tasks = new HashMap<>();
@@ -168,9 +165,6 @@ public class ScriptInstance
             invocable = (Invocable) script.getEngine();
             ScriptCompiler.initEngine(script.getEngine(), this);
             script.eval();
-
-            // Get exports
-            exports = (Bindings) script.getEngine().get("exports");
         }
         catch (IOException | ScriptException e)
         {

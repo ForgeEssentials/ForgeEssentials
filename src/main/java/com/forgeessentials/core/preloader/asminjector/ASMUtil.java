@@ -115,7 +115,7 @@ public final class ASMUtil
                 return loadClassNode(classBytes);
             }
 
-            URLClassLoader appClassLoader = (URLClassLoader) Launch.class.getClassLoader();
+            ClassLoader appClassLoader = Launch.class.getClassLoader();
             String resourcePath = untransformedName.replace('.', '/').concat(".class");
             try (InputStream is = appClassLoader.getResourceAsStream(resourcePath))
             {
