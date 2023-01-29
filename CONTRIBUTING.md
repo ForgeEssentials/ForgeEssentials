@@ -30,6 +30,10 @@ If you open ForgeEssentials in your IDE, you must turn on annotation processing,
  - Under `Annotation Processors`, add this fully qualified name: `org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor`
  - Run `Build > Rebuild Project`
  - Right click `.apt_generated` directory and select `Mark as > Source directory`
+ 
+### FALLBACK
+ - If none of the above options work for your IDEs, you can use do the following.
+   - Add `/misc/forgeessentials-1.7.10-annonations.jar` to your build path.
 
 # Notes
 1. Please consider squashing all commits before initially submitting pull requests

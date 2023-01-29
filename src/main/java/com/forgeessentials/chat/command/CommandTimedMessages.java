@@ -95,7 +95,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
         if (arguments.isEmpty())
         {
             arguments.confirm("/tm add <message>: Add a message");
-            arguments.confirm("/tm list: Delete a message");
+            arguments.confirm("/tm list: List all messages");
             arguments.confirm("/tm delete <id>: Delete a message");
             arguments.confirm("/tm send <id>: Send a message");
             arguments.confirm("/tm interval <sec>: Set message interval");
@@ -103,7 +103,7 @@ public class CommandTimedMessages extends ParserCommandBase implements ConfigSav
             return;
         }
 
-        arguments.tabComplete("add", "list", "delete", "interval", "random");
+        arguments.tabComplete("add", "list", "delete", "send", "interval", "shuffle");
         String sumCmd = arguments.remove().toLowerCase();
         switch (sumCmd)
         {
