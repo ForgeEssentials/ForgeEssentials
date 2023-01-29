@@ -130,7 +130,7 @@ dependencies {
     }
 	
 	// Database libraries	
-	serverLib group: 'com.h2database', 	name: 'h2', 					version: '1.3.175'
+	shadowLib group: 'com.h2database', 	name: 'h2', 					version: '1.3.175'
 	serverLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '8.0.21'
 	shadowLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
 	buildDep  group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.2.2.Final'
@@ -186,6 +186,13 @@ sourceSets {
 
 // Configure server resource processing
 project.processResources {
+	from (sourceSets.main.resources.srcDirs) {
+		include "META-INF/persistence.xml"
+		filter {
+			line ->
+				line.replaceAll('org.hibernate','com.forgeessentials.thirdparty.org.hibernate').replaceAll('org.h2', 'com.forgeessentials.thirdparty.org.h2')
+		}
+	}
 	from (sourceSets.main.resources.srcDirs) {
 		include "mcmod.info"
 		expand (
@@ -243,14 +250,27 @@ def serverRefMap = "${tasks.compileJava.temporaryDir}" + File.separator + "mixin
 def clientRefMap = "${tasks.compileClientJava.temporaryDir}" + File.separator + "mixins.forgeessentials.client.refmap.json"
 
 shadowJar {
-	relocate  'org','com.forgeessentials.thirdparty.org'
-	relocate  'javax','com.forgeessentials.thirdparty.javax'
+	relocate  'org.jboss','com.forgeessentials.thirdparty.org.jboss'
+	relocate  'org.hibernate','com.forgeessentials.thirdparty.org.hibernate'
+	relocate  'org.h2','com.forgeessentials.thirdparty.org.h2'
+	relocate  'org.dom4j','com.forgeessentials.thirdparty.org.dom4j'
+	relocate  'javax.persistence','com.forgeessentials.thirdparty.javax.persistence'
+	relocate  'javax.transaction','com.forgeessentials.thirdparty.javax.transaction'
+	relocate  'javax.interceptor','com.forgeessentials.thirdparty.javax.interceptor'
+	relocate  'javax.inject','com.forgeessentials.thirdparty.javax.inject'
+	relocate  'javax.enterprise','com.forgeessentials.thirdparty.javax.enterprise'
+	relocate  'javax.el','com.forgeessentials.thirdparty.javax.el'
+	relocate  'javax.decorator','com.forgeessentials.thirdparty.javax.decorator'
+	relocate  'javax.annotation','com.forgeessentials.thirdparty.javax.annotation'
 	relocate  'javassist','com.forgeessentials.thirdparty.javassist'
 	relocate  'antlr','com.forgeessentials.thirdparty.antlr'
 	relocate  'com.fasterxml','com.forgeessentials.thirdparty.com.fasterxml'
 	configurations = [project.configurations.shadowLib]
 	classifier = "shadow"
-	minimize()
+
+	from sourceSets.main.output
+	from sourceSets.utils.output
+	exclude('com/forgeessentials/client/**')
 }
 // Configure server jar (default)
 jar {
@@ -272,8 +292,19 @@ jar {
 		}
 	}
 	from (zipTree(shadowJar.archivePath)) {
-		include 'com/forgeessentials/thirdparty/**'
+		exclude 'META-INF','META-INF/**'
 	}
+
+	from (zipTree(shadowJar.archivePath)) {
+		include 'META-INF/services/*'
+		filter {
+			line -> line.replaceAll('org.hibernate','com.forgeessentials.thirdparty.org.hibernate')
+		}
+		rename {
+			name -> "com.forgeessentials.thirdparty.$name"
+		}
+	}
+
     from serverRefMap
 
 	manifest {
