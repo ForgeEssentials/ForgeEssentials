@@ -51,7 +51,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     public static final String PERM = "fe.jscript";
 
-    private static final ScriptEngineManager SEM = new ScriptEngineManager(null);
+    private static final ScriptEngineManager SEM = new ScriptEngineManager();
 
     @FEModule.Instance
     protected static ModuleJScripting instance;
@@ -80,9 +80,25 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     {
         System.setProperty("nashorn.args", "-strict --no-java --no-syntax-extensions");
         ScriptEngine engine = SEM.getEngineByName("JavaScript");
+
+        if (engine == null) {
+            engine = SEM.getEngineByName("nashorn");
+        }
+
+        if (engine == null) {
+            engine = SEM.getEngineByName("rhino");
+        }
+
+        if (engine == null)
+        {
+            return false;
+        }
+
+        LoggingHandler.felog.info("Loaded Engine: " + engine.getFactory().getEngineName());
         isNashorn = engine.getFactory().getEngineName().toLowerCase().contains("nashorn");
         isRhino = engine.getFactory().getEngineName().toLowerCase().contains("rhino");
-        return engine != null;
+
+        return isNashorn || isRhino;
     }
 
     @SubscribeEvent
@@ -120,6 +136,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void serverStarting(FEModuleServerInitEvent event)
     {
+        LoggingHandler.felog.error(this);
         JsLocalStorage.load();
         loadScripts(MinecraftServer.getServer());
     }

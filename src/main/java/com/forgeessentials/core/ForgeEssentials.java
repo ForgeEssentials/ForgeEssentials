@@ -152,6 +152,19 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SuppressWarnings("unused")
     private SelectionHandler selectionHandler;
 
+    public static int javaVersion;
+
+    static {
+        String version = System.getProperty("java.version");
+        if(version.startsWith("1.")) {
+            version = version.substring(2, 3);
+        } else {
+            int dot = version.indexOf(".");
+            if(dot != -1) { version = version.substring(0, dot); }
+        }
+        javaVersion = Integer.parseInt(version);
+    }
+
     /* ------------------------------------------------------------ */
 
     public ForgeEssentials()

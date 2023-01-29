@@ -15,6 +15,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
+import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.event.JsEvent;
 import com.google.common.base.Throwables;
@@ -46,7 +47,8 @@ public final class ScriptCompiler
     {
         try
         {
-            Class<?> cl = Class.forName("jdk.internal.dynalink.beans.StaticClass", true, ClassLoader.getSystemClassLoader());
+            String className = ForgeEssentials.javaVersion < 9 ? "jdk.internal.dynalink.beans.StaticClass" : "jdk.dynalink.beans.StaticClass";
+            Class<?> cl = Class.forName(className, true, ClassLoader.getSystemClassLoader());
             Constructor<?> constructor = cl.getDeclaredConstructor(Class.class);
             constructor.setAccessible(true);
             return constructor.newInstance(c);
