@@ -38,9 +38,9 @@ public class MixinNetHandlerPlayServer
             target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V",
             shift = At.Shift.BEFORE
         ),
-        require = 1,
         cancellable = true
     )
+    //This event is not needed on CraftBukkit since there already exists a sign changed event!
     private void postSignEditEvent(C12PacketUpdateSign packet, CallbackInfo ci)
     {
         SignEditEvent event = new SignEditEvent(packet.func_149588_c(), packet.func_149586_d(), packet.func_149585_e(), packet.func_149589_f(), this.playerEntity);
@@ -70,9 +70,9 @@ public class MixinNetHandlerPlayServer
         at = @At(
             value = "INVOKE",
             target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V"
-        ),
-        require = 1
+        )
     )
+    //This event is not needed on CraftBukkit since there already exists a sign changed event!
     private void copyLinesToBlockEntity(Object src, int srcPos, Object dest, int destPos, int length)
     {
         // You may get a warning that `dest` is not Object[] - don't change this, or Mixin will yell at you.

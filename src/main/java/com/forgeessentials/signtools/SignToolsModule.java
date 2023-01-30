@@ -71,6 +71,8 @@ public class SignToolsModule extends ConfigLoaderBase
 
     }
 
+    //TODO: Add a wrapper for SignChangeEvent (see https://github.com/CrucibleMC/Crucible/blob/master/patches/net/minecraft/network/NetHandlerPlayServer.java.patch#L1834)
+
     /**
      * how to use: First line of the sign MUST BE [command] Second line is the command you want to run Third and fourth
      * lines are arguments to the command.
