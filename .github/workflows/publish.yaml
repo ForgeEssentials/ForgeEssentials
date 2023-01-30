@@ -11,6 +11,7 @@ on:
 env:
   BUILD_NUMBER: 'UNOFFICIAL-${{ github.event.workflow_run.head_sha }}'
   WORKFLOW_GITHUB_REF: ${{ github.event.workflow_run.head_repository.name }}/${{ github.event.workflow_run.head_branch }}
+  HEAD_URL: ${{ github.event.workflow_run.html_url }}
 jobs:
   publish:
 
@@ -56,5 +57,7 @@ jobs:
           DISCORD_TOKEN: '${{ secrets.DISCORD_TOKEN }}'
           CHANNEL_ID: '${{ secrets.CHANNEL_ID }}'
         run: |
+          echo $HEAD_URL
+          echo ${{ github.event.workflow_run.head_repository }}
           chmod +x gradlew
           ./gradlew publishToDiscord -i
