@@ -1,8 +1,9 @@
 package com.forgeessentials.core.preloader.mixin.network;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.NetHandlerPlayServer;
-import net.minecraft.network.play.client.CPacketUpdateSign;
+import net.minecraft.network.play.ServerPlayNetHandler;
+import net.minecraft.network.play.client.CUpdateSignPacket;
 import net.minecraft.tileentity.SignTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -18,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(NetHandlerPlayServer.class)
+@Mixin(ServerPlayNetHandler.class)
 public class MixinNetHandlerPlayServer
 {
 
@@ -31,7 +32,7 @@ public class MixinNetHandlerPlayServer
      * @param packetIn
      *            the update sign packet
      */
-    @Inject(
+    @Inject(//TODO overwrite updateSignText from ServerPlayNetHandler void net.minecraft.network.play.ServerPlayNetHandler.updateSignText()
             method = "processUpdateSign",
             at = @At(
                     value = "INVOKE",
@@ -39,23 +40,23 @@ public class MixinNetHandlerPlayServer
             require = 1,
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
-    private void getLines(CPacketUpdateSign packetIn, CallbackInfo ci, ServerWorld worldserver, BlockPos blockpos, IBlockState iblockstate,
-            TileEntity tileentity, SignTileEntity tileentitysign)
+    private void getLines(CUpdateSignPacket p_244542_1_, CallbackInfo ci, ServerWorld serverworld, BlockPos blockpos, BlockState blockstate,
+            TileEntity tileentity, SignTileEntity signtileentity)
     {
-        SignEditEvent event = new SignEditEvent(packetIn.getPosition(), packetIn.getLines(), this.player);
+        SignEditEvent event = new SignEditEvent(p_244542_1_.getPos(), p_244542_1_.getLines(), this.player);
         if (!MinecraftForge.EVENT_BUS.post(event))
         {
             for (int i = 0; i < event.text.length; ++i)
             {
                 if (event.formatted[i] == null)
-                    tileentitysign.signText[i] = new StringTextComponent(event.text[i]);
+                    signtileentity.setMessage(i, new StringTextComponent(event.text[i]));
                 else
-                    tileentitysign.signText[i] = event.formatted[i];
+                    signtileentity.setMessage(i,  event.formatted[i]);
             }
         }
 
-        tileentitysign.markDirty();
-        worldserver.notifyBlockUpdate(blockpos, iblockstate, iblockstate, 3);
+        signtileentity.setChanged();
+        serverworld.sendBlockUpdated(blockpos, blockstate, blockstate, 3);
         ci.cancel();
     }
 
