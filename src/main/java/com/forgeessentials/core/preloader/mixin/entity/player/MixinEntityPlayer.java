@@ -30,7 +30,7 @@ public abstract class MixinEntityPlayer extends Entity
     public abstract boolean isSpectator();
 
     @Overwrite
-    public boolean canUseCommandBlock()
+    public boolean canUseGameMasterBlocks()
     {
         return this.capabilities.isCreative() && PermissionAPI.hasPermission((PlayerEntity) (Object) this, "mc.commandblock");
     }

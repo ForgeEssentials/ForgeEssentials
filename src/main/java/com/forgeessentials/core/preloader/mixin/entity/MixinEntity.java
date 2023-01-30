@@ -12,7 +12,7 @@ public abstract class MixinEntity
 {
 
     @Overwrite
-    public boolean doesEntityNotTriggerPressurePlate()
+    public boolean isIgnoringBlockTriggers()
     {
         return MinecraftForge.EVENT_BUS.post(new PressurePlateEvent((Entity) (Object) this));
     }
