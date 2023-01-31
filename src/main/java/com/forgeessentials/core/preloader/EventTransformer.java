@@ -22,7 +22,6 @@ public class EventTransformer implements IClassTransformer
 
     public EventTransformer()
     {
-        injectors.add(ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinEntity", isObfuscated));
         injectors.add(ClassInjector.create("com.forgeessentials.core.preloader.injections.MixinBlock", isObfuscated));
     }
 
