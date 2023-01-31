@@ -36,6 +36,7 @@ import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.SpecialSpawn;
@@ -50,7 +51,6 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
-import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
 import net.minecraftforge.fe.event.entity.FallOnBlockEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.fe.event.world.PressurePlateEvent;
@@ -131,7 +131,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void entityAttackedEvent(EntityAttackedEvent event)
+    public void entityAttackedEvent(LivingAttackEvent event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient() || event.source.getEntity() == null)
             return;

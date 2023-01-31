@@ -23,12 +23,12 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
 import net.minecraftforge.permission.PermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -157,7 +157,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void entityAttackedEvent(EntityAttackedEvent event)
+    public void entityAttackedEvent(LivingAttackEvent event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient() || !(event.entity instanceof EntityItemFrame))
             return;
