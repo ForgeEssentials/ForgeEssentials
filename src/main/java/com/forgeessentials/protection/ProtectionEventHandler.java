@@ -57,7 +57,6 @@ import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.BlockEvent.FarmlandTrampleEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
-import net.minecraftforge.fe.event.entity.FallOnBlockEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.fe.event.world.PressurePlateEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
@@ -335,18 +334,18 @@ public class ProtectionEventHandler extends ServerEventHandler
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void fallOnBlockEvent(FallOnBlockEvent event)
+    public void fallOnBlockEvent(BlockEvent.FarmlandTrampleEvent event)
     {
         if (!ServerLifecycleHooks.getCurrentServer().isDedicatedServer())
             return;
-        if (event.fallHeight < 0.5) // Permission checks only for at least 1-block high fall events
+        if (event.getFallDistance() < 0.5) // Permission checks only for at least 1-block high fall events
             return;
 
         ServerPlayerEntity player = (event.getEntity() instanceof ServerPlayerEntity) ? (ServerPlayerEntity) event.getEntity() : null;
         UserIdent ident = player == null ? null : UserIdent.get(player);
-        WorldPoint point = new WorldPoint(event.world, event.pos);
+        WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
 
-        String permission = ModuleProtection.getBlockTramplePermission(event.world.getBlockState(event.pos));
+        String permission = ModuleProtection.getBlockTramplePermission(event.getWorld().getBlockState(event.getPos()));
         ModuleProtection.debugPermission(player, permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
