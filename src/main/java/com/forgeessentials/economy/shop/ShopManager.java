@@ -21,13 +21,13 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -154,7 +154,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void entityAttackedEvent(EntityAttackedEvent event)
+    public void entityAttackedEvent(LivingDamageEvent event)
     {
         if (FMLCommonHandler.instance().getEffectiveSide().isClient() || !(event.getEntity() instanceof EntityItemFrame))
             return;
