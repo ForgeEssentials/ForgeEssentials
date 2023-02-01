@@ -15,6 +15,7 @@ import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -68,7 +69,7 @@ public class CommandItemPermission extends BaseCommand
             if (stack == ItemStack.EMPTY)
                 throw new TranslatedCommandException("No item equipped!");
             arguments.notify(ModuleProtection.getItemPermission(stack));
-            return;
+            return Command.SINGLE_SUCCESS;
         }
 
         List<String> types = Arrays.asList("break", "place", "inventory", "exist");
@@ -117,8 +118,6 @@ public class CommandItemPermission extends BaseCommand
             permEnd = '.' + ModuleProtection.getItemPermission(stack, true);
         }
 
-        if (arguments.isTabCompletion)
-            return;
 
         if (value == null)
             APIRegistry.perms.getServerZone().clearGroupPermission(Zone.GROUP_DEFAULT, permStart + type + permEnd);

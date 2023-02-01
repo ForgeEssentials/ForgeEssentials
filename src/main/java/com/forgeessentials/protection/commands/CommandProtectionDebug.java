@@ -10,6 +10,7 @@ import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -57,14 +58,14 @@ public class CommandProtectionDebug extends BaseCommand
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
 
-        ServerPlayerEntity player = arguments.senderPlayer;
+        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
         if (player == null)
             throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
 
-        if (ModuleProtection.isDebugMode(player) && arguments.isEmpty())
+        if (ModuleProtection.isDebugMode(player))
         {
             ModuleProtection.setDebugMode(player, null);
-            arguments.confirm("Disabled protection debug-mode");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"Disabled protection debug-mode");
         }
         else
         {
@@ -75,8 +76,8 @@ public class CommandProtectionDebug extends BaseCommand
 
             ModuleProtection.setDebugMode(player, cmd);
             if (!ModuleProtection.isDebugMode(player))
-                arguments.confirm("Enabled protection debug-mode");
-            arguments.notify("Command: " + cmd + "<perm>");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Enabled protection debug-mode");
+            ChatOutputHandler.chatNotification(ctx.getSource(),"Command: " + cmd + "<perm>");
         }
     }
 }

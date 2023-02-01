@@ -132,7 +132,7 @@ public class ModuleAfterlife extends ServerEventHandler
     {
         if (event.phase == Phase.END)
             return;
-        if (ServerLifecycleHooks.getCurrentServer().getEntityWorld().getWorldInfo().getWorldTotalTime() % 20 == 0)
+        if (ServerLifecycleHooks.getCurrentServer().getWorldData().overworldData().getGameTime() % 20 == 0)
         {
             for (Grave grave : new ArrayList<Grave>(Grave.graves.values()))
                 grave.updateBlocks();

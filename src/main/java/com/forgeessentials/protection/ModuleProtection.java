@@ -9,6 +9,7 @@ import java.util.UUID;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
@@ -92,6 +93,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.RegistryKey;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -287,7 +289,7 @@ public class ModuleProtection
         APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + Zone.ALL_PERMS, DefaultPermissionLevel.ALL,
                 "(global) Allow forced spawning of mobs (mob-spawners)");
 
-        for (Entry<ResourceLocation, Entity> e : ForgeRegistries.ENTITIES.getEntries())
+        for (Entry<RegistryKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITIES.getEntries())
             if (LivingEntity.class.isAssignableFrom(e.getValue().getClass()))
             {
                 APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey(), DefaultPermissionLevel.ALL, "");
@@ -410,20 +412,17 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    public static String getBlockPermission(Block block, int meta)
+    public static String getBlockPermission(Block block)
     {
-        if (meta == 0 || meta == 32767)
-            return ServerUtil.getBlockPermission(block);
-        else
-            return ServerUtil.getBlockPermission(block) + "." + meta;
+        return ServerUtil.getBlockPermission(block);
     }
 
     public static String getBlockPermission(BlockState blockState)
     {
-        return getBlockPermission(blockState.getBlock(), blockState.getBlock().getMetaFromState(blockState));
+        return getBlockPermission(blockState);
     }
 
-    public static String getBlockBreakPermission(BlockState blockState)
+    public static String getBlockBkPermission(BlockState blockState)
     {
         return ModuleProtection.PERM_BREAK + "." + getBlockPermission(blockState);
     }
@@ -448,29 +447,29 @@ public class ModuleProtection
         return ModuleProtection.PERM_EXPLODE + "." + getBlockPermission(blockState);
     }
 
-    public static String getBlockBreakPermission(Block block, int meta)
+    public static String getBlockBreakPermission(Block block)
     {
-        return PERM_BREAK + "." + getBlockPermission(block, meta);
+        return PERM_BREAK + "." + getBlockPermission(block);
     }
 
-    public static String getBlockTramplePermission(Block block, int meta)
+    public static String getBlockTramplePermission(Block block)
     {
-        return PERM_TRAMPLE + "." + getBlockPermission(block, meta);
+        return PERM_TRAMPLE + "." + getBlockPermission(block);
     }
 
-    public static String getBlockPlacePermission(Block block, int meta)
+    public static String getBlockPlacePermission(Block block)
     {
-        return PERM_PLACE + "." + getBlockPermission(block, meta);
+        return PERM_PLACE + "." + getBlockPermission(block);
     }
 
-    public static String getBlockInteractPermission(Block block, int meta)
+    public static String getBlockInteractPermission(Block block)
     {
-        return PERM_INTERACT + "." + getBlockPermission(block, meta);
+        return PERM_INTERACT + "." + getBlockPermission(block);
     }
 
-    public static String getBlockExplosionPermission(Block block, int meta)
+    public static String getBlockExplosionPermission(Block block)
     {
-        return PERM_EXPLODE + "." + getBlockPermission(block, meta);
+        return PERM_EXPLODE + "." + getBlockPermission(block);
     }
 
     /* ------------------------------------------------------------ */
