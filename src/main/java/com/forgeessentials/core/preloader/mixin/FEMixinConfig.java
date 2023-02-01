@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraftforge.common.ForgeVersion;
 
 import org.spongepowered.asm.lib.tree.ClassNode;
@@ -33,7 +34,19 @@ public class FEMixinConfig implements IMixinConfigPlugin
     @Override
     public List<String> getMixins()
     {
-        return null;
+        List<String> mixins = new ArrayList<>();
+        for(Mixins mixin : Mixins.values())
+        {
+            //Specifically check if the server is a hybrid. Most of them have kimagine in their mod list.
+            if(FMLCommonHandler.instance().getModName().contains("kimagine"))
+                //Add the mixin that is specific for when the server is Cauldron and/or it's forks.
+                mixins.add(Mixins.MixinNetHandlerPlayServerCauldron.getMixinRelativePath());
+            //If the mixin's class name is the normal one and the hybrid specialized mixin is already loaded, skip this one.
+            if(mixin.getMixinClassName().equals(Mixins.MixinNetHandlerPlayServer.getMixinClassName()) && mixins.contains(Mixins.MixinNetHandlerPlayServerCauldron.getMixinClassName()))
+                continue;
+            mixins.add(mixin.getMixinRelativePath());
+        }
+        return mixins;
     }
 
     @Override
