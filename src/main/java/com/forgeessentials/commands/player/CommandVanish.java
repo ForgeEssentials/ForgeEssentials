@@ -5,16 +5,27 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandVanish extends BaseCommand
 {
@@ -61,31 +72,32 @@ public class CommandVanish extends BaseCommand
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        UserIdent player;
-        if (arguments.isEmpty())
-        {
-            if (arguments.ident == null)
-            {
-                return;
-            }
-            player = arguments.ident;
-        }
-        else
-        {
-            if (!arguments.hasPermission(PERM_OTHERS))
-                throw new TranslatedCommandException("You don't have permission to vanish other players");
-            player = arguments.parsePlayer(true, true);
-        }
-        if (arguments.isTabCompletion)
-            return;
+        return builder
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(CommandContext -> execute(CommandContext, "setPass")
+                                )
+                        );
+    }
 
-        vanishToggle(player);
-        if (isVanished(player))
-            arguments.confirm("You are vanished now");
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        if (EntityArgument.getPlayer(ctx, "player")!=getServerPlayer(ctx.getSource()))
+        {
+            if (!hasPermission(ctx.getSource(),PERM_OTHERS))
+                throw new TranslatedCommandException("You don't have permission to vanish other players");
+            player = EntityArgument.getPlayer(ctx, "player");
+        }
+
+        vanishToggle(UserIdent.get(player));
+        if (isVanished(UserIdent.get(player)))
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"You are vanished now");
         else
-            arguments.confirm("You are visible now");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(),"You are visible now");
+        return Command.SINGLE_SUCCESS;
     }
 
     public static void vanishToggle(UserIdent ident)
@@ -120,5 +132,4 @@ public class CommandVanish extends BaseCommand
             world.getEntityTracker().track(player);
         }
     }
-
 }

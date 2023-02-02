@@ -1,6 +1,7 @@
 package com.forgeessentials.commands.item;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -9,13 +10,22 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.electronwill.nightconfig.core.io.CharsWrapper.Builder;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.VirtualChest;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  * Opens a configurable virtual chest
  */
 public class CommandVirtualchest extends BaseCommand implements ConfigurableCommand
 {
+    public CommandVirtualchest(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     public static int size = 54;
     static ForgeConfigSpec.IntValue FEsize;
     
@@ -53,9 +63,17 @@ public class CommandVirtualchest extends BaseCommand implements ConfigurableComm
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        ServerPlayerEntity player = sender;
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
         if (player.containerMenu != player.inventoryMenu)
         {
             player.doCloseContainer();
@@ -88,5 +106,4 @@ public class CommandVirtualchest extends BaseCommand implements ConfigurableComm
 		name = FEname.get();
 		
 	}
-
 }

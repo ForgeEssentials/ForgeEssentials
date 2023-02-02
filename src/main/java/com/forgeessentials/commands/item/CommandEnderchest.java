@@ -2,6 +2,9 @@ package com.forgeessentials.commands.item;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ChestContainer;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
@@ -43,8 +46,8 @@ public class CommandEnderchest extends BaseCommand
         }
         player.nextContainerCounter();
 
-        //chest.setChestTileEntity(null);
-        player.getEnderChestInventory().startOpen(player);
+        //player.getEnderChestInventory().startOpen(player);
+        player.openMenu(new SimpleNamedContainerProvider((i, inv, p) -> ChestContainer.threeRows(i, inv, player.getEnderChestInventory()), new TranslationTextComponent("container.enderchest")));
         return Command.SINGLE_SUCCESS;
     }
 

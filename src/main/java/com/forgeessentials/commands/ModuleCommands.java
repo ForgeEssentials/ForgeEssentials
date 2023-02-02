@@ -103,7 +103,7 @@ public class ModuleCommands
         APIRegistry.getFEEventBus().register(kit);
         
         FECommandManager.registerCommand(new CommandEnderchest("enderchest", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandVirtualchest());
+        FECommandManager.registerCommand(new CommandVirtualchest("virtualchest", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandCapabilities());
         //Craft
         CommandCraft craft = new CommandCraft("craft", 4, true);//TODO fix perms
@@ -117,7 +117,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandPotion());
         FECommandManager.registerCommand(new CommandRepair("repair", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandHeal("heal", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandKill());
+        FECommandManager.registerCommand(new CommandKill("kill", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandGameMode("gamemode", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandDoAs("doas", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandServerSettings("serversettings", 4, true));//TODO fix perms
@@ -129,8 +129,7 @@ public class ModuleCommands
         APIRegistry.getFEEventBus().register(bind);
 
         FECommandManager.registerCommand(new CommandRename("rename", 4, true));//TODO fix perms
-        // FECommandManager.registerCommand(new CommandVanish());
-        FECommandManager.registerCommand(new CommandPush());
+        FECommandManager.registerCommand(new CommandPush("push", 0, true));
         FECommandManager.registerCommand(new CommandDrop("drop", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandFindblock("findblock", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandNoClip("noclip", 4, true));//TODO fix perms
