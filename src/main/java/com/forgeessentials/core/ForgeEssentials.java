@@ -170,10 +170,6 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public ForgeEssentials()
     {
-        //Custom Command Arguments
-        ArgumentTypes.register("FeGroup", FeGroupArgument.class, new ArgumentSerializer<>(FeGroupArgument::group));
-        ArgumentTypes.register("FeIrcPlayer", FeIrcPlayerArgument.class, new ArgumentSerializer<>(FeIrcPlayerArgument::player));
-        ArgumentTypes.register("FeKit", FeKitArgument.class, new ArgumentSerializer<>(FeKitArgument::kit));
         //Set mod as server only
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         // new TestClass().test();
@@ -214,6 +210,10 @@ public class ForgeEssentials extends ConfigLoaderBase
         // Load submodules
         moduleLauncher = new ModuleLauncher();
         moduleLauncher.preLoad(event);
+      //Custom Command Arguments
+        ArgumentTypes.register("FeGroup", FeGroupArgument.class, new ArgumentSerializer<>(FeGroupArgument::group));
+        ArgumentTypes.register("FeIrcPlayer", FeIrcPlayerArgument.class, new ArgumentSerializer<>(FeIrcPlayerArgument::player));
+        ArgumentTypes.register("FeKit", FeKitArgument.class, new ArgumentSerializer<>(FeKitArgument::kit));
     }
 
     @SubscribeEvent
