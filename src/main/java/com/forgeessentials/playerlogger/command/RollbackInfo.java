@@ -108,7 +108,7 @@ public class RollbackInfo
             if (change.type == ActionBlockType.PLACE)
             {
                 ServerWorld world = DimensionManager.getWorld(change.world.id);
-                world.setBlockToAir(change.getBlockPos());
+                world.setBlock(change.getBlockPos(), Blocks.AIR.defaultBlockState(), 11);
                 System.out.println(change.time + " REMOVED " + change.block.name);
             }
             else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
