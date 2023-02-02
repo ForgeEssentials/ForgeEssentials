@@ -1,18 +1,29 @@
 package com.forgeessentials.commands.player;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.inventory.container.ChestContainer;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.commands.util.PlayerInvChest;
+import com.forgeessentials.commands.util.SeenPlayerInventory;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  * Opens other player inventory.
@@ -20,8 +31,10 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 public class CommandInventorySee extends BaseCommand
 {
 
-    public CommandInventorySee()
+
+    public CommandInventorySee(String name, int permissionLevel, boolean enabled)
     {
+        super(name, permissionLevel, enabled);
     }
 
     @Override
@@ -49,41 +62,50 @@ public class CommandInventorySee extends BaseCommand
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args[0] == null)
-            throw new TranslatedCommandException("You need to specify a player!");
-
-        if (!FMLEnvironment.dist.isDedicatedServer())
-        {
-            return;
-        }
-        ServerPlayerEntity player = sender;
-        ServerPlayerEntity victim = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-        if (victim == null)
-            throw new TranslatedCommandException("Player %s not found.", args[0]);
-
-        if (player.containerMenu != player.inventoryMenu)
-        {
-            player.closeContainer();;
-        }
-        player.nextContainerCounter();;
-
-        PlayerInvChest chest = new PlayerInvChest(victim, sender);
-        player.displayGUIChest(chest);
+        return builder
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(CommandContext -> execute(CommandContext)
+                                )
+                        );
+    
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length == 1)
-        {
-            return matchToPlayers(args);
-        }
-        else
-        {
-            return null;
-        }
-    }
+        ServerPlayerEntity source = getServerPlayer(ctx.getSource());
 
+        if (!FMLEnvironment.dist.isDedicatedServer())
+        {
+            return Command.SINGLE_SUCCESS;
+        }
+        ServerPlayerEntity victim = EntityArgument.getPlayer(ctx, "player");
+        if (victim == null)
+            throw new TranslatedCommandException("Player %s not found.", victim.getDisplayName());
+
+        if (source.containerMenu != source.inventoryMenu)
+        {
+            source.closeContainer();
+        }
+        source.nextContainerCounter();
+        
+        source.openMenu(new INamedContainerProvider() {
+
+            @Override
+            public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity victim)
+            {
+                return new ChestContainer(ContainerType.GENERIC_9x5, id, playerInventory, new SeenPlayerInventory(victim), 5);
+            }
+
+            @Override
+            public ITextComponent getDisplayName()
+            {
+                return new StringTextComponent(victim.getName() + "'s inventory");
+            }
+            });
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Does the other player deserve this?");
+        return Command.SINGLE_SUCCESS;
+    }
 }

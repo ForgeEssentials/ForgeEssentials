@@ -111,7 +111,7 @@ public class ModuleCommands
         APIRegistry.getFEEventBus().register(craft);
 
         FECommandManager.registerCommand(new CommandPing("ping", 0, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandInventorySee());
+        FECommandManager.registerCommand(new CommandInventorySee("invsee", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandSmite());
         FECommandManager.registerCommand(new CommandBurn("burn", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandPotion());
