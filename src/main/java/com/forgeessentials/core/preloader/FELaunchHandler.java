@@ -23,10 +23,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.launch.MixinBootstrap;
-import org.spongepowered.asm.launch.platform.container.ContainerHandleURI;
 import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.asm.mixin.MixinEnvironment.CompatibilityLevel;
 import org.spongepowered.asm.mixin.MixinEnvironment.Phase;
 
 public class FELaunchHandler implements ITweaker
@@ -76,25 +73,6 @@ public class FELaunchHandler implements ITweaker
     @SuppressWarnings({ "unchecked", "deprecation" })
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile)
     {
-        // initialize mixin, if someone hasn't already done it for us
-        ArrayList<String> tweaks = (ArrayList<String>) Launch.blackboard.get("TweakClasses");
-        if (!tweaks.contains("org.spongepowered.asm.launch.MixinTweaker"))
-        {
-            tweaks.add("org.spongepowered.asm.launch.MixinTweaker");
-        }
-
-        MixinBootstrap.init();
-        MixinEnvironment.setCompatibilityLevel(CompatibilityLevel.JAVA_8);
-
-        try
-        {
-            URI uri = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-            MixinBootstrap.getPlatform().addContainer(new ContainerHandleURI(uri));
-        }
-        catch (URISyntaxException e)
-        {
-            launchLog.error(e);
-        }
 
         // Fix CoFH compatibility. Fixes #1903
         MixinEnvironment.getEnvironment(Phase.PREINIT).addTransformerExclusion("cofh.asm.CoFHAccessTransformer");

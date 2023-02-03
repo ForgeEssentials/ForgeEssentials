@@ -1,8 +1,10 @@
 {
-	"package": "com.forgeessentials.core.preloader.mixin",
-	"plugin": "com.forgeessentials.core.preloader.mixin.FEMixinConfig",
-    "refmap": "mixins.forgeessentials.refmap.json",
-	"mixins": [
+  "required": true,
+  "package": "com.forgeessentials.core.preloader.mixin",
+  "plugin": "com.forgeessentials.core.preloader.mixin.FEMixinConfig",
+  "refmap": "mixins.forgeessentials.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "server": [
         "block.MixinBlockPortal",
         "block.MixinBlockFire",
         "block.MixinBlockEndPortal",
@@ -16,6 +18,9 @@
         "network.MixinSimpleChannelHandlerWrapper",
         "MixinDimensionManager"
         //"tileentity.MixinMobSpawnerBaseLogic"
-	],
-    "minVersion": "0.8"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8"
 }

@@ -27,20 +27,19 @@ buildscript {
 		classpath "net.minecraftforge.gradle:ForgeGradle:5.+"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.7.+'
 		classpath "com.discord4j:discord4j-core:3.2.1"
 	}
 }
 
 plugins {
-    //id 'org.spongepowered.plugin' version '0.6'
     id 'org.sonarqube' version '2.5'
 }
-
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+// MixinGradle:
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'jacoco'
-apply plugin: 'eclipse'
 
 sonarqube {
     properties {
@@ -156,7 +155,7 @@ ext.sharedManifest = manifest {
 ext.serverManifest = manifest {
 	from sharedManifest
 	attributes (
-		"TweakClass": "com.forgeessentials.core.preloader.FELaunchHandler",
+		"TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
 		"TweakOrder": "0",
 		"MixinConfigs": "mixins.forgeessentials.json",
 		"FMLAT": "forgeessentials_at.cfg",
@@ -200,7 +199,7 @@ dependencies {
 	serverLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
 	serverLib group: 'org.hibernate', 	name: 'hibernate-core', 		version: '5.2.2.Final'
     annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.6.14.Final'
-    annotationProcessor 'org.spongepowered:mixin:0.8.5-SNAPSHOT:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
@@ -272,6 +271,10 @@ project.processResources {
 			'buildNumber': buildNumber,
 		)
 	}
+}
+
+mixin {
+    add sourceSets.main, "mixins.forgeessentials.refmap.json"
 }
 
 /************************************************************
