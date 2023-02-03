@@ -132,24 +132,21 @@ public class CommandRollback extends BaseCommand
             throw new TranslatedCommandException("No selection available. Please select a region first.");
 
         int step = -60;
-        if (!args.isEmpty())
+        String time = args.remove();
+        try
         {
-            String time = args.remove();
-            try
-            {
-                SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-                Date parsedDate = format.parse(time);
-                Date currentDate = new Date();
-                Date date = new Date();
-                date.setSeconds(parsedDate.getSeconds());
-                date.setMinutes(parsedDate.getMinutes());
-                date.setHours(parsedDate.getHours());
-                step = (int) ((date.getTime() - currentDate.getTime()) / 1000);
-            }
-            catch (ParseException e)
-            {
-                throw new TranslatedCommandException("Invalid time format: %s", time);
-            }
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+            Date parsedDate = format.parse(time);
+            Date currentDate = new Date();
+            Date date = new Date();
+            date.setSeconds(parsedDate.getSeconds());
+            date.setMinutes(parsedDate.getMinutes());
+            date.setHours(parsedDate.getHours());
+            step = (int) ((date.getTime() - currentDate.getTime()) / 1000);
+        }
+        catch (ParseException e)
+        {
+            throw new TranslatedCommandException("Invalid time format: %s", time);
         }
 
         RollbackInfo rb = new RollbackInfo(getServerPlayer(ctx.getSource()), area);
@@ -164,8 +161,7 @@ public class CommandRollback extends BaseCommand
     {
         if(!hasPermission(ctx.getSource(),PERM_PREVIEW)) {throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);}
 
-        if (!args.isEmpty())
-            sec = (int) (args.parseTimeReadable() / 1000) * sec;
+        sec = (int) (args.parseTimeReadable() / 1000) * sec;
 
 
         RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getUUID());
@@ -204,8 +200,7 @@ public class CommandRollback extends BaseCommand
         if(!hasPermission(ctx.getSource(),PERM_PREVIEW)) {throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);}
 
         int speed = 1;
-        if (!args.isEmpty())
-            speed = parseInt(args.remove());
+        speed = parseInt(args.remove());
         if (speed == 0)
             speed = 1;
         if (Math.abs(speed) > 10)

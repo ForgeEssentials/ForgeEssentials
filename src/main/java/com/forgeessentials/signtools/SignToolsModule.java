@@ -1,5 +1,6 @@
 package com.forgeessentials.signtools;
 
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.SignTileEntity;
@@ -120,7 +121,7 @@ public class SignToolsModule extends ConfigLoaderBase
                             ObfuscationReflectionHelper.setPrivateValue(SignTileEntity.class, sign, imessage, "messages");
                         }
 
-                        event.getPlayer().openEditSign((SignTileEntity) te);
+                        ((ServerPlayerEntity)event.getPlayer()).openTextEdit((SignTileEntity) te);
                         event.setCanceled(true);
                     }
                 }
