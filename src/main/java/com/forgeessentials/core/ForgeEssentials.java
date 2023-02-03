@@ -21,6 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -303,9 +304,9 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         BlockModListFile.makeModList();
         BlockModListFile.dumpFMLRegistries();
-        ForgeChunkManager.setForcedChunkLoadingCallback(this, new FEChunkLoader());
+        ForgeChunkManager.setForcedChunkLoadingCallback(ForgeEssentials.MODID, new FEChunkLoader());
 
-        ServerUtil.replaceCommand("help", new HelpFixer()); // Will be overwritten again by commands module
+        //ServerUtil.replaceCommand("help", new HelpFixer()); // Will be overwritten again by commands module
 
         registerPermissions();
 

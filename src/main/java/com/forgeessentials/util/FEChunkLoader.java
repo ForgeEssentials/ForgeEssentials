@@ -31,7 +31,7 @@ public class FEChunkLoader implements LoadingValidationCallback
         instance = this;
     }
 
-    public boolean forceLoadWorld(World world)
+    public boolean forceLoadWorld(ServerWorld world)
     {
         if (map.containsKey(world.dimension()))
         {
@@ -60,7 +60,7 @@ public class FEChunkLoader implements LoadingValidationCallback
         }
     }
 
-    public boolean unforceLoadWorld(World world)
+    public boolean unforceLoadWorld(ServerWorld world)
     {
         if (map.containsKey(world.dimension()))
         {

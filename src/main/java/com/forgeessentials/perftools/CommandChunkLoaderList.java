@@ -16,6 +16,8 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.Ticket;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.BaseCommand;
@@ -67,9 +69,10 @@ public class CommandChunkLoaderList extends BaseCommand
                 }
             }
 
-            for (ModContainer mod : Loader.instance().getActiveModList())
+            List<ModContainer> modList = ObfuscationReflectionHelper.getPrivateValue(ModList.class, (ModList) ModList.get(), "mods");
+            for (ModContainer mod :  modList)
             {
-                if (mod.getName().equalsIgnoreCase(target))
+                if (mod.getModId().equalsIgnoreCase(target))
                 {
                     key = "m:" + mod.getModId();
                 }
