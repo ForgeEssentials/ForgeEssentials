@@ -1,6 +1,7 @@
 package com.forgeessentials.core;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -119,6 +120,8 @@ public class ForgeEssentials extends ConfigLoaderBase
 {
 
     public static final String MODID = "forgeessentials";
+    
+    public static final String FE_DIRECTORY = "ForgeEssentials";
 
     public static ForgeEssentials instance;
 
@@ -151,7 +154,11 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
 
-    protected static File configDirectory;
+    private static File feDirectory;
+
+    private static File moduleDirectory;
+
+    private static File jarLocation;
 
     protected static boolean debugMode = false;
 
@@ -174,9 +181,19 @@ public class ForgeEssentials extends ConfigLoaderBase
         //Set mod as server only
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         // new TestClass().test();
-    	LoggingHandler.init();
+        
+        LoggingHandler.init();
+        try
+        {
+            jarLocation = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
+        }
+        catch (URISyntaxException ex)
+        {
+            LoggingHandler.felog.error("Could not get JAR location");
+            ex.printStackTrace();
+        }
         initConfiguration();
-        BuildInfo.getBuildInfo(FELaunchHandler.getJarLocation());
+        BuildInfo.getBuildInfo(jarLocation);
         Environment.check();
         MinecraftForge.EVENT_BUS.register(this);
         
@@ -246,8 +263,13 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     private void initConfiguration()
     {
-        configManager = new ConfigBase(new File(ServerUtil.getBaseDir(), "/ForgeEssentials"));
-        FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials"), "ForgeEssentials");
+        feDirectory = new File(FMLPaths.GAMEDIR.get().toFile(), FE_DIRECTORY);
+        feDirectory.mkdirs();
+
+        moduleDirectory = new File(feDirectory, "modules");
+        moduleDirectory.mkdirs();
+
+        configManager = new ConfigBase(feDirectory);
 
         ConfigBase.getModuleConfig().loadModuleConfig();
         configManager.registerSpecs(configManager.getMainConfigName(), this);
@@ -531,7 +553,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public static File getFEDirectory()
     {
-        return configDirectory;
+        return feDirectory;
     }
 
     public static boolean isDebug()
@@ -542,5 +564,10 @@ public class ForgeEssentials extends ConfigLoaderBase
     public static boolean isSafeMode()
     {
         return safeMode;
+    }
+    
+    public static File getJarLocation()
+    {
+        return jarLocation;
     }
 }
