@@ -23,6 +23,11 @@ import com.forgeessentials.util.CommandParserArgs;
 public class CommandFeSettings extends BaseCommand implements ConfigLoader
 {
 
+    public CommandFeSettings(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
+
     public static final String CONFIG_FILE = "Settings";
 
     public static Map<String, String> aliases = new HashMap<>();
@@ -32,13 +37,7 @@ public class CommandFeSettings extends BaseCommand implements ConfigLoader
     private Configuration config;
 
     private static CommandFeSettings instache;
-
-    public CommandFeSettings()
-    {
-        instache = this;
-        APIRegistry.getFEEventBus().register(this);
-        ForgeEssentials.getConfigManager().registerSpecs(CONFIG_FILE, this);
-    }
+s
 
     public static CommandFeSettings getInstance()
     {

@@ -58,6 +58,7 @@ import org.apache.logging.log4j.core.Logger;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.UserIdent.NpcUserIdent;
+import com.forgeessentials.commands.item.CommandCraft;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
@@ -296,7 +297,11 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         FECommandManager.registerCommand(new CommandFEInfo("feinfo", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandFeReload("fereload", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandFeSettings());
+
+        CommandFeSettings settings = new CommandFeSettings("fesettings", 4, true);//TODO fix perms
+        FECommandManager.registerCommand(settings);
+        APIRegistry.getFEEventBus().register(settings);
+
         FECommandManager.registerCommand(new CommandWand("/fewand", 0, true));
         FECommandManager.registerCommand(new CommandUuid("uuid", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandFEWorldInfo("feworldinfo", 4, true));//TODO fix perms

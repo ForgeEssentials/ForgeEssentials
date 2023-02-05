@@ -144,7 +144,6 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandFly("fly", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandHelp());
         FECommandManager.registerCommand(new CommandPregen("pregen", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandBiome());
         FECommandManager.registerCommand(new CommandVanish("vanish", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandDuplicate("duplicate", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandDelayedAction("delayedaction", 4, true));//TODO fix perms
