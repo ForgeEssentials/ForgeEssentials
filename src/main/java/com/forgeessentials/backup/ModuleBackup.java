@@ -88,7 +88,7 @@ public class ModuleBackup extends ConfigLoaderBase
 
     public static int weeklyBackups;
 
-    public static Map<Integer, Boolean> backupOverrides = new HashMap<>();
+    public static Map<String, Boolean> backupOverrides = new HashMap<>();
 
     public static List<Pattern> exludePatterns = new ArrayList<>();
 
@@ -250,12 +250,12 @@ public class ModuleBackup extends ConfigLoaderBase
             {
                 try
                 {
-                    List<Integer> backupDims = new ArrayList<>();
+                    List<String> backupDims = new ArrayList<>();
                     List<ServerWorld> backupWorlds = new ArrayList<>();
-                    for (ServerWorld world : DimensionManager.getWorlds())
+                    for (ServerWorld world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
                         if (shouldBackup(world))
                         {
-                            backupDims.add(world.provider.getDimension());
+                            backupDims.add(world.dimension().location().toString());
                             backupWorlds.add(world);
                         }
                     ModuleBackup.notify(Translator.format("Starting backup of dimensions %s", StringUtils.join(backupDims, ", ")));
@@ -306,7 +306,7 @@ public class ModuleBackup extends ConfigLoaderBase
 
     protected static boolean shouldBackup(ServerWorld world)
     {
-        Boolean shouldBackup = backupOverrides.get(world.provider.getDimension());
+        Boolean shouldBackup = backupOverrides.get(world.dimension().location().toString());
         if (shouldBackup == null)
             return backupDefault;
         else
@@ -316,7 +316,7 @@ public class ModuleBackup extends ConfigLoaderBase
     private static synchronized void backup(ServerWorld world, boolean notify)
     {
         if (notify)
-            notify(String.format("Starting backup of dim %d...", world.provider.getDimension()));
+            notify(String.format("Starting backup of dim %d...", world.dimension().location().toString()));
 
         // Save world
         if (!saveWorld(world))
@@ -383,7 +383,7 @@ public class ModuleBackup extends ConfigLoaderBase
             }
 
             // Exclude directories of other worlds
-            for (ServerWorld otherWorld : ServerLifecycleHooks.getCurrentServer().getWorlds())
+            for (ServerWorld otherWorld : ServerLifecycleHooks.getCurrentServer().getAllLevels())
                 if (otherWorld.dimension() != world.dimension() && otherWorld.getChunkSaveLocation().equals(file))
                     continue mainLoop;
             for (Pattern pattern : exludePatterns)
@@ -411,16 +411,16 @@ public class ModuleBackup extends ConfigLoaderBase
             world.save((IProgressUpdate) null, oldLevelSaving, oldLevelSaving);
             return true;
         }
-        catch (MinecraftException e)
-        {
-            LoggingHandler.felog.error(String.format("Could not save world %d", world.dimension()));
-            return false;
-        }
         catch (Exception e)
         {
-            LoggingHandler.felog.error("Error while saving world");
+            LoggingHandler.felog.error(String.format("Could not save world %d", world.dimension().location().toString()));
             return false;
         }
+        //catch (Exception e)
+        //{
+        //    LoggingHandler.felog.error("Error while saving world");
+        //    return false;
+        //}
         finally
         {
             world.noSave = oldLevelSaving;

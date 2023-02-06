@@ -84,7 +84,10 @@ public class ModuleCommands
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandTime());
+        CommandTime time = new CommandTime("time", 4, true);//TODO fix perms
+        FECommandManager.registerCommand(time);
+        APIRegistry.getFEEventBus().register(time);
+        
         FECommandManager.registerCommand(new CommandEnchant("enchant", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandDechant("dechant", 4, true));//TODO fix perms
         FECommandManager.registerCommand(new CommandLocate("locate", 4, true));//TODO fix perms
