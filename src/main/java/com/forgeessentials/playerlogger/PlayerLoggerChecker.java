@@ -39,7 +39,7 @@ public class PlayerLoggerChecker
 
     private WorldArea getAreaAround(WorldPoint wp, int radius)
     {
-        return new WorldArea(wp.getWorld(),
+        return new WorldArea(wp.getDimension(),
                 new Point(wp.getX() - radius, wp.getY() - radius, wp.getZ() - radius),
                 new Point(wp.getX() + radius, wp.getY() + radius, wp.getZ() + radius));
     }

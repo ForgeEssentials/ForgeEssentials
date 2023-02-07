@@ -215,9 +215,9 @@ public class JsonProvider extends ZonePersistenceProvider
 
     public void saveWorlds(ServerZone serverZone)
     {
-        for (Entry<Integer, WorldZone> wzEntry : serverZone.getWorldZones().entrySet())
+        for (Entry<String, WorldZone> wzEntry : serverZone.getWorldZones().entrySet())
         {
-            Integer wzDimId = wzEntry.getKey();
+            String wzDimId = wzEntry.getKey();
             WorldZone wz = wzEntry.getValue();
             String pathName = String.format("/world_%d.json", wzDimId);
             File newPath = new File(path + pathName);
@@ -379,12 +379,13 @@ public class JsonProvider extends ZonePersistenceProvider
 
     public static class WorldZoneData
     {
-        public int id, dimId;
+        public int id;
+        public String dimId;
         public List<AreaZoneData> zones;
         public Map<String, GroupData> groups;
         public Map<String, UserData> players;
 
-        public WorldZoneData(int id, int dimId)
+        public WorldZoneData(int id, String dimId)
         {
             this.id = id;
             groups = new HashMap<String, GroupData>();

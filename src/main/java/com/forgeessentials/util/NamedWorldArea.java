@@ -6,8 +6,6 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.google.gson.annotations.Expose;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 /**
@@ -16,7 +14,7 @@ import net.minecraft.world.server.ServerWorld;
 public class NamedWorldArea extends WorldArea
 {
 
-    protected RegistryKey<World> worldName;
+    protected String worldName;
 
     @Expose(serialize = false)
     protected boolean isLinked = false;
@@ -24,31 +22,31 @@ public class NamedWorldArea extends WorldArea
     @Expose(serialize = false)
     protected boolean isValid = true;
 
-    public NamedWorldArea(RegistryKey<World> dimension, RegistryKey<World> registryKey, Point start, Point end)
+    public NamedWorldArea(String dimension, String worldName, Point start, Point end)
     {
         super(dimension, start, end);
-        this.worldName = registryKey;
+        this.worldName = worldName;
         isLinked();
     }
 
-    public NamedWorldArea(RegistryKey<World> registryKey, Point start, Point end)
+    public NamedWorldArea(Point start, Point end,String worldName)
     {
-        this(0, registryKey, start, end);
+        this("minecraft:overworld", worldName, start, end);
     }
 
-    public NamedWorldArea(String worldName, AreaBase area)
+    public NamedWorldArea(AreaBase area, String worldName)
     {
-        this(0, worldName, area.getLowPoint(), area.getHighPoint());
+        this("minecraft:overworld", worldName, area.getLowPoint(), area.getHighPoint());
     }
 
-    public NamedWorldArea(RegistryKey<World> dimension, Point start, Point end)
+    public NamedWorldArea(String dimension, Point start, Point end)
     {
         super(dimension, start, end);
         this.worldName = APIRegistry.namedWorldHandler.getWorldName(dimension);
         isLinked();
     }
 
-    public NamedWorldArea(int dimension, AreaBase area)
+    public NamedWorldArea(String dimension, AreaBase area)
     {
         this(dimension, area.getLowPoint(), area.getHighPoint());
     }
@@ -75,7 +73,7 @@ public class NamedWorldArea extends WorldArea
                 ServerWorld world = APIRegistry.namedWorldHandler.getWorld(worldName);
                 if (world != null)
                 {
-                    this.dim = world.dimension();
+                    this.dim = world.dimension().location().toString();
                     isLinked = true;
                     isValid = true;
                 }

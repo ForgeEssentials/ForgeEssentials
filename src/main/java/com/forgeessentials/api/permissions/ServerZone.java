@@ -14,7 +14,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -39,7 +38,7 @@ public class ServerZone extends Zone implements Loadable
     @Expose(serialize = false)
     private Map<Integer, Zone> zones = new HashMap<Integer, Zone>();
 
-    private Map<RegistryKey<World>, WorldZone> worldZones = new HashMap<RegistryKey<World>, WorldZone>();
+    private Map<String, WorldZone> worldZones = new HashMap<String, WorldZone>();
 
     @Expose(serialize = false)
     private int maxZoneID;
@@ -143,7 +142,7 @@ public class ServerZone extends Zone implements Loadable
 
     // ------------------------------------------------------------
 
-    public Map<RegistryKey<World>, WorldZone> getWorldZones()
+    public Map<String, WorldZone> getWorldZones()
     {
         return worldZones;
     }
@@ -155,7 +154,7 @@ public class ServerZone extends Zone implements Loadable
         setDirty();
     }
 
-    public WorldZone getWorldZone(RegistryKey<World> registryKey)
+    public WorldZone getWorldZone(String registryKey)
     {
         WorldZone zone = getWorldZones().get(registryKey);
         if (zone == null)
@@ -167,7 +166,7 @@ public class ServerZone extends Zone implements Loadable
 
     public WorldZone getWorldZone(World world)
     {
-        return getWorldZone(world.dimension());
+        return getWorldZone(world.dimension().location().toString());
     }
 
     // ------------------------------------------------------------

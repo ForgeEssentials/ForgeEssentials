@@ -1,18 +1,19 @@
  package com.forgeessentials.commons.selections;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.gson.annotations.Expose;
 
 public class WarpPoint
 {
 
-    protected RegistryKey<World> dim;
+    protected String dim;
 
     protected float pitch;
 
@@ -29,7 +30,7 @@ public class WarpPoint
 
     // ------------------------------------------------------------
 
-    public WarpPoint(RegistryKey<World> dimension, double x, double y, double z, float playerPitch, float playerYaw)
+    public WarpPoint(String dimension, double x, double y, double z, float playerPitch, float playerYaw)
     {
         this.dim = dimension;
         this.xd = x;
@@ -42,7 +43,7 @@ public class WarpPoint
     public WarpPoint(ServerWorld world, double x, double y, double z, float playerPitch, float playerYaw)
     {
         this.world = world;
-        this.dim = world.dimension();
+        this.dim = world.dimension().location().toString();
         this.xd = x;
         this.yd = y;
         this.zd = z;
@@ -50,12 +51,12 @@ public class WarpPoint
         this.yaw = playerYaw;
     }
 
-    public WarpPoint(RegistryKey<World> dimension, BlockPos location, float pitch, float yaw)
+    public WarpPoint(String dimension, BlockPos location, float pitch, float yaw)
     {
         this(dimension, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch, yaw);
     }
 
-    public WarpPoint(Point point, RegistryKey<World> dimension, float pitch, float yaw)
+    public WarpPoint(Point point, String dimension, float pitch, float yaw)
     {
         this(dimension, point.getX(), point.getY(), point.getZ(), pitch, yaw);
     }
@@ -83,7 +84,7 @@ public class WarpPoint
 
     // ------------------------------------------------------------
 
-    public RegistryKey<World> getDimension()
+    public String getDimension()
     {
         return dim;
     }
@@ -133,7 +134,7 @@ public class WarpPoint
         return yaw;
     }
 
-    public void set(RegistryKey<World> dim, double xd, double yd, double zd, float pitch, float yaw)
+    public void set(String dim, double xd, double yd, double zd, float pitch, float yaw)
     {
         this.dim = dim;
         this.xd = xd;
@@ -143,14 +144,14 @@ public class WarpPoint
         this.yaw = yaw;
     }
 
-    public void setDimension(RegistryKey<World> dim)
+    public void setDimension(String dim)
     {
         this.dim = dim;
     }
 
     public ServerWorld getWorld()
     {
-        if (world == null || world.dimension() != dim)
+        if (world == null || world.dimension().location().toString() != dim)
             world = world.getLevel();
         return world;
     }
@@ -255,7 +256,7 @@ public class WarpPoint
         }
         return false;
     }
-/*
+
     @Override
     public int hashCode()
     {
@@ -264,7 +265,7 @@ public class WarpPoint
         h = h * 31 + Double.valueOf(zd).hashCode();
         h = h * 31 + Double.valueOf(pitch).hashCode();
         h = h * 31 + Double.valueOf(yaw).hashCode();
-        h = h * 31 + dim;
+        h = h * 31 + dim.hashCode();
         return h;
     }
 
@@ -280,7 +281,7 @@ public class WarpPoint
             try
             {
                 return new WarpPoint(
-                        Integer.parseInt(m.group(4)),
+                        m.group(4),
                         Double.parseDouble(m.group(1)),
                         Double.parseDouble(m.group(2)),
                         Double.parseDouble(m.group(3)),
@@ -300,5 +301,5 @@ public class WarpPoint
             return new WarpPoint(worldPoint);
         }
     }
-*/
+
 }

@@ -5,28 +5,28 @@ import net.minecraft.world.World;
 public class WorldArea extends AreaBase
 {
 
-    protected World dim;
+    protected String dim;
 
-    public WorldArea(World world, Point start, Point end)
+    public WorldArea(String world, Point start, Point end)
     {
         super(start, end);
         dim = world;
     }
 
-    public WorldArea(World world, AreaBase area)
+    public WorldArea(String world, AreaBase area)
     {
         super(area.getHighPoint(), area.getLowPoint());
         dim = world;
     }
 
-    public World getDimension()
+    public String getDimension()
     {
         return dim;
     }
 
     public void setDimension(World dimensionId)
     {
-        this.dim = dimensionId;
+        this.dim = dimensionId.dimension().location().toString();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class WorldArea extends AreaBase
 
     public boolean contains(WorldPoint point)
     {
-        if (point.dim == dim.dimension())
+        if (point.dim == dim)
         {
             return super.contains(point);
         }

@@ -9,7 +9,7 @@ public class Selection extends WorldArea
 
     private Point end;
 
-    public Selection(World dim, Point start, Point end)
+    public Selection(String dim, Point start, Point end)
     {
         super(dim, start == null ? (end == null ? new Point(0, 0, 0) : end) : start, end == null ? (start == null ? new Point(0, 0, 0) : start) : end);
         this.start = start;
@@ -18,7 +18,7 @@ public class Selection extends WorldArea
 
     public Selection(World world, AreaBase area)
     {
-        this(world, area.getLowPoint(), area.getHighPoint());
+        this(world.dimension().location().toString(), area.getLowPoint(), area.getHighPoint());
     }
 
     public Point getStart()

@@ -134,7 +134,7 @@ public class Grave implements Loadable
     {
         if (point.getDimension() == null)
         {//!DimensionManager.isDimensionRegistered(point.getDimension())
-            ServerWorld dworld = ServerLifecycleHooks.getCurrentServer().getLevel(point.getDimension());
+            ServerWorld dworld = ServerLifecycleHooks.getCurrentServer().getLevel(point.getWorld().dimension());
             if (dworld.isLoaded(point.getBlockPos())) {
                 DataManager.getInstance().delete(Grave.class, point.toString());
                 graves.remove(point);

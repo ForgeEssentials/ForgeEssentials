@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.impl.MessageCommand;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.event.ClickEvent;
@@ -41,7 +40,6 @@ import com.forgeessentials.chat.command.CommandGroupMessage;
 import com.forgeessentials.chat.command.CommandIrc;
 import com.forgeessentials.chat.command.CommandIrcBot;
 import com.forgeessentials.chat.command.CommandIrcPm;
-import com.forgeessentials.chat.command.CommandMessageReplacement;
 import com.forgeessentials.chat.command.CommandMute;
 import com.forgeessentials.chat.command.CommandNickname;
 import com.forgeessentials.chat.command.CommandPm;
@@ -279,7 +277,7 @@ public class ModuleChat
             WorldPoint source = new WorldPoint(event.getPlayer());
             for (ServerPlayerEntity player : ServerUtil.getPlayerList())
             {
-                if (player.level.dimension() == source.getDimension() && source.distance(new WorldPoint(player)) <= range)
+                if (player.level == source.getWorld() && source.distance(new WorldPoint(player)) <= range)
                     ChatOutputHandler.sendMessage(player.createCommandSourceStack(), event.getComponent());
             }
             event.setCanceled(true);
@@ -359,7 +357,7 @@ public class ModuleChat
 
     public static ITextComponent appendGroupPrefixSuffix(ITextComponent header, UserIdent ident, boolean isSuffix)
     {
-        WorldPoint point = ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : new WorldPoint(0, 0, 0, 0);
+        WorldPoint point = ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : new WorldPoint("minecraft:overworld", 0, 0, 0);
         for (GroupEntry group : APIRegistry.perms.getServerZone().getAdditionalPlayerGroups(ident, new WorldPoint(ident.getPlayer())))
         {
             String text = APIRegistry.perms.getGroupPermissionProperty(group.getGroup(), point, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);

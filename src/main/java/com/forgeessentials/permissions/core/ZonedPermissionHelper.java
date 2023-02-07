@@ -555,7 +555,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent
     public void worldLoad(WorldEvent.Load e)
     {
-        getServerZone().getWorldZone((RegistryKey<World>) e.getWorld());
+        getServerZone().getWorldZone(e.getWorld());
     }
 
     @SubscribeEvent
@@ -748,7 +748,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         UserIdent ident = null;
         World w = context != null ? context.getWorld() : null;
-        int dim = w != null ? w.provider.getDimension() : 0;
+        String dim = w != null ? w.dimension().location().toString() : "minecraft:overworld";
         WorldPoint loc = null;
         WorldArea area = null;
 

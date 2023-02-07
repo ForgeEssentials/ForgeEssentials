@@ -56,7 +56,7 @@ public class PlayerInfo implements Loadable
 
     private Point sel2;
 
-    private int selDim;
+    private String selDim;
 
     /* ------------------------------------------------------------ */
     /* Selection wand */
@@ -396,7 +396,7 @@ public class PlayerInfo implements Loadable
         return sel2;
     }
 
-    public int getSelDim()
+    public String getSelDim()
     {
         return selDim;
     }
@@ -411,9 +411,9 @@ public class PlayerInfo implements Loadable
         sel2 = point;
     }
 
-    public void setSelDim(int dimension)
+    public void setSelDim(String dim)
     {
-        selDim = dimension;
+        selDim = dim;
     }
 
     /* ------------------------------------------------------------ */

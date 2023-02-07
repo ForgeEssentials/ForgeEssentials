@@ -212,7 +212,7 @@ public class SQLProvider extends ZonePersistenceProvider
         tbl.columns.put("type", "INT");
         tbl.columns.put("parent_id", "INT");
         tbl.columns.put("name", "VARCHAR(64)");
-        tbl.columns.put("dimension", "INT");
+        tbl.columns.put("dimension", "VARCHAR(64)");
         tbl.columns.put("area", "VARCHAR(64)");
         tbl.columns.put("shape", "VARCHAR(16)");
         tbl.primaryKeys.add("id");
@@ -528,7 +528,7 @@ public class SQLProvider extends ZonePersistenceProvider
             for (Map<String, Object> zoneData : zonesData)
                 if (zoneData.get("type").equals(1))
                 {
-                    WorldZone zone = new WorldZone(serverZone, (Integer) zoneData.get("dimension"), (Integer) zoneData.get("id"));
+                    WorldZone zone = new WorldZone(serverZone, (String) zoneData.get("dimension"), (Integer) zoneData.get("id"));
                     zones.put(zone.getId(), zone);
                 }
 

@@ -1,40 +1,48 @@
 package com.forgeessentials.commons.selections;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.annotations.Expose;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  * Point which stores dimension as well
  */
 public class WorldPoint extends Point
 {
-	protected String dimS;
-    protected RegistryKey<World> dim;
+	protected String dim;
 
     @Expose(serialize = false)
     protected World world;
 
     // ------------------------------------------------------------
 
-    public WorldPoint(RegistryKey<World> dim2, int x, int y, int z)
+    public WorldPoint(String dim2, int x, int y, int z)
     {
         super(x, y, z);
         dim = dim2;
     }
 
-    public WorldPoint(RegistryKey<World> dimension, BlockPos location)
+    public WorldPoint(String dimension, BlockPos location)
     {
         this(dimension, location.getX(), location.getY(), location.getZ());
     }
@@ -42,7 +50,7 @@ public class WorldPoint extends Point
     public WorldPoint(World world, int x, int y, int z)
     {
         super(x, y, z);
-        this.dim = world.dimension();
+        this.dim = world.dimension().location().toString();
         this.world = world;
     }
 
@@ -54,11 +62,11 @@ public class WorldPoint extends Point
     public WorldPoint(Entity entity)
     {
         super(entity);
-        this.dim = entity.level.dimension();
+        this.dim = entity.level.dimension().location().toString();
         this.world = entity.level;
     }
 
-    public WorldPoint(RegistryKey<World> dim, Vector3d vector)
+    public WorldPoint(String dim, Vector3d vector)
     {
         super(vector);
         this.dim = dim;
@@ -69,7 +77,7 @@ public class WorldPoint extends Point
         this(other.dim, other.x, other.y, other.z);
     }
 
-    public WorldPoint(RegistryKey<World> dimension, Point point)
+    public WorldPoint(String dimension, Point point)
     {
         this(dimension, point.x, point.y, point.z);
     }
@@ -86,17 +94,17 @@ public class WorldPoint extends Point
 
     public static WorldPoint create(CommandSource sender)
     {
-        return new WorldPoint(sender.getLevel().dimension(), sender.getPosition());
+        return new WorldPoint(sender.getLevel().dimension().location().toString(), sender.getPosition());
     }
 
     // ------------------------------------------------------------
 
-    public RegistryKey<World> getDimension()
+    public String getDimension()
     {
         return dim;
     }
 
-    public void setDimension(RegistryKey<World> dim)
+    public void setDimension(String dim)
     {
         this.dim = dim;
     }
@@ -118,14 +126,20 @@ public class WorldPoint extends Point
     {
         return (WorldPoint) super.setZ(z);
     }
-
-    public World getWorld()
-    {
-        if (world != null && world.dimension() != dim)
+    
+    public World getWorld(){
+        if (world != null && world.dimension().location().toString() != dim)
             return world;
-        world = ServerLifecycleHooks.getCurrentServer().getLevel(dim);
-        return world;
-    }
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        RegistryKey<World> registrykey = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim));
+        world = server.getLevel(registrykey);
+        if (world == null) {
+            LoggingHandler.felog.debug("argument.dimension.invalid"+ dim);
+            return null;
+        } else {
+           return world;
+        }
+     }
 
     public WarpPoint toWarpPoint(float rotationPitch, float rotationYaw)
     {
@@ -151,7 +165,7 @@ public class WorldPoint extends Point
     }
 
     private static final Pattern fromStringPattern = Pattern.compile("\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=(-?\\d+)\\]");
-/*
+
     public static WorldPoint fromString(String value)
     {
         value = value.replaceAll("\\s ", "");
@@ -161,7 +175,7 @@ public class WorldPoint extends Point
             try
             {
                 return new WorldPoint(
-                        Integer.parseInt(m.group(4)),
+                        m.group(4),
                         (int) Double.parseDouble(m.group(1)),
                         (int) Double.parseDouble(m.group(2)),
                         (int) Double.parseDouble(m.group(3)));
@@ -173,7 +187,7 @@ public class WorldPoint extends Point
         }
         return null;
     }
-*/
+
     @Override
     public boolean equals(Object object)
     {
@@ -189,15 +203,15 @@ public class WorldPoint extends Point
         }
         return false;
     }
-/*
+
     @Override
     public int hashCode()
     {
         int h = 1 + x;
         h = h * 31 + y;
         h = h * 31 + z;
-        h = h * 31 + dim;
+        h = h * 31 + dim.hashCode();
         return h;
     }
-*/
+
 }

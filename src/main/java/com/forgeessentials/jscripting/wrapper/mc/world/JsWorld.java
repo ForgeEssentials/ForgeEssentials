@@ -9,7 +9,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
@@ -43,9 +46,9 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     }
 
-    public static JsWorldServer get(int dim)
+    public static JsWorldServer get(String dim)
     {
-        ServerWorld world = DimensionManager.getWorld(dim);
+        ServerWorld world = ServerLifecycleHooks.getCurrentServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
         return world == null ? null : new JsWorldServer(world);
     }
 
@@ -56,9 +59,9 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         super(that);
     }
 
-    public int getDimension()
+    public String getDimension()
     {
-        return that.provider.getDimension();
+        return that.dimension().location().toString();
     }
 
     public int getDifficulty()

@@ -4,7 +4,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -138,7 +137,7 @@ public class SelectionHandler extends ServerEventHandler
         return selectionProvider.getSelection(player);
     }
 
-    public static void setDimension(ServerPlayerEntity player, World dim)
+    public static void setDimension(ServerPlayerEntity player, String dim)
     {
         selectionProvider.setDimension(player, dim);
     }
@@ -153,7 +152,7 @@ public class SelectionHandler extends ServerEventHandler
         selectionProvider.setEnd(player, end);
     }
 
-    public static void select(ServerPlayerEntity player, World dimension, AreaBase area)
+    public static void select(ServerPlayerEntity player, String dimension, AreaBase area)
     {
         selectionProvider.select(player, dimension, area);
     }

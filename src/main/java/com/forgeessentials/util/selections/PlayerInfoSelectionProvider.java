@@ -18,7 +18,7 @@ public class PlayerInfoSelectionProvider implements ISelectionProvider
     }
 
     @Override
-    public void setDimension(ServerPlayerEntity player, int dim)
+    public void setDimension(ServerPlayerEntity player, String dim)
     {
         PlayerInfo.get(player).setSelDim(dim);
     }
@@ -36,7 +36,7 @@ public class PlayerInfoSelectionProvider implements ISelectionProvider
     }
 
     @Override
-    public void select(ServerPlayerEntity player, int dimension, AreaBase area)
+    public void select(ServerPlayerEntity player, String dimension, AreaBase area)
     {
         PlayerInfo pi = PlayerInfo.get(player);
         pi.setSelDim(dimension);

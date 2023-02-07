@@ -18,7 +18,7 @@ public class QueryLogRequest
 
     public Date endTime;
 
-    public Integer dimension;
+    public String dimension;
 
     public Point point;
 

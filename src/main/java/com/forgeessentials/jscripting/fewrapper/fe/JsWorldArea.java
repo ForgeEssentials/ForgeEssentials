@@ -12,12 +12,12 @@ public class JsWorldArea<T extends WorldArea> extends JsAreaBase<T>
     }
 
     @SuppressWarnings("unchecked")
-    public JsWorldArea(int dim, JsPoint<?> p1, JsPoint<?> p2)
+    public JsWorldArea(String dim, JsPoint<?> p1, JsPoint<?> p2)
     {
         this((T) new WorldArea(dim, p1.getThat(), p2.getThat()));
     }
 
-    public int getDimension()
+    public String getDimension()
     {
         return that.getDimension();
     }

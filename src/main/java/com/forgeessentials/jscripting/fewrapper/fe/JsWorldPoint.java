@@ -11,17 +11,17 @@ public class JsWorldPoint<T extends WorldPoint> extends JsPoint<T>
     }
 
     @SuppressWarnings("unchecked")
-    public JsWorldPoint(int dim, int x, int y, int z)
+    public JsWorldPoint(String dim, int x, int y, int z)
     {
         this((T) new WorldPoint(dim, x, y, z));
     }
 
-    public int getDimension()
+    public String getDimension()
     {
         return that.getDimension();
     }
 
-    public void setDimension(int dim)
+    public void setDimension(String dim)
     {
         that.setDimension(dim);
     }

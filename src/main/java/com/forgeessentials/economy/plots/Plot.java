@@ -10,7 +10,6 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 
 import net.minecraft.command.CommandSource;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -115,7 +114,7 @@ public class Plot
         return zone;
     }
 
-    public int getDimension()
+    public String getDimension()
     {
         return zone.getWorldZone().getDimensionID();
     }
@@ -303,7 +302,7 @@ public class Plot
         return plots.containsKey(zone.getId());
     }
 
-    public static boolean isColumnMode(World world)
+    public static boolean isColumnMode(String world)
     {
         ServerZone s = APIRegistry.perms.getServerZone();
         List<Zone> zones = new ArrayList<>();

@@ -55,7 +55,7 @@ public class JsWarpPoint extends JsWrapper<WarpPoint>
         return that.getZ();
     }
 
-    public int getDimension()
+    public String getDimension()
     {
         return that.getDimension();
     }
@@ -70,12 +70,12 @@ public class JsWarpPoint extends JsWrapper<WarpPoint>
         return that.getYaw();
     }
 
-    public void set(int dim, double xd, double yd, double zd, float pitch, float yaw)
+    public void set(String dim, double xd, double yd, double zd, float pitch, float yaw)
     {
         that.set(dim, xd, yd, zd, pitch, yaw);
     }
 
-    public void setDimension(int dim)
+    public void setDimension(String dim)
     {
         that.setDimension(dim);
     }

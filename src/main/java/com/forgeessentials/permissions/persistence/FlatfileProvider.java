@@ -139,7 +139,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
         Properties p = new Properties();
 
         p.setProperty("id", Integer.toString(worldZone.getId()));
-        p.setProperty("dimId", Integer.toString(worldZone.getDimensionID()));
+        p.setProperty("dimId", worldZone.getDimensionID());
 
         try (OutputStream os = new BufferedOutputStream(new FileOutputStream(new File(path, "world.xml"))))
         {
@@ -281,7 +281,7 @@ public class FlatfileProvider extends ZonePersistenceProvider
                 int worldId = Integer.parseInt(worldProperties.getProperty("id"));
                 maxId = Math.max(maxId, worldId);
 
-                int dimensionID = Integer.parseInt(worldProperties.getProperty("dimId"));
+                String dimensionID =worldProperties.getProperty("dimId");
 
                 // Create WorldZone and load permissions
                 WorldZone worldZone = new WorldZone(serverZone, dimensionID, worldId);

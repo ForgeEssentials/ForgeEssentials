@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.forgeessentials.util.output.LoggingHandler;
+
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -11,12 +16,13 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public interface NamedWorldHandler
 {
 
-    static final String WORLD_NAME_END = "the_end";
-    static final String WORLD_NAME_NETHER = "the_nether";
-    static final String WORLD_NAME_OVERWORLD = "overworld";
+    static final String WORLD_NAME_END = "minecarft:the_end";
+    static final String WORLD_NAME_NETHER = "minecarft:the_nether";
+    static final String WORLD_NAME_OVERWORLD = "minecarft:overworld";
 
     ServerWorld getWorld(String name);
 
+    String getWorldName(String dimId);
 
     List<String> getWorldNames();
 
@@ -39,13 +45,36 @@ public interface NamedWorldHandler
             {
                 try
                 {
-                    return ServerLifecycleHooks.getCurrentServer().getLevel(null);
+                    ServerWorld world = ServerLifecycleHooks.getCurrentServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(name)));
+
+                    if (world == null) {
+                        LoggingHandler.felog.debug("argument.dimension.invalid"+ world);
+                        throw new Exception("argument.dimension.invalid"+ world);
+                    } else {
+                       return world;
+                    }
                 }
-                catch (NumberFormatException e)
+                catch (Exception e)
                 {
                     return null;
                 }
             }
+            }
+        }
+        
+        @Override
+        public String getWorldName(String dim)
+        {
+            switch (dim)
+            {
+            case WORLD_NAME_OVERWORLD:
+                return "overworld";
+            case WORLD_NAME_NETHER:
+                return "the_nether";
+            case WORLD_NAME_END:
+                return "the_end";
+            default:
+                return dim;
             }
         }
 

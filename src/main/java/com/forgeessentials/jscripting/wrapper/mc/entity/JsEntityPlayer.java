@@ -66,7 +66,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
     {
         if (commandSender != null || !(that instanceof PlayerEntity))
             return commandSender;
-        return commandSender = new JsICommandSender(that, this);
+        return commandSender = new JsICommandSender(that.createCommandSourceStack(), this);
     }
 
     public JsInventoryPlayer<?> getInventory()
@@ -76,7 +76,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
         return inventory;
     }
 
-    public JsPoint<?> getBedLocation(int dimension)
+    public JsPoint<?> getBedLocation(String dimension)
     {
         BlockPos coord = PlayerEntity.getBedSpawnLocation(that.level, that.getSleepingPos(), false);
         return coord != null ? new JsWorldPoint<>(new WorldPoint(dimension, coord)) : null;
