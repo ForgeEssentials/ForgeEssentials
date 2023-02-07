@@ -5,7 +5,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.IWorldInfo;
+import net.minecraft.world.storage.ServerWorldInfo;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -21,9 +26,15 @@ import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 public class CommandTime extends BaseCommand implements ConfigurableCommand
 {
+
+    public CommandTime(String name, int permissionLevel, boolean enabled)
+    {
+        super(name, permissionLevel, enabled);
+    }
 
     public static final int dayTimeStart = 1;
     public static final int dayTimeEnd = 11;
@@ -35,25 +46,20 @@ public class CommandTime extends BaseCommand implements ConfigurableCommand
         Long frozenTime;
     }
 
-    protected static HashMap<Integer, TimeData> timeData = new HashMap<>();
+    protected static HashMap<RegistryKey<World>, TimeData> timeData = new HashMap<>();
 
-    protected static TimeData getTimeData(int dim)
+    protected static TimeData getTimeData(RegistryKey<World> registryKey)
     {
-        TimeData td = timeData.get(dim);
+        TimeData td = timeData.get(registryKey);
         if (td == null)
         {
             td = new TimeData();
-            timeData.put(dim, td);
+            timeData.put(registryKey, td);
         }
         return td;
     }
 
     /* ------------------------------------------------------------ */
-
-    public CommandTime()
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
 
     @Override
     public String getPrimaryAlias()
@@ -77,6 +83,13 @@ public class CommandTime extends BaseCommand implements ConfigurableCommand
     public String getPermissionNode()
     {
         return ModuleCommands.PERM + ".time";
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -115,11 +128,11 @@ public class CommandTime extends BaseCommand implements ConfigurableCommand
 
         if (world == null)
         {
-            boolean freeze = getTimeData(0).frozenTime == null;
+            boolean freeze = getTimeData(ServerWorld.OVERWORLD).frozenTime == null;
             for (World w : DimensionManager.getWorlds())
             {
-                TimeData td = getTimeData(w.provider.getDimension());
-                td.frozenTime = freeze ? w.getWorldInfo().getWorldTime() : null;
+                TimeData td = getTimeData(w.dimension());
+                td.frozenTime = freeze ? w.getLevelData().getDayTime() : null;
             }
             if (freeze)
                 arguments.confirm("Froze time in all worlds");
@@ -128,8 +141,8 @@ public class CommandTime extends BaseCommand implements ConfigurableCommand
         }
         else
         {
-            TimeData td = getTimeData(world.provider.getDimension());
-            td.frozenTime = (td.frozenTime == null) ? world.getWorldInfo().getWorldTime() : null;
+            TimeData td = getTimeData(world.dimension());
+            td.frozenTime = (td.frozenTime == null) ? world.getLevelData().getDayTime() : null;
             if (td.frozenTime != null)
                 arguments.confirm("Froze time");
             else
@@ -218,16 +231,16 @@ public class CommandTime extends BaseCommand implements ConfigurableCommand
         if (event.phase == Phase.START)
             return;
         World world = event.world;
-        WorldInfo wi = world.getWorldInfo();
-        if (wi.getWorldTotalTime() % 10 == 0)
+        IWorldInfo wi = world.getLevelData();
+        if (wi.getGameTime() % 10 == 0)
             updateWorld(world);
     }
 
-    public static void updateWorld(World world)
+    public static void updateWorld(ServerWorld world)
     {
-        TimeData td = getTimeData(world.provider.getDimension());
+        TimeData td = getTimeData(world.dimension());
         if (td.frozenTime != null)
-            world.getWorldInfo().setWorldTime(td.frozenTime);
+            world.setDayTime(td.frozenTime);
     }
 
     public static void save()
