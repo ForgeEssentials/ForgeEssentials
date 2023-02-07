@@ -247,7 +247,7 @@ public class ProtectionEventHandler extends ServerEventHandler
 
         UserIdent ident = UserIdent.get(event.getPlayer());
         BlockState blockState = event.getWorld().getBlockState(event.getPos());
-        String permission = ModuleProtection.getBlockBreakPermission(blockState);
+        String permission = ModuleProtection.getBlockBreakPermission(blockState.getBlock());
         ModuleProtection.debugPermission(event.getPlayer(), permission);
         WorldPoint point = new WorldPoint(event.getPlayer().level, event.getPos());
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
@@ -680,7 +680,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         WorldPoint point = new WorldPoint(event.getWorld(), event.getPos());
 
         // 1) Do nothing if the whole world is creative!
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getWorld().provider.getDimension());
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getWorld());
         if (stringToGameType(worldZone.getGroupPermission(Zone.GROUP_DEFAULT, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
         {
             // 2) If creative mode is set for any group at the location where the block was destroyed, prevent drops
@@ -795,7 +795,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             if (stack == ItemStack.EMPTY || !(stack.getItem() instanceof BlockItem))
                 continue;
             Block block = ((BlockItem) stack.getItem()).getBlock();
-            String permission = ModuleProtection.getBlockPlacePermission(block, 0);
+            String permission = ModuleProtection.getBlockPlacePermission(block);
             if (!APIRegistry.perms.checkUserPermission(ident, permission))
                 placeIds.add(Block.getId(block.defaultBlockState()));
         }

@@ -14,7 +14,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import org.apache.commons.lang3.StringUtils;
@@ -169,6 +171,11 @@ public class ServerZone extends Zone implements Loadable
         return getWorldZone(world.dimension().location().toString());
     }
 
+    public WorldZone getWorldZone(IWorld world)
+    {
+        return getWorldZone((ServerWorld) world);
+        
+    }
     // ------------------------------------------------------------
 
     public Set<String> getGroups()

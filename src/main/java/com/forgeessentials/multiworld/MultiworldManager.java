@@ -18,7 +18,7 @@ public class MultiworldManager //extends ServerEventHandler implements NamedWorl
 
     public static final String PERM_PROP_MULTIWORLD = FEPermissions.FE_INTERNAL + ".multiworld";
 
-    public static final String PROVIDER_NORMAL = "normal";
+    public static final String PROVIDER_NORMAL = "overworld";
     public static final String PROVIDER_HELL = "nether";
     public static final String PROVIDER_END = "end";
 

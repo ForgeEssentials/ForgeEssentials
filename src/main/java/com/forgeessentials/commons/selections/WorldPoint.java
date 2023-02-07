@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.BlockEvent;
@@ -21,8 +21,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.annotations.Expose;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  * Point which stores dimension as well
@@ -90,6 +88,11 @@ public class WorldPoint extends Point
     public WorldPoint(BlockEvent event)
     {
         this(event.getWorld(), event.getPos());
+    }
+
+    public WorldPoint(IWorld world2, BlockPos pos)
+    {
+        this (((ServerWorld) world2), pos);
     }
 
     public static WorldPoint create(CommandSource sender)
