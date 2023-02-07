@@ -9,7 +9,7 @@ import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsItem;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
-import com.forgeessentials.jscripting.wrapper.mc.world.JsWorldServer;
+import com.forgeessentials.jscripting.wrapper.mc.world.JsServerWorld;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class JsCommandArgs extends JsWrapper<CommandParserArgs>
@@ -177,9 +177,9 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
         that.tabCompleteWord(completion);
     }
 
-    public JsWorldServer parseWorld() throws CommandException
+    public JsServerWorld parseWorld() throws CommandException
     {
-        return new JsWorldServer(that.parseWorld());
+        return new JsServerWorld(that.parseWorld());
     }
 
     public int parseInt() throws CommandException

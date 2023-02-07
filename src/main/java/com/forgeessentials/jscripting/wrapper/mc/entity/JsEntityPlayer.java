@@ -78,8 +78,11 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
 
     public JsPoint<?> getBedLocation(String dimension)
     {
-        BlockPos coord = PlayerEntity.getBedSpawnLocation(that.level, that.getSleepingPos(), false);
-        return coord != null ? new JsWorldPoint<>(new WorldPoint(dimension, coord)) : null;
+        BlockPos coord = ((ServerPlayerEntity) that).getRespawnPosition();
+        if(((ServerPlayerEntity) that).getRespawnDimension().location().toString() == dimension) {
+            return coord != null ? new JsWorldPoint<>(new WorldPoint(dimension, coord)) : null;
+        }
+        return null;
     }
 
     public GameType getGameType()

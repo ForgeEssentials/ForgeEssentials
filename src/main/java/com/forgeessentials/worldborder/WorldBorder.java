@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
 
 import com.forgeessentials.commons.selections.AreaBase;
@@ -32,7 +31,7 @@ public class WorldBorder implements Loadable
 
     private List<WorldBorderEffect> effects = new ArrayList<>();
 
-    RegistryKey<World> dimID;
+    String dimID;
 
     @Expose(serialize = false)
     private AreaBase area;
@@ -40,7 +39,7 @@ public class WorldBorder implements Loadable
     @Expose(serialize = false)
     private Map<PlayerEntity, Set<WorldBorderEffect>> activeEffects = new WeakHashMap<>();
 
-    public WorldBorder(Point center, int xSize, int zSize, RegistryKey<World> registryKey)
+    public WorldBorder(Point center, int xSize, int zSize, String registryKey)
     {
         this.center = center;
         this.size = new Point(xSize, 0, zSize);
@@ -149,14 +148,14 @@ public class WorldBorder implements Loadable
     public void save()
     {
         // TODO: Better way to identify dimensions
-        String key = Integer.toString(dimID);
+        String key = dimID;
         DataManager.getInstance().save(this, key);
     }
 
     public static WorldBorder load(World world)
     {
         // TODO: Better way to identify dimensions
-        String key = Integer.toString(world.dimension());
+        String key = world.dimension().location().toString();
         return DataManager.getInstance().load(WorldBorder.class, key);
     }
 

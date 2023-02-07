@@ -198,7 +198,7 @@ public class ModuleWorldBorder extends ServerEventHandler
         WorldBorder border = borders.get(world);
         if (border == null)
         {
-            border = new WorldBorder(new Point(0, 0, 0), DEFAULT_SIZE, DEFAULT_SIZE, world.dimension());
+            border = new WorldBorder(new Point(0, 0, 0), DEFAULT_SIZE, DEFAULT_SIZE, world.dimension().location().toString());
             borders.put((ServerWorld) world, border);
         }
         return border;

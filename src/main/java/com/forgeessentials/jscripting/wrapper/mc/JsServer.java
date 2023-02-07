@@ -45,8 +45,8 @@ public class JsServer
     public JsICommandSender getServer()
     {
         MinecraftServer srv = ServerLifecycleHooks.getCurrentServer();
-        if (server == null || server.getThat() != srv)
-            server = JsICommandSender.get(srv);
+        if (server == null || server.getThat().getServer() != srv)
+            server = JsICommandSender.get(srv.createCommandSourceStack());
         return server;
     }
 

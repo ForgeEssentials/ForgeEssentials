@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -46,10 +45,10 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     }
 
-    public static JsWorldServer get(String dim)
+    public static JsServerWorld get(String dim)
     {
         ServerWorld world = ServerLifecycleHooks.getCurrentServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
-        return world == null ? null : new JsWorldServer(world);
+        return world == null ? null : new JsServerWorld(world);
     }
 
     protected Map<TileEntity, JsTileEntity<?>> tileEntityCache = new WeakHashMap<>();
@@ -81,10 +80,9 @@ public class JsWorld<T extends World> extends JsWrapper<T>
     }
 
     // TODO: this should take an entity type somehow
-    @SuppressWarnings("unchecked")
     public JsEntityList getEntitiesWithinAABB(JsAxisAlignedBB axisAlignedBB)
     {
-        return new JsEntityList(that.getEntitiesWithinAABB(Entity.class, axisAlignedBB.getThat()));
+        return new JsEntityList(that.getEntitiesOfClass(Entity.class, axisAlignedBB.getThat()));
     }
 
     public boolean blockExists(int x, int y, int z)
@@ -117,9 +115,9 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         return jsTileEntity;
     }
 
-    public JsWorldServer asWorldServer()
+    public JsServerWorld asWorldServer()
     {
-        return that instanceof ServerWorld ? new JsWorldServer((ServerWorld) that) : null;
+        return that instanceof ServerWorld ? new JsServerWorld((ServerWorld) that) : null;
     }
 
     public long getWorldTime()
@@ -130,19 +128,6 @@ public class JsWorld<T extends World> extends JsWrapper<T>
     public long getTotalWorldTime()
     {
         return that.getGameTime();
-    }
-
-    /**
-     * Sets the world time.
-     */
-    public void setWorldTime(long time)
-    {
-        that.setWorldTime(time);
-    }
-
-    public void setSpawnLocation(int x, int y, int z)
-    {
-        that.setSpawnPoint(new BlockPos(x, y, z));
     }
 
     /**

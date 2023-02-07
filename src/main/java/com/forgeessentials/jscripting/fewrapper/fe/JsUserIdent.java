@@ -6,7 +6,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
-import com.forgeessentials.jscripting.wrapper.mc.world.JsWorldServer;
+import com.forgeessentials.jscripting.wrapper.mc.world.JsServerWorld;
 
 public class JsUserIdent extends JsWrapper<UserIdent>
 {
@@ -71,7 +71,7 @@ public class JsUserIdent extends JsWrapper<UserIdent>
         return JsEntityPlayer.get(that.getFakePlayer());
     }
 
-    public JsEntityPlayer getFakePlayer(JsWorldServer world)
+    public JsEntityPlayer getFakePlayer(JsServerWorld world)
     {
         return JsEntityPlayer.get(that.getFakePlayer(world.getThat()));
     }
