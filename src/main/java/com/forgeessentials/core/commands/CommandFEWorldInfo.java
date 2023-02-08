@@ -26,7 +26,7 @@ public class CommandFEWorldInfo extends BaseCommand
         ChatOutputHandler.chatNotification(ctx.getSource(), "Showing all world provider names:");
         for (World world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
         {
-            ChatOutputHandler.chatNotification(ctx.getSource(),Translator.format("%s - %s", world.dimension(), world.dimension().getRegistryName()));
+            ChatOutputHandler.chatNotification(ctx.getSource(),Translator.format("%s - %s - %s", world.dimension(), world.dimension().getRegistryName(), world.dimension().location().toString()));
         }
         return Command.SINGLE_SUCCESS;
     }

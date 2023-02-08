@@ -35,7 +35,7 @@ public class CommandBind extends BaseCommand
 
     public CommandBind(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     private static final String TAG_NAME = "FEbinding";

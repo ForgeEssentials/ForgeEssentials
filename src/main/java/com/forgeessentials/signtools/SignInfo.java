@@ -12,13 +12,14 @@ import com.forgeessentials.util.StringUtil;
 
 public class SignInfo
 {
-    int x, y, z, dim;
+    int x, y, z;
+    String dim;
     String[] text;
     String event;
     Hand hand;
     BlockRayTraceResult hitVec;
 
-    public SignInfo(int dim, BlockPos pos, String[] text, Event event)
+    public SignInfo(String dim, BlockPos pos, String[] text, Event event)
     {
         x = pos.getX();
         y = pos.getY();

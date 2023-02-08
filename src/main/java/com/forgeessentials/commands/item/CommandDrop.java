@@ -35,7 +35,7 @@ public class CommandDrop extends BaseCommand
 
     public CommandDrop(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

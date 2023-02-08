@@ -24,7 +24,7 @@ public class CommandCraft extends BaseCommand
 
     public CommandCraft(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

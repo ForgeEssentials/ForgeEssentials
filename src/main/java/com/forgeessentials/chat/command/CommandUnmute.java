@@ -21,7 +21,7 @@ public class CommandUnmute extends BaseCommand
 
     public CommandUnmute(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

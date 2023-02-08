@@ -44,7 +44,6 @@ import com.forgeessentials.commands.server.CommandServerSettings;
 import com.forgeessentials.commands.util.CommandsEventHandler;
 import com.forgeessentials.commands.util.MobTypeLoader;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
-import com.forgeessentials.commands.world.CommandBiome;
 import com.forgeessentials.commands.world.CommandButcher;
 import com.forgeessentials.commands.world.CommandFindblock;
 import com.forgeessentials.commands.world.CommandPregen;

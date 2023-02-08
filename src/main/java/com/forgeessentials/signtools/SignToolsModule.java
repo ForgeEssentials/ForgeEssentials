@@ -1,7 +1,9 @@
 package com.forgeessentials.signtools;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.SignTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -65,7 +67,7 @@ public class SignToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     public void onSignEdit(SignEditEvent e)
     {
-        if (APIRegistry.scripts.runEventScripts(signeditKey, e.editor.createCommandSourceStack(), new SignInfo(e.editor.dimension, e.pos, e.text, e)))
+        if (APIRegistry.scripts.runEventScripts(signeditKey, e.editor.createCommandSourceStack(), new SignInfo(e.editor.getLevel().dimension().location().toString(), e.pos, e.text, e)))
         {
             e.setCanceled(true);
         }
@@ -110,7 +112,7 @@ public class SignToolsModule extends ConfigLoaderBase
                 {
                     if (PermissionAPI.hasPermission(event.getPlayer(), EDIT_PERM)
                             && PermissionAPI.hasPermission(event.getPlayer(), "fe.protection.use.minecraft.sign")
-                            && event.getPlayer().getMainHandItem().getItem().equals(ItemTags.SIGNS))
+                            && event.getPlayer().getMainHandItem().getItem().equals(Items.ACACIA_SIGN||Items.BIRCH_SIGN||Items.CRIMSON_SIGN||Items.DARK_OAK_SIGN||Items.JUNGLE_SIGN||Items.OAK_SIGN||Items.SPRUCE_SIGN||Items.WARPED_SIGN))
                     {
                         // Convert Formatting back into FE format for easy use
                         ITextComponent[] imessage = ObfuscationReflectionHelper.getPrivateValue(SignTileEntity.class, sign, "messages");
@@ -131,7 +133,7 @@ public class SignToolsModule extends ConfigLoaderBase
             String[] signText = getFormatted(imessage);
 
             if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer().createCommandSourceStack(),
-                    new SignInfo(event.getPlayer().dimension, event.getPos(), signText, event)))
+                    new SignInfo(event.getPlayer().level.dimension().toString(), event.getPos(), signText, event)))
             {
                 event.setCanceled(true);
             }

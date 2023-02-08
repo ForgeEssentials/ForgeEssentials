@@ -36,7 +36,7 @@ public class QueryRegionHandler extends GenericRemoteHandler<Request>
     {
         if (request.data == null)
             error("missing data");
-        ServerWorld world = DimensionManager.getWorld(request.data.dim);
+        ServerWorld world = APIRegistry.namedWorldHandler.getWorld(request.data.dim);
         if (world == null)
             error("Invalid dimension");
         try
@@ -69,7 +69,7 @@ public class QueryRegionHandler extends GenericRemoteHandler<Request>
     public static class Request
     {
 
-        public int dim;
+        public String dim;
 
         public int x;
 

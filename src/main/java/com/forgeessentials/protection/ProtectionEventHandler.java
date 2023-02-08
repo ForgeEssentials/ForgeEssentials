@@ -444,7 +444,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             else if (mop == null)
                 point = new WorldPoint(event.getPlayer().level, event.getPos());
             else
-                point = new WorldPoint(event.getPlayer().level, mop.getBlockPos());
+                point = new WorldPoint(event.getPlayer().level, new BlockPos(mop.getLocation().x, mop.getLocation().y, mop.getLocation().z));
         }
         else
             point = new WorldPoint(event.getPlayer().level, event.getPos());
@@ -658,7 +658,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event.getEntity() instanceof ItemEntity)
         {
             // 1) Do nothing if the whole world is creative!
-            WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getWorld().dimension());
+            WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getWorld().dimension().location().toString());
             if (stringToGameType(worldZone.getGroupPermission(Zone.GROUP_DEFAULT, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
             {
                 // 2) If creative mode is set for any group at the location where the block was destroyed, prevent drops

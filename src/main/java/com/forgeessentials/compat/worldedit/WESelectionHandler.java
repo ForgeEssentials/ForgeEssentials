@@ -3,6 +3,7 @@ package com.forgeessentials.compat.worldedit;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
@@ -45,7 +46,7 @@ public class WESelectionHandler implements ISelectionProvider
             {
                 BlockVector3 wepos1 = rs.getPrimaryPosition();
                 BlockVector3 wepos2 = rs.isDefined() ? rs.getRegion().getPos2() : null;
-                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null
+                return new Selection(world.dimension().location().toString(), new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null
                         : new Point(
                                 wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
             }
@@ -61,7 +62,7 @@ public class WESelectionHandler implements ISelectionProvider
             {
                 BlockVector3 wepos1 = rs.isDefined() ? rs.getRegion().getMinimumPoint() : rs.getPrimaryPosition();
                 BlockVector3 wepos2 = rs.isDefined() ? rs.getRegion().getMaximumPoint() : null;
-                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null
+                return new Selection(world.dimension().location().toString(), new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null
                         : new Point(
                                 wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
             }
@@ -77,7 +78,7 @@ public class WESelectionHandler implements ISelectionProvider
             {
                 BlockVector3 wepos1 = rs.isDefined() ? rs.getRegion().getMinimumPoint() : rs.getPrimaryPosition();
                 BlockVector3 wepos2 = rs.isDefined() ? rs.getRegion().getMaximumPoint() : null;
-                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null
+                return new Selection(world.dimension().location().toString(), new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null
                         : new Point(
                                 wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
                 // Vector c = ellipsoid.getCenter();
@@ -100,7 +101,7 @@ public class WESelectionHandler implements ISelectionProvider
             {
                 BlockVector3 wepos1 = rs.isDefined() ? rs.getRegion().getMinimumPoint() : rs.getPrimaryPosition();
                 BlockVector3 wepos2 = rs.isDefined() ? rs.getRegion().getMaximumPoint() : null;
-                return new Selection(world, new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null
+                return new Selection(world.dimension().location().toString(), new Point(wepos1.getBlockX(), wepos1.getBlockY(), wepos1.getBlockZ()), wepos2 == null ? null
                         : new Point(
                                 wepos2.getBlockX(), wepos2.getBlockY(), wepos2.getBlockZ()));
                 // Vector c = cyl.getCenter();
@@ -117,10 +118,10 @@ public class WESelectionHandler implements ISelectionProvider
     }
 
     @Override
-    public void setDimension(ServerPlayerEntity player, World dim)
+    public void setDimension(ServerPlayerEntity player, String dim)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
-        ForgeWorld world = ForgeWorldEdit.inst.getWorld(dim);
+        ForgeWorld world = ForgeWorldEdit.inst.getWorld(APIRegistry.namedWorldHandler.getWorld(dim));
         session.getRegionSelector(world).setWorld(world);
     }
 
@@ -139,10 +140,10 @@ public class WESelectionHandler implements ISelectionProvider
     }
 
     @Override
-    public void select(ServerPlayerEntity player, World dimension, AreaBase area)
+    public void select(ServerPlayerEntity player, String dimension, AreaBase area)
     {
         LocalSession session = ForgeWorldEdit.inst.getSession(player);
-        ForgeWorld world = ForgeWorldEdit.inst.getWorld(dimension);
+        ForgeWorld world = ForgeWorldEdit.inst.getWorld(APIRegistry.namedWorldHandler.getWorld(dimension));
         CuboidRegionSelector selector;
         if (session.getRegionSelector(world) instanceof ExtendingCuboidRegionSelector)
             selector = new ExtendingCuboidRegionSelector(world);
