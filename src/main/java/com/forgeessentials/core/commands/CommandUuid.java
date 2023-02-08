@@ -12,7 +12,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandUuid extends BaseCommand
+public class CommandUuid extends ForgeEssentialsCommandBuilder
 {
 
     public CommandUuid(String name, int permissionLevel, boolean enabled)

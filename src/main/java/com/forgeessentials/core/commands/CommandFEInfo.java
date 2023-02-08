@@ -17,7 +17,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandFEInfo extends BaseCommand
+public class CommandFEInfo extends ForgeEssentialsCommandBuilder
 {
 
     public CommandFEInfo(String name, int permissionLevel, boolean enabled)

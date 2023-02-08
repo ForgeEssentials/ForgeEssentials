@@ -14,10 +14,10 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandTestPlayerlogger extends BaseCommand
+public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
 {
 
     public ServerPlayerEntity player;

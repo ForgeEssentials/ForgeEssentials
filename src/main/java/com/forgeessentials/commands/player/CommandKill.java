@@ -10,7 +10,7 @@ import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -19,7 +19,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandKill extends BaseCommand
+public class CommandKill extends ForgeEssentialsCommandBuilder
 {
 
     public CommandKill(String name, int permissionLevel, boolean enabled)

@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
@@ -26,7 +26,7 @@ import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandWeather extends BaseCommand implements ConfigurableCommand
+public class CommandWeather extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
 
     public CommandWeather()

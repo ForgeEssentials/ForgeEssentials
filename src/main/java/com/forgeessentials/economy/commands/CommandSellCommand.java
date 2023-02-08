@@ -2,7 +2,7 @@ package com.forgeessentials.economy.commands;
 
 import java.util.Arrays;
 
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -26,7 +26,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandSellCommand extends BaseCommand
+public class CommandSellCommand extends ForgeEssentialsCommandBuilder
 {
 
     public CommandSellCommand(String name, int permissionLevel, boolean enabled)

@@ -7,7 +7,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
@@ -15,7 +15,7 @@ import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 
-public class CommandTPA extends BaseCommand
+public class CommandTPA extends ForgeEssentialsCommandBuilder
 {
 
     public static final String PERM_HERE = TeleportModule.PERM_TPA + ".here";

@@ -20,14 +20,14 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-public abstract class BaseCommand extends CommandProcessing{
+public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
 	protected LiteralArgumentBuilder<CommandSource> builder;
 	boolean enabled;
 
     // ------------------------------------------------------------
     // Command usage
 
-	public BaseCommand(boolean enabled) {
+	public ForgeEssentialsCommandBuilder(boolean enabled) {
 		this.builder = Commands.literal(getName()).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
 		this.enabled = enabled;
 	}
@@ -120,7 +120,7 @@ public abstract class BaseCommand extends CommandProcessing{
     }
 
     /**
-     * @deprecated Use {@link BaseCommand#getDefaultSecondaryAliases()} in downstream classes
+     * @deprecated Use {@link ForgeEssentialsCommandBuilder#getDefaultSecondaryAliases()} in downstream classes
      * Returns a list of default aliases, that will be added to the configuration on first run
      */
     public String[] getDefaultAliases()

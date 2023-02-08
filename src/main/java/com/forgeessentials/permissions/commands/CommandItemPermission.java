@@ -13,14 +13,14 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.permissions.core.ItemPermissionManager;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandItemPermission extends BaseCommand
+public class CommandItemPermission extends ForgeEssentialsCommandBuilder
 {
 
     public CommandItemPermission(String name, int permissionLevel, boolean enabled)

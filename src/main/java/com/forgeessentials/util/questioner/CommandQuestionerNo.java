@@ -1,6 +1,6 @@
 package com.forgeessentials.util.questioner;
 
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -9,7 +9,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandQuestionerNo extends BaseCommand
+public class CommandQuestionerNo extends ForgeEssentialsCommandBuilder
 {
     public CommandQuestionerNo(String name, int permissionLevel, boolean enabled)
     {

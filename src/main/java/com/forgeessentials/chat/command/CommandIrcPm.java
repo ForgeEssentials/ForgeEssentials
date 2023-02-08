@@ -8,7 +8,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.commands.Arguments.FeIrcPlayerArgument;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
@@ -17,7 +17,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandIrcPm extends BaseCommand
+public class CommandIrcPm extends ForgeEssentialsCommandBuilder
 {
 
     public CommandIrcPm(String name, int permissionLevel, boolean enabled)

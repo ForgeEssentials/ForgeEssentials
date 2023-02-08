@@ -1,7 +1,7 @@
 package com.forgeessentials.commands.world;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -20,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandPush extends BaseCommand
+public class CommandPush extends ForgeEssentialsCommandBuilder
 {
 
     public CommandPush(String name, int permissionLevel, boolean enabled)

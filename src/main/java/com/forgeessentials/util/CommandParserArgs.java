@@ -5,7 +5,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -182,12 +182,12 @@ public class CommandParserArgs
         Set<String> result = new TreeSet<>();
         for (UserIdent knownPlayerIdent : APIRegistry.perms.getServerZone().getKnownPlayers())
         {
-            if (BaseCommand.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
+            if (ForgeEssentialsCommandBuilder.doesStringStartWith(arg, knownPlayerIdent.getUsernameOrUuid()))
                 result.add(knownPlayerIdent.getUsernameOrUuid());
         }
         for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
-            if (BaseCommand.doesStringStartWith(arg, player.getName().getString()))
+            if (ForgeEssentialsCommandBuilder.doesStringStartWith(arg, player.getName().getString()))
                 result.add(player.getName().getString());
         }
         return new ArrayList<>(result);
@@ -240,7 +240,7 @@ public class CommandParserArgs
                 int nodeIndex = perm.indexOf('.', permission.length());
                 if (nodeIndex >= 0)
                     perm = perm.substring(0, nodeIndex);
-                if (BaseCommand.doesStringStartWith(permission, perm))
+                if (ForgeEssentialsCommandBuilder.doesStringStartWith(permission, perm))
                     result.add(perm);
             }
             tabCompletion = new ArrayList<>(result);
@@ -262,7 +262,7 @@ public class CommandParserArgs
     {
         if (isTabCompletion && size() == 1)
         {
-            tabCompletion = BaseCommand.getListOfStringsMatchingLastWord(args.peek(), APIRegistry.namedWorldHandler.getWorldNames());
+            tabCompletion = ForgeEssentialsCommandBuilder.getListOfStringsMatchingLastWord(args.peek(), APIRegistry.namedWorldHandler.getWorldNames());
             throw new CancelParsingException();
         }
         if (isEmpty())

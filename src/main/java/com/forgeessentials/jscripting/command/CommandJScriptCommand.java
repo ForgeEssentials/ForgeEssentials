@@ -8,7 +8,7 @@ import javax.script.ScriptException;
 import net.minecraft.command.CommandException;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
@@ -20,7 +20,7 @@ import com.forgeessentials.scripting.ScriptParser.SyntaxException;
 import com.forgeessentials.util.CommandParserArgs;
 import com.google.common.base.Preconditions;
 
-public class CommandJScriptCommand extends BaseCommand
+public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
 {
 
     public final ScriptInstance script;

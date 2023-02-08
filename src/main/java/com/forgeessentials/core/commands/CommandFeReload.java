@@ -12,7 +12,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandFeReload extends BaseCommand
+public class CommandFeReload extends ForgeEssentialsCommandBuilder
 {
 
     public CommandFeReload(String name, int permissionLevel, boolean enabled)

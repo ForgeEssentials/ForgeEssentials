@@ -17,7 +17,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandHome extends BaseCommand
+public class CommandHome extends ForgeEssentialsCommandBuilder
 {
 
     @Override

@@ -16,7 +16,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandPos extends BaseCommand
+public class CommandPos extends ForgeEssentialsCommandBuilder
 {
     private int type;
 

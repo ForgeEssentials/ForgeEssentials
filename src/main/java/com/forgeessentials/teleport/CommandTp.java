@@ -23,7 +23,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-public class CommandTp extends BaseCommand
+public class CommandTp extends ForgeEssentialsCommandBuilder
 {
 
     /**

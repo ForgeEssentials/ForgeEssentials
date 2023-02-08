@@ -12,7 +12,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.FileUtils;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
@@ -36,9 +36,9 @@ public class FECommandManager implements ConfigSaver
 
     public static final int COMMANDS_VERSION = 4;
 
-    protected static Map<String, BaseCommand> commands = new HashMap<>();
+    protected static Map<String, ForgeEssentialsCommandBuilder> commands = new HashMap<>();
 
-    protected static Set<BaseCommand> registeredCommands = new HashSet<>();
+    protected static Set<ForgeEssentialsCommandBuilder> registeredCommands = new HashSet<>();
 
     protected static boolean useSingleConfigFile = false;
     
@@ -67,7 +67,7 @@ public class FECommandManager implements ConfigSaver
             newMappings = true;
             FECversion.set(COMMANDS_VERSION);
         }
-        for (BaseCommand command : commands.values())
+        for (ForgeEssentialsCommandBuilder command : commands.values())
             loadCommandConfig(command);
     }
 
@@ -82,7 +82,7 @@ public class FECommandManager implements ConfigSaver
 		
 	}
 
-    private static void loadCommandConfig(BaseCommand command)
+    private static void loadCommandConfig(ForgeEssentialsCommandBuilder command)
     {
 
         ForgeConfigSpec.Builder configBuilder;
@@ -100,12 +100,12 @@ public class FECommandManager implements ConfigSaver
         ConfigBase.registerConfigManual(configBuilder.build(), Paths.get(ForgeEssentials.getFEDirectory()+"/CommandSettings/"+command.getName()+".toml"),true);
     }
 
-    public static void registerCommand(BaseCommand command)
+    public static void registerCommand(ForgeEssentialsCommandBuilder command)
     {
         registerCommand(command, false);
     }
 
-    public static void registerCommand(BaseCommand command, boolean registerNow)
+    public static void registerCommand(ForgeEssentialsCommandBuilder command, boolean registerNow)
     {
         commands.put(command.getName(), command);
         if (useSingleConfigFile = false)
@@ -118,7 +118,7 @@ public class FECommandManager implements ConfigSaver
 
     public static void deegisterCommand(String name)
     {
-        BaseCommand command = commands.remove(name);
+        ForgeEssentialsCommandBuilder command = commands.remove(name);
         if (command != null)
             command.deregister();
     }
@@ -126,7 +126,7 @@ public class FECommandManager implements ConfigSaver
     public static void registerCommands()
     {
     	bakeConfig(true);
-        for (BaseCommand command : commands.values())
+        for (ForgeEssentialsCommandBuilder command : commands.values())
             if (!registeredCommands.contains(command))
             {
                 registeredCommands.add(command);

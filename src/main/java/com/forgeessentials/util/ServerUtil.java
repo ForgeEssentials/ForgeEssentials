@@ -34,7 +34,7 @@ import net.minecraftforge.fml.event.server.ServerLifecycleEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -115,7 +115,7 @@ public abstract class ServerUtil
         {
             if (isRelative)
                 value = value.substring(1);
-            d1 += BaseCommand.parseDouble(value);
+            d1 += ForgeEssentialsCommandBuilder.parseDouble(value);
         }
         return d1;
     }
@@ -417,8 +417,8 @@ public abstract class ServerUtil
             LoggingHandler.felog.error(String.format("Error replacing command /%s", clazz.getName()));
             e.printStackTrace();
         }
-        if (newCommand instanceof BaseCommand)
-            ((BaseCommand) newCommand).register();
+        if (newCommand instanceof ForgeEssentialsCommandBuilder)
+            ((ForgeEssentialsCommandBuilder) newCommand).register();
     }
 
     public static void replaceCommand(ICommand oldCommand, ICommand newCommand)
@@ -444,8 +444,8 @@ public abstract class ServerUtil
             LoggingHandler.felog.error(String.format("Error replacing command /%s", oldCommand.getName()));
             e.printStackTrace();
         }
-        if (newCommand instanceof BaseCommand)
-            ((BaseCommand) newCommand).register();
+        if (newCommand instanceof ForgeEssentialsCommandBuilder)
+            ((ForgeEssentialsCommandBuilder) newCommand).register();
     }
 
     public static void replaceCommand(String command, ICommand newCommand)

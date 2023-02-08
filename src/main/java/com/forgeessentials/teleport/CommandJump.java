@@ -19,7 +19,7 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 
-public class CommandJump extends BaseCommand
+public class CommandJump extends ForgeEssentialsCommandBuilder
 {
 
     public CommandJump()

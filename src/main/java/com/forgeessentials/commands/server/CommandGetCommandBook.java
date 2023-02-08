@@ -21,11 +21,11 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.PermissionManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandGetCommandBook extends BaseCommand
+public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
 {
 
     public CommandGetCommandBook(boolean enabled)

@@ -8,7 +8,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandDeselect extends BaseCommand
+public class CommandDeselect extends ForgeEssentialsCommandBuilder
 {
 
     @Override

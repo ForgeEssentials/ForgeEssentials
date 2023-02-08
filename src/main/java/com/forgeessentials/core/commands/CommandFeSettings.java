@@ -20,7 +20,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 
-public class CommandFeSettings extends BaseCommand implements ConfigLoader
+public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements ConfigLoader
 {
 
     public CommandFeSettings(String name, int permissionLevel, boolean enabled)

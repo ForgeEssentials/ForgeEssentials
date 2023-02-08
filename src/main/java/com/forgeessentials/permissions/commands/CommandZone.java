@@ -13,7 +13,7 @@ import com.forgeessentials.api.permissions.WorldZone;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
@@ -21,7 +21,7 @@ import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandZone extends BaseCommand
+public class CommandZone extends ForgeEssentialsCommandBuilder
 {
 
     public CommandZone(String name, int permissionLevel, boolean enabled)

@@ -15,11 +15,11 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandPotion extends BaseCommand
+public class CommandPotion extends ForgeEssentialsCommandBuilder
 {
     public CommandPotion(boolean enabled)
     {

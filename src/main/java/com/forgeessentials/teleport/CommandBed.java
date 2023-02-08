@@ -17,7 +17,7 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 
-public class CommandBed extends BaseCommand
+public class CommandBed extends ForgeEssentialsCommandBuilder
 {
 
     public CommandBed()

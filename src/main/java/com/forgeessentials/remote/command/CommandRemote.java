@@ -15,7 +15,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet7Remote;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
@@ -26,7 +26,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandRemote extends BaseCommand
+public class CommandRemote extends ForgeEssentialsCommandBuilder
 {
 
     public CommandRemote(String name, int permissionLevel, boolean enabled)

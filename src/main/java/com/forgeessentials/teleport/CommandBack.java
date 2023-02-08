@@ -11,7 +11,7 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 
-public class CommandBack extends BaseCommand
+public class CommandBack extends ForgeEssentialsCommandBuilder
 {
 
     @Override

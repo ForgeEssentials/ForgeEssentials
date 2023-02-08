@@ -16,7 +16,7 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.CommandParserArgs;
@@ -27,7 +27,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandRollback extends BaseCommand
+public class CommandRollback extends ForgeEssentialsCommandBuilder
 {
 
     public CommandRollback(String name, int permissionLevel, boolean enabled)

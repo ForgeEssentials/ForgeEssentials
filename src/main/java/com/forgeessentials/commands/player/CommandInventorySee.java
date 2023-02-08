@@ -17,7 +17,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.SeenPlayerInventory;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -28,7 +28,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 /**
  * Opens other player inventory.
  */
-public class CommandInventorySee extends BaseCommand
+public class CommandInventorySee extends ForgeEssentialsCommandBuilder
 {
 
 

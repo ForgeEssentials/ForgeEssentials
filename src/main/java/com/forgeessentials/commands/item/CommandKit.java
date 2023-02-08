@@ -19,7 +19,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.Kit;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.commands.Arguments.FeKitArgument;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -39,7 +39,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
  * Kit command with cooldown. Should also put armor in armor slots.
  */
 
-public class CommandKit extends BaseCommand implements ConfigurableCommand
+public class CommandKit extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
 
     public CommandKit(String name, int permissionLevel, boolean enabled)

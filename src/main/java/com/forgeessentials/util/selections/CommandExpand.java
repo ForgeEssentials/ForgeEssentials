@@ -12,7 +12,7 @@ import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandExpand extends BaseCommand
+public class CommandExpand extends ForgeEssentialsCommandBuilder
 {
 
     public CommandExpand()

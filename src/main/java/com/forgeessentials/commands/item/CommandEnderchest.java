@@ -8,7 +8,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -17,7 +17,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 /**
  * Opens your enderchest.
  */
-public class CommandEnderchest extends BaseCommand
+public class CommandEnderchest extends ForgeEssentialsCommandBuilder
 {
     public CommandEnderchest(String name, int permissionLevel, boolean enabled)
     {

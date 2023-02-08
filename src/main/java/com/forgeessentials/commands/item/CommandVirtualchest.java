@@ -10,7 +10,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.electronwill.nightconfig.core.io.CharsWrapper.Builder;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.VirtualChest;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -19,7 +19,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 /**
  * Opens a configurable virtual chest
  */
-public class CommandVirtualchest extends BaseCommand implements ConfigurableCommand
+public class CommandVirtualchest extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
     public CommandVirtualchest(String name, int permissionLevel, boolean enabled)
     {

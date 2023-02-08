@@ -10,14 +10,14 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import java.util.List;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 
-public class CommandModlist extends BaseCommand
+public class CommandModlist extends ForgeEssentialsCommandBuilder
 {
 
     public CommandModlist(String name, int permissionLevel, boolean enabled)

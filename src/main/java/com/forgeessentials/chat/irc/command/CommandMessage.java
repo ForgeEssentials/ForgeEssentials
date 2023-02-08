@@ -9,7 +9,7 @@ import net.minecraft.util.text.ITextComponent;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.CommandParserArgs;
 
 public class CommandMessage extends IrcCommandParser
@@ -56,7 +56,7 @@ public class CommandMessage extends IrcCommandParser
             return;
         }
 
-        ITextComponent msg = BaseCommand.getChatComponentFromNthArg(arguments.sender, arguments.toArray(), 0, true);
+        ITextComponent msg = ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(arguments.sender, arguments.toArray(), 0, true);
         ModuleChat.tell(arguments.sender, msg, player.getPlayer().createCommandSourceStack());
     }
 

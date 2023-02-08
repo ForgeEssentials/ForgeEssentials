@@ -12,13 +12,13 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandSmite extends BaseCommand
+public class CommandSmite extends ForgeEssentialsCommandBuilder
 {
 
     public CommandSmite(boolean enabled)

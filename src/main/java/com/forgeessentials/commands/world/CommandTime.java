@@ -21,14 +21,14 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.world.CommandWeather.WeatherData;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandTime extends BaseCommand implements ConfigurableCommand
+public class CommandTime extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
 
     public CommandTime(String name, int permissionLevel, boolean enabled)

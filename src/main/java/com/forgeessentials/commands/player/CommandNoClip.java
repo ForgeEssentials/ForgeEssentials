@@ -10,7 +10,7 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet5Noclip;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.WorldUtil;
@@ -21,7 +21,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandNoClip extends BaseCommand
+public class CommandNoClip extends ForgeEssentialsCommandBuilder
 {
 
     public CommandNoClip(String name, int permissionLevel, boolean enabled)

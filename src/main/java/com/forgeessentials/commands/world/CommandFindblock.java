@@ -9,14 +9,14 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandFindblock extends BaseCommand implements ConfigurableCommand
+public class CommandFindblock extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
 
     public CommandFindblock(String name, int permissionLevel, boolean enabled)

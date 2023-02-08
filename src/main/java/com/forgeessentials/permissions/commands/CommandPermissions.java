@@ -4,11 +4,11 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.CommandParserArgs;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandPermissions extends BaseCommand
+public class CommandPermissions extends ForgeEssentialsCommandBuilder
 {
 
     public CommandPermissions(String name, int permissionLevel, boolean enabled)

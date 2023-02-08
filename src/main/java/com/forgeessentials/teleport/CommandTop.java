@@ -16,7 +16,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandTop extends BaseCommand
+public class CommandTop extends ForgeEssentialsCommandBuilder
 {
 
     @Override

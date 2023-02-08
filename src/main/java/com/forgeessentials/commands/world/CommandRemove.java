@@ -15,7 +15,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandRemove extends BaseCommand
+public class CommandRemove extends ForgeEssentialsCommandBuilder
 {
 
     @Override

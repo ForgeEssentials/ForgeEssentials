@@ -20,7 +20,7 @@ import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.CommandButcherTickTask.ButcherMobType;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
-public class CommandButcher extends BaseCommand
+public class CommandButcher extends ForgeEssentialsCommandBuilder
 {
 
     public static List<String> typeList = ButcherMobType.getNames();

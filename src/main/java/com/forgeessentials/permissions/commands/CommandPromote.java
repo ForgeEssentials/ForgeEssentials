@@ -11,14 +11,14 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandPromote extends BaseCommand
+public class CommandPromote extends ForgeEssentialsCommandBuilder
 {
 
     public CommandPromote(String name, int permissionLevel, boolean enabled)

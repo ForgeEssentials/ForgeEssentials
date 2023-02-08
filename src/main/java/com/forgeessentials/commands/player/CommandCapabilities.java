@@ -24,7 +24,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
  * Allows you to modify a bunch of interesting stuff...
  */
 
-public class CommandCapabilities extends BaseCommand
+public class CommandCapabilities extends ForgeEssentialsCommandBuilder
 {
     public static ArrayList<String> names;
 

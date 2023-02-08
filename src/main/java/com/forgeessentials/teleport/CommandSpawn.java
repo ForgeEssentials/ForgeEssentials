@@ -18,7 +18,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandSpawn extends BaseCommand
+public class CommandSpawn extends ForgeEssentialsCommandBuilder
 {
 
     @Override

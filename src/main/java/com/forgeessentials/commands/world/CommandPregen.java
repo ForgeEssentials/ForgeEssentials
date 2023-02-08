@@ -23,7 +23,7 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.commands.BaseCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.TickTask;
 import com.forgeessentials.core.misc.TranslatedCommandException;
@@ -34,7 +34,7 @@ import com.forgeessentials.worldborder.ModuleWorldBorder;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-public class CommandPregen extends BaseCommand implements TickTask
+public class CommandPregen extends ForgeEssentialsCommandBuilder implements TickTask
 {
 
     public CommandPregen(String name, int permissionLevel, boolean enabled)
