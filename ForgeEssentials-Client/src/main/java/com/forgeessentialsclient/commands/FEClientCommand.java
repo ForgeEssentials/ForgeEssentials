@@ -18,10 +18,22 @@ import com.mojang.brigadier.context.CommandContext;
  */
 public class FEClientCommand extends BaseCommand {
 	
-	public FEClientCommand(String name, int permissionLevel, boolean enabled) {
-		super(name, permissionLevel, enabled);
+	public FEClientCommand(boolean enabled) {
+		super(enabled);
 	}
-    
+
+    @Override
+    public String getPrimaryAlias()
+    {
+        return "feclient";
+    }
+
+    @Override
+    public int getPermissionLevel()
+    {
+        return 0;
+    }
+
     @Override
 	public LiteralArgumentBuilder<CommandSource> setExecution() {
 		return builder

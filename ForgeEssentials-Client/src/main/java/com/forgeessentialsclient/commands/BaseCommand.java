@@ -8,9 +8,11 @@ import net.minecraft.command.Commands;
 public class BaseCommand {
 	protected LiteralArgumentBuilder<CommandSource> builder;
 	boolean enabled;
+	String name;
+	int permissionLevel;
 	
-	public BaseCommand(String name, int permissionLevel, boolean enabled) {
-		this.builder = Commands.literal(name).requires(source -> source.hasPermission(permissionLevel));
+	public BaseCommand(boolean enabled) {
+		this.builder = Commands.literal(getPrimaryAlias()).requires(source -> source.hasPermission(getPermissionLevel()));
 		this.enabled = enabled;
 	}
 	
@@ -25,4 +27,11 @@ public class BaseCommand {
 	public LiteralArgumentBuilder<CommandSource> setExecution() {
 		return null;
 	}
+    public String getPrimaryAlias() {
+        return "";
+    }
+
+    public int getPermissionLevel() {
+        return 0;
+    }
 }

@@ -13,7 +13,7 @@ public class CommandInit {
 	public static void registerCommands(final RegisterCommandsEvent event) {
 		CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
 		
-		commands.add(new FEClientCommand("feclient", 0, true));
+		commands.add(new FEClientCommand(true));
 		
 		commands.forEach(command -> {
 			if (command.isEnabled() && command.setExecution() != null) {
