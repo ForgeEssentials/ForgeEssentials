@@ -23,7 +23,7 @@ public class CommandHeal extends BaseCommand
 
     public CommandHeal(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

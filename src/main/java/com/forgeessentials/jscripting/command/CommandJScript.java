@@ -22,7 +22,7 @@ public class CommandJScript extends BaseCommand
 
     public CommandJScript(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

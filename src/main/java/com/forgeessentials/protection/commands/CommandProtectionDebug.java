@@ -20,7 +20,7 @@ public class CommandProtectionDebug extends BaseCommand
 
     public CommandProtectionDebug(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

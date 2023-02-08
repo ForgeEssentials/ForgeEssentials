@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.core.misc.PermissionManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.command.CommandSource;
@@ -26,8 +27,8 @@ public abstract class BaseCommand extends CommandProcessing{
     // ------------------------------------------------------------
     // Command usage
 
-	public BaseCommand(String name, int permissionLevel, boolean enabled) {
-		this.builder = Commands.literal(name).requires(source -> source.hasPermission(permissionLevel));
+	public BaseCommand(boolean enabled) {
+		this.builder = Commands.literal(getName()).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
 		this.enabled = enabled;
 	}
 

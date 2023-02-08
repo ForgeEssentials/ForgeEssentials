@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
@@ -14,10 +15,17 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 public class CommandPotion extends BaseCommand
 {
+    public CommandPotion(boolean enabled)
+    {
+        super(enabled);
+    }
+
     public static HashMap<String, Integer> names;
 
     static
@@ -73,6 +81,12 @@ public class CommandPotion extends BaseCommand
     public void registerExtraPermissions()
     {
         APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Use potions on others");
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return null;
     }
 
     @Override

@@ -23,7 +23,7 @@ public class CommandPromote extends BaseCommand
 
     public CommandPromote(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final String PERM_NODE = "fe.perm.promote";

@@ -41,7 +41,7 @@ public class CommandSellprice extends BaseCommand
 
     public CommandSellprice(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     private static File priceFile = new File(ForgeEssentials.getFEDirectory(), "prices.txt");

@@ -22,7 +22,7 @@ public class CommandSpeed extends BaseCommand
 
     public CommandSpeed(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

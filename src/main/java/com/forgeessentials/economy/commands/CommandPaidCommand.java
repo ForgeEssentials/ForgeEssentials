@@ -33,7 +33,7 @@ public class CommandPaidCommand extends BaseCommand
 {
     public CommandPaidCommand(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

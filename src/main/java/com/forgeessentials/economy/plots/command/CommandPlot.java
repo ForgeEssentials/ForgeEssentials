@@ -51,7 +51,7 @@ public class CommandPlot extends BaseCommand
 
     public CommandPlot(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static enum PlotListingType

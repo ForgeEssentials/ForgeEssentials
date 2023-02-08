@@ -20,8 +20,9 @@ import com.mojang.brigadier.context.CommandContext;
 public class CommandModlist extends BaseCommand
 {
 
-    public CommandModlist(String name, int permissionLevel, boolean enabled) {
-		super(name, permissionLevel, enabled);
+    public CommandModlist(String name, int permissionLevel, boolean enabled)
+    {
+		super(enabled);
 	}
 
 	@Override

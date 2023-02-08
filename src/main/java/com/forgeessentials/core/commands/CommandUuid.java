@@ -17,7 +17,7 @@ public class CommandUuid extends BaseCommand
 
     public CommandUuid(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

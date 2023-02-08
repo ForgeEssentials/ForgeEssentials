@@ -19,7 +19,7 @@ public class CommandBackup extends BaseCommand
 
     public CommandBackup(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

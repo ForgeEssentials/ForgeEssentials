@@ -24,7 +24,7 @@ public class CommandTempBan extends BaseCommand
 
     public CommandTempBan(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final String PERM_BAN_REASON = "tempban.reason";

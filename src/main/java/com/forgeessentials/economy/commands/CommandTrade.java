@@ -28,7 +28,7 @@ public class CommandTrade extends BaseCommand
 
     public CommandTrade(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

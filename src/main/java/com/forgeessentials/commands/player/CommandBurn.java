@@ -24,7 +24,7 @@ public class CommandBurn extends BaseCommand
 
     public CommandBurn(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

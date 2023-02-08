@@ -17,7 +17,7 @@ public class CommandFeReload extends BaseCommand
 
     public CommandFeReload(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

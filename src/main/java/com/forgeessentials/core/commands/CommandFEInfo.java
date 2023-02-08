@@ -22,7 +22,7 @@ public class CommandFEInfo extends BaseCommand
 
     public CommandFEInfo(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

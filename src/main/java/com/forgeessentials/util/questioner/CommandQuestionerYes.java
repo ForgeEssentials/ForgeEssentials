@@ -13,7 +13,7 @@ public class CommandQuestionerYes extends BaseCommand
 {
     public CommandQuestionerYes(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     private final boolean type = true;

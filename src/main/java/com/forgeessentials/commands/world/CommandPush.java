@@ -25,7 +25,7 @@ public class CommandPush extends BaseCommand
 
     public CommandPush(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

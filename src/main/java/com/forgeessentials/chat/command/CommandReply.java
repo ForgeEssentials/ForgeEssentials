@@ -24,7 +24,7 @@ public class CommandReply extends BaseCommand
 
     public CommandReply(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static Map<CommandSource, WeakReference<CommandSource>> replyMap = new WeakHashMap<>();

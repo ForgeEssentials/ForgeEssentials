@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -22,9 +23,15 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.PermissionManager;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 public class CommandGetCommandBook extends BaseCommand
 {
+
+    public CommandGetCommandBook(boolean enabled)
+    {
+        super(enabled);
+    }
 
     public static String joinAliases(Object[] par0ArrayOfObj)
     {
@@ -73,6 +80,12 @@ public class CommandGetCommandBook extends BaseCommand
     public String getPermissionNode()
     {
         return ModuleCommands.PERM + ".commandbook";
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return null;
     }
 
     @Override

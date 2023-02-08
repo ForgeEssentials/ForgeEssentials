@@ -25,7 +25,7 @@ public class CommandFeSettings extends BaseCommand implements ConfigLoader
 
     public CommandFeSettings(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final String CONFIG_FILE = "Settings";

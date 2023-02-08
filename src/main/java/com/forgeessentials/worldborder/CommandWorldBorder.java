@@ -23,7 +23,7 @@ public class CommandWorldBorder extends BaseCommand
 
     public CommandWorldBorder(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

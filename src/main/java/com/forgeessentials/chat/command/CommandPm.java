@@ -26,7 +26,7 @@ public class CommandPm extends BaseCommand
 
     public CommandPm(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static Map<CommandSource, WeakReference<CommandSource>> targetMap = new WeakHashMap<>();

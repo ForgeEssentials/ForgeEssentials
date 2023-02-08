@@ -23,7 +23,7 @@ public class CommandBubble extends BaseCommand
 
     public CommandBubble(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static String BUBBLE_GROUP = "command_bubble";

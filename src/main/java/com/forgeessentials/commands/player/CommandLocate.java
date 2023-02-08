@@ -22,7 +22,7 @@ public class CommandLocate extends BaseCommand
 
     public CommandLocate(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

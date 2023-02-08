@@ -18,7 +18,7 @@ public class CommandVIP extends BaseCommand
 {
 
     public CommandVIP(String name, int permissionLevel, boolean enabled) {
-		super(name, permissionLevel, enabled);
+		super(enabled);
 	}
 
 	@Override

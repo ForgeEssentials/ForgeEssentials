@@ -33,7 +33,7 @@ public class CommandTime extends BaseCommand implements ConfigurableCommand
 
     public CommandTime(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final int dayTimeStart = 1;

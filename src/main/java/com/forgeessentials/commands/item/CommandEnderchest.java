@@ -21,7 +21,7 @@ public class CommandEnderchest extends BaseCommand
 {
     public CommandEnderchest(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

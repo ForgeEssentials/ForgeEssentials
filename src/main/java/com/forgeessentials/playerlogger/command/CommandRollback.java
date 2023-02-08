@@ -32,7 +32,7 @@ public class CommandRollback extends BaseCommand
 
     public CommandRollback(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final String PERM = ModulePlayerLogger.PERM_COMMAND + ".rollback";

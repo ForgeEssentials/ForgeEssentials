@@ -32,7 +32,7 @@ public class CommandVanish extends BaseCommand
 
     public CommandVanish(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final String PERM = "fe.commands.vanish";

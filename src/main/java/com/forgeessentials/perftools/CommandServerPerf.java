@@ -19,7 +19,7 @@ public class CommandServerPerf extends BaseCommand
 
     public CommandServerPerf(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
 

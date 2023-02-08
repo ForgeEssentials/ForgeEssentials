@@ -25,7 +25,7 @@ public class CommandAFK extends BaseCommand
 
     public CommandAFK(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final String PERM = "fe.commands.afk";

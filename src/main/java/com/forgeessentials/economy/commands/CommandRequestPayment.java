@@ -24,7 +24,7 @@ public class CommandRequestPayment extends BaseCommand
 
     public CommandRequestPayment(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

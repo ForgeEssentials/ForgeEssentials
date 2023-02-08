@@ -46,7 +46,7 @@ public class CommandRules extends BaseCommand implements ConfigurableCommand
 
     public CommandRules(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final String[] autocomargs = { "add", "remove", "move", "change", "book" };

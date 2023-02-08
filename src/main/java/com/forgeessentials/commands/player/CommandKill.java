@@ -24,7 +24,7 @@ public class CommandKill extends BaseCommand
 
     public CommandKill(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

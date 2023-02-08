@@ -21,7 +21,7 @@ public class CommandMute extends BaseCommand
 
     public CommandMute(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

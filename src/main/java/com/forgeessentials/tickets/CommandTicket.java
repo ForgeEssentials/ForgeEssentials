@@ -31,7 +31,7 @@ public class CommandTicket extends BaseCommand
 {
     public CommandTicket(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

@@ -20,7 +20,7 @@ public class CommandRename extends BaseCommand
 
     public CommandRename(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

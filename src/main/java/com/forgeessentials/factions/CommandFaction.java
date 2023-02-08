@@ -32,7 +32,7 @@ public class CommandFaction extends BaseCommand
 
     public CommandFaction(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final String MSG_FACTION_REQUIRED = "You need to be in a faction to use this command";

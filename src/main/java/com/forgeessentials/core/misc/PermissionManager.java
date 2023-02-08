@@ -108,6 +108,20 @@ public class PermissionManager
 
     }
 
+    public static int fromDefaultPermissionLevel(DefaultPermissionLevel level)
+    {
+        switch (level)
+        {
+        case ALL:
+            return 0;
+        case OP:
+            return 4;
+        default:
+            return 4;
+        }
+
+    }
+
     public interface PermissionObject
     {
         public String getPermissionNode();

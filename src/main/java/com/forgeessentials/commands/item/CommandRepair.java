@@ -23,7 +23,7 @@ public class CommandRepair extends BaseCommand
 
     public CommandRepair(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

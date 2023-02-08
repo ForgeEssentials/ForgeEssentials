@@ -18,7 +18,7 @@ public class CommandPing extends BaseCommand implements ConfigurableCommand
 {
     public CommandPing(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public String response = "Pong! %time";

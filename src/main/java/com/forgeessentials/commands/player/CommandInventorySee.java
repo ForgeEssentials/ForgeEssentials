@@ -34,7 +34,7 @@ public class CommandInventorySee extends BaseCommand
 
     public CommandInventorySee(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

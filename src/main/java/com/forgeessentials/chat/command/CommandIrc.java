@@ -20,7 +20,7 @@ public class CommandIrc extends BaseCommand
 
     public CommandIrc(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
 

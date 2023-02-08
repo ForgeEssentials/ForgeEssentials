@@ -36,7 +36,7 @@ public class CommandDoAs extends BaseCommand
 
     public CommandDoAs(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

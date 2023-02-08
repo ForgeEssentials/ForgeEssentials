@@ -26,7 +26,7 @@ public class CommandNoClip extends BaseCommand
 
     public CommandNoClip(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

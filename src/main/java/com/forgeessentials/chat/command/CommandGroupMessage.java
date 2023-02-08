@@ -20,7 +20,7 @@ public class CommandGroupMessage extends BaseCommand
 
     public CommandGroupMessage(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final String PERM = "fe.chat.groupmessage";

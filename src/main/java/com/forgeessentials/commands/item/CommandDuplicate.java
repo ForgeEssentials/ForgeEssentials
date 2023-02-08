@@ -21,7 +21,7 @@ public class CommandDuplicate extends BaseCommand
 
     public CommandDuplicate(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

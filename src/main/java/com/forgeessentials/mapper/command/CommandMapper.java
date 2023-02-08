@@ -25,7 +25,7 @@ public class CommandMapper extends BaseCommand
 
     public CommandMapper(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

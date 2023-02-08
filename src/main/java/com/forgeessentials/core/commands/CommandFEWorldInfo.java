@@ -17,7 +17,7 @@ public class CommandFEWorldInfo extends BaseCommand
 
     public CommandFEWorldInfo(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

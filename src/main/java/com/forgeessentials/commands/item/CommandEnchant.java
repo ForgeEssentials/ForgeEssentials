@@ -23,7 +23,7 @@ public class CommandEnchant extends BaseCommand
 {
     public CommandEnchant(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     private static final String PERM = ModuleCommands.PERM + ".enchant";

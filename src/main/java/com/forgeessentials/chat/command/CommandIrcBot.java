@@ -18,7 +18,7 @@ public class CommandIrcBot extends BaseCommand
 
     public CommandIrcBot(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

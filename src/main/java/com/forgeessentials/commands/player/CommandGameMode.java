@@ -28,7 +28,7 @@ public class CommandGameMode extends BaseCommand
 {
     public CommandGameMode(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

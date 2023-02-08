@@ -44,7 +44,7 @@ public class CommandKit extends BaseCommand implements ConfigurableCommand
 
     public CommandKit(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final String PERM = ModuleCommands.PERM + ".kit";

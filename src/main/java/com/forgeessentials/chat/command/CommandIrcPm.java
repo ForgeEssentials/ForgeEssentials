@@ -22,7 +22,7 @@ public class CommandIrcPm extends BaseCommand
 
     public CommandIrcPm(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
 

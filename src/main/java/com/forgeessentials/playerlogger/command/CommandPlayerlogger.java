@@ -37,7 +37,7 @@ public class CommandPlayerlogger extends BaseCommand
 
     public CommandPlayerlogger(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

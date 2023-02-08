@@ -3,6 +3,7 @@ package com.forgeessentials.commands.player;
 import java.util.List;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -11,12 +12,19 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
+import com.forgeessentials.core.commands.BaseCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 public class CommandSmite extends BaseCommand
 {
+
+    public CommandSmite(boolean enabled)
+    {
+        super(enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -40,6 +48,12 @@ public class CommandSmite extends BaseCommand
     public String getPermissionNode()
     {
         return ModuleCommands.PERM + ".smite";
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return null;
     }
 
     @Override

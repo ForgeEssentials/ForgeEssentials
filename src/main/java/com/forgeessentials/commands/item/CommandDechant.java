@@ -26,7 +26,7 @@ public class CommandDechant extends BaseCommand
 {
     public CommandDechant(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     private static final String PERM = ModuleCommands.PERM + ".dechant";

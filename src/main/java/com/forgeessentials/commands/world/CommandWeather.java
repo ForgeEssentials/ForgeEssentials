@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,9 +24,15 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 public class CommandWeather extends BaseCommand implements ConfigurableCommand
 {
+
+    public CommandWeather()
+    {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
     public static enum WeatherType
     {
@@ -86,11 +93,6 @@ public class CommandWeather extends BaseCommand implements ConfigurableCommand
 
     protected static Map<Integer, WeatherData> weatherStates = new HashMap<>();
 
-    public CommandWeather()
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
     @Override
     public String getPrimaryAlias()
     {
@@ -125,6 +127,12 @@ public class CommandWeather extends BaseCommand implements ConfigurableCommand
                 return state;
         }
         return WeatherState.ENABLED;
+    }
+
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return null;
     }
 
     @Override

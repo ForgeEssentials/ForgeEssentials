@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
-public class BaseCommand {
+public abstract class BaseCommand {
 	protected LiteralArgumentBuilder<CommandSource> builder;
 	boolean enabled;
 	String name;

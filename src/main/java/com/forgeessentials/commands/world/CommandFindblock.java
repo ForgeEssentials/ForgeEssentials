@@ -21,7 +21,7 @@ public class CommandFindblock extends BaseCommand implements ConfigurableCommand
 
     public CommandFindblock(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final int defaultCount = 1;

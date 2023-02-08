@@ -27,7 +27,7 @@ public class CommandNickname extends BaseCommand
 
     public CommandNickname(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static final String PERM = ModuleChat.PERM + ".nickname";

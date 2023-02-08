@@ -23,7 +23,7 @@ public class CommandVirtualchest extends BaseCommand implements ConfigurableComm
 {
     public CommandVirtualchest(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     public static int size = 54;

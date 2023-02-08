@@ -23,7 +23,7 @@ public class CommandPay extends BaseCommand
 
     public CommandPay(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

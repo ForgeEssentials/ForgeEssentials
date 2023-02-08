@@ -24,7 +24,7 @@ public class CommandSell extends BaseCommand
 
     public CommandSell(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override

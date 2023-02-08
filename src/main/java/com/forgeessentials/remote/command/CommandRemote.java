@@ -31,7 +31,7 @@ public class CommandRemote extends BaseCommand
 
     public CommandRemote(String name, int permissionLevel, boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override
