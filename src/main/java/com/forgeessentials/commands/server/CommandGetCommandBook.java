@@ -24,6 +24,8 @@ import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.PermissionManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
 {
@@ -85,13 +87,15 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return null;
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-
+        ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
         if (sender.inventory.contains(new ItemStack(Items.WRITTEN_BOOK)))
         {
             for (int i = 0; i < sender.inventory.items.size(); i++)
@@ -131,17 +135,15 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
             pages.add(text);
         }
 
+        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
+
         ListNBT pagesNbt = new ListNBT();
         for (String page : pages)
-            pagesNbt.appendTag(new StringNBT(page));
+            pagesNbt.add(StringNBT.valueOf(page));
 
-        CompoundNBT tag = new CompoundNBT();
-        tag.putString("author", "ForgeEssentials");
-        tag.putString("title", "CommandBook");
-        tag.put("pages", pagesNbt);
+        is.addTagElement("author", StringNBT.valueOf("ForgeEssentials"));
+        is.addTagElement("title", StringNBT.valueOf("CommandBook"));
 
-        ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
-        is.setTagCompound(tag);
         sender.inventory.add(is);
     }
 

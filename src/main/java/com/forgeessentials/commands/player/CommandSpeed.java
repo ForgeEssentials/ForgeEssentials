@@ -1,18 +1,16 @@
 package com.forgeessentials.commands.player;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.FloatNBT;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -20,7 +18,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandSpeed extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandSpeed(String name, int permissionLevel, boolean enabled)
+    public CommandSpeed(boolean enabled)
     {
         super(enabled);
     }
@@ -52,8 +50,19 @@ public class CommandSpeed extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .then(Commands.literal("reset")
+                        .executes(CommandContext -> execute(CommandContext, "reset")
+                                )
+                        )
+                .then(Commands.literal("set")
+                        .then(Commands.argument("multiplier", IntegerArgumentType.integer(0))
+                                .executes(CommandContext -> execute(CommandContext, "set")
+                                        )
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "current")
+                        );
     }
 
     @Override
@@ -61,23 +70,38 @@ public class CommandSpeed extends ForgeEssentialsCommandBuilder
     {
         ChatOutputHandler.chatWarning(ctx.getSource(), "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
      // float speed = Float.parseFloat(args[0]);
-
+        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
+        if (params.toString() == "current")
+        {
+            if(((player.getAttributeBaseValue(Attributes.MOVEMENT_SPEED))/0.05F)==1.0)
+            {
+                ChatOutputHandler.chatNotification(ctx.getSource(),"You are currently at the base movement speed");
+            }
+            else {
+                ChatOutputHandler.chatNotification(ctx.getSource(),"Current movement speed is at a muntiplier of x"+ Double.toString(((player.getAttributeBaseValue(Attributes.MOVEMENT_SPEED))/0.05F)));
+            }
+            if(((player.getAttributeBaseValue(Attributes.FLYING_SPEED))/0.1F)==1.0)
+            {
+                ChatOutputHandler.chatNotification(ctx.getSource(),"You are currently at the base flying speed");
+            }
+            else {
+                ChatOutputHandler.chatNotification(ctx.getSource(),"Current flying speed is at a muntiplier of x"+ Double.toString(((player.getAttributeBaseValue(Attributes.FLYING_SPEED))/0.1F)));
+            }
+            return Command.SINGLE_SUCCESS;
+        }
         if (params.toString() == "reset")
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), "Resetting speed to regular walking speed.");
-            NetworkUtils.sendTo(new Packet6Speed(0.0F), player);
-            CompoundNBT tagCompound = new CompoundNBT();
-            player.capabilities.writeCapabilitiesToNBT(tagCompound);
-            tagCompound.getCompound("abilities").put("flySpeed", new FloatNBT(0.05F));
-            tagCompound.getCompound("abilities").put("walkSpeed", new FloatNBT(0.1F));
-            player.abilities.readCapabilitiesFromNBT(tagCompound);
+            player.setSpeed(0.0F);
+            
+            //tagCompound.getCompound("abilities").put("flySpeed", new FloatNBT(0.05F));
             player.onUpdateAbilities();
             return Command.SINGLE_SUCCESS;
         }
 
         float speed = 0.05F;
 
-        int multiplier = parseInt(args[0]);
+        int multiplier = IntegerArgumentType.getInteger(ctx, "multiplier");
 
         if (multiplier >= 10)
         {
@@ -85,15 +109,11 @@ public class CommandSpeed extends ForgeEssentialsCommandBuilder
             multiplier = 10;
         }
         speed = speed * multiplier;
-        CompoundNBT tagCompound = new CompoundNBT();
-        player.capabilities.writeCapabilitiesToNBT(tagCompound);
-        tagCompound.getCompound("abilities").put("flySpeed", new FloatNBT(speed));
-        tagCompound.getCompound("abilities").put("walkSpeed", new FloatNBT(speed));
-        player.capabilities.readCapabilitiesFromNBT(tagCompound);
+        player.setSpeed(speed);
+        //tagCompound.getCompound("abilities").put("flySpeed", new FloatNBT(speed));
         player.onUpdateAbilities();
 
-        ChatOutputHandler.chatNotification(player, "Walk/fly speed set to " + speed);
-        NetworkUtils.sendTo(new Packet6Speed(speed), player);
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Walk/fly speed set to " + speed);
         return Command.SINGLE_SUCCESS;
     }
 }

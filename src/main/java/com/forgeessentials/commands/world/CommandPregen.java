@@ -39,7 +39,7 @@ public class CommandPregen extends ForgeEssentialsCommandBuilder implements Tick
 
     public CommandPregen(boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     private boolean running = false;
