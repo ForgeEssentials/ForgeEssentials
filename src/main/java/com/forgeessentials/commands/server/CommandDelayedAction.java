@@ -20,7 +20,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandDelayedAction extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandDelayedAction(String name, int permissionLevel, boolean enabled)
+    public CommandDelayedAction(boolean enabled)
     {
         super(enabled);
     }

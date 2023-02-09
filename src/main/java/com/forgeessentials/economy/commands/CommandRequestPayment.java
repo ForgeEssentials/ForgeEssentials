@@ -22,7 +22,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandRequestPayment extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandRequestPayment(String name, int permissionLevel, boolean enabled)
+    public CommandRequestPayment(boolean enabled)
     {
         super(enabled);
     }

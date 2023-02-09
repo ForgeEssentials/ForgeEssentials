@@ -109,7 +109,7 @@ public class ModuleFactions
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandFaction("faction", 0, true));
+        FECommandManager.registerCommand(new CommandFaction(true));
 
     }
 

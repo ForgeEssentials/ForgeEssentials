@@ -24,7 +24,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandDechant extends ForgeEssentialsCommandBuilder
 {
-    public CommandDechant(String name, int permissionLevel, boolean enabled)
+    public CommandDechant(boolean enabled)
     {
         super(enabled);
     }

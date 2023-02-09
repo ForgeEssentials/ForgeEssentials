@@ -21,7 +21,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 public class CommandPromote extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandPromote(String name, int permissionLevel, boolean enabled)
+    public CommandPromote(boolean enabled)
     {
         super(enabled);
     }

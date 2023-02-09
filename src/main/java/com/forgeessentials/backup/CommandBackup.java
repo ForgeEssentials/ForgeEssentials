@@ -17,7 +17,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandBackup extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandBackup(String name, int permissionLevel, boolean enabled)
+    public CommandBackup(boolean enabled)
     {
         super(enabled);
     }

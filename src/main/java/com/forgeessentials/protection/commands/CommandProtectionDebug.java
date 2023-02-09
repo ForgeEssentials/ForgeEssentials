@@ -18,7 +18,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandProtectionDebug extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandProtectionDebug(String name, int permissionLevel, boolean enabled)
+    public CommandProtectionDebug(boolean enabled)
     {
         super(enabled);
     }

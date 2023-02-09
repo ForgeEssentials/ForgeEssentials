@@ -30,7 +30,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandFaction extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandFaction(String name, int permissionLevel, boolean enabled)
+    public CommandFaction(boolean enabled)
     {
         super(enabled);
     }

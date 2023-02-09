@@ -107,14 +107,14 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandWallet("wallet", 0, true));
-        FECommandManager.registerCommand(new CommandPay("pay", 0, true));
-        FECommandManager.registerCommand(new CommandSell("sell", 0, true));
-        FECommandManager.registerCommand(new CommandPaidCommand("paidcommand", 0, true));
-        FECommandManager.registerCommand(new CommandSellCommand("sellcommand", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandTrade("trade", 0, true));
-        FECommandManager.registerCommand(new CommandSellprice("sellprice", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandRequestPayment("requestpayment", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandWallet(true));
+        FECommandManager.registerCommand(new CommandPay(true));
+        FECommandManager.registerCommand(new CommandSell(true));
+        FECommandManager.registerCommand(new CommandPaidCommand(true));
+        FECommandManager.registerCommand(new CommandSellCommand(true));
+        FECommandManager.registerCommand(new CommandTrade(true));
+        FECommandManager.registerCommand(new CommandSellprice(true));
+        FECommandManager.registerCommand(new CommandRequestPayment(true));
     }
 
     @SuppressWarnings("unchecked")

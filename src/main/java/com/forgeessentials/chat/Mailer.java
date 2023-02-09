@@ -32,7 +32,7 @@ public class Mailer extends ServerEventHandler
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandMail("mail", 0, true));
+        FECommandManager.registerCommand(new CommandMail(true));
 
     }
 

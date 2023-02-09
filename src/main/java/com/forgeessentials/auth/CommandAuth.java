@@ -26,7 +26,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandAuth extends ForgeEssentialsCommandBuilder
 {
-    public CommandAuth(String name, int permissionLevel, boolean enabled)
+    public CommandAuth(boolean enabled)
     {
         super(enabled);
     }

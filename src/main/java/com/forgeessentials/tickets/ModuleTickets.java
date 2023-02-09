@@ -52,7 +52,7 @@ public class ModuleTickets implements ConfigSaver
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandTicket("ticket", 0, true));
+        FECommandManager.registerCommand(new CommandTicket(true));
     }
 
     @SubscribeEvent

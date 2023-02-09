@@ -16,7 +16,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandIrcBot extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandIrcBot(String name, int permissionLevel, boolean enabled)
+    public CommandIrcBot(boolean enabled)
     {
         super(enabled);
     }

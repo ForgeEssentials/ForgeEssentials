@@ -26,7 +26,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandMail extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandMail(String name, int permissionLevel, boolean enabled)
+    public CommandMail(boolean enabled)
     {
         super(enabled);
     }

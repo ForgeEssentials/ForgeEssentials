@@ -60,7 +60,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandWorldBorder("worldborder", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandWorldBorder(true));
     }
 
     @SubscribeEvent

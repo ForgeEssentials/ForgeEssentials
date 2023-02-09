@@ -19,7 +19,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandDuplicate extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandDuplicate(String name, int permissionLevel, boolean enabled)
+    public CommandDuplicate(boolean enabled)
     {
         super(enabled);
     }

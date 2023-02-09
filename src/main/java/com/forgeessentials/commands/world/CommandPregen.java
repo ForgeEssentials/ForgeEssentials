@@ -37,7 +37,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 public class CommandPregen extends ForgeEssentialsCommandBuilder implements TickTask
 {
 
-    public CommandPregen(String name, int permissionLevel, boolean enabled)
+    public CommandPregen(boolean enabled)
     {
         super(name, permissionLevel, enabled);
     }

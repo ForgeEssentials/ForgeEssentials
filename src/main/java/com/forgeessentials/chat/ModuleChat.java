@@ -184,17 +184,17 @@ public class ModuleChat
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandMute("mute", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandNickname("nickname", 0, true));
-        FECommandManager.registerCommand(new CommandPm("pm", 0, true));
-        FECommandManager.registerCommand(new CommandReply("reply", 0, true));
-        FECommandManager.registerCommand(new CommandTimedMessages("timedmessage", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandUnmute("unmute", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandGroupMessage("gmsg", 0, true));
+        FECommandManager.registerCommand(new CommandMute(true));
+        FECommandManager.registerCommand(new CommandNickname(true));
+        FECommandManager.registerCommand(new CommandPm(true));
+        FECommandManager.registerCommand(new CommandReply(true));
+        FECommandManager.registerCommand(new CommandTimedMessages(true));
+        FECommandManager.registerCommand(new CommandUnmute(true));
+        FECommandManager.registerCommand(new CommandGroupMessage(true));
 
-        FECommandManager.registerCommand(new CommandIrc("irc", 0, true));
-        FECommandManager.registerCommand(new CommandIrcPm("ircpm", 0, true));
-        FECommandManager.registerCommand(new CommandIrcBot("ircbot", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandIrc(true));
+        FECommandManager.registerCommand(new CommandIrcPm(true));
+        FECommandManager.registerCommand(new CommandIrcBot(true));
     }
 
     @SubscribeEvent

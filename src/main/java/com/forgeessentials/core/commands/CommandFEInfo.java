@@ -20,7 +20,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandFEInfo extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandFEInfo(String name, int permissionLevel, boolean enabled)
+    public CommandFEInfo(boolean enabled)
     {
         super(enabled);
     }

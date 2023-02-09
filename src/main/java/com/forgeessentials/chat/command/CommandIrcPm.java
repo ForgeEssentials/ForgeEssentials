@@ -20,7 +20,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandIrcPm extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandIrcPm(String name, int permissionLevel, boolean enabled)
+    public CommandIrcPm(boolean enabled)
     {
         super(enabled);
     }

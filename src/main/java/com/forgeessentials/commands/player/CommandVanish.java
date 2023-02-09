@@ -30,7 +30,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandVanish extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandVanish(String name, int permissionLevel, boolean enabled)
+    public CommandVanish(boolean enabled)
     {
         super(enabled);
     }

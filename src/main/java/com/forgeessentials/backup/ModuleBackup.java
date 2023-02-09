@@ -120,7 +120,7 @@ public class ModuleBackup extends ConfigLoaderBase
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandBackup("backup", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandBackup(true));
 
     }
 

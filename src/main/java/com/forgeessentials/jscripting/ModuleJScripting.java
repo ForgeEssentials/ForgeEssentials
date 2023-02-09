@@ -130,7 +130,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandJScript("fescript", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandJScript(true));
     }
 
     private void copyResourceFileIfNotExists(String fileName) throws IOException

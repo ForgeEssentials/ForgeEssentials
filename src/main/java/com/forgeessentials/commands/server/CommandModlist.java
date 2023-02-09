@@ -20,7 +20,7 @@ import com.mojang.brigadier.context.CommandContext;
 public class CommandModlist extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandModlist(String name, int permissionLevel, boolean enabled)
+    public CommandModlist(boolean enabled)
     {
 		super(enabled);
 	}

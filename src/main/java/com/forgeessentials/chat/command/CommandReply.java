@@ -22,7 +22,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandReply extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandReply(String name, int permissionLevel, boolean enabled)
+    public CommandReply(boolean enabled)
     {
         super(enabled);
     }

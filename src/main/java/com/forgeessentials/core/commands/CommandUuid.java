@@ -15,7 +15,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandUuid extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandUuid(String name, int permissionLevel, boolean enabled)
+    public CommandUuid(boolean enabled)
     {
         super(enabled);
     }

@@ -22,7 +22,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandKill extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandKill(String name, int permissionLevel, boolean enabled)
+    public CommandKill(boolean enabled)
     {
         super(enabled);
     }

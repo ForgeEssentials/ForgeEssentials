@@ -77,8 +77,8 @@ public class ModuleAuth extends ConfigLoaderBase
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandAuth("auth", 0, true));
-        FECommandManager.registerCommand(new CommandVIP("vip", 4, true));// TODO PERMS
+        FECommandManager.registerCommand(new CommandAuth(true));
+        FECommandManager.registerCommand(new CommandVIP(true));
     }
 
     @SubscribeEvent

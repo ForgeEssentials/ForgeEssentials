@@ -31,7 +31,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandPaidCommand extends ForgeEssentialsCommandBuilder
 {
-    public CommandPaidCommand(String name, int permissionLevel, boolean enabled)
+    public CommandPaidCommand(boolean enabled)
     {
         super(enabled);
     }

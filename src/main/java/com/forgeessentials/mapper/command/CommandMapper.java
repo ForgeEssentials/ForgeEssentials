@@ -23,7 +23,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandMapper extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandMapper(String name, int permissionLevel, boolean enabled)
+    public CommandMapper(boolean enabled)
     {
         super(enabled);
     }

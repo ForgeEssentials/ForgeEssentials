@@ -16,7 +16,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandPing extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
-    public CommandPing(String name, int permissionLevel, boolean enabled)
+    public CommandPing(boolean enabled)
     {
         super(enabled);
     }

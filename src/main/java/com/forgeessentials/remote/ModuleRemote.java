@@ -188,7 +188,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandRemote("remote", 0, true));
+        FECommandManager.registerCommand(new CommandRemote(true));
     }
 
     /**

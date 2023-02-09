@@ -19,7 +19,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandFindblock extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
 
-    public CommandFindblock(String name, int permissionLevel, boolean enabled)
+    public CommandFindblock(boolean enabled)
     {
         super(enabled);
     }

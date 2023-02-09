@@ -11,7 +11,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 public class CommandPermissions extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandPermissions(String name, int permissionLevel, boolean enabled)
+    public CommandPermissions(boolean enabled)
     {
         super(enabled);
     }

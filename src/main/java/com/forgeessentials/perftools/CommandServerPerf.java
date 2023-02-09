@@ -17,7 +17,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandServerPerf extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandServerPerf(String name, int permissionLevel, boolean enabled)
+    public CommandServerPerf(boolean enabled)
     {
         super(enabled);
     }

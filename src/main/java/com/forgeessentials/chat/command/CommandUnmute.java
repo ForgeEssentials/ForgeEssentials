@@ -19,7 +19,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandUnmute extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandUnmute(String name, int permissionLevel, boolean enabled)
+    public CommandUnmute(boolean enabled)
     {
         super(enabled);
     }

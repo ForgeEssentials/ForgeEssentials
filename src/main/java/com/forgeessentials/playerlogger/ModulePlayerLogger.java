@@ -92,8 +92,8 @@ public class ModulePlayerLogger
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandRollback("rollback", 4, true));
-        FECommandManager.registerCommand(new CommandPlayerlogger("pl", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandRollback(true));
+        FECommandManager.registerCommand(new CommandPlayerlogger(true));
         // FECommandManager.registerCommand(new CommandTestPlayerlogger());
     }
 

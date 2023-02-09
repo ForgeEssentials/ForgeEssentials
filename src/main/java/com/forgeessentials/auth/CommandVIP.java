@@ -17,7 +17,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandVIP extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandVIP(String name, int permissionLevel, boolean enabled) {
+    public CommandVIP(boolean enabled) {
 		super(enabled);
 	}
 

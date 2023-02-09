@@ -83,71 +83,71 @@ public class ModuleCommands
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        CommandTime time = new CommandTime("time", 4, true);//TODO fix perms
+        CommandTime time = new CommandTime(true);
         FECommandManager.registerCommand(time);
         APIRegistry.getFEEventBus().register(time);
         
-        FECommandManager.registerCommand(new CommandEnchant("enchant", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandDechant("dechant", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandLocate("locate", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandRules("rules", 0, true));
-        FECommandManager.registerCommand(new CommandModlist("modlist", 0, true));
+        FECommandManager.registerCommand(new CommandEnchant(true));
+        FECommandManager.registerCommand(new CommandDechant(true));
+        FECommandManager.registerCommand(new CommandLocate(true));
+        FECommandManager.registerCommand(new CommandRules(true));
+        FECommandManager.registerCommand(new CommandModlist(true));
         FECommandManager.registerCommand(new CommandButcher());
         FECommandManager.registerCommand(new CommandRemove());
         //Afk
-        FECommandManager.registerCommand(new CommandAFK("Afk", 0, true));
+        FECommandManager.registerCommand(new CommandAFK(true));
         CommandFeSettings.addAlias("Afk", "timeout", CommandAFK.PERM_AUTOTIME);
         CommandFeSettings.addAlias("Afk", "auto_kick", CommandAFK.PERM_AUTOKICK);
         CommandFeSettings.addAlias("Afk", "warmup", CommandAFK.PERM_WARMUP);
         //Kit
-        CommandKit kit = new CommandKit("kit", 0, true);
+        CommandKit kit = new CommandKit(true);
         FECommandManager.registerCommand(kit);
         APIRegistry.getFEEventBus().register(kit);
         
-        FECommandManager.registerCommand(new CommandEnderchest("enderchest", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandVirtualchest("virtualchest", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandEnderchest(true));
+        FECommandManager.registerCommand(new CommandVirtualchest(true));
         FECommandManager.registerCommand(new CommandCapabilities());
         //Craft
-        CommandCraft craft = new CommandCraft("craft", 4, true);//TODO fix perms
+        CommandCraft craft = new CommandCraft(true);
         FECommandManager.registerCommand(craft);
         APIRegistry.getFEEventBus().register(craft);
 
-        FECommandManager.registerCommand(new CommandPing("ping", 0, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandInventorySee("invsee", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandSmite());
-        FECommandManager.registerCommand(new CommandBurn("burn", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandPotion());
-        FECommandManager.registerCommand(new CommandRepair("repair", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandHeal("heal", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandKill("kill", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandGameMode("gamemode", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandDoAs("doas", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandServerSettings("serversettings", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandGetCommandBook());
+        FECommandManager.registerCommand(new CommandPing(true));
+        FECommandManager.registerCommand(new CommandInventorySee(true));
+        FECommandManager.registerCommand(new CommandSmite(true));
+        FECommandManager.registerCommand(new CommandBurn(true));
+        FECommandManager.registerCommand(new CommandPotion(true));
+        FECommandManager.registerCommand(new CommandRepair(true));
+        FECommandManager.registerCommand(new CommandHeal(true));
+        FECommandManager.registerCommand(new CommandKill(true));
+        FECommandManager.registerCommand(new CommandGameMode(true));
+        FECommandManager.registerCommand(new CommandDoAs(true));
+        FECommandManager.registerCommand(new CommandServerSettings(true));
+        FECommandManager.registerCommand(new CommandGetCommandBook(true));
         FECommandManager.registerCommand(new CommandWeather());
         //Bind
-        CommandBind bind = new CommandBind("bind", 4, true);//TODO fix perms
+        CommandBind bind = new CommandBind( true);
         FECommandManager.registerCommand(bind);
         APIRegistry.getFEEventBus().register(bind);
 
-        FECommandManager.registerCommand(new CommandRename("rename", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandPush("push", 0, true));
-        FECommandManager.registerCommand(new CommandDrop("drop", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandFindblock("findblock", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandNoClip("noclip", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandRename(true));
+        FECommandManager.registerCommand(new CommandPush(true));
+        FECommandManager.registerCommand(new CommandDrop(true));
+        FECommandManager.registerCommand(new CommandFindblock(true));
+        FECommandManager.registerCommand(new CommandNoClip(true));
         //Bubble
-        CommandBubble bubble = new CommandBubble("bubble", 4, true);//TODO fix perms
+        CommandBubble bubble = new CommandBubble(true);
         FECommandManager.registerCommand(bubble);
         APIRegistry.getFEEventBus().register(bubble);
         
-        FECommandManager.registerCommand(new CommandSpeed("speed", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandSeen("seen", 0, true));
-        FECommandManager.registerCommand(new CommandTempBan("tempban", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandFly("fly", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandSpeed(true));
+        FECommandManager.registerCommand(new CommandSeen(true));
+        FECommandManager.registerCommand(new CommandTempBan(true));
+        FECommandManager.registerCommand(new CommandFly(true));
         FECommandManager.registerCommand(new CommandHelp());
-        FECommandManager.registerCommand(new CommandPregen("pregen", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandVanish("vanish", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandDuplicate("duplicate", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandDelayedAction("delayedaction", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandPregen(true));
+        FECommandManager.registerCommand(new CommandVanish(true));
+        FECommandManager.registerCommand(new CommandDuplicate(true));
+        FECommandManager.registerCommand(new CommandDelayedAction(true));
     }
 }

@@ -29,7 +29,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandSellCommand extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandSellCommand(String name, int permissionLevel, boolean enabled)
+    public CommandSellCommand(boolean enabled)
     {
         super(enabled);
     }

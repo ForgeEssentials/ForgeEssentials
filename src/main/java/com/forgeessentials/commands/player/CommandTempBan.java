@@ -22,7 +22,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandTempBan extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandTempBan(String name, int permissionLevel, boolean enabled)
+    public CommandTempBan(boolean enabled)
     {
         super(enabled);
     }

@@ -35,7 +35,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandServerSettings(String name, int permissionLevel, boolean enabled)
+    public CommandServerSettings(boolean enabled)
     {
         super(enabled);
     }

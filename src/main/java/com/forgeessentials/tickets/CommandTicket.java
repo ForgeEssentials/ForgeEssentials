@@ -29,7 +29,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandTicket extends ForgeEssentialsCommandBuilder
 {
-    public CommandTicket(String name, int permissionLevel, boolean enabled)
+    public CommandTicket(boolean enabled)
     {
         super(enabled);
     }

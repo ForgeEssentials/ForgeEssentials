@@ -21,7 +21,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandBubble extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandBubble(String name, int permissionLevel, boolean enabled)
+    public CommandBubble(boolean enabled)
     {
         super(enabled);
     }

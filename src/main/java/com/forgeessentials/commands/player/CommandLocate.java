@@ -20,7 +20,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandLocate extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandLocate(String name, int permissionLevel, boolean enabled)
+    public CommandLocate(boolean enabled)
     {
         super(enabled);
     }

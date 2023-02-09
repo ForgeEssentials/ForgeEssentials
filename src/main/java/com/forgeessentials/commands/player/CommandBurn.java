@@ -22,7 +22,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandBurn extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandBurn(String name, int permissionLevel, boolean enabled)
+    public CommandBurn(boolean enabled)
     {
         super(enabled);
     }

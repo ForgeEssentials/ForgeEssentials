@@ -30,7 +30,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandRollback extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandRollback(String name, int permissionLevel, boolean enabled)
+    public CommandRollback(boolean enabled)
     {
         super(enabled);
     }

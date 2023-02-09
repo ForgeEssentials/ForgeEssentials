@@ -26,7 +26,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandGameMode extends ForgeEssentialsCommandBuilder
 {
-    public CommandGameMode(String name, int permissionLevel, boolean enabled)
+    public CommandGameMode(boolean enabled)
     {
         super(enabled);
     }

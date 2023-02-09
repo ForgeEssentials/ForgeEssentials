@@ -101,10 +101,10 @@ public class ModulePermissions extends ConfigLoaderBase
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandZone("area", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandPermissions("perm", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandPromote("promote", 4, true));//TODO fix perms
-        FECommandManager.registerCommand(new CommandItemPermission("permitem", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandZone(true));
+        FECommandManager.registerCommand(new CommandPermissions(true));
+        FECommandManager.registerCommand(new CommandPromote(true));
+        FECommandManager.registerCommand(new CommandItemPermission(true));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

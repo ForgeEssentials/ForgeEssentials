@@ -24,7 +24,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 public class CommandZone extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandZone(String name, int permissionLevel, boolean enabled)
+    public CommandZone(boolean enabled)
     {
         super(enabled);
     }

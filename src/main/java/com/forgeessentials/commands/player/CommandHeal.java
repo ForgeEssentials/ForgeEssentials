@@ -21,7 +21,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandHeal extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandHeal(String name, int permissionLevel, boolean enabled)
+    public CommandHeal(boolean enabled)
     {
         super(enabled);
     }

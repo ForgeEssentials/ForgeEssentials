@@ -20,7 +20,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandJScript extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandJScript(String name, int permissionLevel, boolean enabled)
+    public CommandJScript(boolean enabled)
     {
         super(enabled);
     }

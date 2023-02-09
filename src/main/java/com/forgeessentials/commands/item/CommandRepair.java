@@ -21,7 +21,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandRepair extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandRepair(String name, int permissionLevel, boolean enabled)
+    public CommandRepair(boolean enabled)
     {
         super(enabled);
     }

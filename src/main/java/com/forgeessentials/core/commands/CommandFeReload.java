@@ -15,7 +15,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandFeReload extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandFeReload(String name, int permissionLevel, boolean enabled)
+    public CommandFeReload(boolean enabled)
     {
         super(enabled);
     }

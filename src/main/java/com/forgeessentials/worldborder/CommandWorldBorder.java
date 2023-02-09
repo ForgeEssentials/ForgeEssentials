@@ -21,7 +21,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandWorldBorder(String name, int permissionLevel, boolean enabled)
+    public CommandWorldBorder(boolean enabled)
     {
         super(enabled);
     }

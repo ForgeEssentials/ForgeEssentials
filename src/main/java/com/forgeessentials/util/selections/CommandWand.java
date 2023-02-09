@@ -23,7 +23,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandWand extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandWand(String name, int permissionLevel, boolean enabled)
+    public CommandWand(boolean enabled)
     {
         super(name, permissionLevel, enabled);
     }

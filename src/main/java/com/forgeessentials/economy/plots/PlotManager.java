@@ -31,7 +31,7 @@ public class PlotManager extends ServerEventHandler
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandPlot("plot", 0, true));
+        FECommandManager.registerCommand(new CommandPlot(true));
 
     }
 

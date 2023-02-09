@@ -231,8 +231,8 @@ public class ModuleProtection
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandItemPermission("itemperm", 0, true));
-        FECommandManager.registerCommand(new CommandProtectionDebug("protectdebug", 0, true));
+        FECommandManager.registerCommand(new CommandItemPermission(true));
+        FECommandManager.registerCommand(new CommandProtectionDebug(true));
         // FECommandManager.registerCommand(new CommandPlaceblock());
     }
 

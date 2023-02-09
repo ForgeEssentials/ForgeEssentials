@@ -35,7 +35,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandPlayerlogger(String name, int permissionLevel, boolean enabled)
+    public CommandPlayerlogger(boolean enabled)
     {
         super(enabled);
     }

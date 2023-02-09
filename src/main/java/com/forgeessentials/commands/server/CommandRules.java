@@ -44,7 +44,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandRules extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
 
-    public CommandRules(String name, int permissionLevel, boolean enabled)
+    public CommandRules(boolean enabled)
     {
         super(enabled);
     }

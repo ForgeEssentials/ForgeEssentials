@@ -11,7 +11,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 public class CommandQuestionerYes extends ForgeEssentialsCommandBuilder
 {
-    public CommandQuestionerYes(String name, int permissionLevel, boolean enabled)
+    public CommandQuestionerYes(boolean enabled)
     {
         super(enabled);
     }

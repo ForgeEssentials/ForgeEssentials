@@ -29,7 +29,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandRemote extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandRemote(String name, int permissionLevel, boolean enabled)
+    public CommandRemote(boolean enabled)
     {
         super(enabled);
     }

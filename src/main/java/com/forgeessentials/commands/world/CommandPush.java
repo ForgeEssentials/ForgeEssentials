@@ -23,7 +23,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 public class CommandPush extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandPush(String name, int permissionLevel, boolean enabled)
+    public CommandPush(boolean enabled)
     {
         super(enabled);
     }

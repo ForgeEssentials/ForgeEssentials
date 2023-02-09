@@ -21,7 +21,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
  */
 public class CommandVirtualchest extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
-    public CommandVirtualchest(String name, int permissionLevel, boolean enabled)
+    public CommandVirtualchest(boolean enabled)
     {
         super(enabled);
     }

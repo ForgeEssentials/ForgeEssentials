@@ -24,7 +24,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandNoClip extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandNoClip(String name, int permissionLevel, boolean enabled)
+    public CommandNoClip(boolean enabled)
     {
         super(enabled);
     }

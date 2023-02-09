@@ -104,7 +104,7 @@ public class ModuleMapper
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandMapper("mapper", 4, true));//TODO fix perms
+        FECommandManager.registerCommand(new CommandMapper(true));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

@@ -34,7 +34,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandDoAs extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandDoAs(String name, int permissionLevel, boolean enabled)
+    public CommandDoAs(boolean enabled)
     {
         super(enabled);
     }

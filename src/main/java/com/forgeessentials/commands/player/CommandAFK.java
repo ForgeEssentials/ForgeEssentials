@@ -23,7 +23,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandAFK extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandAFK(String name, int permissionLevel, boolean enabled)
+    public CommandAFK(boolean enabled)
     {
         super(enabled);
     }

@@ -22,7 +22,7 @@ public class CommandCraft extends ForgeEssentialsCommandBuilder
 
     protected WeakReference<PlayerEntity> lastPlayer = new WeakReference<>(null);
 
-    public CommandCraft(String name, int permissionLevel, boolean enabled)
+    public CommandCraft(boolean enabled)
     {
         super(enabled);
     }

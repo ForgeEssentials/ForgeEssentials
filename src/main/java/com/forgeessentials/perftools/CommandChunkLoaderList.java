@@ -29,7 +29,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
 {
-    public CommandChunkLoaderList(String name, int permissionLevel, boolean enabled)
+    public CommandChunkLoaderList(boolean enabled)
     {
         super(enabled);
     }

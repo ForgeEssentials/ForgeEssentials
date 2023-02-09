@@ -49,7 +49,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandPlot extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandPlot(String name, int permissionLevel, boolean enabled)
+    public CommandPlot(boolean enabled)
     {
         super(enabled);
     }

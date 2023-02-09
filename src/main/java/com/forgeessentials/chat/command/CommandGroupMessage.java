@@ -18,7 +18,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandGroupMessage(String name, int permissionLevel, boolean enabled)
+    public CommandGroupMessage(boolean enabled)
     {
         super(enabled);
     }

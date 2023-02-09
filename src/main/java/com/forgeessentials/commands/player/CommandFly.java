@@ -17,7 +17,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandFly extends ForgeEssentialsCommandBuilder
 {
-    public CommandFly(String name, int permissionLevel, boolean enabled)
+    public CommandFly(boolean enabled)
     {
         super(enabled);
     }

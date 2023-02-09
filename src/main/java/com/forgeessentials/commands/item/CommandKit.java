@@ -42,7 +42,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandKit extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
 
-    public CommandKit(String name, int permissionLevel, boolean enabled)
+    public CommandKit(boolean enabled)
     {
         super(enabled);
     }

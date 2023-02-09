@@ -23,7 +23,7 @@ import com.forgeessentials.util.CommandParserArgs;
 public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements ConfigLoader
 {
 
-    public CommandFeSettings(String name, int permissionLevel, boolean enabled)
+    public CommandFeSettings(boolean enabled)
     {
         super(enabled);
     }

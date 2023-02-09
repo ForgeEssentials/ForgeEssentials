@@ -18,7 +18,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandSeen extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandSeen(String name, int permissionLevel, boolean enabled)
+    public CommandSeen(boolean enabled)
     {
         super(enabled);
     }

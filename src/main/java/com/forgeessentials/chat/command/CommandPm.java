@@ -24,7 +24,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandPm extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandPm(String name, int permissionLevel, boolean enabled)
+    public CommandPm(boolean enabled)
     {
         super(enabled);
     }

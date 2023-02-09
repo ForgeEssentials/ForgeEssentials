@@ -32,7 +32,7 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
 {
 
 
-    public CommandInventorySee(String name, int permissionLevel, boolean enabled)
+    public CommandInventorySee(boolean enabled)
     {
         super(enabled);
     }

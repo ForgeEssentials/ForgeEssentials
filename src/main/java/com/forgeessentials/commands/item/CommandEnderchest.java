@@ -19,7 +19,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
  */
 public class CommandEnderchest extends ForgeEssentialsCommandBuilder
 {
-    public CommandEnderchest(String name, int permissionLevel, boolean enabled)
+    public CommandEnderchest(boolean enabled)
     {
         super(enabled);
     }

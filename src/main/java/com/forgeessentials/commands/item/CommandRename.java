@@ -18,7 +18,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandRename extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandRename(String name, int permissionLevel, boolean enabled)
+    public CommandRename(boolean enabled)
     {
         super(enabled);
     }

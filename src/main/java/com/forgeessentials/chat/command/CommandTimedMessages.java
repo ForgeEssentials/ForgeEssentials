@@ -21,7 +21,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandTimedMessages(String name, int permissionLevel, boolean enabled)
+    public CommandTimedMessages(boolean enabled)
     {
         super(enabled);
     }

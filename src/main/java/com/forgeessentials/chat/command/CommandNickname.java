@@ -25,7 +25,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandNickname extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandNickname(String name, int permissionLevel, boolean enabled)
+    public CommandNickname(boolean enabled)
     {
         super(enabled);
     }

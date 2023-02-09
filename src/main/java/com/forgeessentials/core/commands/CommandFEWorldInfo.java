@@ -15,7 +15,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandFEWorldInfo extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandFEWorldInfo(String name, int permissionLevel, boolean enabled)
+    public CommandFEWorldInfo(boolean enabled)
     {
         super(enabled);
     }

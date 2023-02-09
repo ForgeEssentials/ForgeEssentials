@@ -39,7 +39,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandSellprice extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandSellprice(String name, int permissionLevel, boolean enabled)
+    public CommandSellprice(boolean enabled)
     {
         super(enabled);
     }

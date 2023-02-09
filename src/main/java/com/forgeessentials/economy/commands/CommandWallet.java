@@ -21,7 +21,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandWallet extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandWallet(String name, int permissionLevel, boolean enabled)
+    public CommandWallet(boolean enabled)
     {
         super(enabled);
     }

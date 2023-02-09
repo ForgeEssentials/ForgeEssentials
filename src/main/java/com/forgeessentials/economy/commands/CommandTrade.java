@@ -26,7 +26,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandTrade extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandTrade(String name, int permissionLevel, boolean enabled)
+    public CommandTrade(boolean enabled)
     {
         super(enabled);
     }

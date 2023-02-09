@@ -33,7 +33,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandBind extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandBind(String name, int permissionLevel, boolean enabled)
+    public CommandBind(boolean enabled)
     {
         super(enabled);
     }

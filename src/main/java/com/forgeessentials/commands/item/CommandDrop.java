@@ -33,7 +33,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandDrop extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandDrop(String name, int permissionLevel, boolean enabled)
+    public CommandDrop(boolean enabled)
     {
         super(enabled);
     }

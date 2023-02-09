@@ -23,7 +23,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class CommandItemPermission extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandItemPermission(String name, int permissionLevel, boolean enabled)
+    public CommandItemPermission(boolean enabled)
     {
         super(enabled);
     }

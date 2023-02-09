@@ -31,7 +31,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 public class CommandTime extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
 
-    public CommandTime(String name, int permissionLevel, boolean enabled)
+    public CommandTime(boolean enabled)
     {
         super(enabled);
     }
