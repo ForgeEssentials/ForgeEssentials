@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.Potion;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -124,9 +128,9 @@ public abstract class PlayerUtil
     public static RayTraceResult getPlayerLookingSpot(PlayerEntity player)
     {
         if (player instanceof PlayerEntity)
-            return getPlayerLookingSpot(player, 5);// setting to 5 since i can't find reach distance for EntityPlayer
+            return getPlayerLookingSpot(player, player.getAttribute(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get()).getValue());
         else
-            return getPlayerLookingSpot(player, 5);
+            return getPlayerLookingSpot(player, 5.0);
     }
 
     /**
@@ -139,12 +143,7 @@ public abstract class PlayerUtil
      */
     public static RayTraceResult getPlayerLookingSpot(PlayerEntity player, double maxDistance)
     {
-        Vector3d lookAt = player.getViewVector(1);
-        Vector3d playerPos = new Vector3d(player.position().x, player.position().y /* + (player.getEyeHeight() - player.getEyeHeight()) */,
-                player.position().z);
-        Vector3d pos1 = playerPos.add(0, player.getEyeHeight(), 0);
-        Vector3d pos2 = pos1.add(lookAt.x * maxDistance, lookAt.y * maxDistance, lookAt.z * maxDistance);
-        return player.level.rayTraceBlocks(pos1, pos2);
+        return player.pick(maxDistance, 1.0F, true);
     }
 
 }
