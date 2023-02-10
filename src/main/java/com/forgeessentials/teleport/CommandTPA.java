@@ -18,6 +18,11 @@ import com.forgeessentials.util.questioner.QuestionerStillActiveException;
 public class CommandTPA extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandTPA(boolean enabled)
+    {
+        super(enabled);
+    }
+
     public static final String PERM_HERE = TeleportModule.PERM_TPA + ".here";
     public static final String PERM_LOCATION = TeleportModule.PERM_TPA + ".loc";
 

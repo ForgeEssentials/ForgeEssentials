@@ -84,19 +84,26 @@ public class TeleportModule extends ConfigLoaderBase
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandBack());
-        FECommandManager.registerCommand(new CommandBed());
-        FECommandManager.registerCommand(new CommandHome());
-        FECommandManager.registerCommand(new CommandSpawn());
-        FECommandManager.registerCommand(new CommandTp());
-        FECommandManager.registerCommand(new CommandTppos());
-        FECommandManager.registerCommand(new CommandWarp());
-        FECommandManager.registerCommand(new CommandTPA());
-        FECommandManager.registerCommand(new CommandPersonalWarp());
-        FECommandManager.registerCommand(new CommandTop());
+        FECommandManager.registerCommand(new CommandBack(true));
+
+        CommandBed bed = new CommandBed(true);
+        FECommandManager.registerCommand(bed);
+        MinecraftForge.EVENT_BUS.register(bed);
+
+        FECommandManager.registerCommand(new CommandHome(true));
+        FECommandManager.registerCommand(new CommandSpawn(true));
+        FECommandManager.registerCommand(new CommandTp(true));
+        FECommandManager.registerCommand(new CommandTppos(true));
+        FECommandManager.registerCommand(new CommandWarp(true));
+        FECommandManager.registerCommand(new CommandTPA(true));
+        FECommandManager.registerCommand(new CommandPersonalWarp(true));
+        FECommandManager.registerCommand(new CommandTop(true));
         FECommandManager.registerCommand(new CommandPortal());
-        FECommandManager.registerCommand(new CommandSetSpawn());
-        FECommandManager.registerCommand(new CommandJump());
+        FECommandManager.registerCommand(new CommandSetSpawn(true));
+
+        CommandJump jump = new CommandJump(true);
+        FECommandManager.registerCommand(jump);
+        MinecraftForge.EVENT_BUS.register(jump);
     }
 
     @SubscribeEvent

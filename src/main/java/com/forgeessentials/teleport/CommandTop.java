@@ -13,11 +13,17 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
 public class CommandTop extends ForgeEssentialsCommandBuilder
 {
+
+    public CommandTop(boolean enabled)
+    {
+        super(enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -106,19 +112,6 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
                 point.setY(precY);
             }
             TeleportHelper.teleport(player, point);
-        }
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
-    {
-        if (args.length == 1)
-        {
-            return matchToPlayers(args);
-        }
-        else
-        {
-            return null;
         }
     }
 

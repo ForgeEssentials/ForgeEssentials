@@ -12,6 +12,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
@@ -25,6 +26,11 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 public class CommandTp extends ForgeEssentialsCommandBuilder
 {
+
+    public CommandTp(boolean enabled)
+    {
+        super(enabled);
+    }
 
     /**
      * Spawn point for each dimension
@@ -149,19 +155,6 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
     public String getPermissionNode()
     {
         return TeleportModule.PERM_TP;
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
-    {
-        if (args.length == 1 || args.length == 2)
-        {
-            return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
-        }
-        else
-        {
-            return Collections.emptyList();
-        }
     }
 
     public DefaultPermissionLevel getPermissionLevel()

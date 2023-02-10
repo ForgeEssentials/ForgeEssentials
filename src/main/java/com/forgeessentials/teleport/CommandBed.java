@@ -13,6 +13,7 @@ import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
@@ -20,9 +21,9 @@ import com.forgeessentials.util.PlayerInfo;
 public class CommandBed extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandBed()
+    public CommandBed(boolean enabled)
     {
-        MinecraftForge.EVENT_BUS.register(this);
+        super(enabled);
     }
 
     @Override

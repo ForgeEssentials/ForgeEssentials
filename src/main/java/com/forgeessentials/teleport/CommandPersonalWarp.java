@@ -23,6 +23,11 @@ import com.forgeessentials.util.ServerUtil;
 public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandPersonalWarp(boolean enabled)
+    {
+        super(enabled);
+    }
+
     public static class PersonalWarp extends HashMap<String, WarpPoint>
     {
     }
@@ -73,7 +78,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
 
     public static PersonalWarp getWarps(ServerPlayerEntity player)
     {
-        PersonalWarp warps = DataManager.getInstance().load(PersonalWarp.class, player.getPersistentID().toString());
+        PersonalWarp warps = DataManager.getInstance().load(PersonalWarp.class, player.getUUID().toString());
         if (warps == null)
             warps = new PersonalWarp();
         return warps;

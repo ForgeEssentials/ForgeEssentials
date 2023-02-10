@@ -16,6 +16,11 @@ import com.forgeessentials.util.CommandParserArgs;
 public class CommandSetSpawn extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandSetSpawn(boolean enabled)
+    {
+        super(enabled);
+    }
+
     public static final String PERM_SETSPAWN = "fe.perm.setspawn";
 
     @Override

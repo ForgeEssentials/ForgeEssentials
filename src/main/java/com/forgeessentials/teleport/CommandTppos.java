@@ -11,12 +11,18 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.ServerUtil;
 
 public class CommandTppos extends ForgeEssentialsCommandBuilder
 {
+
+    public CommandTppos(boolean enabled)
+    {
+        super(enabled);
+    }
 
     /**
      * Spawn point for each dimension

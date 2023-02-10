@@ -23,6 +23,11 @@ import com.forgeessentials.util.ServerUtil;
 public class CommandWarp extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandWarp(boolean enabled)
+    {
+        super(enabled);
+    }
+
     public static class Warp extends WarpPoint
     {
         public Warp(Entity entity)
