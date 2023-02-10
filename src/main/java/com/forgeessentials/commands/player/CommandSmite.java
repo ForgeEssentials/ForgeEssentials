@@ -1,22 +1,28 @@
 package com.forgeessentials.commands.player;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.BlockPosArgument;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.command.arguments.MessageArgument;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandSmite extends ForgeEssentialsCommandBuilder
 {
@@ -51,88 +57,107 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
     }
 
     @Override
+    public void registerExtraPermissions()
+    {
+        APIRegistry.perms.registerPermission(getPermissionNode() + ".others", DefaultPermissionLevel.OP, "Smite others");
+    }
+
+    @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return null;
+        return builder
+                .then(Commands.literal("player")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(CommandContext -> execute(CommandContext, "player")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("location")
+                        .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                .executes(CommandContext -> execute(CommandContext, "location")
+                                        )
+                                )
+                .executes(CommandContext -> execute(CommandContext, "looking")
+                        )
+                );
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length == 1)
+        if (params.toString().equals("player"))
         {
-            if (args[0].toLowerCase().equals("me"))
-            {
-                sender.world.addWeatherEffect(new EntityLightningBolt(sender.world, sender.posX, sender.posY, sender.posZ, false));
-                ChatOutputHandler.chatConfirmation(sender, "Was that really a good idea?");
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if(player == getServerPlayer(ctx.getSource())) {
+                LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
+                lightningboltentity.moveTo(Vector3d.atBottomCenterOf(new BlockPos(player.position().x, player.position().y, player.position().z)));
+                lightningboltentity.setVisualOnly(false);
+                player.level.addFreshEntity(lightningboltentity);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Was that really a good idea?");
+                return Command.SINGLE_SUCCESS;
             }
             else
             {
-                ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-                if (player != null)
-                {
-                    player.world.addWeatherEffect(new EntityLightningBolt(player.world, player.posX, player.posY, player.posZ, false));
-                    ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
+                if(hasPermission(ctx.getSource(), getPermissionNode() + ".others")) {
+                    LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
+                    lightningboltentity.moveTo(Vector3d.atBottomCenterOf(new BlockPos(player.position().x, player.position().y, player.position().z)));
+                    lightningboltentity.setVisualOnly(false);
+                    player.level.addFreshEntity(lightningboltentity);
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
                 }
-                else
-                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+                else {
+                    throw new TranslatedCommandException("You don't have permission to smite other players");
+                }
+                return Command.SINGLE_SUCCESS;
             }
+
         }
-        else if (args.length > 1)
+
+        if (params.toString().equals("location"))
         {
-            if (args.length != 3)
-            {
-                throw new TranslatedCommandException("Need coordinates X, Y, Z.");
-            }
-            int x = Integer.valueOf(args[0]);
-            int y = Integer.valueOf(args[1]);
-            int z = Integer.valueOf(args[2]);
-            sender.world.addWeatherEffect(new EntityLightningBolt(sender.world, x, y, z, false));
-            ChatOutputHandler.chatConfirmation(sender, "I hope that didn't start a fire.");
+            BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
+            LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(ctx.getSource().getLevel());
+            lightningboltentity.moveTo(Vector3d.atBottomCenterOf(pos));
+            lightningboltentity.setVisualOnly(false);
+            ctx.getSource().getLevel().addFreshEntity(lightningboltentity);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "I hope that didn't start a fire.");
+            return Command.SINGLE_SUCCESS;
         }
-        else
+        if(params.toString().equals("looking"))
         {
-            RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(sender, 500);
+            RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(getServerPlayer(ctx.getSource()), 500);
             if (mop == null)
             {
-                ChatOutputHandler.chatError(sender, "You must first look at the ground!");
+                ChatOutputHandler.chatError(ctx.getSource(), "You must first look at the ground!");
             }
             else
             {
-                BlockPos pos = mop.getBlockPos();
-                sender.world.addWeatherEffect(new EntityLightningBolt(sender.world, pos.getX(), pos.getY(), pos.getZ(), false));
-                ChatOutputHandler.chatConfirmation(sender, "I hope that didn't start a fire.");
+                BlockPos pos = new BlockPos(mop.getLocation().x, mop.getLocation().y, mop.getLocation().z);
+                LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(ctx.getSource().getLevel());
+                lightningboltentity.moveTo(Vector3d.atBottomCenterOf(pos));
+                lightningboltentity.setVisualOnly(false);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "I hope that didn't start a fire.");
             }
+            return Command.SINGLE_SUCCESS;
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length >= 1)
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        if (player != null)
         {
-            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
-            {
-                player.world.addWeatherEffect(new EntityLightningBolt(player.world, player.posX, player.posY, player.posZ, false));
-                ChatOutputHandler.chatConfirmation(sender, "You should feel bad about doing that.");
-            }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-        }
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
-    {
-        if (args.length == 1)
-        {
-            return matchToPlayers(args);
+            LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
+            lightningboltentity.moveTo(Vector3d.atBottomCenterOf(new BlockPos(player.position().x, player.position().y, player.position().z)));
+            lightningboltentity.setVisualOnly(false);
+            player.level.addFreshEntity(lightningboltentity);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
         }
         else
-        {
-            return null;
-        }
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+        return Command.SINGLE_SUCCESS;
     }
 
 }
