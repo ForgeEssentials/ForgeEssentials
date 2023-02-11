@@ -1,14 +1,14 @@
 package com.forgeessentials.teleport;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -19,6 +19,10 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandJump extends ForgeEssentialsCommandBuilder
 {
@@ -53,9 +57,18 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity player, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        jump(player);
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        jump(getServerPlayer(ctx.getSource()));
+        return Command.SINGLE_SUCCESS;
     }
 
     public void jump(ServerPlayerEntity player) throws CommandException
@@ -63,33 +76,33 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
         RayTraceResult mo = PlayerUtil.getPlayerLookingSpot(player, 500);
         if (mo == null)
             throw new TranslatedCommandException("The spot you are looking at is too far away to teleport.");
-        BlockPos pos = mo.getBlockPos();
-        TeleportHelper.teleport(player, new WarpPoint(player.getEntityWorld().provider.getDimension(), pos.getX(), pos.getY() + 1, pos.getZ(),
-                player.rotationPitch, player.rotationYaw));
+        BlockPos pos = new BlockPos(mo.getLocation().x, mo.getLocation().y, mo.getLocation().z);
+        TeleportHelper.teleport(player, new WarpPoint(player.level.dimension().location().toString(), pos.getX(), pos.getY() + 1, pos.getZ(),
+                player.xRot, player.yRot));
     }
 
     @SubscribeEvent
     public void playerInteractEvent(PlayerInteractEvent event)
     {
-        if (!(event.getEntityPlayer() instanceof ServerPlayerEntity))
+        if (!(event.getPlayer() instanceof ServerPlayerEntity))
             return;
         if (!(event instanceof PlayerInteractEvent.RightClickEmpty) && !(event instanceof PlayerInteractEvent.RightClickBlock))
             return;
-        ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
+        ItemStack stack = event.getPlayer().getMainHandItem();
         if (stack == ItemStack.EMPTY || stack.getItem() != Items.COMPASS)
             return;
-        if (!PermissionAPI.hasPermission(event.getEntityPlayer(), TeleportModule.PERM_JUMP_TOOL))
+        if (!PermissionAPI.hasPermission(event.getPlayer(), TeleportModule.PERM_JUMP_TOOL))
             return;
 
         try
         {
-            jump((ServerPlayerEntity) event.getEntityPlayer());
+            jump((ServerPlayerEntity) event.getPlayer());
         }
         catch (CommandException ce)
         {
-            TranslationTextComponent msg = new TranslationTextComponent(ce.getMessage(), ce.getErrorObjects());
-            msg.getStyle().setColor(TextFormatting.RED);
-            event.getPlayer().sendMessage(msg);
+            TranslationTextComponent msg = new TranslationTextComponent(ce.getMessage(), ce.getCause());
+            msg.getStyle().withColor(TextFormatting.RED);
+            event.getPlayer().sendMessage(msg,event.getPlayer().getUUID());
         }
     }
 

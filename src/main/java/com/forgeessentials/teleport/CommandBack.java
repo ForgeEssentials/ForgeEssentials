@@ -1,8 +1,7 @@
 package com.forgeessentials.teleport;
 
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -11,6 +10,10 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandBack extends ForgeEssentialsCommandBuilder
 {
@@ -45,18 +48,28 @@ public class CommandBack extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        PlayerInfo pi = PlayerInfo.get(sender.getUUID());
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
+        PlayerInfo pi = PlayerInfo.get(player.getUUID());
         WarpPoint point = null;
-        if (PermissionAPI.hasPermission(sender, TeleportModule.PERM_BACK_ONDEATH))
+        if (PermissionAPI.hasPermission(player, TeleportModule.PERM_BACK_ONDEATH))
             point = pi.getLastDeathLocation();
         if (point == null)
             point = pi.getLastTeleportOrigin();
         if (point == null)
             throw new TranslatedCommandException("You have nowhere to get back to");
 
-        TeleportHelper.teleport(sender, point);
+        TeleportHelper.teleport(player, point);
+        return Command.SINGLE_SUCCESS;
     }
 
 }

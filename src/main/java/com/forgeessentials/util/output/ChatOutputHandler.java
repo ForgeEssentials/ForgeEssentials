@@ -22,6 +22,7 @@ import org.apache.commons.text.StringEscapeUtils;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
+import com.forgeessentials.core.misc.Translator;
 
 public final class ChatOutputHandler extends ConfigLoaderBase
 {
@@ -155,6 +156,11 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param msg
      *            the message to be sent
      */
+    public static void chatError(CommandSource sender, String msg, Object... args)
+    {
+        sendMessage(sender, Translator.format(msg, args), chatErrorColor);
+    }
+
     public static void chatError(CommandSource sender, String msg)
     {
         sendMessage(sender, msg, chatErrorColor);
@@ -173,6 +179,11 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param msg
      *            the message to be sent
      */
+    public static void chatConfirmation(CommandSource sender, String msg, Object... args)
+    {
+        sendMessage(sender, Translator.format(msg, args), chatConfirmationColor);
+    }
+
     public static void chatConfirmation(CommandSource sender, String msg)
     {
         sendMessage(sender, msg, chatConfirmationColor);
@@ -191,6 +202,11 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      * @param msg
      *            the message to be sent
      */
+    public static void chatWarning(CommandSource sender, String msg, Object... args)
+    {
+        sendMessage(sender, Translator.format(msg, args), chatWarningColor);
+    }
+
     public static void chatWarning(CommandSource sender, String msg)
     {
         sendMessage(sender, msg, chatWarningColor);
@@ -208,6 +224,11 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      *            CommandSender to chat to.
      * @param msg
      */
+    public static void chatNotification(CommandSource sender, String msg, Object... args)
+    {
+        sendMessage(sender, Translator.format(msg, args), chatNotificationColor);
+    }
+
     public static void chatNotification(CommandSource sender, String msg)
     {
         sendMessage(sender, msg, chatNotificationColor);

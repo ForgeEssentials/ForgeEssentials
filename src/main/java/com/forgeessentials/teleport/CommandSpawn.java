@@ -1,15 +1,12 @@
 package com.forgeessentials.teleport;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
@@ -18,6 +15,10 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandSpawn extends ForgeEssentialsCommandBuilder
 {
@@ -52,52 +53,61 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length >= 1)
-        {
-            if (!PermissionAPI.hasPermission(sender, TeleportModule.PERM_SPAWN_OTHERS))
-            {
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
-            }
-            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player == null)
-            {
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-            }
-
-            WarpPoint point = RespawnHandler.getSpawn(player, null);
-            if (point == null)
-                throw new TranslatedCommandException("There is no spawnpoint set for that player.");
-            TeleportHelper.teleport(player, point);
-        }
-        else if (args.length == 0)
-        {
-            ServerPlayerEntity player = sender;
-
-            WarpPoint point = RespawnHandler.getSpawn(player, null);
-            if (point == null)
-            {
-                throw new TranslatedCommandException("There is no spawnpoint set for that player.");
-            }
-
-            PlayerInfo.get(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-            ChatOutputHandler.chatConfirmation(player, "Teleporting to spawn.");
-            TeleportHelper.teleport(player, point);
-        }
+        return builder
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(CommandContext -> execute(CommandContext, "others")
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "me")
+                        );
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length < 1)
+        if (params.toString().equals("others"));
         {
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            if (!PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_SPAWN_OTHERS))
+            {
+                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            }
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");;
+            if (player == null)
+            {
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+            }
+
+            WarpPoint point = RespawnHandler.getSpawn(player, null);
+            if (point == null)
+                throw new TranslatedCommandException("There is no spawnpoint set for that player.");
+            TeleportHelper.teleport(player, point);
         }
-        ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+        if (params.toString().equals("me"));
+        {
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+
+            WarpPoint point = RespawnHandler.getSpawn(player, null);
+            if (point == null)
+            {
+                throw new TranslatedCommandException("There is no spawnpoint set for that player.");
+            }
+
+            PlayerInfo.get(player.getUUID()).setLastTeleportOrigin(new WarpPoint(player));
+            ChatOutputHandler.chatConfirmation(player, "Teleporting to spawn.");
+            TeleportHelper.teleport(player, point);
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    @Override
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         if (player == null)
         {
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
         }
 
         WarpPoint point = RespawnHandler.getSpawn(player, null);
@@ -107,19 +117,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
         }
 
         TeleportHelper.teleport(player, point);
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
-    {
-        if (args.length == 1)
-        {
-            return matchToPlayers(args);
-        }
-        else
-        {
-            return null;
-        }
+        return Command.SINGLE_SUCCESS;
     }
 
 }

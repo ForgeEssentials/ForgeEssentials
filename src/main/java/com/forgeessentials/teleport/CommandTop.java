@@ -1,21 +1,24 @@
 package com.forgeessentials.teleport;
 
-import java.util.List;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandTop extends ForgeEssentialsCommandBuilder
 {
@@ -50,55 +53,68 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length == 0)
-        {
-            top(sender);
-        }
-        else if (args.length == 1 && PermissionAPI.hasPermission(sender, TeleportModule.PERM_TOP_OTHERS))
-        {
-            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
-            {
-                top(player);
-            }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-        }
-        else
-            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player>");
+        return builder
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(CommandContext -> execute(CommandContext, "others")
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "me")
+                        );
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length == 1)
+        if (params.toString().equals("me"))
         {
-            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
+            
+            top(getServerPlayer(ctx.getSource()));
+        }
+        else if (params.toString().equals("others") && PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_TOP_OTHERS))
+        {
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             if (player != null)
             {
                 top(player);
             }
             else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    @Override
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        if (params.toString().equals("me"))
+        {
+            
+            throw new TranslatedCommandException("You are not a player.");
+        }
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        if (player != null)
+        {
+            top(player);
         }
         else
-            throw new TranslatedCommandException("Improper syntax. Please try this instead: <player>");
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+        return Command.SINGLE_SUCCESS;
     }
 
     public void top(ServerPlayerEntity player) throws CommandException
     {
         WarpPoint point = new WarpPoint(player);
         int oldY = point.getBlockY();
-        int precY = player.world.getPrecipitationHeight(player.getPosition()).getY();
+        int precY = player.level.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING,player.blockPosition()).getY();
 
         if (oldY != precY)
         {
             if (!ForgeEssentials.isCubicChunksInstalled && precY == -1)
             {
                 point.setY(0);
-                while (player.world.getBlockState(point.getBlockPos()).getMaterial() != Material.AIR)
+                while (player.level.getBlockState(point.getBlockPos()).getMaterial() != Material.AIR)
                 {
                     point.setY(point.getY() + 1);
                 }

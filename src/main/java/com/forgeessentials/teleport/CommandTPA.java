@@ -1,6 +1,7 @@
 package com.forgeessentials.teleport;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -11,9 +12,14 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandTPA extends ForgeEssentialsCommandBuilder
 {
@@ -58,41 +64,45 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void parse(final CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
+        return null;
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        if (params.toString().equals("help"))
         {
-            arguments.confirm("/tpa <player>: Request being teleported to another player");
-            arguments.confirm("/tpa <player> <here|x y z>: Propose another player to be teleported");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tpa <player>: Request being teleported to another player");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tpa <player> <here|x y z>: Propose another player to be teleported");
+            return Command.SINGLE_SUCCESS;
         }
 
         final UserIdent player = arguments.parsePlayer(true, true);
         if (arguments.isEmpty())
         {
-            if (arguments.isTabCompletion)
-                return;
             try
             {
-                arguments.confirm(Translator.format("Waiting for response by %s", player.getUsernameOrUuid()));
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Waiting for response by %s", player.getUsernameOrUuid()));
                 Questioner.addChecked(player.getPlayer().createCommandSourceStack(),
-                        Translator.format("Allow teleporting %s to your location?", arguments.sender.getDisplayName().getString()),
+                        Translator.format("Allow teleporting %s to your location?", getServerPlayer(ctx.getSource()).getDisplayName().getString()),
                         new QuestionerCallback() {
                             @Override
                             public void respond(Boolean response)
                             {
                                 if (response == null)
-                                    arguments.error("TPA request timed out");
+                                    ChatOutputHandler.chatError(ctx.getSource(), "TPA request timed out");
                                 else if (response == false)
-                                    arguments.error("TPA declined");
+                                    ChatOutputHandler.chatError(ctx.getSource(), "TPA declined");
                                 else
                                     try
                                     {
-                                        TeleportHelper.teleport(arguments.senderPlayer, new WarpPoint(player.getPlayer()));
+                                        TeleportHelper.teleport(getServerPlayer(ctx.getSource()), new WarpPoint(player.getPlayer()));
                                     }
                                     catch (CommandException e)
                                     {
-                                        arguments.error(e.getMessage());
+                                        ChatOutputHandler.chatError(ctx.getSource(), e.getMessage());
                                     }
                             }
                         }, 20);
@@ -111,21 +121,19 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
         if (arguments.peek().equalsIgnoreCase("here"))
         {
             arguments.checkPermission(PERM_HERE);
-            point = new WarpPoint(arguments.senderPlayer);
-            locationName = arguments.sender.getDisplayName().getString();
+            point = new WarpPoint(getServerPlayer(ctx.getSource()));
+            locationName = getServerPlayer(ctx.getSource()).getDisplayName().getString();
             arguments.remove();
         }
         else
         {
             arguments.checkPermission(PERM_LOCATION);
-            point = new WarpPoint((ServerWorld) arguments.senderPlayer.getLevel(), //
+            point = new WarpPoint((ServerWorld) getServerPlayer(ctx.getSource()).getLevel(), //
                     arguments.parseDouble(), arguments.parseDouble(), arguments.parseDouble(), //
                     player.getPlayer().yRot, player.getPlayer().xRot);
             locationName = point.toReadableString();
         }
 
-        if (arguments.isTabCompletion)
-            return;
         try
         {
             Questioner.addChecked(player.getPlayer().createCommandSourceStack(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback() {
@@ -133,9 +141,9 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
                 public void respond(Boolean response)
                 {
                     if (response == null)
-                        arguments.error("TPA request timed out");
+                        ChatOutputHandler.chatError(ctx.getSource(), "TPA request timed out");
                     else if (response == false)
-                        arguments.error("TPA declined");
+                        ChatOutputHandler.chatError(ctx.getSource(), "TPA declined");
                     else
                         try
                         {
@@ -143,7 +151,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
                         }
                         catch (CommandException e)
                         {
-                            arguments.error(e.getMessage());
+                            ChatOutputHandler.chatError(ctx.getSource(), e.getMessage());
                         }
                 }
             }, 20);

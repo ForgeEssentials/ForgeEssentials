@@ -1,7 +1,7 @@
 package com.forgeessentials.teleport;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity.SleepResult;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -11,8 +11,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import java.util.Optional;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
@@ -139,9 +137,9 @@ public class TeleportModule extends ConfigLoaderBase
             return;
         }
 
-        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(e.getPlayer(), e.getPos()) || (e.getPlayer().isCrouching()))
+        if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingLocationCheck(e.getPlayer(), e.getPos()) || (e.getPlayer().isCrouching()))
         {
-            e.getPlayer().setSpawnPoint(e.getPos(), false);
+            ((ServerPlayerEntity)e.getPlayer()).setRespawnPosition(e.getPlayer().level.dimension(), e.getPos(), 0, false, false);
             ChatOutputHandler.chatConfirmation(e.getPlayer().createCommandSourceStack(), "Bed Position Set!");
             e.setResult(SleepResult.OTHER_PROBLEM);
         }

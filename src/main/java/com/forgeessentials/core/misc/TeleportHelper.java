@@ -124,7 +124,7 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (point.getWorld() == null)
         {
-            ServerLifecycleHooks.getCurrentServer().getLevel(point.getDimension());
+            ServerLifecycleHooks.getCurrentServer().getLevel(point.getWorld().dimension());
             if (point.getWorld() == null)
             {
                 ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target dimension does not exist"));
@@ -138,7 +138,7 @@ public class TeleportHelper extends ServerEventHandler
             throw new TranslatedCommandException("You are not allowed to teleport from here.");
         if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_TO))
             throw new TranslatedCommandException("You are not allowed to teleport to that location.");
-        if (player.level.dimension() != point.getDimension())
+        if (player.level.dimension().location().toString() != point.getDimension())
         {
             if (!APIRegistry.perms.checkPermission(player, TELEPORT_CROSSDIM_FROM))
                 throw new TranslatedCommandException("You are not allowed to teleport from this dimension.");
@@ -228,7 +228,7 @@ public class TeleportHelper extends ServerEventHandler
         player.stopRiding();
         ;
 
-        if (player.level.dimension() != point.getDimension())
+        if (player.level.dimension().location().toString() != point.getDimension())
         {
             SimpleTeleporter teleporter = new SimpleTeleporter(point.getWorld());
             MinecraftServer mcServer = ServerLifecycleHooks.getCurrentServer();
@@ -244,7 +244,7 @@ public class TeleportHelper extends ServerEventHandler
             doTeleport((PlayerEntity) entity, point);
             return;
         }
-        if (entity.level.dimension() != point.getDimension())
+        if (entity.level.dimension().location().toString() != point.getDimension())
             entity.changeDimension(point.getWorld());
         entity.setLocationAndAngles(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }

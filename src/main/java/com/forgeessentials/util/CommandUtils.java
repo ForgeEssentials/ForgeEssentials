@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.google.common.base.Functions;
 import com.google.common.collect.Iterables;
@@ -392,5 +393,10 @@ public class CommandUtils
             e.printStackTrace();
         }
         return false;
+    }
+    public void checkPermission(CommandSource sender,String perm) throws CommandException
+    {
+        if (sender != null && !hasPermission(sender, perm))
+            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
     }
 }

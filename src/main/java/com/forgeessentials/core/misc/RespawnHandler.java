@@ -15,7 +15,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerRespawnEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -54,7 +53,7 @@ public class RespawnHandler
         if (doDefaultSpawn)
             return null;
         else
-            return new WarpPoint(((ServerPlayerEntity)player).getRespawnDimension(), ((ServerPlayerEntity)player).getRespawnPosition(), player.yRot, player.xRot);
+            return new WarpPoint(((ServerPlayerEntity)player).getRespawnDimension().location().toString(), ((ServerPlayerEntity)player).getRespawnPosition(), player.yRot, player.xRot);
     }
 
     public static WarpPoint getSpawn(PlayerEntity player, WarpPoint location)
@@ -76,7 +75,7 @@ public class RespawnHandler
                 // Bed seems OK, so just return null to let default MC code handle respawn
                 if (doDefaultSpawn)
                     return null;
-                return new WarpPoint(player.level.dimension(), spawn, player.yRot, player.xRot);
+                return new WarpPoint(player.level.dimension().location().toString(), spawn, player.yRot, player.xRot);
             }
         }
 
@@ -119,7 +118,7 @@ public class RespawnHandler
             WarpPoint p = getPlayerSpawn(player, null, true);
             if (p != null)
             {
-                if (player.level.dimension() != p.getDimension())
+                if (player.level.dimension().location().toString() != p.getDimension())
                     respawnPlayers.add(player);
                 else
                     player.moveTo(p.getX(), p.getY(), p.getZ(), p.getYaw(), p.getPitch());

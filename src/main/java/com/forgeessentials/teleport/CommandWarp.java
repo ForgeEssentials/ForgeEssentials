@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -16,9 +17,15 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandWarp extends ForgeEssentialsCommandBuilder
 {
@@ -82,12 +89,19 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        if (params.toString().equals("help"))
         {
-            arguments.confirm("/warp list: List warps");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/warp list: List warps");
+            return Command.SINGLE_SUCCESS;
         }
 
         Map<String, Warp> warps = getWarps();
@@ -99,53 +113,41 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
 
         String warpName = arguments.remove().toLowerCase();
 
-        if (warpName.equals("list"))
+        if (params.toString().equals("list"))
         {
-            arguments.confirm("Warps: " + StringUtils.join(warps.keySet(), ", "));
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Warps: " + StringUtils.join(warps.keySet(), ", "));
+            return Command.SINGLE_SUCCESS;;
         }
 
-        if (arguments.isEmpty())
+        if (params.toString().equals("warp"))
         {
-            if (arguments.isTabCompletion)
-                return;
 
             WarpPoint point = warps.get(warpName);
             if (point == null)
                 throw new TranslatedCommandException("Warp by this name does not exist");
-            if (!arguments.hasPermission(PERM_WARP + "." + warpName))
+            if (!hasPermission(ctx.getSource(),PERM_WARP + "." + warpName))
                 throw new TranslatedCommandException("You don't have permission to use this warp");
-            TeleportHelper.teleport(arguments.senderPlayer, point);
+            TeleportHelper.teleport(getServerPlayer(ctx.getSource()), point);
         }
-        else
+        if (params.toString().equals("set"))
         {
-            arguments.tabComplete("set", "delete");
-            if (arguments.isTabCompletion)
-                return;
+            checkPermission(ctx.getSource(),PERM_SET);
 
-            String subCommand = arguments.remove().toLowerCase();
-            switch (subCommand)
-            {
-            case "set":
-                arguments.checkPermission(PERM_SET);
+            // Check limit
+            int limit = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(getIdent(ctx.getSource()), PERM_LIMIT), Integer.MAX_VALUE);
+            if (warps.size() >= limit)
+                throw new TranslatedCommandException("You reached the warp limit");
 
-                // Check limit
-                int limit = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, PERM_LIMIT), Integer.MAX_VALUE);
-                if (warps.size() >= limit)
-                    throw new TranslatedCommandException("You reached the warp limit");
-
-                DataManager.getInstance().save(new Warp(arguments.senderPlayer), warpName);
-                arguments.confirm("Set warp \"%s\" to current location", warpName);
-                break;
-            case "del":
-            case "delete":
-                arguments.checkPermission(PERM_DELETE);
-                DataManager.getInstance().delete(Warp.class, warpName);
-                arguments.confirm("Deleted warp \"%s\"", warpName);
-                break;
-            default:
-                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
-            }
+            DataManager.getInstance().save(new Warp(getServerPlayer(ctx.getSource())), warpName);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set warp \"%s\" to current location", warpName);
+            return Command.SINGLE_SUCCESS;
+        }
+        if (params.toString().equals("delete"))
+        {
+            checkPermission(ctx.getSource(),PERM_DELETE);
+            DataManager.getInstance().delete(Warp.class, warpName);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted warp \"%s\"", warpName);
+            return Command.SINGLE_SUCCESS;
         }
     }
 

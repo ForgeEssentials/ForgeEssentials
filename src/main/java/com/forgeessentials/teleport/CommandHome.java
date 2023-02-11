@@ -77,7 +77,7 @@ public class CommandHome extends ForgeEssentialsCommandBuilder
                     throw new TranslatedCommandException("You don't have the permission to set your home location.");
 
                 WarpPoint p = new WarpPoint(sender);
-                PlayerInfo info = PlayerInfo.get(player.getPersistentID());
+                PlayerInfo info = PlayerInfo.get(player.getUUID());
                 info.setHome(p);
                 info.save();
                 ChatOutputHandler.chatConfirmation(sender, Translator.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
