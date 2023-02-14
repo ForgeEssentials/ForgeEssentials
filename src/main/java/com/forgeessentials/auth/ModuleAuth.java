@@ -38,7 +38,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 public class ModuleAuth extends ConfigLoaderBase
 {
     private static ForgeConfigSpec AUTH_CONFIG;
-	private static final ConfigData data = new ConfigData("main", AUTH_CONFIG, new ForgeConfigSpec.Builder());
+	private static final ConfigData data = new ConfigData("Auth", AUTH_CONFIG, new ForgeConfigSpec.Builder());
 
     public static final String CONFIG_CATEGORY = "Auth";
     public static final String CONFIG_CATEGORY_LISTS = "Authlists";

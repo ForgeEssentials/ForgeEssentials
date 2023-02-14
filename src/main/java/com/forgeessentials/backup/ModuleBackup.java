@@ -8,6 +8,7 @@ import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.zip.ZipOutputStream;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -64,6 +66,9 @@ public class ModuleBackup extends ConfigLoaderBase
 
     public static final String CONFIG_CAT = "Backup";
     public static final String CONFIG_CAT_WORLDS = CONFIG_CAT + ".Worlds";
+
+    private static ForgeConfigSpec BACKUP_CONFIG;
+    private static final ConfigData data = new ConfigData("Backup", BACKUP_CONFIG, new ForgeConfigSpec.Builder());
 
     public static final String WORLDS_HELP = "Add world configurations in the format \"B:1=true\"";
 
@@ -176,53 +181,32 @@ public class ModuleBackup extends ConfigLoaderBase
             thread.start();
         }
     }
+    static ForgeConfigSpec.BooleanValue FEbackupDefault;
+    static ForgeConfigSpec.IntValue FEbackupInterval;
+    static ForgeConfigSpec.BooleanValue FEbackupOnLoad;
+    static ForgeConfigSpec.BooleanValue FEbackupOnUnload;
+    static ForgeConfigSpec.IntValue FEkeepBackups;
+    static ForgeConfigSpec.IntValue FEdailyBackups;
+    static ForgeConfigSpec.IntValue FEweeklyBackups;
+    static ForgeConfigSpec.ConfigValue<String> FEbaseFolder;
+    static ForgeConfigSpec.ConfigValue<Map<String, Boolean>> FEbackupOverrides;
+    static ForgeConfigSpec.ConfigValue<List<String>> FEexludePatternValues;
+
 
     @Override
     public void bakeConfig(boolean reload)
     {
-        // TODO Auto-generated method stub
+        backupDefault = FEbackupDefault.get();
+        backupInterval = FEbackupInterval.get();
+        backupOnLoad = FEbackupOnLoad.get();
+        backupOnUnload = FEbackupOnUnload.get();
+        keepBackups = FEkeepBackups.get();
+        dailyBackups = FEdailyBackups.get();
+        weeklyBackups = FEweeklyBackups.get();
+        baseFolder = new File(FEbaseFolder.get());
         
-    }
-
-    @Override
-    public ConfigData returnData()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void load(ForgeConfigSpec.Builder BUILDER, boolean isReload)
-    {
-        backupDefault = config.get(CONFIG_CAT, "backup_default", true, "Backup all worlds by default").getBoolean();
-        backupInterval = config.get(CONFIG_CAT, "backup_interval", 60, "Automatic backup interval in minutes (0 to disable)").getInt();
-        backupOnLoad = config.get(CONFIG_CAT, "backup_on_load", true, "Always backup worlds when loaded (server starts)").getBoolean();
-        backupOnUnload = config.get(CONFIG_CAT, "backup_on_unload", true, "Always backup when a world is unloaded").getBoolean();
-        keepBackups = config.get(CONFIG_CAT, "keep_backups", 12, "Keep at least this amount of last backups").getInt();
-        dailyBackups = config.get(CONFIG_CAT, "keep_daily_backups", 7, "Keep at least one daily backup for this last number of last days").getInt();
-        weeklyBackups = config.get(CONFIG_CAT, "keep_weekly_backups", 8, "Keep at least one weekly backup for this last number of weeks").getInt();
-        baseFolder = new File(config.get(CONFIG_CAT, "base_folder", moduleDir.getPath(),
-                "Folder to store the backups in. Can be anywhere writable in the file system.").getString());
-
-        config.get(CONFIG_CAT_WORLDS, "0", true).getBoolean(); // Create default entry
-        ConfigCategory worldCat = config.getCategory(CONFIG_CAT_WORLDS);
-        worldCat.setComment(WORLDS_HELP);
-        for (Entry<String, Property> world : worldCat.entrySet())
-        {
-            try
-            {
-                if (world.getValue().isBooleanValue())
-                    backupOverrides.put(Integer.parseInt(world.getKey()), world.getValue().getBoolean());
-            }
-            catch (NumberFormatException e)
-            {
-                LoggingHandler.felog.error("Invalid backup override entry!");
-            }
-        }
-
-        String[] exludePatternValues = config.get(CONFIG_CAT, "exclude_patterns", DEFAULT_EXCLUDE_PATTERNS, EXCLUDE_PATTERNS_HELP).getStringList();
         exludePatterns.clear();
-        for (String pattern : exludePatternValues)
+        for (String pattern : FEexludePatternValues.get())
         {
             try
             {
@@ -233,9 +217,37 @@ public class ModuleBackup extends ConfigLoaderBase
                 LoggingHandler.felog.error(String.format("Invalid backup exclude pattern %s", pattern));
             }
         }
-
+        backupOverrides =FEbackupOverrides.get();
+        
         if (ServerLifecycleHooks.getCurrentServer() != null && ServerLifecycleHooks.getCurrentServer().isRunning())
             registerBackupTask();
+    }
+
+    @Override
+    public ConfigData returnData()
+    {
+        return data;
+    }
+
+    @Override
+    public void load(ForgeConfigSpec.Builder BUILDER, boolean isReload)
+    {
+        BUILDER.comment("BackupModule configuration").push(CONFIG_CAT);
+        FEbackupDefault = BUILDER.comment("Backup all worlds by default").define("backup_default", true);
+        FEbackupInterval = BUILDER.comment("Automatic backup interval in minutes (0 to disable)").defineInRange("backup_interval", 60, 0, Integer.MAX_VALUE);
+        FEbackupOnLoad = BUILDER.comment("Always backup worlds when loaded (server starts)").define("backup_on_load", true);
+        FEbackupOnUnload = BUILDER.comment("Always backup when a world is unloaded").define("backup_on_unload", true);
+        FEkeepBackups = BUILDER.comment("Keep at least this amount of last backups").defineInRange("keep_backups", 12, 0, Integer.MAX_VALUE);
+        FEdailyBackups = BUILDER.comment("Keep at least one daily backup for this last number of last days").defineInRange("keep_daily_backups", 7, 0, Integer.MAX_VALUE);
+        FEweeklyBackups = BUILDER.comment("Keep at least one daily backup for this last number of last days").defineInRange("keep_weekly_backups", 8, 0, Integer.MAX_VALUE);
+        FEbaseFolder = BUILDER.comment("Folder to store the backups in. Can be anywhere writable in the file system.").define("base_folder", moduleDir.getPath());
+        BUILDER.pop();
+        BUILDER.comment("Discord bot configuration").push(CONFIG_CAT_WORLDS);
+        Map<String, Boolean> worlds = new HashMap<String, Boolean>() {{put("overworld",true);}};
+        FEbackupOverrides= BUILDER.comment(WORLDS_HELP).define("backupOverrides",worlds);
+        FEexludePatternValues = BUILDER.comment(EXCLUDE_PATTERNS_HELP).define("exclude_patterns", new ArrayList<String>(Arrays.asList(DEFAULT_EXCLUDE_PATTERNS)));
+        BUILDER.pop();
+
     }
 
     /* ------------------------------------------------------------ */
@@ -397,7 +409,7 @@ public class ModuleBackup extends ConfigLoaderBase
     private static File getBackupFile(ServerWorld world)
     {
         return new File(baseFolder, String.format("%s/DIM_%d/%s.zip", //
-                world.getLevelData().getWorldName(), //
+                world.dimension().getRegistryName(), //
                 world.dimension(), //
                 FILE_FORMAT.format(new Date())));
     }
@@ -429,7 +441,7 @@ public class ModuleBackup extends ConfigLoaderBase
 
     private static void cleanBackups()
     {
-        File baseDir = new File(baseFolder, DimensionManager.getWorld(0).getWorldInfo().getWorldName());
+        File baseDir = new File(baseFolder, World.OVERWORLD.getRegistryName().getNamespace());
         if (!baseDir.exists())
             return;
         for (File backupDir : baseDir.listFiles())
