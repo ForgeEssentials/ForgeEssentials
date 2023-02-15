@@ -1,6 +1,7 @@
 package com.forgeessentials.commands.player;
 
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -11,6 +12,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -50,15 +52,19 @@ public class CommandSeen extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return null;
+        return builder
+                .then(Commands.argument("player", StringArgumentType.greedyString())
+                        .executes(CommandContext -> execute(CommandContext, "player")
+                                )
+                        );
     }
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        UserIdent player = null;
+        UserIdent player = UserIdent.get(StringArgumentType.getString(ctx, "player"),false);
 
-        if (player.hasPlayer())
+        if (player.hasPlayer()&&!player.getPlayerMP().hasDisconnected())
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Player %s is currently online", player.getUsernameOrUuid()));
             return Command.SINGLE_SUCCESS;
