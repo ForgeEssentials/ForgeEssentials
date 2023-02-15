@@ -5,10 +5,10 @@ import java.util.Collection;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IrcCommand;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
 import com.forgeessentials.core.misc.TranslatedCommandException.WrongUsageException;
 
@@ -52,7 +52,6 @@ public class CommandReply implements IrcCommand
         if (target == sender)
             throw new PlayerNotFoundException("commands.message.sameTarget", new Object[0]);
 
-        ModuleChat.tell(sender, CommandBase.getChatComponentFromNthArg(sender, args, 0, !(sender instanceof PlayerEntity)), target);
+        ModuleChat.tell(sender, ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(args, 0), target);
     }
-
 }

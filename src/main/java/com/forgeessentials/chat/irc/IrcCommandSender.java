@@ -1,16 +1,11 @@
 package com.forgeessentials.chat.irc;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ICommandSource;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.config.ModConfig.Type;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.UUID;
@@ -18,14 +13,23 @@ import java.util.UUID;
 import org.pircbotx.User;
 
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.authlib.GameProfile;
 
-public class IrcCommandSender extends CommandSource
+public class IrcCommandSender extends FakePlayer
 {
-
+    private static final UUID FEIRC_UUID = UUID.fromString("35763490-CD67-428C-9A29-4DED4429A487");
     private User user;
 
     public IrcCommandSender(User user)
     {
+        this(ServerLifecycleHooks.getCurrentServer().getLevel(ServerWorld.OVERWORLD),
+             new GameProfile(FEIRC_UUID, "@" + user.getRealName()),
+             user);
+    }
+
+    public IrcCommandSender(ServerWorld world, GameProfile name, User user)
+    {
+        super(world, name);
         this.user = user;
     }
 
@@ -34,7 +38,6 @@ public class IrcCommandSender extends CommandSource
         return user;
     }
 
-    @Override
     public String getTextName()
     {
         return "IRC:" + user.getNick();
@@ -47,35 +50,16 @@ public class IrcCommandSender extends CommandSource
     }
 
     @Override
-    public void sendMessage(ITextComponent chatComponent)
+    public void sendMessage(ITextComponent chatComponent, UUID senderUUID)
     {
         if (user.getBot().isConnected())
             user.send().message(ChatOutputHandler.stripFormatting(chatComponent.plainCopy().toString()));
     }
 
     @Override
-    public boolean canUseCommand(int p_70003_1_, String p_70003_2_)
+    public Vector3d position()
     {
-        return true;
-    }
-
-    @Override
-    public Vector3d getPosition()
-    {
-        return getServer().getPositionVector();
-    }
-
-
-    @Override
-    public Entity getEntity()
-    {
-        return getServer().getCommandSenderEntity();
-    }
-
-    @Override
-    public boolean sendCommandFeedback()
-    {
-        return getServer().sendCommandFeedback();
+        return new Vector3d(0, 0, 0);
     }
 
     @Override
@@ -84,12 +68,6 @@ public class IrcCommandSender extends CommandSource
         return ServerLifecycleHooks.getCurrentServer();
     }
 
-    @Override
-    public void sendMessage(ITextComponent p_145747_1_, UUID p_145747_2_)
-    {
-        // TODO Auto-generated method stub
-        
-    }
 
     @Override
     public boolean acceptsSuccess()

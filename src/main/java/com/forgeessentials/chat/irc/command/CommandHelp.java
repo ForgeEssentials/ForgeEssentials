@@ -5,13 +5,13 @@ import java.util.Collection;
 import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 
 import com.forgeessentials.chat.irc.IrcCommand;
-import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
 import com.forgeessentials.chat.irc.IrcHandler;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandHelp extends IrcCommandParser
+public class CommandHelp implements IrcCommand
 {
 
     @Override
@@ -39,12 +39,12 @@ public class CommandHelp extends IrcCommandParser
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public void processCommand(CommandSource sender, String[] args) throws CommandException
     {
-        arguments.confirm("List of commands:");
+        ChatOutputHandler.chatConfirmation(sender,"List of commands:");
         for (Entry<String, IrcCommand> command : IrcHandler.getInstance().commands.entrySet())
         {
-            arguments.confirm(COMMAND_CHAR + command.getKey() + " " + command.getValue().getUsage() + ": " + command.getValue().getCommandHelp());
+            ChatOutputHandler.chatConfirmation(sender,COMMAND_CHAR + command.getKey() + " " + command.getValue().getUsage() + ": " + command.getValue().getCommandHelp());
         }
     }
 

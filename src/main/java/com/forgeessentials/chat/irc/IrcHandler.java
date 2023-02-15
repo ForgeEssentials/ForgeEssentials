@@ -380,7 +380,7 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
             {
                 IrcCommandSender sender = new IrcCommandSender(user);
                 ircUserCache.put(sender.getUser(), sender);
-                return sender;
+                return sender.createCommandSourceStack();
             }
         }
         return null;
@@ -403,7 +403,7 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
         ircUserCache.put(sender.getUser(), sender);
         try
         {
-            command.processCommand(sender, args);
+            command.processCommand(sender.createCommandSourceStack(), args);
         }
         catch (CommandException e)
         {
@@ -427,7 +427,7 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
         IrcCommandSender sender = new IrcCommandSender(user);
         ircUserCache.put(sender.getUser(), sender);
         
-        ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher().parse(commandName, sender);// TODO better usage than null
+        ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher().parse(commandName, sender.createCommandSourceStack());
         if (command.getReader().canRead() != true)
         {
             ircSendMessageUser(user, String.format("Error: Command %s not found!", commandName));
@@ -436,7 +436,7 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
 
         try
         {
-            server.getCommands().performCommand(sender, commandName.substring(1));
+            server.getCommands().performCommand(sender.createCommandSourceStack(), commandName.substring(1));
         }
         catch (CommandException e)
         {

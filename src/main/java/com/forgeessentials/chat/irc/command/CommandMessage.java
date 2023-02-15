@@ -4,15 +4,16 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.ITextComponent;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
+import com.forgeessentials.chat.irc.IrcCommand;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandMessage extends IrcCommandParser
+public class CommandMessage implements IrcCommand
 {
 
     @Override
@@ -40,24 +41,23 @@ public class CommandMessage extends IrcCommandParser
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public void processCommand(CommandSource sender, String[] args) throws CommandException
     {
-        if (arguments.isEmpty())
+        if (args.length == 0)
         {
-            arguments.error("No player specified!");
+            ChatOutputHandler.chatError(sender,"No player specified!");
             return;
         }
 
-        UserIdent player = arguments.parsePlayer(true, true);
-
-        if (arguments.isEmpty())
+        UserIdent player = UserIdent.get(args[0], true);
+        if (args.length < 2)
         {
-            arguments.error("No message specified");
+            ChatOutputHandler.chatError(sender,"No message specified");
             return;
         }
 
-        ITextComponent msg = ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(arguments.sender, arguments.toArray(), 0, true);
-        ModuleChat.tell(arguments.sender, msg, player.getPlayer().createCommandSourceStack());
+        ITextComponent msg = ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(args, 2);
+        ModuleChat.tell(sender, msg, player.getPlayer().createCommandSourceStack());
     }
 
 }

@@ -23,6 +23,8 @@ import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -248,6 +250,26 @@ public class CommandUtils
     public static List<String> getListOfStringsMatchingLastWord(String[] args, String... possibilities)
     {
         return getListOfStringsMatchingLastWord(args, Arrays.asList(possibilities));
+    }
+    
+    public static ITextComponent getChatComponentFromNthArg(String[] args, int index)
+    {
+        StringTextComponent itextcomponent = new StringTextComponent("");
+
+        for (int i = index; i < args.length; ++i)
+        {
+            if (i > index)
+            {
+                itextcomponent.append(" ");
+            }
+
+            ITextComponent itextcomponent1 = net.minecraftforge.common.ForgeHooks.newChatWithLinks(args[i]); // Forge: links for messages
+
+
+            itextcomponent.append(itextcomponent1);
+        }
+
+        return itextcomponent;
     }
 
     public static boolean doesStringStartWith(String original, String region)

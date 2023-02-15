@@ -4,11 +4,13 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import com.forgeessentials.chat.irc.IrcCommand.IrcCommandParser;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.chat.irc.IrcCommand;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class CommandListPlayers extends IrcCommandParser
+public class CommandListPlayers implements IrcCommand
 {
 
     @Override
@@ -36,11 +38,11 @@ public class CommandListPlayers extends IrcCommandParser
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public void processCommand(CommandSource sender, String[] args) throws CommandException
     {
-        arguments.confirm("List of players:");
-        for (String username : arguments.server.getPlayerNames())
-            arguments.confirm(" - " + username);
+        ChatOutputHandler.chatConfirmation(sender,"List of players:");
+        for (String username : ServerLifecycleHooks.getCurrentServer().getPlayerNames())
+            ChatOutputHandler.chatConfirmation(sender," - " + username);
     }
 
 }
