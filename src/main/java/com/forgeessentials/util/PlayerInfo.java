@@ -130,7 +130,7 @@ public class PlayerInfo implements Loadable
                 List<ItemStack> portInv = inventoryGroups.get(name);
                 if (portInv != null)
                 {
-                    Map ig = modInventoryGroups.getOrDefault(name, new HashMap<>());
+                    Map<String, List<ItemStack>>  ig = modInventoryGroups.getOrDefault(name, new HashMap<>());
                     if (ig.get("vanilla") == null)
                     {
                         ig.put("vanilla", portInv);

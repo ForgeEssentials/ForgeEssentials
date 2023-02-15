@@ -74,7 +74,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
             }
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");;
-            if (player == null)
+            if (!player.hasDisconnected())
             {
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
             }
@@ -105,7 +105,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
     public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (player == null)
+        if (!player.hasDisconnected())
         {
             throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
         }

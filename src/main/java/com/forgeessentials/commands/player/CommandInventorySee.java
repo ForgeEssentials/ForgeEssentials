@@ -82,7 +82,7 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         ServerPlayerEntity victim = EntityArgument.getPlayer(ctx, "player");
-        if (victim == null)
+        if (victim.hasDisconnected())
             throw new TranslatedCommandException("Player %s not found.", victim.getDisplayName());
 
         if (source.containerMenu != source.inventoryMenu)

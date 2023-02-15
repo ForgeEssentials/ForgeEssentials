@@ -78,7 +78,7 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
         if (EntityArgument.getPlayer(ctx, "victim")!=getServerPlayer(ctx.getSource())&&PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "victim");
-            if (player != null)
+            if (!player.hasDisconnected())
             {
                 player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
                 ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
@@ -98,7 +98,7 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
     public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "victim");
-        if (player != null)
+        if (!player.hasDisconnected())
         {
             player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
             ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));

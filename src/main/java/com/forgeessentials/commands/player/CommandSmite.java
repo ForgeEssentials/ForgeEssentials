@@ -4,7 +4,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -147,7 +146,7 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
     public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (player != null)
+        if (!player.hasDisconnected())
         {
             LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
             lightningboltentity.moveTo(Vector3d.atBottomCenterOf(new BlockPos(player.position().x, player.position().y, player.position().z)));

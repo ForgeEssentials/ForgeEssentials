@@ -61,7 +61,7 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     @Override
     public Map<Currency, BigDecimal> balances(Set<Context> contexts)
     {
-        Map returned = new HashMap();
+        Map<Currency, BigDecimal> returned = new HashMap();
         returned.put(new FECurrency(), balance(new FECurrency(), contexts));
         return returned;
     }

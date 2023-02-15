@@ -1,5 +1,6 @@
 package com.forgeessentials.jscripting.wrapper.mc.world;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -68,10 +69,9 @@ public class JsWorld<T extends World> extends JsWrapper<T>
         return that.getDifficulty().ordinal();
     }
 
-    @SuppressWarnings({ "unchecked", "null" })
     public JsEntityPlayerList getPlayerEntities()
     {
-        List<PlayerEntity> players = null;
+        List<PlayerEntity> players = new ArrayList<>();
         for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
         {
             players.add((PlayerEntity) player);

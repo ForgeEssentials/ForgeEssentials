@@ -75,7 +75,7 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
         else if (params.toString().equals("others") && PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_TOP_OTHERS))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-            if (player != null)
+            if (!player.hasDisconnected())
             {
                 top(player);
             }
@@ -94,7 +94,7 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
             throw new TranslatedCommandException("You are not a player.");
         }
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (player != null)
+        if (!player.hasDisconnected())
         {
             top(player);
         }

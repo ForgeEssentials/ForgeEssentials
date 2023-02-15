@@ -93,13 +93,13 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
             if (PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
             {
                 ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-                if (player != null)
+                if (!player.hasDisconnected())
                 {
                     ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
                     player.setSecondsOnFire(15);
                 }
                 else
-                    throw new TranslatedCommandException("Player does not exist, or is not online.");
+                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
             }
             else
                 throw new PermissionDeniedException();
@@ -109,13 +109,13 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
             if (PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
             {
                 ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-                if (player != null)
+                if (!player.hasDisconnected())
                 {
                     player.setSecondsOnFire(IntegerArgumentType.getInteger(ctx, "time"));
                     ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
                 }
                 else
-                    throw new TranslatedCommandException("Player does not exist, or is not online.");
+                    throw new TranslatedCommandException("Player does not exist, or is not online.", player.getDisplayName());
             }
             else
                 throw new PermissionDeniedException();
@@ -139,13 +139,13 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
         }
 
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (player != null)
+        if (!player.hasDisconnected())
         {
             player.setSecondsOnFire(time);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
         }
         else
-            throw new TranslatedCommandException("Player does not exist, or is not online.");
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
         return Command.SINGLE_SUCCESS;
     }
 
