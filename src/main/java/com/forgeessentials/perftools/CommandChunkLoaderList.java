@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
@@ -18,6 +19,7 @@ import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
@@ -59,7 +61,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
             }
             target = target.substring(1).trim();
 
-            List<String> allUsernames = Arrays.asList(server.getPlayerList().getAvailablePlayerDat());
+            List<String> allUsernames = Arrays.asList(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerNamesArray());
             for (String username : allUsernames)
             {
                 if (username.equalsIgnoreCase(target))
@@ -69,7 +71,10 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
                 }
             }
 
-            List<ModContainer> modList = ObfuscationReflectionHelper.getPrivateValue(ModList.class, (ModList) ModList.get(), "mods");
+            List<ModContainer> modList = new ArrayList<>();
+            for(String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList())) {
+                modList.add(ModList.get().<ModContainer>getModObjectById(id).orElse(null));
+            }
             for (ModContainer mod :  modList)
             {
                 if (mod.getModId().equalsIgnoreCase(target))

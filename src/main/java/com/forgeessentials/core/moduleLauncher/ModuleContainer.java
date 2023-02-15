@@ -4,8 +4,10 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
@@ -20,7 +22,6 @@ import com.forgeessentials.util.output.LoggingHandler;
 import net.minecraft.command.ICommandSource;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
 public class ModuleContainer implements Comparable
@@ -308,7 +309,12 @@ public class ModuleContainer implements Comparable
         Object obj = null;
 
         ModContainer contain = null;
-        List<ModContainer> modList = ObfuscationReflectionHelper.getPrivateValue(ModList.class, (ModList) ModList.get(), "mods");
+
+        List<ModContainer> modList = new ArrayList<>();
+        for(String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList())) {
+            modList.add(ModList.get().<ModContainer>getModObjectById(id).orElse(null));
+        }
+
         for (ModContainer c : modList)
         {
             if (c.getMod() != null && c.getMod().getClass().equals(modClass))

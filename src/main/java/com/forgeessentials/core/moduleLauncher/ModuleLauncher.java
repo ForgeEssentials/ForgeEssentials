@@ -1,5 +1,6 @@
 package com.forgeessentials.core.moduleLauncher;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,6 @@ import com.google.common.collect.Maps;
 
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
@@ -130,8 +130,12 @@ public class ModuleLauncher
             }
         }
 
-        List<ModContainer> modList = ObfuscationReflectionHelper.getPrivateValue(ModList.class, (ModList) ModList.get(), "mods");
-        for (ModContainer container :modList)
+        List<ModContainer> modList = new ArrayList<>();
+        for(String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList())) {
+            modList.add(ModList.get().<ModContainer>getModObjectById(id).orElse(null));
+        }
+
+        for (ModContainer container : modList)
             if (container.getMod() != null)
                 map.scanObject(container);
 

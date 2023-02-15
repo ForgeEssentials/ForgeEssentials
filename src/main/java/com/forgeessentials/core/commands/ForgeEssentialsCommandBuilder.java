@@ -16,7 +16,6 @@ import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockLogic;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -59,7 +58,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
      */
     public boolean checkCommandPermission(CommandSource sender)
     {
-    	ICommandSource source = ObfuscationReflectionHelper.getPrivateValue(CommandSource.class, sender, "source");
+    	ICommandSource source = GetSource(sender);
         if (getPermissionNode() == null || getPermissionNode().isEmpty())
             return true;
         if (source instanceof MinecraftServer || source instanceof CommandBlockLogic)
