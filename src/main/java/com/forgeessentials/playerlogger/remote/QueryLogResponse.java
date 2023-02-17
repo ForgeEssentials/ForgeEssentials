@@ -22,11 +22,11 @@ public class QueryLogResponse<T extends Action>
 
     public List<T> result;
 
-    public Map<Integer, RemoteWorldData> worlds = new HashMap<>();
+    public Map<String, RemoteWorldData> worlds = new HashMap<>();
 
     public Map<Long, RemotePlayerData> players = new HashMap<>();
 
-    public Map<Integer, RemoteBlockData> blocks = null;
+    public Map<String, RemoteBlockData> blocks = null;
 
     public QueryLogResponse(QueryLogRequest request, List<T> data)
     {

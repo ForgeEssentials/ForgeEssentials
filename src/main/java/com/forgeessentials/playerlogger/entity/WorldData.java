@@ -15,7 +15,7 @@ public class WorldData
 
     @Id
     @Column(name = "id")
-    public Integer id;
+    public String id;
 
     @Column(name = "name")
     public String name;

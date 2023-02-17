@@ -27,7 +27,7 @@ public class LogEventBreak extends PlayerLoggerEvent<BlockEvent.BreakEvent>
         Action01Block action = new Action01Block();
         action.time = date;
         action.player = getPlayer(event.getPlayer());
-        action.world = getWorld(event.getWorld().provider.getDimension());
+        action.world = getWorld(event.getPlayer().level.dimension().location().toString());
         action.block = getBlock(event.getState().getBlock());
         action.metadata = event.getState().getBlock().getMetaFromState(event.getState());
         action.entity = tileEntityBlob;

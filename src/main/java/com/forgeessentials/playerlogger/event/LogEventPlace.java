@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.world.BlockEvent;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
@@ -23,8 +24,8 @@ public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.EntityPlaceEvent
     {
         Action01Block action = new Action01Block();
         action.time = new Date();
-        action.player = getPlayer(event.getPlayer());
-        action.world = getWorld(event.getWorld().provider.getDimension());
+        action.player = getPlayer((PlayerEntity)event.getEntity());
+        action.world = getWorld(event.getEntity().level.dimension().location().toString());
         action.block = getBlock(event.getState().getBlock());
         action.metadata = event.getState().getBlock().getMetaFromState(event.getState());
         action.type = ActionBlockType.PLACE;

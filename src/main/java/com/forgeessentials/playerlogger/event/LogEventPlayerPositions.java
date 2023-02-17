@@ -7,7 +7,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
@@ -24,7 +23,6 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
     @Override
     public void process(EntityManager em)
     {
-        @SuppressWarnings("unchecked")
         List<ServerPlayerEntity> players = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         date = new Date();
 
@@ -37,7 +35,7 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
             Action04PlayerPosition action = new Action04PlayerPosition();
             action.time = date;
             action.player = getPlayer(player);
-            action.world = getWorld(player.level.dimension());
+            action.world = getWorld(player.level.dimension().location().toString());
             action.x = (int) player.position().x;
             action.y = (int) player.position().y;
             action.z = (int) player.position().z;

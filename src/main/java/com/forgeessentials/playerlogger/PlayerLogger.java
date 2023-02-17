@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NonUniqueResultException;
@@ -24,17 +25,14 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.sql.rowset.serial.SerialBlob;
 
-import org.spongepowered.asm.mixin.MixinEnvironment.Side;
-
 import net.minecraft.block.Block;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.RedstoneBlock;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BedItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.SkullItem;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
@@ -52,7 +50,6 @@ import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import com.forgeessentials.commons.selections.Point;
@@ -95,9 +92,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     private EntityManager em;
 
-    private Map<String, Integer> blockCache = new HashMap<>();
+    private Map<String, String> blockCache = new HashMap<>();
 
-    private Map<Block, Integer> blockTypeCache = new HashMap<>();
+    private Map<Block, String> blockTypeCache = new HashMap<>();
 
     private Map<UUID, Long> playerCache = new HashMap<>();
 
@@ -341,7 +338,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         startThread();
     }
 
-    protected synchronized WorldData getWorld(int dimensionId)
+    protected synchronized WorldData getWorld(String dimensionId)
     {
         return em.getReference(WorldData.class, dimensionId);
     }
@@ -375,7 +372,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     protected synchronized BlockData getBlock(String name)
     {
-        Integer id = blockCache.get(name);
+        String id = blockCache.get(name);
         if (id != null)
             return em.getReference(BlockData.class, id);
 
@@ -392,7 +389,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     protected synchronized BlockData getBlock(Block block)
     {
-        Integer id = blockTypeCache.get(block);
+        String id = blockTypeCache.get(block);
         if (id != null)
             return em.getReference(BlockData.class, id);
         BlockData data = getBlock(ServerUtil.getBlockName(block));
@@ -412,7 +409,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             tileEntity.save(nbt);
             nbt.putString("ENTITY_CLASS", tileEntity.getClass().getName());
             ByteBuf buf = Unpooled.buffer();
-            ByteBufUtils.writeTag(buf, nbt);
+            writeTag(buf, nbt);
             return new SerialBlob(buf.array());
         }
         catch (Exception e)
@@ -432,7 +429,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
                 return null;
 
             ByteBuf buf = Unpooled.wrappedBuffer(blob.getBytes(1, (int) blob.length()));
-            CompoundNBT nbt = ByteBufUtils.readTag(buf);
+            CompoundNBT nbt = readTag(buf);
             if (nbt == null)
                 return null;
 
@@ -461,6 +458,18 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         return null;
     }
 
+    public static void writeTag(ByteBuf to, CompoundNBT tag)
+    {
+        PacketBuffer pb = new PacketBuffer(to);
+        pb.writeNbt(tag);
+    }
+
+    @Nullable
+    public static CompoundNBT readTag(ByteBuf from)
+    {
+        PacketBuffer pb = new PacketBuffer(from);
+        return pb.readNbt();
+    }
     /* ------------------------------------------------------------ */
     /* data retrieval */
 
