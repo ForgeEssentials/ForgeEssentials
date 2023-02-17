@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -19,10 +20,11 @@ import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -78,8 +80,49 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .then(Commands.literal("start")
+                        .then(Commands.argument("time", StringArgumentType.greedyString())
+                                .executes(CommandContext -> execute(CommandContext, "start")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("cancel")
+                        .executes(CommandContext -> execute(CommandContext, "cancel")
+                                )
+                        )
+                .then(Commands.literal("confirm")
+                        .executes(CommandContext -> execute(CommandContext, "confirm")
+                                )
+                        )
+                .then(Commands.literal("+")
+                        .then(Commands.argument("time", StringArgumentType.greedyString())
+                                .executes(CommandContext -> execute(CommandContext, "+")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("-")
+                        .then(Commands.argument("time", StringArgumentType.greedyString())
+                                .executes(CommandContext -> execute(CommandContext, "-")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("play")
+                        .then(Commands.argument("speed", IntegerArgumentType.integer())
+                                .executes(CommandContext -> execute(CommandContext, "play")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("help")
+                        .executes(CommandContext -> execute(CommandContext, "help")
+                                )
+                        )
+                .then(Commands.literal("stop")
+                        .executes(CommandContext -> execute(CommandContext, "stop")
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "help")
+                        );
     }
 
     @Override
@@ -132,7 +175,7 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
             throw new TranslatedCommandException("No selection available. Please select a region first.");
 
         int step = -60;
-        String time = args.remove();
+        String time = StringArgumentType.getString(ctx, "time");
         try
         {
             SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
@@ -161,7 +204,7 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
     {
         if(!hasPermission(ctx.getSource(),PERM_PREVIEW)) {throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);}
 
-        sec = (int) (args.parseTimeReadable() / 1000) * sec;
+        sec = (int) (parseTimeReadable(StringArgumentType.getString(ctx, "time")) / 1000) * sec;
 
 
         RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getUUID());
@@ -200,7 +243,7 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
         if(!hasPermission(ctx.getSource(),PERM_PREVIEW)) {throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);}
 
         int speed = 1;
-        speed = parseInt(args.remove());
+        speed = IntegerArgumentType.getInteger(ctx, "speed");
         if (speed == 0)
             speed = 1;
         if (Math.abs(speed) > 10)

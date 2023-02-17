@@ -12,6 +12,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.playerlogger.command.CommandPlayerlogger;
 import com.forgeessentials.playerlogger.command.CommandRollback;
+import com.forgeessentials.playerlogger.command.CommandTestPlayerlogger;
 import com.forgeessentials.playerlogger.remote.serializer.BlockDataType;
 import com.forgeessentials.playerlogger.remote.serializer.PlayerDataType;
 import com.forgeessentials.playerlogger.remote.serializer.WorldDataType;
@@ -23,6 +24,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -94,7 +96,10 @@ public class ModulePlayerLogger
     {
         FECommandManager.registerCommand(new CommandRollback(true));
         FECommandManager.registerCommand(new CommandPlayerlogger(true));
-        // FECommandManager.registerCommand(new CommandTestPlayerlogger());
+        
+        CommandTestPlayerlogger test = new CommandTestPlayerlogger(true);
+        FECommandManager.registerCommand(test);
+        MinecraftForge.EVENT_BUS.register(test);
     }
 
     @SubscribeEvent

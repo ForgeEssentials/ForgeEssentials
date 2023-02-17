@@ -33,7 +33,7 @@ public abstract class PlayerLoggerEvent<T>
         return ModulePlayerLogger.getLogger().getBlock(block);
     }
 
-    public WorldData getWorld(int dimensionId)
+    public WorldData getWorld(String dimensionId)
     {
         return ModulePlayerLogger.getLogger().getWorld(dimensionId);
     }

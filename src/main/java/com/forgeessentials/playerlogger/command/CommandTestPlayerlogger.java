@@ -1,10 +1,9 @@
 package com.forgeessentials.playerlogger.command;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
@@ -15,19 +14,22 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.util.CommandParserArgs;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandTestPlayerlogger(boolean enabled)
+    {
+        super(enabled);
+    }
+
     public ServerPlayerEntity player;
 
     public boolean place;
-
-    public CommandTestPlayerlogger()
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
 
     @Override
     public String getPrimaryAlias()
@@ -54,12 +56,21 @@ public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (player == null)
-            player = arguments.senderPlayer;
+            player = getServerPlayer(ctx.getSource());
         else
             player = null;
+        return Command.SINGLE_SUCCESS;
     }
 
     @SubscribeEvent
@@ -73,7 +84,7 @@ public class CommandTestPlayerlogger extends ForgeEssentialsCommandBuilder
             BlockPos pos = new BlockPos(x, y, z);
             for (int i = 0; i < 300; i++)
                 if (place)
-                    ForgeEventFactory.onBlockPlace(player, new BlockSnapshot(player.level, pos, Blocks.AIR.defaultBlockState()), Direction.DOWN);
+                    ForgeEventFactory.onBlockPlace(player, BlockSnapshot.create(player.level.dimension(), player.level, pos), Direction.DOWN);
                 else
                     MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(player.level, pos, Blocks.DIRT.defaultBlockState(), player));
             place = !place;
