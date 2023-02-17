@@ -17,14 +17,14 @@ public class TileEntitySkullGrave extends SkullTileEntity
     public TileEntitySkullGrave(GameProfile player)
     {
         if (player != null)
-            setPlayerProfile(player);
+            setOwner(player);
     }
 
     @Override
-    public void invalidate()
+    public void setRemoved()
     {
-        super.invalidate();
-        WorldPoint point = new WorldPoint(world, pos.getX(), pos.getY(), pos.getZ());
+        super.setRemoved();
+        WorldPoint point = new WorldPoint(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
         Grave grave = Grave.graves.get(point);
         if (grave == null)
             return;
@@ -35,7 +35,7 @@ public class TileEntitySkullGrave extends SkullTileEntity
             if (owner.hasPlayer())
             {
                 // createPlayerSkull(owner.getPlayer(), world, point.getX(), point.getY(), point.getZ());
-                world.setBlockState(pos, Blocks.CHEST.defaultBlockState());
+                level.setBlockAndUpdate(worldPosition, Blocks.CHEST.defaultBlockState());
             }
         }
         else

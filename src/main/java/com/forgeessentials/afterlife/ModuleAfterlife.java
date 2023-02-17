@@ -9,15 +9,14 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
@@ -57,9 +56,10 @@ public class ModuleAfterlife extends ServerEventHandler
     public static final String PERM_DEATHCHEST_BYPASS = PERM_DEATHCHEST + ".bypass";
 
     @SubscribeEvent
-    public void load(final RegistryEvent.Register<TileEntityType<?>> event)
-    {
-        TileEntity.register("FESkull", TileEntitySkullGrave.class);
+    public static void registerTE(RegistryEvent.Register<TileEntityType<?>> evt) {
+      TileEntityType<?> type = TileEntityType.Builder.of(TileEntitySkullGrave::new, Blocks.SKELETON_SKULL).build(null);
+      type.setRegistryName("ForgeEssentials", "FESkull");
+      evt.getRegistry().register(type);
     }
 
     @SubscribeEvent

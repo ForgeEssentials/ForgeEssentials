@@ -18,9 +18,8 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ChestContainer;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SOpenWindowPacket;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
@@ -223,11 +222,7 @@ public class Grave implements Loadable
         if (player.containerMenu != player.inventoryMenu)
             player.closeContainer();
         player.nextContainerCounter();
-        //new SPacketOpenWindow(player.containerCounter, "minecraft:chest", invGrave.getDisplayName(), invGrave.getSizeInventory())
-        player.connection.send(new SOpenWindowPacket(player.containerCounter,ContainerType.GENERIC_9x6, invGrave.getDisplayName()));
-        player.containerMenu = new ChestContainer(ContainerType.GENERIC_9x6, player.containerCounter, player.inventory,invGrave,6);
-        player.containerMenu.containerId = player.containerCounter;// Needed?
-        player.containerMenu.addSlotListener(player);
+        player.openMenu(new SimpleNamedContainerProvider((i, inv, p) -> ChestContainer.threeRows(i, inv, invGrave), invGrave.getDisplayName()));
     }
 
     protected void dropItems()
