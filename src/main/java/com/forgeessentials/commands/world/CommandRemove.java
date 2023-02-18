@@ -2,21 +2,33 @@ package com.forgeessentials.commands.world;
 
 import java.util.List;
 
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.BlockPosArgument;
+import net.minecraft.command.arguments.DimensionArgument;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandRemove extends ForgeEssentialsCommandBuilder
 {
+
+    public CommandRemove(boolean enabled)
+    {
+        super(enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -43,33 +55,35 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return builder
+                .then(Commands.argument("radius", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                        .then(Commands.argument("position", BlockPosArgument.blockPos())
+                                .then(Commands.argument("dimension", DimensionArgument.dimension())
+                                        .executes(CommandContext -> execute(CommandContext,"dim")
+                                                )
+                                        )
+                                .executes(CommandContext -> execute(CommandContext)
+                                        )
+                                )
+                        );
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         int radius = 10;
         double centerX;
         double centerY;
         double centerZ;
 
-        if (args.length == 1)
-        {
-            radius = parseInt(args[0], 0, Integer.MAX_VALUE);
-            centerX = sender.position().x;
-            centerY = sender.position().y;
-            centerZ = sender.position().z;
-        }
-        else if (args.length == 4)
-        {
-            radius = parseInt(args[0], 0, Integer.MAX_VALUE);
-            centerX = parseDouble(args[1], sender.position().x);
-            centerY = parseDouble(args[2], sender.position().y);
-            centerZ = parseDouble(args[3], sender.position().z);
-        }
-        else
-        {
+        radius = IntegerArgumentType.getInteger(ctx, "radius");
+        centerX = BlockPosArgument.getLoadedBlockPos(ctx, "position").getX();
+        centerY = BlockPosArgument.getLoadedBlockPos(ctx, "position").getY();
+        centerZ = BlockPosArgument.getLoadedBlockPos(ctx, "position").getZ();
 
-        }
-
-        List<ItemEntity> entityList = sender.world.getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(centerX - radius, centerY - radius, centerZ
+        List<ItemEntity> entityList = getServerPlayer(ctx.getSource()).getLevel().getEntitiesOfClass(ItemEntity.class, new AxisAlignedBB(centerX - radius, centerY - radius, centerZ
                 - radius, centerX + radius + 1, centerY + radius + 1, centerZ + radius + 1));
 
         int counter = 0;
@@ -79,29 +93,28 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
             counter++;
             entity.remove();;
         }
-        ChatOutputHandler.chatConfirmation(sender, Translator.format("%d items removed.", counter));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%d items removed.", counter));
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         int radius = 0;
-        WorldPoint center = new WorldPoint(0, 0, 0, 0);
+        WorldPoint center = new WorldPoint("minecraft:overworld", 0, 0, 0);
 
-        if (args.length >= 4)
-        {
-            radius = parseInt(args[0], 0, Integer.MAX_VALUE);
-            center.setX(parseInt(args[1]));
-            center.setY(parseInt(args[2]));
-            center.setZ(parseInt(args[3]));
-            if (args.length >= 5)
-            {
-                center.setDimension(parseInt(args[3]));
-            }
+        radius = IntegerArgumentType.getInteger(ctx, "radius");
+        center.setX(BlockPosArgument.getLoadedBlockPos(ctx, "position").getX());
+        center.setY(BlockPosArgument.getLoadedBlockPos(ctx, "position").getY());
+        center.setZ(BlockPosArgument.getLoadedBlockPos(ctx, "position").getZ());
+
+        if(params.toString().equals("dim")) {
+            center.setDimension(DimensionArgument.getDimension(ctx, "dimension").dimension().location().toString());
         }
 
 
-        List<ItemEntity> entityList = DimensionManager.getWorld(center.getDimension()).getEntitiesWithinAABB(
+
+        List<ItemEntity> entityList = ServerUtil.getWorldFromString(center.getDimension()).getEntitiesOfClass(
                 ItemEntity.class,
                 new AxisAlignedBB(center.getX() - radius, center.getY() - radius, center.getZ() - radius, center.getX() + radius + 1, center.getY() + radius
                         + 1, center.getZ() + radius + 1));
@@ -113,7 +126,8 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
             counter++;
             entity.remove();
         }
-        ChatOutputHandler.chatConfirmation(sender, Translator.format("%d items removed.", counter));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%d items removed.", counter));
+        return Command.SINGLE_SUCCESS;
     }
 
 }

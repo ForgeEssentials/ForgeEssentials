@@ -1,7 +1,6 @@
 package com.forgeessentials.commands;
 
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.forgeessentials.api.APIRegistry;
@@ -91,8 +90,8 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandLocate(true));
         FECommandManager.registerCommand(new CommandRules(true));
         FECommandManager.registerCommand(new CommandModlist(true));
-        FECommandManager.registerCommand(new CommandButcher());
-        FECommandManager.registerCommand(new CommandRemove());
+        FECommandManager.registerCommand(new CommandButcher(true));
+        FECommandManager.registerCommand(new CommandRemove(true));
         //Afk
         FECommandManager.registerCommand(new CommandAFK(true));
         CommandFeSettings.addAlias("Afk", "timeout", CommandAFK.PERM_AUTOTIME);

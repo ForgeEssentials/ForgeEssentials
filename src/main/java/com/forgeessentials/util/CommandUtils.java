@@ -405,7 +405,7 @@ public class CommandUtils
     {
         try
         {
-            if (sender.getPlayerOrException() instanceof PlayerEntity)
+            if (sender.getEntityOrException() instanceof PlayerEntity)
                 return APIRegistry.perms.checkPermission(getServerPlayer(sender), perm);
             else
                 return true;

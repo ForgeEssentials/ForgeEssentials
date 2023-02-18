@@ -18,12 +18,19 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.CommandButcherTickTask.ButcherMobType;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 
 public class CommandButcher extends ForgeEssentialsCommandBuilder
 {
 
+    public CommandButcher(boolean enabled)
+    {
+        super(enabled);
+    }
+
     public static List<String> typeList = ButcherMobType.getNames();
+
 
     @Override
     public String getPrimaryAlias()
