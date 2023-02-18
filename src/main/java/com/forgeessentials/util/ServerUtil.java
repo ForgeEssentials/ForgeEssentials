@@ -9,10 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.block.Block;
@@ -20,24 +17,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.event.server.ServerLifecycleEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.environment.CommandSetChecker;
 import com.forgeessentials.core.environment.Environment;
-import com.forgeessentials.util.output.LoggingHandler;
 
 public abstract class ServerUtil
 {
@@ -253,7 +245,6 @@ public abstract class ServerUtil
      * 
      * @return
      */
-    @SuppressWarnings("unchecked")
     public static List<ServerPlayerEntity> getPlayerList()
     {
         MinecraftServer mc = ServerLifecycleHooks.getCurrentServer();
@@ -347,7 +338,6 @@ public abstract class ServerUtil
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static void copyNbt(CompoundNBT nbt, CompoundNBT data)
     {
         // Clear old data
@@ -392,8 +382,14 @@ public abstract class ServerUtil
         return (loc.getNamespace() + '.' + loc.getPath()).replace(' ', '_');
     }
 
-    /* ------------------------------------------------------------ */
+    public static ServerWorld getWorldFromString(String dim)
+    {
+        ServerWorld world = ServerLifecycleHooks.getCurrentServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
+        return world;
+    }
 
+    /* ------------------------------------------------------------ */
+/*
     public static void replaceCommand(Class<CommandMessage> clazz, ICommand newCommand)
     {
         try
@@ -456,5 +452,5 @@ public abstract class ServerUtil
         else
             LoggingHandler.felog.error(String.format("Could not find command /%s to replace", command));
     }
-
+*/
 }

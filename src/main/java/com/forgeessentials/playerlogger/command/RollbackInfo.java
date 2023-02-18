@@ -19,6 +19,7 @@ import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLogger;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.Lists;
 
@@ -107,13 +108,13 @@ public class RollbackInfo
         {
             if (change.type == ActionBlockType.PLACE)
             {
-                ServerWorld world = DimensionManager.getWorld(change.world.id);
+                ServerWorld world = ServerUtil.getWorldFromString(change.world.id);
                 world.setBlock(change.getBlockPos(), Blocks.AIR.defaultBlockState(), 11);
                 System.out.println(change.time + " REMOVED " + change.block.name);
             }
             else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
             {
-                ServerWorld world = DimensionManager.getWorld(change.world.id);
+                ServerWorld world = ServerUtil.getWorldFromString(change.world.id);
                 Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
                 world.setBlockState(change.getBlockPos(), block.stateById(change.metadata), 3);
                 world.setTileEntity(change.getBlockPos(), PlayerLogger.blobToTileEntity(change.entity));
@@ -127,7 +128,7 @@ public class RollbackInfo
         if (task != null)
             task.cancel();
         for (Action01Block change : Lists.reverse(changes))
-            player.connection.sendPacket(new SPacketBlockChange(DimensionManager.getWorld(change.world.id), change.getBlockPos()));
+            player.connection.sendPacket(new SPacketBlockChange(ServerUtil.getWorldFromString(change.world.id), change.getBlockPos()));
     }
 
     public Date getTime()
@@ -150,7 +151,7 @@ public class RollbackInfo
      */
     public static void sendBlockChange(ServerPlayerEntity player, Action01Block change, BlockState newState)
     {
-        SPacketBlockChange packet = new SPacketBlockChange(DimensionManager.getWorld(change.world.id), change.getBlockPos());
+        SPacketBlockChange packet = new SPacketBlockChange(ServerUtil.getWorldFromString(change.world.id), change.getBlockPos());
         packet.blockState = newState;
         player.connection.sendPacket(packet);
     }

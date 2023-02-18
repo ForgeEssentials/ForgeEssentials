@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.LoggingHandler;
 
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -30,10 +28,10 @@ public interface NamedWorldHandler
     {
 
         @Override
-        public ServerWorld getWorld(String name)
+        public ServerWorld getWorld(String regName)
         {
-            name = name.toLowerCase();
-            switch (name)
+            regName = regName.toLowerCase();
+            switch (regName)
             {
             case WORLD_NAME_OVERWORLD:
                 return ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD);
@@ -45,7 +43,7 @@ public interface NamedWorldHandler
             {
                 try
                 {
-                    ServerWorld world = ServerLifecycleHooks.getCurrentServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(name)));
+                    ServerWorld world = ServerUtil.getWorldFromString(regName);
 
                     if (world == null) {
                         LoggingHandler.felog.debug("argument.dimension.invalid"+ world);

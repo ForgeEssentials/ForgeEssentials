@@ -9,10 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
@@ -24,6 +21,7 @@ import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityList;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayerList;
 import com.forgeessentials.jscripting.wrapper.mc.util.JsAxisAlignedBB;
+import com.forgeessentials.util.ServerUtil;
 
 /**
  * @tsd.static World
@@ -48,7 +46,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public static JsServerWorld get(String dim)
     {
-        ServerWorld world = ServerLifecycleHooks.getCurrentServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
+        ServerWorld world = ServerUtil.getWorldFromString(dim);
         return world == null ? null : new JsServerWorld(world);
     }
 

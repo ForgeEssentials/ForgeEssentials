@@ -6,19 +6,15 @@ import java.util.regex.Pattern;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.annotations.Expose;
 
@@ -133,9 +129,7 @@ public class WorldPoint extends Point
     public World getWorld(){
         if (world != null && world.dimension().location().toString() != dim)
             return world;
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        RegistryKey<World> registrykey = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim));
-        world = server.getLevel(registrykey);
+        world = ServerUtil.getWorldFromString(dim);
         if (world == null) {
             LoggingHandler.felog.debug("argument.dimension.invalid"+ dim);
             return null;
