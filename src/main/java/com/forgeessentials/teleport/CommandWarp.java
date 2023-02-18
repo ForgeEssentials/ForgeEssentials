@@ -4,25 +4,23 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -91,8 +89,31 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .then(Commands.literal("warp")
+                        .then(Commands.argument("warp", StringArgumentType.word())
+                                .executes(CommandContext -> execute(CommandContext, "warp")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("set")
+                        .then(Commands.argument("warp", StringArgumentType.word())
+                                .executes(CommandContext -> execute(CommandContext, "set")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("delete")
+                        .then(Commands.argument("warp", StringArgumentType.word())
+                                .executes(CommandContext -> execute(CommandContext, "delete")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("list")
+                        .executes(CommandContext -> execute(CommandContext, "list")
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "help")
+                        );
     }
 
     @Override
@@ -107,18 +128,15 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
         Map<String, Warp> warps = getWarps();
 
         Set<String> completeList = new HashSet<>();
-        completeList.add("list");
         completeList.addAll(warps.keySet());
-        arguments.tabComplete(completeList);
 
-        String warpName = arguments.remove().toLowerCase();
 
         if (params.toString().equals("list"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Warps: " + StringUtils.join(warps.keySet(), ", "));
-            return Command.SINGLE_SUCCESS;;
+            return Command.SINGLE_SUCCESS;
         }
-
+        String warpName = StringArgumentType.getString(ctx, "warp");
         if (params.toString().equals("warp"))
         {
 
@@ -128,6 +146,7 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
             if (!hasPermission(ctx.getSource(),PERM_WARP + "." + warpName))
                 throw new TranslatedCommandException("You don't have permission to use this warp");
             TeleportHelper.teleport(getServerPlayer(ctx.getSource()), point);
+            return Command.SINGLE_SUCCESS;
         }
         if (params.toString().equals("set"))
         {
@@ -149,6 +168,7 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted warp \"%s\"", warpName);
             return Command.SINGLE_SUCCESS;
         }
+        return Command.SINGLE_SUCCESS;
     }
 
 }

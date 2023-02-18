@@ -1,22 +1,25 @@
 package com.forgeessentials.teleport;
 
-import java.util.List;
-
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandBed extends ForgeEssentialsCommandBuilder
 {
@@ -51,74 +54,61 @@ public class CommandBed extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length >= 1 && PermissionAPI.hasPermission(sender, TeleportModule.PERM_BED_OTHERS))
+        return builder
+                .then(Commands.argument("player", EntityArgument.player())
+                        .executes(CommandContext -> execute(CommandContext)
+                                )
+                        );
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        if (PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_BED_OTHERS))
         {
-            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if (!player.hasDisconnected())
             {
                 tp(player);
             }
             else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
         }
         else
         {
-            tp(sender);
+            tp(getServerPlayer(ctx.getSource()));
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     private void tp(ServerPlayerEntity player) throws CommandException
     {
-        World world = player.world;
-        if (!world.provider.canRespawnHere())
-            world = DimensionManager.getWorld(0);
+        World world = ServerLifecycleHooks.getCurrentServer().getLevel(player.getRespawnDimension());
+        if (world == null)
+            throw new TranslatedCommandException("No respawn dim found.");
 
-        BlockPos spawn = player.getBedLocation(world.provider.getDimension());
-        if (spawn == null && world.provider.getDimension() != 0)
-        {
-            world = DimensionManager.getWorld(0);
-            spawn = player.getBedLocation(world.provider.getDimension());
-        }
+        BlockPos spawn = player.getRespawnPosition();
         if (spawn == null)
-            throw new TranslatedCommandException("No bed found.");
+            throw new TranslatedCommandException("No respawn position found.");
 
-        spawn = EntityPlayer.getBedSpawnLocation(player.world, spawn, true);
-        if (spawn == null)
-            throw new TranslatedCommandException("Your bed has been obstructed.");
-
-        PlayerInfo.get(player.getPersistentID()).setLastTeleportOrigin(new WarpPoint(player));
-        WarpPoint spawnPoint = new WarpPoint(world.provider.getDimension(), spawn, player.rotationPitch, player.rotationYaw);
+        PlayerInfo.get(player.getUUID()).setLastTeleportOrigin(new WarpPoint(player));
+        WarpPoint spawnPoint = new WarpPoint(world.dimension().location().toString(), spawn, player.xRot, player.yRot);
         TeleportHelper.teleport(player, spawnPoint);
     }
 
     @Override
-    public void processCommandConsole(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length >= 1)
+        ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        if (!player.hasDisconnected())
         {
-            ServerPlayerEntity player = UserIdent.getPlayerByMatchOrUsername(sender, args[0]);
-            if (player != null)
-            {
-                tp(player);
-            }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", args[0]);
-        }
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
-    {
-        if (args.length == 1)
-        {
-            return matchToPlayers(args);
+            tp(player);
         }
         else
-        {
-            return null;
-        }
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+        return Command.SINGLE_SUCCESS;
     }
 
 }
