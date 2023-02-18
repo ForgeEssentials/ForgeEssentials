@@ -19,7 +19,6 @@ import com.forgeessentials.commands.item.CommandVirtualchest;
 import com.forgeessentials.commands.player.CommandAFK;
 import com.forgeessentials.commands.player.CommandBubble;
 import com.forgeessentials.commands.player.CommandBurn;
-import com.forgeessentials.commands.player.CommandCapabilities;
 import com.forgeessentials.commands.player.CommandDoAs;
 import com.forgeessentials.commands.player.CommandFly;
 import com.forgeessentials.commands.player.CommandGameMode;
@@ -106,7 +105,6 @@ public class ModuleCommands
         
         FECommandManager.registerCommand(new CommandEnderchest(true));
         FECommandManager.registerCommand(new CommandVirtualchest(true));
-        FECommandManager.registerCommand(new CommandCapabilities());
         //Craft
         CommandCraft craft = new CommandCraft(true);
         FECommandManager.registerCommand(craft);
