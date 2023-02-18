@@ -22,7 +22,7 @@ public class WorldDataType implements DataType<WorldData>
     public WorldData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
     {
         WorldData wd = new WorldData();
-        wd.id = json.getAsInt();
+        wd.id = json.getAsString();
         return wd;
     }
 

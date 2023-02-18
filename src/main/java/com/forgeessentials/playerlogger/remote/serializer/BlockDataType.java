@@ -22,7 +22,7 @@ public class BlockDataType implements DataType<BlockData>
     public BlockData deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
     {
         BlockData wd = new BlockData();
-        wd.id = json.getAsInt();
+        wd.id = json.getAsString();
         return wd;
     }
 
