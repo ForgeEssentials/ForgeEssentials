@@ -1,5 +1,5 @@
 package com.forgeessentials.factions;
-
+/*
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -263,7 +263,6 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
                 }
                 catch (QuestionerStillActiveException e)
                 {
-                    /* do nothing */
                 }
             }
         }
@@ -415,3 +414,4 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
         throw new CancelParsingException();
     }
 }
+*/
