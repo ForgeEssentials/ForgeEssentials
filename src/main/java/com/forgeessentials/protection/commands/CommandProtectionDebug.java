@@ -1,7 +1,7 @@
 package com.forgeessentials.protection.commands;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -9,8 +9,9 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -50,8 +51,11 @@ public class CommandProtectionDebug extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .then(Commands.argument("command", StringArgumentType.greedyString())
+                        .executes(CommandContext -> execute(CommandContext, "setPass")
+                                )
+                        );
     }
 
     @Override
@@ -69,7 +73,7 @@ public class CommandProtectionDebug extends ForgeEssentialsCommandBuilder
         }
         else
         {
-            String cmd = arguments.toString();
+            String cmd = StringArgumentType.getString(ctx, "command");
             if (cmd.isEmpty())
                 cmd = "global deny";
             cmd = "/p " + cmd + " ";
@@ -79,5 +83,6 @@ public class CommandProtectionDebug extends ForgeEssentialsCommandBuilder
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Enabled protection debug-mode");
             ChatOutputHandler.chatNotification(ctx.getSource(),"Command: " + cmd + "<perm>");
         }
+        return Command.SINGLE_SUCCESS;
     }
 }

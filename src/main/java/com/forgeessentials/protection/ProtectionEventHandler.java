@@ -1,6 +1,5 @@
 package com.forgeessentials.protection;
 
-import static net.minecraftforge.eventbus.api.Event.Result.ALLOW;
 import static net.minecraftforge.eventbus.api.Event.Result.DENY;
 
 import java.util.ArrayList;
@@ -60,11 +59,9 @@ import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
 import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.fe.event.world.PressurePlateEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
-
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.APIRegistry;
@@ -200,7 +197,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         UserIdent ident = UserIdent.get(event.getPlayer());
         WorldPoint point = new WorldPoint(event.getTarget());
 
-        String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + EntityList.getEntityString(event.getTarget());
+        String permission = ModuleProtection.PERM_INTERACT_ENTITY + "." + event.getTarget().getType().getDescriptionId();
         ModuleProtection.debugPermission(event.getPlayer(), permission);
         if (!APIRegistry.perms.checkUserPermission(ident, point, permission))
         {
@@ -373,7 +370,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         int cx = (int) Math.floor(center.x);
         int cy = (int) Math.floor(center.y);
         int cz = (int) Math.floor(center.z);
-        float size = event.getExplosion().size;
+        float size = event.getExplosion().radius;
         int s = (int) Math.ceil(size);
 
         if (!APIRegistry.perms.checkUserPermission(ident, new WorldPoint(event.getWorld(), cx, cy, cz), ModuleProtection.PERM_EXPLOSION))
@@ -594,7 +591,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         LivingEntity entity = (LivingEntity) event.getEntityLiving();
         WorldPoint point = new WorldPoint(entity);
         // TODO: Create a cache for spawn permissions
-        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_NATURAL + "." + EntityList.getEntityString(entity)))
+        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_NATURAL + "." + entity.getType().getDescriptionId()))
         {
             event.setResult(Result.DENY);
             return;
@@ -615,7 +612,7 @@ public class ProtectionEventHandler extends ServerEventHandler
             return;
         LivingEntity entity = (LivingEntity) event.getEntityLiving();
         WorldPoint point = new WorldPoint(entity);
-        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + "." + EntityList.getEntityString(entity)))
+        if (!APIRegistry.perms.checkUserPermission(null, point, ModuleProtection.PERM_MOBSPAWN_FORCED + "." + entity.getType().getDescriptionId()))
         {
             event.setResult(Result.DENY);
             return;
@@ -930,7 +927,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (target instanceof PlayerEntity)
             return "Player";
-        String name = EntityList.getEntityString(target);
+        String name = target.getType().getDescriptionId();
         return name != null ? name : target.getClass().getSimpleName();
     }
 
