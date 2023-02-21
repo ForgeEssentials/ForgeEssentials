@@ -14,7 +14,6 @@ import net.minecraftforge.server.permission.PermissionAPI;
 public class WEIntegrationHandler
 {
 
-    @SuppressWarnings("unused")
     private CUIComms cuiComms;
 
     @SubscribeEvent

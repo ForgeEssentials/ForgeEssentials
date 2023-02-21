@@ -159,18 +159,6 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
         return that.hasPermission(perm);
     }
 
-    public void tabComplete(String... completionList) throws CommandException
-    {
-        that.tabComplete(completionList);
-    }
-
-    /**
-     * @tsd.ignore
-     */
-    public void tabComplete(Collection<String> completionList) throws CommandException
-    {
-        that.tabComplete(completionList);
-    }
 
     public void tabCompleteWord(String completion) throws CommandException
     {
@@ -210,11 +198,6 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
     public long parseTimeReadable() throws CommandException
     {
         return that.parseTimeReadable();
-    }
-
-    public void checkTabCompletion() throws CommandException
-    {
-        that.checkTabCompletion();
     }
 
     public void requirePlayer() throws CommandException

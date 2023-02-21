@@ -100,7 +100,7 @@ public class JsWorld<T extends World> extends JsWrapper<T>
 
     public void setBlock(int x, int y, int z, JsBlock block, int meta)
     {
-        that.setBlock(new BlockPos(x, y, z), block.getThat().stateById(meta), 3);
+        that.setBlock(new BlockPos(x, y, z), block.getThat().defaultBlockState(), 3);
     }
 
     public JsTileEntity<?> getTileEntity(int x, int y, int z)

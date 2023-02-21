@@ -119,7 +119,7 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
         return new JsPoint(that.getSel2());
     }
 
-    public int getSelDim()
+    public String getSelDim()
     {
         return that.getSelDim();
     }
@@ -134,7 +134,7 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
         that.setSel2(point.getThat());
     }
 
-    public void setSelDim(int dimension)
+    public void setSelDim(String dimension)
     {
         that.setSelDim(dimension);
     }

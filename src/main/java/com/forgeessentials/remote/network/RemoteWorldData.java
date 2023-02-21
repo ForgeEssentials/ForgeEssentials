@@ -5,7 +5,7 @@ import com.forgeessentials.playerlogger.entity.WorldData;
 public class RemoteWorldData
 {
 
-    public int id;
+    public String id;
 
     public String name;
 

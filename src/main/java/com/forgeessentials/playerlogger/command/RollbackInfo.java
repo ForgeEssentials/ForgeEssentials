@@ -72,7 +72,7 @@ public class RollbackInfo
                 else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
                 {
                     Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
-                    sendBlockChange(player, change, block.stateById(change.metadata));
+                    sendBlockChange(player, change, block.defaultBlockState());
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " RESTORED " +
                     // change.block.name + ":" + change.metadata);
                 }
@@ -86,7 +86,7 @@ public class RollbackInfo
                 if (change.type == ActionBlockType.PLACE)
                 {
                     Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
-                    sendBlockChange(player, change, block.stateById(change.metadata));
+                    sendBlockChange(player, change, block.defaultBlockState());
                     // System.out.println(FEConfig.FORMAT_DATE_TIME_SECONDS.format(change.time) + " REPLACED " +
                     // change.block.name);
                 }
@@ -116,8 +116,8 @@ public class RollbackInfo
             {
                 ServerWorld world = ServerUtil.getWorldFromString(change.world.id);
                 Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
-                world.setBlockState(change.getBlockPos(), block.stateById(change.metadata), 3);
-                world.setTileEntity(change.getBlockPos(), PlayerLogger.blobToTileEntity(change.entity));
+                world.setBlock(change.getBlockPos(), block.defaultBlockState(), 3);
+                world.setBlockEntity(change.getBlockPos(), PlayerLogger.blobToTileEntity(change.entity));
                 System.out.println(change.time + " RESTORED " + change.block.name + ":" + change.metadata);
             }
         }

@@ -42,10 +42,10 @@ public final class MapperUtil
         {
             for (int iz = 0; iz < 16; iz++)
             {
-                int iy = chunk.getHeight(new BlockPos(ix, 0, iz));
+                int iy = chunk.getMaxBuildHeight();
                 for (; iy >= 0; iy--)
                 {
-                    Block block = chunk.getBlockState(ix, iy, iz).getBlock();
+                    Block block = chunk.getBlockState(new BlockPos(ix, iy, iz)).getBlock();
                     if (block == Blocks.AIR)
                         continue;
                     image.setRGB(offsetX + ix, offsetY + iz, getBlockColor(block, block.getMetaFromState(chunk.getBlockState(ix, iy, iz))).getRGB());
