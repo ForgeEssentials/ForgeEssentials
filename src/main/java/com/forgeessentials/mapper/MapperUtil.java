@@ -2,7 +2,6 @@ package com.forgeessentials.mapper;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -10,27 +9,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 
 import com.mojang.datafixers.util.Either;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.biome.BiomeContainer;
-import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.chunk.storage.ChunkLoader;
+import net.minecraft.world.chunk.storage.RegionFile;
 import net.minecraft.world.chunk.storage.RegionFileCache;
-import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.server.ChunkHolder;
 import net.minecraft.world.server.ChunkManager;
 import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public final class MapperUtil
 {
@@ -59,10 +55,10 @@ public final class MapperUtil
                 int iy = chunk.getMaxBuildHeight();
                 for (; iy >= 0; iy--)
                 {
-                    Block block = chunk.getBlockState(new BlockPos(ix, iy, iz)).getBlock();
-                    if (block == Blocks.AIR)
+                    BlockState blockState = chunk.getBlockState(new BlockPos(ix, iy, iz));
+                    if (blockState.getBlock() == Blocks.AIR)
                         continue;
-                    image.setRGB(offsetX + ix, offsetY + iz, getBlockColor(block, block.getMetaFromState(chunk.getBlockState(ix, iy, iz))).getRGB());
+                    image.setRGB(offsetX + ix, offsetY + iz, getBlockColor(blockState, blockState.getMapColor(chunk.getLevel(), new BlockPos(ix, iy, iz))).getRGB());
                     break;
                 }
                 if (iy < 0)
@@ -145,14 +141,30 @@ public final class MapperUtil
 
     public static boolean chunkExists(ServerWorld world, int cx, int cz)
     {
-        return RegionFileCache.getRegionFile(new ChunkPos(cx, cz)).doesChunkExist(new ChunkPos(cx & 0x1F, cz & 0x1F));
+        boolean doesExist =false;
+        try
+        {
+            ChunkPos chunkPos = new ChunkPos(cx, cz); // replace x and z with the coordinates of the chunk
+            Method method = RegionFileCache.class.getDeclaredMethod("getRegionFile", ChunkPos.class);
+            method.setAccessible(true);
+            RegionFile region = (RegionFile) method.invoke(null, chunkPos);
+            doesExist = region.doesChunkExist(new ChunkPos(cx & 0x1F, cz & 0x1F));
+        }
+        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return doesExist;
     }
 
     /* ------------------------------------------------------------ */
 
-    public static Color getBlockColor(Block block, int meta)
+    public static Color getBlockColor(BlockState blockState, MaterialColor matColor)
     {
-        int id = ForgeRegistries.BLOCKS;
+        Color color = new Color(matColor.col);
+        /*
+        int id = ;
         if (id >= colors.length)
             return Color.BLACK;
 
@@ -202,7 +214,7 @@ public final class MapperUtil
             colors[id][2] = color;
             colors[id][3] = color;
             colors[id][4] = color;
-        }
+        }*/
         return color;
     }
 
