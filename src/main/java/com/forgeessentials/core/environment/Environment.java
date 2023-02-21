@@ -22,7 +22,6 @@ public class Environment
 
     protected static boolean hasSponge = false;
 
-    @SuppressWarnings("unused")
     private static boolean hasFTBU = false;
 
     public static void check()

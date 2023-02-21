@@ -40,7 +40,6 @@ public class ModulePlayerLogger
 
     private static PlayerLogger logger;
 
-    @SuppressWarnings("unused")
     private PlayerLoggerEventHandler eventHandler;
 
     /*
