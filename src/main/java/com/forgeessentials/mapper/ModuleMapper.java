@@ -303,7 +303,7 @@ public class ModuleMapper
             return null;
         File cacheFile = getChunkCacheFile(world, chunkX, chunkZ);
         LoggingHandler.felog.warn(String.format("Rendering chunk %d.%d...", chunkX, chunkZ));
-        Chunk chunk = MapperUtil.loadChunk(world, chunkX, chunkZ);
+        Chunk chunk = MapperUtil.loadOrCreateChunk(world, chunkX, chunkZ);
         BufferedImage image = MapperUtil.renderChunk(chunk);
         try
         {
