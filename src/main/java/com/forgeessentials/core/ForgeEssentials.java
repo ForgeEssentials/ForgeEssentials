@@ -151,10 +151,8 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     protected static boolean logCommandsToConsole;
 
-    @SuppressWarnings("unused")
     private RespawnHandler respawnHandler;
 
-    @SuppressWarnings("unused")
     private SelectionHandler selectionHandler;
 
     public static boolean isCubicChunksInstalled = false;
@@ -293,9 +291,9 @@ public class ForgeEssentials extends ConfigLoaderBase
         {
             FECommandManager.registerCommand(new CommandPos(1));
             FECommandManager.registerCommand(new CommandPos(2));
-            FECommandManager.registerCommand(new CommandDeselect());
-            FECommandManager.registerCommand(new CommandExpand());
-            FECommandManager.registerCommand(new CommandExpandY());
+            FECommandManager.registerCommand(new CommandDeselect(true));
+            FECommandManager.registerCommand(new CommandExpand(true));
+            FECommandManager.registerCommand(new CommandExpandY(true));
         }
     }
 
