@@ -95,7 +95,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
     }
 
     /**
-     * @deprecated Use {@link #getPrimaryAlias()} instead for downstream classes     *
+     * @deprecated Use {@link ForgeEssentialsCommandBuilder#getPrimaryAlias()} instead for downstream classes     *
      */
     public String getName() {
         String name = getPrimaryAlias();
@@ -158,9 +158,9 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
     /**
      * Registers this command and it's permission node
      */
-    /*
     public void register()
     {
+        /*
         if (ServerLifecycleHooks.getCurrentServer() == null)
             return;
 
@@ -182,11 +182,12 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
 
         ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).registerCommand(this);
         PermissionManager.registerCommandPermission(this, this.getPermissionNode(), this.getPermissionLevel());
+        */
     }
 
-    @SuppressWarnings("unchecked")
     public void deregister()
     {
+        /*
         if (ServerLifecycleHooks.getCurrentServer() == null)
             return;
         CommandHandler cmdHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
@@ -204,6 +205,6 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
             {
                 commandMap.remove(alias);
             }
-        }
-    }*/
+        }*/
+    }
 }

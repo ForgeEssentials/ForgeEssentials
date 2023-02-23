@@ -1,8 +1,11 @@
 package com.forgeessentials.core.misc;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,9 +19,9 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigSaver;
+import com.forgeessentials.core.config.ConfigLoader;
 
-public class FECommandManager implements ConfigSaver
+public class FECommandManager implements ConfigLoader
 {
     private static ForgeConfigSpec COMMAND_CONFIG;
 	private static final ConfigData data = new ConfigData("Commands", COMMAND_CONFIG, new ForgeConfigSpec.Builder());
@@ -34,9 +37,11 @@ public class FECommandManager implements ConfigSaver
         
     }
 
-    public static final int COMMANDS_VERSION = 4;
+    public static final int COMMANDS_VERSION = 5;
 
     protected static Map<String, ForgeEssentialsCommandBuilder> commands = new HashMap<>();
+
+    protected static Map<String, ForgeConfigSpec.ConfigValue<List<String>>> commandAlises = new HashMap<>();
 
     protected static Set<ForgeEssentialsCommandBuilder> registeredCommands = new HashSet<>();
 
@@ -76,28 +81,43 @@ public class FECommandManager implements ConfigSaver
 		return data;
 	}
 
-	@Override
-	public void save(boolean reload) {
-		// TODO Auto-generated method stub
-		
-	}
-
     private static void loadCommandConfig(ForgeEssentialsCommandBuilder command)
     {
-
-        ForgeConfigSpec.Builder configBuilder;
-    	
+        //Create commandConfig
+        ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
         String category = "Commands_" + command.getName();
-        Property aliasesProperty = config.get(category, "aliases", command.getDefaultAliases());
 
-        if (newMappings)
-            aliasesProperty.set(command.getDefaultAliases());
-        command.setAliases(aliasesProperty.getStringList());
+        //load from command config names
+        configBuilder.push(category);
+        final ForgeConfigSpec.ConfigValue<List<String>> aliases;
+        aliases = configBuilder.define("aliases", new ArrayList<String>(Arrays.asList(command.getDefaultAliases())));
+        configBuilder.pop();
+        commandAlises.put(command.getName(), aliases);
 
+        //load additional config items
         if (command instanceof ConfigurableCommand)
             ((ConfigurableCommand) command).loadConfig(configBuilder, category);
+
+        //register the config
         FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials/CommandSettings"), "ForgeEssentials/CommandSettings");
         ConfigBase.registerConfigManual(configBuilder.build(), Paths.get(ForgeEssentials.getFEDirectory()+"/CommandSettings/"+command.getName()+".toml"),true);
+
+        //load aliases and test for newMappings
+        List<String> aliasesProperty = commandAlises.getOrDefault(command.getName(),  aliases).get();
+        if (newMappings) {
+            aliasesProperty.clear();
+            for(String alias : command.getDefaultAliases()){
+                aliasesProperty.add(String.valueOf(alias));
+                }
+        }
+
+        //set aliases
+        command.setAliases(aliasesProperty);
+
+        //bake the configs
+        if (command instanceof ConfigurableCommand)
+            ((ConfigurableCommand) command).bakeConfig(false);
+
     }
 
     public static void registerCommand(ForgeEssentialsCommandBuilder command)
@@ -125,7 +145,6 @@ public class FECommandManager implements ConfigSaver
 
     public static void registerCommands()
     {
-    	bakeConfig(true);
         for (ForgeEssentialsCommandBuilder command : commands.values())
             if (!registeredCommands.contains(command))
             {
