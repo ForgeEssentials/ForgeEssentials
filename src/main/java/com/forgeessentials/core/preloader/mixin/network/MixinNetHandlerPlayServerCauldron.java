@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(NetHandlerPlayServer.class)
-public class MixinNetHandlerPlayServer
+public class MixinNetHandlerPlayServerCauldron
 {
 
     @Shadow
@@ -31,16 +31,16 @@ public class MixinNetHandlerPlayServer
      * @param packet the update sign packet
      * @param ci the callback info
      */
-    @Inject(
-        method = "processUpdateSign",
-        at = @At(
-            value = "INVOKE",
-            target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V",
-            shift = At.Shift.BEFORE
-        ),
-        require = 1,
-        cancellable = true
-    )
+//    @Inject(
+//            method = "processUpdateSign",
+//            at = @At(
+//                    value = "INVOKE",
+//                    target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V",
+//                    shift = At.Shift.BEFORE
+//            ),
+//            cancellable = true
+//    )
+    //TODO: Fix this event so it works on Cauldron
     private void postSignEditEvent(C12PacketUpdateSign packet, CallbackInfo ci)
     {
         SignEditEvent event = new SignEditEvent(packet.func_149588_c(), packet.func_149586_d(), packet.func_149585_e(), packet.func_149589_f(), this.playerEntity);
@@ -65,14 +65,14 @@ public class MixinNetHandlerPlayServer
      * @param destPos starting position in the destination array
      * @param length the number of array elements to be copied
      */
-    @Redirect(
-        method = "processUpdateSign",
-        at = @At(
-            value = "INVOKE",
-            target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V"
-        ),
-        require = 1
-    )
+//    @Redirect(
+//            method = "processUpdateSign",
+//            at = @At(
+//                    value = "INVOKE",
+//                    target = "Ljava/lang/System;arraycopy(Ljava/lang/Object;ILjava/lang/Object;II)V"
+//            )
+//    )
+    //TODO: Fix this event so it works on Cauldron
     private void copyLinesToBlockEntity(Object src, int srcPos, Object dest, int destPos, int length)
     {
         // You may get a warning that `dest` is not Object[] - don't change this, or Mixin will yell at you.
@@ -89,12 +89,12 @@ public class MixinNetHandlerPlayServer
      * @return {@code true} if the player has permission
      */
     @Redirect(
-        method = "processVanilla250Packet",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/entity/player/EntityPlayerMP;canCommandSenderUseCommand(ILjava/lang/String;)Z"
-        ),
-        require = 1
+            method = "processVanilla250Packet",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/player/EntityPlayerMP;canCommandSenderUseCommand(ILjava/lang/String;)Z"
+            ),
+            require = 1
     )
     private boolean checkCommandBlockPermission(EntityPlayerMP player, int level, String command)
     {
@@ -108,13 +108,13 @@ public class MixinNetHandlerPlayServer
      * @return always {@code true}
      */
     @Redirect(
-        method = "processVanilla250Packet",
-        at = @At(
-            value = "FIELD",
-            target = "Lnet/minecraft/entity/player/PlayerCapabilities;isCreativeMode:Z",
-            ordinal = 0
-        ),
-        require = 1
+            method = "processVanilla250Packet",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/entity/player/PlayerCapabilities;isCreativeMode:Z",
+                    ordinal = 0
+            ),
+            require = 1
     )
     private boolean isCreativeMode(PlayerCapabilities capabilities)
     {
