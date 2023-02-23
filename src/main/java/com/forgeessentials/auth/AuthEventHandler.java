@@ -98,7 +98,7 @@ public class AuthEventHandler extends ServerEventHandler
         if (!ModuleAuth.isEnabled() || notPlayer(event.getParseResults().getContext().getSource().getEntity()))
             return;
         PlayerEntity player = (PlayerEntity) event.getParseResults().getContext().getSource().getEntity();
-        if (!ModuleAuth.isAuthenticated(player) && !ModuleAuth.isGuestCommand(event.getParseResults().getContext().getCommand()))
+        if (!ModuleAuth.isAuthenticated(player) && !ModuleAuth.isGuestCommand(event.getParseResults().getContext()))
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(player.createCommandSourceStack(), "Login required. Try /auth help.");

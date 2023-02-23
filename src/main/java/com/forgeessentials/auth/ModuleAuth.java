@@ -5,7 +5,6 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.impl.HelpCommand;
 import net.minecraft.entity.player.PlayerEntity;
 
 import com.forgeessentials.api.APIRegistry;
@@ -25,7 +24,7 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
-import com.mojang.brigadier.Command;
+import com.mojang.brigadier.context.CommandContextBuilder;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -182,10 +181,10 @@ public class ModuleAuth extends ConfigLoaderBase
      * @param command
      * @return
      */
-    public static boolean isGuestCommand(Command<CommandSource>  command)
+    public static boolean isGuestCommand(CommandContextBuilder<CommandSource>  command)
     {
-        
-        return command instanceof CommandAuth || command instanceof HelpCommand;
+        String name =command.getNodes().get(0).toString();
+        return name == "auth" || name == "FEauth" || name == "help";
     }
 
     private static final String CFG_DESC_forceEnable = "Forces the authentication server to be loaded regardless of Minecraft auth services";
