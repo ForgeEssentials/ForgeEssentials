@@ -91,7 +91,7 @@ import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.selections.CommandDeselect;
 import com.forgeessentials.util.selections.CommandExpand;
 import com.forgeessentials.util.selections.CommandExpandY;
-import com.forgeessentials.util.selections.CommandPos;
+import com.forgeessentials.util.selections.CommandPos1;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -289,8 +289,8 @@ public class ForgeEssentials extends ConfigLoaderBase
         FECommandManager.registerCommand(new CommandFEWorldInfo(true));
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
-            FECommandManager.registerCommand(new CommandPos(1));
-            FECommandManager.registerCommand(new CommandPos(2));
+            FECommandManager.registerCommand(new CommandPos1(true));
+            FECommandManager.registerCommand(new CommandPos1(true));
             FECommandManager.registerCommand(new CommandDeselect(true));
             FECommandManager.registerCommand(new CommandExpand(true));
             FECommandManager.registerCommand(new CommandExpandY(true));

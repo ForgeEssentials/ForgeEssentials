@@ -1,23 +1,27 @@
 package com.forgeessentials.util.selections;
 
-//Depreciated
-
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandExpand extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandExpand()
+    public CommandExpand(boolean enabled)
     {
-        return;
+        super(enabled);
     }
 
     @Override
@@ -27,18 +31,53 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity player, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
+        return builder
+                .then(Commands.argument("expand", IntegerArgumentType.integer())
+                        .executes(CommandContext -> execute(CommandContext, "expand")
+                                )
+                        .then(Commands.literal("north")
+                                .executes(CommandContext -> execute(CommandContext, "north")
+                                        )
+                                )
+                        .then(Commands.literal("east")
+                                .executes(CommandContext -> execute(CommandContext, "east")
+                                        )
+                                )
+                        .then(Commands.literal("south")
+                                .executes(CommandContext -> execute(CommandContext, "south")
+                                        )
+                                )
+                        .then(Commands.literal("west")
+                                .executes(CommandContext -> execute(CommandContext, "west")
+                                        )
+                                )
+                        .then(Commands.literal("up")
+                                .executes(CommandContext -> execute(CommandContext, "up")
+                                        )
+                                )
+                        .then(Commands.literal("down")
+                                .executes(CommandContext -> execute(CommandContext, "down")
+                                        )
+                                )
+                        );
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
         Selection sel = SelectionHandler.getSelection(player);
         if (sel == null)
             throw new TranslatedCommandException("Invalid selection.");
 
-        if (args.length == 1)
+        if (params.toString().equals("expand"))
         {
-            int x = Math.round((float) player.getLookVec().x);
-            int y = Math.round((float) player.getLookVec().y);
-            int z = Math.round((float) player.getLookVec().z);
-            int expandby = Integer.decode(args[0]);
+            int x = Math.round((float) player.getLookAngle().x);
+            int y = Math.round((float) player.getLookAngle().y);
+            int z = Math.round((float) player.getLookAngle().z);
+            int expandby = IntegerArgumentType.getInteger(ctx, "expand");
 
             if (x == -1)
             {
@@ -107,27 +146,12 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                 }
             }
             ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
-            return;
+            return Command.SINGLE_SUCCESS;
         }
-        else if (args.length == 2)
+        else if (params.toString().equals("direction"))
         {
-            int expandby = 0;
-            try
-            {
-                expandby = Integer.decode(args[0]);
-            }
-            catch (Exception e)
-            {
-                try
-                {
-                    expandby = Integer.decode(args[1]);
-                }
-                catch (Exception ex)
-                {
-                    throw new TranslatedCommandException("Neither %s or %s is a number", args[0], args[1]);
-                }
-            }
-            if (args[0].equalsIgnoreCase("north") || args[1].equalsIgnoreCase("north"))
+            int expandby = IntegerArgumentType.getInteger(ctx, "expand");
+            if (params.toString().equals("north"))
             {
                 if (sel.getStart().getZ() < sel.getEnd().getZ())
                 {
@@ -138,7 +162,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                     SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
                 }
             }
-            else if (args[0].equalsIgnoreCase("east") || args[1].equalsIgnoreCase("east"))
+            else if (params.toString().equals("east"))
             {
                 if (sel.getStart().getX() > sel.getEnd().getX())
                 {
@@ -149,7 +173,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                     SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
                 }
             }
-            else if (args[0].equalsIgnoreCase("south") || args[1].equalsIgnoreCase("south"))
+            else if (params.toString().equals("south"))
             {
                 if (sel.getStart().getZ() > sel.getEnd().getZ())
                 {
@@ -160,7 +184,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                     SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
                 }
             }
-            else if (args[0].equalsIgnoreCase("west") || args[1].equalsIgnoreCase("west"))
+            else if (params.toString().equals("west"))
             {
                 if (sel.getStart().getX() < sel.getEnd().getX())
                 {
@@ -171,7 +195,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                     SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
                 }
             }
-            else if (args[0].equalsIgnoreCase("up") || args[1].equalsIgnoreCase("up"))
+            else if (params.toString().equals("up"))
             {
                 if (sel.getStart().getZ() > sel.getEnd().getZ())
                 {
@@ -182,7 +206,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                     SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
                 }
             }
-            else if (args[0].equalsIgnoreCase("down") || args[1].equalsIgnoreCase("down"))
+            else if (params.toString().equals("down"))
             {
                 if (sel.getStart().getY() < sel.getEnd().getY())
                 {
@@ -196,12 +220,13 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
             else
                 throw new TranslatedCommandException("Invalid Direction");
             ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
-            return;
+            return Command.SINGLE_SUCCESS;
         }
         else
         {
 
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override

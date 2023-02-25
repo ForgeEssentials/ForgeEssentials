@@ -1,15 +1,23 @@
 package com.forgeessentials.util.selections;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
+import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandDeselect extends ForgeEssentialsCommandBuilder
 {
+
+    public CommandDeselect(boolean enabled)
+    {
+        super(enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
@@ -24,13 +32,22 @@ public class CommandDeselect extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        PlayerInfo info = PlayerInfo.get(sender.getUUID());
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        PlayerInfo info = PlayerInfo.get(getServerPlayer(ctx.getSource()).getUUID());
         info.setSel1(null);
         info.setSel2(null);
-        SelectionHandler.sendUpdate(sender);
-        ChatOutputHandler.chatConfirmation(sender, "Selection cleared.");
+        SelectionHandler.sendUpdate(getServerPlayer(ctx.getSource()));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Selection cleared.");
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
