@@ -634,39 +634,39 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), msgBase + "to interact with objects");
             break;
         case "chest":
-            plot.setPermission(ModuleProtection.getBlockBreakPermission(Blocks.CHEST, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockBreakPermission(Blocks.CHEST, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.CHEST, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockBreakPermission(Blocks.TRAPPED_CHEST, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.TRAPPED_CHEST, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockBreakPermission(Blocks.CHEST) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockBreakPermission(Blocks.CHEST) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.CHEST) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockBreakPermission(Blocks.TRAPPED_CHEST) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.TRAPPED_CHEST) + Zone.ALL_PERMS, userPerms, allow);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), msgBase + "to interact with chests");
             break;
         case "button":
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.ACACIA_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.BIRCH_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.CRIMSON_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.DARK_OAK_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.JUNGLE_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.OAK_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.SPRUCE_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.WARPED_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.STONE_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.POLISHED_BLACKSTONE_BUTTON, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.ACACIA_BUTTON) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.BIRCH_BUTTON) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.CRIMSON_BUTTON) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.DARK_OAK_BUTTON) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.JUNGLE_BUTTON) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.OAK_BUTTON) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.SPRUCE_BUTTON) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.WARPED_BUTTON) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.STONE_BUTTON) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.POLISHED_BLACKSTONE_BUTTON) + Zone.ALL_PERMS, userPerms, allow);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), msgBase + "to interact with buttons");
             break;
         case "lever":
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.LEVER, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.LEVER) + Zone.ALL_PERMS, userPerms, allow);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), msgBase + "to interact with levers");
             break;
         case "door":
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.ACACIA_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.BIRCH_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.CRIMSON_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.DARK_OAK_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.JUNGLE_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.OAK_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.OAK_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
-            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.WARPED_DOOR, 0) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.ACACIA_DOOR) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.BIRCH_DOOR) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.CRIMSON_DOOR) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.DARK_OAK_DOOR) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.JUNGLE_DOOR) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.OAK_DOOR) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.OAK_DOOR) + Zone.ALL_PERMS, userPerms, allow);
+            plot.setPermission(ModuleProtection.getBlockInteractPermission(Blocks.WARPED_DOOR) + Zone.ALL_PERMS, userPerms, allow);
 
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.translate(msgBase + "to interact with doors"));
             break;
@@ -818,7 +818,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
 
     public static Plot getPlot(CommandSource sender) throws CommandException
     {
-        Plot plot = Plot.getPlot(new WorldPoint(sender.getEntity().level.dimension(), sender.getPosition()));
+        Plot plot = Plot.getPlot(new WorldPoint(sender.getEntity().level.dimension().location().toString(), sender.getPosition()));
         if (plot == null)
             throw new TranslatedCommandException("There is no plot at this position. You have to stand inside it to use plot commands.");
         return plot;
