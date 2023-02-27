@@ -20,13 +20,6 @@ public class PermissionManager
 
     public static String getCommandPermission(Command command)
     {
-        if (command instanceof PermissionObject)
-        {
-            String permission = ((PermissionObject) command).getPermissionNode();
-            if (permission != null)
-                return permission;
-        }
-        String permission = commandPermissions.get(command);
         if (permission != null)
             return permission;
         return "command." + command.getName();
@@ -121,11 +114,5 @@ public class PermissionManager
         }
 
     }
-
-    public interface PermissionObject
-    {
-        public String getPermissionNode();
-
-        public DefaultPermissionLevel getPermissionLevel();
     }
 }
