@@ -20,7 +20,8 @@ public class PermissionsHandler implements ForgePermissionsProvider
     public void registerPermission(String permission)
     {
         boolean allowForAllPlayers = permission.startsWith("worldedit.selection");
-        PermissionManager.registerCommandPermission(permission, permission, allowForAllPlayers ? DefaultPermissionLevel.ALL : DefaultPermissionLevel.OP);
+        
+        PermissionManager.registerCommandPermission(permission.split("\\.")[1], permission, allowForAllPlayers ? DefaultPermissionLevel.ALL : DefaultPermissionLevel.OP);
     }
 
 }

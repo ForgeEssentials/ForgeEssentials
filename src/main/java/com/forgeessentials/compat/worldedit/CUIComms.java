@@ -36,7 +36,7 @@ public class CUIComms
     {
         if (e.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity)
         {
-            String cmd = e.getParseResults().getContext().getRootNode().getName();
+            String cmd = e.getParseResults().getContext().getNodes().get(0).toString();
             for (String weCmd : worldEditSelectionCommands)
             {
                 if (cmd.equals(weCmd) && !(e.getParseResults().getContext().getSource().getEntity() instanceof FakePlayer))
