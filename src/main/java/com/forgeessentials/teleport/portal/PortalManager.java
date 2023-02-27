@@ -19,6 +19,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -80,10 +81,10 @@ public class PortalManager extends ServerEventHandler
             if (portal.getPortalArea().contains(after) && !portal.getPortalArea().contains(before))
             {
                 if (!MinecraftForge.EVENT_BUS.post(
-                        new EntityPortalEvent(e.getEntity(), after.getWorld(), after.getBlockPos(), portal.target.getDimension(), portal.target.getBlockPos())))
+                        new EntityPortalEvent(e.getEntity(), after.getWorld(), after.getBlockPos(), portal.target.getWorld(), portal.target.getBlockPos())))
                 {
                     TeleportHelper.doTeleport((ServerPlayerEntity) e.getPlayer(),
-                            portal.target.toWarpPoint(e.getEntityPlayer().rotationPitch, e.getEntityPlayer().rotationYaw));
+                            portal.target.toWarpPoint(e.getPlayer().xRot, e.getPlayer().yRot));
                 }
             }
         }
@@ -161,7 +162,7 @@ public class PortalManager extends ServerEventHandler
     {
         if (!portal.hasFrame())
             return;
-        World world = DimensionManager.getWorld(portal.getPortalArea().getDimension());
+        World world = ServerUtil.getWorldFromString(portal.getPortalArea().getDimension());
         if (world != null)
         {
             for (int ix = portal.getPortalArea().getLowPoint().getX(); ix <= portal.getPortalArea().getHighPoint().getX(); ix++)
@@ -170,7 +171,7 @@ public class PortalManager extends ServerEventHandler
                     {
                         BlockPos pos = new BlockPos(ix, iy, iz);
                         if (world.getBlockState(pos).getBlock() != portalBlock)
-                            world.setBlockState(pos, portalBlock.defaultBlockState());
+                            world.setBlockAndUpdate(pos, portalBlock.defaultBlockState());
                     }
         }
     }
@@ -179,7 +180,7 @@ public class PortalManager extends ServerEventHandler
     {
         if (!portal.hasFrame())
             return;
-        World world = DimensionManager.getWorld(portal.getPortalArea().getDimension());
+        World world = ServerUtil.getWorldFromString(portal.getPortalArea().getDimension());
         if (world != null)
         {
             for (int ix = portal.getPortalArea().getLowPoint().getX(); ix <= portal.getPortalArea().getHighPoint().getX(); ix++)
@@ -189,7 +190,7 @@ public class PortalManager extends ServerEventHandler
                         BlockPos pos = new BlockPos(ix, iy, iz);
                         Block block = world.getBlockState(pos).getBlock();
                         if (block == portalBlock || block == Blocks.NETHER_PORTAL)
-                            world.setBlockState(pos, Blocks.AIR.defaultBlockState());
+                            world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                     }
         }
     }

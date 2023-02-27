@@ -10,13 +10,10 @@ import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Teleporter;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldSettings;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -40,7 +37,7 @@ import com.forgeessentials.util.output.LoggingHandler;
 
 public class TeleportHelper extends ServerEventHandler
 {
-
+/*
     public static class SimpleTeleporter extends Teleporter
     {
 
@@ -66,7 +63,7 @@ public class TeleportHelper extends ServerEventHandler
         }
 
     }
-
+*/
     public static class TeleportInfo
     {
 
@@ -189,8 +186,8 @@ public class TeleportHelper extends ServerEventHandler
         BlockPos blockPos2 = new BlockPos(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
         Block block1 = point.getWorld().getBlockState(blockPos1).getBlock();
         Block block2 = point.getWorld().getBlockState(blockPos2).getBlock();
-        AxisAlignedBB blockBounds1 = block1.getCollisionBoundingBox(block1.defaultBlockState(), point.getWorld(), blockPos1);
-        AxisAlignedBB blockBounds2 = block2.getCollisionBoundingBox(block2.defaultBlockState(), point.getWorld(), blockPos2);
+        AxisAlignedBB blockBounds1 = block1.getBlockSupportShape(block1.defaultBlockState(), point.getWorld(), blockPos1).bounds();
+        AxisAlignedBB blockBounds2 = block2.getBlockSupportShape(block2.defaultBlockState(), point.getWorld(), blockPos2).bounds();
         boolean block1Free = !block1.isPossibleToRespawnInThis() || blockBounds1 == null || blockBounds1.maxX < 1 || blockBounds1.maxY > 0;
         boolean block2Free = !block2.isPossibleToRespawnInThis() || blockBounds2 == null || blockBounds2.maxX < 1 || blockBounds2.maxY > 0;
         return block1Free && block2Free;
@@ -226,13 +223,11 @@ public class TeleportHelper extends ServerEventHandler
         }
         // TODO: Handle teleportation of mounted entity
         player.stopRiding();
-        ;
 
         if (player.level.dimension().location().toString() != point.getDimension())
         {
-            SimpleTeleporter teleporter = new SimpleTeleporter(point.getWorld());
-            MinecraftServer mcServer = ServerLifecycleHooks.getCurrentServer();
-            mcServer.getPlayerList().transferPlayerToDimension(player, point.getDimension(), teleporter);
+            //SimpleTeleporter teleporter = new SimpleTeleporter(point.getWorld());
+            player.changeDimension(point.getWorld());//, teleporter);
         }
         player.absMoveTo(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
@@ -246,7 +241,7 @@ public class TeleportHelper extends ServerEventHandler
         }
         if (entity.level.dimension().location().toString() != point.getDimension())
             entity.changeDimension(point.getWorld());
-        entity.setLocationAndAngles(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
+        entity.absMoveTo(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
 
     @SubscribeEvent
@@ -288,54 +283,16 @@ public class TeleportHelper extends ServerEventHandler
         }
     }
 
-    // TODO: Remove method
-    public static void transferPlayerToDimension(PlayerEntity player, int dimension, Teleporter teleporter)
-    {
-        // TODO (upgrade): Check teleportation!
-        World oldDim = player.level;
-        MinecraftServer mcServer = ServerLifecycleHooks.getCurrentServer();
-
-        WorldSettings oldWorld = mcServer.getLevel(player.level);
-        player.dimension = dimension;
-        ServerWorld newWorld = mcServer.getLevel(player.level.dimension());
-        player.connection.sendPacket(new SPacketRespawn(player.dimension, newWorld.getDifficulty(),
-                newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType())); // Forge: Use new dimensions information
-        oldWorld.removeEntityDangerously(player);
-        player.isDead = false;
-
-        transferEntityToWorld(player, oldDim, oldWorld, newWorld, teleporter);
-
-        mcServer.getPlayerList().preparePlayer(player, oldWorld);
-        player.connection.setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw,
-                player.rotationPitch);
-        player.interactionManager.setWorld(newWorld);
-        mcServer.getPlayerList().updateTimeAndWeatherForPlayer(player, newWorld);
-        mcServer.getPlayerList().syncPlayerInventory(player);
-        Iterator<?> iterator = player.getActivePotionEffects().iterator();
-        while (iterator.hasNext())
-        {
-            PotionEffect potioneffect = (PotionEffect) iterator.next();
-            player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), potioneffect));
-        }
-        player.sendPlayerAbilities();
-        player.connection.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
-        FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDim, dimension);
-    }
-
     public static void transferEntityToWorld(Entity entity, int oldDim, ServerWorld oldWorld, ServerWorld newWorld, Teleporter teleporter)
     {
         double d0 = entity.position().x;
         double d1 = entity.position().z;
-        double d3 = entity.position().x;
-        double d4 = entity.position().y;
-        double d5 = entity.position().z;
-        float f = entity.yRotO;
         d0 = MathHelper.clamp((int) d0, -29999872, 29999872);
         d1 = MathHelper.clamp((int) d1, -29999872, 29999872);
         if (entity.isAlive())
         {
             entity.absMoveTo(d0, entity.position().y, d1, entity.yRotO, entity.xRotO);
-            teleporter.placeInPortal(entity, f);
+            //teleporter.placeInPortal(entity, f);
             newWorld.addFreshEntity(entity);
             newWorld.updateChunkPos(entity);
         }

@@ -22,7 +22,7 @@ public class MixinBlockPortal
         { // TODO: get target coordinates somehow
             if (!MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entityIn, worldIn, pos, entityIn.level, new BlockPos(0, 0, 0))))
             {
-                entityIn.setPortal(pos);
+                entityIn.handleInsidePortal(pos);
             }
         }
     }
