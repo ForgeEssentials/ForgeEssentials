@@ -114,5 +114,12 @@ public class PermissionManager
         }
 
     }
+    public static String stripNode(String node) {
+        
+        int index = node.indexOf("$"); // Find index of $ character
+        if (index != -1) { // Check if $ character was found
+            node = node.substring(0, index);
+        }
+        return node;
     }
 }
