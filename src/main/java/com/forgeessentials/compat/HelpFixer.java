@@ -24,7 +24,7 @@ public class HelpFixer extends HelpCommand
 {
 
     public static boolean hideWorldEditCommands = true;
-
+/*
     @Override
     @SuppressWarnings("unchecked")
     public List<ICommand> getSortedPossibleCommands(ICommandSender sender, MinecraftServer server)
@@ -39,6 +39,6 @@ public class HelpFixer extends HelpCommand
                     it.remove();
             }
         }
-    }
+    }*/
 
 }
