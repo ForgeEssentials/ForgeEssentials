@@ -27,9 +27,6 @@ public class CommandPos2 extends ForgeEssentialsCommandBuilder
         super(enabled);
     }
 
-    private int type = 2;
-
-
     @Override
     public String getPrimaryAlias()
     {

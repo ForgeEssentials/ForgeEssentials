@@ -268,16 +268,77 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
 
         }
 
-        @Override
         public String getId()
         {
             return "fe:" + name;
         }
 
-        @Override
         public String getName()
         {
             return name;
         }
+    }
+
+    @Override
+    public boolean hasBalance(Currency currency, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public BigDecimal balance(Currency currency, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<Currency, BigDecimal> balances(Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TransactionResult setBalance(Currency currency, BigDecimal amount, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Map<Currency, TransactionResult> resetBalances(Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TransactionResult resetBalance(Currency currency, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TransactionResult deposit(Currency currency, BigDecimal amount, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TransactionResult withdraw(Currency currency, BigDecimal amount, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TransferResult transfer(Account to, Currency currency, BigDecimal amount, Cause cause)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

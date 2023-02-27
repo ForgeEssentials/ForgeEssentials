@@ -284,14 +284,14 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void commandEvent(CommandEvent event)
     {
-        if (!(event.getParseResults().getContext().getSource().getPlayerOrException() instanceof ServerPlayerEntity))
+        if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity))
             return;
-        UserIdent ident = UserIdent.get((ServerPlayerEntity) event.getParseResults().getContext().getSource().getPlayerOrException());
+        UserIdent ident = UserIdent.get((ServerPlayerEntity) event.getParseResults().getContext().getSource().getEntity());
 
         for (int i = event.getParseResults().getContext().getArguments().size(); i >= 0; i--)
         {
             String permission = PERM_COMMANDPRICE + '.' + event.getParseResults().getReader().getString() + //
-                    (i == 0 ? "" : ('.' + StringUtils.join(Arrays.copyOf(event.getParameters(), i), '.')));
+                    (i == 0 ? "" : ('.' + StringUtils.join(event.getParseResults().getContext().getNodes(), '.')));
             Long price = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, permission));
             if (price == null)
                 continue;

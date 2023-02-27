@@ -41,8 +41,6 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
     public static final String PERM_ALL = PERM + Zone.ALL_PERMS;
     public static final String PERM_PREVIEW = PERM + ".preview";
 
-    private static final String[] subCommands = { "help", "start", "cancel", "confirm", "play", "stop", "+", "-" };
-
     private Map<UUID, RollbackInfo> rollbacks = new HashMap<>();
 
     private Timer playbackTimer = new Timer();

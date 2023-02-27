@@ -10,6 +10,7 @@ import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.account.AccountDeletionResultType;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
+import org.spongepowered.api.service.economy.account.VirtualAccount;
 
 import com.forgeessentials.api.UserIdent;
 

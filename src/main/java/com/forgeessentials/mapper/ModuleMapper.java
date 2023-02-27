@@ -27,6 +27,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ChunkHolder;
 import net.minecraft.world.server.ChunkManager;
+import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
@@ -142,7 +143,8 @@ public class ModuleMapper
         if (event.side.isClient())
             return;
         ServerWorld world = (ServerWorld) event.world;
-        Long2ObjectLinkedOpenHashMap<ChunkHolder> map = ObfuscationReflectionHelper.getPrivateValue(ChunkManager.class, world.getChunkSource().chunkMap, "visibleChunkMap");
+        ServerChunkProvider cSource = world.getChunkSource();
+        Long2ObjectLinkedOpenHashMap<ChunkHolder> map = ObfuscationReflectionHelper.getPrivateValue(ChunkManager.class, cSource.chunkMap, "visibleChunkMap");
         Iterable<ChunkHolder> list = Iterables.unmodifiableIterable(map.values());
         for (ChunkHolder chunkH : list) {
             Chunk chunk = chunkH.getTickingChunk();

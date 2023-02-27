@@ -26,7 +26,7 @@ public class QueryStatsHandler extends GenericRemoteHandler<Request>
 
     public static final String PERM = PERM_REMOTE + ".stats";
 
-    private StatsManager statsManager = new StatsManager();
+    //private StatsManager statsManager = new StatsManager();
 
     public QueryStatsHandler()
     {

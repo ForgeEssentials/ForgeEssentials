@@ -50,15 +50,4 @@ public class FECurrency implements Currency
         return false;
     }
 
-    @Override
-    public String getId()
-    {
-        return "fe:currency";
-    }
-
-    @Override
-    public String getName()
-    {
-        return "fecurrency";
-    }
 }

@@ -311,8 +311,6 @@ public class DBConnector
         private String database;
         private String user;
         private String pass;
-        private String chosenType;
-        private boolean checkParent;
 
         public String getHost()
         {

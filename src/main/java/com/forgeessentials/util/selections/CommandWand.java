@@ -25,7 +25,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
 
     public CommandWand(boolean enabled)
     {
-        super(name, permissionLevel, enabled);
+        super(enabled);
     }
 
     @Override
