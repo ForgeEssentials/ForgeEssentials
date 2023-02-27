@@ -3,34 +3,49 @@ package com.forgeessentials.core.misc;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.mojang.brigadier.Command;
+//import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.tree.CommandNode;
 
-import net.minecraft.command.Commands;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.permission.DefaultPermissionHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 /**
  * Transition class to the new Permissions API
  */
-@SuppressWarnings("rawtypes")
 public class PermissionManager
 {
-    protected static Map<Command, String> commandPermissions = new WeakHashMap<>();
+    /*
+     * First String is command name
+     * Second string is the node
+    */
+    protected static Map<String, String> commandPermissions = new WeakHashMap<>();
 
-    public static String getCommandPermission(Command command)
+    public static String getCommandPermission(String commandName)
     {
+        String permission = commandPermissions.get(commandName);
         if (permission != null)
             return permission;
-        return "command." + command.getName();
+        return "command." + commandName;
     }
 
-    public static DefaultPermissionLevel getCommandLevel(Command command)
+    public static DefaultPermissionLevel getCommandLevel(String commandName)
     {
-        if (command instanceof PermissionObject)
-            return ((PermissionObject) command).getPermissionLevel();
-        if (command instanceof CommandBase)
-            return fromIntegerLevel(((CommandBase) command).getRequiredPermissionLevel());
+        CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
+
+        for (CommandNode<CommandSource> commandNode : dispatcher.getRoot().getChildren()) {
+            if (commandNode.getRequirement() != null) {
+                String permission = stripNode(commandNode.getRequirement().toString());
+
+                if(commandName == commandNode.getUsageText().substring(1)) {
+                    DefaultPermissionHandler.INSTANCE.getDefaultPermissionLevel(permission);
+                }
+                System.out.println("Command: " + commandNode.getUsageText() + " - Permission: " + permission);
+            }
+        }
         return DefaultPermissionLevel.OP;
     }
 
@@ -40,9 +55,9 @@ public class PermissionManager
      *
      * @param command
      */
-    public static void registerCommandPermission(Command command)
+    public static void registerCommandPermission(String commandName)
     {
-        PermissionAPI.registerNode(getCommandPermission(command), getCommandLevel(command), "");
+        PermissionAPI.registerNode(getCommandPermission(commandName), getCommandLevel(commandName), "");
     }
 
     /**
@@ -52,9 +67,9 @@ public class PermissionManager
      * @param permission
      * @param permissionLevel
      */
-    public static void registerCommandPermission(Command command, String permission, DefaultPermissionLevel permissionLevel)
+    public static void registerCommandPermission(String commandName, String permission, DefaultPermissionLevel permissionLevel)
     {
-        commandPermissions.put(command, permission);
+        commandPermissions.put(commandName, permission);
         PermissionAPI.registerNode(permission, permissionLevel, "");
     }
 
@@ -64,9 +79,9 @@ public class PermissionManager
      * @param command
      * @param permission
      */
-    public static void registerCommandPermission(Command command, String permission)
+    public static void registerCommandPermission(String commandName, String permission)
     {
-        registerCommandPermission(command, permission, getCommandLevel(command));
+        registerCommandPermission(commandName, permission, getCommandLevel(commandName));
     }
 
     /**
@@ -78,10 +93,17 @@ public class PermissionManager
      */
     public static void registerCommandPermissions()
     {
-        Map<String, Command> commands = ServerLifecycleHooks.getCurrentServer();
-        for (Command command : commands.values())
-            if (!commandPermissions.containsKey(command))
-                registerCommandPermission(command);
+        CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
+
+        for (CommandNode<CommandSource> commandNode : dispatcher.getRoot().getChildren()) {
+            if (commandNode.getRequirement() != null) {
+                String permission = stripNode(commandNode.getRequirement().toString());
+
+                System.out.println("Found command: " + commandNode.getUsageText().substring(1) + " - Permission: " + permission);
+            }
+            if (!commandPermissions.containsKey(commandNode.getUsageText().substring(1)))
+                registerCommandPermission(commandNode.getUsageText().substring(1));
+        }
     }
 
     public static DefaultPermissionLevel fromIntegerLevel(int value)
