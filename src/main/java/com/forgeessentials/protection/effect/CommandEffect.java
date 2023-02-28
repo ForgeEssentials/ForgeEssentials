@@ -1,14 +1,18 @@
 package com.forgeessentials.protection.effect;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.tree.CommandNode;
 
 public class CommandEffect extends ZoneEffect
 {
@@ -26,24 +30,31 @@ public class CommandEffect extends ZoneEffect
     {
         try
         {
-            // ScriptParser.run(command, player, null);
-
             String[] args = command.split(" ");
             String cmdName = args[0];
-            args = ArrayUtils.remove(args, 0);
+            //args = ArrayUtils.remove(args, 0); //we need command name to be in the args
 
             // Slightly preprocess command for backwards compatibility
             for (int i = 0; i < args.length; i++)
                 if (args[i].equals("@player"))
-                    args[i] = player.getName();
+                    args[i] = player.getDisplayName().getString();
 
-            ICommand mcCommand = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(cmdName);
-            if (mcCommand == null)
+            boolean cmdExists = false;
+            //check if command exists
+            CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
+            for (CommandNode<CommandSource> commandNode : dispatcher.getRoot().getChildren()) {
+                if (cmdName==commandNode.getUsageText().substring(1)) {
+                    cmdExists = true;
+                    break;
+                }
+            }
+            ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(player.createCommandSourceStack(), String.join(" ", args));
+            if (cmdExists == false)
             {
                 LoggingHandler.felog.error(String.format("Could not find command for WorldBorder effect: %s", command));
                 return;
             }
-            mcCommand.execute(FMLCommonHandler.instance().getMinecraftServerInstance(), new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), args);
+            ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), String.join(" ", args));
         }
         catch (CommandException e)
         {

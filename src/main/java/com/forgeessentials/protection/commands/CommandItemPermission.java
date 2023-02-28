@@ -3,8 +3,8 @@ package com.forgeessentials.protection.commands;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -14,7 +14,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -51,79 +51,112 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     {
         return false;
     }
+    List<String> types = Arrays.asList("break", "place", "inventory", "exist");
+    List<String> function = Arrays.asList("allow", "deny", "clear");
 
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        builder.executes(CommandContext -> execute(CommandContext, "blank")
+                        );
+                for(String type : types) {
+                    builder
+                    .then(Commands.literal(type)
+                            .then(Commands.literal("allow")
+                                    .then(Commands.literal("all")
+                                            .executes(CommandContext -> execute(CommandContext, type+"-allow-all")
+                                                    )
+                                            )
+                                    .then(Commands.literal("*")
+                                            .executes(CommandContext -> execute(CommandContext, type+"-allow-all")
+                                                    )
+                                            )
+                                    .executes(CommandContext -> execute(CommandContext, type+"-allow-noall")
+                                            )
+                                    )
+                            .then(Commands.literal("deny")
+                                    .then(Commands.literal("all")
+                                            .executes(CommandContext -> execute(CommandContext, type+"-deny-all")
+                                                    )
+                                            )
+                                    .then(Commands.literal("*")
+                                            .executes(CommandContext -> execute(CommandContext, type+"-deny-all")
+                                                    )
+                                            )
+                                    .executes(CommandContext -> execute(CommandContext, type+"-deny-noall")
+                                            )
+                                    )
+                            .then(Commands.literal("clear")
+                                    .then(Commands.literal("all")
+                                            .executes(CommandContext -> execute(CommandContext, type+"-clear-all")
+                                                    )
+                                            )
+                                    .then(Commands.literal("*")
+                                            .executes(CommandContext -> execute(CommandContext, type+"-clear-all")
+                                                    )
+                                            )
+                                    .executes(CommandContext -> execute(CommandContext, type+"-clear-noall")
+                                            )
+                                    )
+                            );
+                 };
+                 return builder;
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        ItemStack stack = arguments.senderPlayer.getMainHandItem();
+        ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
 
-        if (arguments.isEmpty())
+        if (params.toString().equals("blank"))
         {
             if (stack == ItemStack.EMPTY)
-                throw new TranslatedCommandException("No item equipped!");
-            arguments.notify(ModuleProtection.getItemPermission(stack));
+                throw new TranslatedCommandException("No item equipped in main hand!");
+            ChatOutputHandler.chatNotification(ctx.getSource(), ModuleProtection.getItemPermission(stack));
             return Command.SINGLE_SUCCESS;
         }
 
-        List<String> types = Arrays.asList("break", "place", "inventory", "exist");
-        arguments.tabComplete(types);
-        String type = arguments.remove().toLowerCase();
-        if (!types.contains(type))
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, type);
+        String[] para = params.toString().split("-");
+        if (!types.contains(para[1]))
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, para[1]);
 
         Boolean value;
-        if (!arguments.isEmpty())
+        switch (para[1])
         {
-            arguments.tabComplete("allow", "deny", "clear");
-            switch (arguments.remove().toLowerCase())
-            {
-            case "allow":
-                value = true;
-                break;
-            case "deny":
-                value = false;
-                break;
-            case "clear":
-                value = null;
-                break;
-            default:
-                throw new TranslatedCommandException("Need to specify allow, deny or clear");
-            }
-        }
-        else
+        case "allow":
+            value = true;
+            break;
+        case "deny":
             value = false;
+            break;
+        case "clear":
+            value = null;
+            break;
+        default:
+            throw new TranslatedCommandException("Need to specify allow, deny or clear");
+        }
 
         if (stack == ItemStack.EMPTY)
             throw new TranslatedCommandException("No item equipped!");
 
         String permStart = ModuleProtection.BASE_PERM + '.';
         String permEnd;
-        if (!arguments.isEmpty())
+        if (para[2]=="all")
         {
-            arguments.tabComplete("all", "*");
-            String arg = arguments.remove();
-            if (!arg.equalsIgnoreCase("all") && !arg.equalsIgnoreCase("*"))
-                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
-            permEnd = '.' + ModuleProtection.getItemPermission(stack, false) + ".*";
+            permEnd = '.' + ModuleProtection.getItemPermission(stack) + ".*";
         }
         else
         {
-            permEnd = '.' + ModuleProtection.getItemPermission(stack, true);
+            permEnd = '.' + ModuleProtection.getItemPermission(stack);
         }
 
 
         if (value == null)
-            APIRegistry.perms.getServerZone().clearGroupPermission(Zone.GROUP_DEFAULT, permStart + type + permEnd);
+            APIRegistry.perms.getServerZone().clearGroupPermission(Zone.GROUP_DEFAULT, permStart + para[0] + permEnd);
         else
-            APIRegistry.perms.getServerZone().setGroupPermission(Zone.GROUP_DEFAULT, permStart + type + permEnd, value);
-        arguments.confirm(value == null ? "Cleared [%s] for item %s" : //
-                (value ? "Allowed [%s] for item %s" : "Denied [%s] for item %s"), type, ModuleProtection.getItemPermission(stack, false));
+            APIRegistry.perms.getServerZone().setGroupPermission(Zone.GROUP_DEFAULT, permStart + para[0] + permEnd, value);
+        ChatOutputHandler.chatConfirmation(ctx.getSource(),value == null ? "Cleared [%s] for item %s" : 
+                (value ? "Allowed [%s] for item %s" : "Denied [%s] for item %s"), para[0], ModuleProtection.getItemPermission(stack));
+        return Command.SINGLE_SUCCESS;
     }
 }

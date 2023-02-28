@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.WitherEntity;
@@ -81,12 +80,6 @@ import net.minecraft.entity.passive.horse.SkeletonHorseEntity;
 import net.minecraft.entity.passive.horse.ZombieHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.CraftingResultSlot;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.inventory.container.WorkbenchContainer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.item.BlockItem;
@@ -474,15 +467,11 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    public static String getItemPermission(ItemStack stack, boolean checkMeta)
+    public static String getItemPermission(ItemStack stack)
     {
         try
         {
-            int dmg = stack.getDamageValue();
-            if (!checkMeta || dmg == 0 || dmg == 32767)
-                return ServerUtil.getItemPermission(stack.getItem());
-            else
-                return ServerUtil.getItemPermission(stack.getItem()) + "." + dmg;
+            return ServerUtil.getItemPermission(stack.getItem());
         }
         catch (Exception e)
         {
@@ -497,11 +486,6 @@ public class ModuleProtection
             LoggingHandler.felog.error(msg);
             return "fe.error";
         }
-    }
-
-    public static String getItemPermission(ItemStack stack)
-    {
-        return getItemPermission(stack, true);
     }
 
     public static String getItemUsePermission(ItemStack stack)
@@ -520,15 +504,15 @@ public class ModuleProtection
     }
 
     /* ------------------------------------------------------------ */
-
+/*
     public static PlayerEntity getCraftingPlayer(CraftingInventory inventory)
     {
 
-        Container abstractContainer = inventory.eventHandler;
+        Container abstractContainer = inventory;
         if (abstractContainer instanceof PlayerContainer)
         {
             PlayerContainer container = (PlayerContainer) abstractContainer;
-            return container.player;
+            return container.;
         }
         else if (abstractContainer instanceof WorkbenchContainer)
         {
@@ -537,10 +521,11 @@ public class ModuleProtection
         }
         return null;
     }
+    */
 
     public static String getCraftingPermission(ItemStack stack)
     {
-        return PERM_CRAFT + "." + getItemPermission(stack, true);
+        return PERM_CRAFT + "." + getItemPermission(stack);
     }
 
     public static boolean canCraft(PlayerEntity player, ItemStack result)
