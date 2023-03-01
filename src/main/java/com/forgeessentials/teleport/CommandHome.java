@@ -1,15 +1,12 @@
 package com.forgeessentials.teleport;
 
-import java.util.List;
-
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
@@ -17,6 +14,10 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandHome extends ForgeEssentialsCommandBuilder
 {
@@ -51,50 +52,59 @@ public class CommandHome extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void processCommandPlayer(MinecraftServer server, ServerPlayerEntity sender, String[] args) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (args.length == 0)
-        {
-            WarpPoint home = PlayerInfo.get(sender.getPersistentID()).getHome();
-            if (home == null)
-                throw new TranslatedCommandException("No home set. Use \"/home set\" first.");
-            TeleportHelper.teleport(sender, home);
-        }
-        else
-        {
-            if (args[0].equalsIgnoreCase("set"))
-            {
-                ServerPlayerEntity player = sender;
-                if (args.length == 2)
-                {
-                    if (!PermissionAPI.hasPermission(sender, TeleportModule.PERM_HOME_OTHER))
-                        throw new TranslatedCommandException("You don't have the permission to access other players home.");
-                    player = UserIdent.getPlayerByMatchOrUsername(sender, args[1]);
-                    if (player == null)
-                        throw new TranslatedCommandException("Player %s not found.", args[1]);
-                }
-                else if (!PermissionAPI.hasPermission(sender, TeleportModule.PERM_HOME_SET))
-                    throw new TranslatedCommandException("You don't have the permission to set your home location.");
-
-                WarpPoint p = new WarpPoint(sender);
-                PlayerInfo info = PlayerInfo.get(player.getUUID());
-                info.setHome(p);
-                info.save();
-                ChatOutputHandler.chatConfirmation(sender, Translator.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
-            }
-            else
-                throw new TranslatedCommandException("Unknown subcommand");
-        }
+        return builder
+                .then(Commands.literal("set")
+                        .executes(CommandContext -> execute(CommandContext, "set")
+                                )
+                        )
+                .then(Commands.literal("setPlayer")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(CommandContext -> execute(CommandContext, "setOthers")
+                                        )
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "goHome")
+                        );
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (args.length == 1)
+        if (params.toString().equals("goHome"))
         {
-            return getListOfStringsMatchingLastWord(args, "here");
+            WarpPoint home = PlayerInfo.get(getServerPlayer(ctx.getSource()).getUUID()).getHome();
+            if (home == null)
+                throw new TranslatedCommandException("No home set. Use \"/home set\" first.");
+            TeleportHelper.teleport(getServerPlayer(ctx.getSource()), home);
         }
-        return null;
+        if (params.toString().equals("set"))
+        {
+            ServerPlayerEntity player = getServerPlayer(ctx.getSource());
+
+            if (!PermissionAPI.hasPermission(player, TeleportModule.PERM_HOME_SET))
+                throw new TranslatedCommandException("You don't have the permission to set your home location.");
+
+            WarpPoint p = new WarpPoint(player);
+            PlayerInfo info = PlayerInfo.get(player.getUUID());
+            info.setHome(p);
+            info.save();
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
+        }
+        if (params.toString().equals("setOthers"))
+        {
+            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+            if (player!= getServerPlayer(ctx.getSource())&&!PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_HOME_OTHER))
+                throw new TranslatedCommandException("You don't have the permission to access other players home.");
+
+            WarpPoint p = new WarpPoint(player);
+            PlayerInfo info = PlayerInfo.get(player.getUUID());
+            info.setHome(p);
+            info.save();
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
+        }
+        return Command.SINGLE_SUCCESS;
     }
 
 }

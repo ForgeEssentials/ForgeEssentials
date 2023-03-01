@@ -401,7 +401,7 @@ public class CommandUtils
         return ident;
     }
 
-    public boolean hasPermission(CommandSource sender, String perm)
+    public static boolean hasPermission(CommandSource sender, String perm)
     {
         try
         {
@@ -416,7 +416,7 @@ public class CommandUtils
         }
         return false;
     }
-    public void checkPermission(CommandSource sender,String perm) throws CommandException
+    public static void checkPermission(CommandSource sender,String perm) throws CommandException
     {
         if (sender != null && !hasPermission(sender, perm))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);

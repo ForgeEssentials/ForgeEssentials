@@ -5,6 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -19,6 +23,14 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
 {
@@ -85,15 +97,43 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
+        return builder
+                .then(Commands.literal("login")
+                        .then(Commands.argument("name", StringArgumentType.greedyString())
+                                .suggests((context, builder) -> SuggestionsBuilder.getSuggestions(getWarpSuggestions(context), builder))
+                                .executes(context -> execute(context, "login")))
+                        );
+    }
+
+    public static final SuggestionProvider<CommandSource> SUGGEST_WARPS = (ctx, builder) -> {
+        PersonalWarp warps = getWarps(getServerPlayer(ctx.getSource()));
+
+        Set<String> completeList = new HashSet<>();
+        completeList.add("list");
+        completeList.addAll(warps.keySet());
+        return ISuggestionProvider.suggestResource(completeList, builder);
+     };
+    public static Set<String> getWarpSuggestions(CommandContext<CommandSource> context) {
+        PersonalWarp warps = getWarps(getServerPlayer(context.getSource()));
+
+        Set<String> completeList = new HashSet<>();
+        completeList.add("list");
+        completeList.addAll(warps.keySet());
+        return completeList;
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        if (params.toString().equals("blank"))
         {
-            arguments.confirm("/pwarp list: List personal warps");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/pwarp list: List personal warps");
+            return Command.SINGLE_SUCCESS;
         }
 
-        PersonalWarp warps = getWarps(arguments.senderPlayer);
+        PersonalWarp warps = getWarps(getServerPlayer(ctx.getSource()));
 
         Set<String> completeList = new HashSet<>();
         completeList.add("list");
@@ -104,14 +144,12 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
 
         if (warpName.equals("list"))
         {
-            arguments.confirm("Warps: " + StringUtils.join(warps.keySet(), ", "));
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Warps: " + StringUtils.join(warps.keySet(), ", "));
+            return Command.SINGLE_SUCCESS;
         }
 
         if (arguments.isEmpty())
         {
-            if (arguments.isTabCompletion)
-                return;
 
             WarpPoint point = warps.get(warpName);
             if (point == null)
@@ -121,33 +159,31 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
         else
         {
             arguments.tabComplete("set", "delete");
-            if (arguments.isTabCompletion)
-                return;
 
             String subCommand = arguments.remove().toLowerCase();
             switch (subCommand)
             {
             case "set":
-                arguments.checkPermission(PERM_SET);
+                checkPermission(ctx.getSource(), PERM_SET);
 
                 // Check limit
-                int limit = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(arguments.ident, PERM_LIMIT), Integer.MAX_VALUE);
+                int limit = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(getIdent(ctx.getSource()), PERM_LIMIT), Integer.MAX_VALUE);
                 if (warps.size() >= limit)
                     throw new TranslatedCommandException("You reached your personal warp limit");
 
-                warps.put(warpName, new WarpPoint(arguments.senderPlayer));
-                arguments.confirm("Set personal warp \"%s\" to current location", warpName);
+                warps.put(warpName, new WarpPoint(getServerPlayer(ctx.getSource())));
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set personal warp \"%s\" to current location", warpName);
                 break;
             case "del":
             case "delete":
-                arguments.checkPermission(PERM_DELETE);
+                checkPermission(ctx.getSource(), PERM_DELETE);
                 warps.remove(warpName);
-                arguments.confirm("Deleted personal warp \"%s\"", warpName);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted personal warp \"%s\"", warpName);
                 break;
             default:
                 throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
             }
-            DataManager.getInstance().save(warps, arguments.senderPlayer.getPersistentID().toString());
+            DataManager.getInstance().save(warps, getServerPlayer(ctx.getSource()).getStringUUID());
         }
     }
 

@@ -2,6 +2,8 @@ package com.forgeessentials.permissions.commands;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.context.AreaContext;
@@ -16,10 +18,13 @@ import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.events.EventCancelledException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandZone extends ForgeEssentialsCommandBuilder
 {
@@ -68,49 +73,101 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
+        return builder
+                .then(Commands.literal("help")
+                        .executes(CommandContext -> execute(CommandContext, "help")
+                                )
+                        )
+                .then(Commands.literal("list")
+                        .then(Commands.argument("password", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "login")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("info")
+                        .then(Commands.argument("password", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "login")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("define")
+                        .then(Commands.argument("password", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "login")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("redefine")
+                        .then(Commands.argument("password", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "login")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("delete")
+                        .then(Commands.argument("password", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "login")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("exit")
+                        .then(Commands.argument("password", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "login")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("entry")
+                        .then(Commands.argument("password", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "login")
+                                        )
+                                )
+                        );
+    }
+
+    @Override
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        if (params.toString().equals("help"))
         {
-            arguments.confirm("/zone list [page]: Lists all zones");
-            arguments.confirm("/zone info <zone>|here: Zone information");
-            arguments.confirm("/zone define|redefine <zone-name>: define or redefine a zone.");
-            arguments.confirm("/zone delete <zone-id>: Delete a zone.");
-            arguments.confirm("/zone entry|exit <zone-id> <message|clear>: Set the zone entry/exit message.");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone list [page]: Lists all zones");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone info <zone>|here: Zone information");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone define|redefine <zone-name>: define or redefine a zone.");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone delete <zone-id>: Delete a zone.");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone entry|exit <zone-id> <message|clear>: Set the zone entry/exit message.");
+            return Command.SINGLE_SUCCESS;
         }
 
-        arguments.tabComplete("define", "list", "delete", "select", "redefine", "exit", "entry");
-        String arg = arguments.remove().toLowerCase();
-        switch (arg)
+        String[] arg = params.toString().split("-");
+        switch (arg[0])
         {
         case "select":
-            parseSelect(arguments);
+            parseSelect(ctx, params);
             break;
         case "info":
-            parseInfo(arguments);
+            parseInfo(ctx, params);
             break;
         case "list":
-            parseList(arguments);
+            parseList(ctx, params);
             break;
         case "define":
-            parseDefine(arguments, false);
+            parseDefine(ctx, false, params);
             break;
         case "redefine":
-            parseDefine(arguments, true);
+            parseDefine(ctx, true, params);
             break;
         case "delete":
-            parseDelete(arguments);
+            parseDelete(ctx, params);
             break;
         case "entry":
-            parseEntryExitMessage(arguments, true);
+            parseEntryExitMessage(ctx, true, params);
             break;
         case "exit":
-            parseEntryExitMessage(arguments, false);
+            parseEntryExitMessage(ctx, false, params);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     public static AreaZone getAreaZone(WorldZone worldZone, String arg)
@@ -128,12 +185,10 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         return worldZone.getAreaZone(arg);
     }
 
-    public static void parseList(CommandParserArgs arguments) throws CommandException
+    public static void parseList(CommandContext<CommandSource> ctx, Object... params) throws CommandException
     {
-        if (arguments.isTabCompletion)
-            return;
 
-        arguments.checkPermission(PERM_LIST);
+        checkPermission(ctx.getSource(),PERM_LIST);
 
         final int PAGE_SIZE = 12;
         int limit = 1;
@@ -148,7 +203,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                 limit = 1;
             }
         }
-        arguments.confirm("List of areas (page #" + limit + "):");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "List of areas (page #" + limit + "):");
         limit *= PAGE_SIZE;
 
         WorldZone worldZone = arguments.getWorldZone();
@@ -163,7 +218,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                     if (limit >= 0)
                     {
                         if (limit <= PAGE_SIZE)
-                            arguments.confirm("#" + areaZone.getId() + ": " + areaZone.toString());
+                            ChatOutputHandler.chatConfirmation(ctx.getSource(), "#" + areaZone.getId() + ": " + areaZone.toString());
                         limit--;
                     }
                     else
@@ -182,7 +237,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                 if (limit >= 0)
                 {
                     if (limit <= PAGE_SIZE)
-                        arguments.confirm("#" + areaZone.getId() + ": " + areaZone.toString());
+                        ChatOutputHandler.chatConfirmation(ctx.getSource(), "#" + areaZone.getId() + ": " + areaZone.toString());
                     limit--;
                 }
                 else
@@ -193,11 +248,9 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static void parseDefine(CommandParserArgs arguments, boolean redefine) throws CommandException
+    public static void parseDefine(CommandContext<CommandSource> ctx, boolean redefine, Object... params) throws CommandException
     {
-        arguments.checkPermission(PERM_DEFINE);
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+        checkPermission(ctx.getSource(),PERM_DEFINE);
 
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
@@ -218,9 +271,6 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                 shape = AreaShape.BOX;
         }
 
-        if (arguments.isTabCompletion)
-            return;
-
         AreaBase selection = SelectionHandler.getSelection(arguments.senderPlayer);
         if (selection == null)
             throw new TranslatedCommandException("No selection available. Please select a region first.");
@@ -228,7 +278,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         if (arguments.hasPlayer())
         {
             arguments.context = new AreaContext(arguments.senderPlayer, selection.toAxisAlignedBB());
-            arguments.checkPermission(PERM_DEFINE);
+            checkPermission(ctx.getSource(),PERM_DEFINE);
         }
 
         if (redefine && area != null)
@@ -236,7 +286,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
             area.setArea(selection);
             if (shape != null)
                 area.setShape(shape);
-            arguments.confirm("Area \"%s\" has been redefined.", areaName);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area \"%s\" has been redefined.", areaName);
         }
         else
         {
@@ -245,7 +295,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                 area = new AreaZone(worldZone, areaName, selection);
                 if (shape != null)
                     area.setShape(shape);
-                arguments.confirm("Area \"%s\" has been defined.", areaName);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area \"%s\" has been defined.", areaName);
             }
             catch (EventCancelledException e)
             {
@@ -254,37 +304,27 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static void parseDelete(CommandParserArgs arguments) throws CommandException
+    public static void parseDelete(CommandContext<CommandSource> ctx, Object... params) throws CommandException
     {
-        arguments.checkPermission(PERM_DELETE);
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+        checkPermission(ctx.getSource(),PERM_DELETE);
 
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
-
-        if (arguments.isTabCompletion)
-            return;
 
         WorldZone worldZone = arguments.getWorldZone();
         AreaZone areaZone = getAreaZone(worldZone, areaName);
         if (areaZone == null)
             throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
         areaZone.getWorldZone().removeAreaZone(areaZone);
-        arguments.confirm("Area \"%s\" has been deleted.", areaZone.getName());
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area \"%s\" has been deleted.", areaZone.getName());
     }
 
-    public static void parseSelect(CommandParserArgs arguments) throws CommandException
+    public static void parseSelect(CommandContext<CommandSource> ctx, Object... params) throws CommandException
     {
-        arguments.checkPermission(PERM_INFO);
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+        checkPermission(ctx.getSource(),PERM_INFO);
 
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
-
-        if (arguments.isTabCompletion)
-            return;
 
         WorldZone worldZone = arguments.getWorldZone();
         AreaZone areaZone = getAreaZone(worldZone, areaName);
@@ -293,20 +333,15 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
         AreaBase area = areaZone.getArea();
         SelectionHandler.select(arguments.senderPlayer, worldZone.getDimensionID(), area);
-        arguments.confirm("Area \"%s\" has been selected.", areaName);
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area \"%s\" has been selected.", areaName);
     }
 
-    public static void parseInfo(CommandParserArgs arguments) throws CommandException
+    public static void parseInfo(CommandContext<CommandSource> ctx, Object... params) throws CommandException
     {
-        arguments.checkPermission(PERM_INFO);
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+        checkPermission(ctx.getSource(),PERM_INFO);
 
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
-
-        if (arguments.isTabCompletion)
-            return;
 
         WorldZone worldZone = arguments.getWorldZone();
         AreaZone areaZone = getAreaZone(worldZone, areaName);
@@ -314,16 +349,14 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
             throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
         AreaBase area = areaZone.getArea();
 
-        arguments.confirm("Area \"%s\"", areaZone.getName());
-        arguments.notify("  start = " + area.getLowPoint().toString());
-        arguments.notify("  end   = " + area.getHighPoint().toString());
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area \"%s\"", areaZone.getName());
+        ChatOutputHandler.chatNotification(ctx.getSource(), "  start = " + area.getLowPoint().toString());
+        ChatOutputHandler.chatNotification(ctx.getSource(), "  end   = " + area.getHighPoint().toString());
     }
 
-    public static void parseEntryExitMessage(CommandParserArgs arguments, boolean isEntry) throws CommandException
+    public static void parseEntryExitMessage(CommandContext<CommandSource> ctx, boolean isEntry, Object... params) throws CommandException
     {
-        arguments.checkPermission(PERM_SETTINGS);
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+        checkPermission(ctx.getSource(),PERM_SETTINGS);
 
         tabCompleteArea(arguments);
         String areaName = arguments.remove();
@@ -335,8 +368,8 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
         if (arguments.isEmpty())
         {
-            arguments.confirm(Translator.format((isEntry ? "Entry" : "Exit") + " message for area %s:", areaZone.getName()));
-            arguments.confirm(areaZone.getGroupPermission(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format((isEntry ? "Entry" : "Exit") + " message for area %s:", areaZone.getName()));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), areaZone.getGroupPermission(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE));
             return;
         }
 
@@ -345,12 +378,10 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         if (msg.equalsIgnoreCase("clear"))
             msg = null;
 
-        if (arguments.isTabCompletion)
-            return;
         areaZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE, msg);
     }
 
-    public static void tabCompleteArea(CommandParserArgs arguments) throws CommandException
+    public static void tabCompleteArea(CommandContext<CommandSource> ctx, Object... params) throws CommandException
     {
         if (arguments.isTabCompletion && arguments.size() == 1)
         {
@@ -366,13 +397,6 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
             }
             throw new CommandParserArgs.CancelParsingException();
         }
-    }
-
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }
