@@ -1,21 +1,12 @@
 package com.forgeessentials.commands.player;
 
-import java.util.Arrays;
-import java.util.List;
-
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -98,7 +89,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
             if (!PermissionAPI.hasPermission(player, "fe.commands.doas.console"))
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
             
-            ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), message);
+            ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player.createCommandSourceStack()).createCommandSourceStack(), message);
         }
 
         ServerPlayerEntity player = (ServerPlayerEntity) UserIdent.getPlayerByMatchOrUsername(null, playerS);
@@ -110,5 +101,6 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
         }
         else
             throw new TranslatedCommandException("Player %s does not exist, or is not online.", playerS);
+        return Command.SINGLE_SUCCESS;
     }
 }

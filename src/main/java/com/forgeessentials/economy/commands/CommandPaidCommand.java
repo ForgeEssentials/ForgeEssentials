@@ -1,23 +1,17 @@
 package com.forgeessentials.economy.commands;
 
-import java.util.Arrays;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.command.arguments.MessageArgument;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.core.misc.TranslatedCommandException.InvalidSyntaxException;
 import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
@@ -99,9 +93,10 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, ident.getPlayerMP()), MessageArgument.getMessage(ctx, "command").getString());
+        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, ident.getPlayerMP().createCommandSourceStack()).createCommandSourceStack(), MessageArgument.getMessage(ctx, "command").getString());
 
         ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("That cost you %s", APIRegistry.economy.toString(amount)));
         ModuleEconomy.confirmNewWalletAmount(ident, wallet);
+        return Command.SINGLE_SUCCESS;
     }
 }

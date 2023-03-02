@@ -7,8 +7,8 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 
 import net.minecraft.command.CommandSource;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -53,9 +53,9 @@ public class RemoteCommandSender extends DoAsCommandSender
     {
         super(session.getUserIdent());
         if (session.getUserIdent() != null)
-            this.sender = session.getUserIdent().getFakePlayer();
+            this.sender = session.getUserIdent().getFakePlayer().createCommandSourceStack();
         else
-            this.sender = FakePlayerFactory.get(ServerUtil.getOverworld(), ModuleRemote.FAKEPLAYER);
+            this.sender = FakePlayerFactory.get(ServerUtil.getOverworld(), ModuleRemote.FAKEPLAYER).createCommandSourceStack();
         this.session = session;
     }
 
@@ -71,9 +71,9 @@ public class RemoteCommandSender extends DoAsCommandSender
     }
 
     @Override
-    public String getName()
+    public ITextComponent getDisplayName()
     {
-        return session.getUserIdent() != null ? session.getUserIdent().getUsernameOrUuid() : "anonymous";
+        return session.getUserIdent() != null ? new StringTextComponent(session.getUserIdent().getUsernameOrUuid()) : new StringTextComponent("anonymous");
     }
 
     @Override
@@ -105,9 +105,18 @@ public class RemoteCommandSender extends DoAsCommandSender
     }
 
     @Override
-    public boolean canUseCommand(int level, String cmd)
+    public int getPermissionLevel()
     {
-        return sender.canUseCommand(level, cmd);
+        if(sender.getEntity().hasPermissions(4))
+            return 4;
+        else if(sender.getEntity().hasPermissions(3))
+            return 3;
+        else if(sender.getEntity().hasPermissions(2))
+            return 2;
+        else if(sender.getEntity().hasPermissions(1))
+            return 1;
+        else
+            return 0;
     }
 
 }

@@ -4,6 +4,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -72,22 +73,19 @@ public class IrcCommandSender extends FakePlayer
     @Override
     public boolean acceptsSuccess()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return ServerLifecycleHooks.getCurrentServer().getLevel(ServerWorld.OVERWORLD).getGameRules().getBoolean(GameRules.RULE_SENDCOMMANDFEEDBACK);
     }
 
     @Override
     public boolean acceptsFailure()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
     public boolean shouldInformAdmins()
     {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
 }

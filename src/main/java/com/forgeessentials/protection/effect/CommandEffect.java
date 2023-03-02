@@ -3,10 +3,8 @@ package com.forgeessentials.protection.effect;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import org.apache.commons.lang3.ArrayUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.DoAsCommandSender;
@@ -54,7 +52,7 @@ public class CommandEffect extends ZoneEffect
                 LoggingHandler.felog.error(String.format("Could not find command for WorldBorder effect: %s", command));
                 return;
             }
-            ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player), String.join(" ", args));
+            ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player.createCommandSourceStack()).createCommandSourceStack(), String.join(" ", args));
         }
         catch (CommandException e)
         {
