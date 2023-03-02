@@ -121,7 +121,10 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandDoAs(true));
         FECommandManager.registerCommand(new CommandServerSettings(true));
         FECommandManager.registerCommand(new CommandGetCommandBook(true));
-        FECommandManager.registerCommand(new CommandWeather());
+        //Weather
+        CommandWeather weather = new CommandWeather(true);
+        FECommandManager.registerCommand(weather);
+        APIRegistry.getFEEventBus().register(weather);
         //Bind
         CommandBind bind = new CommandBind( true);
         FECommandManager.registerCommand(bind);

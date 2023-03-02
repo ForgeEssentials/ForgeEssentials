@@ -6,9 +6,10 @@ import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
-import net.minecraft.world.World;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.MessageArgument;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,22 +17,24 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandWeather extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
 
-    public CommandWeather()
+    public CommandWeather(boolean enabled)
     {
-        MinecraftForge.EVENT_BUS.register(this);
+        super(enabled);
     }
 
     public static enum WeatherType
@@ -91,7 +94,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
         }
     }
 
-    protected static Map<Integer, WeatherData> weatherStates = new HashMap<>();
+    protected static Map<String, WeatherData> weatherStates = new HashMap<>();
 
     @Override
     public String getPrimaryAlias()
@@ -117,7 +120,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
         return ModuleCommands.PERM + ".weather";
     }
 
-    public static WeatherState getWeatherState(int dim, WeatherType type)
+    public static WeatherState getWeatherState(String dim, WeatherType type)
     {
         Map<WeatherType, WeatherState> worldData = weatherStates.get(dim);
         if (worldData != null)
@@ -132,62 +135,106 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return null;
+        return builder
+                .then(Commands.literal("rain")
+                        .then(Commands.argument("enable", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "rain-enable")
+                                        )
+                                )
+                        .then(Commands.argument("disable", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "rain-disable")
+                                        )
+                                )
+                        .then(Commands.argument("force", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "rain-force")
+                                        )
+                                )
+                        .then(Commands.argument("start", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "rain-start")
+                                        )
+                                )
+                        .then(Commands.argument("stop", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "rain-stop")
+                                        )
+                                )
+                        .executes(CommandContext -> execute(CommandContext, "rain-info")
+                                )
+
+                        )
+                .then(Commands.literal("storm")
+                        .then(Commands.argument("enable", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "storm-enable")
+                                        )
+                                )
+                        .then(Commands.argument("disable", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "storm-disable")
+                                        )
+                                )
+                        .then(Commands.argument("force", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "storm-force")
+                                        )
+                                )
+                        .then(Commands.argument("start", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "storm-start")
+                                        )
+                                )
+                        .then(Commands.argument("stop", MessageArgument.message())
+                                .executes(CommandContext -> execute(CommandContext, "storm-stop")
+                                        )
+                                )
+                        .executes(CommandContext -> execute(CommandContext, "storm-info")
+                                )
+
+                        )
+                .executes(CommandContext -> execute(CommandContext, "blank")
+                        );
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (arguments.isEmpty())
+        if (params.toString().equals("blank"))
         {
-            arguments.confirm("/weather rain|storm enable|disable|force");
-            return;
-        }
-        if (arguments.senderPlayer == null)
-        {
-            arguments.error(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/weather rain|storm enable|disable|force");
+            return Command.SINGLE_SUCCESS;
         }
 
-        World world = arguments.senderPlayer.world;
-        int dim = world.provider.getDimension();
+        ServerWorld world = getServerPlayer(ctx.getSource()).getLevel();
+        String dim = world.dimension().location().toString();
 
-        arguments.tabComplete("rain", "thunder");
-        WeatherType type = WeatherType.fromString(arguments.remove());
+        String[] args = params.toString().split("-");
+        WeatherType type = WeatherType.fromString(args[0]);
         String typeName = type.toString().toLowerCase();
 
-        if (arguments.isEmpty())
+        if (args[1]=="info")
         {
             WeatherState state = getWeatherState(dim, type);
-            arguments.confirm(Translator.format("%s is %s in world %d", StringUtils.capitalize(typeName), state.toString().toLowerCase(), dim));
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s is %s in world %d", StringUtils.capitalize(typeName), state.toString().toLowerCase(), dim));
+            return Command.SINGLE_SUCCESS;
         }
 
-        arguments.tabComplete("enable", "disable", "force", "start", "stop");
-        WeatherState state = WeatherState.fromString(arguments.remove());
+        WeatherState state = WeatherState.fromString(args[1]);
 
-        if (arguments.isTabCompletion)
-            return;
-
-        WorldInfo wi = world.getWorldInfo();
         switch (state)
         {
         case START:
             if (type == WeatherType.RAIN)
-                wi.setRaining(true);
+                world.setWeatherParameters(0, 0, true, false);
             else
             {
-                wi.setRaining(true);
-                wi.setThundering(true);
+                world.setWeatherParameters(0, 0, true, true);
             }
-            arguments.confirm("Started %s in world %d", typeName, dim);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started %s in world %d", typeName, dim);
             break;
         case STOP:
             if (type == WeatherType.RAIN)
-                wi.setRaining(false);
+                world.setWeatherParameters(0, 0, false, false);
             else
-                wi.setThundering(false);
-            arguments.confirm("Stopped %s in world %d", typeName, dim);
+            {
+                boolean rain = world.isRaining();
+                world.setWeatherParameters(0, 0, rain, false);
+            }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped %s in world %d", typeName, dim);
             break;
         default:
             WeatherData worldData = weatherStates.get(dim);
@@ -199,10 +246,11 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
 
             worldData.put(type, state);
             save();
-            arguments.confirm(Translator.format("%s %s in world %d", StringUtils.capitalize(state.toString().toLowerCase()), typeName, dim));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s %s in world %d", StringUtils.capitalize(state.toString().toLowerCase()), typeName, dim));
             updateWorld(world);
             break;
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     @SubscribeEvent
@@ -210,20 +258,17 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     {
         if (event.phase == Phase.START)
             return;
-        World world = event.world;
-        WorldInfo wi = world.getWorldInfo();
-        if (wi.getWorldTotalTime() % 60 == 0)
+        ServerWorld world = (ServerWorld) event.world;
+        if (world.getGameTime() % 60 == 0)
             updateWorld(world);
     }
 
-    public static void updateWorld(World world)
+    public static void updateWorld(ServerWorld world)
     {
-        int dim = world.provider.getDimension();
+        String dim = world.dimension().location().toString();
         Map<WeatherType, WeatherState> worldData = weatherStates.get(dim);
         if (worldData == null)
             return;
-
-        WorldInfo wi = world.getWorldInfo();
 
         WeatherState rainState = worldData.get(WeatherType.RAIN);
         if (rainState != null)
@@ -231,12 +276,10 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
             switch (rainState)
             {
             case FORCE:
-                wi.setRainTime(20 * 70);
-                wi.setRaining(true);
+                world.setWeatherParameters(0, 20 * 70, true, false);
                 break;
             case DISABLED:
-                wi.setRainTime(20 * 70);
-                wi.setRaining(false);
+                world.setWeatherParameters(0, 20 * 70, false, false);
                 break;
             default:
                 break;
@@ -249,14 +292,10 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
             switch (thunderState)
             {
             case FORCE:
-                wi.setRainTime(20 * 70);
-                wi.setRaining(true);
-                wi.setThunderTime(20 * 70);
-                wi.setThundering(true);
+                world.setWeatherParameters(0, 20 * 70, true, true);
                 break;
             case DISABLED:
-                wi.setThunderTime(20 * 70);
-                wi.setThundering(false);
+                world.setWeatherParameters(0, 20 * 70, false, false);
                 break;
             default:
                 break;
@@ -267,7 +306,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     public static void save()
     {
         DataManager.getInstance().deleteAll(WeatherData.class);
-        for (Entry<Integer, WeatherData> state : weatherStates.entrySet())
+        for (Entry<String, WeatherData> state : weatherStates.entrySet())
         {
             DataManager.getInstance().save(state.getValue(), state.getKey().toString());
         }
@@ -284,7 +323,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
                 continue;
             try
             {
-                weatherStates.put(Integer.parseInt(state.getKey()), state.getValue());
+                weatherStates.put(state.getKey(), state.getValue());
             }
             catch (NumberFormatException e)
             {
@@ -299,7 +338,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
         /* do nothing */
     }
 
-    @Override
+    //@Override
     public void bakeConfig(boolean reload)
     {
     	/* do nothing */
