@@ -818,7 +818,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
 
     public static Plot getPlot(CommandSource sender) throws CommandException
     {
-        Plot plot = Plot.getPlot(new WorldPoint(sender.getEntity().level.dimension().location().toString(), sender.getPosition()));
+        Plot plot = Plot.getPlot(new WorldPoint(sender.getEntity().level.dimension(), sender.getPosition()));
         if (plot == null)
             throw new TranslatedCommandException("There is no plot at this position. You have to stand inside it to use plot commands.");
         return plot;

@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorld;
@@ -60,10 +61,10 @@ public class WorldPoint extends Point
         this.world = entity.level;
     }
 
-    public WorldPoint(String dim, Vector3d vector)
+    public WorldPoint(RegistryKey<World> dim, Vector3d vector)
     {
         super(vector);
-        this.dim = dim;
+        this.dim = dim.location().toString();
     }
 
     public WorldPoint(WorldPoint other)
@@ -93,7 +94,7 @@ public class WorldPoint extends Point
 
     public static WorldPoint create(CommandSource sender)
     {
-        return new WorldPoint(sender.getLevel().dimension().location().toString(), sender.getPosition());
+        return new WorldPoint(sender.getLevel().dimension(), sender.getPosition());
     }
 
     // ------------------------------------------------------------

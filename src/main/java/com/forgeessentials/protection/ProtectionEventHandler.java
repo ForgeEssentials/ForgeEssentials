@@ -655,7 +655,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event.getEntity() instanceof ItemEntity)
         {
             // 1) Do nothing if the whole world is creative!
-            WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getWorld().dimension().location().toString());
+            WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(event.getWorld());
             if (stringToGameType(worldZone.getGroupPermission(Zone.GROUP_DEFAULT, ModuleProtection.PERM_GAMEMODE)) != GameType.CREATIVE)
             {
                 // 2) If creative mode is set for any group at the location where the block was destroyed, prevent drops

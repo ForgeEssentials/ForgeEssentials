@@ -70,7 +70,7 @@ public class CommandTppos extends ForgeEssentialsCommandBuilder
     {
         ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
         BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
-        TeleportHelper.teleport(sender, new WarpPoint(sender.level.dimension().location().toString(), pos, sender.xRot,
+        TeleportHelper.teleport(sender, new WarpPoint(sender.level.dimension(), pos, sender.xRot,
                 sender.yRot));
         return Command.SINGLE_SUCCESS;
     }

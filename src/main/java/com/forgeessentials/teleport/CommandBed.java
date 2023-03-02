@@ -94,7 +94,7 @@ public class CommandBed extends ForgeEssentialsCommandBuilder
             throw new TranslatedCommandException("No respawn position found.");
 
         PlayerInfo.get(player.getUUID()).setLastTeleportOrigin(new WarpPoint(player));
-        WarpPoint spawnPoint = new WarpPoint(world.dimension().location().toString(), spawn, player.xRot, player.yRot);
+        WarpPoint spawnPoint = new WarpPoint(world.dimension(), spawn, player.xRot, player.yRot);
         TeleportHelper.teleport(player, spawnPoint);
     }
 

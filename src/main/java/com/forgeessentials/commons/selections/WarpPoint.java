@@ -1,8 +1,10 @@
  package com.forgeessentials.commons.selections;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import java.util.regex.Matcher;
@@ -54,6 +56,10 @@ public class WarpPoint
     public WarpPoint(String dimension, BlockPos location, float pitch, float yaw)
     {
         this(dimension, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch, yaw);
+    }
+    public WarpPoint(RegistryKey<World> dimension, BlockPos location, float pitch, float yaw)
+    {
+        this(dimension.location().toString(), location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch, yaw);
     }
 
     public WarpPoint(Point point, String dimension, float pitch, float yaw)

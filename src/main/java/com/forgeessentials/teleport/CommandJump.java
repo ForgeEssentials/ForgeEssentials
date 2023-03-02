@@ -77,8 +77,8 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
         if (mo == null)
             throw new TranslatedCommandException("The spot you are looking at is too far away to teleport.");
         BlockPos pos = new BlockPos(mo.getLocation().x, mo.getLocation().y, mo.getLocation().z);
-        TeleportHelper.teleport(player, new WarpPoint(player.level.dimension().location().toString(), pos.getX(), pos.getY() + 1, pos.getZ(),
-                player.xRot, player.yRot));
+        pos.offset(0, 1, 0);
+        TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.xRot, player.yRot));
     }
 
     @SubscribeEvent
