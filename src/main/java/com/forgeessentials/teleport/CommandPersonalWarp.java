@@ -4,24 +4,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -30,7 +26,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
 {
@@ -100,10 +95,22 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return builder
-                .then(Commands.literal("login")
-                        .then(Commands.argument("name", StringArgumentType.greedyString())
-                                .suggests((context, builder) -> SuggestionsBuilder.getSuggestions(getWarpSuggestions(context), builder))
-                                .executes(context -> execute(context, "login")))
+                .then(Commands.literal("list")
+                        .executes(context -> execute(context, "login")
+                                )
+                        )
+                .then(Commands.argument("name", StringArgumentType.greedyString())
+                        .suggests(SUGGEST_WARPS)
+                        .then(Commands.literal("set")
+                                .executes(context -> execute(context, "set")
+                                        )
+                                )
+                        .then(Commands.literal("delete")
+                                .executes(context -> execute(context, "delete")
+                                        )
+                                )
+                        )
+                .executes(context -> execute(context, "blank")
                         );
     }
 
@@ -113,16 +120,8 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
         Set<String> completeList = new HashSet<>();
         completeList.add("list");
         completeList.addAll(warps.keySet());
-        return ISuggestionProvider.suggestResource(completeList, builder);
+        return ISuggestionProvider.suggest(completeList, builder);
      };
-    public static Set<String> getWarpSuggestions(CommandContext<CommandSource> context) {
-        PersonalWarp warps = getWarps(getServerPlayer(context.getSource()));
-
-        Set<String> completeList = new HashSet<>();
-        completeList.add("list");
-        completeList.addAll(warps.keySet());
-        return completeList;
-    }
 
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
@@ -130,61 +129,50 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
         if (params.toString().equals("blank"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/pwarp list: List personal warps");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/pwarp <warpname>: Teleport to the warp");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/pwarp <warpname> add|delete: Modify your warps");
             return Command.SINGLE_SUCCESS;
         }
 
         PersonalWarp warps = getWarps(getServerPlayer(ctx.getSource()));
 
-        Set<String> completeList = new HashSet<>();
-        completeList.add("list");
-        completeList.addAll(warps.keySet());
-        arguments.tabComplete(completeList);
-
-        String warpName = arguments.remove().toLowerCase();
-
-        if (warpName.equals("list"))
+        if (params.toString().equals("list"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Warps: " + StringUtils.join(warps.keySet(), ", "));
             return Command.SINGLE_SUCCESS;
         }
 
-        if (arguments.isEmpty())
+        String warpName = StringArgumentType.getString(ctx, "name");
+
+        if (params.toString().equals("set"))
         {
 
-            WarpPoint point = warps.get(warpName);
-            if (point == null)
-                throw new TranslatedCommandException("Warp by this name does not exist");
-            TeleportHelper.teleport(arguments.senderPlayer, point);
-        }
-        else
-        {
-            arguments.tabComplete("set", "delete");
+            checkPermission(ctx.getSource(), PERM_SET);
 
-            String subCommand = arguments.remove().toLowerCase();
-            switch (subCommand)
-            {
-            case "set":
-                checkPermission(ctx.getSource(), PERM_SET);
+            // Check limit
+            int limit = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(getIdent(ctx.getSource()), PERM_LIMIT), Integer.MAX_VALUE);
+            if (warps.size() >= limit)
+                throw new TranslatedCommandException("You reached your personal warp limit");
 
-                // Check limit
-                int limit = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(getIdent(ctx.getSource()), PERM_LIMIT), Integer.MAX_VALUE);
-                if (warps.size() >= limit)
-                    throw new TranslatedCommandException("You reached your personal warp limit");
-
-                warps.put(warpName, new WarpPoint(getServerPlayer(ctx.getSource())));
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set personal warp \"%s\" to current location", warpName);
-                break;
-            case "del":
-            case "delete":
-                checkPermission(ctx.getSource(), PERM_DELETE);
-                warps.remove(warpName);
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted personal warp \"%s\"", warpName);
-                break;
-            default:
-                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
-            }
+            warps.put(warpName, new WarpPoint(getServerPlayer(ctx.getSource())));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set personal warp \"%s\" to current location", warpName);
             DataManager.getInstance().save(warps, getServerPlayer(ctx.getSource()).getStringUUID());
+            return Command.SINGLE_SUCCESS;
         }
+        if (params.toString().equals("delete"))
+        {
+            checkPermission(ctx.getSource(), PERM_DELETE);
+            warps.remove(warpName);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted personal warp \"%s\"", warpName);
+            DataManager.getInstance().save(warps, getServerPlayer(ctx.getSource()).getStringUUID());
+            return Command.SINGLE_SUCCESS;
+        }
+        
+        WarpPoint point = warps.get(warpName);
+        if (point == null)
+            throw new TranslatedCommandException("Warp by this name does not exist");
+        TeleportHelper.teleport(getServerPlayer(ctx.getSource()), point);
+        return Command.SINGLE_SUCCESS;
     }
 
 }

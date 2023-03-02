@@ -1,7 +1,8 @@
 package com.forgeessentials.economy.commands;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -11,9 +12,9 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -53,37 +54,31 @@ public class CommandPay extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .then(Commands.argument("player", EntityArgument.entity())
+                        .then(Commands.argument("amount", LongArgumentType.longArg(1))
+                                .executes(CommandContext -> execute(CommandContext)
+                                        )
+                                )
+                        );
     }
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException("Player needed");
-        UserIdent player = arguments.parsePlayer(true, false);
+        UserIdent player = getIdent(EntityArgument.getPlayer(ctx, "player"));
+        Long amount = LongArgumentType.getLong(ctx, "amount");
 
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException("Missing value");
-        Long amount = ServerUtil.tryParseLong(arguments.remove());
-        if (amount == null)
-            throw new TranslatedCommandException("Invalid number");
-        if (amount < 1)
-            throw new TranslatedCommandException("Invalid number");
-
-        if (arguments.isTabCompletion)
-            return;
-
-        Wallet sender = APIRegistry.economy.getWallet(arguments.ident);
+        Wallet sender = APIRegistry.economy.getWallet(getIdent(getServerPlayer(ctx.getSource())));
         if (!sender.withdraw(amount))
             throw new TranslatedCommandException("You do not have enough %s in your wallet", APIRegistry.economy.currency(2));
-        arguments.confirm(Translator.format("You paid %s to %s. You now have %s", //
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("You paid %s to %s. You now have %s", //
                 APIRegistry.economy.toString(amount), player.getUsernameOrUuid(), sender.toString()));
 
         Wallet receiver = APIRegistry.economy.getWallet(player);
         receiver.add(amount);
         ChatOutputHandler.chatConfirmation(player.getPlayerMP(), Translator.format("You were paid %s from %s. You now have %s", //
-                APIRegistry.economy.toString(amount), arguments.sender.getTextName(), receiver.toString()));
+                APIRegistry.economy.toString(amount), getServerPlayer(ctx.getSource()).getDisplayName().getString(), receiver.toString()));
+        return Command.SINGLE_SUCCESS;
     }
 }
