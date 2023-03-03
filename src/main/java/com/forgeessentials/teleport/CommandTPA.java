@@ -2,7 +2,9 @@ package com.forgeessentials.teleport;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.BlockPosArgument;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -11,7 +13,6 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
@@ -66,7 +67,27 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return null;
+        return builder
+                .then(Commands.literal("help")
+                        .executes(CommandContext -> execute(CommandContext, "help")
+                                )
+                        )
+                .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.literal("position")
+                                .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                        .executes(CommandContext -> execute(CommandContext, "pos")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("here")
+                                .then(Commands.argument("player", EntityArgument.player())
+                                        .executes(CommandContext -> execute(CommandContext, "here")
+                                                )
+                                        )
+                                )
+                        .executes(CommandContext -> execute(CommandContext, "toP")
+                                )
+                        );
     }
 
     @Override
@@ -79,8 +100,8 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        final UserIdent player = arguments.parsePlayer(true, true);
-        if (arguments.isEmpty())
+        final UserIdent player = getIdent(EntityArgument.getPlayer(ctx, "player"));
+        if (params.toString().equals("toP"))
         {
             try
             {
@@ -111,25 +132,23 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
             {
                 throw new QuestionerStillActiveException.CommandException();
             }
-            return;
+            return Command.SINGLE_SUCCESS;
         }
 
-        arguments.tabComplete("here");
 
         final WarpPoint point;
         final String locationName;
-        if (arguments.peek().equalsIgnoreCase("here"))
+        if (params.toString().equals("here"))
         {
-            arguments.checkPermission(PERM_HERE);
+            checkPermission(ctx.getSource(), PERM_HERE);
             point = new WarpPoint(getServerPlayer(ctx.getSource()));
             locationName = getServerPlayer(ctx.getSource()).getDisplayName().getString();
-            arguments.remove();
         }
         else
         {
-            arguments.checkPermission(PERM_LOCATION);
-            point = new WarpPoint((ServerWorld) getServerPlayer(ctx.getSource()).getLevel(), //
-                    arguments.parseDouble(), arguments.parseDouble(), arguments.parseDouble(), //
+            checkPermission(ctx.getSource(), PERM_LOCATION);
+            point = new WarpPoint(getServerPlayer(ctx.getSource()).getLevel().dimension(), //
+                    BlockPosArgument.getLoadedBlockPos(ctx, "pos"), //
                     player.getPlayer().yRot, player.getPlayer().xRot);
             locationName = point.toReadableString();
         }
@@ -160,6 +179,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
         {
             throw new QuestionerStillActiveException.CommandException();
         }
+        return Command.SINGLE_SUCCESS;
     }
 
 }
