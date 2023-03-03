@@ -1,7 +1,8 @@
 package com.forgeessentials.economy.commands;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -12,8 +13,9 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
-import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -64,63 +66,78 @@ public class CommandWallet extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.literal("add")
+                                .then(Commands.argument("amount", LongArgumentType.longArg())
+                                        .executes(CommandContext -> execute(CommandContext, "add")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("set")
+                                .then(Commands.argument("amount", LongArgumentType.longArg())
+                                        .executes(CommandContext -> execute(CommandContext, "set")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("remove")
+                                .then(Commands.argument("amount", LongArgumentType.longArg())
+                                        .executes(CommandContext -> execute(CommandContext, "remove")
+                                                )
+                                        )
+                                )
+                        .executes(CommandContext -> execute(CommandContext, "walletOther")
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "wallet")
+                        );
     }
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (arguments.isEmpty())
+        if (params.toString().equals("wallet"))
         {
-            if (!arguments.hasPlayer())
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-            arguments.confirm(Translator.format("Your wallet contains %s", APIRegistry.economy.getWallet(arguments.ident).toString()));
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Your wallet contains %s", APIRegistry.economy.getWallet(getIdent(ctx.getSource())).toString()));
+            return Command.SINGLE_SUCCESS;
         }
 
-        UserIdent player = arguments.parsePlayer(true, false);
-        if (!player.equals(arguments.ident))
-            arguments.checkPermission(PERM_OTHERS);
+        UserIdent player = getIdent(EntityArgument.getPlayer(ctx, "player"));
+        if (!player.equals(getIdent(ctx.getSource())))
+            checkPermission(ctx.getSource(), PERM_OTHERS);
 
         Wallet wallet = APIRegistry.economy.getWallet(player);
-        if (arguments.isEmpty())
+        if (params.toString().equals("walletOther"))
         {
-            arguments.confirm(Translator.format("Wallet of %s contains %s", player.getUsernameOrUuid(), wallet.toString()));
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Wallet of %s contains %s", player.getUsernameOrUuid(), wallet.toString()));
+            return Command.SINGLE_SUCCESS;
         }
 
-        arguments.tabComplete(new String[] { "set", "add", "remove" });
-        String subCommand = arguments.remove().toLowerCase();
+        checkPermission(ctx.getSource(), PERM_MODIFY);
 
-        arguments.checkPermission(PERM_MODIFY);
+        Long amount = LongArgumentType.getLong(ctx, "amount");
 
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException("Missing value");
-        Long amount = ServerUtil.tryParseLong(arguments.remove());
-        if (amount == null)
-            throw new TranslatedCommandException("Invalid number");
-
-        switch (subCommand)
+        switch (params.toString())
         {
         case "set":
             wallet.set(amount);
-            arguments.confirm(Translator.format("Set wallet of %s to %s", player.getUsernameOrUuid(), wallet.toString()));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set wallet of %s to %s", player.getUsernameOrUuid(), wallet.toString()));
             break;
         case "add":
             wallet.add(amount);
-            arguments.confirm(Translator.format("Added %s to %s's wallet. It now contains %s", //
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Added %s to %s's wallet. It now contains %s", //
                     APIRegistry.economy.toString(amount), player.getUsernameOrUuid(), wallet.toString()));
             break;
         case "remove":
             if (!wallet.withdraw(amount))
                 throw new TranslatedCommandException("Player %s does not have enough %s in his wallet", //
                         player.getUsernameOrUuid(), APIRegistry.economy.currency(2));
-            arguments.confirm(Translator.format("Removed %s from %s's wallet. It now contains %s", //
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Removed %s from %s's wallet. It now contains %s", //
                     APIRegistry.economy.toString(amount), player.getUsernameOrUuid(), wallet.toString()));
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params.toString());
         }
+        return Command.SINGLE_SUCCESS;
     }
 }

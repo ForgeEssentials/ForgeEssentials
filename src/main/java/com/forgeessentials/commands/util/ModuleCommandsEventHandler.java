@@ -162,7 +162,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void commandEvent(CommandEvent event)
     {
-        if (event.getParseResults().getContext().getCommand() instanceof CommandAFK)
+        if (event.getParseResults().getContext().getNodes().get(0).toString() =="afk"||event.getParseResults().getContext().getNodes().get(0).toString()=="feafk")
             return;
         try
         {

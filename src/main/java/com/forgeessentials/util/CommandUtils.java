@@ -242,7 +242,7 @@ public class CommandUtils
         return list;
     }
 
-    public List<String> matchToPlayers(String[] args)
+    public static List<String> matchToPlayers(String[] args)
     {
         return getListOfStringsMatchingLastWord(args, ServerLifecycleHooks.getCurrentServer().getPlayerNames());
     }
@@ -292,7 +292,7 @@ public class CommandUtils
      * @return
      * @throws CommandException
      */
-    public Long mcParseTimeReadable(String mcTime) throws CommandException
+    public static Long mcParseTimeReadable(String mcTime) throws CommandException
     {
         String timeStr = mcTime;
 
@@ -331,7 +331,7 @@ public class CommandUtils
         return Math.round(resultPart);
     }
 
-    public long parseTimeReadable(String time) throws CommandException
+    public static long parseTimeReadable(String time) throws CommandException
     {
         String value = time;
         Matcher m = timeFormatPattern.matcher(value);

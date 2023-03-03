@@ -37,7 +37,6 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements 
     private Configuration config;
 
     private static CommandFeSettings instache;
-s
 
     public static CommandFeSettings getInstance()
     {
@@ -120,8 +119,6 @@ s
 
     public void loadSettings()
     {
-        if (config == null)
-            return;
         RootZone root = APIRegistry.perms.getServerZone().getRootZone();
         for (Entry<String, String> setting : aliases.entrySet())
         {

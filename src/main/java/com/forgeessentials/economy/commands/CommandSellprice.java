@@ -148,7 +148,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                 for (Iterator<IRecipe> iterator = CraftingManager.REGISTRY.iterator(); iterator.hasNext();)
                 {
                     IRecipe recipe = iterator.next();
-                    if (recipe.getRecipeOutput() == ItemStack.EMPTY)
+                    if (recipe.getResultItem() == ItemStack.EMPTY)
                     {
                         continue;
                     }
@@ -158,8 +158,8 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                         continue;
                     }
                     craftRecipes
-                            .write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
-                                    ItemUtil.getItemDamage(recipe.getRecipeOutput())));
+                            .write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getResultItem().getItem()),
+                                    ItemUtil.getItemDamage(recipe.getResultItem())));
                     for (Ingredient ingredient : recipeItems)
                     {
                         if (ingredient != null)
@@ -207,7 +207,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                     for (Iterator<IRecipe> iterator = CraftingManager.REGISTRY.iterator(); iterator.hasNext();)
                     {
                         IRecipe recipe = iterator.next();
-                        if (recipe.getRecipeOutput() == ItemStack.EMPTY)
+                        if (recipe.getResultItem() == ItemStack.EMPTY)
                         {
                             continue;
                         }
@@ -215,15 +215,15 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                         double price = getRecipePrice(recipe, priceMap, priceMapFull);
                         if (price > 0)
                         {
-                            price /= recipe.getRecipeOutput().getCount();
-                            Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getRecipeOutput()));
+                            price /= recipe.getResultItem().getCount();
+                            Double resultPrice = priceMap.get(ItemUtil.getItemIdentifier(recipe.getResultItem()));
                             if (resultPrice == null || price < resultPrice)
                             {
-                                priceMap.put(ItemUtil.getItemIdentifier(recipe.getRecipeOutput()), price);
+                                priceMap.put(ItemUtil.getItemIdentifier(recipe.getResultItem()), price);
                                 changedPrice = true;
 
-                                String msg = String.format("%s:%d = %.0f -> %s", ServerUtil.getItemName(recipe.getRecipeOutput().getItem()),
-                                        ItemUtil.getItemDamage(recipe.getRecipeOutput()), resultPrice == null ? 0 : resultPrice, (int) price);
+                                String msg = String.format("%s:%d = %.0f -> %s", ServerUtil.getItemName(recipe.getResultItem().getItem()),
+                                        ItemUtil.getItemDamage(recipe.getResultItem()), resultPrice == null ? 0 : resultPrice, (int) price);
                                 for (Ingredient ingredient : getRecipeItems(recipe))
                                     if (ingredient != null)
                                     {

@@ -4,6 +4,11 @@ import java.lang.ref.WeakReference;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.inventory.container.WorkbenchContainer;
+import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -73,6 +78,13 @@ public class CommandCraft extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatNotification(ctx.getSource(),"This feature is currently unimplimented");
         ChatOutputHandler.chatNotification(ctx.getSource(),"as forge made it impossable to make a custom");
         ChatOutputHandler.chatNotification(ctx.getSource(),"crafting gui without modifications on the client.");
+        ServerPlayerEntity player = ctx.getSource().getPlayerOrException();
+        ctx.getSource().getPlayerOrException().openMenu(new SimpleNamedContainerProvider((i, playerInventory, playerEntity) ->
+                new WorkbenchContainer(i, playerInventory, IWorldPosCallable.create(player.getCommandSenderWorld(), player.blockPosition())) {
+                    public boolean stillValid(PlayerEntity p_75145_1_) {
+                        return true;
+                     }
+                }, new TranslationTextComponent("container.crafting")));
         return Command.SINGLE_SUCCESS;
     }
 }

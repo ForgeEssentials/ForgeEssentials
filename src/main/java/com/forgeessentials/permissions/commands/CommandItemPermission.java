@@ -130,7 +130,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
 
         if (arguments.isTabCompletion)
             return;
-        getSettingsTag(stack).add(new StringNBT(permission + "=" + value));
+        getSettingsTag(stack).add(StringNBT.valueOf(permission + "=" + value));
         arguments.confirm("Set permission %s=%s for item", permission, value);
     }
 
@@ -144,7 +144,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
 
         if (arguments.isTabCompletion)
             return;
-        getSettingsTag(stack).add(new StringNBT(group));
+        getSettingsTag(stack).add(StringNBT.valueOf(group));
         arguments.confirm("Added group %s to item", group);
     }
 
