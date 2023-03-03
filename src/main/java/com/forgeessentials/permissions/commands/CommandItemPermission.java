@@ -19,6 +19,8 @@ import com.forgeessentials.permissions.core.ItemPermissionManager;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandItemPermission extends ForgeEssentialsCommandBuilder
 {
@@ -53,7 +55,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         ItemStack stack = arguments.senderPlayer.getMainHandItem();
         if (stack == ItemStack.EMPTY)
