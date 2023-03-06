@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.text.StringTextComponent;
@@ -28,6 +27,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -151,7 +151,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
                         )
                 .then(Commands.literal("motd")
                         .then(Commands.literal("modify")
-                                .then(Commands.argument("motd", MessageArgument.message())
+                                .then(Commands.argument("motd", StringArgumentType.greedyString())
                                         .executes(CommandContext -> execute(CommandContext, "motdT")
                                                 )
                                         )
@@ -224,7 +224,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("MotD = %s", server.getMotd()));
             return Command.SINGLE_SUCCESS;
         case "motdT":
-            String motd = ScriptArguments.process(MessageArgument.getMessage(ctx, "motd").getString(), null);
+            String motd = ScriptArguments.process(StringArgumentType.getString(ctx, "motd"), null);
             server.getStatus().setDescription(new StringTextComponent(ChatOutputHandler.formatColors(motd)));
             server.setMotd(motd);
             setProperty("motd", motd);

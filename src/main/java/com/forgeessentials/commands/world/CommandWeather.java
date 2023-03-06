@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.TickEvent;
@@ -137,23 +136,23 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     {
         return builder
                 .then(Commands.literal("rain")
-                        .then(Commands.argument("enable", MessageArgument.message())
+                        .then(Commands.literal("enable")
                                 .executes(CommandContext -> execute(CommandContext, "rain-enable")
                                         )
                                 )
-                        .then(Commands.argument("disable", MessageArgument.message())
+                        .then(Commands.literal("disable")
                                 .executes(CommandContext -> execute(CommandContext, "rain-disable")
                                         )
                                 )
-                        .then(Commands.argument("force", MessageArgument.message())
+                        .then(Commands.literal("force")
                                 .executes(CommandContext -> execute(CommandContext, "rain-force")
                                         )
                                 )
-                        .then(Commands.argument("start", MessageArgument.message())
+                        .then(Commands.literal("start")
                                 .executes(CommandContext -> execute(CommandContext, "rain-start")
                                         )
                                 )
-                        .then(Commands.argument("stop", MessageArgument.message())
+                        .then(Commands.literal("stop")
                                 .executes(CommandContext -> execute(CommandContext, "rain-stop")
                                         )
                                 )
@@ -162,23 +161,23 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
 
                         )
                 .then(Commands.literal("storm")
-                        .then(Commands.argument("enable", MessageArgument.message())
+                        .then(Commands.literal("enable")
                                 .executes(CommandContext -> execute(CommandContext, "storm-enable")
                                         )
                                 )
-                        .then(Commands.argument("disable", MessageArgument.message())
+                        .then(Commands.literal("disable")
                                 .executes(CommandContext -> execute(CommandContext, "storm-disable")
                                         )
                                 )
-                        .then(Commands.argument("force", MessageArgument.message())
+                        .then(Commands.literal("force")
                                 .executes(CommandContext -> execute(CommandContext, "storm-force")
                                         )
                                 )
-                        .then(Commands.argument("start", MessageArgument.message())
+                        .then(Commands.literal("start")
                                 .executes(CommandContext -> execute(CommandContext, "storm-start")
                                         )
                                 )
-                        .then(Commands.argument("stop", MessageArgument.message())
+                        .then(Commands.literal("stop")
                                 .executes(CommandContext -> execute(CommandContext, "storm-stop")
                                         )
                                 )

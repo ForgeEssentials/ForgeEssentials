@@ -2,7 +2,6 @@ package com.forgeessentials.commands.player;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -15,6 +14,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -57,9 +57,9 @@ public class CommandTempBan extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return builder
-                .then(Commands.argument("player", MessageArgument.message())
-                        .then(Commands.argument("duration", MessageArgument.message())
-                                .then(Commands.argument("reasion", MessageArgument.message())
+                .then(Commands.argument("player", StringArgumentType.word())
+                        .then(Commands.argument("duration", StringArgumentType.greedyString())
+                                .then(Commands.argument("reasion", StringArgumentType.greedyString())
                                         .executes(CommandContext -> execute(CommandContext)
                                                 )
                                         )
@@ -69,10 +69,10 @@ public class CommandTempBan extends ForgeEssentialsCommandBuilder
 
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        String name = MessageArgument.getMessage(ctx, "player").getString();
-        String reason = MessageArgument.getMessage(ctx, "reasion").getString();
-        String durationS = MessageArgument.getMessage(ctx, "duration").getString();
-        UserIdent ident = UserIdent.get(MessageArgument.getMessage(ctx, "player").getString(), ctx.getSource(), true);
+        String name = StringArgumentType.getString(ctx, "player");
+        String reason = StringArgumentType.getString(ctx, "reasion");
+        String durationS = StringArgumentType.getString(ctx, "duration");
+        UserIdent ident = UserIdent.get(name, ctx.getSource(), true);
         if (ident == null || !ident.hasUuid())
             throw new TranslatedCommandException("Player %s not found", name);
         else if (!ident.hasPlayer())

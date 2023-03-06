@@ -3,9 +3,9 @@ package com.forgeessentials.chat.command;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -19,6 +19,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -69,7 +70,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
                         )
                 .then(Commands.literal("send")
                         .then(Commands.argument("player", EntityArgument.player())
-                                .then(Commands.argument("message", MessageArgument.message())
+                                .then(Commands.argument("message", StringArgumentType.greedyString())
                                         .executes(CommandContext -> execute(CommandContext, "send")
                                                 )
                                         )
@@ -119,7 +120,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
         {
             PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             UserIdent receiver = UserIdent.get(player);
-            ITextComponent message = MessageArgument.getMessage(ctx, "message");
+            ITextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
             Mailer.sendMail(getIdent(ctx.getSource()), receiver,message.toString());
             ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("You sent a mail to %s", receiver.getUsernameOrUuid()));
             return Command.SINGLE_SUCCESS;

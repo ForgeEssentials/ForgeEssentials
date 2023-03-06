@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.ITextComponent;
@@ -23,6 +22,7 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -57,8 +57,8 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("new")
-                        //.then(Commands.argument("catagory", ModuleTickets.categories)
-                        .then(Commands.argument("message", MessageArgument.message())
+                        //.then(Commands.argument("catagory", ModuleTickets.categories)//TODO add constructor string
+                        .then(Commands.argument("message", StringArgumentType.greedyString())
                                 .executes(CommandContext -> execute(CommandContext, "new"))
                                         )
                                // )
@@ -143,7 +143,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
             if (!ModuleTickets.categories.contains(catagory))
                 throw new TranslatedCommandException("message.error.illegalCategory", catagory);
 
-            String msg = MessageArgument.getMessage(ctx, "message").getString();
+            String msg = StringArgumentType.getString(ctx, "message");
             Ticket t = new Ticket(ctx.getSource(), catagory, msg);
             ModuleTickets.ticketList.add(t);
             ChatOutputHandler.chatNotification(ctx.getSource(), c + Translator.format("Your ticket with ID %d has been posted.", t.id));

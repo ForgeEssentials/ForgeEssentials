@@ -3,7 +3,6 @@ package com.forgeessentials.auth;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -20,6 +19,7 @@ import com.forgeessentials.util.events.PlayerAuthLoginEvent;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -45,13 +45,13 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("login")
-                        .then(Commands.argument("password", MessageArgument.message())
+                        .then(Commands.argument("password", StringArgumentType.word())
                                 .executes(CommandContext -> execute(CommandContext, "login")
                                         )
                                 )
                         )
                 .then(Commands.literal("register")
-                        .then(Commands.argument("password", MessageArgument.message())
+                        .then(Commands.argument("password", StringArgumentType.word())
                                 .executes(CommandContext -> execute(CommandContext, "register")
                                         )
                                 )
@@ -70,8 +70,8 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
                         )
                 .then(Commands.literal("changepass")
                         .then(Commands.argument("player", EntityArgument.player())
-                                .then(Commands.argument("passwordOld", MessageArgument.message())
-                                        .then(Commands.argument("passwordNew", MessageArgument.message())
+                                .then(Commands.argument("passwordOld", StringArgumentType.word())
+                                        .then(Commands.argument("passwordNew", StringArgumentType.word())
                                                 .executes(CommandContext -> execute(CommandContext, "changepass")
                                                         )
                                                 )
@@ -80,7 +80,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
                         )
                 .then(Commands.literal("setPass")
                         .then(Commands.argument("player", EntityArgument.player())
-                                .then(Commands.argument("passwordNew", MessageArgument.message())
+                                .then(Commands.argument("passwordNew", StringArgumentType.word())
                                         .executes(CommandContext -> execute(CommandContext, "setPass")
                                                 )
                                         )
@@ -145,7 +145,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
             if (!ModuleAuth.isRegistered(((PlayerEntity) ctx.getSource().getEntity()).getUUID()))
                 throw new TranslatedCommandException("Player %s is not registered!", ((PlayerEntity) ctx.getSource().getEntity()).getUUID());
 
-            if (PasswordManager.checkPassword(((PlayerEntity) ctx.getSource().getEntity()).getUUID(), MessageArgument.getMessage(ctx, "login").getString()))
+            if (PasswordManager.checkPassword(((PlayerEntity) ctx.getSource().getEntity()).getUUID(), StringArgumentType.getString(ctx, "password")))
             {
                 // login worked
                 ModuleAuth.authenticate(((PlayerEntity) ctx.getSource().getEntity()).getUUID());
@@ -171,7 +171,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
             if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineRegistration)
                 throw new TranslatedCommandException("Registrations have been disabled.");
 
-            PasswordManager.setPassword(((PlayerEntity) ctx.getSource().getEntity()).getUUID(), MessageArgument.getMessage(ctx, "login").getString());
+            PasswordManager.setPassword(((PlayerEntity) ctx.getSource().getEntity()).getUUID(), StringArgumentType.getString(ctx, "password"));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Registration successful.");
             return Command.SINGLE_SUCCESS;
         }
@@ -234,7 +234,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         if (params.toString() == "changepass")
         {
             
-            if (MessageArgument.getMessage(ctx, "passwordOld").getString().equals(MessageArgument.getMessage(ctx, "passwordNew").getString()))
+            if (StringArgumentType.getString(ctx, "passwordOld").equals(StringArgumentType.getString(ctx, "passwordNew")))
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "You can't use this new password - it's the same as what was previously there.");
                 return Command.SINGLE_SUCCESS;
@@ -243,13 +243,13 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
             if (!ModuleAuth.isRegistered(((PlayerEntity) ctx.getSource().getEntity()).getUUID()))
                 throw new TranslatedCommandException("Player %s is not registered!", ((PlayerEntity) ctx.getSource().getEntity()).getName().getString());
 
-            if (!PasswordManager.checkPassword(((PlayerEntity) ctx.getSource().getEntity()).getUUID(), MessageArgument.getMessage(ctx, "passwordOld").getString()))
+            if (!PasswordManager.checkPassword(((PlayerEntity) ctx.getSource().getEntity()).getUUID(), StringArgumentType.getString(ctx, "passwordOld")))
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Could not change the password - your old password is wrong");
                 return Command.SINGLE_SUCCESS;
             }
 
-            PasswordManager.setPassword(((PlayerEntity) ctx.getSource().getEntity()).getUUID(), MessageArgument.getMessage(ctx, "passwordNew").getString());
+            PasswordManager.setPassword(((PlayerEntity) ctx.getSource().getEntity()).getUUID(), StringArgumentType.getString(ctx, "passwordNew"));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Password change successful.");
             return Command.SINGLE_SUCCESS;
 
@@ -260,7 +260,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         {
             if (!hasAdmin)
                 throw new PermissionDeniedException();
-            PasswordManager.setPassword(player.getUUID(), MessageArgument.getMessage(ctx, "passwordNew").getString());
+            PasswordManager.setPassword(player.getUUID(), StringArgumentType.getString(ctx, "passwordNew"));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Password set for %s", player.getName()));
         }
         return Command.SINGLE_SUCCESS;
@@ -322,7 +322,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         // pasre setPass
         if (params.toString() == "setPass")
         {
-            PasswordManager.setPassword(player.getUUID(), MessageArgument.getMessage(ctx, "passwordNew").getString());
+            PasswordManager.setPassword(player.getUUID(), StringArgumentType.getString(ctx, "passwordNew"));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Password set for %s", player.getName()));
         }
         return Command.SINGLE_SUCCESS;

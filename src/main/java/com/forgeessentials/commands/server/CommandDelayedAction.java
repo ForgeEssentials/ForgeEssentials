@@ -4,7 +4,6 @@ import java.util.TimerTask;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
@@ -13,6 +12,7 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -53,8 +53,8 @@ public class CommandDelayedAction extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return builder
-                .then(Commands.argument("time", MessageArgument.message())
-                        .then(Commands.argument("command", MessageArgument.message())
+                .then(Commands.argument("time", StringArgumentType.string())
+                        .then(Commands.argument("command", StringArgumentType.greedyString())
                                 .executes(CommandContext -> execute(CommandContext)
                                         )
                                 )
@@ -64,8 +64,8 @@ public class CommandDelayedAction extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        long time = parseTimeReadable(MessageArgument.getMessage(ctx, "time").getString());
-        final String execute = MessageArgument.getMessage(ctx, "command").getString();
+        long time = parseTimeReadable(StringArgumentType.getString(ctx, "time"));
+        final String execute = StringArgumentType.getString(ctx, "command");
         TaskRegistry.schedule(new TimerTask() {
             @Override
             public void run()

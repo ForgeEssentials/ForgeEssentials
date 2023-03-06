@@ -3,7 +3,6 @@ package com.forgeessentials.remote.command;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.ITextComponent;
@@ -22,6 +21,7 @@ import com.forgeessentials.remote.ModuleRemote;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -56,7 +56,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
                         )
                 .then(Commands.literal("setkey")
                         .then(Commands.argument("player", EntityArgument.player())
-                                .then(Commands.argument("key", MessageArgument.message())
+                                .then(Commands.argument("key", StringArgumentType.word())
                                         .executes(CommandContext -> execute(CommandContext, "setkey")
                                                 )
                                         )
@@ -116,7 +116,7 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         case "setkey":
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-            String key = MessageArgument.getMessage(ctx, "key").getContents();
+            String key = StringArgumentType.getString(ctx, "key");
             if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {return Command.SINGLE_SUCCESS;}
             ModuleRemote.getInstance().setPasskey(getIdent(player), key);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Passkey of %s changed to %s", getIdent(player).getUsernameOrUuid(), key));

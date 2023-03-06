@@ -2,7 +2,6 @@ package com.forgeessentials.commands.item;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -26,6 +25,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -72,34 +72,34 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
         return builder
                 .then(Commands.literal("left")
                         .then(Commands.literal("command")
-                                .then(Commands.argument("command", MessageArgument.message())
-                                        .executes(CommandContext -> execute(CommandContext, "left")
+                                .then(Commands.argument("command", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "left-set")
                                                 )
                                         )
                                 )
                         .then(Commands.literal("none")
-                                .then(Commands.argument("command", MessageArgument.message())
-                                        .executes(CommandContext -> execute(CommandContext, "left")
-                                                )
+                                .executes(CommandContext -> execute(CommandContext, "left-none")
                                         )
+                                )
+                        .executes(CommandContext -> execute(CommandContext, "left-help")
                                 )
                         )
                 .then(Commands.literal("right")
                         .then(Commands.literal("command")
-                                .then(Commands.argument("command", MessageArgument.message())
-                                        .executes(CommandContext -> execute(CommandContext, "right")
+                                .then(Commands.argument("command", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "right-set")
                                                 )
                                         )
                                 )
                         .then(Commands.literal("none")
-                                .then(Commands.argument("command", MessageArgument.message())
-                                        .executes(CommandContext -> execute(CommandContext, "right")
-                                                )
+                                .executes(CommandContext -> execute(CommandContext, "right-none")
                                         )
+                                )
+                        .executes(CommandContext -> execute(CommandContext, "right-help")
                                 )
                         )
                 .then(Commands.literal("clear")
-                        .executes(CommandContext -> execute(CommandContext, "clear")
+                        .executes(CommandContext -> execute(CommandContext, "clear-all")
                                 )
                         )
                 .executes(CommandContext -> execute(CommandContext, "blank")
@@ -115,8 +115,8 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        String side = params.toString();
-
+        String side = params.toString().split("-")[0];
+        String option = params.toString().split("-")[1];
         // If sub-command is "clear"
         if (side.equals("clear"))
         {
@@ -130,9 +130,7 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        String option = MessageArgument.getMessage(ctx, "command").getString();
-
-        if (option.isEmpty())
+        if (option.equals("help"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/bind " + side + " <command...>: Bind command to an item"));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/bind " + side + " none: Clear bound command"));
@@ -154,7 +152,7 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
         }
         else
         {
-            String command = option;
+            String command = StringArgumentType.getString(ctx, "command");
             bindTag.putString(side, command);
 
             String loreStart = LORE_TEXT_TAG + side + "> ";

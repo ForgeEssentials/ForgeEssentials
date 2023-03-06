@@ -2,7 +2,6 @@ package com.forgeessentials.commands.player;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -18,6 +17,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -64,8 +64,8 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return builder
-                .then(Commands.argument("player", MessageArgument.message())
-                        .then(Commands.argument("message", MessageArgument.message())
+                .then(Commands.argument("player", StringArgumentType.greedyString())
+                        .then(Commands.argument("message", StringArgumentType.greedyString())
                                 .executes(CommandContext -> execute(CommandContext))
                                 )
                         )
@@ -76,8 +76,8 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        String playerS = MessageArgument.getMessage(ctx, "player").getString();
-        String message = MessageArgument.getMessage(ctx, "messag").getString();
+        String playerS = StringArgumentType.getString(ctx, "player");
+        String message = StringArgumentType.getString(ctx, "message");
         if (params.toString() == "blank")
         {
             ChatOutputHandler.chatError(ctx.getSource(), "/doas <player> <command> Run a command as another player.");

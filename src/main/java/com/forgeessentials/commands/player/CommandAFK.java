@@ -3,7 +3,6 @@ package com.forgeessentials.commands.player;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -16,6 +15,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -77,7 +77,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
         return builder
                 .then(Commands.literal("timeout")
                         .then(Commands.literal("group")
-                                .then(Commands.argument("group", MessageArgument.message())
+                                .then(Commands.argument("group", StringArgumentType.word())
                                         .then(Commands.argument("timeout", IntegerArgumentType.integer())
                                                 .executes(CommandContext -> execute(CommandContext, "timeout","G")
                                                         )
@@ -95,7 +95,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
                         )
                 .then(Commands.literal("autokick")
                         .then(Commands.literal("group")
-                                .then(Commands.argument("group", MessageArgument.message())
+                                .then(Commands.argument("group", StringArgumentType.string())
                                         .then(Commands.argument("yn", BoolArgumentType.bool())
                                                 .executes(CommandContext -> execute(CommandContext, "autokick","G")
                                                         )
@@ -132,7 +132,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
             }
             else
             {
-                APIRegistry.perms.setGroupPermissionProperty(MessageArgument.getMessage(ctx, "group").getString(), PERM_AUTOTIME, amount.toString());
+                APIRegistry.perms.setGroupPermissionProperty(StringArgumentType.getString(ctx, "group"), PERM_AUTOTIME, amount.toString());
             }
         }
         // expected syntax: /afk timeout <group|player> [true|false}
@@ -146,7 +146,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
             }
             else
             {
-                APIRegistry.perms.setGroupPermissionProperty(MessageArgument.getMessage(ctx, "group").getString(), PERM_AUTOKICK, amount.toString());
+                APIRegistry.perms.setGroupPermissionProperty(StringArgumentType.getString(ctx, "group"), PERM_AUTOKICK, amount.toString());
             }
         }
         else

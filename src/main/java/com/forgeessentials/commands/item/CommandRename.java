@@ -2,7 +2,6 @@ package com.forgeessentials.commands.item;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -11,6 +10,7 @@ import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -51,7 +51,7 @@ public class CommandRename extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return builder
-                .then(Commands.argument("name", MessageArgument.message())
+                .then(Commands.argument("name", StringArgumentType.greedyString())
                         .executes(CommandContext -> execute(CommandContext)
                                 )
                 );
@@ -65,7 +65,7 @@ public class CommandRename extends ForgeEssentialsCommandBuilder
         if (is == ItemStack.EMPTY)
             throw new TranslatedCommandException("You are not holding a valid item.");
 
-        String nameS = MessageArgument.getMessage(ctx, "name").getString().trim();
+        String nameS = StringArgumentType.getString(ctx, "name").trim();
         is.setHoverName(new StringTextComponent(nameS));
         return Command.SINGLE_SUCCESS;
     }

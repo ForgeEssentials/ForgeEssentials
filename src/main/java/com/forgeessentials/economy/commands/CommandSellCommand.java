@@ -1,27 +1,26 @@
 package com.forgeessentials.economy.commands;
 
-import java.util.Arrays;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.command.arguments.ItemArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.misc.TranslatedCommandException.InvalidSyntaxException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -65,28 +64,35 @@ public class CommandSellCommand extends ForgeEssentialsCommandBuilder
     }
 
     /*
-     * Expected structure: "/sellcommand <player> <item> <amount> <meta> <command...>"
+     * Expected structure: "/sellcommand <player> <item> <amount> <command...>"
      */
 
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.argument("item", ItemArgument.item())
+                                .then(Commands.argument("amount", IntegerArgumentType.integer())
+                                        .then(Commands.argument("command", StringArgumentType.greedyString())
+                                                .executes(CommandContext -> execute(CommandContext)
+                                                        )
+                                                )
+                                        )
+                                )
+                        );
     }
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        UserIdent ident = UserIdent.get(args[0], sender);
+        UserIdent ident = UserIdent.get(EntityArgument.getPlayer(ctx, "player"));
         ServerPlayerEntity player = ident.getPlayerMP();
 
-        String itemName = args[1];
-        int amount = parseInt(args[2]);
-        int meta = parseInt(args[3]);
+        int amount = IntegerArgumentType.getInteger(ctx, "amount");
 
-        Item item = CommandBase.getItemByText(ident.getPlayerMP(), itemName);
-        ItemStack itemStack = new ItemStack(item, amount, meta);
+        Item item = ItemArgument.getItem(ctx, "item").getItem();
+        ItemStack itemStack = new ItemStack(item, amount);
 
         int foundStacks = 0;
         for (int slot = 0; slot < player.inventory.items.size(); slot++)
@@ -106,8 +112,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatConfirmation(player, Translator.format("You paid %d x %s", //
                 amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(UserIdent.get(player)).toString()));
 
-        args = Arrays.copyOfRange(args, 4, args.length);
-        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player.createCommandSourceStack()).createCommandSourceStack(), StringUtils.join(args, " "));
+        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player.createCommandSourceStack()).createCommandSourceStack(), StringArgumentType.getString(ctx, "command"));
 
         for (int slot = 0; slot < player.inventory.items.size(); slot++)
         {
@@ -123,5 +128,6 @@ public class CommandSellCommand extends ForgeEssentialsCommandBuilder
                     break;
             }
         }
+        return Command.SINGLE_SUCCESS;
     }
 }

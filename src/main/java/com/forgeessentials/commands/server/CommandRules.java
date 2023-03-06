@@ -15,7 +15,6 @@ import java.util.TreeSet;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -37,6 +36,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -197,13 +197,13 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
                                 )
                         )
                 .then(Commands.literal("add")
-                        .then(Commands.argument("rule", MessageArgument.message()))
+                        .then(Commands.argument("rule", StringArgumentType.string()))
                                 .executes(CommandContext -> execute(CommandContext, "add")
                                 )
                         )
                 .then(Commands.literal("change")
                         .then(Commands.argument("page", IntegerArgumentType.integer(1, rules.size()))
-                                .then(Commands.argument("rule", MessageArgument.message())
+                                .then(Commands.argument("rule", StringArgumentType.string())
                                         .executes(CommandContext -> execute(CommandContext, "change")
                                                 )
                                         )
@@ -288,10 +288,10 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
         }
         else if (params.toString() == "add")
         {
-            String newRule = MessageArgument.getMessage(ctx, "rule").getContents();
+            String newRule = StringArgumentType.getString(ctx, "rule");
             newRule = ChatOutputHandler.formatColors(newRule);
             rules.add(newRule);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule added as # %s.", MessageArgument.getMessage(ctx, "rule").getContents()));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule added as # %s.", StringArgumentType.getString(ctx, "rule")));
         }
         else if (params.toString() == "move")
         {
@@ -315,7 +315,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
         {
             index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
 
-            String newRule = MessageArgument.getMessage(ctx, "rule").getContents();
+            String newRule = StringArgumentType.getString(ctx, "rule");
             newRule = ChatOutputHandler.formatColors(newRule);
             rules.set(index - 1, newRule);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));
@@ -360,10 +360,10 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
         }
         else if (params.toString() == "add")
         {
-            String newRule = MessageArgument.getMessage(ctx, "rule").getContents();
+            String newRule = StringArgumentType.getString(ctx, "rule");
             newRule = ChatOutputHandler.formatColors(newRule);
             rules.add(newRule);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule added as # %s.", MessageArgument.getMessage(ctx, "rule").getContents()));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule added as # %s.", StringArgumentType.getString(ctx, "rule")));
         }
         else if (params.toString() == "move")
         {
@@ -387,7 +387,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
         {
             index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
 
-            String newRule = MessageArgument.getMessage(ctx, "rule").getContents();
+            String newRule = StringArgumentType.getString(ctx, "rule");
             newRule = ChatOutputHandler.formatColors(newRule);
             rules.set(index - 1, newRule);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rules # %1$s changed to '%2$s'.", index + "", newRule));

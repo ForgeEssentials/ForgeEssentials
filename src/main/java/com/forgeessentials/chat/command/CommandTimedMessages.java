@@ -2,7 +2,6 @@ package com.forgeessentials.chat.command;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -14,6 +13,7 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -65,7 +65,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("add")
-                        .then(Commands.argument("message", MessageArgument.message())
+                        .then(Commands.argument("message", StringArgumentType.greedyString())
                                 .executes(CommandContext -> execute(CommandContext, "add")
                                         )
                                 )
@@ -145,7 +145,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
 
     public void parseAdd(CommandContext<CommandSource> ctx) throws CommandSyntaxException
     {
-        String message = MessageArgument.getMessage(ctx, "message").getString();
+        String message = StringArgumentType.getString(ctx, "message");
         if (message.isEmpty())
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/timedmessage add <message...>: Add a timed message");

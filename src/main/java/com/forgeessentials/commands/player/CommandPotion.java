@@ -5,7 +5,6 @@ import java.util.HashMap;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.command.arguments.PotionArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Effect;
@@ -104,7 +103,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
     {
         return builder
                 .then(Commands.literal("me")
-                        .then(Commands.argument("potionID", MessageArgument.message())
+                        .then(Commands.argument("potionID", PotionArgument.effect())
                                 .then(Commands.argument("duration", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
                                         .then(Commands.argument("amplifier", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
                                                 .executes(CommandContext -> execute(CommandContext, "me-amp")

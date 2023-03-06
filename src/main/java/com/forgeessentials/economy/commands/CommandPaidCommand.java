@@ -5,7 +5,6 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -19,6 +18,7 @@ import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -70,7 +70,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBuilder
         return builder
                 .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
-                                .then(Commands.argument("command", MessageArgument.message())
+                                .then(Commands.argument("command", StringArgumentType.greedyString())
                                         .executes(CommandContext -> execute(CommandContext)
                                                 )
                                         )
@@ -93,7 +93,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, ident.getPlayerMP().createCommandSourceStack()).createCommandSourceStack(), MessageArgument.getMessage(ctx, "command").getString());
+        ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, ident.getPlayerMP().createCommandSourceStack()).createCommandSourceStack(), StringArgumentType.getString(ctx, "command"));
 
         ChatOutputHandler.chatConfirmation(ident.getPlayerMP(), Translator.format("That cost you %s", APIRegistry.economy.toString(amount)));
         ModuleEconomy.confirmNewWalletAmount(ident, wallet);
