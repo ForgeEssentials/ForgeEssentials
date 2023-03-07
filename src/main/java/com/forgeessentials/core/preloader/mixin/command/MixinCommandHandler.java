@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.PermissionManager;
+import com.forgeessentials.remote.handler.command.CommandHandler;
 import com.forgeessentials.util.DoAsCommandSender;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
