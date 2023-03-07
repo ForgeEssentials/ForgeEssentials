@@ -38,7 +38,6 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
                 action.time = date;
                 action.world = worldData;
                 action.block = getBlock(blockData.block);
-                action.metadata = blockData.metadata;
                 action.entity = blockData.tileEntityBlob;
                 action.type = ActionBlockType.DETONATE;
                 action.x = blockData.pos.getX();

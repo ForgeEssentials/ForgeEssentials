@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.play.server.SChangeBlockPacket;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -118,7 +119,7 @@ public class RollbackInfo
                 Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
                 world.setBlock(change.getBlockPos(), block.defaultBlockState(), 3);
                 world.setBlockEntity(change.getBlockPos(), PlayerLogger.blobToTileEntity(change.entity));
-                System.out.println(change.time + " RESTORED " + change.block.name + ":" + change.metadata);
+                System.out.println(change.time + " RESTORED " + change.block.name);
             }
         }
     }
@@ -128,7 +129,7 @@ public class RollbackInfo
         if (task != null)
             task.cancel();
         for (Action01Block change : Lists.reverse(changes))
-            player.connection.sendPacket(new SPacketBlockChange(ServerUtil.getWorldFromString(change.world.id), change.getBlockPos()));
+            player.connection.send(new SChangeBlockPacket(ServerUtil.getWorldFromString(change.world.id), change.getBlockPos()));
     }
 
     public Date getTime()
@@ -151,9 +152,8 @@ public class RollbackInfo
      */
     public static void sendBlockChange(ServerPlayerEntity player, Action01Block change, BlockState newState)
     {
-        SPacketBlockChange packet = new SPacketBlockChange(ServerUtil.getWorldFromString(change.world.id), change.getBlockPos());
-        packet.blockState = newState;
-        player.connection.sendPacket(packet);
+        SChangeBlockPacket packet = new SChangeBlockPacket(change.getBlockPos(), newState);
+        player.connection.send(packet);
     }
 
     public static class PlaybackTask extends TimerTask

@@ -4,6 +4,7 @@ import java.sql.Blob;
 
 import javax.persistence.EntityManager;
 
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fe.event.world.FireEvent;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
@@ -26,9 +27,8 @@ public class LogEventBurn extends PlayerLoggerEvent<FireEvent.Destroy>
     {
         Action01Block action = new Action01Block();
         action.time = date;
-        action.world = getWorld(event.getWorld().provider.getDimension());
+        action.world = getWorld(((ServerWorld)event.getWorld()).getLevel().dimension().location().toString());
         action.block = getBlock(event.getState().getBlock());
-        action.metadata = event.getState().getBlock().getMetaFromState(event.getState());
         action.entity = tileEntityBlob;
         action.type = ActionBlockType.BURN;
         action.x = event.getPos().getX();

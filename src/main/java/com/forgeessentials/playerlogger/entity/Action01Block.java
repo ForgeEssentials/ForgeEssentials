@@ -28,9 +28,6 @@ public class Action01Block extends Action
     @JoinColumn(name = "block_id")
     public BlockData block;
 
-    @Column(name = "metadata")
-    public int metadata;
-
     @Column(name = "entity")
     public Blob entity;
 

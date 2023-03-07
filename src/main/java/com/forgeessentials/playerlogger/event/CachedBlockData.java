@@ -18,7 +18,6 @@ public class CachedBlockData
 
     public final Block block;
 
-    public final int metadata;
 
     public final Blob tileEntityBlob;
 
@@ -27,7 +26,6 @@ public class CachedBlockData
         this.pos = pos;
         state = world.getBlockState(pos);
         block = state.getBlock();
-        metadata = block.getId(state);
         tileEntityBlob = PlayerLogger.tileEntityToBlob(world.getBlockEntity(pos));
     }
 

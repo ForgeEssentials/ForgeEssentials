@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action02Command;
+import com.forgeessentials.util.CommandUtils;
 
 public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
 {
@@ -26,24 +27,24 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
     {
         Action02Command action = new Action02Command();
         action.time = date;
-        action.command = event.getCommand().getName();
-        if (event.getParameters().length > 0)
-            action.arguments = StringUtils.join(event.getParameters(), ' ');
-        if (event.getSender() instanceof PlayerEntity)
+        action.command = event.getParseResults().getContext().getNodes().get(0).toString();
+        if (event.getParseResults().getContext().getNodes().size() > 1)
+            action.arguments = StringUtils.join(event.getParseResults().getContext().getNodes(), ' ');
+        if (event.getParseResults().getContext().getSource().getEntity() instanceof PlayerEntity)
         {
-            PlayerEntity player = ((PlayerEntity) event.getSender());
+            PlayerEntity player = ((PlayerEntity) event.getParseResults().getContext().getSource().getEntity());
             action.player = getPlayer(player);
-            action.world = getWorld(player.world.provider.getDimension());
-            action.x = (int) player.posX;
-            action.y = (int) player.posY;
-            action.z = (int) player.posZ;
+            action.world = getWorld(player.level.dimension().location().toString());
+            action.x = (int) player.position().x;
+            action.y = (int) player.position().y;
+            action.z = (int) player.position().z;
         }
-        else if (event.getSender() instanceof CommandBlockLogic)
+        else if (CommandUtils.GetSource(event.getParseResults().getContext().getSource()) instanceof CommandBlockLogic)
         {
-            CommandBlockLogic block = ((CommandBlockLogic) event.getSender());
+            CommandBlockLogic block = ((CommandBlockLogic) CommandUtils.GetSource(event.getParseResults().getContext().getSource()));
             action.player = getPlayer(UserIdent.getVirtualPlayer("commandblock"));
-            action.world = getWorld(block.getEntityWorld().provider.getDimension());
-            BlockPos pos = block.getPosition();
+            action.world = getWorld(block.getLevel().dimension().toString());
+            BlockPos pos = new BlockPos(block.getPosition());
             action.x = pos.getX();
             action.y = pos.getY();
             action.z = pos.getZ();
