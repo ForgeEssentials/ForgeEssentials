@@ -8,6 +8,7 @@ import java.util.Map;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -20,7 +21,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.Kit;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.commands.Arguments.FeKitArgument;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
@@ -31,9 +31,11 @@ import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 /**
  * Kit command with cooldown. Should also put armor in armor slots.
@@ -96,13 +98,22 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
         return availableKits;
     }
 
+    public static final SuggestionProvider<CommandSource> SUGGEST_KITS = (ctx, builder) -> {
+        List<String> availableKits = new ArrayList<>();
+        for (Kit kit : CommandKit.kits.values())
+            if (com.forgeessentials.util.CommandUtils.hasPermission(ctx.getSource(),CommandKit.PERM + "." + kit.getName()))
+                availableKits.add(kit.getName());
+        return ISuggestionProvider.suggest(availableKits, builder);
+     };
+
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return builder
                 .then(Commands.literal("select")
-                        .then(Commands.argument("kit", FeKitArgument.kit())
-                                .executes(CommandContext -> execute(CommandContext, "select")
+                        .then(Commands.argument("kit", StringArgumentType.greedyString())
+                                .suggests(SUGGEST_KITS)
+                                .executes(context -> execute(context, "select")
                                         )
                                 )
                         )
@@ -133,7 +144,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
             return Command.SINGLE_SUCCESS;
         }
 
-        final String kitName = FeKitArgument.getKit(ctx, "kit");
+        final String kitName = StringArgumentType.getString(ctx, "kit");
         Kit kit = kits.get(kitName);
 
         if (params.toString() == "select")

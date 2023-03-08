@@ -7,8 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.arguments.ArgumentSerializer;
-import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -63,9 +61,6 @@ import com.forgeessentials.core.commands.CommandFEWorldInfo;
 import com.forgeessentials.core.commands.CommandFeReload;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandUuid;
-import com.forgeessentials.core.commands.Arguments.FeGroupArgument;
-import com.forgeessentials.core.commands.Arguments.FeIrcPlayerArgument;
-import com.forgeessentials.core.commands.Arguments.FeKitArgument;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
@@ -211,10 +206,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         // Load submodules
         moduleLauncher = new ModuleLauncher();
         moduleLauncher.preLoad(event);
-      //Custom Command Arguments
-        ArgumentTypes.register("FeGroup", FeGroupArgument.class, new ArgumentSerializer<>(FeGroupArgument::group));
-        ArgumentTypes.register("FeIrcPlayer", FeIrcPlayerArgument.class, new ArgumentSerializer<>(FeIrcPlayerArgument::player));
-        ArgumentTypes.register("FeKit", FeKitArgument.class, new ArgumentSerializer<>(FeKitArgument::kit));
     }
 
     @SubscribeEvent
