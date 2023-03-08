@@ -3,20 +3,17 @@ package com.forgeessentials.jscripting.wrapper.mc;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.script.ScriptException;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.entity.Entity;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,6 +23,7 @@ import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.JsonParseException;
+import com.mojang.brigadier.ParseResults;
 
 /**
  * @tsd.interface Server
@@ -75,24 +73,25 @@ public class JsServer
         if (sender == null)
             sender = server;
 
-        ICommand mcCommand = (ICommand) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().getCommands().get(cmd);
-        if (mcCommand == null)
-        {
-            script.chatError("Command \"" + cmd + "\" not found");
-            return;
-        }
-
         String[] strArgs = new String[args.length];
         for (int i = 0; i < args.length; i++)
             strArgs[i] = args[i].toString();
 
         // Join and split again to fix invalid arguments containing spaces
         String cmdLine = StringUtils.join(strArgs, " ");
-        strArgs = cmdLine.split(" ");
+        cmd = cmd + cmdLine;
+        
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        final ParseResults<CommandSource> command = (ParseResults<CommandSource>) server.getCommands().getDispatcher().parse(cmd, server.createCommandSourceStack());
+        if (command.getReader().canRead() != true)
+        {
+            script.chatError("Command \"" + cmd + "\" not found");
+            return;
+        }
 
         try
         {
-            mcCommand.execute(FMLCommonHandler.instance().getMinecraftServerInstance(), sender.getThat(), strArgs);
+            server.getCommands().performCommand(sender.getThat(), cmd);
         }
         catch (CommandException e)
         {

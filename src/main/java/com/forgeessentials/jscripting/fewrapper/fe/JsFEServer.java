@@ -8,15 +8,6 @@ import java.util.UUID;
 
 import javax.script.ScriptException;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.ChestContainer;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,12 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.jscripting.ScriptInstance;
-import com.forgeessentials.jscripting.command.CommandJScriptCommand;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
-import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsInteractionObject;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsInventory;
-import com.forgeessentials.jscripting.wrapper.mc.item.JsItemStack;
 import com.forgeessentials.util.PlayerInfo;
 
 /**
@@ -75,7 +61,7 @@ public class JsFEServer
     public void registerCommand(Object options) throws ScriptException
     {
         JsCommandOptions opt = script.getProperties(new JsCommandOptions(), options, JsCommandOptions.class);
-        script.registerScriptCommand(new CommandJScriptCommand(script, opt));
+        //script.registerScriptCommand(new CommandJScriptCommand(script, opt));
     }
 
     /**
@@ -172,6 +158,7 @@ public class JsFEServer
      * @param stacks
      * @return
      */
+    /*
     public JsInventory<InventoryBasic> createCustomInventory(final String name, boolean hasCustom, JsItemStack[] stacks)
     {
         InventoryBasic inventoryBasic = new InventoryBasic(name, hasCustom, stacks.length);
@@ -181,7 +168,7 @@ public class JsFEServer
         }
         return JsInventory.get(inventoryBasic);
     }
-
+*/
     /**
      * Clones an existing inventory
      *
@@ -191,6 +178,7 @@ public class JsFEServer
      * @param size
      * @return
      */
+    /*
     public JsInventory<Inventory> cloneInventory(final String name, boolean hasCustom, JsInventory<IInventory> inventory, int size)
     {
         if (size > inventory.getSize())
@@ -219,7 +207,7 @@ public class JsFEServer
             }
         }
     }
-
+*/
     /**
      * Gets a Special Interaction Object that is designed to be used as a menu WARNING: Do not close the screen during the callback. This causes a desync!
      *

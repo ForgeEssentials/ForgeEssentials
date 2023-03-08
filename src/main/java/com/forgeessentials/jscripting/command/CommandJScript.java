@@ -4,6 +4,8 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -12,7 +14,8 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.ScriptUpgrader;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -58,66 +61,70 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .then(Commands.literal("list")
+                        .executes(CommandContext -> execute(CommandContext, "list")
+                                )
+                        )
+                .then(Commands.literal("reload")
+                        .executes(CommandContext -> execute(CommandContext, "reload")
+                                )
+                        )
+                .then(Commands.literal("upgrade")
+                        .executes(CommandContext -> execute(CommandContext, "upgrade")
+                                )
+                        );
     }
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-
-        arguments.tabComplete("list", "reload", "upgrade");
-        String subcmd = arguments.remove().toLowerCase();
+        String subcmd = params.toString().toLowerCase();
         switch (subcmd)
         {
         case "list":
-            parseList(arguments);
+            parseList(ctx);
             break;
         case "reload":
-            parseReload(arguments);
+            parseReload(ctx);
             break;
         case "upgrade":
-            if (arguments.isTabCompletion)
-                return;
-            ScriptUpgrader.upgradeOldScripts(arguments.sender);
+            ScriptUpgrader.upgradeOldScripts(ctx.getSource());
             break;
         default:
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
         }
+        return Command.SINGLE_SUCCESS;
     }
 
-    private static void parseReload(CommandParserArgs arguments)
+    private static void parseReload(CommandContext<CommandSource> ctx)
     {
-        if (arguments.isTabCompletion)
-            return;
-        arguments.confirm("Reloading scripts...");
-        ModuleJScripting.instance().reloadScripts(arguments.sender);
-        arguments.confirm("Done!");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Reloading scripts...");
+        ModuleJScripting.instance().reloadScripts(ctx.getSource());
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Done!");
     }
 
-    private static void parseList(CommandParserArgs arguments)
+    private static void parseList(CommandContext<CommandSource> ctx)
     {
-        if (arguments.isTabCompletion)
-            return;
-        arguments.confirm("Loaded scripts:");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Loaded scripts:");
         for (ScriptInstance script : ModuleJScripting.getScripts())
         {
-            arguments.notify(script.getName());
+            ChatOutputHandler.chatNotification(ctx.getSource(), script.getName());
 
             List<String> eventHandlers = script.getEventHandlers();
             if (!eventHandlers.isEmpty())
             {
-                arguments.confirm("  Registered events:");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Registered events:");
                 for (String eventType : eventHandlers)
-                    arguments.sendMessage("    " + eventType);
+                    ctx.getSource().sendSuccess(new StringTextComponent(("    " + eventType)),true);
             }
 
             List<CommandJScriptCommand> commands = script.getCommands();
             if (!commands.isEmpty())
             {
-                arguments.confirm("  Registered commands:");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Registered commands:");
                 for (CommandJScriptCommand command : commands)
-                    arguments.sendMessage("    /" + command.getName());
+                    ctx.getSource().sendSuccess(new StringTextComponent("    /" + command.getName()),true);
             }
         }
     }

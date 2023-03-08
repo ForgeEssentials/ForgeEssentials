@@ -31,7 +31,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.ITextComponent;
 
 import org.apache.commons.lang3.ArrayUtils;
-import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.RunLaterTimerTask;
 import com.forgeessentials.jscripting.command.CommandJScriptCommand;
@@ -144,11 +143,11 @@ public class ScriptInstance
         for (TimerTask task : tasks.values())
             TaskRegistry.remove(task);
         tasks.clear();
-
+        /*
         for (ParserCommandBase command : commands)
             FECommandManager.deegisterCommand(command.getName());
         commands.clear();
-
+*/
         for (JsEvent<?> eventHandler : eventHandlers.values())
             eventHandler._unregister();
         eventHandlers.clear();
@@ -433,13 +432,13 @@ public class ScriptInstance
 
     /* ************************************************************ */
     /* Event handling */
-
+/*
     public void registerScriptCommand(CommandJScriptCommand command)
     {
         commands.add(command);
         FECommandManager.registerCommand(command, true);
     }
-
+*/
     public void registerEventHandler(String event, Object handler)
     {
         Class<? extends JsEvent> eventType = ScriptCompiler.eventTypes.get(event);

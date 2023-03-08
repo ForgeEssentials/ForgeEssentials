@@ -2,11 +2,9 @@ package com.forgeessentials.jscripting.wrapper.mc;
 
 import java.util.UUID;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentUtils;
 
@@ -14,10 +12,10 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
-import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.gson.JsonParseException;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  *
@@ -62,9 +60,9 @@ public class JsICommandSender extends JsWrapper<CommandSource>
     {
         UserIdent doAsUser = userIdOrPlayer instanceof UUID ? UserIdent.get((UUID) userIdOrPlayer)
                 : userIdOrPlayer instanceof JsEntityPlayer ? UserIdent.get(((JsEntityPlayer) userIdOrPlayer).getThat()) : APIRegistry.IDENT_SERVER;
-        DoAsCommandSender result = new DoAsCommandSender(doAsUser, CommandUtils.GetSource(that));
+        DoAsCommandSender result = new DoAsCommandSender(doAsUser, that);
         result.setHideChatMessages(hideChatOutput);
-        return new JsICommandSender(result);
+        return new JsICommandSender(result.createCommandSourceStack());
     }
 
     public void chat(String message)
@@ -104,14 +102,14 @@ public class JsICommandSender extends JsWrapper<CommandSource>
             if (senderEntity != null)
             {
                 ITextComponent itextcomponent = ITextComponent.Serializer.fromJson(msg);
-                this.that.sendMessage(TextComponentUtils.processComponent(this.that, itextcomponent, senderEntity));
+                this.that.sendSuccess(TextComponentUtils.updateForEntity(this.that, itextcomponent, senderEntity, 0),true);
             }
         }
         catch (JsonParseException jsonparseexception)
         {
             this.chatError("There is an error in your JSON: " + jsonparseexception.getMessage());
         }
-        catch (CommandException e)
+        catch (CommandSyntaxException e)
         {
             this.chatError("There is an error in your input: " + e.getMessage());
         }

@@ -1,5 +1,5 @@
 package com.forgeessentials.jscripting.fewrapper.fe;
-
+/*
 import java.util.Collection;
 
 import net.minecraft.command.CommandException;
@@ -226,4 +226,4 @@ public class JsCommandArgs extends JsWrapper<CommandParserArgs>
         that.args.clear();
     }
 
-}
+}*/

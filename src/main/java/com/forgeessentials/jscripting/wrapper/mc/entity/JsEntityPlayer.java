@@ -5,11 +5,17 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.ChestContainer;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 
+import java.util.Objects;
+
+import com.forgeessentials.commands.item.CommandVirtualchest;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.jscripting.fewrapper.fe.JsPoint;
 import com.forgeessentials.jscripting.fewrapper.fe.JsWorldPoint;
@@ -333,7 +339,8 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
 
     public void displayGUIChest(JsInventory<IInventory> inventory)
     {
-        that.displayGUIChest(inventory.getThat());
+        that.openMenu(new SimpleNamedContainerProvider((syncId, inv, player) -> new ChestContainer(CommandVirtualchest.chestTypes.get(CommandVirtualchest.rowCount - 1), syncId, inv,
+                Objects.requireNonNull(inventory.getThat()), CommandVirtualchest.rowCount), new StringTextComponent(CommandVirtualchest.name)));
     }
 
     public void closeScreen()

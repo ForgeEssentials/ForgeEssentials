@@ -1,7 +1,6 @@
 package com.forgeessentials.jscripting.wrapper.mc.item;
-
+/*
 import net.minecraft.inventory.IInventory;
-import net.minecraft.world.IInteractionObject;
 
 import com.forgeessentials.jscripting.wrapper.JsWrapper;
 
@@ -31,3 +30,4 @@ public class JsInteractionObject<T extends IInteractionObject> extends JsWrapper
     }
 
 }
+*/

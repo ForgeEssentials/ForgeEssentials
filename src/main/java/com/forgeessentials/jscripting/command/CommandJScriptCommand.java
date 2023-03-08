@@ -1,34 +1,20 @@
 package com.forgeessentials.jscripting.command;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.script.ScriptException;
-
-import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.jscripting.ModuleJScripting;
-import com.forgeessentials.jscripting.ScriptInstance;
-import com.forgeessentials.jscripting.fewrapper.fe.JsCommandArgs;
-import com.forgeessentials.jscripting.fewrapper.fe.JsCommandOptions;
-import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.scripting.ScriptParser.ScriptArgument;
-import com.forgeessentials.scripting.ScriptParser.SyntaxException;
-import com.forgeessentials.util.CommandParserArgs;
-import com.google.common.base.Preconditions;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
 {
 
-    public final ScriptInstance script;
+    //public final ScriptInstance script;
 
-    private JsCommandOptions options;
+    //private JsCommandOptions options;
 
-    private static final Pattern ARGUMENT_PATTERN = Pattern.compile("@(\\w+)(.*)");
-
+    //private static final Pattern ARGUMENT_PATTERN = Pattern.compile("@(\\w+)(.*)");
+/*
     public CommandJScriptCommand(ScriptInstance script, JsCommandOptions options)
     {
         Preconditions.checkNotNull(script);
@@ -42,11 +28,16 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
         this.script = script;
         this.options = options;
     }
+*/
+    public CommandJScriptCommand(boolean enabled)
+    {
+        super(enabled);
+    }
 
     @Override
     public String getPrimaryAlias()
     {
-        return options.name;
+        return null;//options.name;
     }
 
     @Override
@@ -58,28 +49,28 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
     @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
-        return options.opOnly ? DefaultPermissionLevel.OP : DefaultPermissionLevel.ALL;
+        return null;//options.opOnly ? DefaultPermissionLevel.OP : DefaultPermissionLevel.ALL;
     }
 
     @Override
     public String getPermissionNode()
     {
-        return options.permission;
+        return null;//options.permission;
     }
-
+/*
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public void parse() throws CommandException
     {
         try
         {
             if (arguments.isTabCompletion)
             {
                 if (options.tabComplete != null)
-                    script.call(options.tabComplete, options.tabComplete, new JsCommandArgs(arguments));
+                    //script.call(options.tabComplete, options.tabComplete, new JsCommandArgs(arguments));
             }
             else
             {
-                script.call(options.processCommand, options.processCommand, new JsCommandArgs(arguments));
+                //script.call(options.processCommand, options.processCommand, new JsCommandArgs(arguments));
             }
         }
         catch (NoSuchMethodException e)
@@ -127,5 +118,11 @@ public class CommandJScriptCommand extends ForgeEssentialsCommandBuilder
                 }
             }
         }
+    }
+*/
+    @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return null;
     }
 }
