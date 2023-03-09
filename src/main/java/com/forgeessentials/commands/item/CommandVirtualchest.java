@@ -111,7 +111,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder implement
         }
         playerServer.nextContainerCounter();
 
-        playerServer.openMenu(new SimpleNamedContainerProvider((syncId, inv, player) -> new ChestContainer(chestTypes.get(CommandVirtualchest.rowCount - 1), syncId, inv,
+        playerServer.openMenu(new SimpleNamedContainerProvider((syncId, inv, player) -> new ChestContainer(CommandVirtualchest.chestTypes.get(CommandVirtualchest.rowCount - 1), syncId, inv,
                 Objects.requireNonNull(getVirtualChest(1, playerServer)), CommandVirtualchest.rowCount), new StringTextComponent(CommandVirtualchest.name)));
         return Command.SINGLE_SUCCESS;
     }

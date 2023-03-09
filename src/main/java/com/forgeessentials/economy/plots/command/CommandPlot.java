@@ -12,6 +12,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -190,8 +191,11 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
 
     public static void parseDefine(CommandContext<CommandSource> ctx) throws CommandException
     {
-        arguments.checkPermission(Plot.PERM_DEFINE);
-        arguments.requirePlayer();
+        checkPermission(ctx.getSource(), Plot.PERM_DEFINE);
+        if(!(ctx.getSource().getEntity() instanceof ServerPlayerEntity)) {
+            ChatOutputHandler.chatWarning(ctx.getSource(), "Only a player can do this!");
+            return;
+        }
 
 
         Selection selection = SelectionHandler.getSelection((ServerPlayerEntity) ctx.getSource().getEntity());
@@ -237,8 +241,11 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
 
     public static void parseClaim(final CommandContext<CommandSource> ctx) throws CommandException
     {
-        arguments.checkPermission(Plot.PERM_CLAIM);
-        arguments.requirePlayer();
+        checkPermission(ctx.getSource(), Plot.PERM_CLAIM);
+        if(!(ctx.getSource().getEntity() instanceof ServerPlayerEntity)) {
+            ChatOutputHandler.chatWarning(ctx.getSource(), "Only a player can do this!");
+            return;
+        }
 
 
         final Selection selection = SelectionHandler.getSelection((ServerPlayerEntity) ctx.getSource().getEntity());
@@ -335,7 +342,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
 
     public static void parseList(final CommandContext<CommandSource> ctx) throws CommandException
     {
-        arguments.checkPermission(Plot.PERM_LIST);
+        checkPermission(ctx.getSource(), Plot.PERM_LIST);
 
         PlotListingType listType = PlotListingType.OWN;
         if (!arguments.isEmpty())
@@ -352,7 +359,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         }
 
 
-        final WorldPoint playerRef = (ServerPlayerEntity) ctx.getSource().getEntity() != null ? arguments.getSenderPoint().setY(0) : new WorldPoint(0, 0, 0, 0);
+        final WorldPoint playerRef = (ServerPlayerEntity) ctx.getSource().getEntity() != null ? new WorldPoint(((ServerPlayerEntity) ctx.getSource().getEntity()).getLevel(), ((ServerPlayerEntity) ctx.getSource().getEntity()).blockPosition().getX(), 0, ((ServerPlayerEntity) ctx.getSource().getEntity()).blockPosition().getZ()) : new WorldPoint(ServerWorld.OVERWORLD.location().toString(), 0, 0, 0);
         SortedSet<Plot> plots = new TreeSet<Plot>(new Comparator<Plot>() {
             @Override
             public int compare(Plot a, Plot b)
@@ -418,7 +425,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         String type = modifyUsers ? "users" : "mods";
         String group = modifyUsers ? Plot.GROUP_PLOT_USER : Plot.GROUP_PLOT_MOD;
 
-        arguments.checkPermission(Plot.PERM_MODS);
+        checkPermission(ctx.getSource(), Plot.PERM_MODS);
         if (arguments.isEmpty())
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/plot " + type + " add|remove <player>: Add / remove " + type);
@@ -499,7 +506,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Current plot is not up for sale");
             return;
         }
-        arguments.checkPermission(Plot.PERM_SET_PRICE);
+        checkPermission(ctx.getSource(), Plot.PERM_SET_PRICE);
 
         arguments.tabComplete("clear");
         String priceStr = arguments.remove().toLowerCase();
@@ -530,7 +537,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Current plot fee: %s", APIRegistry.economy.toString(plot.getFee())));
             return;
         }
-        arguments.checkPermission(Plot.PERM_SET_FEE);
+        checkPermission(ctx.getSource(), Plot.PERM_SET_FEE);
 
         int amount = arguments.parseInt();
         int timeout = arguments.parseInt();
@@ -554,7 +561,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             return;
         }
         String name = arguments.toString();
-        arguments.checkPermission(Plot.PERM_SET_NAME);
+        checkPermission(ctx.getSource(), Plot.PERM_SET_NAME);
         plot.getZone().setGroupPermissionProperty(Plot.GROUP_ALL, Plot.PERM_NAME, name);
         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set plot name to \"%s\"", name));
     }
@@ -576,7 +583,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             return;
         }
         UserIdent newOwner = arguments.parsePlayer(true, false);
-        arguments.checkPermission(Plot.PERM_SET_OWNER);
+        checkPermission(ctx.getSource(), Plot.PERM_SET_OWNER);
         plot.setOwner(newOwner);
         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set plot owner to \"%s\"", newOwner.getUsernameOrUuid()));
     }
@@ -585,7 +592,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
     {
         final String[] tabCompletion = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
 
-        arguments.checkPermission(Plot.PERM_PERMS);
+        checkPermission(ctx.getSource(), Plot.PERM_PERMS);
         Plot plot = getPlot(ctx.getSource());
         if (arguments.isEmpty())
         {

@@ -147,7 +147,7 @@ public class CommandParserArgs
         if (isTabCompletion && size() == 1)
         {
             tabCompletion = completePlayer(peek());
-            throw new CancelParsingException();
+            //throw new CancelParsingException();
         }
         if (isEmpty())
         {
@@ -203,10 +203,10 @@ public class CommandParserArgs
             for (Object item : ForgeRegistries.ITEMS.getKeys())
                 if (item.toString().startsWith("minecraft:" + peek()))
                     tabCompletion.add(item.toString().substring(10));
-            throw new CancelParsingException();
+            //throw new CancelParsingException();
         }
         String itemName = remove();
-        Item item = CommandBase.getItemByText(sender, itemName);
+        Item item = null;//CommandBase.getItemByText(sender, itemName);
         if (item == null)
             throw new TranslatedCommandException("Item %s not found", itemName);
         return item;
@@ -222,10 +222,10 @@ public class CommandParserArgs
             for (Object block : ForgeRegistries.BLOCKS.getKeys())
                 if (block.toString().startsWith("minecraft:" + peek()))
                     tabCompletion.add(block.toString().substring(10));
-            throw new CancelParsingException();
+            //throw new CancelParsingException();
         }
         String itemName = remove();
-        return CommandBase.getBlockByText(sender, itemName);
+        return null;//CommandBase.getBlockByText(sender, itemName);
     }
 
     public String parsePermission() throws CommandException
@@ -244,7 +244,7 @@ public class CommandParserArgs
                     result.add(perm);
             }
             tabCompletion = new ArrayList<>(result);
-            throw new CancelParsingException();
+            //throw new CancelParsingException();
         }
         return remove();
     }
@@ -263,7 +263,7 @@ public class CommandParserArgs
         if (isTabCompletion && size() == 1)
         {
             tabCompletion = ForgeEssentialsCommandBuilder.getListOfStringsMatchingLastWord(args.peek(), APIRegistry.namedWorldHandler.getWorldNames());
-            throw new CancelParsingException();
+            //throw new CancelParsingException();
         }
         if (isEmpty())
         {
@@ -376,8 +376,8 @@ public class CommandParserArgs
 
     public WorldPoint getSenderPoint()
     {
-        CommandSource s = sender != null ? sender : server;
-        return new WorldPoint(s.getLevel(), s.getPosition());
+        CommandSource s = sender != null ? sender : null;//server;
+        return null;//new WorldPoint(s.getLevel(), s.getPosition());
     }
 
     public WorldZone getWorldZone() throws CommandException

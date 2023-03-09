@@ -9,6 +9,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
@@ -29,6 +30,9 @@ import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandHelp extends ForgeEssentialsCommandBuilder implements ConfigLoader
 {
@@ -74,12 +78,17 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         if (arguments.isEmpty())
         {
-            if (arguments.isTabCompletion)
-                return;
             showHelpPage(arguments.server, arguments.sender);
         }
         else
@@ -88,8 +97,6 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
             try
             {
                 int page = Integer.parseInt(name);
-                if (arguments.isTabCompletion)
-                    return;
                 showHelpPage(arguments.server, arguments.sender, page);
             }
             catch (NumberFormatException e)
@@ -144,7 +151,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
         }
     }
 
-    public void sendCommandUsageMessage(ICommandSender sender, ICommand command, TextFormatting color)
+    public void sendCommandUsageMessage(CommandSource sender, ICommand command, TextFormatting color)
     {
         ITextComponent chatMsg = new TranslationTextComponent(command.getUsage(sender));
         chatMsg.getStyle().withColor(color);
@@ -191,4 +198,5 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
 	public ConfigData returnData() {
 		return FEConfig.data;
 	}
+
 }

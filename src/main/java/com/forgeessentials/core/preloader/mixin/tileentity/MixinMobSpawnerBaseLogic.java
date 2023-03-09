@@ -1,5 +1,5 @@
 package com.forgeessentials.core.preloader.mixin.tileentity;
-
+/*
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.tileentity.MobSpawnerBaseLogic;
@@ -38,3 +38,4 @@ public abstract class MixinMobSpawnerBaseLogic
         }
     }
 }
+*/

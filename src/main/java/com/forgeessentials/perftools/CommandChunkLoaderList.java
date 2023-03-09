@@ -23,8 +23,10 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.collect.HashMultimap;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -87,26 +89,27 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
                 }
             }
         }
-        list(sender, key);
+        list(ctx, key);
     }
 
     @Override
     public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        list(sender, "*");
+        list(ctx, "*");
+        return Command.SINGLE_SUCCESS;
     }
 
-    private void list(CommandSource sender, String key)
+    private void list(CommandContext<CommandSource> ctx, String key)
     {
-        for (int i : DimensionManager.getIDs())
+        for (ServerWorld i : ServerLifecycleHooks.getCurrentServer().getAllLevels())
         {
-            list(sender, i, key);
+            list(ctx, i.dimension().location().toString(), key);
         }
     }
 
-    private void list(CommandSource sender, int dim, String key)
+    private void list(CommandContext<CommandSource> ctx, String dim, String key)
     {
-        ServerWorld world = DimensionManager.getWorld(dim);
+        ServerWorld world = ServerUtil.getWorldFromString(dim);
 
         HashMultimap<String, Ticket> modTickets = HashMultimap.create();
         HashMultimap<String, Ticket> playerTickets = HashMultimap.create();
@@ -130,10 +133,10 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
 
         if (!key.equals("*"))
         {
-            ChatOutputHandler.chatNotification(sender, TextFormatting.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
+            ChatOutputHandler.chatNotification(ctx.getSource(), TextFormatting.UNDERLINE + "ChunkLoaders for " + key.split(":", 2)[1] + ":");
         }
 
-        ChatOutputHandler.chatNotification(sender, "Dim " + world.provider.getDimensionType().getName() + ":");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Dim " + world.provider.getDimensionType().getName() + ":");
 
         if (key.startsWith("p:") || key.equals("*"))
         {
@@ -184,7 +187,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
 
                 for (ChunkPos coords : chunks)
                 {
-                    ChatOutputHandler.chatNotification(sender, coords.x + " : " + coords.z);
+                    ChatOutputHandler.chatNotification(ctx.getSource(), coords.x + " : " + coords.z);
                 }
             }
         }

@@ -1,8 +1,10 @@
 package com.forgeessentials.core.preloader.mixin.command;
-
+/*
+import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.CommandBlockLogic;
 
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,9 +18,9 @@ import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.PermissionManager;
 
-@Mixin(value = { ServerPlayerEntity.class, MinecraftServer.class, RConConsoleSource.class, CommandBlockBaseLogic.class },
+@Mixin(value = { ServerPlayerEntity.class, MinecraftServer.class, RConConsoleSource.class, CommandBlockLogic.class },
         targets = { "net/minecraft/tileentity/TileEntitySign$1", "net/minecraft/tileentity/TileEntitySign$2" })
-public abstract class MixinICommandSender implements ICommandSender
+public abstract class MixinICommandSender implements ICommandSource
 {
     private static final Logger launchLog = org.apache.logging.log4j.LogManager.getLogger("ForgeEssentials");
 
@@ -61,4 +63,4 @@ public abstract class MixinICommandSender implements ICommandSender
                     commandName, permissionLevel, permNode);
         }
     }
-}
+}*/

@@ -1,5 +1,5 @@
 package com.forgeessentials.core.preloader.mixin;
-
+/*
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.world.WorldPreLoadEvent;
@@ -28,3 +28,4 @@ public abstract class MixinDimensionManager
     }
 
 }
+*/

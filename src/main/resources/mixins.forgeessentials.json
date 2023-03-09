@@ -5,17 +5,17 @@
   "refmap": "mixins.forgeessentials.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "server": [
-        "block.MixinBlockPortal",
-        "block.MixinBlockFire",
+        "block.MixinBlockPortal",//ported
+        "block.MixinBlockFire",//ported
         "command.MixinCommandHandler",
-        "command.MixinICommandSender",
-        "entity.MixinEntity",
-        "entity.MixinItemFrameEntity",
-        "entity.player.MixinEntityPlayer",
+        //"command.MixinICommandSender",
+        "entity.MixinEntity",//ported
+        "entity.MixinItemFrameEntity",//ported
+        "entity.player.MixinEntityPlayer",//ported
         "item.crafting.MixinCraftingManager",
-        "network.MixinNetHandlerPlayServer",
-        "network.MixinSimpleChannelHandlerWrapper",
-        "MixinDimensionManager"
+        "network.MixinNetHandlerPlayServer",//ported
+        "network.MixinSimpleChannelHandlerWrapper"
+        //"MixinDimensionManager"
         //"tileentity.MixinMobSpawnerBaseLogic"
   ],
   "injectors": {
