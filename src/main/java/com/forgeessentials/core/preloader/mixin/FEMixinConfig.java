@@ -17,7 +17,20 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 public class FEMixinConfig implements IMixinConfigPlugin
 {
 
-    protected static List<String> injectedPatches = new ArrayList<String>();
+    public static int javaVersion;
+
+    static {
+        String version = System.getProperty("java.version");
+        if(version.startsWith("1.")) {
+            version = version.substring(2, 3);
+        } else {
+            int dot = version.indexOf(".");
+            if(dot != -1) { version = version.substring(0, dot); }
+        }
+        javaVersion = Integer.parseInt(version);
+    }
+
+    protected static List<String> injectedPatches = new ArrayList<>();
 
     @Override
     public void onLoad(String mixinPackage)
@@ -35,15 +48,26 @@ public class FEMixinConfig implements IMixinConfigPlugin
     public List<String> getMixins()
     {
         List<String> mixins = new ArrayList<>();
+
+        //Specifically check if the server is a hybrid. Most of them have kimagine in their mod list.
+        if(javaVersion < 9 && FMLCommonHandler.instance().getModName().contains("kimagine"))
+        {
+            //Add the mixin that is specific for when the server is Cauldron and/or it's forks.
+            mixins.add(Mixins.MixinNetHandlerPlayServerCauldron.getMixinRelativePath());
+        }
+
         for(Mixins mixin : Mixins.values())
         {
-            //Specifically check if the server is a hybrid. Most of them have kimagine in their mod list.
-            if(FMLCommonHandler.instance().getModName().contains("kimagine"))
-                //Add the mixin that is specific for when the server is Cauldron and/or it's forks.
-                mixins.add(Mixins.MixinNetHandlerPlayServerCauldron.getMixinRelativePath());
             //If the mixin's class name is the normal one and the hybrid specialized mixin is already loaded, skip this one.
             if(mixin.getMixinClassName().equals(Mixins.MixinNetHandlerPlayServer.getMixinClassName()) && mixins.contains(Mixins.MixinNetHandlerPlayServerCauldron.getMixinClassName()))
+            {
                 continue;
+            }
+
+            if (mixin == Mixins.MixinNetHandlerPlayServerCauldron)
+            {
+                continue;
+            }
             mixins.add(mixin.getMixinRelativePath());
         }
         return mixins;
