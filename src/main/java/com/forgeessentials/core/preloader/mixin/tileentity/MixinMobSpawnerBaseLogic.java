@@ -29,7 +29,7 @@ public abstract class MixinMobSpawnerBaseLogic
         require = 1,
         locals = LocalCapture.CAPTURE_FAILEXCEPTION
     )
-    public void handleUpdateSpawner(CallbackInfo ci, double d2, boolean flag, int i, Entity entity, int j, double d3, double d4, EntityLiving living)
+    public void handleUpdateSpawner(CallbackInfo ci, int var1, int var2, Entity entity, int var4, double d2, double d3, double d4, EntityLiving living)
     {
         //System.out.println("Mixin : Spawned entity from mob spawner block");
         // hack to work around mixin bug regarding SHIFT and lvt injection
