@@ -10,13 +10,11 @@ public enum Mixins {
     MixinEntity("entity.MixinEntity"),
     MixinEntityTracker("entity.MixinEntityTracker"),
     MixinEntityPlayerMP("entity.player.MixinEntityPlayerMP"),
-    MixinEventBus("fml.common.eventhandler.MixinEventBus"),
     MixinCraftingManager("item.crafting.MixinCraftingManager"),
     MixinNetHandlerPlayServer("network.MixinNetHandlerPlayServer"),
     MixinNetHandlerPlayServerCauldron("network.MixinNetHandlerPlayServerCauldron"),
     MixinSimpleChannelHandlerWrapper("network.MixinSimpleChannelHandlerWrapper"),
     MixinItemInWorldManager("server.management.MixinItemInWorldManager"),
-    MixinMobSpawnerBaseLogic("tileentity.MixinMobSpawnerBaseLogic"),
     MixinDimensionManager("MixinDimensionManager");
     private String mixinRelativePath;
 
