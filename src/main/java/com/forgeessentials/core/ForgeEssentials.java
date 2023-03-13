@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.JsonParseException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -402,7 +403,13 @@ public class ForgeEssentials extends ConfigLoaderBase
         {
             EntityPlayerMP player = (EntityPlayerMP) event.player;
             UserIdent.login(player);
-            PlayerInfo.login(player.getPersistentID());
+
+            try {
+                PlayerInfo.login(player.getPersistentID());
+            } catch (JsonParseException e) {
+                player.playerNetServerHandler.kickPlayerFromServer("Unable to Parse PlayerInfo file, please contact your admin for assistance and ask them to check the log!");
+                LoggingHandler.felog.fatal("Unable to Parse PlayerInfo file!  If this is date related, please check S:format_gson_compat in your main.cfg file!", e);
+            }
 
             if (FEConfig.checkSpacesInNames)
             {
