@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.forgeessentials.core.preloader.FELaunchHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.common.ForgeVersion;
 
+import org.apache.logging.log4j.LogManager;
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -48,10 +51,7 @@ public class FEMixinConfig implements IMixinConfigPlugin
     public List<String> getMixins()
     {
         List<String> mixins = new ArrayList<>();
-
-        //Specifically check if the server is a hybrid. Most of them have kimagine in their mod list.
-        if(javaVersion < 9 && FMLCommonHandler.instance().getModName().contains("kimagine"))
-        {
+        if (FELaunchHandler.isCauldron) {
             //Add the mixin that is specific for when the server is Cauldron and/or it's forks.
             mixins.add(Mixins.MixinNetHandlerPlayServerCauldron.getMixinRelativePath());
         }
