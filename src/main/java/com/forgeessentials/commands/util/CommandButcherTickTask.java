@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -23,7 +22,7 @@ import net.minecraft.entity.passive.SquidEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -53,7 +52,7 @@ public class CommandButcherTickTask implements TickTask
     private CommandSource sender;
     private ButcherMobType mobType;
     private AxisAlignedBB aabb;
-    private World world;
+    private ServerWorld world;
     private int radius;
 
     private int maxChunkX;
@@ -65,7 +64,7 @@ public class CommandButcherTickTask implements TickTask
 
     private static final int MAX_TICK_KILLS = 1;
 
-    public CommandButcherTickTask(CommandSource sender, World world, ButcherMobType mobType, AxisAlignedBB aabb, int radius)
+    public CommandButcherTickTask(CommandSource sender, ServerWorld world, ButcherMobType mobType, AxisAlignedBB aabb, int radius)
     {
         this.sender = sender;
         this.mobType = mobType;
@@ -81,12 +80,12 @@ public class CommandButcherTickTask implements TickTask
         }
     }
 
-    public CommandButcherTickTask(CommandSource sender, World world, String mobType, AxisAlignedBB aabb, int radius)
+    public CommandButcherTickTask(CommandSource sender, ServerWorld world, String mobType, AxisAlignedBB aabb, int radius)
     {
         this(sender, world, CommandButcherTickTask.ButcherMobType.valueOf(mobType.toUpperCase()), aabb, radius);
     }
 
-    public static void schedule(CommandSource sender, World world, String mobType, AxisAlignedBB aabb, int radius) throws CommandException
+    public static void schedule(CommandSource sender, ServerWorld world, String mobType, AxisAlignedBB aabb, int radius) throws CommandException
     {
         try
         {
@@ -107,7 +106,7 @@ public class CommandButcherTickTask implements TickTask
             return true;
         else if (radius == -1)
         {
-            for (Object entity : world.loadedEntityList)
+            for (Object entity : world.getAllEntities())
                 if (entity instanceof LivingEntity)
                 {
                     checkEntity((LivingEntity) entity);

@@ -48,6 +48,7 @@ import com.forgeessentials.commands.world.CommandPush;
 import com.forgeessentials.commands.world.CommandRemove;
 import com.forgeessentials.commands.world.CommandTime;
 import com.forgeessentials.commands.world.CommandWeather;
+import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -143,8 +144,12 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandSeen(true));
         FECommandManager.registerCommand(new CommandTempBan(true));
         FECommandManager.registerCommand(new CommandFly(true));
-        FECommandManager.registerCommand(new CommandHelp());
-        //FECommandManager.registerCommand(new CommandPregen(true));
+        //Help
+        CommandHelp help = new CommandHelp(true);
+        FECommandManager.registerCommand(help);
+        ForgeEssentials.getConfigManager().registerSpecs("HelpCommand", help);
+        help.fixer = new HelpFixer();
+
         FECommandManager.registerCommand(new CommandVanish(true));
         FECommandManager.registerCommand(new CommandDuplicate(true));
         FECommandManager.registerCommand(new CommandDelayedAction(true));
