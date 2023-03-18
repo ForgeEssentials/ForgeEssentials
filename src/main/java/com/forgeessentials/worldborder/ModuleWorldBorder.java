@@ -15,7 +15,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
@@ -60,7 +59,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandWorldBorder(true));
+        //FECommandManager.registerCommand(new CommandWorldBorder(true));
     }
 
     @SubscribeEvent

@@ -51,6 +51,13 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
     }
 
     @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         String key = "*";
@@ -225,10 +232,4 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
         return DefaultPermissionLevel.OP;
     }
 
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

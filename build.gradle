@@ -50,7 +50,6 @@ sonarqube {
 }
 
 //Clear repositories since spongepowered plugin is inserting an extra repo with http!
-//TODO: Update to a newer version of the spongepowered plugin
 repositories.clear()
 // Set up FE required repositories
 repositories {

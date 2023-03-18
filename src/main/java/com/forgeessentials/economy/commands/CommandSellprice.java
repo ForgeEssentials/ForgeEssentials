@@ -336,6 +336,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
 
     private static void initializeDefaultPrices(Map<String, Double> priceMap)
     {
+        //TODO re-evaluate these prices
         priceMap.put("minecraft:wool", 48.0);
         for (int i = 1; i <= 15; i++)
             priceMap.put("minecraft:wool:" + i, 48.0);

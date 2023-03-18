@@ -44,7 +44,6 @@ import com.forgeessentials.commands.util.MobTypeLoader;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commands.world.CommandButcher;
 import com.forgeessentials.commands.world.CommandFindblock;
-import com.forgeessentials.commands.world.CommandPregen;
 import com.forgeessentials.commands.world.CommandPush;
 import com.forgeessentials.commands.world.CommandRemove;
 import com.forgeessentials.commands.world.CommandTime;
@@ -145,7 +144,7 @@ public class ModuleCommands
         FECommandManager.registerCommand(new CommandTempBan(true));
         FECommandManager.registerCommand(new CommandFly(true));
         FECommandManager.registerCommand(new CommandHelp());
-        FECommandManager.registerCommand(new CommandPregen(true));
+        //FECommandManager.registerCommand(new CommandPregen(true));
         FECommandManager.registerCommand(new CommandVanish(true));
         FECommandManager.registerCommand(new CommandDuplicate(true));
         FECommandManager.registerCommand(new CommandDelayedAction(true));

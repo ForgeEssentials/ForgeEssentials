@@ -17,7 +17,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -74,7 +73,6 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.FEChunkLoader;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent;
@@ -304,7 +302,8 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         BlockModListFile.makeModList();
         BlockModListFile.dumpFMLRegistries();
-        ForgeChunkManager.setForcedChunkLoadingCallback(ForgeEssentials.MODID, new FEChunkLoader());
+        //TODO REIMPLEMENT
+        //ForgeChunkManager.setForcedChunkLoadingCallback(ForgeEssentials.MODID, new FEChunkLoader());
 
         //ServerUtil.replaceCommand("help", new HelpFixer()); // Will be overwritten again by commands module
 
@@ -546,5 +545,15 @@ public class ForgeEssentials extends ConfigLoaderBase
     public static File getJarLocation()
     {
         return jarLocation;
+    }
+
+    public RespawnHandler getRespawnHandler()
+    {
+        return respawnHandler;
+    }
+
+    public SelectionHandler getSelectionHandler()
+    {
+        return selectionHandler;
     }
 }

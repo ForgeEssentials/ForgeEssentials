@@ -7,7 +7,7 @@
   "server": [
         "block.MixinBlockPortal",//ported
         "block.MixinBlockFire",//ported
-        "command.MixinCommandHandler",
+        //"command.MixinCommandHandler",
         //"command.MixinICommandSender",
         "entity.MixinEntity",//ported
         "entity.MixinItemFrameEntity",//ported
