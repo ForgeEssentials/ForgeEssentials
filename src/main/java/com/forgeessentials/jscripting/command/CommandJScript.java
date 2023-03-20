@@ -2,7 +2,6 @@ package com.forgeessentials.jscripting.command;
 
 import java.util.List;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;

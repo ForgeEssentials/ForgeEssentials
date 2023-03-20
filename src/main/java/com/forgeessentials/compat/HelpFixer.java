@@ -5,20 +5,6 @@
  */
 package com.forgeessentials.compat;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.command.impl.HelpCommand;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextFormatting;
 
 public class HelpFixer extends HelpCommand
 {

@@ -52,6 +52,16 @@ public class WarpPoint
         this.pitch = playerPitch;
         this.yaw = playerYaw;
     }
+    public WarpPoint(ServerWorld world, BlockPos pos, float playerPitch, float playerYaw)
+    {
+        this.world = world;
+        this.dim = world.dimension().location().toString();
+        this.xd = pos.getX();
+        this.yd = pos.getY();
+        this.zd = pos.getZ();
+        this.pitch = playerPitch;
+        this.yaw = playerYaw;
+    }
 
     public WarpPoint(String dimension, BlockPos location, float pitch, float yaw)
     {

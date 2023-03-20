@@ -11,8 +11,11 @@ import java.util.TreeSet;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.arguments.BlockPosArgument;
+import net.minecraft.command.arguments.DimensionArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -1005,11 +1008,9 @@ public class PermissionCommandParser
                 throw new TranslatedCommandException("Too few arguments!");
             try
             {
-                int x = CommandUtils.parseInt(loc);
-                int y = CommandUtils.parseInt(arguments.args.remove());
-                int z = CommandUtils.parseInt(arguments.args.remove());
-                int dimension = CommandUtils.parseInt(arguments.args.remove());
-                point = new WarpPoint(dimension, x, y, z, 0, 0);
+                BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "position");
+                ServerWorld dimension = DimensionArgument.getDimension(ctx, "dim");
+                point = new WarpPoint(dimension, pos, 0, 0);
             }
             catch (NumberFormatException e)
             {

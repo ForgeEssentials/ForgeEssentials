@@ -8,6 +8,7 @@ import javax.persistence.TypedQuery;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -28,6 +29,8 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -101,14 +104,63 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .then(Commands.literal("stats")
+                        .executes(CommandContext -> execute(CommandContext, "stats")
+                                )
+                        )
+                .then(Commands.literal("filter")
+                        .then(Commands.literal("help")
+                                .executes(CommandContext -> execute(CommandContext, "filter-help")
+                                        )
+                                )
+                        .executes(CommandContext -> execute(CommandContext, "filter")
+                                )
+                        )
+                .then(Commands.literal("gfilter")
+                        .then(Commands.literal("help")
+                                .executes(CommandContext -> execute(CommandContext, "gfilter-help")
+                                        )
+                                )
+                        .executes(CommandContext -> execute(CommandContext, "gfilter")
+                                )
+                        )
+                .then(Commands.literal("lookup")
+                        .then(Commands.literal("help")
+                                .executes(CommandContext -> execute(CommandContext, "lookup-help")
+                                        )
+                                )
+                        .executes(CommandContext -> execute(CommandContext, "lookup")
+                                )
+                        )
+                .then(Commands.literal("glookup")
+                        .then(Commands.literal("help")
+                                .executes(CommandContext -> execute(CommandContext, "glookup-help")
+                                        )
+                                )
+                        .executes(CommandContext -> execute(CommandContext, "glookup")
+                                )
+                        )
+                .then(Commands.literal("purge")
+                        .then(Commands.literal("help")
+                                .executes(CommandContext -> execute(CommandContext, "purge-help")
+                                        )
+                                )
+                        .then(Commands.argument("daysToPurge", IntegerArgumentType.integer())
+                                .executes(CommandContext -> execute(CommandContext, "purge-days")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("help")
+                        .executes(CommandContext -> execute(CommandContext, "help")
+                                )
+                        );
     }
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (arguments.isEmpty())
+        if (params.toString().equals("help"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl stats: Show playerlogger stats");
             ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl filter: Sets the players FilterConfig");
@@ -118,21 +170,20 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl purge: Purge old playerData");
             return Command.SINGLE_SUCCESS;
         }
-        arguments.tabComplete("stats", "gfilter", "filter", "glookup", "lookup", "purge");
         FilterConfig fc = null;
-        String subCmd = arguments.remove().toLowerCase();
+        String[] subCmd = params.toString().split("-");
         boolean global = false;
-        switch (subCmd)
+        switch (subCmd[0])
         {
         case "gfilter":
             global = true;
         case "filter":
-            if (arguments.isEmpty())
+            if (subCmd[1]=="help")
             {
-                arguments.confirm("/pl [gfilter | filter] [filterConfig] : Filter displayed blocks based on a criteria");
-                break;
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "/pl [gfilter | filter] [filterConfig] : Filter displayed blocks based on a criteria");
+                return Command.SINGLE_SUCCESS;;
             }
-            global = arguments.senderPlayer == null || global;
+            global = getServerPlayer(ctx.getSource()) == null || global;
             fc = global ? FilterConfig.globalConfig : new FilterConfig();
             fc.parse(arguments);
             if (!global)
@@ -145,13 +196,13 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
         case "glookup":
             global = true;
         case "lookup":
-            if (!arguments.isEmpty() && arguments.peek().toLowerCase().equals("help"))
+            if (subCmd[1].toLowerCase().equals("help"))
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl [glookup | lookup] [[[x] [y] [z] [dim]?] | [player]]?  [pageSize]? [filterConfig]?");
-                break;
+                return Command.SINGLE_SUCCESS;;
             }
-            global = arguments.senderPlayer == null || global;
-            WorldPoint p = arguments.getSenderPoint();
+            global = getServerPlayer(ctx.getSource()) == null || global;
+            WorldPoint p = getSenderPoint(ctx.getSource());
             String next = arguments.peek();
             if (next != null)
             {
@@ -197,8 +248,8 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                     catch (TranslatedCommandException e)
                     {
                         arguments.args.addFirst(next);
-                        PlayerEntity pl = arguments.parsePlayer(true, true).getPlayer();
-                        p = new WorldPoint(pl.getEntityWorld(), pl.blockPosition());
+                        PlayerEntity pl = parsePlayer(StringArgumentType.getString(ctx, "name"),ctx.getSource(),true, true).getPlayer();
+                        p = new WorldPoint(pl.level, pl.blockPosition());
                     }
                 }
             }
@@ -238,13 +289,13 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             showStats(ctx.getSource());
             break;
         case "purge":
-            if (arguments.isEmpty())
+            if (subCmd[1]=="help")
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl purge <duration>: Purge all PL data that is older than <duration> in days");
             }
             else
             {
-                int days = arguments.parseInt();
+                int days = IntegerArgumentType.getInteger(ctx, "daysToPurge");
                 final Date startTime = new Date();
                 startTime.setTime(startTime.getTime() - TimeUnit.DAYS.toMillis(days));
                 final String startTimeStr = startTime.toString();
@@ -275,8 +326,9 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             }
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd.toString());
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     public static void showStats(CommandSource sender)

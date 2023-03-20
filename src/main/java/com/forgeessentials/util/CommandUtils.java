@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
+import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.google.common.base.Functions;
 import com.google.common.collect.Iterables;
@@ -23,6 +24,7 @@ import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -35,6 +37,24 @@ public class CommandUtils
 		return isource;
 	}
 	
+    public UserIdent parsePlayer(String name, CommandSource sender, boolean mustExist, boolean mustBeOnline) throws CommandException
+    {
+        UserIdent ident = UserIdent.get(name, sender, mustExist);
+        if (mustExist && (ident == null || !ident.hasUuid()))
+            throw new TranslatedCommandException("Player %s not found", name);
+        else if (mustBeOnline && !ident.hasPlayer())
+            throw new TranslatedCommandException("Player %s is not online", name);
+        return ident;
+    }
+    public static List<String> getAllPlayernames()
+    {
+        List<String> arraylist = new ArrayList<>();
+        for (UserIdent s2 : APIRegistry.perms.getServerZone().getKnownPlayers())
+        {
+            arraylist.add(s2.getUsernameOrUuid());
+        }
+        return arraylist;
+    }
 	public static double parseDouble(String input) throws NumberFormatException
     {
         try
@@ -420,5 +440,12 @@ public class CommandUtils
     {
         if (sender != null && !hasPermission(sender, perm))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+    }
+    
+    public WorldPoint getSenderPoint(CommandSource sender)
+    {
+        CommandSource s = sender != null ? sender : null;//server;
+        BlockPos pos = new BlockPos(s.getPosition().x, s.getPosition().y, s.getPosition().z);
+        return new WorldPoint(s.getLevel(), pos);
     }
 }
