@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.command.CommandSource;
 import net.minecraft.util.text.TextFormatting;
 
 import com.forgeessentials.api.APIRegistry;
@@ -20,6 +21,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -52,7 +54,8 @@ public class ModuleTickets implements ConfigSaver
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandTicket(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandTicket(true), dispatcher);
     }
 
     @SubscribeEvent

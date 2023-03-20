@@ -9,7 +9,9 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.mojang.brigadier.CommandDispatcher;
 
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,8 +34,9 @@ public class PerfToolsModule extends ConfigLoaderBase
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandServerPerf(true));
-        FECommandManager.registerCommand(new CommandChunkLoaderList(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandServerPerf(true), dispatcher);
+        FECommandManager.registerCommand(new CommandChunkLoaderList(true), dispatcher);
     }
 
     @SubscribeEvent

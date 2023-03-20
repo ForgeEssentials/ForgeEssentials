@@ -26,6 +26,9 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.CommandDispatcher;
+
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -109,14 +112,15 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandWallet(true));
-        FECommandManager.registerCommand(new CommandPay(true));
-        FECommandManager.registerCommand(new CommandSell(true));
-        FECommandManager.registerCommand(new CommandPaidCommand(true));
-        FECommandManager.registerCommand(new CommandSellCommand(true));
-        FECommandManager.registerCommand(new CommandTrade(true));
-        FECommandManager.registerCommand(new CommandSellprice(true));
-        FECommandManager.registerCommand(new CommandRequestPayment(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandWallet(true), dispatcher);
+        FECommandManager.registerCommand(new CommandPay(true), dispatcher);
+        FECommandManager.registerCommand(new CommandSell(true), dispatcher);
+        FECommandManager.registerCommand(new CommandPaidCommand(true), dispatcher);
+        FECommandManager.registerCommand(new CommandSellCommand(true), dispatcher);
+        FECommandManager.registerCommand(new CommandTrade(true), dispatcher);
+        FECommandManager.registerCommand(new CommandSellprice(true), dispatcher);
+        FECommandManager.registerCommand(new CommandRequestPayment(true), dispatcher);
     }
 
     @SuppressWarnings("unchecked")

@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.WitherEntity;
@@ -107,6 +108,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.brigadier.CommandDispatcher;
 
 @FEModule(name = "Protection", parentMod = ForgeEssentials.class, isCore = true, canDisable = false)
 public class ModuleProtection
@@ -224,8 +226,9 @@ public class ModuleProtection
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandItemPermission(true));
-        FECommandManager.registerCommand(new CommandProtectionDebug(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandItemPermission(true), dispatcher);
+        FECommandManager.registerCommand(new CommandProtectionDebug(true), dispatcher);
         // FECommandManager.registerCommand(new CommandPlaceblock());
     }
 

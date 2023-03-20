@@ -108,7 +108,8 @@ public class ModuleFactions
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        //FECommandManager.registerCommand(new CommandFaction(true));
+        //CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        //FECommandManager.registerCommand(new CommandFaction(true), dispatcher);
         //TODO MASS HIDE
     }
 

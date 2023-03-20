@@ -23,6 +23,7 @@ import java.util.regex.PatternSyntaxException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.text.ITextComponent;
@@ -56,6 +57,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEve
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.brigadier.CommandDispatcher;
 
 @FEModule(name = "Backups", parentMod = ForgeEssentials.class)
 public class ModuleBackup extends ConfigLoaderBase
@@ -125,7 +127,8 @@ public class ModuleBackup extends ConfigLoaderBase
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandBackup(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandBackup(true), dispatcher);
 
     }
 

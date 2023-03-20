@@ -87,6 +87,7 @@ import com.forgeessentials.util.selections.CommandExpandY;
 import com.forgeessentials.util.selections.CommandPos1;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionHandler;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
@@ -266,23 +267,24 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandFEInfo(true));
-        FECommandManager.registerCommand(new CommandFeReload(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandFEInfo(true), dispatcher);
+        FECommandManager.registerCommand(new CommandFeReload(true), dispatcher);
 
         CommandFeSettings settings = new CommandFeSettings(true);
-        FECommandManager.registerCommand(settings);
+        FECommandManager.registerCommand(settings, dispatcher);
         APIRegistry.getFEEventBus().register(settings);
 
-        FECommandManager.registerCommand(new CommandWand(true));
-        FECommandManager.registerCommand(new CommandUuid(true));
-        FECommandManager.registerCommand(new CommandFEWorldInfo(true));
+        FECommandManager.registerCommand(new CommandWand(true), dispatcher);
+        FECommandManager.registerCommand(new CommandUuid(true), dispatcher);
+        FECommandManager.registerCommand(new CommandFEWorldInfo(true), dispatcher);
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
-            FECommandManager.registerCommand(new CommandPos1(true));
-            FECommandManager.registerCommand(new CommandPos1(true));
-            FECommandManager.registerCommand(new CommandDeselect(true));
-            FECommandManager.registerCommand(new CommandExpand(true));
-            FECommandManager.registerCommand(new CommandExpandY(true));
+            FECommandManager.registerCommand(new CommandPos1(true), dispatcher);
+            FECommandManager.registerCommand(new CommandPos1(true), dispatcher);
+            FECommandManager.registerCommand(new CommandDeselect(true), dispatcher);
+            FECommandManager.registerCommand(new CommandExpand(true), dispatcher);
+            FECommandManager.registerCommand(new CommandExpandY(true), dispatcher);
         }
     }
 
@@ -319,7 +321,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         // CommandSetChecker.remove();
-        FECommandManager.registerCommands();
+        FECommandManager.registerAndLoadCommands();
 
         // Do permission registration in first server tick.
         // TODO This can be removed if the Permission API gets accepted!

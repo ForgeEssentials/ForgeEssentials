@@ -21,7 +21,9 @@ import net.minecraftforge.server.permission.PermissionAPI;
 
 public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
 	protected LiteralArgumentBuilder<CommandSource> builder;
-	boolean enabled;
+	protected List<LiteralArgumentBuilder<CommandSource>> builders;
+
+    boolean enabled;
 
     // ------------------------------------------------------------
     // Command usage
@@ -29,11 +31,20 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
 	public ForgeEssentialsCommandBuilder(boolean enabled) {
 		this.builder = Commands.literal(getName()).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
 		this.enabled = enabled;
+		for(String alias : getDefaultAliases()) {
+		    builders.add(Commands.literal(alias).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel()))));
+		}
+		
 	}
 
 	public LiteralArgumentBuilder<CommandSource> getBuilder() {
 		return builder;
 	}
+
+	public List<LiteralArgumentBuilder<CommandSource>> getBuilders()
+    {
+        return builders;
+    }
 
 	public boolean isEnabled() {
 		return enabled;
@@ -118,11 +129,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
         }
     }
 
-    /**
-     * @deprecated Use {@link ForgeEssentialsCommandBuilder#getDefaultSecondaryAliases()} in downstream classes
-     * Returns a list of default aliases, that will be added to the configuration on first run
-     */
-    public String[] getDefaultAliases()
+    public List<String> getDefaultAliases()
     {
         List<String> list = new ArrayList<>();
         String name = getPrimaryAlias();
@@ -131,7 +138,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
             list.add(name);
         }
         list.addAll(Arrays.asList(getDefaultSecondaryAliases()));
-        return list.toArray(new String[]{});
+        return list;
     }
 
     public void setAliases(String[] aliases)
@@ -155,56 +162,4 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
         /* do nothing */
     }
 
-    /**
-     * Registers this command and it's permission node
-     */
-    public void register()
-    {
-        /*
-        if (ServerLifecycleHooks.getCurrentServer() == null)
-            return;
-
-        Map<String, ICommand> commandMap = ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).getCommands();
-        if (commandMap.containsKey(getName()))
-            LoggingHandler.felog.error(String.format("Command %s registered twice", getName()));
-
-        if (getAliases() != null && !getAliases().isEmpty())
-        {
-            for (String alias : getAliases())
-                if (alias != null && commandMap.containsKey(alias))
-                {
-                    LoggingHandler.felog.error(String.format("Command alias %s of command %s registered twice", alias, getName()));
-                    ICommand old = commandMap.get(alias);
-                    LoggingHandler.felog.error(String.format("Old Class: %s has been removed from commandMap!", old.getClass().getCanonicalName()));
-                    commandMap.remove(alias);
-                }
-        }
-
-        ((CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).registerCommand(this);
-        PermissionManager.registerCommandPermission(this, this.getPermissionNode(), this.getPermissionLevel());
-        */
-    }
-
-    public void deregister()
-    {
-        /*
-        if (ServerLifecycleHooks.getCurrentServer() == null)
-            return;
-        CommandHandler cmdHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
-        Map<String, ICommand> commandMap = cmdHandler.getCommands();
-        Set<ICommand> commandSet = cmdHandler.commandSet;
-
-        String commandName = getName();
-        List<String> commandAliases = getAliases();
-        commandSet.remove(this);
-        if (commandName != null)
-            commandMap.remove(commandName);
-        if (commandAliases != null && !commandAliases.isEmpty())
-        {
-            for (String alias : commandAliases)
-            {
-                commandMap.remove(alias);
-            }
-        }*/
-    }
 }

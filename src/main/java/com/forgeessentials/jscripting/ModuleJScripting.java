@@ -41,6 +41,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.brigadier.CommandDispatcher;
 
 @FEModule(name = "JScripting", parentMod = ForgeEssentials.class, isCore = false, canDisable = false)
 public class ModuleJScripting extends ServerEventHandler implements ScriptHandler
@@ -130,7 +131,8 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandJScript(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandJScript(true), dispatcher);
     }
 
     private void copyResourceFileIfNotExists(String fileName) throws IOException

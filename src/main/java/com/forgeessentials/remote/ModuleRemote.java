@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -53,6 +54,7 @@ import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
+import com.mojang.brigadier.CommandDispatcher;
 
 @FEModule(name = "Remote", parentMod = ForgeEssentials.class, canDisable = true)
 public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
@@ -188,7 +190,8 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandRemote(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandRemote(true), dispatcher);
     }
 
     /**

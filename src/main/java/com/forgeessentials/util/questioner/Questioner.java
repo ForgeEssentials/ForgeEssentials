@@ -16,6 +16,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.CommandDispatcher;
 
 public class Questioner extends ServerEventHandler
 {
@@ -34,8 +35,9 @@ public class Questioner extends ServerEventHandler
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandQuestionerYes(true));
-        FECommandManager.registerCommand(new CommandQuestionerNo(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandQuestionerYes(true), dispatcher);
+        FECommandManager.registerCommand(new CommandQuestionerNo(true), dispatcher);
     }
 
     public static synchronized void add(QuestionData question) throws QuestionerStillActiveException

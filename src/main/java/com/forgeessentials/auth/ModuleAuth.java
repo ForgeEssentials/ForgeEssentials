@@ -24,6 +24,7 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContextBuilder;
 
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -76,8 +77,9 @@ public class ModuleAuth extends ConfigLoaderBase
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandAuth(true));
-        FECommandManager.registerCommand(new CommandVIP(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandAuth(true), dispatcher);
+        FECommandManager.registerCommand(new CommandVIP(true), dispatcher);
     }
 
     @SubscribeEvent

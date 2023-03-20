@@ -13,13 +13,21 @@ import net.minecraftforge.eventbus.api.Event;
 public class FEModuleEvent extends Event
 {
 
-    protected ServerLifecycleEvent event;
+    protected ServerLifecycleEvent event1;
     protected FMLCommonSetupEvent event2;
     protected RegisterCommandsEvent event3;
 
+    public ServerLifecycleEvent getServerLifecycleEvent()
+    {
+        return event1;
+    }
     public FMLCommonSetupEvent getFMLEvent()
     {
         return event2;
+    }
+    public RegisterCommandsEvent getRegisterCommandsEvent()
+    {
+        return event3;
     }
 
     public static class FEModuleCommonSetupEvent extends FEModuleEvent
@@ -41,7 +49,7 @@ public class FEModuleEvent extends Event
     {
         public FEModuleServerAboutToStartEvent(FMLServerAboutToStartEvent event)
         {
-            this.event = event;
+            this.event1 = event;
         }
     }
 
@@ -49,7 +57,7 @@ public class FEModuleEvent extends Event
     {
         public FEModuleServerStartingEvent(FMLServerStartingEvent event)
         {
-            this.event = event;
+            this.event1 = event;
         }
     }
 
@@ -57,7 +65,7 @@ public class FEModuleEvent extends Event
     {
         public FEModuleServerStartedEvent(FMLServerStartedEvent event)
         {
-            this.event = event;
+            this.event1 = event;
         }
     }
 
@@ -65,7 +73,7 @@ public class FEModuleEvent extends Event
     {
         public FEModuleServerStoppingEvent(FMLServerStoppingEvent event)
         {
-            this.event = event;
+            this.event1 = event;
         }
     }
 
@@ -73,7 +81,7 @@ public class FEModuleEvent extends Event
     {
         public FEModuleServerStoppedEvent(FMLServerStoppedEvent event)
         {
-            this.event = event;
+            this.event1 = event;
         }
     }
 

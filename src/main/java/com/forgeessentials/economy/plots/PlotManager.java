@@ -12,7 +12,9 @@ import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.CommandDispatcher;
 
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -31,7 +33,8 @@ public class PlotManager extends ServerEventHandler
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandPlot(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandPlot(true), dispatcher);
 
     }
 

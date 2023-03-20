@@ -22,7 +22,9 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.brigadier.CommandDispatcher;
 
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -93,11 +95,12 @@ public class ModulePlayerLogger
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandRollback(true));
-        FECommandManager.registerCommand(new CommandPlayerlogger(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandRollback(true), dispatcher);
+        FECommandManager.registerCommand(new CommandPlayerlogger(true), dispatcher);
         
         CommandTestPlayerlogger test = new CommandTestPlayerlogger(true);
-        FECommandManager.registerCommand(test);
+        FECommandManager.registerCommand(test, dispatcher);
         MinecraftForge.EVENT_BUS.register(test);
     }
 

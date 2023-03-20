@@ -64,6 +64,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class)
@@ -184,17 +185,18 @@ public class ModuleChat
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandMute(true));
-        FECommandManager.registerCommand(new CommandNickname(true));
-        FECommandManager.registerCommand(new CommandPm(true));
-        FECommandManager.registerCommand(new CommandReply(true));
-        FECommandManager.registerCommand(new CommandTimedMessages(true));
-        FECommandManager.registerCommand(new CommandUnmute(true));
-        FECommandManager.registerCommand(new CommandGroupMessage(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandMute(true), dispatcher);
+        FECommandManager.registerCommand(new CommandNickname(true), dispatcher);
+        FECommandManager.registerCommand(new CommandPm(true), dispatcher);
+        FECommandManager.registerCommand(new CommandReply(true), dispatcher);
+        FECommandManager.registerCommand(new CommandTimedMessages(true), dispatcher);
+        FECommandManager.registerCommand(new CommandUnmute(true), dispatcher);
+        FECommandManager.registerCommand(new CommandGroupMessage(true), dispatcher);
 
-        FECommandManager.registerCommand(new CommandIrc(true));
-        FECommandManager.registerCommand(new CommandIrcPm(true));
-        FECommandManager.registerCommand(new CommandIrcBot(true));
+        FECommandManager.registerCommand(new CommandIrc(true), dispatcher);
+        FECommandManager.registerCommand(new CommandIrcPm(true), dispatcher);
+        FECommandManager.registerCommand(new CommandIrcBot(true), dispatcher);
     }
 
     @SubscribeEvent

@@ -19,6 +19,7 @@ import java.util.concurrent.Future;
 
 import javax.imageio.ImageIO;
 
+import net.minecraft.command.CommandSource;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.INBT;
@@ -47,6 +48,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.Iterables;
+import com.mojang.brigadier.CommandDispatcher;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 
@@ -105,7 +107,8 @@ public class ModuleMapper
     @SubscribeEvent
     private void registerCommands(FEModuleRegisterCommandsEvent event)
     {
-        FECommandManager.registerCommand(new CommandMapper(true));
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandMapper(true), dispatcher);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
