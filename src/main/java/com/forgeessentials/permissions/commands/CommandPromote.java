@@ -65,7 +65,7 @@ public class CommandPromote extends ForgeEssentialsCommandBuilder
         return builder
                 .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("group", StringArgumentType.greedyString())
-                                .suggests(SUGGEST_WARPS)
+                                .suggests(SUGGEST_GROUPS)
                                 .executes(context -> execute(context, "group")
                                         )
                                 )
@@ -74,7 +74,7 @@ public class CommandPromote extends ForgeEssentialsCommandBuilder
                         );
     }
 
-    public static final SuggestionProvider<CommandSource> SUGGEST_WARPS = (ctx, builder) -> {
+    public static final SuggestionProvider<CommandSource> SUGGEST_GROUPS = (ctx, builder) -> {
         List<String> completeList = new ArrayList<String>();
         for (String group : APIRegistry.perms.getServerZone().getGroups())
             completeList.add(group);

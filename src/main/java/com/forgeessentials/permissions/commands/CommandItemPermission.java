@@ -2,8 +2,15 @@ package com.forgeessentials.permissions.commands;
 
 import static com.forgeessentials.permissions.core.ItemPermissionManager.TAG_MODE;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -16,11 +23,14 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.permissions.core.ItemPermissionManager;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 public class CommandItemPermission extends ForgeEssentialsCommandBuilder
 {
@@ -55,53 +65,109 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     }
 
     @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return builder
+                .then(Commands.literal("mode")
+                        .then(Commands.argument("inventory", EntityArgument.player())
+                                .executes(context -> execute(context, "inventory")
+                                        )
+                                )
+                        .then(Commands.argument("equip", EntityArgument.player())
+                                .executes(context -> execute(context, "equip")
+                                        )
+                                )
+                        .then(Commands.argument("use", EntityArgument.player())
+                                .executes(context -> execute(context, "use")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("perm")
+                        .then(Commands.argument("perm", StringArgumentType.greedyString())
+                                .suggests(SUGGEST_PERMS)
+                                .then(Commands.literal(Zone.PERMISSION_TRUE)
+                                        .executes(context -> execute(context, "perm-"+Zone.PERMISSION_TRUE)
+                                                )
+                                        )
+                                .then(Commands.literal(Zone.PERMISSION_FALSE)
+                                        .executes(context -> execute(context, "perm"+Zone.PERMISSION_FALSE)
+                                                )
+                                        )
+                                )
+                        )
+                .then(Commands.literal("group")
+                        .then(Commands.argument("group", StringArgumentType.greedyString())
+                                .suggests(SUGGEST_GROUPS)
+                                .executes(context -> execute(context, "group")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("reset")
+                        .executes(context -> execute(context, "reset")
+                                )
+                        );
+    }
+
+    public static final SuggestionProvider<CommandSource> SUGGEST_GROUPS = (ctx, builder) -> {
+        List<String> completeList = new ArrayList<String>();
+        for (String group : APIRegistry.perms.getServerZone().getGroups())
+            completeList.add(group);
+        return ISuggestionProvider.suggest(completeList, builder);
+     };
+
+     public static final SuggestionProvider<CommandSource> SUGGEST_PERMS = (ctx, builder) -> {
+         Set<String> permissionSet = APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions();
+         List<String> result = new ArrayList<>();
+         for (String perm : permissionSet)
+         {
+             result.add(perm);
+         }
+         return ISuggestionProvider.suggest(result, builder);
+      };
+
+    @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        ItemStack stack = arguments.senderPlayer.getMainHandItem();
+        ItemStack stack = getServerPlayer(ctx.getSource()).getItemInHand(null);
         if (stack == ItemStack.EMPTY)
             throw new TranslatedCommandException("No item equipped!");
 
-        if (arguments.isEmpty())
+        if (params.toString().equals("help"))
         {
-            arguments.confirm("/permitem mode inventory|equip"); // |use");
-            arguments.confirm("/permitem perm <perm> <value>");
-            arguments.confirm("/permitem group <group>");
-            arguments.confirm("/permitem reset");
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/permitem mode inventory|equip"); // |use");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/permitem perm <perm> <value>");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/permitem group <group>");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/permitem reset");
+            return Command.SINGLE_SUCCESS;
         }
 
-        arguments.tabComplete("mode", "perm", "group", "reset");
-        String subCmd = arguments.remove().toLowerCase();
-        switch (subCmd)
+        String[] subCmd = params.toString().split("-");
+        switch (subCmd[0])
         {
         case "mode":
-            parseMode(arguments, stack);
+            parseMode(ctx, stack, subCmd);
             break;
         case "perm":
-            parsePermission(arguments, stack);
+            parsePermission(ctx, stack, subCmd);
             break;
         case "group":
-            parseGroup(arguments, stack);
+            parseGroup(ctx, stack, subCmd);
             break;
         case "reset":
             CompoundNBT stackTag = stack.getTag();
             if (stackTag != null)
                 stackTag.remove(ItemPermissionManager.TAG_BASE);
-            arguments.confirm("Deleted permission item settings");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted permission item settings");
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd.toString());
         }
+        return Command.SINGLE_SUCCESS;
     }
 
-    public static void parseMode(CommandParserArgs arguments, ItemStack stack) throws CommandException
+    public static void parseMode(CommandContext<CommandSource> ctx, ItemStack stack, String[] params) throws CommandException
     {
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-        arguments.tabComplete("inventory", "equip"); // , "use");
-        String subCmd = arguments.remove().toLowerCase();
-        if (arguments.isTabCompletion)
-            return;
+        String subCmd = params[1];
 
         switch (subCmd)
         {
@@ -119,35 +185,22 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static void parsePermission(CommandParserArgs arguments, ItemStack stack) throws CommandException
+    public static void parsePermission(CommandContext<CommandSource> ctx, ItemStack stack, String[] params) throws CommandException
     {
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-        String permission = arguments.parsePermission();
+        String permission = StringArgumentType.getString(ctx, "perm");
 
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-        arguments.tabComplete(Zone.PERMISSION_TRUE, Zone.PERMISSION_FALSE);
-        String value = arguments.remove();
+        String value = params[1];
 
-        if (arguments.isTabCompletion)
-            return;
         getSettingsTag(stack).add(StringNBT.valueOf(permission + "=" + value));
-        arguments.confirm("Set permission %s=%s for item", permission, value);
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set permission %s=%s for item", permission, value);
     }
 
-    public static void parseGroup(CommandParserArgs arguments, ItemStack stack) throws CommandException
+    public static void parseGroup(CommandContext<CommandSource> ctx, ItemStack stack, String[] params) throws CommandException
     {
-        if (arguments.isEmpty())
-            throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+        String group = StringArgumentType.getString(ctx, "group");
 
-        arguments.tabComplete(APIRegistry.perms.getServerZone().getGroups());
-        String group = arguments.remove();
-
-        if (arguments.isTabCompletion)
-            return;
         getSettingsTag(stack).add(StringNBT.valueOf(group));
-        arguments.confirm("Added group %s to item", group);
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Added group %s to item", group);
     }
 
     public static CompoundNBT getOrCreatePermissionTag(ItemStack stack)
@@ -164,13 +217,6 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
         ListNBT settings = ItemPermissionManager.getSettingsTag(tag);
         tag.put(ItemPermissionManager.TAG_SETTINGS, settings);
         return settings;
-    }
-
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }
