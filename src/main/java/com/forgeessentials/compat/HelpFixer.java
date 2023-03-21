@@ -5,6 +5,7 @@
  */
 package com.forgeessentials.compat;
 
+import net.minecraft.command.impl.HelpCommand;
 
 public class HelpFixer extends HelpCommand
 {

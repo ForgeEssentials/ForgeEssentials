@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -19,6 +20,11 @@ import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements ConfigLoader
 {
@@ -33,8 +39,6 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements 
     public static Map<String, String> aliases = new HashMap<>();
 
     public static Map<String, String> values = new HashMap<>();
-
-    private Configuration config;
 
     private static CommandFeSettings instache;
 
@@ -79,12 +83,19 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements 
     }
 
     @Override
-    public void parse(CommandParserArgs arguments) throws CommandException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        if (arguments.isEmpty())
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    {
+        if (params.toString().equals("help"))
         {
-            arguments.confirm("Available settings: " + StringUtils.join(aliases.keySet(), ", "));
-            return;
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Available settings: " + StringUtils.join(aliases.keySet(), ", "));
+            return Command.SINGLE_SUCCESS;
         }
 
         arguments.tabComplete(aliases.keySet());
@@ -98,23 +109,22 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements 
             String rootValue = APIRegistry.perms.getServerZone().getRootZone().getGroupPermission(Zone.GROUP_DEFAULT, perm);
             String globalValue = APIRegistry.perms.getServerZone().getGroupPermission(Zone.GROUP_DEFAULT, perm);
             if (globalValue != null && !globalValue.equals(rootValue))
-                arguments.warn(Translator.format("%s = %s, but global permission value is set to %s", key, rootValue, globalValue));
+                ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format("%s = %s, but global permission value is set to %s", key, rootValue, globalValue));
             else
-                arguments.confirm("%s = %s", key, rootValue);
-            return;
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "%s = %s", key, rootValue);
+            return Command.SINGLE_SUCCESS;
         }
 
         arguments.tabComplete(Zone.PERMISSION_TRUE, Zone.PERMISSION_FALSE);
         String value = arguments.remove();
-        if (arguments.isTabCompletion)
-            return;
+
 
         String[] aliasParts = key.split("\\.", 2);
         config.get(aliasParts[0], aliasParts[1], "").set(value);
         config.save();
 
         APIRegistry.perms.registerPermissionProperty(perm, value);
-        arguments.confirm("Changed setting \"%s\" to \"%s\"", key, value);
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Changed setting \"%s\" to \"%s\"", key, value);
     }
 
     public void loadSettings()

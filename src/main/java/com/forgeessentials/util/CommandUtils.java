@@ -37,7 +37,7 @@ public class CommandUtils
 		return isource;
 	}
 	
-    public UserIdent parsePlayer(String name, CommandSource sender, boolean mustExist, boolean mustBeOnline) throws CommandException
+    public static UserIdent parsePlayer(String name, CommandSource sender, boolean mustExist, boolean mustBeOnline) throws CommandException
     {
         UserIdent ident = UserIdent.get(name, sender, mustExist);
         if (mustExist && (ident == null || !ident.hasUuid()))

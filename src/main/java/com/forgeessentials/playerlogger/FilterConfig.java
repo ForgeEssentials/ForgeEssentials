@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.arguments.BlockStateArgument;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.CommandUtils;
+import com.mojang.brigadier.context.CommandContext;
 
 public class FilterConfig
 {
@@ -52,7 +56,6 @@ public class FilterConfig
     static
     {
         keywords.add("action");
-        keywords.add("block");
         keywords.add("blockid");
         keywords.add("before");
         keywords.add("after");
@@ -71,7 +74,7 @@ public class FilterConfig
 
         try
         {
-            globalConfig.parse(null);
+            globalConfig.parse(null, null);
         }
         catch (CommandException e)
         {
@@ -100,40 +103,39 @@ public class FilterConfig
         return new Date(System.currentTimeMillis() - before);
     }
 
-    public void parse(final CommandParserArgs args) throws CommandException
+    public void parse(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
     {
         if (args != null)
         {
-            while (!args.isEmpty())
+            //while (!(args.length==0))
             {
-                args.tabComplete(keywords);
-                String next = args.remove();
+                //args.tabComplete(keywords);
+                String next = args.remove(0);
                 switch (next)
                 {
                 case "action":
-                    parseActions(args);
+                    parseActions(ctx, args);
                     break;
-                case "block":
                 case "blockid":
-                    parseBlock(args);
+                    parseBlock(ctx, args);
                     break;
                 case "before":
-                    parseBefore(args);
+                    parseBefore(ctx, args);
                     break;
                 case "after":
-                    parseAfter(args);
+                    parseAfter(ctx, args);
                     break;
                 case "range":
-                    parseRange(args);
+                    parseRange(ctx, args);
                     break;
                 case "whitelist":
-                    parseWhitelist(args, true);
+                    parseWhitelist(ctx, args, true);
                     break;
                 case "blacklist":
-                    parseWhitelist(args, false);
+                    parseWhitelist(ctx, args, false);
                     break;
                 case "player":
-                    player = args.parsePlayer(true, false);
+                    player = CommandUtils.parsePlayer(args.remove(0),ctx.getSource(), true, false);
                     break;
                 default:
                     throw new TranslatedCommandException("Expected Keyword here!");
@@ -153,11 +155,11 @@ public class FilterConfig
 
     }
 
-    public void parseWhitelist(CommandParserArgs args, boolean enabled)
+    public void parseWhitelist(CommandContext<CommandSource> ctx, List<String> args, boolean enabled)
     {
-        while (!args.isEmpty() && !keywords.contains(args.peek()))
+        //while (!args.isEmpty() && !keywords.contains(args.peek()))
         {
-            String name = args.remove();
+            String name = args.remove(0);
             if (name.equalsIgnoreCase("actions"))
             {
                 Awhitelist = enabled;
@@ -186,13 +188,11 @@ public class FilterConfig
     {
     }
 
-    public void parseActions(CommandParserArgs args) throws CommandException
+    public void parseActions(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
     {
-        while (!args.isEmpty() && !keywords.contains(args.peek()))
+        //while (!args.isEmpty() && !keywords.contains(args.peek()))
         {
-            args.tabComplete(actiontabs);
-
-            String arg = args.remove();
+            String arg = args.remove(0);
             if (arg.equals("reset"))
             {
                 actions.clear();
@@ -212,69 +212,63 @@ public class FilterConfig
         }
     }
 
-    public void parseBlock(CommandParserArgs args) throws CommandException
+    public void parseBlock(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
     {
-        while (!args.isEmpty() && !keywords.contains(args.peek()))
+        //while (!args.isEmpty() && !keywords.contains(args.peek()))
         {
-            if (args.peek().equals("reset") && !args.isTabCompletion)
+            if (args.get(0).equals("reset"))
             {
                 blocks.clear();
-                args.remove();
+                args.remove(0);
             }
             else
             {
-                if (args.isTabCompletion && "reset".startsWith(args.peek()) && args.size() == 1)
-                    args.tabCompletion.add("reset");
-                blocks.add(args.parseBlock());
+                blocks.add(BlockStateArgument.getBlock(ctx, "block").getState().getBlock());
             }
         }
     }
 
-    public void parseBefore(CommandParserArgs args) throws CommandException
+    public void parseBefore(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
     {
-        args.tabComplete("reset");
         if (!args.isEmpty())
         {
-            if (args.peek().equals("reset"))
+            if (args.get(0).equals("reset"))
             {
                 before = 0;
             }
             else
             {
                 before = 0;
-                while (!args.isEmpty() && !keywords.contains(args.peek()))
-                    before += args.parseTimeReadable();
+                before += CommandUtils.parseTimeReadable(args.remove(0));
             }
         }
         else
             throw new TranslatedCommandException("A time must be specified here!");
     }
 
-    public void parseAfter(CommandParserArgs args) throws CommandException
+    public void parseAfter(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
     {
-        args.tabComplete("reset");
         if (!args.isEmpty())
         {
-            if (args.peek().equals("reset"))
+            if (args.get(0).equals("reset"))
             {
                 after = default_after;
             }
             else
             {
                 after = 0;
-                while (!args.isEmpty() && !keywords.contains(args.peek()))
-                    after += args.parseTimeReadable();
+                after += CommandUtils.parseTimeReadable(args.remove(0));
             }
         }
         else
             throw new TranslatedCommandException("A time must be specified here!");
     }
 
-    public void parseRange(CommandParserArgs args) throws CommandException
+    public void parseRange(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
     {
         if (!args.isEmpty())
         {
-            pickerRange = args.parseInt();
+            pickerRange = CommandUtils.parseInt(args.remove(0));
         }
         else
             throw new TranslatedCommandException("A integer must be specified here!");

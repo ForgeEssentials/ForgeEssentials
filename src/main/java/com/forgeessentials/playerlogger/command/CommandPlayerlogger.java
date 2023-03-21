@@ -1,14 +1,19 @@
 package com.forgeessentials.playerlogger.command;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.NoSuchElementException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.persistence.TypedQuery;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.BlockPosArgument;
+import net.minecraft.command.arguments.BlockStateArgument;
+import net.minecraft.command.arguments.DimensionArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -23,8 +28,8 @@ import com.forgeessentials.playerlogger.FilterConfig;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLogger;
 import com.forgeessentials.playerlogger.PlayerLoggerChecker;
+import com.forgeessentials.playerlogger.FilterConfig.ActionEnum;
 import com.forgeessentials.playerlogger.entity.Action;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
@@ -34,6 +39,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
 {
@@ -67,40 +73,6 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
         return DefaultPermissionLevel.OP;
     }
 
-    private String outputFilterReadable(int filter)
-    {
-        String out = "Set to filter:";
-        if (filter != 0b11111)
-        {
-            if ((0b10000 & filter) != 0)
-            {
-                out += " playerEvents, ";
-            }
-            if ((0b01000 & filter) != 0)
-            {
-                out += " commandEvents, ";
-            }
-            if ((0b00100 & filter) != 0)
-            {
-                out += " blockEvents, ";
-            }
-            if ((0b00010 & filter) != 0)
-            {
-                out += " explosionEvents, ";
-            }
-            if ((0b00001 & filter) != 0)
-            {
-                out += " burnEvents, ";
-            }
-
-        }
-        else
-        {
-            out += " All events, ";
-        }
-        return out;
-    }
-
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
@@ -114,7 +86,78 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                                 .executes(CommandContext -> execute(CommandContext, "filter-help")
                                         )
                                 )
-                        .executes(CommandContext -> execute(CommandContext, "filter")
+                        .then(Commands.literal("action")
+                                .then(Commands.literal("reset")
+                                        .executes(CommandContext -> execute(CommandContext, "filter-action-reset")
+                                                )
+                                        )
+                                .then(Commands.argument("type", StringArgumentType.greedyString())
+                                        .suggests(SUGGEST_actiontabs)
+                                        .executes(CommandContext -> execute(CommandContext, "filter-action-"+StringArgumentType.getString(CommandContext, "type"))
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("blockid")
+                                .then(Commands.literal("reset")
+                                        .executes(CommandContext -> execute(CommandContext, "filter-blockid-reset")
+                                                )
+                                        )
+                                .then(Commands.argument("block", BlockStateArgument.block())
+                                        .executes(CommandContext -> execute(CommandContext, "filter-blockid-block")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("before")
+                                .then(Commands.literal("reset")
+                                        .executes(CommandContext -> execute(CommandContext, "filter-before-reset")
+                                                )
+                                        )
+                                .then(Commands.argument("duration", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "filter-before-"+StringArgumentType.getString(CommandContext, "duration"))
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("after")
+                                .then(Commands.literal("reset")
+                                        .executes(CommandContext -> execute(CommandContext, "filter-after-reset")
+                                                )
+                                        )
+                                .then(Commands.argument("duration", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "filter-after-"+StringArgumentType.getString(CommandContext, "duration"))
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("range")
+                                .then(Commands.argument("range", IntegerArgumentType.integer())
+                                        .executes(CommandContext -> execute(CommandContext, "filter-range-"+IntegerArgumentType.getInteger(CommandContext, "range"))
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("whitelist")
+                                .then(Commands.literal("actions")
+                                        .executes(CommandContext -> execute(CommandContext, "filter-whitelist-actions")
+                                                )
+                                        )
+                                .then(Commands.literal("blocks")
+                                        .executes(CommandContext -> execute(CommandContext, "filter-whitelist-blocks")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("blacklist")
+                                .then(Commands.literal("actions")
+                                        .executes(CommandContext -> execute(CommandContext, "filter-blacklist-actions")
+                                                )
+                                        )
+                                .then(Commands.literal("blocks")
+                                        .executes(CommandContext -> execute(CommandContext, "filter-blacklist-blocks")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("player")
+                                .then(Commands.argument("name", StringArgumentType.word())
+                                        .executes(CommandContext -> execute(CommandContext, "filter-player-"+StringArgumentType.getString(CommandContext, "name"))
+                                                )
+                                        )
                                 )
                         )
                 .then(Commands.literal("gfilter")
@@ -130,7 +173,73 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                                 .executes(CommandContext -> execute(CommandContext, "lookup-help")
                                         )
                                 )
-                        .executes(CommandContext -> execute(CommandContext, "lookup")
+                        .then(Commands.literal("Position")
+                                .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                        .then(Commands.argument("dim", DimensionArgument.dimension())
+                                                .then(Commands.argument("pageSize", IntegerArgumentType.integer())
+                                                        .then(Commands.literal("Config")
+                                                                .executes(CommandContext -> execute(CommandContext, "lookup-loc:dim:page:config")
+                                                                        )
+                                                                )
+                                                        .executes(CommandContext -> execute(CommandContext, "lookup-loc:dim:page:noconfig")
+                                                                )
+                                                        )
+                                                .then(Commands.literal("Config")
+                                                        .executes(CommandContext -> execute(CommandContext, "lookup-loc:dim:nopage:config")
+                                                                )
+                                                        )
+                                                .executes(CommandContext -> execute(CommandContext, "lookup-loc:dim:nopage:noconfig")
+                                                        )
+                                                )
+                                        .then(Commands.argument("pageSize", IntegerArgumentType.integer())
+                                                .then(Commands.literal("Config")
+                                                        .executes(CommandContext -> execute(CommandContext, "lookup-loc:nodim:page:config")
+                                                                )
+                                                        )
+                                                .executes(CommandContext -> execute(CommandContext, "lookup-loc:nodim:page:noconfig")
+                                                        )
+                                                )
+                                        .then(Commands.literal("Config")
+                                                .executes(CommandContext -> execute(CommandContext, "lookup-loc:nodim:nopage:config")
+                                                        )
+                                                )
+                                        .executes(CommandContext -> execute(CommandContext, "lookup-loc:nodim:mopage:noconfig")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("Player")
+                                .then(Commands.argument("player", StringArgumentType.word())
+                                        .then(Commands.argument("pageSize", IntegerArgumentType.integer())
+                                                .then(Commands.literal("Config")
+                                                        .executes(CommandContext -> execute(CommandContext, "lookup-player:nodim:page:config")
+                                                                )
+                                                        )
+                                                .executes(CommandContext -> execute(CommandContext, "lookup-player:nodim:page:noconfig")
+                                                        )
+                                                )
+                                        .then(Commands.literal("Config")
+                                                .executes(CommandContext -> execute(CommandContext, "lookup-player:nodim:nopage:config")
+                                                        )
+                                                )
+                                        .executes(CommandContext -> execute(CommandContext, "lookup-player:nodim:nopage:noconfig")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("Page")
+                                .then(Commands.argument("pageSize", IntegerArgumentType.integer())
+                                        .then(Commands.literal("Config")
+                                                .executes(CommandContext -> execute(CommandContext, "lookup-blank:nodim:page:config")
+                                                        )
+                                                )
+                                        .executes(CommandContext -> execute(CommandContext, "lookup-blank:nodim:page:noconfig")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("Config")
+                                .executes(CommandContext -> execute(CommandContext, "lookup-blank:nodim:nopage:config")
+                                        )
+                                )
+                        .executes(CommandContext -> execute(CommandContext, "lookup-blank:nodim:nopage:noconfig")
                                 )
                         )
                 .then(Commands.literal("glookup")
@@ -138,7 +247,73 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                                 .executes(CommandContext -> execute(CommandContext, "glookup-help")
                                         )
                                 )
-                        .executes(CommandContext -> execute(CommandContext, "glookup")
+                        .then(Commands.literal("Position")
+                                .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                        .then(Commands.argument("dim", DimensionArgument.dimension())
+                                                .then(Commands.argument("pageSize", IntegerArgumentType.integer())
+                                                        .then(Commands.literal("Config")
+                                                                .executes(CommandContext -> execute(CommandContext, "glookup-loc:dim:page:config")
+                                                                        )
+                                                                )
+                                                        .executes(CommandContext -> execute(CommandContext, "glookup-loc:dim:page:noconfig")
+                                                                )
+                                                        )
+                                                .then(Commands.literal("Config")
+                                                        .executes(CommandContext -> execute(CommandContext, "glookup-loc:dim:nopage:config")
+                                                                )
+                                                        )
+                                                .executes(CommandContext -> execute(CommandContext, "glookup-loc:dim:nopage:noconfig")
+                                                        )
+                                                )
+                                        .then(Commands.argument("pageSize", IntegerArgumentType.integer())
+                                                .then(Commands.literal("Config")
+                                                        .executes(CommandContext -> execute(CommandContext, "glookup-loc:nodim:page:config")
+                                                                )
+                                                        )
+                                                .executes(CommandContext -> execute(CommandContext, "glookup-loc:nodim:page:noconfig")
+                                                        )
+                                                )
+                                        .then(Commands.literal("Config")
+                                                .executes(CommandContext -> execute(CommandContext, "glookup-loc:nodim:nopage:config")
+                                                        )
+                                                )
+                                        .executes(CommandContext -> execute(CommandContext, "glookup-loc:nodim:mopage:noconfig")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("Player")
+                                .then(Commands.argument("player", StringArgumentType.word())
+                                        .then(Commands.argument("pageSize", IntegerArgumentType.integer())
+                                                .then(Commands.literal("Config")
+                                                        .executes(CommandContext -> execute(CommandContext, "glookup-player:nodim:page:config")
+                                                                )
+                                                        )
+                                                .executes(CommandContext -> execute(CommandContext, "glookup-player:nodim:page:noconfig")
+                                                        )
+                                                )
+                                        .then(Commands.literal("Config")
+                                                .executes(CommandContext -> execute(CommandContext, "glookup-player:nodim:nopage:config")
+                                                        )
+                                                )
+                                        .executes(CommandContext -> execute(CommandContext, "glookup-player:nodim:nopage:noconfig")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("Page")
+                                .then(Commands.argument("pageSize", IntegerArgumentType.integer())
+                                        .then(Commands.literal("Config")
+                                                .executes(CommandContext -> execute(CommandContext, "glookup-blank:nodim:page:config")
+                                                        )
+                                                )
+                                        .executes(CommandContext -> execute(CommandContext, "glookup-blank:nodim:page:noconfig")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("Config")
+                                .executes(CommandContext -> execute(CommandContext, "glookup-blank:nodim:nopage:config")
+                                        )
+                                )
+                        .executes(CommandContext -> execute(CommandContext, "glookup-blank:nodim:nopage:noconfig")
                                 )
                         )
                 .then(Commands.literal("purge")
@@ -156,6 +331,17 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                                 )
                         );
     }
+
+     public static final SuggestionProvider<CommandSource> SUGGEST_actiontabs = (ctx, builder) -> {
+         List<String> actiontabs = new ArrayList<>();
+         ActionEnum[] enums = ActionEnum.values();
+         for (ActionEnum ae : enums)
+         {
+             actiontabs.add(ae.name());
+         }
+         actiontabs.add("reset");
+         return ISuggestionProvider.suggest(actiontabs, builder);
+      };
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
@@ -181,11 +367,13 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             if (subCmd[1]=="help")
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "/pl [gfilter | filter] [filterConfig] : Filter displayed blocks based on a criteria");
-                return Command.SINGLE_SUCCESS;;
+                return Command.SINGLE_SUCCESS;
             }
             global = getServerPlayer(ctx.getSource()) == null || global;
             fc = global ? FilterConfig.globalConfig : new FilterConfig();
-            fc.parse(arguments);
+            List<String> arg1 = Arrays.asList(subCmd); 
+            arg1.remove(0);
+            fc.parse(ctx, arg1);
             if (!global)
                 FilterConfig.perPlayerFilters.put(getIdent(ctx.getSource()), fc);
 
@@ -196,80 +384,36 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
         case "glookup":
             global = true;
         case "lookup":
-            if (subCmd[1].toLowerCase().equals("help"))
+            if (subCmd[0].toLowerCase().equals("help"))
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl [glookup | lookup] [[[x] [y] [z] [dim]?] | [player]]?  [pageSize]? [filterConfig]?");
-                return Command.SINGLE_SUCCESS;;
+                return Command.SINGLE_SUCCESS;
             }
+            String[] subCmds = subCmd[1].split(":");
             global = getServerPlayer(ctx.getSource()) == null || global;
             WorldPoint p = getSenderPoint(ctx.getSource());
-            String next = arguments.peek();
-            if (next != null)
+            if (subCmds[0].toLowerCase().equals("loc"))
             {
-                if (!FilterConfig.keywords.contains(next))
-                {
-                    try
-                    {
-                        int tmp = arguments.parseInt();
-
-                        try
-                        {
-                            next = arguments.args.peek();
-                            p.setY(arguments.parseInt());
-                            p.setX(tmp);
-                            try
-                            {
-                                p.setZ(arguments.parseInt());
-
-                                try
-                                {
-                                    next = arguments.peek();
-                                    if (next != null)
-                                        p.setDimension(arguments.parseInt());
-                                }
-                                catch (TranslatedCommandException e)
-                                {
-                                    arguments.args.addFirst(next);
-                                }
-                            }
-                            catch (NoSuchElementException | TranslatedCommandException e)
-                            {
-                                ChatOutputHandler.chatError(ctx.getSource(),"Point must be in the form [x] [y] [z] [dim]?");
-                                break;
-                            }
-                        }
-                        catch (NoSuchElementException | TranslatedCommandException e)
-                        {
-                            if (next != null)
-                                arguments.args.addFirst(next);
-                            arguments.args.addFirst(Integer.toString(tmp));
-                        }
-                    }
-                    catch (TranslatedCommandException e)
-                    {
-                        arguments.args.addFirst(next);
-                        PlayerEntity pl = parsePlayer(StringArgumentType.getString(ctx, "name"),ctx.getSource(),true, true).getPlayer();
-                        p = new WorldPoint(pl.level, pl.blockPosition());
-                    }
+                p.setX(BlockPosArgument.getLoadedBlockPos(ctx, "pos").getX());
+                p.setY(BlockPosArgument.getLoadedBlockPos(ctx, "pos").getY());
+                p.setZ(BlockPosArgument.getLoadedBlockPos(ctx, "pos").getZ());
+                if(subCmds[1].toLowerCase().equals("dim")) {
+                    p.setDimension(DimensionArgument.getDimension(ctx, "dim"));
                 }
+            }
+            else if (subCmd[0].toLowerCase().equals("player")) {
+                PlayerEntity pl = parsePlayer(StringArgumentType.getString(ctx, "name"),ctx.getSource(),true, true).getPlayer();
+                p = new WorldPoint(pl.level, pl.blockPosition());
             }
 
             int pageSize = 0;
             boolean newCheck = true;
-            if (!arguments.isEmpty())
+            if (subCmds[2].toLowerCase().equals("page"))
             {
-                next = arguments.peek();
-                try
-                {
-                    pageSize = arguments.parseInt();
-                    newCheck = false;
-                }
-                catch (TranslatedCommandException e)
-                {
-                    arguments.args.addFirst(next);
-                }
+                pageSize = IntegerArgumentType.getInteger(ctx, "pageSize");
+                newCheck = false;
             }
-            if (arguments.isEmpty())
+            if (subCmds[2].toLowerCase().equals("noconfig"))
             {
                 if (!global)
                     fc = FilterConfig.getDefaultPlayerConfig(getIdent(ctx.getSource()));
@@ -278,12 +422,15 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             }
             else
             {
+                ChatOutputHandler.chatWarning(ctx.getSource(), "This subCommand has not been ported yet!");
                 fc = new FilterConfig();
-                fc.parse(arguments);
+                List<String> arg2 = Arrays.asList(subCmd); 
+                arg2.remove(0);
+                arg2.remove(1);
+                fc.parse(ctx, arg2);
             }
             ChatOutputHandler.sendMessage(ctx.getSource(), ChatOutputHandler.formatColors("Looking up: \n" + fc.toReadableString()));
             PlayerLoggerChecker.instance.CheckBlock(p, fc, ctx.getSource(), pageSize, newCheck);
-
             break;
         case "stats":
             showStats(ctx.getSource());

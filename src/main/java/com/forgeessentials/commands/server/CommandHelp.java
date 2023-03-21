@@ -13,13 +13,11 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigLoader;
+import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -30,12 +28,19 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 
-public class CommandHelp extends ForgeEssentialsCommandBuilder implements ConfigLoader
+public class CommandHelp extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
 {
+    CommandDispatcher<CommandSource> dispatcher;
+    public CommandHelp(boolean enabled, CommandDispatcher<CommandSource> disp)
+    {
+        this(enabled);
+        dispatcher = disp;
+    }
 
     public CommandHelp(boolean enabled)
     {
         super(enabled);
+
     }
 
     private static String[] messages;
@@ -47,10 +52,6 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
     private static Integer subCommandColor;
     
     public HelpFixer fixer;
-
-
-    private static ForgeConfigSpec HELP_CONFIG;
-    private static final ConfigData data = new ConfigData("HelpConfig", HELP_CONFIG, new ForgeConfigSpec.Builder());
 
     @Override
     public String getPrimaryAlias()
@@ -126,7 +127,6 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
 
     public void showHelpPage(CommandContext<CommandSource> ctx, int page) throws CommandException
     {
-        CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands().getDispatcher();
         List<String> scmds = new ArrayList<String>();
         Map<CommandNode<CommandSource>, String> map = dispatcher.getSmartUsage(dispatcher.getRoot(), ctx.getSource());
         for(String s : map.values()) {
@@ -180,10 +180,10 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
     static ForgeConfigSpec.IntValue FEcommandColor;
     static ForgeConfigSpec.IntValue FEsubCommandColor;
 
-	@Override
-	public void load(Builder BUILDER, boolean isReload)
+    @Override
+    public void loadConfig(Builder BUILDER, String category)
     {
-        BUILDER.comment("Configure ForgeEssentials Help Command.").push("General");
+        BUILDER.comment("Configure ForgeEssentials Help Command.").push(category);
         FEmessages = BUILDER.comment("Add custom messages here that will appear when /help is run")
                 .define("custom_help", new String[] {});
         FEentriesPerPage = BUILDER.comment("Amount to commands to show per help page")
@@ -211,9 +211,10 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
         
     }
 
-	@Override
-	public ConfigData returnData() {
-		return data;
-	}
+    @Override
+    public void loadData()
+    {
+        
+    }
 
 }

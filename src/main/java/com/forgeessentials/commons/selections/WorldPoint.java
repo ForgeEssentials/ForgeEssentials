@@ -108,6 +108,10 @@ public class WorldPoint extends Point
     {
         this.dim = dim;
     }
+    public void setDimension(ServerWorld dim)
+    {
+        this.dim = dim.dimension().location().toString();
+    }
 
     @Override
     public WorldPoint setX(int x)
