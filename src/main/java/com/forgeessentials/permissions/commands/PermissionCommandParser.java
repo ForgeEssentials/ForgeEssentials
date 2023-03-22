@@ -39,13 +39,14 @@ import com.forgeessentials.permissions.persistence.FlatfileProvider;
 import com.forgeessentials.permissions.persistence.JsonProvider;
 import com.forgeessentials.permissions.persistence.SingleFileProvider;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.context.CommandContext;
 
-public class PermissionCommandParser
+public class PermissionCommandParser extends CommandUtils
 {
 
     public static final String PERM = "fe.perm";
@@ -77,117 +78,103 @@ public class PermissionCommandParser
     }
 
     // Variables for auto-complete
-    private static final String[] parseMainArgs = { "user", "group", "global", "list", "test", "reload", "save", "debug" }; // "export",
+    public static final String[] parseMainArgs = { "user", "group", "global", "list", "test", "reload", "save", "debug" }; // "export",
                                                                                                                             // "promote",
-    private static final String[] parseListArgs = { "zones", "perms", "users", "groups", "worlds" };
-    private static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
+    public static final String[] parseListArgs = { "zones", "perms", "users", "groups", "worlds" };
+    public static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
             "denydefault" };
-    private static final String[] parseGroupArgs = { "zone", "users", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
-            "priority", "parent", "include", "denydefault" };
-    private static final String[] parseUserGroupArgs = { "add", "remove", "set" };
-    private static final String[] parseGroupIncludeArgs = { "add", "remove", "clear" };
-    private static final String[] parseSpawnArgs = { "here", "clear", "bed" };
+    public static final String[] parseGroupArgs = { "zone", "users", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
+            "priority", "parent", "include", "denydefault", "create" };
+    public static final String[] parseUserGroupArgs = { "add", "remove", "set" };
+    public static final String[] parseGroupIncludeArgs = { "add", "remove", "clear" };
+    public static final String[] parseSpawnArgs = { "here", "clear", "bed" };
 
-    public static void parseMain(CommandParserArgs arguments) throws CommandException
+    public static void parseMain(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-        if (arguments.isTabCompletion && arguments.args.size() == 1)
+        if (params.isEmpty())
         {
-            arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseMainArgs);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feperm " + StringUtils.join(parseMainArgs, "|") + ": Displays help for the subcommands");
             return;
         }
-        if (arguments.args.isEmpty())
+        switch (params.remove(0).toLowerCase())
         {
-            arguments.confirm("/feperm " + StringUtils.join(parseMainArgs, "|") + ": Displays help for the subcommands");
-        }
-        else
-        {
-            switch (arguments.args.remove().toLowerCase())
+        case "save":
+            parseSave(ctx, params);
+            break;
+        case "reload":
+            checkPermission(ctx.getSource(), PERM_RELOAD);
+            if (ModulePermissions.permissionHelper.load())
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Successfully reloaded permissions");
+            else
+                ChatOutputHandler.chatError(ctx.getSource(), "Error while reloading permissions");
+            break;
+        case "test":
+            parseTest(ctx, params);
+            break;
+        case "list":
+            parseList(ctx, params);
+            break;
+        case "user":
+            parseUser(ctx, params);
+            break;
+        case "group":
+            parseGroup(ctx, params);
+            break;
+        case "global":
+            parseGlobal(ctx, params);
+            break;
+        case "debug":
+            checkPermission(ctx.getSource(), PERM_DEBUG);
+            if (ModulePermissions.permissionHelper.permissionDebugUsers.contains(ctx.getSource()))
             {
-            case "save":
-                parseSave(arguments);
-                break;
-            case "reload":
-                arguments.checkPermission(PERM_RELOAD);
-                if (arguments.isTabCompletion)
-                    return;
-                if (ModulePermissions.permissionHelper.load())
-                    arguments.confirm("Successfully reloaded permissions");
-                else
-                    arguments.error("Error while reloading permissions");
-                break;
-            case "test":
-                parseTest(arguments);
-                break;
-            case "list":
-                parseList(arguments);
-                break;
-            case "user":
-                parseUser(arguments);
-                break;
-            case "group":
-                parseGroup(arguments);
-                break;
-            case "global":
-                parseGlobal(arguments);
-                break;
-            case "debug":
-                if (arguments.isTabCompletion)
-                    return;
-                arguments.checkPermission(PERM_DEBUG);
-                if (ModulePermissions.permissionHelper.permissionDebugUsers.contains(arguments.sender))
-                {
-                    ModulePermissions.permissionHelper.permissionDebugUsers.remove(arguments.sender);
-                    arguments.confirm("Permission debug mode off");
-                }
-                else
-                {
-                    ModulePermissions.permissionHelper.permissionDebugUsers.add(arguments.sender);
-                    arguments.confirm("Permission debug mode on");
-                }
-                break;
-            default:
-                arguments.error("Unknown command argument");
-                break;
+                ModulePermissions.permissionHelper.permissionDebugUsers.remove(ctx.getSource());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Permission debug mode off");
             }
+            else
+            {
+                ModulePermissions.permissionHelper.permissionDebugUsers.add(ctx.getSource());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Permission debug mode on");
+            }
+            break;
+        default:
+            ChatOutputHandler.chatError(ctx.getSource(), "Unknown command argument");
+            break;
         }
     }
 
-    public static void parseSave(CommandParserArgs arguments) throws CommandException
+    public static void parseSave(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-        arguments.checkPermission(PERM_SAVE);
-        arguments.tabComplete("disable", "enable", "flatfile", "singlejson", "json");
-        if (arguments.isTabCompletion)
-            return;
-        if (arguments.isEmpty())
+        checkPermission(ctx.getSource(), PERM_SAVE);
+        if (params.isEmpty())
         {
             ModulePermissions.permissionHelper.setDirty(false);
             ModulePermissions.permissionHelper.save();
-            arguments.confirm("Permissions saved!");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Permissions saved!");
         }
         else
         {
-            String action = arguments.remove().toLowerCase();
+            String action = params.remove(0).toLowerCase();
             switch (action)
             {
             case "enable":
                 ModulePermissions.permissionHelper.disableAutoSave = false;
-                arguments.confirm("Permission saving enabled");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Permission saving enabled");
                 break;
             case "disable":
                 ModulePermissions.permissionHelper.disableAutoSave = true;
-                arguments.confirm("Permission saving disabled");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Permission saving disabled");
                 break;
             case "flatfile":
                 new FlatfileProvider().save(APIRegistry.perms.getServerZone());
-                arguments.confirm("Permissions saved to flatfile format");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Permissions saved to flatfile format");
                 break;
             case "singlejson":
                 new SingleFileProvider().save(APIRegistry.perms.getServerZone());
-                arguments.confirm("Permissions saved to single-json format");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Permissions saved to single-json format");
                 break;
             case "json":
                 new JsonProvider().save(APIRegistry.perms.getServerZone());
-                arguments.confirm("Permissions saved to json format");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Permissions saved to json format");
                 break;
             default:
                 throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, action);
@@ -199,41 +186,35 @@ public class PermissionCommandParser
     // -- Listings
     // ------------------------------------------------------------
 
-    public static void parseList(CommandParserArgs arguments) throws CommandException
+    public static void parseList(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-        if (arguments.isTabCompletion)
+        if (params.isEmpty())
         {
-            if (arguments.args.size() == 1)
-                arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseListArgs);
-            return;
-        }
-        if (arguments.args.isEmpty())
-        {
-            arguments.confirm("/feperm list " + StringUtils.join(parseListArgs, "|") + " : List the specified objects");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feperm list " + StringUtils.join(parseListArgs, "|") + " : List the specified objects");
         }
         else
         {
-            String arg = arguments.args.remove().toLowerCase();
+            String arg = params.remove(0).toLowerCase();
             switch (arg)
             {
             case "zones":
-                if (arguments.senderPlayer == null)
+                if (getServerPlayer(ctx.getSource()) == null)
                     throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-                listZones(arguments.senderPlayer.createCommandSourceStack(), new WorldPoint(arguments.senderPlayer));
+                listZones(ctx.getSource(), new WorldPoint(getServerPlayer(ctx.getSource())));
                 break;
             case "worlds":
-                listWorlds(arguments.senderPlayer.createCommandSourceStack());
+                listWorlds(ctx.getSource());
                 break;
             case "perms":
-                if (arguments.senderPlayer == null)
+                if (getServerPlayer(ctx.getSource()) == null)
                     throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
-                listUserPermissions(arguments.sender, UserIdent.get(arguments.senderPlayer), true);
+                listUserPermissions(ctx.getSource(), UserIdent.get(getServerPlayer(ctx.getSource())), true);
                 break;
             case "users":
-                listUsers(arguments.sender);
+                listUsers(ctx.getSource());
                 break;
             case "groups":
-                listGroups(arguments.sender);
+                listGroups(ctx.getSource());
                 break;
             default:
                 throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
@@ -241,12 +222,11 @@ public class PermissionCommandParser
         }
     }
 
-    public static void parseTest(CommandParserArgs arguments) throws CommandException
+    public static void parseTest(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-        if (arguments.args.isEmpty())
+        checkPermission(ctx.getSource(), PERM_TEST);
+        if (params.isEmpty())
             throw new TranslatedCommandException("Missing permission argument!");
-        arguments.checkPermission(PERM_TEST);
-
         if (arguments.isTabCompletion)
         {
             arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserArgs);
@@ -263,23 +243,23 @@ public class PermissionCommandParser
             return;
         }
 
-        UserIdent ident = arguments.ident;
-        if (arguments.sender instanceof DoAsCommandSender)
-            ident = ((DoAsCommandSender) arguments.sender).getUserIdent();
+        UserIdent ident = getIdent(ctx.getSource());
+        if (CommandUtils.GetSource(ctx.getSource()) instanceof DoAsCommandSender)
+            ident = ((DoAsCommandSender) CommandUtils.GetSource(ctx.getSource())).getUserIdent();
 
         String permissionNode = arguments.args.remove();
         String result = APIRegistry.perms.getUserPermissionProperty(ident, permissionNode);
         if (result == null)
         {
-            arguments.confirm(permissionNode + " = \u00a7etrue (not set)");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), permissionNode + " = \u00a7etrue (not set)");
         }
         else if (Zone.PERMISSION_FALSE.equalsIgnoreCase(result))
         {
-            arguments.confirm(permissionNode + " = \u00a7c" + result);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), permissionNode + " = \u00a7c" + result);
         }
         else
         {
-            arguments.confirm(permissionNode + " = " + result);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), permissionNode + " = " + result);
         }
     }
 
@@ -287,43 +267,43 @@ public class PermissionCommandParser
     // -- User
     // ------------------------------------------------------------
 
-    public static void parseUser(CommandParserArgs arguments) throws CommandException
+    public static void parseUser(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-        arguments.checkPermission(PERM_USER);
-        if (arguments.args.isEmpty())
+        checkPermission(ctx.getSource(), PERM_USER);
+        if (params.isEmpty())
         {
-            arguments.confirm("Possible usage:");
-            arguments.confirm("/p user <player> : Display user info");
-            arguments.confirm("/p user <player> zone <zone> ... : Work with zones");
-            arguments.confirm("/p user <player> perms : List player's permissions");
-            arguments.confirm("/p user <player> group add|remove <group>: Player's group settings");
-            arguments.confirm("/p user <player> allow|deny|clear <perms> : Set permissions");
-            arguments.confirm("/p user <player> value <perm> <value> : Set permission property");
-            arguments.confirm("/p user <player> spawn : Set player spawn");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Possible usage:");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> : Display user info");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> zone <zone> ... : Work with zones");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> perms : List player's permissions");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> group add|remove <group>: Player's group settings");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> allow|deny|clear <perms> : Set permissions");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> value <perm> <value> : Set permission property");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p user <player> spawn : Set player spawn");
             return;
         }
 
         // Parse player
-        UserIdent ident = arguments.parsePlayer(false, false);
+        UserIdent ident = parsePlayer(params.remove(0), null, false, false);
         if (!ident.hasUuid())
-            arguments.error("Player %s not found. playername will be used, but may be inaccurate.", ident.getUsername());
+            ChatOutputHandler.chatError(ctx.getSource(), "Player %s not found. playername will be used, but may be inaccurate.", ident.getUsername());
         else if (!ident.hasUsername())
-            arguments.error("Player uuid %s not found. uuid will be used, but may be inaccurate.", ident.getUuid());
+            ChatOutputHandler.chatError(ctx.getSource(), "Player uuid %s not found. uuid will be used, but may be inaccurate.", ident.getUuid());
 
-        parseUserInner(arguments, ident, null);
+        parseUserInner(ctx, params, ident, null);
     }
 
-    public static void parseUserInner(CommandParserArgs arguments, UserIdent ident, Zone zone) throws CommandException
+    public static void parseUserInner(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident, Zone zone) throws CommandException
     {
         // Display help or player info
-        if (arguments.args.isEmpty())
+        if (params.isEmpty())
         {
             if (zone == null)
             {
-                arguments.confirm("Groups for player %s:", ident.getUsernameOrUuid());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Groups for player %s:", ident.getUsernameOrUuid());
                 for (GroupEntry group : APIRegistry.perms.getPlayerGroups(ident))
                 {
-                    arguments.confirm("  " + group);
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "  " + group);
                 }
                 return;
             }
@@ -332,10 +312,10 @@ public class PermissionCommandParser
             // args.info("/p ... allow|deny|clear <perms> : Set permissions");
             // args.info("/p ... value <perm> <value> : Set permission property");
             // args.info("/p ... spawn : Set player spawn");
-            arguments.confirm(ident.getUsernameOrUuid() + "'s permissions in zone " + zone.getName() + ":");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), ident.getUsernameOrUuid() + "'s permissions in zone " + zone.getName() + ":");
             for (Entry<String, String> perm : zone.getPlayerPermissions(ident).entrySet())
             {
-                arguments.confirm("  " + perm.getKey() + " = " + (perm.getValue() == null ? "null" : perm.getValue()));
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "  " + perm.getKey() + " = " + (perm.getValue() == null ? "null" : perm.getValue()));
             }
             return;
         }
@@ -355,18 +335,18 @@ public class PermissionCommandParser
         {
             if (zone != null)
             {
-                arguments.error("Zone already set!");
+                ChatOutputHandler.chatError(ctx.getSource(), "Zone already set!");
                 return;
             }
-            if (arguments.args.isEmpty())
+            if (params.isEmpty())
             {
-                arguments.error("Expected zone identifier.");
+                ChatOutputHandler.chatError(ctx.getSource(), "Expected zone identifier.");
                 return;
             }
-            zone = parseZone(arguments);
+            zone = parseZone(ctx, params);
             if (zone == null)
                 return;
-            parseUserInner(arguments, ident, zone);
+            parseUserInner(ctx, params, ident, zone);
             return;
         }
 
@@ -378,38 +358,36 @@ public class PermissionCommandParser
         switch (cmd)
         {
         case "group":
-            parseUserGroup(arguments, ident, zone);
+            parseUserGroup(ctx, params, ident, zone);
             break;
         case "perms":
-            listUserPermissions(arguments.sender, ident, true);
+            listUserPermissions(ctx.getSource(), ident, true);
             break;
         case "prefix":
-            parseUserPrefixSuffix(arguments, ident, zone, false);
+            parseUserPrefixSuffix(ctx, params, ident, zone, false);
             break;
         case "suffix":
-            parseUserPrefixSuffix(arguments, ident, zone, true);
+            parseUserPrefixSuffix(ctx, params, ident, zone, true);
             break;
         case "spawn":
-            parseUserSpawn(arguments, ident, zone);
+            parseUserSpawn(ctx, params, ident, zone);
             break;
         case "true":
         case "allow":
-            parseUserPermissions(arguments, ident, zone, PermissionAction.ALLOW);
+            parseUserPermissions(ctx, params, ident, zone, PermissionAction.ALLOW);
             break;
         case "false":
         case "deny":
-            parseUserPermissions(arguments, ident, zone, PermissionAction.DENY);
+            parseUserPermissions(ctx, params, ident, zone, PermissionAction.DENY);
             break;
         case "clear":
-            parseUserPermissions(arguments, ident, zone, PermissionAction.CLEAR);
+            parseUserPermissions(ctx, params, ident, zone, PermissionAction.CLEAR);
             break;
         case "value":
-            parseUserPermissions(arguments, ident, zone, PermissionAction.VALUE);
+            parseUserPermissions(ctx, params, ident, zone, PermissionAction.VALUE);
             break;
         case "denydefault":
-            arguments.checkPermission(PERM_USER_PERMS);
-            if(arguments.isTabCompletion)
-            	return;
+            checkPermission(ctx.getSource(),PERM_USER_PERMS);
             denyDefault(zone.getPlayerPermissions(ident));
             break;
         default:
@@ -417,51 +395,47 @@ public class PermissionCommandParser
         }
     }
 
-    public static void parseUserFormat(CommandParserArgs arguments, UserIdent ident, Zone zone, boolean isPlayer) throws CommandException
+    public static void parseUserFormat(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident, Zone zone, boolean isPlayer) throws CommandException
     {
-        arguments.checkPermission(PERM_USER_FIX);
-        if (arguments.isTabCompletion)
-            return;
+        checkPermission(ctx.getSource(),PERM_USER_FIX);
 
         String fixPerm = "fe.chat." + (isPlayer ? "playerformat" : "textformat");
         // TODO: Implement Player / Text Format as an option in the command
         // EX: /p user [] format [player|text] [format values]
     }
 
-    public static void parseUserPrefixSuffix(CommandParserArgs arguments, UserIdent ident, Zone zone, boolean isSuffix) throws CommandException
+    public static void parseUserPrefixSuffix(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident, Zone zone, boolean isSuffix) throws CommandException
     {
-        arguments.checkPermission(PERM_USER_FIX);
-        if (arguments.isTabCompletion)
-            return;
+        checkPermission(ctx.getSource(),PERM_USER_FIX);
 
         String fixName = isSuffix ? "suffix" : "prefix";
-        if (arguments.args.isEmpty())
+        if (params.isEmpty())
         {
             String fix = zone.getPlayerPermission(ident, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (fix == null || fix.isEmpty())
                 fix = "empty";
-            arguments.confirm("%s's %s is %s", ident.getUsernameOrUuid(), fixName, fix);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "%s's %s is %s", ident.getUsernameOrUuid(), fixName, fix);
         }
         else
         {
-            String fix = StringUtils.join(arguments.args, " ");
+            String fix = StringUtils.join(params, " ");
             if (fix.equalsIgnoreCase("clear"))
             {
-                arguments.confirm("%s's %s cleared", ident.getUsernameOrUuid(), fixName);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "%s's %s cleared", ident.getUsernameOrUuid(), fixName);
                 zone.clearPlayerPermission(ident, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             }
             else
             {
-                arguments.confirm("%s's %s set to %s", ident.getUsernameOrUuid(), fixName, fix);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "%s's %s set to %s", ident.getUsernameOrUuid(), fixName, fix);
                 zone.setPlayerPermissionProperty(ident, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX, fix);
             }
         }
     }
 
-    public static void parseUserPermissions(CommandParserArgs arguments, UserIdent ident, Zone zone, PermissionAction type) throws CommandException
+    public static void parseUserPermissions(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident, Zone zone, PermissionAction type) throws CommandException
     {
-        arguments.checkPermission(PERM_USER_PERMS);
-        if (arguments.args.isEmpty())
+        checkPermission(ctx.getSource(),PERM_USER_PERMS);
+        if (params.isEmpty())
             throw new TranslatedCommandException("Missing permission argument!");
 
         // Apply permissions
@@ -486,16 +460,11 @@ public class PermissionCommandParser
             {
                 if (arguments.args.isEmpty())
                 {
-                    arguments.confirm("Value of %s = %s", permissionNode, zone.getPlayerPermission(ident, permissionNode));
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "Value of %s = %s", permissionNode, zone.getPlayerPermission(ident, permissionNode));
                     return;
                 }
                 value = StringUtils.join(arguments.args, ' ');
                 arguments.args.clear();
-            }
-
-            if (arguments.isTabCompletion)
-            {
-                return;
             }
 
             switch (type)
@@ -514,21 +483,21 @@ public class PermissionCommandParser
                 break;
             case VALUE:
                 zone.setPlayerPermissionProperty(ident, permissionNode, value);
-                arguments.confirm("Set %s for %s to %s in zone %s", permissionNode, ident.getUsernameOrUuid(), value, zone.getName());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set %s for %s to %s in zone %s", permissionNode, ident.getUsernameOrUuid(), value, zone.getName());
                 break;
             }
             if (msg != null)
-                arguments.confirm(msg, ident.getUsernameOrUuid(), permissionNode, zone.getName());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), msg, ident.getUsernameOrUuid(), permissionNode, zone.getName());
         }
     }
 
-    public static void parseUserSpawn(CommandParserArgs arguments, UserIdent ident, Zone zone) throws CommandException
+    public static void parseUserSpawn(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident, Zone zone) throws CommandException
     {
-        arguments.checkPermission(PERM_USER_SPAWN);
-        if (arguments.args.isEmpty())
+        checkPermission(ctx.getSource(),PERM_USER_SPAWN);
+        if (params.isEmpty())
         {
-            arguments.confirm("/feperm user " + ident.getUsernameOrUuid() + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
-            arguments.confirm("/feperm user " + ident.getUsernameOrUuid() + " spawn bed (enable|disable): Enable/disable spawning at bed");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feperm user " + ident.getUsernameOrUuid() + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feperm user " + ident.getUsernameOrUuid() + " spawn bed (enable|disable): Enable/disable spawning at bed");
             return;
         }
         if (arguments.isTabCompletion)
@@ -543,27 +512,27 @@ public class PermissionCommandParser
         switch (loc)
         {
         case "here":
-            if (arguments.senderPlayer == null)
+            if (getServerPlayer(ctx.getSource()) == null)
                 throw new TranslatedCommandException("[here] cannot be used from console.");
-            point = new WarpPoint(arguments.senderPlayer);
+            point = new WarpPoint(getServerPlayer(ctx.getSource()));
             break;
         case "bed":
         {
-            if (arguments.args.isEmpty())
+            if (params.isEmpty())
                 throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             String val = arguments.args.peek().toLowerCase();
             if (val.equals("true") | val.equals("enable"))
             {
                 zone.setPlayerPermission(ident, FEPermissions.SPAWN_BED, true);
-                arguments.confirm("Enabled bed-spawning for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Enabled bed-spawning for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName());
             }
             else if (val.equals("false") | val.equals("disable"))
             {
                 zone.setPlayerPermission(ident, FEPermissions.SPAWN_BED, false);
-                arguments.confirm("Disabled bed-spawning for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Disabled bed-spawning for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName());
             }
             else
-                arguments.error("Invalid argument. Use enable or disable.");
+                ChatOutputHandler.chatError(ctx.getSource(), "Invalid argument. Use enable or disable.");
             return;
         }
         case "clear":
@@ -577,12 +546,12 @@ public class PermissionCommandParser
                 int x = CommandUtils.parseInt(loc);
                 int y = CommandUtils.parseInt(arguments.args.remove());
                 int z = CommandUtils.parseInt(arguments.args.remove());
-                int dimension = CommandUtils.parseInt(arguments.args.remove());
+                String dimension = arguments.args.remove();
                 point = new WarpPoint(dimension, x, y, z, 0, 0);
             }
             catch (NumberFormatException e)
             {
-                arguments.error("Invalid location argument");
+                ChatOutputHandler.chatError(ctx.getSource(), "Invalid location argument");
                 return;
             }
             break;
@@ -591,31 +560,31 @@ public class PermissionCommandParser
         if (point == null)
         {
             zone.clearPlayerPermission(ident, FEPermissions.SPAWN_LOC);
-            arguments.confirm("Cleared spawn-rule for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName());
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Cleared spawn-rule for user %s in zone %s", ident.getUsernameOrUuid(), zone.getName());
         }
         else
         {
             zone.setPlayerPermissionProperty(ident, FEPermissions.SPAWN_LOC, point.toString());
-            arguments.confirm("Set spawn for user %s to %s in zone %s", ident.getUsernameOrUuid(), point.toString(), zone.getName());
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set spawn for user %s to %s in zone %s", ident.getUsernameOrUuid(), point.toString(), zone.getName());
         }
     }
 
-    public static void parseUserGroup(CommandParserArgs arguments, UserIdent ident, Zone zone)
+    public static void parseUserGroup(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident, Zone zone)
     {
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
             arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseUserGroupArgs);
             return;
         }
-        if (arguments.args.isEmpty())
+        if (params.isEmpty())
         {
             if (zone instanceof ServerZone)
-                arguments.confirm("Groups for player %s (without includes):", ident.getUsernameOrUuid());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Groups for player %s (without includes):", ident.getUsernameOrUuid());
             else
-                arguments.confirm("Groups for player %s (without includes) in %s:", ident.getUsernameOrUuid(), zone.getName());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Groups for player %s (without includes) in %s:", ident.getUsernameOrUuid(), zone.getName());
             for (GroupEntry g : zone.getStoredPlayerGroupEntries(ident))
             {
-                arguments.confirm("  " + g);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "  " + g);
             }
         }
         else
@@ -623,8 +592,8 @@ public class PermissionCommandParser
             String mode = arguments.args.remove().toLowerCase();
             if (!mode.equals("add") && !mode.equals("remove") && !mode.equals("set"))
             {
-                arguments.error("Syntax error. Please try this instead:");
-                arguments.error("/p user <player> group add|set|remove <GROUP>");
+                ChatOutputHandler.chatError(ctx.getSource(), "Syntax error. Please try this instead:");
+                ChatOutputHandler.chatError(ctx.getSource(), "/p user <player> group add|set|remove <GROUP>");
                 return;
             }
 
@@ -641,9 +610,9 @@ public class PermissionCommandParser
                 }
                 return;
             }
-            if (arguments.args.isEmpty())
+            if (params.isEmpty())
             {
-                arguments.error("Usage: /p user <player> group " + mode + " <group-name>");
+                ChatOutputHandler.chatError(ctx.getSource(), "Usage: /p user <player> group " + mode + " <group-name>");
             }
             else
             {
@@ -651,7 +620,7 @@ public class PermissionCommandParser
                 for (String group : groups)
                     if (!APIRegistry.perms.groupExists(group))
                     {
-                        arguments.error("Group %s not found.", group);
+                        ChatOutputHandler.chatError(ctx.getSource(), "Group %s not found.", group);
                         return;
                     }
 
@@ -660,19 +629,19 @@ public class PermissionCommandParser
                 case "add":
                     for (String group : groups)
                         zone.addPlayerToGroup(ident, group);
-                    arguments.confirm("Player %s added to group(s) %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", "));
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "Player %s added to group(s) %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", "));
                     break;
                 case "remove":
                     for (String group : groups)
                         zone.removePlayerFromGroup(ident, group);
-                    arguments.confirm("Player %s removed from group(s) %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", "));
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "Player %s removed from group(s) %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", "));
                     break;
                 case "set":
                     for (GroupEntry g : APIRegistry.perms.getStoredPlayerGroups(ident))
                         zone.removePlayerFromGroup(ident, g.getGroup());
                     for (String group : groups)
                         zone.addPlayerToGroup(ident, group);
-                    arguments.confirm("Set %s's group(s) to %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", "));
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set %s's group(s) to %s", ident.getUsernameOrUuid(), StringUtils.join(groups, ", "));
                     break;
                 }
             }
@@ -683,85 +652,77 @@ public class PermissionCommandParser
     // -- Group
     // ------------------------------------------------------------
 
-    public static void parseGroup(CommandParserArgs arguments) throws CommandException
+    public static void parseGroup(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-        arguments.checkPermission(PERM_GROUP);
-        if (arguments.args.isEmpty())
+        checkPermission(ctx.getSource(),PERM_GROUP);
+        if (params.isEmpty())
         {
-            arguments.confirm("Possible usage:");
-            arguments.confirm("/p group <group> : Display group info");
-            arguments.confirm("/p group <group> users : Show users in this group");
-            arguments.confirm("/p group <group> zone <zone> ... : Work with zones");
-            arguments.confirm("/p group <group> create : Create a new group");
-            arguments.confirm("/p group <group> perms : List group's permissions");
-            arguments.confirm("/p group <group> allow|deny|clear <perms> : Set permissions");
-            arguments.confirm("/p group <group> value <perm> <value> : Set permission property");
-            arguments.confirm("/p group <group> spawn : Set group spawn");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Possible usage:");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> : Display group info");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> users : Show users in this group");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> zone <zone> ... : Work with zones");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> create : Create a new group");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> perms : List group's permissions");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> allow|deny|clear <perms> : Set permissions");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> value <perm> <value> : Set permission property");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/p group <group> spawn : Set group spawn");
             return;
         }
 
-        // Auto-complete group name
-        if (arguments.isTabCompletion && arguments.args.size() == 1)
-        {
-            arguments.tabComplete(APIRegistry.perms.getServerZone().getGroups());
-            return;
-        }
-
-        String group = arguments.args.remove();
+        String group = params.remove(0);
         if (!APIRegistry.perms.groupExists(group))
         {
-            if (arguments.isTabCompletion && arguments.args.size() == 1)
+            if (params.isEmpty())
             {
-                arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), "create");
-                return;
-            }
-            if (arguments.args.isEmpty())
-            {
-                arguments.confirm("Group %s does not exist", group);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Group %s does not exist", group);
             }
             else
             {
-                String groupArg = arguments.args.remove();
+                String groupArg = params.remove(0);
                 if (!groupArg.equalsIgnoreCase("create"))
-                    throw new CommandException("Group %s does not exist", group);
+                    throw new TranslatedCommandException("Group %s does not exist", group);
                 if (APIRegistry.perms.createGroup(group))
-                    arguments.confirm("Created group %s", group);
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "Created group %s", group);
                 else
-                    arguments.confirm("Could not create group %s. Cancelled.", group);
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "Could not create group %s. Cancelled.", group);
             }
             return;
         }
+        else if(params.get(0).toLowerCase().equals("create")) {
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Group %s alredy exists", group);
+            return;
+        }
 
-        parseGroupInner(arguments, group, null);
+        parseGroupInner(ctx, params, group, null);
     }
 
-    public static void parseGlobal(CommandParserArgs arguments) throws CommandException
+    public static void parseGlobal(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-        arguments.checkPermission(PERM_GROUP);
-        parseGroupInner(arguments, Zone.GROUP_DEFAULT, null);
+        checkPermission(ctx.getSource(),PERM_GROUP);
+        parseGroupInner(ctx, params, Zone.GROUP_DEFAULT, null);
     }
 
-    public static void parseGroupInner(CommandParserArgs arguments, String group, Zone zone) throws CommandException
+    public static void parseGroupInner(CommandContext<CommandSource> ctx, List<String> params, String group, Zone zone) throws CommandException
     {
         // Display help or player info
-        if (arguments.args.isEmpty())
+        if (params.isEmpty())
         {
             if (zone == null)
             {
-                arguments.confirm("Group " + group + " permissions:");
-                listGroupPermissions(arguments.sender, group);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Group " + group + " permissions:");
+                listGroupPermissions(ctx.getSource(), group);
                 return;
             }
             if (zone.getGroupPermissions(group) == null)
             {
-                arguments.confirm("Group " + group + " has no permissions in zone " + zone.getName() + ".");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Group " + group + " has no permissions in zone " + zone.getName() + ".");
             }
             else
             {
-                arguments.confirm("Group " + group + " permissions in zone " + zone.getName() + ":");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Group " + group + " permissions in zone " + zone.getName() + ":");
                 for (Entry<String, String> perm : zone.getGroupPermissions(group).entrySet())
                 {
-                    arguments.confirm("  " + perm.getKey() + " = " + perm.getValue());
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "  " + perm.getKey() + " = " + perm.getValue());
                 }
             }
             return;
@@ -782,18 +743,18 @@ public class PermissionCommandParser
         {
             if (zone != null)
             {
-                arguments.error("Zone already set!");
+                ChatOutputHandler.chatError(ctx.getSource(), "Zone already set!");
                 return;
             }
-            if (arguments.args.isEmpty())
+            if (params.isEmpty())
             {
-                arguments.error("Expected zone identifier.");
+                ChatOutputHandler.chatError(ctx.getSource(), "Expected zone identifier.");
                 return;
             }
-            zone = parseZone(arguments);
+            zone = parseZone(ctx, params);
             if (zone == null)
                 return;
-            parseGroupInner(arguments, group, zone);
+            parseGroupInner(ctx, params, group, zone);
             return;
         }
 
@@ -807,48 +768,46 @@ public class PermissionCommandParser
         // listGroupUsers(group);
         // break;
         case "perms":
-            arguments.confirm("Group " + group + " permissions:");
-            listGroupPermissions(arguments.sender, group);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Group " + group + " permissions:");
+            listGroupPermissions(ctx.getSource(), group);
             break;
         case "users":
-            listGroupUsers(arguments.sender, group);
+            listGroupUsers(ctx.getSource(), group);
             break;
         case "prefix":
-            parseGroupPrefixSuffix(arguments, group, zone, false);
+            parseGroupPrefixSuffix(ctx, params, group, zone, false);
             break;
         case "suffix":
-            parseGroupPrefixSuffix(arguments, group, zone, true);
+            parseGroupPrefixSuffix(ctx, params, group, zone, true);
             break;
         case "spawn":
-            parseGroupSpawn(arguments, group, zone);
+            parseGroupSpawn(ctx, params, group, zone);
             break;
         case "priority":
-            parseGroupPriority(arguments, group);
+            parseGroupPriority(ctx, params, group);
             break;
         case "parent":
-            parseGroupInclude(arguments, group, true);
+            parseGroupInclude(ctx, params, group, true);
             break;
         case "include":
-            parseGroupInclude(arguments, group, false);
+            parseGroupInclude(ctx, params, group, false);
             break;
         case "true":
         case "allow":
-            parseGroupPermissions(arguments, group, zone, PermissionAction.ALLOW);
+            parseGroupPermissions(ctx, params, group, zone, PermissionAction.ALLOW);
             break;
         case "false":
         case "deny":
-            parseGroupPermissions(arguments, group, zone, PermissionAction.DENY);
+            parseGroupPermissions(ctx, params, group, zone, PermissionAction.DENY);
             break;
         case "clear":
-            parseGroupPermissions(arguments, group, zone, PermissionAction.CLEAR);
+            parseGroupPermissions(ctx, params, group, zone, PermissionAction.CLEAR);
             break;
         case "value":
-            parseGroupPermissions(arguments, group, zone, PermissionAction.VALUE);
+            parseGroupPermissions(ctx, params, group, zone, PermissionAction.VALUE);
             break;
         case "denydefault":
-            arguments.checkPermission(PERM_GROUP_PERMS);
-            if(arguments.isTabCompletion)
-            	return;
+            checkPermission(ctx.getSource(),PERM_GROUP_PERMS);
             denyDefault(zone.getGroupPermissions(group));
             break;
         default:
@@ -856,40 +815,38 @@ public class PermissionCommandParser
         }
     }
 
-    public static void parseGroupPrefixSuffix(CommandParserArgs arguments, String group, Zone zone, boolean isSuffix) throws CommandException
+    public static void parseGroupPrefixSuffix(CommandContext<CommandSource> ctx, List<String> params, String group, Zone zone, boolean isSuffix) throws CommandException
     {
-        arguments.checkPermission(PERM_GROUP_FIX);
-        if (arguments.isTabCompletion)
-            return;
+        checkPermission(ctx.getSource(),PERM_GROUP_FIX);
 
         String fixName = isSuffix ? "suffix" : "prefix";
-        if (arguments.args.isEmpty())
+        if (params.isEmpty())
         {
             String fix = zone.getGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (fix == null || fix.isEmpty())
                 fix = "empty";
-            arguments.confirm("%s's %s is %s", group, fixName, fix);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "%s's %s is %s", group, fixName, fix);
         }
         else
         {
             String fix = StringUtils.join(arguments.args, " ");
             if (fix.equalsIgnoreCase("clear"))
             {
-                arguments.confirm("%s's %s cleared", group, fixName);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "%s's %s cleared", group, fixName);
                 zone.clearGroupPermission(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             }
             else
             {
-                arguments.confirm("%s's %s set to %s", group, fixName, fix);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "%s's %s set to %s", group, fixName, fix);
                 zone.setGroupPermissionProperty(group, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX, fix);
             }
         }
     }
 
-    public static void parseGroupPermissions(CommandParserArgs arguments, String group, Zone zone, PermissionAction type) throws CommandException
+    public static void parseGroupPermissions(CommandContext<CommandSource> ctx, List<String> params, String group, Zone zone, PermissionAction type) throws CommandException
     {
-        arguments.checkPermission(PERM_GROUP_PERMS);
-        if (arguments.args.isEmpty())
+        checkPermission(ctx.getSource(),PERM_GROUP_PERMS);
+        if (params.isEmpty())
             throw new TranslatedCommandException("Missing permission argument!");
 
         // Apply permissions
@@ -908,18 +865,13 @@ public class PermissionCommandParser
             String msg = null, value = null;
             if (type == PermissionAction.VALUE)
             {
-                if (arguments.args.isEmpty())
+                if (params.isEmpty())
                 {
-                    arguments.confirm("Value of %s = %s", permissionNode, zone.getGroupPermission(group, permissionNode));
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "Value of %s = %s", permissionNode, zone.getGroupPermission(group, permissionNode));
                     return;
                 }
                 value = StringUtils.join(arguments.args, ' ');
                 arguments.args.clear();
-            }
-
-            if (arguments.isTabCompletion)
-            {
-                return;
             }
 
             switch (type)
@@ -938,30 +890,30 @@ public class PermissionCommandParser
                 break;
             case VALUE:
                 zone.setGroupPermissionProperty(group, permissionNode, value);
-                arguments.confirm("Set %s for group %s to %s in zone %s", permissionNode, group, value, zone.getName());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set %s for group %s to %s in zone %s", permissionNode, group, value, zone.getName());
                 break;
             }
             if (msg != null)
-                arguments.confirm(msg, group, permissionNode, zone.getName());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), msg, group, permissionNode, zone.getName());
             if (type == PermissionAction.VALUE)
                 return;
         }
     }
 
-    public static void parseGroupSpawn(CommandParserArgs arguments, String group, Zone zone) throws CommandException
+    public static void parseGroupSpawn(CommandContext<CommandSource> ctx, List<String> params, String group, Zone zone) throws CommandException
     {
-        arguments.checkPermission(PERM_GROUP_SPAWN);
-        if (arguments.args.isEmpty())
+        checkPermission(ctx.getSource(),PERM_GROUP_SPAWN);
+        if (params.isEmpty())
         {
             if (arguments.command.getName().equalsIgnoreCase("setspawn"))
             {
-                arguments.confirm("/setspawn here|clear|<x> <y> <z> <dim>: Set spawn location");
-                arguments.confirm("/setspawn bed (enable|disable): Enable/disable spawning at bed");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "/setspawn here|clear|<x> <y> <z> <dim>: Set spawn location");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "/setspawn bed (enable|disable): Enable/disable spawning at bed");
             }
             else
             {
-                arguments.confirm("/feperm group " + group + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
-                arguments.confirm("/feperm group " + group + " spawn bed (enable|disable): Enable/disable spawning at bed");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feperm group " + group + " spawn here|clear|<x> <y> <z> <dim>: Set spawn location");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feperm group " + group + " spawn bed (enable|disable): Enable/disable spawning at bed");
             }
             return;
         }
@@ -977,27 +929,27 @@ public class PermissionCommandParser
         switch (loc)
         {
         case "here":
-            if (arguments.senderPlayer == null)
+            if (getServerPlayer(ctx.getSource()) == null)
                 throw new TranslatedCommandException("[here] cannot be used from console.");
-            point = new WarpPoint(arguments.senderPlayer);
+            point = new WarpPoint(getServerPlayer(ctx.getSource()));
             break;
         case "bed":
         {
-            if (arguments.args.isEmpty())
+            if (params.isEmpty())
                 throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
             String val = arguments.args.peek().toLowerCase();
             if (val.equals("true") | val.equals("enable"))
             {
                 zone.setGroupPermission(group, FEPermissions.SPAWN_BED, true);
-                arguments.confirm("Enabled bed-spawning for group %s in zone %s", group, zone.getName());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Enabled bed-spawning for group %s in zone %s", group, zone.getName());
             }
             else if (val.equals("false") | val.equals("disable"))
             {
                 zone.setGroupPermission(group, FEPermissions.SPAWN_BED, false);
-                arguments.confirm("Disabled bed-spawning for group %s in zone %s", group, zone.getName());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Disabled bed-spawning for group %s in zone %s", group, zone.getName());
             }
             else
-                arguments.error("Invalid argument. Use enable or disable.");
+                ChatOutputHandler.chatError(ctx.getSource(), "Invalid argument. Use enable or disable.");
             return;
         }
         case "clear":
@@ -1014,7 +966,7 @@ public class PermissionCommandParser
             }
             catch (NumberFormatException e)
             {
-                arguments.error("Invalid location argument");
+                ChatOutputHandler.chatError(ctx.getSource(), "Invalid location argument");
                 return;
             }
             break;
@@ -1023,40 +975,38 @@ public class PermissionCommandParser
         if (point == null)
         {
             zone.clearGroupPermission(group, FEPermissions.SPAWN_LOC);
-            arguments.confirm("Cleared spawn-rule for group %s in zone %s", group, zone.getName());
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Cleared spawn-rule for group %s in zone %s", group, zone.getName());
         }
         else
         {
             zone.setGroupPermissionProperty(group, FEPermissions.SPAWN_LOC, point.toString());
-            arguments.confirm("Set spawn for group %s to %s in zone %s", group, point.toString(), zone.getName());
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set spawn for group %s to %s in zone %s", group, point.toString(), zone.getName());
         }
     }
 
-    public static void parseGroupPriority(CommandParserArgs arguments, String group) throws CommandException
+    public static void parseGroupPriority(CommandContext<CommandSource> ctx, List<String> params, String group) throws CommandException
     {
-        arguments.checkPermission(PERM_GROUP_PERMS);
-        if(arguments.isTabCompletion)
-        	return;
-        if (arguments.args.isEmpty())
+        checkPermission(ctx.getSource(),PERM_GROUP_PERMS);
+        if (prams.isEmpty())
         {
-            arguments.confirm("Priority for group " + group + ": " + APIRegistry.perms.getGroupPermissionProperty(group, FEPermissions.GROUP_PRIORITY));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Priority for group " + group + ": " + APIRegistry.perms.getGroupPermissionProperty(group, FEPermissions.GROUP_PRIORITY));
             return;
         }
         String priorityValue = arguments.args.remove();
         try
         {
             APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_PRIORITY, Integer.toString(Integer.parseInt(priorityValue)));
-            arguments.confirm("Set priority for group %s to %s", group, priorityValue);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set priority for group %s to %s", group, priorityValue);
         }
         catch (NumberFormatException e)
         {
-            arguments.error("The string %s is not a valid integer", priorityValue);
+            ChatOutputHandler.chatError(ctx.getSource(), "The string %s is not a valid integer", priorityValue);
         }
     }
 
-    public static void parseGroupInclude(CommandParserArgs arguments, String group, boolean isParent) throws CommandException
+    public static void parseGroupInclude(CommandContext<CommandSource> ctx, List<String> params, String group, boolean isParent) throws CommandException
     {
-        arguments.checkPermission(PERM_GROUP_PERMS);
+        checkPermission(ctx.getSource(),PERM_GROUP_PERMS);
         if (arguments.isTabCompletion && arguments.args.size() == 1)
         {
             arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseGroupIncludeArgs);
@@ -1068,13 +1018,13 @@ public class PermissionCommandParser
         // Get included groups
         Set<String> groups = isParent ? APIRegistry.perms.getServerZone().getParentedGroups(group) : APIRegistry.perms.getServerZone().getIncludedGroups(group);
 
-        if (arguments.args.isEmpty())
+        if (params.isEmpty())
         {
             // arguments.info("/feperm group " + group + " " + displayName1 + " add|remove <group>");
             // arguments.info("/feperm group " + group + " " + displayName1 + " clear");
-            arguments.confirm((isParent ? "Parented" : "Included") + " groups for %s:", group);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), (isParent ? "Parented" : "Included") + " groups for %s:", group);
             for (String includedGroup : groups)
-                arguments.confirm("  " + includedGroup);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "  " + includedGroup);
             return;
         }
 
@@ -1082,13 +1032,13 @@ public class PermissionCommandParser
         if (cmd.equals("clear"))
         {
             APIRegistry.perms.getServerZone().clearGroupPermission(group, isParent ? FEPermissions.GROUP_PARENTS : FEPermissions.GROUP_INCLUDES);
-            arguments.confirm("Cleared group-" + displayName1 + "s for group %s", group);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Cleared group-" + displayName1 + "s for group %s", group);
             return;
         }
 
-        if (arguments.args.isEmpty())
+        if (params.isEmpty())
         {
-            arguments.error(FEPermissions.MSG_INVALID_SYNTAX);
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_INVALID_SYNTAX);
             return;
         }
 
@@ -1112,14 +1062,14 @@ public class PermissionCommandParser
         {
         case "add":
             groups.add(groupsName);
-            arguments.confirm("Added group-" + displayName1 + " of %s to group %s", groupsName, group);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Added group-" + displayName1 + " of %s to group %s", groupsName, group);
             break;
         case "remove":
             groups.remove(groupsName);
-            arguments.confirm("Removed group-" + displayName1 + " of %s to group %s", groupsName, group);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Removed group-" + displayName1 + " of %s to group %s", groupsName, group);
             break;
         default:
-            arguments.error(FEPermissions.MSG_INVALID_SYNTAX);
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_INVALID_SYNTAX);
             return;
         }
 
@@ -1150,27 +1100,15 @@ public class PermissionCommandParser
         return completePermission(permission, APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
     }
 
-    public static Zone parseZone(CommandParserArgs arguments)
+    public static Zone parseZone(CommandContext<CommandSource> ctx, List<String> params)
     {
-        if (arguments.isTabCompletion && arguments.args.size() == 1)
-        {
-            for (Zone z : APIRegistry.perms.getZones())
-            {
-                arguments.tabCompleteWord(z.getName());
-            }
-            for (String n : APIRegistry.namedWorldHandler.getWorldNames())
-            {
-                arguments.tabCompleteWord(n);
-            }
-            return null;
-        }
-        String zoneId = arguments.remove();
+        String zoneId = params.remove(0);
         try
         {
             int intId = Integer.parseInt(zoneId);
             if (intId < 1)
             {
-                arguments.error("Zone ID must be greater than 0!");
+                ChatOutputHandler.chatError(ctx.getSource(), "Zone ID must be greater than 0!");
                 return null;
             }
 
@@ -1180,9 +1118,9 @@ public class PermissionCommandParser
 
             ServerWorld world = APIRegistry.namedWorldHandler.getWorld(zoneId);
             if (world != null)
-                return APIRegistry.perms.getServerZone().getWorldZone(world.dimension());
+                return APIRegistry.perms.getServerZone().getWorldZone(world);
 
-            arguments.error("No zone by the ID %s exists!", zoneId);
+            ChatOutputHandler.chatError(ctx.getSource(), "No zone by the ID %s exists!", zoneId);
             return null;
         }
         catch (NumberFormatException e)
@@ -1192,19 +1130,19 @@ public class PermissionCommandParser
                     return wz;
             ServerWorld world = APIRegistry.namedWorldHandler.getWorld(zoneId);
             if (world != null)
-                return APIRegistry.perms.getServerZone().getWorldZone(world.dimension());
+                return APIRegistry.perms.getServerZone().getWorldZone(world);
 
-            if (arguments.senderPlayer == null)
+            if (getServerPlayer(ctx.getSource()) == null)
             {
-                arguments.error(Translator.translate("Cannot identify areas by name from console!"));
+                ChatOutputHandler.chatError(ctx.getSource(), Translator.translate("Cannot identify areas by name from console!"));
                 return null;
             }
 
-            Zone zone = APIRegistry.perms.getServerZone().getWorldZone(arguments.senderPlayer.level).getAreaZone(zoneId);
+            Zone zone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel()).getAreaZone(zoneId);
             if (zone != null)
                 return zone;
 
-            arguments.error("No zone by the name %s exists!", zoneId);
+            ChatOutputHandler.chatError(ctx.getSource(), "No zone by the name %s exists!", zoneId);
             return null;
         }
     }
@@ -1315,7 +1253,7 @@ public class PermissionCommandParser
 
     public static void listGroups(CommandSource sender) throws CommandException
     {
-        if (sender.getEntity() instanceof PlayerEntity && !PermissionAPI.hasPermission((PlayerEntity) sender.getEntity(), PERM_LIST_GROUPS))
+        if (sender.getEntity() instanceof PlayerEntity && !PermissionAPI.hasPermission(getServerPlayer(sender), PERM_LIST_GROUPS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         ChatOutputHandler.chatNotification(sender, "Groups:");
@@ -1325,7 +1263,7 @@ public class PermissionCommandParser
 
     public static void listUsers(CommandSource sender) throws CommandException
     {
-        if (sender.getEntity() instanceof PlayerEntity && !PermissionAPI.hasPermission((PlayerEntity) sender.getEntity(), PERM_LIST_USERS))
+        if (sender.getEntity() instanceof PlayerEntity && !PermissionAPI.hasPermission(getServerPlayer(sender), PERM_LIST_USERS))
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
 
         ChatOutputHandler.chatNotification(sender, "Known players:");
