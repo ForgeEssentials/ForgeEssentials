@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
@@ -29,9 +28,9 @@ public final class ScriptCompiler
 
     public static final String WRAPPER_PACKAGE = "com.forgeessentials.jscripting.wrapper";
 
-    private static String INIT_SCRIPT;
+    //private static String INIT_SCRIPT;
 
-    private static CompiledScript initScript;
+    //private static CompiledScript initScript;
 
     public static Map<String, Class<? extends JsEvent>> eventTypes = new HashMap<>();
 

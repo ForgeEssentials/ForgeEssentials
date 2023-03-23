@@ -35,7 +35,7 @@ public class CallableMap
         try
         {
             FECallable call;
-            Class c = obj.getClass();
+            Class<?> c = obj.getClass();
             if (obj instanceof ModContainer)
             {
                 c = ((ModContainer) obj).getMod().getClass();
@@ -211,13 +211,13 @@ public class CallableMap
             return method.invoke(instance, args);
         }
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("rawtypes")
         public Annotation getAnnotation(Class annot)
         {
             return method.getAnnotation(annot);
         }
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("rawtypes")
         public Annotation getClassAnnotation(Class annot)
         {
             return method.getDeclaringClass().getAnnotation(annot);

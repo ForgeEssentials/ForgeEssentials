@@ -24,10 +24,10 @@ import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
-public class ModuleContainer implements Comparable
+public class ModuleContainer implements Comparable<Object>
 {
 
-    protected static HashSet<Class> modClasses = new HashSet<Class>();
+    protected static HashSet<Class<?>> modClasses = new HashSet<Class<?>>();
 
     public Object module, mod;
 
@@ -44,11 +44,10 @@ public class ModuleContainer implements Comparable
     public boolean isLoadable = true;
     protected boolean doesOverride;
 
-    @SuppressWarnings("unchecked")
     public ModuleContainer(ModFileScanData.AnnotationData data)
     {
         // get the class....
-        Class c = null;
+        Class<?> c = null;
         className = (String)data.getAnnotationData().getClass().getName();
 
         try
@@ -93,7 +92,7 @@ public class ModuleContainer implements Comparable
         mod = handleMod(annot.parentMod());
 
         // check method annotations. they are all optional...
-        Class[] params;
+        Class<?>[] params;
         for (Method m : c.getDeclaredMethods())
         {
             if (m.isAnnotationPresent(Preconditions.class))
@@ -172,11 +171,10 @@ public class ModuleContainer implements Comparable
         }
     }
 
-    @SuppressWarnings("unchecked")
 	protected void createAndPopulate()
     {
         Field f;
-        Class c;
+        Class<?> c;
         // instantiate.
         try
         {
@@ -303,7 +301,7 @@ public class ModuleContainer implements Comparable
         return (11 + name.hashCode()) * 29 + className.hashCode();
     }
 
-    private static Object handleMod(Class modClass)
+    private static Object handleMod(Class<?> modClass)
     {
         String modid;
         Object obj = null;

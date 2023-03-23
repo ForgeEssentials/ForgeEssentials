@@ -16,7 +16,7 @@ import com.forgeessentials.util.events.ServerEventHandler;
 public class PlayerLoggerEventHandler extends ServerEventHandler
 {
 
-    private static PlayerLoggerEventHandler instance = null;
+    //private static PlayerLoggerEventHandler instance = null;
 
     // public static int pickerRange = 0;
 

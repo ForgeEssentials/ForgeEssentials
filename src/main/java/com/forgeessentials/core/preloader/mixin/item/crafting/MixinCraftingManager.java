@@ -32,7 +32,7 @@ public abstract class MixinCraftingManager
         PlayerEntity player = ModuleProtection.getCraftingPlayer(inventory);
         Iterator var2 = ForgeRegistries.RECIPE_SERIALIZERS.iterator();
 
-        IRecipe irecipe;
+        IRecipe<?> irecipe;
         do
         {
             if (!var2.hasNext())

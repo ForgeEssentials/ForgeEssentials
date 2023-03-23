@@ -372,7 +372,7 @@ public class PermissionCommandParser extends CommandUtils
     {
         checkPermission(ctx.getSource(),PERM_USER_FIX);
 
-        String fixPerm = "fe.chat." + (isPlayer ? "playerformat" : "textformat");
+        //String fixPerm = "fe.chat." + (isPlayer ? "playerformat" : "textformat");
         // TODO: Implement Player / Text Format as an option in the command
         // EX: /p user [] format [player|text] [format values]
     }
