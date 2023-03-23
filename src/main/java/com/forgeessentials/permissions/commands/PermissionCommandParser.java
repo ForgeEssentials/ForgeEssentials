@@ -83,7 +83,7 @@ public class PermissionCommandParser extends CommandUtils
     public static final String[] parseListArgs = { "zones", "perms", "users", "groups", "worlds" };
     public static final String[] parseUserArgs = { "zone", "group", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
             "denydefault" };
-    public static final String[] parseGroupArgs = { "zone", "users", "allow", "deny", "clear", "value", "true", "false", "spawn", "prefix", "suffix", "perms",
+    public static final String[] parseGroupArgs = { "zone", "users", "allow", "deny", "clear", "value", "spawn", "prefix", "suffix", "perms",
             "priority", "parent", "include", "denydefault", "create" };
     public static final String[] parseUserGroupArgs = { "add", "remove", "set" };
     public static final String[] parseGroupIncludeArgs = { "add", "remove", "clear" };
@@ -728,16 +728,7 @@ public class PermissionCommandParser extends CommandUtils
             return;
         }
 
-        // TAB-complete command
-        if (arguments.isTabCompletion && arguments.args.size() == 1)
-        {
-            arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseGroupArgs);
-            if (zone != null)
-                arguments.tabCompletion.remove("zone");
-            return;
-        }
-
-        String cmd = arguments.args.remove().toLowerCase();
+        String cmd = params.remove(0).toLowerCase();
 
         if (cmd.equals("zone"))
         {
@@ -781,7 +772,7 @@ public class PermissionCommandParser extends CommandUtils
             parseGroupPrefixSuffix(ctx, params, group, zone, true);
             break;
         case "spawn":
-            parseGroupSpawn(ctx, params, group, zone);
+            parseGroupSpawn(ctx, params, group, zone, false);
             break;
         case "priority":
             parseGroupPriority(ctx, params, group);
@@ -792,11 +783,9 @@ public class PermissionCommandParser extends CommandUtils
         case "include":
             parseGroupInclude(ctx, params, group, false);
             break;
-        case "true":
         case "allow":
             parseGroupPermissions(ctx, params, group, zone, PermissionAction.ALLOW);
             break;
-        case "false":
         case "deny":
             parseGroupPermissions(ctx, params, group, zone, PermissionAction.DENY);
             break;
@@ -829,7 +818,7 @@ public class PermissionCommandParser extends CommandUtils
         }
         else
         {
-            String fix = StringUtils.join(arguments.args, " ");
+            String fix = StringUtils.join(params, " ");
             if (fix.equalsIgnoreCase("clear"))
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "%s's %s cleared", group, fixName);
@@ -850,18 +839,9 @@ public class PermissionCommandParser extends CommandUtils
             throw new TranslatedCommandException("Missing permission argument!");
 
         // Apply permissions
-        while (!arguments.args.isEmpty())
+        //while (!arguments.args.isEmpty())
         {
-            if (arguments.isTabCompletion && arguments.args.size() == 1)
-            {
-                if (type != PermissionAction.CLEAR)
-                    arguments.tabCompletion = completePermission(arguments.args.peek());
-                else
-                    arguments.tabCompletion = completePermission(arguments.args.peek(), zone.getGroupPermissions(group).keySet());
-                return;
-            }
-
-            String permissionNode = arguments.args.remove();
+            String permissionNode = params.remove(0);
             String msg = null, value = null;
             if (type == PermissionAction.VALUE)
             {
@@ -870,8 +850,8 @@ public class PermissionCommandParser extends CommandUtils
                     ChatOutputHandler.chatConfirmation(ctx.getSource(), "Value of %s = %s", permissionNode, zone.getGroupPermission(group, permissionNode));
                     return;
                 }
-                value = StringUtils.join(arguments.args, ' ');
-                arguments.args.clear();
+                value = StringUtils.join(params, ' ');
+                params.clear();
             }
 
             switch (type)
@@ -900,12 +880,12 @@ public class PermissionCommandParser extends CommandUtils
         }
     }
 
-    public static void parseGroupSpawn(CommandContext<CommandSource> ctx, List<String> params, String group, Zone zone) throws CommandException
+    public static void parseGroupSpawn(CommandContext<CommandSource> ctx, List<String> params, String group, Zone zone, boolean commandSetspawn) throws CommandException
     {
         checkPermission(ctx.getSource(),PERM_GROUP_SPAWN);
         if (params.isEmpty())
         {
-            if (arguments.command.getName().equalsIgnoreCase("setspawn"))
+            if (commandSetspawn)
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "/setspawn here|clear|<x> <y> <z> <dim>: Set spawn location");
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "/setspawn bed (enable|disable): Enable/disable spawning at bed");
@@ -917,14 +897,8 @@ public class PermissionCommandParser extends CommandUtils
             }
             return;
         }
-        if (arguments.isTabCompletion)
-        {
-            if (arguments.args.size() == 1)
-                arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseSpawnArgs);
-            return;
-        }
 
-        String loc = arguments.args.remove().toLowerCase();
+        String loc = params.remove(0).toLowerCase();
         WarpPoint point = null;
         switch (loc)
         {
@@ -937,7 +911,7 @@ public class PermissionCommandParser extends CommandUtils
         {
             if (params.isEmpty())
                 throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
-            String val = arguments.args.peek().toLowerCase();
+            String val = params.remove(0).toLowerCase();
             if (val.equals("true") | val.equals("enable"))
             {
                 zone.setGroupPermission(group, FEPermissions.SPAWN_BED, true);
@@ -956,13 +930,15 @@ public class PermissionCommandParser extends CommandUtils
             point = null;
             break;
         default:
-            if (arguments.args.size() < 3)
+            if (params.size() < 3)
                 throw new TranslatedCommandException("Too few arguments!");
             try
             {
-                BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "position");
-                ServerWorld dimension = DimensionArgument.getDimension(ctx, "dim");
-                point = new WarpPoint(dimension, pos, 0, 0);
+                int x = CommandUtils.parseInt(loc);
+                int y = CommandUtils.parseInt(params.remove(0));
+                int z = CommandUtils.parseInt(params.remove(0));
+                String dimension = params.remove(0);
+                point = new WarpPoint(dimension, x, y, z, 0, 0);
             }
             catch (NumberFormatException e)
             {
@@ -987,12 +963,12 @@ public class PermissionCommandParser extends CommandUtils
     public static void parseGroupPriority(CommandContext<CommandSource> ctx, List<String> params, String group) throws CommandException
     {
         checkPermission(ctx.getSource(),PERM_GROUP_PERMS);
-        if (prams.isEmpty())
+        if (params.isEmpty())
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Priority for group " + group + ": " + APIRegistry.perms.getGroupPermissionProperty(group, FEPermissions.GROUP_PRIORITY));
             return;
         }
-        String priorityValue = arguments.args.remove();
+        String priorityValue = params.remove(0);
         try
         {
             APIRegistry.perms.setGroupPermissionProperty(group, FEPermissions.GROUP_PRIORITY, Integer.toString(Integer.parseInt(priorityValue)));
@@ -1007,11 +983,6 @@ public class PermissionCommandParser extends CommandUtils
     public static void parseGroupInclude(CommandContext<CommandSource> ctx, List<String> params, String group, boolean isParent) throws CommandException
     {
         checkPermission(ctx.getSource(),PERM_GROUP_PERMS);
-        if (arguments.isTabCompletion && arguments.args.size() == 1)
-        {
-            arguments.tabCompletion = CommandUtils.getListOfStringsMatchingLastWord(arguments.args.peek(), parseGroupIncludeArgs);
-            return;
-        }
 
         final String displayName1 = (isParent ? " parent" : " include");
 
@@ -1028,7 +999,7 @@ public class PermissionCommandParser extends CommandUtils
             return;
         }
 
-        String cmd = arguments.args.remove().toLowerCase();
+        String cmd = params.remove(0).toLowerCase();
         if (cmd.equals("clear"))
         {
             APIRegistry.perms.getServerZone().clearGroupPermission(group, isParent ? FEPermissions.GROUP_PARENTS : FEPermissions.GROUP_INCLUDES);
@@ -1042,22 +1013,7 @@ public class PermissionCommandParser extends CommandUtils
             return;
         }
 
-        // Auto-complete group name
-        if (arguments.isTabCompletion)
-        {
-            if (arguments.args.size() == 1)
-            {
-                arguments.tabCompletion = new ArrayList<>();
-                for (String g : APIRegistry.perms.getServerZone().getGroups())
-                {
-                    if (CommandUtils.doesStringStartWith(arguments.args.peek(), g))
-                        arguments.tabCompletion.add(g);
-                }
-            }
-            return;
-        }
-
-        String groupsName = arguments.args.remove();
+        String groupsName = params.remove(0);
         switch (cmd)
         {
         case "add":
@@ -1080,25 +1036,6 @@ public class PermissionCommandParser extends CommandUtils
     // ------------------------------------------------------------
     // -- Utils
     // ------------------------------------------------------------
-
-    public static List<String> completePermission(String permission, Collection<String> permissionSet)
-    {
-        Set<String> result = new TreeSet<>();
-        for (String perm : permissionSet)
-        {
-            int nodeIndex = perm.indexOf('.', permission.length());
-            if (nodeIndex >= 0)
-                perm = perm.substring(0, nodeIndex);
-            if (CommandUtils.doesStringStartWith(permission, perm))
-                result.add(perm);
-        }
-        return new ArrayList<>(result);
-    }
-
-    public static List<String> completePermission(String permission)
-    {
-        return completePermission(permission, APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions());
-    }
 
     public static Zone parseZone(CommandContext<CommandSource> ctx, List<String> params)
     {
