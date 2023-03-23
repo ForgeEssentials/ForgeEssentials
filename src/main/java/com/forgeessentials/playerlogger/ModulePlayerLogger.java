@@ -42,7 +42,7 @@ public class ModulePlayerLogger
 
     private static PlayerLogger logger;
 
-    //private PlayerLoggerEventHandler eventHandler;
+    private PlayerLoggerEventHandler eventHandler;
 
     /*
     @Preconditions
