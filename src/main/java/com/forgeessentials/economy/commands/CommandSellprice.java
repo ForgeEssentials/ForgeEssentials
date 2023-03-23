@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,10 +19,14 @@ import java.util.regex.Pattern;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.ItemArgument;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.datafix.fixes.FurnaceRecipes;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -34,6 +39,8 @@ import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -81,8 +88,21 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .then(Commands.literal("save")
+                        .executes(CommandContext -> execute(CommandContext, "save")
+                                )
+                        )
+                .then(Commands.literal("set")
+                        .executes(CommandContext -> execute(CommandContext, "set")
+                                )
+                        .then(Commands.argument("item", ItemArgument.item())
+                                .then(Commands.argument("price", DoubleArgumentType.doubleArg())
+                                        .executes(CommandContext -> execute(CommandContext, "set-item")
+                                                )
+                                        )
+                                )
+                        );
     }
 
     @Override
@@ -94,7 +114,6 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
             calcPriceList(ctx, null, false);
             return Command.SINGLE_SUCCESS;
         }
-        arguments.tabComplete("save", "set");
         String subArg = args.remove(0).toLowerCase();
         switch (subArg)
         {
@@ -107,6 +126,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
         default:
             break;
         }
+        return Command.SINGLE_SUCCESS;
     }
 
     public static void parseSetprice(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
@@ -117,8 +137,8 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
             return;
         }
 
-        Item item = arguments.parseItem();
-        double price = arguments.parseDouble();
+        Item item = ItemArgument.getItem(ctx, "item").getItem();
+        double price = DoubleArgumentType.getDouble(ctx, "price");
 
         String itemId = ServerUtil.getItemName(item);
         Map<String, Double> priceMap = loadPriceList(ctx);
@@ -145,9 +165,9 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
         {
             try (BufferedWriter craftRecipes = new BufferedWriter(new FileWriter(craftRecipesFile)))
             {
-                for (Iterator<IRecipe> iterator = CraftingManager.REGISTRY.iterator(); iterator.hasNext();)
+                Collection<IRecipe<?>> recpies = ServerLifecycleHooks.getCurrentServer().overworld().getRecipeManager().getRecipes();
+                for(IRecipe<?> recipe : recpies)
                 {
-                    IRecipe recipe = iterator.next();
                     if (recipe.getResultItem() == ItemStack.EMPTY)
                     {
                         continue;
@@ -165,7 +185,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                         if (ingredient != null)
                         {
                             ItemStack stack = null;
-                            ItemStack[] stacks = ingredient.getMatchingStacks();
+                            ItemStack[] stacks = ingredient.getItems();
                             if (stacks != null && stacks.length > 0)
                             {
                                 stack = stacks[0];
@@ -198,15 +218,15 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                 changedAnyPrice = false;
 
                 @SuppressWarnings("unchecked")
-                Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.instance().getSmeltingList());
+                //Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.instance().getSmeltingList());
 
                 boolean changedPrice;
                 do
                 {
                     changedPrice = false;
-                    for (Iterator<IRecipe> iterator = CraftingManager.REGISTRY.iterator(); iterator.hasNext();)
+                    Collection<IRecipe<?>> recpies = ServerLifecycleHooks.getCurrentServer().overworld().getRecipeManager().getRecipes();
+                    for(IRecipe<?> recipe : recpies)
                     {
-                        IRecipe recipe = iterator.next();
                         if (recipe.getResultItem() == ItemStack.EMPTY)
                         {
                             continue;
@@ -228,7 +248,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                                     if (ingredient != null)
                                     {
                                         ItemStack stack = null;
-                                        ItemStack[] stacks = ingredient.getMatchingStacks();
+                                        ItemStack[] stacks = ingredient.getItems();
                                         if (stacks != null && stacks.length > 0)
                                         {
                                             stack = stacks[0];
@@ -242,7 +262,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                             }
                         }
                     }
-
+                    /*
                     for (Iterator<Entry<ItemStack, ItemStack>> iterator = furnaceRecipes.entrySet().iterator(); iterator.hasNext();)
                     {
                         Entry<ItemStack, ItemStack> recipe = iterator.next();
@@ -261,7 +281,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                                 changedPrice = true;
                             }
                         }
-                    }
+                    }*/
                     changedAnyPrice |= changedPrice;
                 }
                 while (changedPrice);
@@ -447,12 +467,12 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static List<Ingredient> getRecipeItems(IRecipe recipe)
+    public static List<Ingredient> getRecipeItems(IRecipe<?> recipe)
     {
         return recipe.getIngredients();
     }
 
-    public static double getRecipePrice(IRecipe recipe, Map<String, Double> priceMap, Map<String, Double> priceMapFull)
+    public static double getRecipePrice(IRecipe<?> recipe, Map<String, Double> priceMap, Map<String, Double> priceMapFull)
     {
         double price = 0;
         List<Ingredient> stackList = getRecipeItems(recipe);
@@ -464,7 +484,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
             if (ingredient != null)
             {
                 Double itemPrice = null;
-                ItemStack[] stacks = ingredient.getMatchingStacks();
+                ItemStack[] stacks = ingredient.getItems();
                 for (ItemStack stack : stacks)
                 {
                     if (stack == ItemStack.EMPTY)

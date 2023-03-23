@@ -35,12 +35,7 @@ public final class ItemUtil
 
     public static String getItemIdentifier(ItemStack itemStack)
     {
-        String id = itemStack.getDescriptionId();
-        int itemDamage = getItemDamage(itemStack);
-        if (itemDamage == 0 || itemDamage == 32767)
-            return id;
-        else
-            return id + ":" + itemDamage;
+        return itemStack.getDescriptionId();
     }
 
     public static boolean isItemFrame(HangingEntity entity)

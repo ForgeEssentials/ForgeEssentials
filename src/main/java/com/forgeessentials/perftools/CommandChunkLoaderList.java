@@ -1,35 +1,27 @@
 package com.forgeessentials.perftools;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.server.Ticket;
-import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.google.common.collect.HashMultimap;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
 {
@@ -53,49 +45,64 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder;
+        return builder
+                .then(Commands.literal("player")
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(CommandContext -> execute(CommandContext, "player")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("modname")
+                        .then(Commands.argument("modname", StringArgumentType.greedyString())
+                                .suggests(SUGGEST_mods)
+                                .executes(CommandContext -> execute(CommandContext, "modname")
+                                        )
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "all")
+                        );
     }
-
+    public static final SuggestionProvider<CommandSource> SUGGEST_mods = (ctx, builder) -> {
+        List<String> modList = new ArrayList<>();
+        for(String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList())) {
+            modList.add(ModList.get().<ModContainer>getModObjectById(id).orElse(null).getModId());
+            modList.add(ModList.get().<ModContainer>getModObjectById(id).orElse(null).getModInfo().getDisplayName());
+        }
+        return ISuggestionProvider.suggest(modList, builder);
+     };
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
         String key = "*";
-        if (args.length != 0)
+        if (!params.toString().equals("all"))
         {
-            String target = "";
-            for (String s : args)
+            if (params.toString().equals("player")) 
             {
-                target = target + " " + s;
-            }
-            target = target.substring(1).trim();
-
-            List<String> allUsernames = Arrays.asList(ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerNamesArray());
-            for (String username : allUsernames)
-            {
-                if (username.equalsIgnoreCase(target))
-                {
-                    key = "p:" + username;
-                    break;
-                }
+                key = "p:" + EntityArgument.getPlayer(ctx, "players").getDisplayName().getString();
             }
 
-            List<ModContainer> modList = new ArrayList<>();
-            for(String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList())) {
-                modList.add(ModList.get().<ModContainer>getModObjectById(id).orElse(null));
-            }
-            for (ModContainer mod :  modList)
+            if (params.toString().equals("modname")) 
             {
-                if (mod.getModId().equalsIgnoreCase(target))
-                {
-                    key = "m:" + mod.getModId();
+                List<ModContainer> modList = new ArrayList<>();
+                for(String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList())) {
+                    modList.add(ModList.get().<ModContainer>getModObjectById(id).orElse(null));
                 }
-                else if (mod.getModId().equalsIgnoreCase(target))
+                for (ModContainer mod :  modList)
                 {
-                    key = "m:" + mod.getModId();
+                    String modid = StringArgumentType.getString(ctx, "modname");
+                    if (mod.getModInfo().getDisplayName().equalsIgnoreCase(modid))
+                    {
+                        key = "m:" + mod.getModId();
+                    }
+                    else if (mod.getModId().equalsIgnoreCase(modid))
+                    {
+                        key = "m:" + mod.getModId();
+                    }
                 }
             }
         }
         list(ctx, key);
+        return Command.SINGLE_SUCCESS;
     }
 
     @Override
@@ -107,12 +114,14 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
 
     private void list(CommandContext<CommandSource> ctx, String key)
     {
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Key= "+key);
         for (ServerWorld i : ServerLifecycleHooks.getCurrentServer().getAllLevels())
         {
-            list(ctx, i.dimension().location().toString(), key);
+            ChatOutputHandler.chatNotification(ctx.getSource(), "Dimension: "+i.dimension().location().toString());
+            //list(ctx, i.dimension().location().toString(), key);
         }
     }
-
+/*
     private void list(CommandContext<CommandSource> ctx, String dim, String key)
     {
         ServerWorld world = ServerUtil.getWorldFromString(dim);
@@ -198,13 +207,13 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
             }
         }
     }
-
+*/
     @Override
     public boolean canConsoleUseCommand()
     {
         return false;
     }
-
+/*
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
@@ -224,7 +233,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
         }
         return null;
     }
-
+*/
     @Override
     public DefaultPermissionLevel getPermissionLevel()
     {
