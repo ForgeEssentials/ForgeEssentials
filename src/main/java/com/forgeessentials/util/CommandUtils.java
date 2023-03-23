@@ -75,7 +75,17 @@ public class CommandUtils
             throw new NumberFormatException();
         }
     }
-
+    public static long parseLong(String input) throws CommandException
+    {
+        try
+        {
+            return Long.parseLong(input);
+        }
+        catch (NumberFormatException e)
+        {
+            throw new TranslatedCommandException("Invalid number: %s", input);
+        }
+    }
     public static double parseDouble(String input, double min) throws NumberFormatException
     {
         return parseDouble(input, min, Double.MAX_VALUE);

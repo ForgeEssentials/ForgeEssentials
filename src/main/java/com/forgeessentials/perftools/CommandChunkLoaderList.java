@@ -53,8 +53,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder;
     }
 
     @Override

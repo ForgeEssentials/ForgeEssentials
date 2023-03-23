@@ -4,9 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,19 +12,13 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.RootZone;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigLoader;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements ConfigLoader
+public class CommandFeSettings extends ForgeEssentialsCommandBuilder //implements ConfigLoader
 {
 
     public CommandFeSettings(boolean enabled)
@@ -85,8 +77,9 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements 
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .executes(CommandContext -> execute(CommandContext, "help")
+                        );
     }
 
     @Override
@@ -97,7 +90,7 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements 
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Available settings: " + StringUtils.join(aliases.keySet(), ", "));
             return Command.SINGLE_SUCCESS;
         }
-
+        /*
         arguments.tabComplete(aliases.keySet());
         String key = arguments.remove().toLowerCase();
         String perm = aliases.get(key);
@@ -125,6 +118,8 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements 
 
         APIRegistry.perms.registerPermissionProperty(perm, value);
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Changed setting \"%s\" to \"%s\"", key, value);
+        */
+        return Command.SINGLE_SUCCESS;
     }
 
     public void loadSettings()
@@ -136,19 +131,25 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements 
             if (defaultValue == null)
                 defaultValue = "";
             String desc = APIRegistry.perms.getPermissionDescription(setting.getValue());
-            String help = String.format("%s = %s\n%s", setting.getValue(), defaultValue, desc);
-            String[] aliasParts = setting.getKey().split("\\.", 2);
-            String value = config.get(aliasParts[0], aliasParts[1], "", help).getString();
-            if (!value.isEmpty())
-                APIRegistry.perms.registerPermissionProperty(setting.getValue(), value);
+            if(desc!=null) {
+                APIRegistry.perms.registerPermissionProperty(setting.getValue(), defaultValue, desc);
+            }
+            else {
+                APIRegistry.perms.registerPermissionProperty(setting.getValue(), defaultValue);
+            }
+            //String help = String.format("%s = %s\n%s", setting.getValue(), defaultValue, desc);
+            //String[] aliasParts = setting.getKey().split("\\.", 2);
+            //String value = config.get(aliasParts[0], aliasParts[1], "", help).getString();
+            //if (!value.isEmpty())
+                //APIRegistry.perms.registerPermissionProperty(setting.getValue(), defaultValue);
         }
-        config.save();
+        //config.save();
     }
-
+/*
 	@Override
 	public void load(Builder BUILDER, boolean isReload)
     {
-        this.config = config;
+        //this.config = config;
         if (isReload)
             loadSettings();
     }
@@ -165,5 +166,5 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder implements 
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+*/
 }

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,8 @@ import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -86,48 +89,46 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (arguments.isEmpty())
+        List<String> args = Arrays.asList(params.toString().split("-")); 
+        if (args.isEmpty())
         {
-            calcPriceList(arguments, false);
-            return;
+            calcPriceList(ctx, null, false);
+            return Command.SINGLE_SUCCESS;
         }
-
         arguments.tabComplete("save", "set");
-        String subArg = arguments.remove().toLowerCase();
+        String subArg = args.remove(0).toLowerCase();
         switch (subArg)
         {
         case "save":
-            calcPriceList(arguments, true);
+            calcPriceList(ctx, args, true);
             break;
         case "set":
-            parseSetprice(arguments);
+            parseSetprice(ctx, args);
             break;
         default:
             break;
         }
     }
 
-    public static void parseSetprice(CommandParserArgs arguments) throws CommandException
+    public static void parseSetprice(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
     {
-        if (arguments.isEmpty())
+        if (args.isEmpty())
         {
-            arguments.confirm("/sellprice set <item> <price>");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/sellprice set <item> <price>");
             return;
         }
 
         Item item = arguments.parseItem();
         double price = arguments.parseDouble();
-        if (arguments.isTabCompletion)
-            return;
 
         String itemId = ServerUtil.getItemName(item);
-        Map<String, Double> priceMap = loadPriceList(arguments);
+        Map<String, Double> priceMap = loadPriceList(ctx);
         priceMap.put(itemId, price);
         writeMap(priceMap, priceFile);
-        arguments.confirm(Translator.format("Set price for %s to %d", itemId, (int) price));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set price for %s to %d", itemId, (int) price));
     }
 
-    public static void calcPriceList(CommandParserArgs arguments, boolean save)
+    public static void calcPriceList(CommandContext<CommandSource> ctx, List<String> args, boolean save)
     {
         /*
          * Map<Item, Double> priceMap = new TreeMap<>(new Comparator<Item>() {
@@ -135,7 +136,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
          * @Override public int compare(Item a, Item b) { try { String aId = Item.REGISTRY.getNameForObject(a); String bId = Item.REGISTRY.getNameForObject(b); return
          * aId.compareTo(bId); } catch (Exception e) { return 0; } } });
          */
-        Map<String, Double> priceMap = loadPriceList(arguments);
+        Map<String, Double> priceMap = loadPriceList(ctx);
         Map<String, Double> priceMapFull = new TreeMap<>();
 
         File craftRecipesFile = new File(ForgeEssentials.getFEDirectory(), "craft_recipes.txt");
@@ -192,7 +193,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                 iterateCount++;
                 if (iterateCount > 16)
                 {
-                    arguments.error("WARNING: Infinite loop found in recipes. Cannot calculate prices reliably!");
+                    ChatOutputHandler.chatError(ctx.getSource(), "WARNING: Infinite loop found in recipes. Cannot calculate prices reliably!");
                     return;
                 }
                 changedAnyPrice = false;
@@ -295,16 +296,16 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                         Integer.toString((int) Math.floor(entry.getValue())));
             }
             config.save();
-            arguments.confirm("Calculated and saved new price table");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Calculated and saved new price table");
         }
         else
         {
-            arguments.confirm("Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into Economy.cfg");
-            arguments.confirm("You can also use [/calcpricelist save] to directly save the calculated prices");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Calculated new prices. Copy the prices you want to use from ./ForgeEssentials/prices.txt into Economy.cfg");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "You can also use [/calcpricelist save] to directly save the calculated prices");
         }
     }
 
-    private static Map<String, Double> loadPriceList(CommandParserArgs arguments)
+    private static Map<String, Double> loadPriceList(CommandContext<CommandSource> ctx)
     {
         Map<String, Double> priceMap = new TreeMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(priceFile)))
@@ -328,7 +329,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
         }
         catch (IOException e)
         {
-            arguments.warn(String.format("Could not load %s. Using default values", priceFile.getName()));
+            ChatOutputHandler.chatWarning(ctx.getSource(), String.format("Could not load %s. Using default values", priceFile.getName()));
             initializeDefaultPrices(priceMap);
         }
         return priceMap;

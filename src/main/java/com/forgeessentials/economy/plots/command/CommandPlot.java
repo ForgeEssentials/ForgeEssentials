@@ -1,6 +1,7 @@
 package com.forgeessentials.economy.plots.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.TreeSet;
 import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.server.ServerWorld;
@@ -33,8 +36,6 @@ import com.forgeessentials.economy.plots.Plot;
 import com.forgeessentials.economy.plots.Plot.PlotRedefinedException;
 import com.forgeessentials.protection.MobType;
 import com.forgeessentials.protection.ModuleProtection;
-import com.forgeessentials.util.CommandParserArgs;
-import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.EventCancelledException;
@@ -43,9 +44,13 @@ import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.LongArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 public class CommandPlot extends ForgeEssentialsCommandBuilder
 {
@@ -116,14 +121,173 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return builder
+                .then(Commands.literal("list")
+                        .then(Commands.literal("own")
+                                .executes(CommandContext -> execute(CommandContext, "list-own")
+                                        )
+                                )
+                        .then(Commands.literal("sale")
+                                .executes(CommandContext -> execute(CommandContext, "list-sale")
+                                        )
+                                )
+                        .then(Commands.literal("all")
+                                .executes(CommandContext -> execute(CommandContext, "list-all")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("define")
+                        .executes(CommandContext -> execute(CommandContext, "define")
+                                )
+                        )
+                .then(Commands.literal("claim")
+                        .executes(CommandContext -> execute(CommandContext, "claim")
+                                )
+                        )
+                .then(Commands.literal("set")
+                        .then(Commands.literal("price")
+                                .executes(CommandContext -> execute(CommandContext, "set-price")
+                                        )
+                                .then(Commands.literal("clear")
+                                        .executes(CommandContext -> execute(CommandContext, "set-price-clear")
+                                                )
+                                        )
+                                .then(Commands.argument("amount", IntegerArgumentType.integer())
+                                        .executes(CommandContext -> execute(CommandContext, "set-price-"+Integer.toString(IntegerArgumentType.getInteger(CommandContext, "amount")))
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("fee")
+                                .executes(CommandContext -> execute(CommandContext, "set-fee")
+                                        )
+                                .then(Commands.argument("amount", IntegerArgumentType.integer())
+                                        .then(Commands.argument("timeout", IntegerArgumentType.integer())
+                                                .executes(CommandContext -> execute(CommandContext, "set-fee-"+Integer.toString(IntegerArgumentType.getInteger(CommandContext, "amount"))+"-"+Integer.toString(IntegerArgumentType.getInteger(CommandContext, "timeout")))
+                                                        )
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("name")
+                                .then(Commands.argument("name", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "set-name-"+StringArgumentType.getString(CommandContext, "name"))
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("owner")
+                                .then(Commands.argument("player", StringArgumentType.word())
+                                        .executes(CommandContext -> execute(CommandContext, "set-owner-"+StringArgumentType.getString(CommandContext, "player"))
+                                                )
+                                        )
+                                )
+                        )
+                .then(Commands.literal("guestperms")
+                        .executes(CommandContext -> execute(CommandContext, "guestperms")
+                                )
+                        .then(Commands.argument("type", StringArgumentType.greedyString())
+                                .suggests(SUGGEST_PermTypes)
+                                .then(Commands.literal("allow")
+                                        .executes(CommandContext -> execute(CommandContext, "guestperms-"+StringArgumentType.getString(CommandContext, "type")+"-allow")
+                                                )
+                                        )
+                                .then(Commands.literal("deny")
+                                        .executes(CommandContext -> execute(CommandContext, "guestperms-"+StringArgumentType.getString(CommandContext, "type")+"-deny")
+                                                )
+                                        )
+                                )
+                        )
+                .then(Commands.literal("select")
+                        .executes(CommandContext -> execute(CommandContext, "select")
+                                )
+                        )
+                .then(Commands.literal("userperms")
+                        .executes(CommandContext -> execute(CommandContext, "userperms")
+                                )
+                        .then(Commands.argument("type", StringArgumentType.greedyString())
+                                .suggests(SUGGEST_PermTypes)
+                                .then(Commands.literal("allow")
+                                        .executes(CommandContext -> execute(CommandContext, "userperms-"+StringArgumentType.getString(CommandContext, "type")+"-allow")
+                                                )
+                                        )
+                                .then(Commands.literal("deny")
+                                        .executes(CommandContext -> execute(CommandContext, "userperms-"+StringArgumentType.getString(CommandContext, "type")+"-deny")
+                                                )
+                                        )
+                                )
+                        )
+                .then(Commands.literal("mods")
+                        .executes(CommandContext -> execute(CommandContext, "mods")
+                                )
+                        .then(Commands.literal("add")
+                                .then(Commands.argument("player", StringArgumentType.word())
+                                        .executes(CommandContext -> execute(CommandContext, "mods-add-"+StringArgumentType.getString(CommandContext, "player"))
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("remove")
+                                .then(Commands.argument("player", StringArgumentType.word())
+                                        .executes(CommandContext -> execute(CommandContext, "mods-remove-"+StringArgumentType.getString(CommandContext, "player"))
+                                                )
+                                        )
+                                )
+                                  
+                        )
+                .then(Commands.literal("users")
+                        .executes(CommandContext -> execute(CommandContext, "users")
+                                )
+                        .then(Commands.literal("add")
+                                .then(Commands.argument("player", StringArgumentType.word())
+                                        .executes(CommandContext -> execute(CommandContext, "users-add-"+StringArgumentType.getString(CommandContext, "player"))
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("remove")
+                                .then(Commands.argument("player", StringArgumentType.word())
+                                        .executes(CommandContext -> execute(CommandContext, "users-remove-"+StringArgumentType.getString(CommandContext, "player"))
+                                                )
+                                        )
+                                )
+                        )
+                .then(Commands.literal("limits")
+                        .executes(CommandContext -> execute(CommandContext, "limits")
+                                )
+                        )
+                .then(Commands.literal("buy")
+                        .executes(CommandContext -> execute(CommandContext, "buy")
+                                )
+                        .then(Commands.argument("amount", LongArgumentType.longArg())
+                                .executes(CommandContext -> execute(CommandContext, "buy-"+Long.toString(LongArgumentType.getLong(CommandContext, "amount")))
+                                        )
+                                )
+                        )
+                .then(Commands.literal("sell")
+                        .executes(CommandContext -> execute(CommandContext, "sell")
+                                )
+                        )
+                .then(Commands.literal("delete")
+                        .executes(CommandContext -> execute(CommandContext, "delete")
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "help")
+                        );
     }
+
+    public static final SuggestionProvider<CommandSource> SUGGEST_PermTypes = (ctx, builder) -> {
+        List<String> listArgs = new ArrayList<>();
+        listArgs.add("build");
+        listArgs.add("interact");
+        listArgs.add("use");
+        listArgs.add("chest");
+        listArgs.add("button");
+        listArgs.add("lever");
+        listArgs.add("door");
+        listArgs.add("animal");
+        return ISuggestionProvider.suggest(listArgs, builder);
+        };
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        if (params.toString() == "blank")
+        if (params.toString() == "help")
         {
             if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),Plot.PERM_LIST))
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "/plot list [own|sale|all]: List plots");
@@ -140,8 +304,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                     .translate("/plot buy [amount]: Buy the plot you are standing in. Owner needs to approve the transaction if plot is not up for sale"));
             return Command.SINGLE_SUCCESS;
         }
-
-        //arguments.tabComplete("define", "claim", "list", "select", "set", "perms", "userperms", "mods", "users", "limits", "buy", "sell", "delete");
+        List<String> args = Arrays.asList(params.toString().split("-"));
         String subcmd = params.toString();
         switch (subcmd)
         {
@@ -155,7 +318,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             parseClaim(ctx);
             break;
         case "list":
-            parseList(ctx);
+            parseList(ctx, args);
             break;
         case "limits":
             parseLimits(ctx);
@@ -164,22 +327,22 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             parseSelect(ctx);
             break;
         case "mods":
-            parseMods(ctx, false);
+            parseMods(ctx, args, false);
             break;
         case "users":
-            parseMods(ctx, true);
+            parseMods(ctx, args, true);
             break;
         case "set":
-            parseSet(ctx);
+            parseSet(ctx, args);
             break;
-        case "perms":
-            parsePerms(ctx, false);
+        case "guestperms":
+            parsePerms(ctx, args, false);
             break;
         case "userperms":
-            parsePerms(ctx, true);
+            parsePerms(ctx, args, true);
             break;
         case "buy":
-            parseBuyStart(ctx);
+            parseBuyStart(ctx, args);
             break;
         case "sell":
             throw new TranslatedCommandException("Not yet implemented. Use \"/plot set price\" instead.");
@@ -340,17 +503,16 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             throw new TranslatedCommandException("You have reached your limit of %s blocks^2 already!", limitSize);
     }
 
-    public static void parseList(final CommandContext<CommandSource> ctx) throws CommandException
+    public static void parseList(final CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
         checkPermission(ctx.getSource(), Plot.PERM_LIST);
 
         PlotListingType listType = PlotListingType.OWN;
-        if (!arguments.isEmpty())
+        if (params.isEmpty())
         {
-            arguments.tabComplete(PlotListingType.stringValues());
             try
             {
-                listType = PlotListingType.valueOf(arguments.remove().toUpperCase());
+                listType = PlotListingType.valueOf(params.remove(0).toUpperCase());
             }
             catch (IllegalArgumentException e)
             {
@@ -419,14 +581,14 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Selected plot");
     }
 
-    public static void parseMods(CommandContext<CommandSource> ctx, boolean modifyUsers) throws CommandException
+    public static void parseMods(CommandContext<CommandSource> ctx, List<String> params, boolean modifyUsers) throws CommandException
     {
         Plot plot = getPlot(ctx.getSource());
         String type = modifyUsers ? "users" : "mods";
         String group = modifyUsers ? Plot.GROUP_PLOT_USER : Plot.GROUP_PLOT_MOD;
 
         checkPermission(ctx.getSource(), Plot.PERM_MODS);
-        if (arguments.isEmpty())
+        if (params.isEmpty())
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/plot " + type + " add|remove <player>: Add / remove " + type);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Plot " + type + ":");
@@ -435,10 +597,9 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                     ChatOutputHandler.chatConfirmation(ctx.getSource(), "  " + user.getUsernameOrUuid());
             return;
         }
-        arguments.tabComplete("add", "remove");
-        String action = arguments.remove().toLowerCase();
+        String action = params.remove(0).toLowerCase();
 
-        UserIdent player = arguments.parsePlayer(true, false);
+        UserIdent player = parsePlayer(params.remove(0),null, true, false);
 
         switch (action)
         {
@@ -455,9 +616,9 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static void parseSet(CommandContext<CommandSource> ctx) throws CommandException
+    public static void parseSet(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-        if (arguments.isEmpty())
+        if (params.isEmpty())
         {
             if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),Plot.PERM_SET_PRICE))
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "/plot set price: Put up plot for sale");
@@ -468,31 +629,30 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             return;
         }
 
-        arguments.tabComplete("price", "fee", "name", "owner");
-        String subcmd = arguments.remove().toLowerCase();
+        String subcmd = params.remove(0).toLowerCase();
         switch (subcmd)
         {
         case "price":
-            parseSetPrice(ctx);
+            parseSetPrice(ctx, params);
             break;
         case "fee":
-            parseSetFee(ctx);
+            parseSetFee(ctx, params);
             break;
         case "name":
-            parseSetName(ctx);
+            parseSetName(ctx, params);
             break;
         case "owner":
-            parseSetOwner(ctx);
+            parseSetOwner(ctx, params);
             break;
         default:
             break;
         }
     }
 
-    public static void parseSetPrice(CommandContext<CommandSource> ctx) throws CommandException
+    public static void parseSetPrice(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
         Plot plot = getPlot(ctx.getSource());
-        if (arguments.isEmpty())
+        if (params.isEmpty())
         {
             if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),Plot.PERM_SET_PRICE))
             {
@@ -508,8 +668,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         }
         checkPermission(ctx.getSource(), Plot.PERM_SET_PRICE);
 
-        arguments.tabComplete("clear");
-        String priceStr = arguments.remove().toLowerCase();
+        String priceStr = params.remove(0).toLowerCase();
         int price = -1;
         if (!priceStr.equals("clear"))
             price = parseInt(priceStr);
@@ -526,10 +685,10 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static void parseSetFee(CommandContext<CommandSource> ctx) throws CommandException
+    public static void parseSetFee(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
         Plot plot = getPlot(ctx.getSource());
-        if (arguments.isEmpty())
+        if (params.isEmpty())
         {
             if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),Plot.PERM_SET_FEE))
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.translate("/plot set fee <amount> <timeout>: Set fee (WIP)")); // TODO WIP
@@ -539,18 +698,18 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         }
         checkPermission(ctx.getSource(), Plot.PERM_SET_FEE);
 
-        int amount = arguments.parseInt();
-        int timeout = arguments.parseInt();
+        int amount = parseInt(params.remove(0));
+        int timeout = parseInt(params.remove(0));
 
         plot.setFee(amount);
         plot.setFeeTimeout(timeout);
         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set plot price to %s and timeout to %d", APIRegistry.economy.toString(amount), timeout));
     }
 
-    public static void parseSetName(CommandContext<CommandSource> ctx) throws CommandException
+    public static void parseSetName(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
         Plot plot = getPlot(ctx.getSource());
-        if (arguments.isEmpty())
+        if (params.isEmpty())
         {
             if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),Plot.PERM_SET_NAME))
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "/plot set name <name>: Set plot name");
@@ -560,16 +719,16 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Current plot name: %s", name));
             return;
         }
-        String name = arguments.toString();
+        String name = params.toString();
         checkPermission(ctx.getSource(), Plot.PERM_SET_NAME);
         plot.getZone().setGroupPermissionProperty(Plot.GROUP_ALL, Plot.PERM_NAME, name);
         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set plot name to \"%s\"", name));
     }
 
-    public static void parseSetOwner(CommandContext<CommandSource> ctx) throws CommandException
+    public static void parseSetOwner(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
         Plot plot = getPlot(ctx.getSource());
-        if (arguments.isEmpty())
+        if (params.isEmpty())
         {
             if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),Plot.PERM_SET_OWNER))
             {
@@ -582,41 +741,35 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Current plot owner: %s", owner.getUsernameOrUuid()));
             return;
         }
-        UserIdent newOwner = arguments.parsePlayer(true, false);
+        UserIdent newOwner = parsePlayer(params.remove(0), null, true, false);
         checkPermission(ctx.getSource(), Plot.PERM_SET_OWNER);
         plot.setOwner(newOwner);
         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set plot owner to \"%s\"", newOwner.getUsernameOrUuid()));
     }
 
-    public static void parsePerms(CommandContext<CommandSource> ctx, boolean userPerms) throws CommandException
+    public static void parsePerms(CommandContext<CommandSource> ctx, List<String> params, boolean userPerms) throws CommandException
     {
         final String[] tabCompletion = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
 
         checkPermission(ctx.getSource(), Plot.PERM_PERMS);
         Plot plot = getPlot(ctx.getSource());
-        if (arguments.isEmpty())
+        if (params.isEmpty())
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/plot perms <type> true|false: Control what other players can do in a plot");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Possible perms: %s", StringUtils.join(tabCompletion, ", ")));
             return;
         }
 
-        arguments.tabComplete(tabCompletion);
-        String perm = arguments.remove().toLowerCase();
+        String perm = params.remove(0).toLowerCase();
 
-        arguments.tabComplete("yes", "no", "true", "false", "allow", "deny");
-        String allowDeny = arguments.remove().toLowerCase();
+        String allowDeny = params.remove(0).toLowerCase();
 
         boolean allow;
         switch (allowDeny)
         {
-        case "yes":
-        case "true":
         case "allow":
             allow = true;
             break;
-        case "no":
-        case "false":
         case "deny":
             allow = false;
             break;
@@ -687,7 +840,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static void parseBuyStart(final CommandContext<CommandSource> ctx) throws CommandException
+    public static void parseBuyStart(final CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
         final Plot plot = getPlot(ctx.getSource());
         if (plot == null)
@@ -700,9 +853,9 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         final long plotPrice = plot.getCalculatedPrice();
         final long sellPrice = plot.getPrice();
         final long buyPrice;
-        if (!arguments.isEmpty())
+        if (!params.isEmpty())
         {
-            buyPrice = arguments.parseLong();
+            buyPrice = parseLong(params.remove(0));
             if (sellPrice >= 0 && sellPrice < buyPrice)
                 ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("%s is above the plots default price of %s", APIRegistry.economy.toString(buyPrice),
                         APIRegistry.economy.toString(sellPrice)));
