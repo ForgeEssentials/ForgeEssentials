@@ -1,7 +1,8 @@
 package com.forgeessentials.worldborder.effect;
 
+import java.util.List;
+
 import com.forgeessentials.commons.selections.WarpPoint;
-import com.forgeessentials.util.CommandParserArgs;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
@@ -14,7 +15,7 @@ public class EffectKnockback extends WorldBorderEffect
 {
 
     @Override
-    public void provideArguments(CommandParserArgs args) throws CommandException
+    public void provideArguments(List<String> args) throws CommandException
     {
     }
 

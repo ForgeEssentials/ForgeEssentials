@@ -10,7 +10,6 @@ import com.forgeessentials.jscripting.wrapper.mc.entity.JsEntityPlayer;
 import com.forgeessentials.jscripting.wrapper.mc.item.JsItem;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsBlock;
 import com.forgeessentials.jscripting.wrapper.mc.world.JsServerWorld;
-import com.forgeessentials.util.CommandParserArgs;
 
 public class JsCommandArgs extends JsWrapper<CommandParserArgs>
 {

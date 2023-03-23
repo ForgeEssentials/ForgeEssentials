@@ -1,6 +1,7 @@
 package com.forgeessentials.worldborder.effect;
 
-import com.forgeessentials.util.CommandParserArgs;
+import java.util.List;
+
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
@@ -10,7 +11,7 @@ import com.forgeessentials.worldborder.WorldBorderEffect;
 public class EffectBlock extends WorldBorderEffect
 {
     @Override
-    public void provideArguments(CommandParserArgs args) throws CommandException
+    public void provideArguments(List<String> args) throws CommandException
     {
     }
 

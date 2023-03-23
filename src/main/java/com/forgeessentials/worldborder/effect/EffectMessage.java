@@ -3,9 +3,11 @@ package com.forgeessentials.worldborder.effect;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
+import java.util.List;
+
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.util.CommandParserArgs;
+import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.worldborder.WorldBorder;
@@ -22,11 +24,11 @@ public class EffectMessage extends WorldBorderEffect
     public int interval = 6000;
 
     @Override
-    public void provideArguments(CommandParserArgs args) throws CommandException
+    public void provideArguments(List<String> args) throws CommandException
     {
         if (args.isEmpty())
             throw new TranslatedCommandException("Missing interval argument");
-        interval = args.parseInt();
+        interval = CommandUtils.parseInt(args.remove(0));
 
         if (args.isEmpty())
             throw new TranslatedCommandException("Missing message argument");
