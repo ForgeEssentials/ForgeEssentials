@@ -34,11 +34,14 @@ public class FEConfig extends ConfigLoaderBase
 
     public static SimpleDateFormat FORMAT_TIME_SECONDS = new SimpleDateFormat("HH:mm:ss");
 
+    public static SimpleDateFormat FORMAT_GSON_COMPAT = new SimpleDateFormat("MMM d, yyyy h:mm:ss aa");
+
     static ForgeConfigSpec.ConfigValue<String> FEFORMAT_DATE;
     static ForgeConfigSpec.ConfigValue<String> FEFORMAT_DATE_TIME;
     static ForgeConfigSpec.ConfigValue<String> FEFORMAT_DATE_TIME_SECONDS;
     static ForgeConfigSpec.ConfigValue<String> FEFORMAT_TIME;
     static ForgeConfigSpec.ConfigValue<String> FEFORMAT_TIME_SECONDS;
+    static ForgeConfigSpec.ConfigValue<String> FEFORMAT_GSON_COMPAT;
     static ForgeConfigSpec.ConfigValue<String> FEmodlistLocation;
     static ForgeConfigSpec.IntValue FEmajoritySleep;
     static ForgeConfigSpec.BooleanValue FEcheckSpacesInNames;
@@ -57,6 +60,8 @@ public class FEConfig extends ConfigLoaderBase
                 .define("format_time", "HH:mm");
         FEFORMAT_TIME_SECONDS = BUILDER.comment("Time-only format with seconds")
                 .define("format_time_seconds", "HH:mm:ss");
+        FEFORMAT_GSON_COMPAT = BUILDER.comment("Extra Time format to Load GSON data from a different locale and convert it!")
+                .define("format_gson_compat", "MMM d, yyyy h:mm:ss aa");
         FEmodlistLocation = BUILDER.comment("Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.")
                 .define("modlistLocation", "modlist.txt");
         BUILDER.pop();

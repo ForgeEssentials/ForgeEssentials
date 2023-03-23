@@ -87,6 +87,7 @@ import com.forgeessentials.util.selections.CommandExpandY;
 import com.forgeessentials.util.selections.CommandPos1;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionHandler;
+import com.google.gson.JsonParseException;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
@@ -395,10 +396,15 @@ public class ForgeEssentials extends ConfigLoaderBase
     {
         if (event.getEntity() instanceof PlayerEntity)
         {
-        	PlayerEntity player = (PlayerEntity) event.getPlayer();
+        	ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
             UserIdent.login(player);
             PlayerInfo.login(player.getUUID());
-
+            try {
+                PlayerInfo.login(player.getUUID());
+            } catch (JsonParseException e) {
+                player.connection.disconnect(new TranslationTextComponent("Unable to Parse PlayerInfo file, please contact your admin for assistance and ask them to check the log!"));
+                LoggingHandler.felog.fatal("Unable to Parse PlayerInfo file!  If this is date related, please check S:format_gson_compat in your main.cfg file!", e);
+            }
             if (FEConfig.checkSpacesInNames)
             {
                 Pattern pattern = Pattern.compile("\\s");
