@@ -6,14 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +19,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.datafix.fixes.FurnaceRecipes;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -40,7 +33,6 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -178,8 +170,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                         continue;
                     }
                     craftRecipes
-                            .write(String.format("%s:%d\n", ServerUtil.getItemName(recipe.getResultItem().getItem()),
-                                    ItemUtil.getItemDamage(recipe.getResultItem())));
+                            .write(String.format("%s\n", ServerUtil.getItemName(recipe.getResultItem().getItem())));
                     for (Ingredient ingredient : recipeItems)
                     {
                         if (ingredient != null)
@@ -193,7 +184,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
 
                             if (stack != ItemStack.EMPTY)
                             {
-                                craftRecipes.write(String.format("  %s:%d\n", ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack)));
+                                craftRecipes.write(String.format("  :%s\n", ServerUtil.getItemName(stack.getItem())));
                             }
                         }
                     }
@@ -217,7 +208,6 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                 }
                 changedAnyPrice = false;
 
-                @SuppressWarnings("unchecked")
                 //Map<ItemStack, ItemStack> furnaceRecipes = new HashMap<>(FurnaceRecipes.instance().getSmeltingList());
 
                 boolean changedPrice;
@@ -242,8 +232,8 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                                 priceMap.put(ItemUtil.getItemIdentifier(recipe.getResultItem()), price);
                                 changedPrice = true;
 
-                                String msg = String.format("%s:%d = %.0f -> %s", ServerUtil.getItemName(recipe.getResultItem().getItem()),
-                                        ItemUtil.getItemDamage(recipe.getResultItem()), resultPrice == null ? 0 : resultPrice, (int) price);
+                                String msg = String.format("%s = %.0f -> %s", ServerUtil.getItemName(recipe.getResultItem().getItem()), 
+                                        resultPrice == null ? 0 : resultPrice, (int) price);
                                 for (Ingredient ingredient : getRecipeItems(recipe))
                                     if (ingredient != null)
                                     {
@@ -255,8 +245,8 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                                         }
 
                                         if (stack != ItemStack.EMPTY)
-                                            msg += String.format("\n  %.0f - %s:%d", priceMap.get(ItemUtil.getItemIdentifier(stack)),
-                                                    ServerUtil.getItemName(stack.getItem()), ItemUtil.getItemDamage(stack));
+                                            msg += String.format("\n  %.0f - %s", priceMap.get(ItemUtil.getItemIdentifier(stack)),
+                                                    ServerUtil.getItemName(stack.getItem()));
                                     }
                                 writer.write(msg + "\n");
                             }
@@ -306,15 +296,23 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
 
         if (save)
         {
-            Configuration config = ForgeEssentials.getConfigManager().getConfig(ModuleEconomy.CONFIG_CATEGORY);
-            ConfigCategory category = config.getCategory(ModuleEconomy.CATEGORY_ITEM);
+            //get current values on disc
+            Map<String, Integer> items = new HashMap<String, Integer>();
+            for(Map.Entry<String,Integer> entry : ModuleEconomy.itemTables.entrySet()){
+                items.put(entry.getKey(), entry.getValue());
+            } 
+            //add new prices
             for (Entry<String, Double> entry : priceMap.entrySet())
             {
-                category.put(entry.getKey(), new Property(entry.getKey(), Integer.toString((int) Math.floor(entry.getValue())), Type.INTEGER));
-                APIRegistry.perms.registerPermissionProperty(ModuleEconomy.PERM_PRICE + "." + entry.getKey(),
-                        Integer.toString((int) Math.floor(entry.getValue())));
+                items.put(entry.getKey(), (int) Math.floor(entry.getValue()));
+                APIRegistry.perms.registerPermissionProperty(ModuleEconomy.PERM_PRICE + "." + entry.getKey(), dTs(entry.getValue()));
             }
-            config.save();
+            //save new prices to disc
+            Set<String> toWrite = new HashSet<String>(); 
+            for (Map.Entry<String,Integer> entry : items.entrySet()) {
+                toWrite.add(entry.getKey()+"="+Integer.toString(entry.getValue()));
+            }
+            ModuleEconomy.FEitemTables.set(toWrite);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Calculated and saved new price table");
         }
         else
@@ -324,6 +322,9 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
         }
     }
 
+    public static String dTs(Double value) {
+        return Integer.toString((int) Math.floor(value));
+    }
     private static Map<String, Double> loadPriceList(CommandContext<CommandSource> ctx)
     {
         Map<String, Double> priceMap = new TreeMap<>();
@@ -458,7 +459,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                 String id = "I:\"" + entry.getKey() + "\"";
                 while (id.length() < 50)
                     id = id + ' ';
-                writer.write(id + "=" + Integer.toString((int) Math.floor(entry.getValue())) + "\n");
+                writer.write(id + "=" + dTs(entry.getValue()) + "\n");
             }
         }
         catch (IOException e)

@@ -18,6 +18,7 @@ import com.forgeessentials.economy.commands.*;
 import com.forgeessentials.economy.plots.PlotManager;
 import com.forgeessentials.economy.shop.ShopManager;
 import com.forgeessentials.protection.ProtectionEventHandler;
+import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
@@ -26,10 +27,10 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,7 +38,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -52,9 +52,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -123,7 +125,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         FECommandManager.registerCommand(new CommandRequestPayment(true), dispatcher);
     }
 
-    @SuppressWarnings("unchecked")
     @SubscribeEvent
     public void serverStarting(FEModuleServerStartingEvent event)
     {
@@ -359,34 +360,33 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         APIRegistry.perms.registerPermissionProperty(getItemPricePermission(itemStack), Long.toString(price));
     }
 
+    public static ForgeConfigSpec.ConfigValue<Set<String>> FEitemTables;
+    public static Map<String, Integer> itemTables;
 	@Override
 	public void load(Builder BUILDER, boolean isReload)
     {
-        if (config.hasCategory("ItemTables"))
-        {
-            ConfigCategory category = config.getCategory("ItemTables");
-            for (Entry<String, Property> entry : category.entrySet())
-            {
-                for (Item item : ForgeRegistries.ITEMS)
-                    if (entry.getKey().equals(item.getUnlocalizedName()))
-                    {
-                        String id = ServerUtil.getItemName(item);
-                        config.get(CATEGORY_ITEM, id, DEFAULT_ITEM_PRICE).set(entry.getValue().getInt(DEFAULT_ITEM_PRICE));
-                        break;
-                    }
-            }
-            config.removeCategory(category);
-        }
-
-        ConfigCategory category = config.getCategory(CATEGORY_ITEM);
-        for (Entry<String, Property> entry : category.entrySet())
-            APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString(entry.getValue().getInt(DEFAULT_ITEM_PRICE)));
+        BUILDER.comment("ItemTables").push(CATEGORY_ITEM);
+        FEitemTables = BUILDER.comment(CATEGORY_ITEM).define("exclude_patterns", new HashSet<String>());
     }
 	
 	@Override
 	public void bakeConfig(boolean reload) {
-		// TODO Auto-generated method stub
-		
+		for(String itemValue :FEitemTables.get()) {
+		    String[] values = itemValue.split("=");
+		    int price;
+		    try {price = CommandUtils.parseInt(values[0]);
+		    }catch(NumberFormatException e) 
+		    {LoggingHandler.felog.error("Incorrect Prive value", e); price = DEFAULT_ITEM_PRICE;}
+		    for (Item item : ForgeRegistries.ITEMS)
+                if (values[0].equals(item.getDescriptionId()))
+                {
+                    String id = ServerUtil.getItemName(item);
+                    itemTables.put(id, price);
+                    break;
+                }
+		}
+		for (Entry<String, Integer> entry : itemTables.entrySet())
+            APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString((entry.getValue())));
 	}
 	
 	@Override
