@@ -10,7 +10,12 @@ import org.spongepowered.asm.mixin.Overwrite;
 @Mixin(Entity.class)
 public abstract class MixinEntity
 {
+    /**
+     * Send pressure-plate event on plate depress 
 
+     * @author Maximuslotro
+     * @reason stuff
+     */
     @Overwrite
     public boolean isIgnoringBlockTriggers()
     {

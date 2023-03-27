@@ -17,32 +17,38 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import com.forgeessentials.util.PlayerInfo;
 import com.mojang.authlib.GameProfile;
 
-@Mixin(ServerPlayerEntity.class)
-public abstract class MixinEntityPlayer extends ServerPlayerEntity
+@Mixin(PlayerEntity.class)
+public abstract class MixinEntityPlayer
 {
 
-
-    public MixinEntityPlayer(MinecraftServer p_i45285_1_, ServerWorld p_i45285_2_, GameProfile p_i45285_3_, PlayerInteractionManager p_i45285_4_)
-    {
-        super(p_i45285_1_, p_i45285_2_, p_i45285_3_, p_i45285_4_);
-        // TODO Auto-generated constructor stub
-    }
-
     @Shadow
-    public PlayerInteractionManager gameMode;
+    public GameProfile gameProfile;
 
     @Shadow
     public abstract boolean isSpectator();
+    
+    @Shadow
+    public abstract boolean isCreative();
 
+    /**
+     * Custom permissions for command blocks
+     * @author Maximuslotro
+     * @reason stuff
+     */
     @Overwrite
     public boolean canUseGameMasterBlocks()
     {
-        return gameMode.getGameModeForPlayer() == GameType.SPECTATOR && PermissionAPI.hasPermission((PlayerEntity) (Object) this, "mc.commandblock");
+        return isCreative() && PermissionAPI.hasPermission((PlayerEntity) (Object) this, "mc.commandblock");
     }
 
-    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/ServerPlayerEntity;isSpectator()Z"))
+    /**
+     * Solve for noClip functionality
+     * @author Maximuslotro
+     * @reason stuff
+     */
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "isSpectator()V"))
     public boolean onUpdate_NoClip()
     {
-        return isSpectator() || PlayerInfo.get(this.getUUID()).isNoClip();
+        return isSpectator() || PlayerInfo.get(gameProfile.getId()).isNoClip();
     }
 }

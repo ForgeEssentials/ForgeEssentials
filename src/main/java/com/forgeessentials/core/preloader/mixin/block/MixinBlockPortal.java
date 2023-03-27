@@ -15,6 +15,11 @@ import org.spongepowered.asm.mixin.Overwrite;
 public class MixinBlockPortal
 {
 
+    /**
+     * Custom portal stuff
+     * @author Maximuslotro
+     * @reason stuff
+     */
     @Overwrite
     public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
     {

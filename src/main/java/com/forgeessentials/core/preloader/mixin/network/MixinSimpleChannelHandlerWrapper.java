@@ -39,7 +39,7 @@ public abstract class MixinSimpleChannelHandlerWrapper extends SimpleChannelInbo
 
     @Overwrite//(method = "channelRead0", at = @At("HEAD"), cancellable = true)
     //private void onChannelRead(ChannelHandlerContext context, IPacket<?> packet, CallbackInfo callbackInfo)
-    private void channelRead0(ChannelHandlerContext context, IPacket<?> packet, CallbackInfo callbackInfo) throws Exception
+    protected void channelRead0(ChannelHandlerContext context, IPacket<?> packet, CallbackInfo callbackInfo) throws Exception
     {
         if (this.channel.isOpen()) {
             try {

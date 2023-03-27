@@ -13,6 +13,11 @@ import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
 @Mixin(ItemFrameEntity.class)
 public class MixinItemFrameEntity
 {
+    /**
+     * Solve for item frame bow killing
+     * @author Maximuslotro
+     * @reason stuff
+     */
     @Inject(at = @At("HEAD"), method = "Lnet/minecraft/entity/item/ItemFrameEntity;hurt(Lnet/minecraft/util/DamageSource;F)Z", cancellable = true)
     private void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> callback) {
         EntityAttackedEvent event = new EntityAttackedEvent((ItemFrameEntity) (Object) this, source, amount);
