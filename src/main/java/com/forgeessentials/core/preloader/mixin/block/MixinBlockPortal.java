@@ -16,9 +16,9 @@ public class MixinBlockPortal
 {
 
     @Overwrite
-    public void onEntityCollidedWithBlock(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
+    public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
     {
-        if (!entityIn.isPassenger() && !entityIn.isVehicle())
+        if (!entityIn.isPassenger() && !entityIn.isVehicle() && entityIn.canChangeDimensions())
         { // TODO: get target coordinates somehow
             if (!MinecraftForge.EVENT_BUS.post(new EntityPortalEvent(entityIn, worldIn, pos, entityIn.level, new BlockPos(0, 0, 0))))
             {
