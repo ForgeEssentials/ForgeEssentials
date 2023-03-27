@@ -6,9 +6,9 @@ import java.util.UUID;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.IPacket;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.commons.network.IFEPacket;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
@@ -162,7 +162,7 @@ public class ModuleAuth extends ConfigLoaderBase
         return isAuthenticated(player.getUUID());
     }
 
-    public static boolean isAllowedMethod(IFEPacket msg)
+    public static boolean isAllowedMethod(IPacket<?> msg)
     {
         return msg instanceof Packet6AuthLogin || msg instanceof Packet0Handshake || msg instanceof Packet7Remote;
     }

@@ -367,6 +367,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         BUILDER.comment("ItemTables").push(CATEGORY_ITEM);
         FEitemTables = BUILDER.comment(CATEGORY_ITEM).define("exclude_patterns", new HashSet<String>());
+        BUILDER.pop();
     }
 	
 	@Override
