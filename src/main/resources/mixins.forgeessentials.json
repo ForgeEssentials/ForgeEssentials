@@ -12,9 +12,9 @@
         "entity.MixinEntity",//ported
         "entity.MixinItemFrameEntity",//ported
         "entity.player.MixinEntityPlayer",//ported
-        "item.crafting.MixinCraftingManager",
+        //"item.crafting.MixinCraftingManager",
         "network.MixinNetHandlerPlayServer",//ported
-        "network.MixinSimpleChannelHandlerWrapper"
+        "network.MixinSimpleChannelHandlerWrapper"//ported
         //"MixinDimensionManager"
         //"tileentity.MixinMobSpawnerBaseLogic"
   ],

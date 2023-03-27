@@ -209,7 +209,7 @@ public class CommandButcherTickTask implements TickTask
             for (EnderDragonPartEntity part : ((EnderDragonEntity) entity).getSubEntities())
                 part.remove();
         }
-        entity.remove();
+        entity.kill();
     }
 
     @Override

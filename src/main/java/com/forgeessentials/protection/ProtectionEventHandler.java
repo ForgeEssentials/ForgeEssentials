@@ -2,6 +2,7 @@ package com.forgeessentials.protection;
 
 import static net.minecraftforge.eventbus.api.Event.Result.DENY;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,6 +28,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.GameType;
 import net.minecraft.world.server.ServerWorld;
@@ -370,7 +372,16 @@ public class ProtectionEventHandler extends ServerEventHandler
         int cx = (int) Math.floor(center.x);
         int cy = (int) Math.floor(center.y);
         int cz = (int) Math.floor(center.z);
-        float size = event.getExplosion().radius;
+        Explosion explosion = event.getExplosion();
+        // Store the value of private field in variable
+        float size;
+        
+        try
+        {Field privateField = Explosion.class.getDeclaredField("radius"); privateField.setAccessible(true);
+            size = (float)privateField.get(explosion);
+        }catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
+        {e.printStackTrace(); size = 4;}
+        
         int s = (int) Math.ceil(size);
 
         if (!APIRegistry.perms.checkUserPermission(ident, new WorldPoint(event.getWorld(), cx, cy, cz), ModuleProtection.PERM_EXPLOSION))

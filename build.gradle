@@ -181,6 +181,7 @@ dependencies {
 
     minecraft "net.minecraftforge:forge:$project.minecraftVersion-$project.forgeVersion"
 	 // IRC
+	compile "org.pircbotx:pircbotx:2.1"
 	serverLib("org.pircbotx:pircbotx:2.1") {
         // these are all packaged with the minecraft server jar
         exclude module: 'guava'
@@ -222,8 +223,8 @@ dependencies {
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
     compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
-
-	//compile 'javax.xml.bind:jaxb-api:2.3.1'
+    compile 'org.apache.commons:commons-text:1.10.0'	
+	compile 'javax.xml.bind:jaxb-api:2.3.1'
 }
 
 /************************************************************
@@ -236,17 +237,17 @@ sourceSets {
         configurations.compileClasspath,
         configurations.runtimeClasspath
 	]
-	utils {
-		compileClasspath = files(configurations.compile)
-		compileClasspath += files deps
-	}
+	//utils {
+	//	compileClasspath = files(configurations.compile)
+	//	compileClasspath += files deps
+	//}
 	main {
-		compileClasspath = files(configurations.compile, sourceSets.utils.output)
+		compileClasspath = files(configurations.compile)//, sourceSets.utils.output)
 		compileClasspath += files deps
         refMap = "mixins.forgeessentials.refmap.json"
 	}
 }
-
+/*
 project.compileUtilsJava {
     doFirst {
         copy {
@@ -256,7 +257,7 @@ project.compileUtilsJava {
             into 'src/utils/java'
         }
     }
-}
+}*/
 // Configure server resource processing
 project.processResources {
 	from (sourceSets.main.resources.srcDirs) {
@@ -282,7 +283,7 @@ mixin {
 
  // JavaExec task for generating tsd
 //  Calls the main class for the TSD generator since that is working
-
+/*
 task tsd(type: JavaExec) {
     dependsOn "classes"
     classpath = project.sourceSets.test.compileClasspath
@@ -296,7 +297,7 @@ task tsd(type: JavaExec) {
             into "build/resources/main/com/forgeessentials/jscripting"
         }
     }
-}
+}*/
 
 // Pack libraries as zip file to include them in the jar file
 task serverLibArchive(type: Zip) {
@@ -314,12 +315,12 @@ jar.doLast {
 // Configure server jar (default)
 jar {
 	dependsOn "serverLibArchive"
-    dependsOn "tsd"
+    //dependsOn "tsd"
 	classifier = "server"
 	appendix = project.minecraftVersion
 	
 	from sourceSets.main.output
-	from sourceSets.utils.output
+	//from sourceSets.utils.output
     exclude('com/forgeessentials/client/**')
     from fileTree(serverLibArchive.archivePath)
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
@@ -399,7 +400,7 @@ jar.finalizedBy('reobfJar')
 
 // util.jar
 task Annotations(type: Jar) {
-	classifier = "annotations"
+	classifier = "annonations"
 	appendix = project.minecraftVersion
 	
     from(sourceSets.main.output) {

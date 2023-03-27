@@ -29,7 +29,6 @@ import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -356,7 +355,8 @@ public class ModuleBackup extends ConfigLoaderBase
                 ZipOutputStream zipStream = new ZipOutputStream(fileStream);)
         {
             LoggingHandler.felog.info(String.format("Listing files for backup of world %d", world.dimension().getRegistryName()));
-            for (File file : enumWorldFiles(world, world.getChunkSaveLocation(), null))
+            notify(String.format("Backup failed - Error %s : Could not do shit", "666-666-6666"));
+            for (File file : enumWorldFiles(world, null , null ))//world.getChunkSaveLocation(), null))
             {
                 String relativePath = baseUri.relativize(file.toURI()).getPath();
                 try (FileInputStream in = new FileInputStream(file))
@@ -398,9 +398,10 @@ public class ModuleBackup extends ConfigLoaderBase
             }
 
             // Exclude directories of other worlds
-            for (ServerWorld otherWorld : ServerLifecycleHooks.getCurrentServer().getAllLevels())
-                if (otherWorld.dimension() != world.dimension() && otherWorld.getChunkSaveLocation().equals(file))
-                    continue mainLoop;
+            for (ServerWorld otherWorld : ServerLifecycleHooks.getCurrentServer().getAllLevels()) {
+                notify(String.format("Backup looping failed - Error %s : Could not do shit", "666-666-6666"));
+                if (otherWorld.dimension() != world.dimension() )//&& otherWorld.getChunkSaveLocation().equals(file))
+                    continue mainLoop;}
             for (Pattern pattern : exludePatterns)
                 if (pattern.matcher(file.getName()).matches())
                     continue mainLoop;

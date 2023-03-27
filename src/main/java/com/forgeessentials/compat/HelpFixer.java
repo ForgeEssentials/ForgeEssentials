@@ -1,13 +1,6 @@
-/**
- * Copy of
- * https://github.com/matthewprenger/HelpFixer/blob/master/src/main/java/com/matthewprenger/helpfixer/HelpFixer.java
- * for FE specifically.
- */
 package com.forgeessentials.compat;
 
-import net.minecraft.command.impl.HelpCommand;
-
-public class HelpFixer extends HelpCommand
+public class HelpFixer //extends HelpCommand
 {
 
     public static boolean hideWorldEditCommands = true;

@@ -1,8 +1,6 @@
 package com.forgeessentials.chat.command;
 
-import net.minecraft.command.impl.MessageCommand;
-
-public class CommandMessageReplacement extends MessageCommand
+public class CommandMessageReplacement //extends MessageCommand
 {
 /*
     @Override

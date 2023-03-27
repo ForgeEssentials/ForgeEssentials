@@ -39,5 +39,5 @@ modlist.txt
 /src/*/generated/
 /jscripting/tsconfig.json
 *.launch
-src/main/java/com/forgeessentials/commons/BuildInfo.java
 ForgeEssentials-Client/build.gradle.old
+/.apt_generated_tests/
