@@ -55,7 +55,7 @@ import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleRegisterCommandsEvent;
+import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.mojang.brigadier.CommandDispatcher;
 
 @FEModule(name = "Commands", parentMod = ForgeEssentials.class)
@@ -81,7 +81,7 @@ public class ModuleCommands
     }
 
     @SubscribeEvent
-    private void registerCommands(FEModuleRegisterCommandsEvent event)
+    private void registerCommands(FERegisterCommandsEvent event)
     {
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         CommandTime time = new CommandTime(true);
