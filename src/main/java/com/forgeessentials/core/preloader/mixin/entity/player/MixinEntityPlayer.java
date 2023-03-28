@@ -1,18 +1,15 @@
 package com.forgeessentials.core.preloader.mixin.entity.player;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerInteractionManager;
-import net.minecraft.world.GameType;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.forgeessentials.util.PlayerInfo;
 import com.mojang.authlib.GameProfile;
@@ -46,9 +43,14 @@ public abstract class MixinEntityPlayer
      * @author Maximuslotro
      * @reason stuff
      */
-    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "isSpectator()V"))
-    public boolean onUpdate_NoClip()
+    @Inject(
+            method = "tick",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"),
+            cancellable = true)
+    public void onUpdate_NoClip(CallbackInfoReturnable<Boolean> callback)
     {
-        return isSpectator() || PlayerInfo.get(gameProfile.getId()).isNoClip();
+        callback.setReturnValue(isSpectator() || PlayerInfo.get(gameProfile.getId()).isNoClip());
     }
 }

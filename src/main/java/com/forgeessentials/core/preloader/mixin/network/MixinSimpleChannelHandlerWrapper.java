@@ -10,8 +10,9 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.forgeessentials.auth.ModuleAuth;
@@ -37,7 +38,10 @@ public abstract class MixinSimpleChannelHandlerWrapper extends SimpleChannelInbo
     @Shadow
     protected <T extends INetHandler> void genericsFtw(IPacket<T> p_197664_0_, INetHandler p_197664_1_) {}
 
-    @Overwrite//(method = "channelRead0", at = @At("HEAD"), cancellable = true)
+    @Inject(at = @At("HEAD"), 
+            method = "channelRead0", 
+            cancellable = true)
+    //@Overwrite//(method = "channelRead0", at = @At("HEAD"), cancellable = true)
     //private void onChannelRead(ChannelHandlerContext context, IPacket<?> packet, CallbackInfo callbackInfo)
     protected void channelRead0(ChannelHandlerContext context, IPacket<?> packet, CallbackInfo callbackInfo) throws Exception
     {
@@ -58,6 +62,7 @@ public abstract class MixinSimpleChannelHandlerWrapper extends SimpleChannelInbo
             }
 
             ++receivedPackets;
+            callbackInfo.cancel();
          }
     }
 

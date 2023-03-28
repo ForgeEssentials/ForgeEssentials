@@ -1,19 +1,18 @@
 package com.forgeessentials.core.preloader.mixin.block;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FireBlock;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fe.event.world.FireEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Random;
 
@@ -22,49 +21,52 @@ public class MixinBlockFire
 {
 
     @Inject(
-            method = "tryCatchFire(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;ILjava/util/Random;ILnet/minecraft/util/EnumFacing;)V",
+            method = "tryCatchFire",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;I)Z"
-
+                    target = "Lnet/minecraftforge/common/extensions/IForgeBlockState;catchFire(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/Direction;Lnet/minecraft/entity/LivingEntity;)V"
             ),
             cancellable = true,
             remap = false)
     public void handleTryCatchFire(World world, BlockPos pos, int chance, Random random, int argValue1, Direction face, CallbackInfo ci)
     {
-        // System.out.println("Mixin : Fire destroyed block and spread to below block");
+        BlockPos source = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ());
+        if (MinecraftForge.EVENT_BUS.post(new FireEvent.Spread(world, pos, source)))
+        {
+            world.setBlock(pos, Blocks.AIR.defaultBlockState(), 1);
+            ci.cancel();
+        }
+    }
+    @Inject(
+            method = "tryCatchFire",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/server/ServerWorld;removeBlock(Lnet/minecraft/util/math/BlockPos;Z)Z"),
+            cancellable = true,
+            remap = false)
+    public void handleBlockDestroyOntryCatchFire(World world, BlockPos pos, int p_176536_3_, Random p_176536_4_, int p_176536_5_, Direction face, CallbackInfo ci)
+    {
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))
         {
             ci.cancel();
-        }
-        else
-        {
-            BlockPos source = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ());
-            if (MinecraftForge.EVENT_BUS.post(new FireEvent.Spread(world, pos, source)))
-            {
-                // System.out.println("Injector: Fire destroyed but could not spread to block below");
-                world.setBlock(pos, Blocks.AIR.defaultBlockState(), 1);
-                ci.cancel();
-            }
         }
     }
 
     @Inject(
-            method = "tryCatchFire(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;ILjava/util/Random;ILnet/minecraft/util/EnumFacing;)V",
+            method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;setBlockToAir(Lnet/minecraft/util/math/BlockPos;)Z"),
+                    target = "Lnet/minecraft/world/server/ServerWorld;removeBlock(Lnet/minecraft/util/math/BlockPos;Z)Z"),
             cancellable = true,
             remap = false)
-    public void handleTryCatchFireAir(World world, BlockPos pos, int chance, Random random, int argValue1, Direction face, CallbackInfo ci)
+    public void handleBlockDestroyOnTick(BlockState p_225534_1_, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci)
     {
-        // System.out.println("Mixin : Fire destroyed block");
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))
         {
             ci.cancel();
         }
     }
-
+/*
     @Inject(
             method = "updateTick(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/state/IBlockState;Ljava/util/Random;)V",
             at = @At(
@@ -83,6 +85,6 @@ public class MixinBlockFire
         {
             ci.cancel();
         }
-    }
+    }*/
 
 }
