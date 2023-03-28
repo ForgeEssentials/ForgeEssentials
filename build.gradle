@@ -264,7 +264,7 @@ project.processResources {
 		include 'META-INF/mods.toml'
 		duplicatesStrategy = DuplicatesStrategy.INCLUDE
 		expand (
-			'version': project.version,
+			'version': "$mod_version",
 			'mod_name': mod_name,
 			'mod_download': mod_download,
 			'buildHash': gitCommitHash,
