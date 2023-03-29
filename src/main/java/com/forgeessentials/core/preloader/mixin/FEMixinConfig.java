@@ -54,22 +54,10 @@ public class FEMixinConfig implements IMixinConfigPlugin
         if (FELaunchHandler.isCauldron) {
             //Add the mixin that is specific for when the server is Cauldron and/or it's forks.
             mixins.add(Mixins.MixinNetHandlerPlayServerCauldron.getMixinRelativePath());
+        } else {
+            mixins.add(Mixins.MixinNetHandlerPlayServerForge.getMixinRelativePath());
         }
 
-        for(Mixins mixin : Mixins.values())
-        {
-            //If the mixin's class name is the normal one and the hybrid specialized mixin is already loaded, skip this one.
-            if(mixin.getMixinClassName().equals(Mixins.MixinNetHandlerPlayServer.getMixinClassName()) && mixins.contains(Mixins.MixinNetHandlerPlayServerCauldron.getMixinClassName()))
-            {
-                continue;
-            }
-
-            if (mixin == Mixins.MixinNetHandlerPlayServerCauldron)
-            {
-                continue;
-            }
-            mixins.add(mixin.getMixinRelativePath());
-        }
         return mixins;
     }
 

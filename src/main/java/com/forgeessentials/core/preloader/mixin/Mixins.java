@@ -13,6 +13,7 @@ public enum Mixins {
     MixinCraftingManager("item.crafting.MixinCraftingManager"),
     MixinNetHandlerPlayServer("network.MixinNetHandlerPlayServer"),
     MixinNetHandlerPlayServerCauldron("network.MixinNetHandlerPlayServerCauldron"),
+    MixinNetHandlerPlayServerForge("network.MixinNetHandlerPlayServerForge"),
     MixinSimpleChannelHandlerWrapper("network.MixinSimpleChannelHandlerWrapper"),
     MixinItemInWorldManager("server.management.MixinItemInWorldManager"),
     MixinDimensionManager("MixinDimensionManager");

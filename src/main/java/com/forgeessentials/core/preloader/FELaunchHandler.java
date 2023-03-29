@@ -84,6 +84,12 @@ public class FELaunchHandler implements ITweaker
     {
         // initialize mixin, if someone hasn't already done it for us
         ArrayList<String> tweaks = (ArrayList<String>) Launch.blackboard.get("TweakClasses");
+        try {
+            Class.forName("org.bukkit.Bukkit", false, this.getClass().getClassLoader());
+            isCauldron = true;
+        } catch (ClassNotFoundException e) {
+
+        }
         if (!tweaks.contains("org.spongepowered.asm.launch.MixinTweaker"))
         {
             tweaks.add("org.spongepowered.asm.launch.MixinTweaker");
