@@ -14,6 +14,7 @@ import org.objectweb.asm.Type;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.APIRegistry.ForgeEssentialsRegistrar;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
@@ -157,7 +158,7 @@ public class ModuleLauncher
             }
         }
 
-
+        ConfigBase.getModuleConfig().setCreated();
         // TODO Check if this works
         ForgeEssentials.getConfigManager().loadAllRegisteredConfigs();
         // TODO Check if this works

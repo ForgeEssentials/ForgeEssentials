@@ -24,7 +24,8 @@ public class ModuleConfig
      * Only call when ModuleLauncher is done loading modules.
      */
     public void setCreated() {
-        saveConfig();
+        if(getNeedsSaving())
+            saveConfig();
     }
 
     public Boolean getNeedsSaving()

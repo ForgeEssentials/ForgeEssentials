@@ -1,7 +1,6 @@
 package com.forgeessentials.core;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -161,15 +160,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         // new TestClass().test();
         
         LoggingHandler.init();
-        try
-        {
-            jarLocation = new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI());
-        }
-        catch (URISyntaxException ex)
-        {
-            LoggingHandler.felog.error("Could not get JAR location");
-            ex.printStackTrace();
-        }
+        jarLocation = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
         initConfiguration();
         BuildInfo.getBuildInfo(jarLocation);
         Environment.check();
@@ -246,8 +237,8 @@ public class ForgeEssentials extends ConfigLoaderBase
         configManager = new ConfigBase(feDirectory);
 
         ConfigBase.getModuleConfig().loadModuleConfig();
-        configManager.registerSpecs(configManager.getMainConfigName(), this);
         configManager.registerSpecs(configManager.getMainConfigName(), new FEConfig());
+        configManager.registerSpecs(configManager.getMainConfigName(), this);
         configManager.registerSpecs(configManager.getMainConfigName(), new ChatOutputHandler());
     }
 

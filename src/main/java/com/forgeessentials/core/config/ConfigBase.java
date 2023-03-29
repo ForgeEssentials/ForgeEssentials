@@ -33,7 +33,7 @@ public class ConfigBase
     public ConfigBase(File rootDirectory)
     {
         ConfigBase.rootDirectory = rootDirectory;
-        // load(false);
+        moduleConfig = new ModuleConfig();
     }
 
     public void registerSpecs(String configName, ConfigLoader loader)

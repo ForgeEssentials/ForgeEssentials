@@ -10,9 +10,9 @@ public class ConfigData {
 
     public ConfigData(String Name, ForgeConfigSpec config, ForgeConfigSpec.Builder builder)
     {
-        if (Name == null || config == null || builder == null)
+        if (Name == null || builder == null)
         {
-            throw new NullPointerException();
+            throw new NullPointerException("WTF, why are we geting null config items\nSomeone is doing some schetchy shit");
         }
         this.Name = Name;
         this.config = config;
