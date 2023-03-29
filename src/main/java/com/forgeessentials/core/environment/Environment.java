@@ -4,9 +4,11 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -28,12 +30,11 @@ public class Environment
     {
         CrashReportExtender.registerCrashCallable(new FECrashCallable());
         // Check if dedicated or integrated server
-        try
+        if(FMLEnvironment.dist == Dist.CLIENT)
         {
-            Class.forName("net.minecraft.client.Minecraft");
             isClient = true;
         }
-        catch (ClassNotFoundException e)
+        else
         {
             isClient = false;
         }
@@ -70,8 +71,8 @@ public class Environment
         // Some additional checks
 
         // Check for Cauldron or LavaBukkit
-        String modName = ServerLifecycleHooks.getCurrentServer().getServerModName();
-        if (modName.contains("cauldron"))
+        //String modName = ServerLifecycleHooks.getCurrentServer().getServerModName();
+        if (ModList.get().isLoaded("cauldron"))
         {
             LoggingHandler.felog.error("You are attempting to run FE on Cauldron. This is completely unsupported.");
 

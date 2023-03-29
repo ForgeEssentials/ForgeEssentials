@@ -15,7 +15,8 @@ public class ServerEventHandler
 
     public ServerEventHandler()
     {
-        APIRegistry.getFEEventBus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
+        //APIRegistry.getFEEventBus().register(this);
     }
 
     public ServerEventHandler(boolean forceRegister)

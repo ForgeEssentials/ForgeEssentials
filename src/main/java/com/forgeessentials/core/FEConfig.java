@@ -18,7 +18,7 @@ public class FEConfig extends ConfigLoaderBase
 
     public static boolean mcStats;
 
-    public static String modlistLocation;
+    public static String modlistLocation = "modlist.txt";
 
     public static float majoritySleep;
 

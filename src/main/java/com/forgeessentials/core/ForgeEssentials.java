@@ -31,9 +31,11 @@ import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.network.FMLNetworkConstants;
 import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -103,6 +105,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     public static final String FE_DIRECTORY = "ForgeEssentials";
 
     public static ForgeEssentials instance;
+    public static IEventBus busMain;
 
     public static Random rnd = new Random();
 
@@ -155,10 +158,11 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public ForgeEssentials()
     {
+        instance = this;
         //Set mod as server only
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         // new TestClass().test();
-        
+        busMain = FMLJavaModLoadingContext.get().getModEventBus();
         LoggingHandler.init();
         jarLocation = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
         initConfiguration();
@@ -351,7 +355,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void registerCommandEvent(RegisterCommandsEvent event) 
+    public void registerCommandEvent(final RegisterCommandsEvent event) 
     {
         APIRegistry.getFEEventBus().post(new FERegisterCommandsEvent(event));
     }
