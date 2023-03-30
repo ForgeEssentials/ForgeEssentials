@@ -169,9 +169,10 @@ public class ModuleLauncher
         ConfigBase.getModuleConfig().setCreated();
         // TODO Check if this works
         ForgeEssentials.getConfigManager().loadAllRegisteredConfigs();
+        ForgeEssentials.getConfigManager().buildAllRegisteredConfigs();
         // TODO Check if this works
         ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs(false);
-        APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
+        //APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
     }
 
     public void reloadConfigs()

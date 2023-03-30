@@ -71,9 +71,9 @@ public class ModulePermissions extends ConfigLoaderBase
     public ModulePermissions()
     {
         // Earliest initialization of permission system possible
-        //permissionHelper = new ZonedPermissionHelper();
-        //APIRegistry.perms = permissionHelper;
-        //PermissionAPI.setPermissionHandler(permissionHelper);
+        permissionHelper = new ZonedPermissionHelper();
+        APIRegistry.perms = permissionHelper;
+        PermissionAPI.setPermissionHandler(permissionHelper);
 
         if (ModList.get().isLoaded("ftblib"))
         {

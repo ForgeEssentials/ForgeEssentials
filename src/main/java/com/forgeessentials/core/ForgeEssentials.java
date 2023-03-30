@@ -20,6 +20,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -38,7 +39,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -75,8 +75,6 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.permissions.ModulePermissions;
-import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent;
@@ -109,6 +107,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public static ForgeEssentials instance;
     public static IEventBus modMain;
+    public static ModContainer MOD_CONTAINER;
 
     public static Random rnd = new Random();
 
@@ -164,7 +163,8 @@ public class ForgeEssentials extends ConfigLoaderBase
         LoggingHandler.felog.info("ForgeEssentialsInt");
         instance = this;
         //Set mod as server only
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+        MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
+        MOD_CONTAINER.registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         // new TestClass().test();
         modMain = FMLJavaModLoadingContext.get().getModEventBus();
         tasks = new TaskRegistry();
@@ -194,11 +194,10 @@ public class ForgeEssentials extends ConfigLoaderBase
         registerNetworkMessages();
 
         // Set up logger level
-        if (debugMode)
+        if (true)
             ((Logger) LoggingHandler.felog).setLevel(Level.DEBUG);
         else
             ((Logger) LoggingHandler.felog).setLevel(Level.INFO);
-        ((Logger) LoggingHandler.felog).setLevel(Level.DEBUG);
         // Register core submodules
         factory = new ForgeEssentialsEventFactory();
         teleportHelper = new TeleportHelper();
@@ -210,9 +209,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         // Load submodules
         moduleLauncher = new ModuleLauncher();
         moduleLauncher.preLoad(event);
-        ModulePermissions.permissionHelper = new ZonedPermissionHelper();
-        APIRegistry.perms = ModulePermissions.permissionHelper;
-        PermissionAPI.setPermissionHandler(ModulePermissions.permissionHelper);
     }
 
     //@SubscribeEvent
@@ -256,8 +252,8 @@ public class ForgeEssentials extends ConfigLoaderBase
         ConfigBase.getModuleConfig().loadModuleConfig();
         ConfigBase.getModuleConfig().setCreated();
         configManager.registerSpecs(configManager.getMainConfigName(), new FEConfig());
-        configManager.registerSpecs(configManager.getMainConfigName(), this);
         configManager.registerSpecs(configManager.getMainConfigName(), new ChatOutputHandler());
+        configManager.registerSpecs(configManager.getMainConfigName(), this);
     }
 
     private void registerNetworkMessages()

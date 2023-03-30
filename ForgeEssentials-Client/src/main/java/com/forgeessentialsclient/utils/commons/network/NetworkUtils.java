@@ -18,7 +18,7 @@ public class NetworkUtils
 {
 	public static final String PROTOCOL_VERSION = "1.0.0";
 	public static final SimpleChannel HANDLER = NetworkRegistry.ChannelBuilder
-			.named(new ResourceLocation("forgeessentials", "fenetwork"))
+			.named(new ResourceLocation("forgeessentials", "fe-network"))
 			.clientAcceptedVersions(s -> true)
 			.serverAcceptedVersions(s -> true)
 			.networkProtocolVersion(() -> PROTOCOL_VERSION)
