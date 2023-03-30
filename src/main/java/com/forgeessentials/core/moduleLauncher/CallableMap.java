@@ -22,6 +22,7 @@ public class CallableMap
 
     public CallableMap()
     {
+        LoggingHandler.felog.debug("Making new callable map");
         callables = HashMultimap.create();
     }
 

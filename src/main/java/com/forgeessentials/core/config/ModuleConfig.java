@@ -13,7 +13,7 @@ import com.forgeessentials.core.ForgeEssentials;
 
 public class ModuleConfig
 {
-    private HashMap<String, Boolean> modules;
+    private HashMap<String, Boolean> modules = new HashMap<String, Boolean>();
 
     private Boolean fileNotFound;
     private Boolean needsSaving;
@@ -26,9 +26,6 @@ public class ModuleConfig
     public void setCreated() {
         if(getNeedsSaving())
             saveConfig();
-    }
-    public void intMap() {
-        modules = new HashMap<String, Boolean>();
     }
 
     public Boolean getNeedsSaving()
@@ -55,7 +52,6 @@ public class ModuleConfig
      * Called on startup only! 
      */
     public void loadModuleConfig() {
-        intMap();
         File configFile = new File(ForgeEssentials.getFEDirectory()+"/Modules.cfg");
         
         try {

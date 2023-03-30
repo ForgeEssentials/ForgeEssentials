@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.moduleLauncher.FEModule.Container;
@@ -20,9 +19,9 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraft.command.ICommandSource;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
 public class ModuleContainer implements Comparable<Object>
@@ -190,7 +189,8 @@ public class ModuleContainer implements Comparable<Object>
             return;
         }
 
-        APIRegistry.getFEEventBus().register(module);
+        MinecraftForge.EVENT_BUS.register(module);
+       // APIRegistry.getFEEventBus().register(module);
 
         // now for the fields...
         try

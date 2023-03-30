@@ -198,7 +198,7 @@ public class ForgeEssentials extends ConfigLoaderBase
             ((Logger) LoggingHandler.felog).setLevel(Level.DEBUG);
         else
             ((Logger) LoggingHandler.felog).setLevel(Level.INFO);
-
+        ((Logger) LoggingHandler.felog).setLevel(Level.DEBUG);
         // Register core submodules
         factory = new ForgeEssentialsEventFactory();
         teleportHelper = new TeleportHelper();

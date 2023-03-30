@@ -70,16 +70,18 @@ public class ModuleLauncher
             temp = new ModuleContainer(asm);
             if (temp.isLoadable && !APIRegistry.FE_EVENTBUS.post(new ModuleRegistrationEvent(temp)))
             {
-                LoggingHandler.felog.info("Checking if contanerMap"+temp.name);
+                LoggingHandler.felog.debug("Checking if contanerMap contains: "+temp.name);
                 if (containerMap.containsKey(temp.name))
                 {
                     other = containerMap.get(temp.name);
                     if (temp.doesOverride && other.mod == ForgeEssentials.instance)
                     {
+                        LoggingHandler.felog.debug("Duplicate module overrided the existing one");
                         containerMap.put(temp.name, temp);
                     }
                     else if (temp.mod == ForgeEssentials.instance && other.doesOverride)
                     {
+                        LoggingHandler.felog.debug("Duplicate module was overrided by the existing one");
                         continue;
                     }
                     else
@@ -91,7 +93,6 @@ public class ModuleLauncher
                 {
                     containerMap.put(temp.name, temp);
                 }
-
                 temp.createAndPopulate();
                 LoggingHandler.felog.debug("Discovered FE module " + temp.name);
             }
@@ -99,7 +100,7 @@ public class ModuleLauncher
 
         CallableMap map = new CallableMap();
 
-       
+        LoggingHandler.felog.debug("Gathering @FEModule classes");
         // Gather all @FEModule classes
         data.stream().filter(a -> Type.getType(ForgeEssentialsRegistrar.class).equals(a.getAnnotationType())).forEach(info -> classModIds.put(info.getClassType(), (String)info.getAnnotationData().get("value")));
         LoggingHandler.felog.info(REGISTRIES,"Found {} ForgeEssentialsRegistrar annotations", data.size());

@@ -66,7 +66,7 @@ public class DataManager
     public DataManager(File basePath)
     {
         this.basePath = basePath;
-        LoggingHandler.felog.info("ForgeEssentials: Created new Datamanager Instance");
+        LoggingHandler.felog.debug("ForgeEssentials: Created new Datamanager Instance");
     }
 
     public static DataManager getInstance()
