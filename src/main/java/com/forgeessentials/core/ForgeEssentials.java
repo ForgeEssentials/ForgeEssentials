@@ -12,7 +12,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
@@ -25,7 +24,8 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -38,6 +38,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -74,6 +75,8 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.permissions.ModulePermissions;
+import com.forgeessentials.permissions.core.ZonedPermissionHelper;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent;
@@ -96,7 +99,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
  * Main mod class
  */
 @Mod(ForgeEssentials.MODID)
-@Mod.EventBusSubscriber(modid = ForgeEssentials.MODID, bus = Bus.MOD,value = Dist.DEDICATED_SERVER)
+@Mod.EventBusSubscriber(modid = ForgeEssentials.MODID)
 public class ForgeEssentials extends ConfigLoaderBase
 {
 
@@ -105,7 +108,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     public static final String FE_DIRECTORY = "ForgeEssentials";
 
     public static ForgeEssentials instance;
-    public static IEventBus busMain;
+    public static IEventBus modMain;
 
     public static Random rnd = new Random();
 
@@ -124,7 +127,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     
     protected static ModuleLauncher moduleLauncher;
 
-    protected static TaskRegistry tasks = new TaskRegistry();
+    protected static TaskRegistry tasks;
 
     protected static ForgeEssentialsEventFactory factory;
 
@@ -158,24 +161,30 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     public ForgeEssentials()
     {
+        LoggingHandler.felog.info("ForgeEssentialsInt");
         instance = this;
         //Set mod as server only
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         // new TestClass().test();
-        busMain = FMLJavaModLoadingContext.get().getModEventBus();
+        modMain = FMLJavaModLoadingContext.get().getModEventBus();
+        tasks = new TaskRegistry();
         LoggingHandler.init();
         jarLocation = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
         initConfiguration();
         BuildInfo.getBuildInfo(jarLocation);
         Environment.check();
         MinecraftForge.EVENT_BUS.register(this);
-        
+        modMain.addListener(this::preInit);
+        modMain.addListener(this::loadServer);
+        modMain.addListener(this::postLoad);
+        moduleLauncher = new ModuleLauncher();
         
     }
 
-    @SubscribeEvent
+    //@SubscribeEvent
     public void preInit(FMLCommonSetupEvent event)
     {
+        LoggingHandler.felog.info("ForgeEssentials Common Setup");
         LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
         if (safeMode)
         {
@@ -196,15 +205,18 @@ public class ForgeEssentials extends ConfigLoaderBase
         questioner = new Questioner();
         respawnHandler = new RespawnHandler();
         selectionHandler = new SelectionHandler();
-        APIRegistry.getFEEventBus().register(new CompatReiMinimap());
+        MinecraftForge.EVENT_BUS.register(new CompatReiMinimap());
 
         // Load submodules
         moduleLauncher = new ModuleLauncher();
         moduleLauncher.preLoad(event);
+        ModulePermissions.permissionHelper = new ZonedPermissionHelper();
+        APIRegistry.perms = ModulePermissions.permissionHelper;
+        PermissionAPI.setPermissionHandler(ModulePermissions.permissionHelper);
     }
 
-    @SubscribeEvent
-    public void load(FMLCommonSetupEvent e)
+    //@SubscribeEvent
+    public void loadServer(FMLDedicatedServerSetupEvent e)
     {
         LoggingHandler.felog
                 .info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
@@ -219,12 +231,13 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
 
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleCommonSetupEvent(e));
+        //APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleCommonSetupEvent(e));
     }
 
     @SubscribeEvent
-    public void postLoad(FMLCommonSetupEvent e)
+    public void postLoad(FMLLoadCompleteEvent e)
     {
+        LoggingHandler.felog.info("ForgeEssentials LoadCompleteEvent");
         commandManager = new FECommandManager();
     }
 
@@ -241,6 +254,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         configManager = new ConfigBase(feDirectory);
 
         ConfigBase.getModuleConfig().loadModuleConfig();
+        ConfigBase.getModuleConfig().setCreated();
         configManager.registerSpecs(configManager.getMainConfigName(), new FEConfig());
         configManager.registerSpecs(configManager.getMainConfigName(), this);
         configManager.registerSpecs(configManager.getMainConfigName(), new ChatOutputHandler());
@@ -248,6 +262,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     private void registerNetworkMessages()
     {
+        LoggingHandler.felog.info("ForgeEssentials Regestering network Packets");
         // Load network packages
         NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::decode);
         NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::decode);
@@ -263,6 +278,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent
     public void registerCommands(FERegisterCommandsEvent event)
     {
+        LoggingHandler.felog.info("ForgeEssentials Regestering commands");
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         FECommandManager.registerCommand(new CommandFEInfo(true), dispatcher);
         FECommandManager.registerCommand(new CommandFeReload(true), dispatcher);
@@ -289,6 +305,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
+        LoggingHandler.felog.info("ForgeEssentials Server About to start");
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerAboutToStartEvent(e));
@@ -298,6 +315,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStarting(FMLServerStartingEvent e)
     {
+        LoggingHandler.felog.info("ForgeEssentials Server starting");
         BlockModListFile.makeModList();
         BlockModListFile.dumpFMLRegistries();
         //TODO REIMPLEMENT
@@ -305,7 +323,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         //ServerUtil.replaceCommand("help", new HelpFixer()); // Will be overwritten again by commands module
 
-        registerPermissions();
+        //registerPermissions();
 
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStartingEvent(e));
     }
@@ -313,6 +331,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStarted(FMLServerStartedEvent e)
     {
+        LoggingHandler.felog.info("ForgeEssentials Server started");
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStartedEvent(e));
 
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
@@ -321,7 +340,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
         // Do permission registration in first server tick.
         // TODO This can be removed if the Permission API gets accepted!
-        MinecraftForge.EVENT_BUS.register(new CommandPermissionRegistrationHandler());
+        //MinecraftForge.EVENT_BUS.register(new CommandPermissionRegistrationHandler());
     }
 
     public static final class CommandPermissionRegistrationHandler
@@ -337,6 +356,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStopping(FMLServerStoppingEvent e)
     {
+        LoggingHandler.felog.info("ForgeEssentials Server stopping");
         APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStoppingEvent(e));
         PlayerInfo.discardAll();
     }
@@ -344,6 +364,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent
     public void serverStopped(FMLServerStoppedEvent e)
     {
+        LoggingHandler.felog.info("ForgeEssentials server stopped");
         try
         {
             APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStoppedEvent(e));
@@ -357,6 +378,7 @@ public class ForgeEssentials extends ConfigLoaderBase
     @SubscribeEvent
     public void registerCommandEvent(final RegisterCommandsEvent event) 
     {
+        LoggingHandler.felog.info("ForgeEssentials register command event");
         APIRegistry.getFEEventBus().post(new FERegisterCommandsEvent(event));
     }
 
@@ -450,14 +472,19 @@ public class ForgeEssentials extends ConfigLoaderBase
     public void commandEvent(CommandEvent event) throws CommandSyntaxException
     {
         boolean perm = false;
-        try
-        {
-            perm = checkPerms(StringUtils.join(event.getParseResults().getContext().getNodes().iterator().toString(), "."), event.getParseResults().getContext().getSource().getPlayerOrException().createCommandSourceStack());
+        if(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity) {
+            try
+            {
+                perm = checkPerms(StringUtils.join(event.getParseResults().getContext().getNodes().iterator().toString(), "."), event.getParseResults().getContext().getSource());
+            }
+            catch (CommandSyntaxException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
-        catch (CommandSyntaxException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        else {
+            perm = true;
         }
 
         if (logCommandsToConsole)

@@ -32,7 +32,7 @@ public class PerfToolsModule extends ConfigLoaderBase
     protected static boolean warn;
 
     @SubscribeEvent
-    private void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(FERegisterCommandsEvent event)
     {
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         FECommandManager.registerCommand(new CommandServerPerf(true), dispatcher);

@@ -27,12 +27,20 @@ public class ModuleConfig
         if(getNeedsSaving())
             saveConfig();
     }
+    public void intMap() {
+        modules = new HashMap<String, Boolean>();
+    }
 
     public Boolean getNeedsSaving()
     {
         return needsSaving;
     }
 
+    public void setNeedsSaving(boolean set)
+    {
+        needsSaving  = set;
+    }
+    
     public boolean isFileNull() {
         return fileNotFound;
     }
@@ -47,7 +55,7 @@ public class ModuleConfig
      * Called on startup only! 
      */
     public void loadModuleConfig() {
-        
+        intMap();
         File configFile = new File(ForgeEssentials.getFEDirectory()+"/Modules.cfg");
         
         try {
@@ -59,17 +67,16 @@ public class ModuleConfig
             }
             reader.close();
             fileNotFound = false;
+            setNeedsSaving(false);
         } catch (FileNotFoundException ex) {
             // file does not exist
             fileNotFound = true;
-            needsSaving = true;
+            setNeedsSaving(true);
         } catch (IOException ex) {
             // I/O error
             fileNotFound = true;
-            needsSaving = true;
+            setNeedsSaving(true);
         }
-        fileNotFound = false;
-        needsSaving = false;
     }
 
     private void saveConfig() {
@@ -82,13 +89,17 @@ public class ModuleConfig
             FileWriter writer = new FileWriter(configFile);
             props.store(writer, "Enable/disable modules here.");
             writer.close();
+            setNeedsSaving(false);
         } catch (FileNotFoundException ex) {
+            fileNotFound = true;
             // file does not exist
         } catch (IOException ex) {
+            fileNotFound = true;
             // I/O error
+        } catch (NullPointerException ex) {
+            setNeedsSaving(false);
+            // Empty module Map
         }
-        fileNotFound = false;
-        needsSaving = false;
     }
     
     public boolean get(String name, boolean defaultValue) {
@@ -99,7 +110,7 @@ public class ModuleConfig
         Boolean value = modules.get(name);
         if (value == null) {
             addModule(name, defaultValue);
-            needsSaving = true;
+            setNeedsSaving(true);
             return defaultValue;
         }
         return value;

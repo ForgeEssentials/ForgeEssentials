@@ -56,17 +56,21 @@ public class ModuleLauncher
         // Gather all @FEModule classes
         data.stream().filter(a -> MOD.equals(a.getAnnotationType())).forEach(info -> classModIds.put(info.getClassType(), (String)info.getAnnotationData().get("value")));
         LoggingHandler.felog.info("Found {} FEModule annotations", data.size());
-            
+        for (ModFileScanData.AnnotationData asm : data) {
+            LoggingHandler.felog.info("Found FEModule {}", asm.getMemberName());
+        }
+        LoggingHandler.felog.info("");
         // started ASM handling for the module loading
         //Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
         
-        // LOAD THE MODULES!
+        // Create THE MODULES!
         ModuleContainer temp, other;
         for (ModFileScanData.AnnotationData asm : data)
         {
             temp = new ModuleContainer(asm);
             if (temp.isLoadable && !APIRegistry.FE_EVENTBUS.post(new ModuleRegistrationEvent(temp)))
             {
+                LoggingHandler.felog.info("Checking if contanerMap"+temp.name);
                 if (containerMap.containsKey(temp.name))
                 {
                     other = containerMap.get(temp.name);
@@ -133,7 +137,10 @@ public class ModuleLauncher
 
         List<ModContainer> modList = new ArrayList<>();
         for(String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList())) {
-            modList.add(ModList.get().<ModContainer>getModObjectById(id).orElse(null));
+            ModContainer temp2 = ModList.get().getModContainerById(id).orElse(null);
+            if(temp2!=null) {
+                modList.add(temp2);
+            }
         }
 
         for (ModContainer container : modList)

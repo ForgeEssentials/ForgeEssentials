@@ -188,7 +188,7 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     }
 
     @SubscribeEvent
-    private void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(FERegisterCommandsEvent event)
     {
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         FECommandManager.registerCommand(new CommandRemote(true), dispatcher);

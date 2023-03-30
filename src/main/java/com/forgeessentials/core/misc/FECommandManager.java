@@ -161,6 +161,7 @@ public class FECommandManager implements ConfigLoader
 
     public static void registerAndLoadCommands()
     {
+        LoggingHandler.felog.info("ForgeEssentials: Registering known commands");
         for (FEcommandData command : loadedFEcommands)
             if (!registeredFEcommands.contains(command.getName()))
             {
@@ -168,11 +169,12 @@ public class FECommandManager implements ConfigLoader
                 if (command.getData() instanceof ConfigurableCommand)
                     ((ConfigurableCommand) command.getData()).loadData();
             }
-        CommandFeSettings.getInstance().loadSettings();
+        //CommandFeSettings.getInstance().loadSettings();
     }
 
     public static void clearRegisteredCommands()
     {
+        LoggingHandler.felog.info("ForgeEssentials clearing commands");
         loadedFEcommands.clear();
         registeredFEcommands.clear();
         registeredAiliases.clear();

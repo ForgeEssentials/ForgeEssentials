@@ -57,7 +57,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     }
 
     @SubscribeEvent
-    private void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(FERegisterCommandsEvent event)
     {
         //FECommandManager.registerCommand(new CommandWorldBorder(true));
     }

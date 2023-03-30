@@ -1,8 +1,7 @@
 modLoader="javafml"
 loaderVersion="[36,)"
 license="GNU General Public License v3.0"
-# A URL to refer people to when problems occur with this mod
-#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+issueTrackerURL="https://github.com/ForgeEssentials/ForgeEssentials/issues"
 
 [[mods]]
     modId="forgeessentials"

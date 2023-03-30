@@ -105,7 +105,7 @@ public class ModuleMapper
     }
 
     @SubscribeEvent
-    private void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(FERegisterCommandsEvent event)
     {
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         FECommandManager.registerCommand(new CommandMapper(true), dispatcher);

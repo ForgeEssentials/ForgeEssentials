@@ -22,6 +22,7 @@ import com.forgeessentials.util.output.LoggingHandler;
 import net.minecraft.command.ICommandSource;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
 public class ModuleContainer implements Comparable<Object>
@@ -48,7 +49,7 @@ public class ModuleContainer implements Comparable<Object>
     {
         // get the class....
         Class<?> c = null;
-        className = (String)data.getAnnotationData().getClass().getName();
+        className = data.getMemberName();
 
         try
         {
@@ -307,10 +308,12 @@ public class ModuleContainer implements Comparable<Object>
         Object obj = null;
 
         ModContainer contain = null;
-
         List<ModContainer> modList = new ArrayList<>();
         for(String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList())) {
-            modList.add(ModList.get().<ModContainer>getModObjectById(id).orElse(null));
+            ModContainer temp = ModList.get().getModContainerById(id).orElse(null);
+            if(temp!=null) {
+                modList.add(temp);
+            }
         }
 
         for (ModContainer c : modList)

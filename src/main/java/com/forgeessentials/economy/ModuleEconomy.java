@@ -112,7 +112,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     }
 
     @SubscribeEvent
-    private void registerCommands(FERegisterCommandsEvent event)
+    public void registerCommands(FERegisterCommandsEvent event)
     {
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         FECommandManager.registerCommand(new CommandWallet(true), dispatcher);
