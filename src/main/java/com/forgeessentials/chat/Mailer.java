@@ -88,7 +88,7 @@ public class Mailer extends ServerEventHandler
         Set<UserIdent> senders = new HashSet<>();
         for (Mail mail : mailBag.mails)
             senders.add(mail.sender);
-        String message = Translator.format("You hav unread mails from %s. Use /mail to read.", UserIdent.join(senders, ", ", " and "));
+        String message = Translator.format("You have unread mails from %s. Use /mail to read.", UserIdent.join(senders, ", ", " and "));
         ChatOutputHandler.chatConfirmation(event.getPlayer().createCommandSourceStack(), message);
     }
 
