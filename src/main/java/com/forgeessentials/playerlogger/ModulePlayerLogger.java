@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
@@ -25,7 +24,6 @@ import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandSource;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -33,8 +31,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class)
 public class ModulePlayerLogger
 {
-    private static ForgeConfigSpec PLAYERLOGGER_CONFIG;
-	public static final ConfigData data = new ConfigData("PlayerLogger", PLAYERLOGGER_CONFIG, new ForgeConfigSpec.Builder());
 	
     public static final String PERM = "fe.pl";
     public static final String PERM_WAND = PERM + ".wand";
@@ -44,42 +40,10 @@ public class ModulePlayerLogger
 
     private PlayerLoggerEventHandler eventHandler;
 
-    /*
-    @Preconditions
-    public boolean checkLibraries()
+    public ModulePlayerLogger()
     {
-        String[] compulsoryLibs = { "antlr.Version", "org.dom4j.Text", "org.hibernate.annotations.common.Version", "org.hibernate.Version",
-                "org.hibernate.jpa.AvailableSettings", "javax.persistence.Version", "org.jboss.jandex.Main", "javassist.CtClass", "org.jboss.logging.Logger",
-                "org.jboss.logging.annotations.Message", "javax.transaction.Status" };
-        List<String> erroredLibs = new ArrayList<String>();
-        for (String clazz : compulsoryLibs)
-        {
-            try
-            {
-                Launch.classLoader.findClass(clazz);
-            }
-            catch (ClassNotFoundException cnfe)
-            {
-                erroredLibs.add(clazz);
-                cnfe.printStackTrace();
-            }
-        }
-        if (!erroredLibs.isEmpty())
-        {
-            LoggingHandler.felog.error("[ForgeEssentials] You are missing the following library files.");
-            for (Object error : erroredLibs.toArray())
-            {
-                System.err.println(error);
-            }
-
-            LoggingHandler.felog.error("[PlayerLogger] As the necessary files could not be loaded, PlayerLogger will be disabled.");
-            LoggingHandler.felog.error("[PlayerLogger] Please verify that the necessary files are present if you wish to use PlayerLogger.");
-            return false;
-        }
-        return true;
+        ForgeEssentials.getConfigManager().registerSpecs("PlayerLogger", new PlayerLoggerConfig());
     }
-    */
-
     @SubscribeEvent
     public void load(FEModuleCommonSetupEvent e)
     {
@@ -89,7 +53,6 @@ public class ModulePlayerLogger
         
         logger = new PlayerLogger();
         eventHandler = new PlayerLoggerEventHandler();
-        ForgeEssentials.getConfigManager().registerSpecs("PlayerLogger", new PlayerLoggerConfig());
     }
 
     @SubscribeEvent

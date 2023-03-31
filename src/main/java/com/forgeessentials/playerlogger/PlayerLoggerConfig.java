@@ -8,6 +8,8 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
 public class PlayerLoggerConfig implements ConfigSaver
 {
+    private static ForgeConfigSpec PLAYERLOGGER_CONFIG;
+    public static final ConfigData data = new ConfigData("PlayerLogger", PLAYERLOGGER_CONFIG, new ForgeConfigSpec.Builder());
 
     private static final String CAT = "PlayerLogger";
 
@@ -68,6 +70,6 @@ public class PlayerLoggerConfig implements ConfigSaver
 
 	@Override
 	public ConfigData returnData() {
-		return ModulePlayerLogger.data;
+		return data;
 	}
 }

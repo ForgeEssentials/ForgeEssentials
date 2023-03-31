@@ -16,11 +16,11 @@ import net.minecraft.util.ResourceLocation;
 
 public class NetworkUtils
 {
-	public static final String PROTOCOL_VERSION = "1.0.0";
+	public static final String PROTOCOL_VERSION = "FE1";
 	public static final SimpleChannel HANDLER = NetworkRegistry.ChannelBuilder
 			.named(new ResourceLocation("forgeessentials", "fe-network"))
-			.clientAcceptedVersions(s -> true)
-			.serverAcceptedVersions(s -> true)
+			.clientAcceptedVersions(NetworkRegistry.ABSENT::equals)
+			.serverAcceptedVersions(NetworkRegistry.ABSENT::equals)
 			.networkProtocolVersion(() -> PROTOCOL_VERSION)
 			.simpleChannel();
     private static Set<Integer> registeredMessages = new HashSet<>();

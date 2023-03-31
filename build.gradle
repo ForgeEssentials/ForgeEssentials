@@ -322,13 +322,17 @@ task serverLibArchive(type: Zip) {
 
 jar.doLast {
 	delete (serverLibArchive.archivePath)
+	delete (shadowJar.archivePath)
 }
 
 shadowJar {
 	relocate  'org.jboss','com.forgeessentials.thirdparty.org.jboss'
 	relocate  'org.hibernate','com.forgeessentials.thirdparty.org.hibernate'
 	relocate  'org.h2','com.forgeessentials.thirdparty.org.h2'
+	relocate  'org.gjt','com.forgeessentials.thirdparty.org.gjt'
 	relocate  'org.dom4j','com.forgeessentials.thirdparty.org.dom4j'
+	relocate  'org.pircbotx','com.forgeessentials.thirdparty.org.pircbotx'
+	relocate  'org.slf4j','com.forgeessentials.thirdparty.org.slf4j'
 	relocate  'javax.persistence','com.forgeessentials.thirdparty.javax.persistence'
 	relocate  'javax.transaction','com.forgeessentials.thirdparty.javax.transaction'
 	relocate  'javax.interceptor','com.forgeessentials.thirdparty.javax.interceptor'
@@ -340,6 +344,7 @@ shadowJar {
 	relocate  'javassist','com.forgeessentials.thirdparty.javassist'
 	relocate  'antlr','com.forgeessentials.thirdparty.antlr'
 	relocate  'com.fasterxml','com.forgeessentials.thirdparty.com.fasterxml'
+	relocate  'com.mysql','com.forgeessentials.thirdparty.com.mysql'
 	configurations = [project.configurations.shadowLib]
 	classifier = "shadow"
 
@@ -349,6 +354,7 @@ shadowJar {
 }
 // Configure server jar (default)
 jar {
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	dependsOn "serverLibArchive"
 	dependsOn shadowJar
     //dependsOn "tsd"
@@ -357,7 +363,7 @@ jar {
 	
 	from sourceSets.main.output
 	//from sourceSets.utils.output
-    exclude('com/forgeessentials/client/**')
+    //exclude('com/forgeessentials/client/**')
     from fileTree(serverLibArchive.archivePath)
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
@@ -375,6 +381,9 @@ jar {
 		include 'META-INF/services/*'
 		filter {
 			line -> line.replaceAll('org.hibernate','com.forgeessentials.thirdparty.org.hibernate')
+		}
+		filter {
+			line -> line.replaceAll('org.pircbotx','com.forgeessentials.thirdparty.org.pircbotx')
 		}
 		rename {
 			name -> "com.forgeessentials.thirdparty.$name"

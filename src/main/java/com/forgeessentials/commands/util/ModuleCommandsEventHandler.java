@@ -26,6 +26,7 @@ import com.forgeessentials.util.events.FEPlayerEvent.PlayerAFKEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class ModuleCommandsEventHandler extends ServerEventHandler implements Runnable
@@ -136,8 +137,10 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerMoveEvent(PlayerMoveEvent event)
     {
+        LoggingHandler.felog.info("PlayerMove Event CommandEvent1");
         if (FMLEnvironment.dist.isClient())
             return;
+        LoggingHandler.felog.info("PlayerMove Event CommandEvent2");
         playerActive((ServerPlayerEntity) event.getPlayer());
     }
 
