@@ -1,7 +1,6 @@
 package com.forgeessentials.tickets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -127,21 +126,21 @@ public class ModuleTickets implements ConfigSaver
         }
     }
 
-    static ForgeConfigSpec.ConfigValue<String[]> FEcategories;
+    static ForgeConfigSpec.ConfigValue<List<String>> FEcategories;
     static ForgeConfigSpec.IntValue FEcurrentID;
 
 	@Override
 	public void load(Builder BUILDER, boolean isReload) {
         LoggingHandler.felog.debug("Loading Tickets Config");
         BUILDER.push("Tickets");
-        FEcategories = BUILDER.define("categories", new String[] { "griefing", "overflow", "dispute" });
+        FEcategories = BUILDER.define("categories", new ArrayList<String>(){{add("griefing");add("overflow");add("dispute");}});
         FEcurrentID = BUILDER.comment("Don't change anythign in there.").defineInRange("currentID", 0, 0, Integer.MAX_VALUE);
         BUILDER.pop();
 	}
 
 	@Override
 	public void bakeConfig(boolean reload) {
-		ModuleTickets.categories = Arrays.asList(FEcategories.get());
+		ModuleTickets.categories = FEcategories.get();
         ModuleTickets.currentID = FEcurrentID.get();
 	}
 
@@ -152,7 +151,7 @@ public class ModuleTickets implements ConfigSaver
 
 	@Override
 	public void save(boolean reload) {
-		FEcategories.set(ModuleTickets.categories.toArray(new String[0]));
+		FEcategories.set(ModuleTickets.categories);
         FEcurrentID.set(ModuleTickets.currentID);
 	}
 }

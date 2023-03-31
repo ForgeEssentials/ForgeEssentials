@@ -43,7 +43,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
 
     }
 
-    private static String[] messages;
+    private static List<String> messages;
 
     private static Integer entriesPerPage;
 
@@ -119,10 +119,10 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
 
     public void showHelpPage(CommandContext<CommandSource> ctx) throws CommandException
     {
-        if (messages.length == 0)
+        if (messages.size() == 0)
             showHelpPage(ctx, 1);
-        for (int i = 0; i < messages.length; i++)
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), ScriptArguments.processSafe(messages[i], ctx.getSource()));
+        for (int i = 0; i < messages.size(); i++)
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), ScriptArguments.processSafe(messages.get(i), ctx.getSource()));
     }
 
     public void showHelpPage(CommandContext<CommandSource> ctx, int page) throws CommandException
@@ -175,7 +175,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
         }
     }
 
-    static ForgeConfigSpec.ConfigValue<String[]> FEmessages;
+    static ForgeConfigSpec.ConfigValue<List<String>> FEmessages;
     static ForgeConfigSpec.IntValue FEentriesPerPage;
     static ForgeConfigSpec.IntValue FEcommandColor;
     static ForgeConfigSpec.IntValue FEsubCommandColor;
@@ -185,7 +185,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
     {
         BUILDER.comment("Configure ForgeEssentials Help Command.").push(category);
         FEmessages = BUILDER.comment("Add custom messages here that will appear when /help is run")
-                .define("custom_help", new String[] {});
+                .define("custom_help", new ArrayList<String>());
         FEentriesPerPage = BUILDER.comment("Amount to commands to show per help page")
                 .defineInRange("commandPerPage", 8, 1, 50);
         FEcommandColor = BUILDER.comment("Color for the command in /help. The possible values are; "

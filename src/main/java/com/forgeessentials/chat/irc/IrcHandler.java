@@ -255,8 +255,8 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
     static ForgeConfigSpec.IntValue FEmessageDelay;
     static ForgeConfigSpec.BooleanValue FEallowCommands;
     static ForgeConfigSpec.BooleanValue FEallowMcCommands;
-    static ForgeConfigSpec.ConfigValue<String[]> FEchannels;
-    static ForgeConfigSpec.ConfigValue<String[]> FEadmins;
+    static ForgeConfigSpec.ConfigValue<List<String>> FEchannels;
+    static ForgeConfigSpec.ConfigValue<List<String>> FEadmins;
     static ForgeConfigSpec.BooleanValue FEenable;
 
 	@Override
@@ -282,8 +282,8 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
         FEallowCommands = BUILDER.comment("If enabled, allows usage of bot commands").define("allowCommands", true);
         FEallowMcCommands = BUILDER.comment("If enabled, allows usage of MC commands through the bot (only if the IRC user is in the admins list)")
                 .define("allowMcCommands", true);
-        FEchannels = BUILDER.comment(CHANNELS_HELP).define("channels", new String[] { "#someChannelName" });
-        FEadmins = BUILDER.comment(ADMINS_HELP).define("admins", new String[] {});
+        FEchannels = BUILDER.comment(CHANNELS_HELP).define("channels", new ArrayList<String>(){{add("#someChannelName");}});
+        FEadmins = BUILDER.comment(ADMINS_HELP).define("admins", new ArrayList<String>());
         FEenable = BUILDER.comment("Enable IRC interoperability?").define("enable", false);
     }
 

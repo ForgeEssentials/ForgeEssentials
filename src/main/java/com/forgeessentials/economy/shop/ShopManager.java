@@ -2,6 +2,7 @@ package com.forgeessentials.economy.shop;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -377,14 +378,15 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     /* ------------------------------------------------------------ */
 
     static ForgeConfigSpec.BooleanValue FEuseStock;
-    static ForgeConfigSpec.ConfigValue<String[]> FEshopTags;
+    static ForgeConfigSpec.ConfigValue<List<String>> FEshopTags;
 
 	@Override
 	public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.push(CONFIG_FILE);
         FEuseStock = BUILDER.comment(STOCK_HELP).define("use_stock", false);
-        FEshopTags = BUILDER.define("shopTags", shopTags.toArray(new String[shopTags.size()]));
+        List<String> aList = new ArrayList<String>(shopTags.size());for (String x : shopTags){aList.add(x);}
+        FEshopTags = BUILDER.define("shopTags", aList);
         BUILDER.pop();
     }
 
@@ -393,9 +395,8 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     {
 
         useStock = FEuseStock.get();
-        String[] tags = FEshopTags.get();
         shopTags.clear();
-        for (String tag : tags)
+        for (String tag : FEshopTags.get())
             shopTags.add(tag);
     }
 

@@ -1,7 +1,6 @@
 package com.forgeessentials.chat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class TimedMessages implements ConfigSaver, Runnable
     public static final String MESSAGES_HELP = "Each line is 1 message. \nYou can use scripting arguments and color codes. "
             + "\nUsing json messages (tellraw) is also supported";
 
-    public static final String[] MESSAGES_DEFAULT = new String[] { "This server runs ForgeEssentials server management mod" };
+    public static final List<String> MESSAGES_DEFAULT = new ArrayList<String>(){{add("This server runs ForgeEssentials server management mod");}};
 
     private static List<String> messages = new ArrayList<>();
 
@@ -123,7 +122,7 @@ public class TimedMessages implements ConfigSaver, Runnable
     static ForgeConfigSpec.IntValue FEinverval;
     static ForgeConfigSpec.BooleanValue FEenabled;
     static ForgeConfigSpec.BooleanValue FEshuffle;
-    static ForgeConfigSpec.ConfigValue<String[]> FEmessages;
+    static ForgeConfigSpec.ConfigValue<List<String>> FEmessages;
 
     @Override
     public void load(Builder BUILDER, boolean isReload)
@@ -142,7 +141,7 @@ public class TimedMessages implements ConfigSaver, Runnable
         setInterval(FEinverval.get());
         enabled = FEenabled.get();
         shuffle = FEshuffle.get();
-        messages = new ArrayList<String>(Arrays.asList(FEmessages.get()));
+        messages = FEmessages.get();
         initMessageOrder();
     }
 
@@ -151,7 +150,7 @@ public class TimedMessages implements ConfigSaver, Runnable
     {
         FEinverval.set(interval);
         FEshuffle.set(shuffle);
-        FEmessages.set(messages.toArray(new String[messages.size()]));
+        FEmessages.set(messages);
     }
 
     @Override

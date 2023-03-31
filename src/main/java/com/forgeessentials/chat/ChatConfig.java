@@ -1,7 +1,9 @@
 package com.forgeessentials.chat;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.IllegalFormatException;
+import java.util.List;
 import java.util.Set;
 
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -28,7 +30,7 @@ public class ChatConfig extends ConfigLoaderBase
 
     private static final String DEFAULT_WELCOME_MESSAGE = "New player @player joined the server!";
 
-    private static final String[] DEFAULT_LOGIN_MESSAGE = new String[] { "Welcome @player.", "This server is running ForgeEssentials" };
+    private static final List<String> DEFAULT_LOGIN_MESSAGE = new ArrayList<String>(){{add("Welcome @player.");add("This server is running ForgeEssentials");}};
 
     public static String gamemodeCreative;
 
@@ -40,18 +42,18 @@ public class ChatConfig extends ConfigLoaderBase
 
     public static String welcomeMessage;
 
-    public static String[] loginMessage;
+    public static List<String> loginMessage;
 
     public static Set<String> mutedCommands = new HashSet<>();
 
     static ForgeConfigSpec.ConfigValue<String> FEchatFormat;
     static ForgeConfigSpec.ConfigValue<String> FEwelcomeMessage;
-    static ForgeConfigSpec.ConfigValue<String[]> FEloginMessage;
+    static ForgeConfigSpec.ConfigValue<List<String>> FEloginMessage;
     static ForgeConfigSpec.ConfigValue<String> FEgamemodeSurvival;
     static ForgeConfigSpec.ConfigValue<String> FEgamemodeCreative;
     static ForgeConfigSpec.ConfigValue<String> FEgamemodeAdventure;
     static ForgeConfigSpec.BooleanValue FELogChat;
-    static ForgeConfigSpec.ConfigValue<String[]> FEmutedCommands;
+    static ForgeConfigSpec.ConfigValue<List<String>> FEmutedCommands;
 
 	@Override
 	public void load(Builder BUILDER, boolean isReload)
@@ -71,7 +73,7 @@ public class ChatConfig extends ConfigLoaderBase
         BUILDER.pop();
 
         BUILDER.push("mute");
-        FEmutedCommands = BUILDER.comment(MUTEDCMD_HELP).define("mutedCommands", new String[] { "me" });
+        FEmutedCommands = BUILDER.comment(MUTEDCMD_HELP).define("mutedCommands", new ArrayList<String>(){{add("me");}});
         BUILDER.pop();
     }
 

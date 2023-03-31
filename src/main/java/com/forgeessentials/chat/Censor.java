@@ -21,7 +21,7 @@ public class Censor extends ConfigLoaderBase
 
     private static final String CONFIG_CATEGORY = "Censor";
 
-    private static final String[] DEFAULT_WORDS = new String[] { "fuck\\S*", "bastard", "moron", "ass", "asshole", "bitch", "shit" };
+    private static final List<String> DEFAULT_WORDS = new ArrayList<String>(){{add("fuck\\S*");add("bastard");add("moron");add("ass");add("asshole");add("bitch");add("shit");}};
 
     private static final String CENSOR_HELP = "Words to be censored. Prepend with ! to disable word boundary check.";
 
@@ -61,7 +61,7 @@ public class Censor extends ConfigLoaderBase
     static ForgeConfigSpec.BooleanValue FEenabled;
     static ForgeConfigSpec.IntValue FEcensorSlap;
     static ForgeConfigSpec.ConfigValue<String> FEcensorSymbol;
-    static ForgeConfigSpec.ConfigValue<String[]> FEfilterList;
+    static ForgeConfigSpec.ConfigValue<List<String>> FEfilterList;
 
 	@Override
 	public void load(Builder BUILDER, boolean isReload)
