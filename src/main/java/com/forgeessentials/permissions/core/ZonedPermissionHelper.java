@@ -113,6 +113,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public ZonedPermissionHelper()
     {
+        LoggingHandler.felog.info("Creating new ZonedPermissionHelper");
         rootZone = new RootZone(this);
         rootZone.setPermissionDebugger(this);
 
@@ -228,8 +229,16 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     {
         PermissionList defaultPerms = rootZone.getGroupPermissions(Zone.GROUP_DEFAULT);
         PermissionList opPerms = rootZone.getGroupPermissions(Zone.GROUP_OPERATORS);
-        opPerms.remove(null);
-        defaultPerms.remove(null);
+        try
+        {
+            opPerms.remove(null);
+            defaultPerms.remove(null);
+        }
+        catch (NullPointerException e1)
+        {
+            e1.printStackTrace();
+            return;
+        }
 
         File file = new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_FILE);
         File fileItems = new File(ForgeEssentials.getFEDirectory(), PERMISSIONS_LIST_ITEMS_FILE);

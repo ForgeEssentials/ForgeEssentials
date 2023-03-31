@@ -117,10 +117,10 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
 
     public static void checkAfkMessage(CommandSource target, ITextComponent message) throws CommandSyntaxException
     {
-        if (!(target.getPlayerOrException() instanceof ServerPlayerEntity))
+        if (!(target.getEntity() instanceof ServerPlayerEntity))
             return;
-        UserIdent targetIdent = UserIdent.get((ServerPlayerEntity) target.getPlayerOrException());
-        if (target.getPlayerOrException() instanceof ServerPlayerEntity && isAfk(targetIdent))
+        UserIdent targetIdent = UserIdent.get((ServerPlayerEntity) target.getEntity());
+        if (target.getEntity() instanceof ServerPlayerEntity && isAfk(targetIdent))
         {
             ChatOutputHandler.notification(Translator.format("Player %s is currently AFK", targetIdent.getUsernameOrUuid()));
             return;
@@ -162,18 +162,12 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void commandEvent(CommandEvent event)
     {
+        if(event.getParseResults().getContext().getNodes().isEmpty())
+            return;
         if (event.getParseResults().getContext().getNodes().get(0).toString() =="afk"||event.getParseResults().getContext().getNodes().get(0).toString()=="feafk")
             return;
-        try
-        {
-            if (event.getParseResults().getContext().getSource().getPlayerOrException() instanceof ServerPlayerEntity)
-                playerActive((ServerPlayerEntity) event.getParseResults().getContext().getSource().getPlayerOrException());
-        }
-        catch (CommandSyntaxException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        if (event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity)
+            playerActive((ServerPlayerEntity) event.getParseResults().getContext().getSource().getEntity());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

@@ -80,11 +80,13 @@ public class ModuleContainer implements Comparable<Object>
 
         if (annot.canDisable())
         {
-            if (!ConfigBase.getModuleConfig().get(name, annot.defaultModule()));
+            if (!ConfigBase.getModuleConfig().get(name, annot.defaultModule()))
             {
-                LoggingHandler.felog.info("Requested to disable module " + name);
+                LoggingHandler.felog.info("Requested to disable module: " + name);
                 isLoadable = false;
                 return;
+            }else {
+                LoggingHandler.felog.info("Requested to enable module: " + name);
             }
         }
 
