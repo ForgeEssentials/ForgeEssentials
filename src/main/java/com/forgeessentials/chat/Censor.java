@@ -10,14 +10,11 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigBase;
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.base.Strings;
 
-public class Censor extends ConfigLoaderBase
+public class Censor
 {
 
     private static final String CONFIG_CATEGORY = "Censor";
@@ -54,17 +51,11 @@ public class Censor extends ConfigLoaderBase
 
     }
 
-    public Censor()
-    {
-        ForgeEssentials.getConfigManager().registerSpecs(ModuleChat.CONFIG_FILE, this);
-    }
-
     static ForgeConfigSpec.BooleanValue FEenabled;
     static ForgeConfigSpec.IntValue FEcensorSlap;
     static ForgeConfigSpec.ConfigValue<String> FEcensorSymbol;
     static ForgeConfigSpec.ConfigValue<List<? extends String>> FEfilterList;
 
-	@Override
 	public void load(Builder BUILDER, boolean isReload)
 	{
         BUILDER.push(CONFIG_CATEGORY);
@@ -75,7 +66,6 @@ public class Censor extends ConfigLoaderBase
         BUILDER.pop();
     }
 
-	@Override
 	public void bakeConfig(boolean reload)
 	{
         enabled = FEenabled.get();
@@ -136,9 +126,4 @@ public class Censor extends ConfigLoaderBase
         }
         return message;
     }
-
-	@Override
-	public ConfigData returnData() {
-		return ModuleChat.data;
-	}
 }

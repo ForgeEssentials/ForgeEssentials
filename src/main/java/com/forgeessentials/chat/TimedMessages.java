@@ -6,10 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigBase;
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -20,7 +17,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
-public class TimedMessages implements ConfigSaver, Runnable
+public class TimedMessages implements Runnable
 {
 
     public static final String CATEGORY = "TimedMessage";
@@ -46,7 +43,6 @@ public class TimedMessages implements ConfigSaver, Runnable
 
     public TimedMessages()
     {
-        ForgeEssentials.getConfigManager().registerSpecs(ModuleChat.CONFIG_FILE, this);
         tm = this;
     }
 
@@ -125,7 +121,6 @@ public class TimedMessages implements ConfigSaver, Runnable
     static ForgeConfigSpec.BooleanValue FEshuffle;
     static ForgeConfigSpec.ConfigValue<List<? extends String>> FEmessages;
 
-    @Override
     public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.comment("Automated spam").push(CATEGORY);
@@ -136,7 +131,6 @@ public class TimedMessages implements ConfigSaver, Runnable
         BUILDER.pop();
     }
 
-    @Override
     public void bakeConfig(boolean reload)
     {
         setInterval(FEinverval.get());
@@ -146,17 +140,11 @@ public class TimedMessages implements ConfigSaver, Runnable
         initMessageOrder();
     }
 
-    @Override
     public void save(boolean reload)
     {
         FEinverval.set(interval);
         FEshuffle.set(shuffle);
         FEmessages.set(messages);
-    }
-
-    @Override
-    public ConfigData returnData() {
-        return ModuleChat.data;
     }
 
     // ------------------------------------------------------------

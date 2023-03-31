@@ -52,17 +52,14 @@ import com.forgeessentials.chat.irc.command.CommandHelp;
 import com.forgeessentials.chat.irc.command.CommandListPlayers;
 import com.forgeessentials.chat.irc.command.CommandMessage;
 import com.forgeessentials.chat.irc.command.CommandReply;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigBase;
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.ParseResults;
 
-public class IrcHandler extends ListenerAdapter implements ConfigLoader
+public class IrcHandler extends ListenerAdapter
 {
 
     private static final String CATEGORY = "IRC";
@@ -127,7 +124,6 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
 
     public IrcHandler()
     {
-        ForgeEssentials.getConfigManager().registerSpecs(ModuleChat.CONFIG_FILE, this);
         MinecraftForge.EVENT_BUS.register(this);
 
         registerCommand(new CommandHelp());
@@ -258,7 +254,6 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
     static ForgeConfigSpec.ConfigValue<List<? extends String>> FEadmins;
     static ForgeConfigSpec.BooleanValue FEenable;
 
-	@Override
 	public void load(Builder BUILDER, boolean isReload)
 	{
         BUILDER.comment("Configure the built-in IRC bot here").push(CATEGORY);
@@ -284,9 +279,9 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
         FEchannels = BUILDER.comment(CHANNELS_HELP).defineList("channels", new ArrayList<String>(){{add("#someChannelName");}},ConfigBase.stringValidator);
         FEadmins = BUILDER.comment(ADMINS_HELP).defineList("admins", new ArrayList<String>(),ConfigBase.stringValidator);
         FEenable = BUILDER.comment("Enable IRC interoperability?").define("enable", false);
+        BUILDER.pop();
     }
 
-	@Override
 	public void bakeConfig(boolean reload)
 	{
         ModuleChat.instance.ircHandler.server = FEserver.get();
@@ -629,10 +624,4 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
     {
         this.sendMessages = sendMessages;
     }
-
-
-	@Override
-	public ConfigData returnData() {
-		return ModuleChat.data;
-	}
 }

@@ -10,16 +10,14 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
 import com.forgeessentials.core.config.ConfigBase;
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.util.output.LoggingHandler;
 
-public class ChatConfig extends ConfigLoaderBase
+public class ChatConfig
 {
 
-    private static final String CATEGORY = ModuleChat.CONFIG_CATEGORY;
+    private static final String CATEGORY = "Chat";
 
-    private static final String CAT_GM = CATEGORY + "_Gamemodes";
+    private static final String CAT_GM = "Gamemodes";
 
     public static final String CHAT_FORMAT_HELP = "Format for chat. Always needs to contain all 5 \"%s\" placeholders like the default!";
 
@@ -56,8 +54,7 @@ public class ChatConfig extends ConfigLoaderBase
     static ForgeConfigSpec.BooleanValue FELogChat;
     static ForgeConfigSpec.ConfigValue<List<? extends String>> FEmutedCommands;
 
-	@Override
-	public void load(Builder BUILDER, boolean isReload)
+	public static void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.comment("Chat configuration").push(CATEGORY);
         FEchatFormat = BUILDER.comment(CHAT_FORMAT_HELP).define("ChatFormat", "%s%s<%s>%s%s ");
@@ -73,13 +70,12 @@ public class ChatConfig extends ConfigLoaderBase
         FEgamemodeAdventure = BUILDER.define("Adventure", "adventure");
         BUILDER.pop();
 
-        BUILDER.push("mute");
+        BUILDER.push("Mute");
         FEmutedCommands = BUILDER.comment(MUTEDCMD_HELP).defineList("mutedCommands", new ArrayList<String>(){{add("me");}},ConfigBase.stringValidator);
         BUILDER.pop();
     }
 
-	@Override
-	public void bakeConfig(boolean reload)
+	public static void bakeConfig(boolean reload)
     {
         try
         {
@@ -106,9 +102,5 @@ public class ChatConfig extends ConfigLoaderBase
         ModuleChat.instance.setChatLogging(FELogChat.get());
 
     }
-	@Override
-	public ConfigData returnData() {
-		return ModuleChat.data;
-	}
 
 }

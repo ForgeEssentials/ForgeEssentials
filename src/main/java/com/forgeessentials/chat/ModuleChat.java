@@ -23,6 +23,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -51,6 +52,7 @@ import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptArguments;
@@ -68,14 +70,12 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 @FEModule(name = "Chat", parentMod = ForgeEssentials.class)
-public class ModuleChat
+public class ModuleChat implements ConfigSaver
 {
 	private static ForgeConfigSpec CHAT_CONFIG;
 	public static final ConfigData data = new ConfigData("Chat", CHAT_CONFIG, new ForgeConfigSpec.Builder());
 	
     public static final String CONFIG_FILE = "Chat";
-
-    public static final String CONFIG_CATEGORY = "Chat";
 
     public static final String PERM = "fe.chat";
 
@@ -117,7 +117,6 @@ public class ModuleChat
     /* ------------------------------------------------------------ */
 
     public ModuleChat() {
-    	ForgeEssentials.getConfigManager().registerSpecs(CONFIG_FILE, new ChatConfig());
     	ircHandler = new IrcHandler();
         censor = new Censor();
         timedMessages = new TimedMessages();
@@ -127,11 +126,6 @@ public class ModuleChat
     public void moduleLoad(FEModuleCommonSetupEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
-
-        ircHandler = new IrcHandler();
-        censor = new Censor();
-        timedMessages = new TimedMessages();
-        mailer = new Mailer();
 
         setupChatReplacements();
     }
@@ -585,4 +579,31 @@ public class ModuleChat
             }
         }
     }
+
+	@Override
+	public void load(Builder BUILDER, boolean isReload) {
+	    ChatConfig.load(BUILDER, isReload);
+	    censor.load(BUILDER, isReload);
+	    timedMessages.load(BUILDER, isReload);
+	    ircHandler.load(BUILDER, isReload);
+	}
+
+	@Override
+	public void bakeConfig(boolean reload) {
+		censor.bakeConfig(reload);
+	    timedMessages.bakeConfig(reload);
+	    ircHandler.bakeConfig(reload);
+	    ChatConfig.bakeConfig(reload);
+	}
+
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
+
+	@Override
+	public void save(boolean reload) {
+	    timedMessages.save(reload);
+		
+	}
 }
