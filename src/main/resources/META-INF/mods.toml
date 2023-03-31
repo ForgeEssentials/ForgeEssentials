@@ -20,11 +20,11 @@ issueTrackerURL="https://github.com/ForgeEssentials/ForgeEssentials/issues"
     mandatory=true
     versionRange="[36,)"
     ordering="NONE"
-    side="BOTH"
+    side="SERVER"
 [[dependencies.forgeessentials]]
     modId="minecraft"
     mandatory=true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange="[1.16.5,1.17)"
     ordering="NONE"
-    side="BOTH"
+    side="SERVER"

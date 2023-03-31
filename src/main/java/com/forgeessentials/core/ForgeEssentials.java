@@ -163,7 +163,7 @@ public class ForgeEssentials
         instance = this;
         //Set mod as server only
         MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
-        MOD_CONTAINER.registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         // new TestClass().test();
         modMain = FMLJavaModLoadingContext.get().getModEventBus();
         tasks = new TaskRegistry();
