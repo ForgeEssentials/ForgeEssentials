@@ -1,7 +1,16 @@
-run ./gradlew genEclipseRuns to build the classpath and generate eclipse files.
+Run ./gradlew eclipse to build the classpath and generate eclipse files.
 
-Java Build Path sources
+If having eclipse problems, use the following commands:
 
-scr/utils/replacejava
-scr/main/java
-scr/main/java -exclude com.forgeessentials.commons.Buildinfo.java
+First try cleaning the Eclipse configuration completely. 
+./gradlew cleanEclipse
+
+If that doesn't work you may try more specific tasks: 
+./gradlew cleanEclipseProject       to remove the .project file
+./gradlew cleanEclipseClasspath     to empty the project's classpath
+
+Finally to rebuild the Eclipse configuration
+./gradlew eclipse
+
+Finally to build launch files for Eclipse
+./gradlew genEclipseRuns
