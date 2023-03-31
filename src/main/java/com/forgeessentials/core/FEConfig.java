@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -64,6 +65,7 @@ public class FEConfig extends ConfigLoaderBase
                 .define("format_gson_compat", "MMM d, yyyy h:mm:ss aa");
         FEmodlistLocation = BUILDER.comment("Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.")
                 .define("modlistLocation", "modlist.txt");
+        BUILDER = ForgeEssentials.load(BUILDER, isReload);
         BUILDER.pop();
 
         BUILDER.push(CONFIG_MAIN_MISC);
@@ -71,8 +73,8 @@ public class FEConfig extends ConfigLoaderBase
                 .defineInRange("MajoritySleepThreshold", 50, 0, 100);
         FEcheckSpacesInNames = BUILDER.comment("Check if a player's name contains spaces (can gum up some things in FE)")
                 .define("CheckSpacesInNames", true);
-
         BUILDER.pop();
+        BUILDER = ChatOutputHandler.load(BUILDER, isReload);
     }
 
 	@Override
@@ -87,6 +89,8 @@ public class FEConfig extends ConfigLoaderBase
 
         majoritySleep = FEmajoritySleep.get();
         checkSpacesInNames = FEcheckSpacesInNames.get();
+        ForgeEssentials.bakeConfig(reload);
+        ChatOutputHandler.bakeConfig(reload);
     }
 
 	@Override

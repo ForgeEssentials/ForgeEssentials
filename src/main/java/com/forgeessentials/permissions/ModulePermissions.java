@@ -233,7 +233,7 @@ public class ModulePermissions extends ConfigLoaderBase
     	FEpersistenceBackend = BUILDER.comment(PERSISTENCE_HELP).define("persistenceBackend", "singlejson");
     	FEfakePlayerIsSpecialBunny = BUILDER.comment("Should we force override UUID for fake players? This is by default true because mods are randomly generating UUID each boot!").define("fakePlayerIsSpecialBunny", true);
     	BUILDER.pop();
-    	dbConnector.loadOrGenerate(BUILDER, CONFIG_CAT + ".SQL");
+    	dbConnector.loadOrGenerate(BUILDER, CONFIG_CAT+"-DBTypes");
     }
 
 	@Override

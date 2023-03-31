@@ -119,7 +119,7 @@ public class DBConnector
         DBConnectorDataStatic propsStatic;
         for (EnumDBType dbType : EnumDBType.values())
         {
-            newcat = cat + "." + dbType;
+            newcat = cat + "-" + dbType.toString();
 
             propsStatic = dataStatic.get(dbType);
             if (propsStatic == null)

@@ -17,13 +17,11 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.util.events.ConfigReloadEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.Maps;
 
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
 import static net.minecraftforge.registries.ForgeRegistry.REGISTRIES;
@@ -41,7 +39,7 @@ public class ModuleLauncher
 
     private static final Type MOD = Type.getType(FEModule.class);
     
-    public void preLoad(FMLCommonSetupEvent e)
+    public void init()
     {
         LoggingHandler.felog.info("Discovering and loading modules...");
 

@@ -63,8 +63,6 @@ import com.forgeessentials.core.commands.CommandFeReload;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.CommandUuid;
 import com.forgeessentials.core.config.ConfigBase;
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -73,6 +71,7 @@ import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.PlayerInfo;
@@ -98,13 +97,13 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
  */
 @Mod(ForgeEssentials.MODID)
 @Mod.EventBusSubscriber(modid = ForgeEssentials.MODID)
-public class ForgeEssentials extends ConfigLoaderBase
+public class ForgeEssentials
 {
 
     public static final String MODID = "forgeessentials";
     
     public static final String FE_DIRECTORY = "ForgeEssentials";
-
+    @Instance
     public static ForgeEssentials instance;
     public static IEventBus modMain;
     public static ModContainer MOD_CONTAINER;
@@ -140,7 +139,7 @@ public class ForgeEssentials extends ConfigLoaderBase
 
     private static File feDirectory;
 
-    private static File moduleDirectory;
+    //private static File moduleDirectory;
 
     private static File jarLocation;
 
@@ -178,10 +177,10 @@ public class ForgeEssentials extends ConfigLoaderBase
         modMain.addListener(this::loadServer);
         modMain.addListener(this::postLoad);
         moduleLauncher = new ModuleLauncher();
-        
+        // Load submodules
+        //moduleLauncher.init();
     }
 
-    //@SubscribeEvent
     public void preInit(FMLCommonSetupEvent event)
     {
         LoggingHandler.felog.info("ForgeEssentials Common Setup");
@@ -194,10 +193,10 @@ public class ForgeEssentials extends ConfigLoaderBase
         registerNetworkMessages();
 
         // Set up logger level
-        if (true)
-            ((Logger) LoggingHandler.felog).setLevel(Level.DEBUG);
+        if (debugMode)
+            ((Logger) LoggingHandler.felog).setLevel(Level.ALL);
         else
-            ((Logger) LoggingHandler.felog).setLevel(Level.INFO);
+            ((Logger) LoggingHandler.felog).setLevel(Level.ALL);
         // Register core submodules
         factory = new ForgeEssentialsEventFactory();
         teleportHelper = new TeleportHelper();
@@ -207,13 +206,14 @@ public class ForgeEssentials extends ConfigLoaderBase
         MinecraftForge.EVENT_BUS.register(new CompatReiMinimap());
 
         // Load submodules
-        moduleLauncher = new ModuleLauncher();
-        moduleLauncher.preLoad(event);
+        moduleLauncher.init();
+        //APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent());
     }
 
-    //@SubscribeEvent
     public void loadServer(FMLDedicatedServerSetupEvent e)
     {
+        LoggingHandler.felog.info("ForgeEssentials DedicatedServerSetup Event");
+
         LoggingHandler.felog
                 .info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
         if (BuildInfo.isOutdated())
@@ -230,7 +230,6 @@ public class ForgeEssentials extends ConfigLoaderBase
         //APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleCommonSetupEvent(e));
     }
 
-    @SubscribeEvent
     public void postLoad(FMLLoadCompleteEvent e)
     {
         LoggingHandler.felog.info("ForgeEssentials LoadCompleteEvent");
@@ -244,16 +243,14 @@ public class ForgeEssentials extends ConfigLoaderBase
         feDirectory = new File(FMLPaths.GAMEDIR.get().toFile(), FE_DIRECTORY);
         feDirectory.mkdirs();
 
-        moduleDirectory = new File(feDirectory, "modules");
-        moduleDirectory.mkdirs();
+        //moduleDirectory = new File(feDirectory, "modules");
+        //moduleDirectory.mkdirs();
 
         configManager = new ConfigBase(feDirectory);
 
         ConfigBase.getModuleConfig().loadModuleConfig();
         ConfigBase.getModuleConfig().setCreated();
         configManager.registerSpecs(configManager.getMainConfigName(), new FEConfig());
-        configManager.registerSpecs(configManager.getMainConfigName(), new ChatOutputHandler());
-        configManager.registerSpecs(configManager.getMainConfigName(), this);
     }
 
     private void registerNetworkMessages()
@@ -509,10 +506,9 @@ public class ForgeEssentials extends ConfigLoaderBase
     static ForgeConfigSpec.BooleanValue FEhideWorldEditCommands;
     static ForgeConfigSpec.BooleanValue FElogCommandsToConsole;
 	
-	@Override
-	public void load(Builder BUILDER, boolean isReload)
+
+	public static Builder load(Builder BUILDER, boolean isReload)
     {
-    	BUILDER.comment("Configure ForgeEssentials Core.").push(FEConfig.CONFIG_MAIN_CORE);
         FEcheckVersion = BUILDER.comment("Check for newer versions of ForgeEssentials on load?").define("versionCheck", true);
         //configManager.setUseCanonicalConfig(SERVER_BUILDER.comment("For modules that support it, place their configs in this file.").define("canonicalConfigs", false).get());
         FEdebugMode = BUILDER.comment("Activates developer debug mode. Spams your FML logs.")
@@ -524,11 +520,10 @@ public class ForgeEssentials extends ConfigLoaderBase
         		.define("hide_worldedit_help", true);
         FElogCommandsToConsole = BUILDER.comment("Log commands to console")
         		.define("logCommands", false);
-        //BuildInfo.startVersionChecks();
-        BUILDER.pop();
+        return BUILDER;
     }
-	@Override
-	public void bakeConfig(boolean reload) {
+
+	public static void bakeConfig(boolean reload) {
     	if (reload)
             Translator.translations.clear();
         Translator.load();
@@ -541,11 +536,7 @@ public class ForgeEssentials extends ConfigLoaderBase
         logCommandsToConsole = FElogCommandsToConsole.get();
         BuildInfo.startVersionChecks();
     }
-	
-	@Override
-	public ConfigData returnData() {
-		return FEConfig.data;
-	}
+
     /* ------------------------------------------------------------ */
 
     public static ConfigBase getConfigManager()

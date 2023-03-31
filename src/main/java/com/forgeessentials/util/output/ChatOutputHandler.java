@@ -21,12 +21,9 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 //import org.apache.commons.text.StringEscapeUtils;
 
-import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.Translator;
 
-public final class ChatOutputHandler extends ConfigLoaderBase
+public final class ChatOutputHandler
 {
 
     public static final char COLOR_FORMAT_CHARACTER = '\u00a7';
@@ -535,8 +532,7 @@ public final class ChatOutputHandler extends ConfigLoaderBase
     static ForgeConfigSpec.ConfigValue<String> FEchatNotificationColor;
     static ForgeConfigSpec.ConfigValue<String> FEchatWarningColor;
 
-	@Override
-	public void load(Builder BUILDER, boolean isReload)
+	public static Builder load(Builder BUILDER, boolean isReload)
     {
         BUILDER.comment(
                 "This controls the colors of the various chats output by ForgeEssentials." + "\nValid output colors are as follows:"
@@ -552,20 +548,15 @@ public final class ChatOutputHandler extends ConfigLoaderBase
         FEchatWarningColor = BUILDER.comment("Defaults to yellow.")
                 .define("warningOutputColor", "yellow");
         BUILDER.pop();
+        return BUILDER;
     }
 
-	@Override
-	public void bakeConfig(boolean reload)
+	public static void bakeConfig(boolean reload)
     {
         setConfirmationColor(FEchatConfirmationColor.get());
         setErrorColor(FEchatErrorColor.get());
         setNotificationColor(FEchatNotificationColor.get());
         setWarningColor(FEchatWarningColor.get());
     }
-
-	@Override
-	public ConfigData returnData() {
-		return FEConfig.data;
-	}
 
 }

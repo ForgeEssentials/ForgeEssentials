@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -25,6 +26,7 @@ public class LoggingHandler
     public static final QueueLogAppender logCache = new QueueLogAppender("fe_server_log_queue", null, MC_PATTERN, true, MAX_LOG_LENGTH);
 
     public static final org.apache.logging.log4j.Logger felog = LogManager.getLogger(ForgeEssentials.MODID);
+
 
     static
     {
