@@ -137,10 +137,8 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerMoveEvent(PlayerMoveEvent event)
     {
-        LoggingHandler.felog.info("PlayerMove Event CommandEvent1");
         if (FMLEnvironment.dist.isClient())
             return;
-        LoggingHandler.felog.info("PlayerMove Event CommandEvent2");
         playerActive((ServerPlayerEntity) event.getPlayer());
     }
 

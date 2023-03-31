@@ -569,7 +569,6 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
     @SubscribeEvent
     public void playerMoveEvent(PlayerMoveEvent e)
     {
-        LoggingHandler.felog.info("PlayerMove Event ZonedHandler");
         Zone before = APIRegistry.perms.getServerZone().getZonesAt(e.before.toWorldPoint()).get(0);
         Zone after = APIRegistry.perms.getServerZone().getZonesAt(e.after.toWorldPoint()).get(0);
         if (!before.equals(after))

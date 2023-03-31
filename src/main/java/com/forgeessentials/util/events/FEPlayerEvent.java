@@ -15,14 +15,16 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 public class FEPlayerEvent extends PlayerEvent
 {
 
+    private PlayerEntity player;
     public FEPlayerEvent(PlayerEntity player)
     {
         super(player);
+        this.player = player;
     }
 
     public PlayerEntity getPlayer()
     {
-        return (PlayerEntity) getPlayer();
+        return player;
     }
 
     /**
