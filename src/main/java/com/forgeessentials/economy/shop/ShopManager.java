@@ -42,6 +42,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -378,7 +379,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     /* ------------------------------------------------------------ */
 
     static ForgeConfigSpec.BooleanValue FEuseStock;
-    static ForgeConfigSpec.ConfigValue<List<String>> FEshopTags;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEshopTags;
 
 	@Override
 	public void load(Builder BUILDER, boolean isReload)
@@ -386,7 +387,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         BUILDER.push(CONFIG_FILE);
         FEuseStock = BUILDER.comment(STOCK_HELP).define("use_stock", false);
         List<String> aList = new ArrayList<String>(shopTags.size());for (String x : shopTags){aList.add(x);}
-        FEshopTags = BUILDER.define("shopTags", aList);
+        FEshopTags = BUILDER.defineList("shopTags", aList,ConfigBase.stringValidator);
         BUILDER.pop();
     }
 

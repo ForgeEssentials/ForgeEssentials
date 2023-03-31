@@ -18,8 +18,6 @@ import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 
 @FEModule(name = "factions", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
@@ -67,7 +65,7 @@ public class ModuleFactions
     public ModuleFactions()
     {
         MinecraftForge.EVENT_BUS.register(this);
-        APIRegistry.FE_EVENTBUS.register(this);
+        //APIRegistry.FE_EVENTBUS.register(this);
     }
 
     @SubscribeEvent
@@ -118,16 +116,6 @@ public class ModuleFactions
     {
         event.serverZone.setGroupPermissionProperty(GROUP_OWNER, FEPermissions.GROUP_PRIORITY, Integer.toString(FEPermissions.GROUP_PRIORITY_DEFAULT - 2));
         event.serverZone.setGroupPermissionProperty(GROUP_OP, FEPermissions.GROUP_PRIORITY, Integer.toString(FEPermissions.GROUP_PRIORITY_DEFAULT - 4));
-    }
-
-    @SubscribeEvent
-    public void serverStarting(FEModuleServerStartingEvent event)
-    {
-    }
-
-    @SubscribeEvent
-    public void serverStopping(FEModuleServerStoppingEvent event)
-    {
     }
 
     /* ------------------------------------------------------------ */

@@ -9,6 +9,7 @@ import java.util.Set;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -48,12 +49,12 @@ public class ChatConfig extends ConfigLoaderBase
 
     static ForgeConfigSpec.ConfigValue<String> FEchatFormat;
     static ForgeConfigSpec.ConfigValue<String> FEwelcomeMessage;
-    static ForgeConfigSpec.ConfigValue<List<String>> FEloginMessage;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEloginMessage;
     static ForgeConfigSpec.ConfigValue<String> FEgamemodeSurvival;
     static ForgeConfigSpec.ConfigValue<String> FEgamemodeCreative;
     static ForgeConfigSpec.ConfigValue<String> FEgamemodeAdventure;
     static ForgeConfigSpec.BooleanValue FELogChat;
-    static ForgeConfigSpec.ConfigValue<List<String>> FEmutedCommands;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEmutedCommands;
 
 	@Override
 	public void load(Builder BUILDER, boolean isReload)
@@ -63,7 +64,7 @@ public class ChatConfig extends ConfigLoaderBase
         FELogChat = BUILDER.comment("Log all chat messages").define("LogChat", true);
 
         FEwelcomeMessage = BUILDER.comment(WELCOME_MESSAGE).define("WelcomeMessage", DEFAULT_WELCOME_MESSAGE);
-        FEloginMessage = BUILDER.comment(LOGIN_MESSAGE).define("LoginMessage", DEFAULT_LOGIN_MESSAGE);
+        FEloginMessage = BUILDER.comment(LOGIN_MESSAGE).defineList("LoginMessage", DEFAULT_LOGIN_MESSAGE, ConfigBase.stringValidator);
         BUILDER.pop();
 
         BUILDER.comment("Gamemode names").push(CAT_GM);
@@ -73,7 +74,7 @@ public class ChatConfig extends ConfigLoaderBase
         BUILDER.pop();
 
         BUILDER.push("mute");
-        FEmutedCommands = BUILDER.comment(MUTEDCMD_HELP).define("mutedCommands", new ArrayList<String>(){{add("me");}});
+        FEmutedCommands = BUILDER.comment(MUTEDCMD_HELP).defineList("mutedCommands", new ArrayList<String>(){{add("me");}},ConfigBase.stringValidator);
         BUILDER.pop();
     }
 
@@ -92,7 +93,7 @@ public class ChatConfig extends ConfigLoaderBase
         }
 
         welcomeMessage = FEwelcomeMessage.get();
-        loginMessage = FEloginMessage.get();
+        loginMessage = new ArrayList<>(FEloginMessage.get());
 
         gamemodeSurvival = FEgamemodeSurvival.get();
         gamemodeCreative = FEgamemodeCreative.get();

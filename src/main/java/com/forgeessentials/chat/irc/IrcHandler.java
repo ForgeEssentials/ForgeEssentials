@@ -47,13 +47,13 @@ import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.command.CommandHelp;
 import com.forgeessentials.chat.irc.command.CommandListPlayers;
 import com.forgeessentials.chat.irc.command.CommandMessage;
 import com.forgeessentials.chat.irc.command.CommandReply;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.Translator;
@@ -65,7 +65,7 @@ import com.mojang.brigadier.ParseResults;
 public class IrcHandler extends ListenerAdapter implements ConfigLoader
 {
 
-    private static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + "_IRC";
+    private static final String CATEGORY = "IRC";
 
     private static final String CHANNELS_HELP = "List of channels to connect to, together with the # character";
 
@@ -129,7 +129,6 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
     {
         ForgeEssentials.getConfigManager().registerSpecs(ModuleChat.CONFIG_FILE, this);
         MinecraftForge.EVENT_BUS.register(this);
-        APIRegistry.getFEEventBus().register(this);
 
         registerCommand(new CommandHelp());
         registerCommand(new CommandListPlayers());
@@ -255,8 +254,8 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
     static ForgeConfigSpec.IntValue FEmessageDelay;
     static ForgeConfigSpec.BooleanValue FEallowCommands;
     static ForgeConfigSpec.BooleanValue FEallowMcCommands;
-    static ForgeConfigSpec.ConfigValue<List<String>> FEchannels;
-    static ForgeConfigSpec.ConfigValue<List<String>> FEadmins;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEchannels;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEadmins;
     static ForgeConfigSpec.BooleanValue FEenable;
 
 	@Override
@@ -282,8 +281,8 @@ public class IrcHandler extends ListenerAdapter implements ConfigLoader
         FEallowCommands = BUILDER.comment("If enabled, allows usage of bot commands").define("allowCommands", true);
         FEallowMcCommands = BUILDER.comment("If enabled, allows usage of MC commands through the bot (only if the IRC user is in the admins list)")
                 .define("allowMcCommands", true);
-        FEchannels = BUILDER.comment(CHANNELS_HELP).define("channels", new ArrayList<String>(){{add("#someChannelName");}});
-        FEadmins = BUILDER.comment(ADMINS_HELP).define("admins", new ArrayList<String>());
+        FEchannels = BUILDER.comment(CHANNELS_HELP).defineList("channels", new ArrayList<String>(){{add("#someChannelName");}},ConfigBase.stringValidator);
+        FEadmins = BUILDER.comment(ADMINS_HELP).defineList("admins", new ArrayList<String>(),ConfigBase.stringValidator);
         FEenable = BUILDER.comment("Enable IRC interoperability?").define("enable", false);
     }
 

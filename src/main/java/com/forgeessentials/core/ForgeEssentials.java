@@ -76,7 +76,12 @@ import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -207,7 +212,7 @@ public class ForgeEssentials
 
         // Load submodules
         moduleLauncher.init();
-        //APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent());
+        MinecraftForge.EVENT_BUS.post(new FEModuleCommonSetupEvent(event));
     }
 
     public void loadServer(FMLDedicatedServerSetupEvent e)
@@ -301,7 +306,7 @@ public class ForgeEssentials
         LoggingHandler.felog.info("ForgeEssentials Server About to start");
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerAboutToStartEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleServerAboutToStartEvent(e));
         new BaublesCompat();
     }
 
@@ -318,14 +323,14 @@ public class ForgeEssentials
 
         //registerPermissions();
 
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStartingEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleServerStartingEvent(e));
     }
 
     @SubscribeEvent
     public void serverStarted(FMLServerStartedEvent e)
     {
         LoggingHandler.felog.info("ForgeEssentials Server started");
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStartedEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleServerStartedEvent(e));
 
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         // CommandSetChecker.remove();
@@ -350,7 +355,7 @@ public class ForgeEssentials
     public void serverStopping(FMLServerStoppingEvent e)
     {
         LoggingHandler.felog.info("ForgeEssentials Server stopping");
-        APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStoppingEvent(e));
+        APIRegistry.getFEEventBus().post(new FEModuleServerStoppingEvent(e));
         PlayerInfo.discardAll();
     }
 
@@ -360,7 +365,7 @@ public class ForgeEssentials
         LoggingHandler.felog.info("ForgeEssentials server stopped");
         try
         {
-            APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleServerStoppedEvent(e));
+            APIRegistry.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
             FECommandManager.clearRegisteredCommands();
             Translator.save();
         } catch (RuntimeException ex) {

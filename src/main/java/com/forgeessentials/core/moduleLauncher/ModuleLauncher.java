@@ -20,6 +20,7 @@ import com.forgeessentials.util.events.ConfigReloadEvent;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.Maps;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
@@ -170,7 +171,6 @@ public class ModuleLauncher
         ForgeEssentials.getConfigManager().buildAllRegisteredConfigs();
         // TODO Check if this works
         ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs(false);
-        //APIRegistry.getFEEventBus().post(new FEModuleCommonSetupEvent(e));
     }
 
     public void reloadConfigs()
@@ -183,7 +183,7 @@ public class ModuleLauncher
     public void unregister(String moduleName)
     {
         ModuleContainer container = containerMap.get(moduleName);
-        APIRegistry.getFEEventBus().unregister(container.module);
+        MinecraftForge.EVENT_BUS.unregister(container.module);
         containerMap.remove(moduleName);
     }
 

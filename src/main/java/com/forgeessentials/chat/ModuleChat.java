@@ -116,12 +116,17 @@ public class ModuleChat
 
     /* ------------------------------------------------------------ */
 
+    public ModuleChat() {
+    	ForgeEssentials.getConfigManager().registerSpecs(CONFIG_FILE, new ChatConfig());
+    	ircHandler = new IrcHandler();
+        censor = new Censor();
+        timedMessages = new TimedMessages();
+        mailer = new Mailer();
+    }
     @SubscribeEvent
     public void moduleLoad(FEModuleCommonSetupEvent e)
     {
         MinecraftForge.EVENT_BUS.register(this);
-
-        ForgeEssentials.getConfigManager().registerSpecs(CONFIG_FILE, new ChatConfig());
 
         ircHandler = new IrcHandler();
         censor = new Censor();

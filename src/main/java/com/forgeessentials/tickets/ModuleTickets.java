@@ -9,6 +9,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -126,21 +127,21 @@ public class ModuleTickets implements ConfigSaver
         }
     }
 
-    static ForgeConfigSpec.ConfigValue<List<String>> FEcategories;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEcategories;
     static ForgeConfigSpec.IntValue FEcurrentID;
 
 	@Override
 	public void load(Builder BUILDER, boolean isReload) {
         LoggingHandler.felog.debug("Loading Tickets Config");
         BUILDER.push("Tickets");
-        FEcategories = BUILDER.define("categories", new ArrayList<String>(){{add("griefing");add("overflow");add("dispute");}});
-        FEcurrentID = BUILDER.comment("Don't change anythign in there.").defineInRange("currentID", 0, 0, Integer.MAX_VALUE);
+        FEcategories = BUILDER.defineList("categories", new ArrayList<String>(){{add("griefing");add("overflow");add("dispute");}},ConfigBase.stringValidator);
+        FEcurrentID = BUILDER.comment("Don't change anything in there.").defineInRange("currentID", 0, 0, Integer.MAX_VALUE);
         BUILDER.pop();
 	}
 
 	@Override
 	public void bakeConfig(boolean reload) {
-		ModuleTickets.categories = FEcategories.get();
+		ModuleTickets.categories = new ArrayList<>(FEcategories.get());
         ModuleTickets.currentID = FEcurrentID.get();
 	}
 

@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -22,7 +23,7 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 public class TimedMessages implements ConfigSaver, Runnable
 {
 
-    public static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + "_TimedMessage";
+    public static final String CATEGORY = "TimedMessage";
 
     public static final String MESSAGES_HELP = "Each line is 1 message. \nYou can use scripting arguments and color codes. "
             + "\nUsing json messages (tellraw) is also supported";
@@ -122,7 +123,7 @@ public class TimedMessages implements ConfigSaver, Runnable
     static ForgeConfigSpec.IntValue FEinverval;
     static ForgeConfigSpec.BooleanValue FEenabled;
     static ForgeConfigSpec.BooleanValue FEshuffle;
-    static ForgeConfigSpec.ConfigValue<List<String>> FEmessages;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEmessages;
 
     @Override
     public void load(Builder BUILDER, boolean isReload)
@@ -131,7 +132,7 @@ public class TimedMessages implements ConfigSaver, Runnable
         FEinverval = BUILDER.comment("Interval in seconds. 0 to disable").defineInRange("inverval", 60, 0, Integer.MAX_VALUE);
         FEenabled = BUILDER.comment("Enable TimedMessages.").define("enabled", false);
         FEshuffle = BUILDER.comment("Shuffle messages").define("shuffle", false);
-        FEmessages = BUILDER.comment(MESSAGES_HELP).define("messages", MESSAGES_DEFAULT);
+        FEmessages = BUILDER.comment(MESSAGES_HELP).defineList("messages", MESSAGES_DEFAULT,ConfigBase.stringValidator);
         BUILDER.pop();
     }
 
@@ -141,7 +142,7 @@ public class TimedMessages implements ConfigSaver, Runnable
         setInterval(FEinverval.get());
         enabled = FEenabled.get();
         shuffle = FEshuffle.get();
-        messages = FEmessages.get();
+        messages = new ArrayList<>(FEmessages.get());
         initMessageOrder();
     }
 

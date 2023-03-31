@@ -17,6 +17,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -175,7 +176,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
         }
     }
 
-    static ForgeConfigSpec.ConfigValue<List<String>> FEmessages;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEmessages;
     static ForgeConfigSpec.IntValue FEentriesPerPage;
     static ForgeConfigSpec.IntValue FEcommandColor;
     static ForgeConfigSpec.IntValue FEsubCommandColor;
@@ -185,7 +186,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
     {
         BUILDER.comment("Configure ForgeEssentials Help Command.").push(category);
         FEmessages = BUILDER.comment("Add custom messages here that will appear when /help is run")
-                .define("custom_help", new ArrayList<String>());
+                .defineList("custom_help", new ArrayList<String>(),ConfigBase.stringValidator);
         FEentriesPerPage = BUILDER.comment("Amount to commands to show per help page")
                 .defineInRange("commandPerPage", 8, 1, 50);
         FEcommandColor = BUILDER.comment("Color for the command in /help. The possible values are; "
@@ -204,7 +205,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
 	@Override
 	public void bakeConfig(boolean reload)
     {
-        messages = FEmessages.get();
+        messages = new ArrayList<>(FEmessages.get());
         entriesPerPage = FEentriesPerPage.get();
         commandColor = FEcommandColor.get();
         subCommandColor = FEsubCommandColor.get();

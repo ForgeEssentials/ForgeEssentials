@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.WritingMode;
@@ -26,6 +27,10 @@ public class ConfigBase
     private Set<ConfigLoader> builtLoaders = new HashSet<>();
 
     private static File rootDirectory;
+
+    public static Predicate<Object> stringValidator = a -> a instanceof String;
+    public static Predicate<Object> intValidator = b -> b instanceof Integer;
+    public static Predicate<Object> booleanValidator = c -> c instanceof Boolean;
 
     public ConfigBase(File rootDirectory)
     {

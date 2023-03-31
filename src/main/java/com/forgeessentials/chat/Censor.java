@@ -11,6 +11,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -61,7 +62,7 @@ public class Censor extends ConfigLoaderBase
     static ForgeConfigSpec.BooleanValue FEenabled;
     static ForgeConfigSpec.IntValue FEcensorSlap;
     static ForgeConfigSpec.ConfigValue<String> FEcensorSymbol;
-    static ForgeConfigSpec.ConfigValue<List<String>> FEfilterList;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEfilterList;
 
 	@Override
 	public void load(Builder BUILDER, boolean isReload)
@@ -70,7 +71,7 @@ public class Censor extends ConfigLoaderBase
         FEenabled = BUILDER.comment("Enable Chat Censor?").define("enable", true);
         FEcensorSlap = BUILDER.comment("Damage to a player when he uses a censored word").defineInRange("slapDamage", 1, 0, Integer.MAX_VALUE);
         FEcensorSymbol = BUILDER.comment("Replace censored words with this character").define("censorSymbol", "#");
-        FEfilterList = BUILDER.comment(CENSOR_HELP).define("words", DEFAULT_WORDS);
+        FEfilterList = BUILDER.comment(CENSOR_HELP).defineList("words", DEFAULT_WORDS, ConfigBase.stringValidator);
         BUILDER.pop();
     }
 
