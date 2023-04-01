@@ -1,4 +1,4 @@
-package com.forgeessentials.teleport;
+package com.forgeessentials.teleport.commands;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
@@ -15,6 +15,7 @@ import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.teleport.TeleportModule;
 import com.forgeessentials.util.PlayerInfo;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

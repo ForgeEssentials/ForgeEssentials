@@ -1,4 +1,4 @@
-package com.forgeessentials.teleport;
+package com.forgeessentials.teleport.commands;
 
 import java.util.HashMap;
 import java.util.HashSet;

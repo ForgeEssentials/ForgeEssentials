@@ -1,4 +1,4 @@
-package com.forgeessentials.teleport;
+package com.forgeessentials.teleport.commands;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;

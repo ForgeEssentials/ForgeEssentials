@@ -1,4 +1,4 @@
-package com.forgeessentials.teleport;
+package com.forgeessentials.teleport.commands;
 
 import java.util.HashMap;
 
@@ -15,6 +15,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.teleport.TeleportModule;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;

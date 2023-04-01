@@ -1,40 +1,33 @@
-package com.forgeessentials.teleport;
-
-import java.util.HashMap;
+package com.forgeessentials.teleport.commands;
 
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
-import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.teleport.TeleportModule;
+import com.forgeessentials.util.PlayerInfo;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandTppos extends ForgeEssentialsCommandBuilder
+public class CommandBack extends ForgeEssentialsCommandBuilder
 {
 
-    public CommandTppos(boolean enabled)
+    public CommandBack(boolean enabled)
     {
         super(enabled);
     }
 
-    /**
-     * Spawn point for each dimension
-     */
-    public static HashMap<Integer, Point> spawnPoints = new HashMap<>();
-
     @Override
     public String getPrimaryAlias()
     {
-        return "tppos";
+        return "back";
     }
 
     @Override
@@ -52,26 +45,31 @@ public class CommandTppos extends ForgeEssentialsCommandBuilder
     @Override
     public String getPermissionNode()
     {
-        return TeleportModule.PERM_TPPOS;
+        return TeleportModule.PERM_BACK;
     }
 
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return builder
-                .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                        .executes(CommandContext -> execute(CommandContext)
-                                )
+                .executes(CommandContext -> execute(CommandContext)
                         );
     }
 
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
-        BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
-        TeleportHelper.teleport(sender, new WarpPoint(sender.level.dimension(), pos, sender.xRot,
-                sender.yRot));
+        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
+        PlayerInfo pi = PlayerInfo.get(player.getUUID());
+        WarpPoint point = null;
+        if (PermissionAPI.hasPermission(player, TeleportModule.PERM_BACK_ONDEATH))
+            point = pi.getLastDeathLocation();
+        if (point == null)
+            point = pi.getLastTeleportOrigin();
+        if (point == null)
+            throw new TranslatedCommandException("You have nowhere to get back to");
+
+        TeleportHelper.teleport(player, point);
         return Command.SINGLE_SUCCESS;
     }
 
