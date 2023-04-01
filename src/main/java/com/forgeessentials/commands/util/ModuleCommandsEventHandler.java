@@ -5,7 +5,7 @@ import java.util.Set;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -115,7 +115,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         clearAfk(pi.ident);
     }
 
-    public static void checkAfkMessage(CommandSource target, ITextComponent message) throws CommandSyntaxException
+    public static void checkAfkMessage(CommandSource target, TextComponent message) throws CommandSyntaxException
     {
         if (!(target.getEntity() instanceof ServerPlayerEntity))
             return;

@@ -7,7 +7,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
@@ -149,7 +149,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatNotification(ctx.getSource(), c + Translator.format("Your ticket with ID %d has been posted.", t.id));
 
             // notify any ticket-admins that are online
-            ITextComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", ctx.getSource().getEntity().getName().getString()));
+            TextComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", ctx.getSource().getEntity().getName().getString()));
             if (!ctx.getSource().getServer().isStopped())
                 for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                     if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))

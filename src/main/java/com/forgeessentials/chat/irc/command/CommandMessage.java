@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.chat.ModuleChat;
@@ -56,7 +56,7 @@ public class CommandMessage implements IrcCommand
             return;
         }
 
-        ITextComponent msg = ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(args, 2);
+        TextComponent msg = ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(args, 2);
         ModuleChat.tell(sender, msg, player.getPlayer().createCommandSourceStack());
     }
 

@@ -7,8 +7,8 @@ import java.util.WeakHashMap;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.MessageArgument;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.ModuleChat;
@@ -17,6 +17,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -85,9 +86,11 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
                                         )
                                 )
                         )
-                .then(Commands.argument("message", MessageArgument.message())
+                .then(Commands.argument("message", StringArgumentType.greedyString())
                         .executes(CommandContext -> execute(CommandContext, "message")
                                 )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "clear")
                         );
     }
     
@@ -103,17 +106,14 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set PM target to %s", target.getTextName()));
             return Command.SINGLE_SUCCESS;
         }
-        ITextComponent message = MessageArgument.getMessage(ctx, "message");
-        if (message.getString().isEmpty())
+        if (params.toString() == "clear")
         {
-            clearTarget(ctx.getSource());
+        	clearTarget(ctx.getSource());
             ChatOutputHandler.chatConfirmation(ctx.getSource(),("Cleared PM target"));
             return Command.SINGLE_SUCCESS;
         }
-        else
-        {
-            ModuleChat.tell(ctx.getSource(), message, target);
-        }
+        TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
+        ModuleChat.tell(ctx.getSource(), message, target);
         return Command.SINGLE_SUCCESS;
     }
 }

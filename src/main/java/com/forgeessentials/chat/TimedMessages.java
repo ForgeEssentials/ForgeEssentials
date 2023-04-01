@@ -14,6 +14,7 @@ import com.google.gson.JsonParseException;
 
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
@@ -96,12 +97,14 @@ public class TimedMessages implements Runnable
             TaskRegistry.scheduleRepeated(this, interval * 1000);
     }
 
-    public ITextComponent formatMessage(String message)
+    public TextComponent formatMessage(String message)
     {
         message = ModuleChat.processChatReplacements(null, message);
         try
         {
-            return ITextComponent.Serializer.fromJson(message);
+        	TextComponent formatted = new StringTextComponent("");
+        	formatted.append(ITextComponent.Serializer.fromJson(message));
+            return formatted;
         }
         catch (JsonParseException e)
         {

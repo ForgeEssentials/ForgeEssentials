@@ -84,7 +84,7 @@ public class RemoteCommandSender extends DoAsCommandSender
         CommandSource receiver = ServerLifecycleHooks.getCurrentServer().createCommandSourceStack();
         if (session.getUserIdent() != null && session.getUserIdent().hasPlayer())
             receiver = session.getUserIdent().getPlayer().createCommandSourceStack();
-        ChatOutputHandler.sendMessage(receiver, chatComponent);
+        ChatOutputHandler.sendMessageI(receiver, chatComponent);
 
         if (!session.isClosed())
         {

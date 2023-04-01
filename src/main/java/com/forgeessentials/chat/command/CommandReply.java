@@ -7,14 +7,15 @@ import java.util.WeakHashMap;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.MessageArgument;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -78,7 +79,7 @@ public class CommandReply extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return builder
-                .then(Commands.argument("message", MessageArgument.message())
+                .then(Commands.argument("message", StringArgumentType.greedyString())
                         .executes(CommandContext -> execute(CommandContext, "message")
                                 )
                         );
@@ -87,7 +88,7 @@ public class CommandReply extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        ITextComponent message = MessageArgument.getMessage(ctx, "message");
+        TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
         CommandSource target = getReplyTarget(ctx.getSource());
         if (target == null)
             throw new CommandException(Translator.translateITC("No reply target found"));

@@ -3,10 +3,8 @@ package com.forgeessentials.chat.command;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.MessageArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -18,6 +16,7 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -85,14 +84,14 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("setSelf")
-                        .then(Commands.argument("name", MessageArgument.message())
+                        .then(Commands.argument("name", StringArgumentType.word())
                                 .executes(CommandContext -> execute(CommandContext, "setS")
                                         )
                                 )
                         )
                 .then(Commands.literal("setPlayer")
                         .then(Commands.argument("player", EntityArgument.player())
-                                .then(Commands.argument("name", MessageArgument.message())
+                                .then(Commands.argument("name", StringArgumentType.word())
                                         .executes(CommandContext -> execute(CommandContext, "setO")
                                                 )
                                         )
@@ -111,9 +110,9 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
         }
         if(params.toString() == "setS")
         {
-            ITextComponent name = MessageArgument.getMessage(ctx, "name");
-            ModuleChat.setPlayerNickname((PlayerEntity) ctx.getSource().getEntity(), name.getString());
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Nickname set to " + name.getString());
+            String name = StringArgumentType.getString(ctx, "name");
+            ModuleChat.setPlayerNickname((PlayerEntity) ctx.getSource().getEntity(), name);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Nickname set to " + name);
             return Command.SINGLE_SUCCESS;
         }
 
@@ -129,9 +128,9 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
         }
         if(params.toString() == "setO")
         {
-            ITextComponent name = MessageArgument.getMessage(ctx, "name");
-            ModuleChat.setPlayerNickname(player, name.getString());
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set nickname of %s to %s", player, name.getString()));
+        	String name = StringArgumentType.getString(ctx, "name");
+            ModuleChat.setPlayerNickname(player, name);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set nickname of %s to %s", player, name));
             return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
@@ -155,9 +154,9 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
         }
         if(params.toString() == "setO")
         {
-            ITextComponent name = MessageArgument.getMessage(ctx, "name");
-            ModuleChat.setPlayerNickname(player, name.getString());
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set nickname of %s to %s", player, name.getString()));
+        	String name = StringArgumentType.getString(ctx, "name");
+            ModuleChat.setPlayerNickname(player, name);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set nickname of %s to %s", player, name));
             return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;

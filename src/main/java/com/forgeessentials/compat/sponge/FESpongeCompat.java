@@ -24,7 +24,7 @@ public class FESpongeCompat
     private Game game;
 
     @Listener
-    public void checkEnvironment(StartingEngineEvent e)
+    public void checkEnvironment(StartingEngineEvent<?> e)
     {
         if (!game.platform().executionType().name().equals("SpongeForge"))
         {

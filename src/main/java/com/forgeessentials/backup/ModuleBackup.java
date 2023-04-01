@@ -26,7 +26,7 @@ import java.util.zip.ZipOutputStream;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.IProgressUpdate;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -557,7 +557,7 @@ public class ModuleBackup extends ConfigLoaderBase
 
     private static void notify(String message)
     {
-        ITextComponent messageComponent = ChatOutputHandler.notification(message);
+        TextComponent messageComponent = ChatOutputHandler.notification(message);
         if (!ServerLifecycleHooks.getCurrentServer().isShutdown())
             for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                 if (UserIdent.get(player).checkPermission(PERM_NOTIFY))

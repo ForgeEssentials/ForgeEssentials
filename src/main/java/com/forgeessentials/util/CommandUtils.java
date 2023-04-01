@@ -25,8 +25,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -282,9 +282,9 @@ public class CommandUtils
         return getListOfStringsMatchingLastWord(args, Arrays.asList(possibilities));
     }
     
-    public static ITextComponent getChatComponentFromNthArg(String[] args, int index)
+    public static TextComponent getChatComponentFromNthArg(String[] args, int index)
     {
-        StringTextComponent itextcomponent = new StringTextComponent("");
+        TextComponent itextcomponent = new StringTextComponent("");
 
         for (int i = index; i < args.length; ++i)
         {
@@ -293,10 +293,8 @@ public class CommandUtils
                 itextcomponent.append(" ");
             }
 
-            ITextComponent itextcomponent1 = net.minecraftforge.common.ForgeHooks.newChatWithLinks(args[i]); // Forge: links for messages
+            itextcomponent.append(net.minecraftforge.common.ForgeHooks.newChatWithLinks(args[i])); // Forge: links for messages
 
-
-            itextcomponent.append(itextcomponent1);
         }
 
         return itextcomponent;

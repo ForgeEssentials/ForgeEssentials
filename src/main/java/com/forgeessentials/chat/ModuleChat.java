@@ -19,8 +19,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -59,7 +59,6 @@ import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
@@ -230,9 +229,11 @@ public class ModuleChat implements ConfigSaver
 
         if (CommandPm.getTarget(event.getPlayer().createCommandSourceStack()) != null)
         {
-            tell(event.getPlayer().createCommandSourceStack(), event.getComponent(), CommandPm.getTarget(event.getPlayer().createCommandSourceStack()));
-            event.setCanceled(true);
-            return;
+        	TextComponent message = new StringTextComponent("");
+        	message.append(event.getComponent());
+        	tell(event.getPlayer().createCommandSourceStack(), message, CommandPm.getTarget(event.getPlayer().createCommandSourceStack()));
+        	event.setCanceled(true);
+        	return;
         }
 
         // Log chat message
@@ -240,7 +241,7 @@ public class ModuleChat implements ConfigSaver
 
         // Initialize parameters
         String message = processChatReplacements(event.getPlayer().createCommandSourceStack(), censor.filter(event.getMessage(), event.getPlayer()), false);
-        ITextComponent header = getChatHeader(ident);
+        TextComponent header = getChatHeader(ident);
 
         // Apply colors
         if (event.getMessage().contains("&") && ident.checkPermission(PERM_COLOR))
@@ -254,7 +255,7 @@ public class ModuleChat implements ConfigSaver
             message = ChatOutputHandler.formatColors(textFormats) + message;
 
         // Build message part with links
-        ITextComponent messageComponent;
+        TextComponent messageComponent;
         if (ident.checkPermission(PERM_URL))
         {
             messageComponent = filterChatLinks(message);
@@ -275,13 +276,13 @@ public class ModuleChat implements ConfigSaver
             for (ServerPlayerEntity player : ServerUtil.getPlayerList())
             {
                 if (player.level == source.getWorld() && source.distance(new WorldPoint(player)) <= range)
-                    ChatOutputHandler.sendMessage(player.createCommandSourceStack(), event.getComponent());
+                    ChatOutputHandler.sendMessageI(player.createCommandSourceStack(), event.getComponent());
             }
             event.setCanceled(true);
         }
     }
 
-    public static ITextComponent getChatHeader(UserIdent ident)
+    public static TextComponent getChatHeader(UserIdent ident)
     {
         String playerName = ident.hasPlayer() ? getPlayerNickname(ident.getPlayer()) : ident.getUsernameOrUuid();
 
@@ -292,12 +293,12 @@ public class ModuleChat implements ConfigSaver
 
         // Initialize header
         String playerCmd = "/msg " + ident.getUsernameOrUuid() + " ";
-        ITextComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
-        ITextComponent playerPrefix = clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
-        ITextComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
-        ITextComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
-        ITextComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
-        ITextComponent header = new TranslationTextComponent(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
+        TextComponent groupPrefix = appendGroupPrefixSuffix(null, ident, false);
+        TextComponent playerPrefix = clickChatComponent(getPlayerPrefixSuffix(ident, false), Action.SUGGEST_COMMAND, playerCmd);
+        TextComponent playerText = clickChatComponent(playerFormat + playerName, Action.SUGGEST_COMMAND, playerCmd);
+        TextComponent playerSuffix = clickChatComponent(getPlayerPrefixSuffix(ident, true), Action.SUGGEST_COMMAND, playerCmd);
+        TextComponent groupSuffix = appendGroupPrefixSuffix(null, ident, true);
+        TextComponent header = new TranslationTextComponent(ChatOutputHandler.formatColors(ChatConfig.chatFormat), //
                 groupPrefix != null ? groupPrefix : "", //
                 playerPrefix != null ? playerPrefix : "", //
                 playerText, //
@@ -337,10 +338,12 @@ public class ModuleChat implements ConfigSaver
         return message;
     }
 
-    public static ITextComponent clickChatComponent(String text, Action action, String uri)
+    public static TextComponent clickChatComponent(String text, Action action, String uri)
     {
-        ITextComponent component = new StringTextComponent(ChatOutputHandler.formatColors(text));
-        component.getStyle().withClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, uri));
+        TextComponent component = new StringTextComponent(ChatOutputHandler.formatColors(text));
+        ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, uri);
+        component.withStyle((style) -> {
+            return style.withClickEvent(click);});
         return component;
     }
 
@@ -352,7 +355,7 @@ public class ModuleChat implements ConfigSaver
         return fix;
     }
 
-    public static ITextComponent appendGroupPrefixSuffix(ITextComponent header, UserIdent ident, boolean isSuffix)
+    public static TextComponent appendGroupPrefixSuffix(TextComponent header, UserIdent ident, boolean isSuffix)
     {
         WorldPoint point = ident.hasPlayer() ? new WorldPoint(ident.getPlayer()) : new WorldPoint("minecraft:overworld", 0, 0, 0);
         for (GroupEntry group : APIRegistry.perms.getServerZone().getAdditionalPlayerGroups(ident, new WorldPoint(ident.getPlayer())))
@@ -360,22 +363,22 @@ public class ModuleChat implements ConfigSaver
             String text = APIRegistry.perms.getGroupPermissionProperty(group.getGroup(), point, isSuffix ? FEPermissions.SUFFIX : FEPermissions.PREFIX);
             if (text != null)
             {
-                ITextComponent component = clickChatComponent(text, Action.SUGGEST_COMMAND, "/gmsg " + group.getGroup() + " ");
+                TextComponent component = clickChatComponent(text, Action.SUGGEST_COMMAND, "/gmsg " + group.getGroup() + " ");
                 if (header == null)
                     header = component;
                 else
-                    header.copy().append(component);
+                    header.append(component);
             }
         }
         return header;
     }
 
-    public static ITextComponent filterChatLinks(String text)
+    public static TextComponent filterChatLinks(String text)
     {
         // Includes ipv4 and domain pattern
         // Matches an ip (xx.xxx.xx.xxx) or a domain (something.com) with or
         // without a protocol or path.
-        ITextComponent ichat = new StringTextComponent("");
+    	TextComponent ichat = new StringTextComponent("");
         Matcher matcher = URL_PATTERN.matcher(text);
         int lastEnd = 0;
 
@@ -386,33 +389,36 @@ public class ModuleChat implements ConfigSaver
             int end = matcher.end();
 
             // Append the previous left overs.
-            ichat.copy().append(text.substring(lastEnd, start));
+            ichat.append(text.substring(lastEnd, start));
             lastEnd = end;
             String url = text.substring(start, end);
-            ITextComponent link = new StringTextComponent(url);
-            link.getStyle().setUnderlined(true);
+            TextComponent link = new StringTextComponent(url);
+            link.withStyle(TextFormatting.UNDERLINE);
 
             try
             {
                 // Add schema so client doesn't crash.
                 if ((new URI(url)).getScheme() == null)
                     url = "http://" + url;
+                LoggingHandler.felog.info("Url made: "+url);
+
             }
             catch (URISyntaxException e)
             {
                 // Bad syntax bail out!
-                ichat.copy().append(url);
+                ichat.append(url);
                 continue;
             }
 
             // Set the click event and append the link.
             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-            link.getStyle().withClickEvent(click);
-            ichat.copy().append(link);
+            link.withStyle((style) -> {
+                return style.withClickEvent(click);});
+            ichat.append(link);
         }
-
         // Append the rest of the message.
-        ichat.copy().append(text.substring(lastEnd));
+        ichat.append(text.substring(lastEnd));
+
         return ichat;
     }
 
@@ -441,7 +447,7 @@ public class ModuleChat implements ConfigSaver
         {
             message = processChatReplacements(sender, message);
             LoggingHandler.felog.info("Processing message2: "+message);
-            ITextComponent message1 = filterChatLinks(message);
+            TextComponent message1 = filterChatLinks(message);
             LoggingHandler.felog.info("Processing message3: "+message1.getString());
             ChatOutputHandler.sendMessage(sender, filterChatLinks(message));
         }
@@ -520,7 +526,7 @@ public class ModuleChat implements ConfigSaver
     }
     /* ------------------------------------------------------------ */
 
-    public static void tell(CommandSource sender, ITextComponent message, CommandSource target)
+    public static void tell(CommandSource sender, TextComponent message, CommandSource target)
     {
         TranslationTextComponent sentMsg = new TranslationTextComponent("commands.message.display.incoming", new Object[] { sender.getDisplayName(),
                 message.copy() });
@@ -555,19 +561,19 @@ public class ModuleChat implements ConfigSaver
         if (groupName == null)
             groupName = group;
 
-        ITextComponent msg;
+        TextComponent msg;
         PlayerEntity player = sender.getEntity() instanceof PlayerEntity ? (PlayerEntity) sender.getEntity() : null;
         msg = player != null ? getChatHeader(UserIdent.get((PlayerEntity) sender.getEntity())) : new TranslationTextComponent("SERVER ");
         String censored = censor.filter(message, player);
         String formatted = processChatReplacements(sender, censored, formatColors);
 
-        ITextComponent msgGroup = new StringTextComponent("@" + groupName + "@ ");
-        msgGroup.getStyle().withColor(TextFormatting.GRAY).withItalic(true);
-        msg.copy().append(msgGroup);
+        TextComponent msgGroup = new StringTextComponent("@" + groupName + "@ ");
+        msgGroup.withStyle(TextFormatting.GRAY).withStyle(TextFormatting.ITALIC);
+        msg.append(msgGroup);
 
-        ITextComponent msgBody = new StringTextComponent(formatted);
-        msgBody.getStyle().withColor(TextFormatting.GRAY);
-        msg.copy().append(msgBody);
+        TextComponent msgBody = new StringTextComponent(formatted);
+        msgBody.withStyle(TextFormatting.GRAY);
+        msg.append(msgBody);
 
         for (ServerPlayerEntity p : ServerUtil.getPlayerList())
         {

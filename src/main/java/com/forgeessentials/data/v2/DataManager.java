@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 
-import net.minecraft.util.text.ITextComponent;
 
 import org.apache.commons.io.FileUtils;
 
@@ -27,6 +26,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+
+import net.minecraft.util.text.TextComponent;
 
 public class DataManager
 {
@@ -60,7 +61,7 @@ public class DataManager
         addDataType(new ItemStackType());
         addDataType(new NBTTagCompoundType());
         addDataType(new BlockType());
-        addDataType(ITextComponent.class, new ITextComponent.Serializer());
+        addDataType(TextComponent.class, new TextComponent.Serializer());
     }
 
     public DataManager(File basePath)

@@ -15,8 +15,8 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
@@ -338,7 +338,7 @@ public class IrcHandler extends ListenerAdapter
                 bot.sendIRC().message(channel, message);
     }
 
-    public void sendPlayerMessage(CommandSource sender, ITextComponent message)
+    public void sendPlayerMessage(CommandSource sender, TextComponent message)
     {
         if (isConnected())
             ircSendMessage(String.format(mcHeader, sender.getTextName(), ChatOutputHandler.stripFormatting(message.getString())));
@@ -350,16 +350,16 @@ public class IrcHandler extends ListenerAdapter
         ModuleChat.instance.logChatMessage("IRC-" + user.getNick(), filteredMessage);
 
         String headerText = String.format(ircHeader, user.getNick());
-        ITextComponent header = ModuleChat.clickChatComponent(headerText, Action.SUGGEST_COMMAND, "/ircpm " + user.getNick() + " ");
-        ITextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
+        TextComponent header = ModuleChat.clickChatComponent(headerText, Action.SUGGEST_COMMAND, "/ircpm " + user.getNick() + " ");
+        TextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
         ChatOutputHandler.broadcast(new TranslationTextComponent("%s%s", header, messageComponent));
     }
 
     private void mcSendMessage(String message)
     {
         String filteredMessage = ModuleChat.censor.filterIRC(message);
-        ITextComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
-        ITextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
+        TextComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
+        TextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
         ChatOutputHandler.broadcast(new TranslationTextComponent("%s%s", header, messageComponent));
     }
 

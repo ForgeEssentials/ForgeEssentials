@@ -5,8 +5,8 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -201,14 +201,15 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         String connectString = ModuleRemote.getInstance().getConnectString(ident);
         String url = ("https://chart.googleapis.com/chart?cht=qr&chld=M|4&chs=547x547&chl=" + connectString).replaceAll("\\|", "%7C");
 
-        ITextComponent qrLink = new StringTextComponent("[QR code]");
+        TextComponent qrLink = new StringTextComponent("[QR code]");
         if (ident.hasUuid() && PlayerInfo.get(ident.getUuid()).getHasFEClient())
             qrLink.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/remote qr"));
         else
             qrLink.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
-        qrLink.getStyle().withColor(TextFormatting.RED);
-        qrLink.getStyle().setUnderlined(true);
-        ITextComponent msg = new StringTextComponent("Remote passkey = " + passkey + " ").append(qrLink);
+        qrLink.withStyle(TextFormatting.RED);
+        qrLink.withStyle(TextFormatting.UNDERLINE);
+        TextComponent msg = new StringTextComponent("Remote passkey = " + passkey + " ");
+        msg.append(qrLink);
 
         ChatOutputHandler.sendMessage(source, msg);
         ChatOutputHandler.sendMessage(source, new StringTextComponent("Port = " + ModuleRemote.getInstance().getPort()));

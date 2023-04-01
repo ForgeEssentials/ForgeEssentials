@@ -4,7 +4,12 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.util.FakePlayer;
@@ -44,7 +49,7 @@ public final class ChatOutputHandler
      */
     public static void sendMessage(CommandSource recipient, String message)
     {
-        sendMessage(recipient, new StringTextComponent(message));
+        sendMessageI(recipient, new StringTextComponent(message));
     }
 
     /**
@@ -53,7 +58,18 @@ public final class ChatOutputHandler
      * @param recipient
      * @param message
      */
-    public static void sendMessage(CommandSource recipient, ITextComponent message)
+    public static void sendMessage(CommandSource recipient, TextComponent message)
+    {
+    	sendMessageI(recipient, message);
+    }
+
+    /**
+     * Sends a message to a {@link ICommandSender} and performs some security checks
+     * 
+     * @param recipient
+     * @param message
+     */
+    public static void sendMessageI(CommandSource recipient, ITextComponent message)
     {
         Entity entity = recipient.getEntity();
         if (entity instanceof FakePlayer && ((ServerPlayerEntity) entity).connection.getConnection() == null)
@@ -78,7 +94,7 @@ public final class ChatOutputHandler
         if (recipient.getEntity() instanceof PlayerEntity)
         {
             TextComponent component = new StringTextComponent(message);
-            component.getStyle().withColor(color);
+            component.withStyle(color);
             sendMessage(recipient, component);
         }
         else
@@ -102,6 +118,20 @@ public final class ChatOutputHandler
      * @param message
      *            The message to send
      */
+    public static void broadcast(TextComponent message)
+    {
+        for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
+        {
+            ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT, p.getUUID());
+        }
+    }
+
+    /**
+     * Sends a message to all clients
+     *
+     * @param message
+     *            The message to send
+     */
     public static void broadcast(ITextComponent message)
     {
         for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
@@ -112,22 +142,22 @@ public final class ChatOutputHandler
 
     /* ------------------------------------------------------------ */
 
-    public static ITextComponent confirmation(String message)
+    public static TextComponent confirmation(String message)
     {
         return setChatColor(new StringTextComponent(formatColors(message)), chatConfirmationColor);
     }
 
-    public static ITextComponent notification(String message)
+    public static TextComponent notification(String message)
     {
         return setChatColor(new StringTextComponent(formatColors(message)), chatNotificationColor);
     }
 
-    public static ITextComponent warning(String message)
+    public static TextComponent warning(String message)
     {
         return setChatColor(new StringTextComponent(formatColors(message)), chatWarningColor);
     }
 
-    public static ITextComponent error(String message)
+    public static TextComponent error(String message)
     {
         return setChatColor(new StringTextComponent(formatColors(message)), chatErrorColor);
     }
@@ -139,9 +169,9 @@ public final class ChatOutputHandler
      * @param color
      * @return message
      */
-    public static ITextComponent setChatColor(ITextComponent message, TextFormatting color)
+    public static TextComponent setChatColor(TextComponent message, TextFormatting color)
     {
-        message.getStyle().withColor(color);
+        message.withStyle(color);
         return message;
     }
 
@@ -351,12 +381,12 @@ public final class ChatOutputHandler
 
     /* ------------------------------------------------------------ */
 
-    public static String getUnformattedMessage(ITextComponent message)
+    public static String getUnformattedMessage(TextComponent message)
     {
         return message.plainCopy().toString();
     }
 
-    public static String getFormattedMessage(ITextComponent message)
+    public static String getFormattedMessage(TextComponent message)
     {
         return message.copy().toString();
     }
@@ -403,7 +433,7 @@ public final class ChatOutputHandler
 
         PLAINTEXT, /* HTML, */ MINECRAFT, DETAIL;
 
-        public Object format(ITextComponent message)
+        public Object format(TextComponent message)
         {
             switch (this)
             {

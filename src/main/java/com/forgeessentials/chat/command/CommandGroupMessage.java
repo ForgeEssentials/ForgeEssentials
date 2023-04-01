@@ -3,8 +3,8 @@ package com.forgeessentials.chat.command;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.MessageArgument;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
         return builder
                 .then(Commands.argument("group", StringArgumentType.greedyString())
                         .suggests(SUGGEST_GROUPS)
-                        .then(Commands.argument("message", MessageArgument.message())
+                        .then(Commands.argument("message", StringArgumentType.greedyString())
                                 .executes(CommandContext -> execute(CommandContext)
                                         )
                                 )
@@ -80,7 +80,7 @@ public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
         String group = StringArgumentType.getString(ctx, "group");
         APIRegistry.perms.getServerZone().getGroups();
 
-        ITextComponent msgComponent = MessageArgument.getMessage(ctx, "message");
+        TextComponent msgComponent = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
         ModuleChat.tellGroup(ctx.getSource(), msgComponent.getString(), group, getIdent(ctx.getSource()).checkPermission(ModuleChat.PERM_COLOR));
         return Command.SINGLE_SUCCESS;
     }

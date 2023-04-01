@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -79,8 +81,11 @@ public class PushChatHandler extends GenericRemoteHandler<Request>
                 ChatFormat format = formats.get(session);
                 if (format == null)
                     format = ChatFormat.PLAINTEXT;
-                if (messages[format.ordinal()] == null)
-                    messages[format.ordinal()] = new RemoteResponse<>(RemoteMessageID.CHAT, new ChatResponse(username, format.format(message)));
+                if (messages[format.ordinal()] == null) {
+                	TextComponent mes = new StringTextComponent("");
+                	format.format(mes);
+                    messages[format.ordinal()] = new RemoteResponse<>(RemoteMessageID.CHAT, new ChatResponse(username, format.format(mes)));
+                }
                 session.trySendMessage(messages[format.ordinal()]);
             }
         }

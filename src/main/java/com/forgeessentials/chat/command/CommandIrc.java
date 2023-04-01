@@ -2,15 +2,14 @@ package com.forgeessentials.chat.command;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.MessageArgument;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.TranslatedCommandException.WrongUsageException;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -53,7 +52,7 @@ public class CommandIrc extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return builder
-                .then(Commands.argument("message", MessageArgument.message())
+                .then(Commands.argument("message", StringArgumentType.greedyString())
                         .executes(CommandContext -> execute(CommandContext)
                                 )
                         );
@@ -64,15 +63,7 @@ public class CommandIrc extends ForgeEssentialsCommandBuilder
     {
         if (!IrcHandler.getInstance().isConnected())
             throw new TranslatedCommandException("Not connected to IRC!");
-        ITextComponent message = MessageArgument.getMessage(ctx, "message");
-        if (message.getString() == null || message.getString() == "")
-        {
-            throw new WrongUsageException("commands.message.usage");
-        }
-        else
-        {
-            IrcHandler.getInstance().sendPlayerMessage(ctx.getSource(), message);
-        }
+        IrcHandler.getInstance().sendPlayerMessage(ctx.getSource(), new StringTextComponent(StringArgumentType.getString(ctx, "message")));
         return Command.SINGLE_SUCCESS;
     }
 }

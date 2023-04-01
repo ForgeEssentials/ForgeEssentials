@@ -4,8 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 
 import com.forgeessentialsclient.ForgeEssentialsClient;
 import com.forgeessentialsclient.utils.commons.BuildInfo;
@@ -52,23 +52,23 @@ public class FEClientCommand extends BaseCommand {
     	if (entity != null) {
     		if (num == 0)
             {
-            	ITextComponent msg = new StringTextComponent("/feclient info: Get FE client info");
+            	TextComponent msg = new StringTextComponent("/feclient info: Get FE client info");
             	instance.gui.getChat().addMessage(msg);
-            	ITextComponent msg2 = new StringTextComponent("/feclient reinit: Redo server handshake");
+            	TextComponent msg2 = new StringTextComponent("/feclient reinit: Redo server handshake");
             	instance.gui.getChat().addMessage(msg2);
             }
             if (num == 1)
             {
             	ForgeEssentialsClient.resendHandshake();
-            	ITextComponent msg = new StringTextComponent("Resent handshake packet to server.");
+            	TextComponent msg = new StringTextComponent("Resent handshake packet to server.");
             	instance.gui.getChat().addMessage(msg);
             }
             if (num == 2)
             {
-            	ITextComponent msg = new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", //
+            	TextComponent msg = new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", //
                         BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
             	instance.gui.getChat().addMessage(msg);
-            	ITextComponent msg2 = new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
+            	TextComponent msg2 = new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
             	instance.gui.getChat().addMessage(msg2);
             }
     	}

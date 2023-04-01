@@ -3,8 +3,8 @@ package com.forgeessentials.chat.command;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.MessageArgument;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBuilder
         return builder
                 .then(Commands.argument("ircUser", StringArgumentType.greedyString())
                         .suggests(SUGGEST_USERS)
-                        .then(Commands.argument("message", MessageArgument.message())
+                        .then(Commands.argument("message", StringArgumentType.greedyString())
                                 .executes(CommandContext -> execute(CommandContext, "help")
                                         )
                                 )
@@ -94,7 +94,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBuilder
         else
         {
             
-            ITextComponent message = MessageArgument.getMessage(ctx, "message");
+        	TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "name"));
             ModuleChat.tell(ctx.getSource(), message, target);
         }
         return Command.SINGLE_SUCCESS;

@@ -4,8 +4,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
@@ -120,8 +118,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
         {
             PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             UserIdent receiver = UserIdent.get(player);
-            ITextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
-            Mailer.sendMail(getIdent(ctx.getSource()), receiver,message.toString());
+            Mailer.sendMail(getIdent(ctx.getSource()), receiver,StringArgumentType.getString(ctx, "message"));
             ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("You sent a mail to %s", receiver.getUsernameOrUuid()));
             return Command.SINGLE_SUCCESS;
         }

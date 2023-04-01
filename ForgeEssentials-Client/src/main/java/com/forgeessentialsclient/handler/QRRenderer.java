@@ -14,8 +14,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -74,8 +74,8 @@ public class QRRenderer extends Packet7Remote
         }
         catch (IOException e)
         {
-        	ITextComponent cmsg = new StringTextComponent("Could not load QR Code. " + e.getMessage());
-            cmsg.getStyle().withColor(TextFormatting.RED);
+        	TextComponent cmsg = new StringTextComponent("Could not load QR Code. " + e.getMessage());
+            cmsg.withStyle(TextFormatting.RED);
             Minecraft instance = Minecraft.getInstance();
             instance.player.sendMessage(cmsg,instance.player.getUUID());
             e.printStackTrace();

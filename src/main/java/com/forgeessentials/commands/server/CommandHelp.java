@@ -8,8 +8,8 @@ import java.util.Map;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -160,15 +160,15 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
                 String acmd = cmdlspl[0];
                 String csuffix = commandline.replaceAll(acmd, "");
                 
-                ITextComponent tc = new StringTextComponent("");
+                TextComponent tc = new StringTextComponent("");
 
-                ITextComponent tc0 = new StringTextComponent(acmd);
-                tc0.getStyle().withColor(commandcolour);
-                tc.copy().append(tc0);
+                TextComponent tc0 = new StringTextComponent(acmd);
+                tc0.withStyle(commandcolour);
+                tc.append(tc0);
 
-                ITextComponent tc1 = new StringTextComponent(csuffix);
-                tc1.getStyle().withColor(subcommandcolour);
-                tc.copy().append(tc1);
+                TextComponent tc1 = new StringTextComponent(csuffix);
+                tc1.withStyle(subcommandcolour);
+                tc.append(tc1);
                 
                 ChatOutputHandler.sendMessage(ctx.getSource(), tc);
             }

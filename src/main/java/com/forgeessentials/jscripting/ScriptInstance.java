@@ -28,7 +28,7 @@ import javax.script.SimpleBindings;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
 
 import org.apache.commons.lang3.ArrayUtils;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -512,7 +512,7 @@ public class ScriptInstance
 
     public void chatError(CommandSource sender, String message)
     {
-        ITextComponent msg = ChatOutputHandler.error(message);
+        TextComponent msg = ChatOutputHandler.error(message);
         if (sender == null)
             ChatOutputHandler.broadcast(msg); // TODO: Replace with broadcast to admins only
         else
