@@ -87,6 +87,11 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     /* ------------------------------------------------------------ */
 
+    public ModuleJScripting()
+    {
+        APIRegistry.scripts = this;
+    }
+
     public static ModuleJScripting instance()
     {
         return instance;
@@ -102,12 +107,6 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
             isRhino = factory.getEngineName().toLowerCase().contains("rhino");
         }
         return factory != null;
-    }
-
-    @SubscribeEvent
-    public void preLoad(FEModuleCommonSetupEvent event)
-    {
-        APIRegistry.scripts = this;
     }
 
     @SubscribeEvent

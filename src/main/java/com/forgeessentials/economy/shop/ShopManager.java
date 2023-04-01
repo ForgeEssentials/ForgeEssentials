@@ -41,10 +41,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigBase;
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
@@ -58,7 +55,7 @@ import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.google.common.reflect.TypeToken;
 
-public class ShopManager extends ServerEventHandler implements ConfigLoader
+public class ShopManager extends ServerEventHandler
 {
 
     public static final String PERM_BASE = ModuleEconomy.PERM + ".shop";
@@ -87,7 +84,6 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     public ShopManager()
     {
         shopTags.add("[FEShop]");
-        ForgeEssentials.getConfigManager().registerSpecs(CONFIG_FILE, this);
     }
 
     @Override
@@ -381,8 +377,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
     static ForgeConfigSpec.BooleanValue FEuseStock;
     static ForgeConfigSpec.ConfigValue<List<? extends String>> FEshopTags;
 
-	@Override
-	public void load(Builder BUILDER, boolean isReload)
+	public static void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.push(CONFIG_FILE);
         FEuseStock = BUILDER.comment(STOCK_HELP).define("use_stock", false);
@@ -391,8 +386,7 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         BUILDER.pop();
     }
 
-	@Override
-	public void bakeConfig(boolean reload)
+	public static void bakeConfig(boolean reload)
     {
 
         useStock = FEuseStock.get();
@@ -400,9 +394,4 @@ public class ShopManager extends ServerEventHandler implements ConfigLoader
         for (String tag : FEshopTags.get())
             shopTags.add(tag);
     }
-
-	@Override
-	public ConfigData returnData() {
-		return ModuleEconomy.data;
-	}
 }

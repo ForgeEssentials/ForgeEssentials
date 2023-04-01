@@ -368,6 +368,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         BUILDER.comment("ItemTables").push(CATEGORY_ITEM);
         FEitemTables = BUILDER.comment(CATEGORY_ITEM).define("exclude_patterns", new HashSet<String>());
         BUILDER.pop();
+        ShopManager.load(BUILDER, isReload);
     }
 	
 	@Override
@@ -388,6 +389,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 		}
 		for (Entry<String, Integer> entry : itemTables.entrySet())
             APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString((entry.getValue())));
+		ShopManager.bakeConfig(reload);
 	}
 	
 	@Override

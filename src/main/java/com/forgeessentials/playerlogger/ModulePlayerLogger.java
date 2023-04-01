@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
@@ -24,14 +26,18 @@ import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandSource;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 @FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class)
-public class ModulePlayerLogger
+public class ModulePlayerLogger implements ConfigSaver
 {
-	
+    private static ForgeConfigSpec PLAYERLOGGER_CONFIG;
+    public static final ConfigData data = new ConfigData("PlayerLogger", PLAYERLOGGER_CONFIG, new ForgeConfigSpec.Builder());
+    
     public static final String PERM = "fe.pl";
     public static final String PERM_WAND = PERM + ".wand";
     public static final String PERM_COMMAND = PERM + ".cmd";
@@ -40,10 +46,6 @@ public class ModulePlayerLogger
 
     private PlayerLoggerEventHandler eventHandler;
 
-    public ModulePlayerLogger()
-    {
-        ForgeEssentials.getConfigManager().registerSpecs("PlayerLogger", new PlayerLoggerConfig());
-    }
     @SubscribeEvent
     public void load(FEModuleCommonSetupEvent e)
     {
@@ -105,5 +107,21 @@ public class ModulePlayerLogger
     {
         return logger;
     }
+	@Override
+	public void load(Builder BUILDER, boolean isReload) {
+		PlayerLoggerConfig.load(BUILDER, isReload);
+	}
+	@Override
+	public void bakeConfig(boolean reload) {
+		PlayerLoggerConfig.bakeConfig(reload);
+	}
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
+	@Override
+	public void save(boolean reload) {
+		PlayerLoggerConfig.save(reload);
+	}
 
 }

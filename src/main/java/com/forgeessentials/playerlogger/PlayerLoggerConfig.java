@@ -1,15 +1,10 @@
 package com.forgeessentials.playerlogger;
 
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigSaver;
-
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
-public class PlayerLoggerConfig implements ConfigSaver
+public class PlayerLoggerConfig
 {
-    private static ForgeConfigSpec PLAYERLOGGER_CONFIG;
-    public static final ConfigData data = new ConfigData("PlayerLogger", PLAYERLOGGER_CONFIG, new ForgeConfigSpec.Builder());
 
     private static final String CAT = "PlayerLogger";
 
@@ -30,8 +25,7 @@ public class PlayerLoggerConfig implements ConfigSaver
     static ForgeConfigSpec.IntValue FElogDuration;
     static ForgeConfigSpec.IntValue FEplayerPositionInterval;
     
-	@Override
-	public void load(Builder BUILDER, boolean isReload)
+	public static void load(Builder BUILDER, boolean isReload)
     {
     	BUILDER.comment("PlayerLogger config").push(CAT);
     	
@@ -44,8 +38,7 @@ public class PlayerLoggerConfig implements ConfigSaver
     	BUILDER.pop();
     }
 
-	@Override
-	public void bakeConfig(boolean reload) {
+	public static void bakeConfig(boolean reload) {
 		databaseType = FEdatabaseType.get();
         databaseUrl = FEdatabaseUrl.get();
         databaseUsername = FEdatabaseUsername.get();
@@ -58,8 +51,7 @@ public class PlayerLoggerConfig implements ConfigSaver
             ModulePlayerLogger.getLogger().loadDatabase();
 	}
 	
-	@Override
-	public void save(boolean reload)
+	public static void save(boolean reload)
     {
 		FEdatabaseType.set(databaseType);
 		FEdatabaseUrl.set(databaseUrl);
@@ -67,9 +59,4 @@ public class PlayerLoggerConfig implements ConfigSaver
 		FEdatabaseUsername.set(databasePassword);
 		FElogDuration.set(logDuration);
     }
-
-	@Override
-	public ConfigData returnData() {
-		return data;
-	}
 }

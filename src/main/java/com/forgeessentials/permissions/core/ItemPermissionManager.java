@@ -25,7 +25,7 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
-public class ItemPermissionManager extends ServerEventHandler implements ConfigLoader
+public class ItemPermissionManager extends ServerEventHandler
 {
 
     public static final String HELP = "Enable the item permission manager";
@@ -48,11 +48,6 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
     protected static boolean enabled;
 
     /* ------------------------------------------------------------ */
-
-    public ItemPermissionManager()
-    {
-        ForgeEssentials.getConfigManager().registerSpecs(ForgeEssentials.getConfigManager().getMainConfigName(), this);
-    }
 
     @Override
     @SubscribeEvent
@@ -194,7 +189,6 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
 
     static ForgeConfigSpec.BooleanValue FEenabled;
 
-	@Override
 	public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.push("ItemPermissions");
@@ -202,7 +196,6 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
         BUILDER.pop();
     }
 
-	@Override
 	public void bakeConfig(boolean reload)
     {
         enabled = FEenabled.get();
@@ -215,10 +208,5 @@ public class ItemPermissionManager extends ServerEventHandler implements ConfigL
                 ModulePermissions.getItemPermissionManager().unregister();
         }
     }
-
-	@Override
-	public ConfigData returnData() {
-		return FEConfig.data;
-	}
 
 }

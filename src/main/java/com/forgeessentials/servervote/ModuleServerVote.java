@@ -11,6 +11,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SChatPacket;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.ChatType;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -18,6 +20,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigData;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.servervote.Votifier.VoteReceiver;
@@ -29,9 +33,11 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 
 @FEModule(name = "ServerVote", parentMod = ForgeEssentials.class, defaultModule = false)
-public class ModuleServerVote
+public class ModuleServerVote extends ConfigLoaderBase
 {
-	
+	private static ForgeConfigSpec SERVERVOTE_CONFIG;
+	private static final ConfigData data = new ConfigData("ServerVote", SERVERVOTE_CONFIG, new ForgeConfigSpec.Builder());
+
     @ModuleDir
     public static File moduleDir;
 
@@ -49,7 +55,6 @@ public class ModuleServerVote
     @SubscribeEvent
     public void init(FEModuleCommonSetupEvent e)
     {
-        ForgeEssentials.getConfigManager().registerSpecs("ServerVote", new ConfigServerVote());
         APIRegistry.scripts.addScriptType(scriptKey);
     }
 
@@ -193,4 +198,19 @@ public class ModuleServerVote
 
         APIRegistry.scripts.runEventScripts(scriptKey, player.createCommandSourceStack());
     }
+
+	@Override
+	public void load(Builder BUILDER, boolean isReload) {
+		ConfigServerVote.load(BUILDER, isReload);
+	}
+
+	@Override
+	public void bakeConfig(boolean reload) {
+		ConfigServerVote.bakeConfig(reload);
+	}
+
+	@Override
+	public ConfigData returnData() {
+		return data;
+	}
 }

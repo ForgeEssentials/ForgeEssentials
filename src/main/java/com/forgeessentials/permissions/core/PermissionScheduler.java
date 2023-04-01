@@ -10,9 +10,6 @@ import java.util.TimeZone;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.ServerUtil;
@@ -27,7 +24,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class PermissionScheduler extends ServerEventHandler implements ConfigLoader
+public class PermissionScheduler extends ServerEventHandler
 {
 
     public static final int CHECK_INTERVAL = 1000;
@@ -78,11 +75,6 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
     protected long lastCheck;
 
     protected static boolean enabled;
-
-    public PermissionScheduler()
-    {
-        ForgeEssentials.getConfigManager().registerSpecs(ForgeEssentials.getConfigManager().getMainConfigName(), this);
-    }
 
     @SubscribeEvent
     public void serverTickEvent(TickEvent.ServerTickEvent e)
@@ -182,16 +174,14 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
 
     static ForgeConfigSpec.BooleanValue FEenabled;
 
-	@Override
-	public void load(Builder BUILDER, boolean isReload)
+	public static void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.push("PermissionScheduler");
         FEenabled = BUILDER.comment(HELP).define("enabled", false);
         BUILDER.pop();
     }
 
-	@Override
-	public void bakeConfig(boolean reload)
+	public static void bakeConfig(boolean reload)
     {
         enabled = FEenabled.get();
 
@@ -208,9 +198,4 @@ public class PermissionScheduler extends ServerEventHandler implements ConfigLoa
             }
         }
     }
-
-	@Override
-	public ConfigData returnData() {
-		return ModulePermissions.data;
-	}
 }
