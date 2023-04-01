@@ -121,10 +121,6 @@ public class ModuleChat implements ConfigSaver
         censor = new Censor();
         timedMessages = new TimedMessages();
         mailer = new Mailer();
-    }
-    @SubscribeEvent
-    public void moduleLoad(FEModuleCommonSetupEvent e)
-    {
         MinecraftForge.EVENT_BUS.register(this);
 
         setupChatReplacements();
@@ -444,6 +440,9 @@ public class ModuleChat implements ConfigSaver
         for (String message : ChatConfig.loginMessage)
         {
             message = processChatReplacements(sender, message);
+            LoggingHandler.felog.info("Processing message2: "+message);
+            ITextComponent message1 = filterChatLinks(message);
+            LoggingHandler.felog.info("Processing message3: "+message1.getString());
             ChatOutputHandler.sendMessage(sender, filterChatLinks(message));
         }
     }

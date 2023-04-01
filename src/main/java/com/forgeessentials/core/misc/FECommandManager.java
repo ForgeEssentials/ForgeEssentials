@@ -16,7 +16,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoader;
@@ -206,7 +205,7 @@ public class FECommandManager implements ConfigLoader
             }
 
             dispatcher.register(commandData.getData().getBuilder());
-
+            LoggingHandler.felog.info("Registered Command: "+commandData.getData().getName());
             if(commandData.getAliases() != null && !commandData.getAliases().isEmpty()) {
                 for (LiteralArgumentBuilder<CommandSource> builder : commandData.getData().getBuilders()) {
                     if(registeredAiliases.contains(builder.getLiteral())) {
@@ -214,6 +213,7 @@ public class FECommandManager implements ConfigLoader
                         continue;
                     }
                     dispatcher.register(builder);
+                    LoggingHandler.felog.info("Registered Command: "+commandData.getData().getName()+"'s alias: "+commandData.getName());
                     registeredAiliases.add(builder.getLiteral());
                 }
             }
