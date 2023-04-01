@@ -15,7 +15,6 @@ import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
@@ -24,10 +23,10 @@ import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
@@ -45,10 +44,8 @@ public class ModuleTickets implements ConfigSaver
 
     public static int currentID;
 
-    @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent e)
-    {
-        FMLJavaModLoadingContext.get().getModEventBus().register(this);
+    public ModuleTickets() {
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent

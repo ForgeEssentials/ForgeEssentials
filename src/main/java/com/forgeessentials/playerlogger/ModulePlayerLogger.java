@@ -17,7 +17,6 @@ import com.forgeessentials.playerlogger.command.CommandTestPlayerlogger;
 import com.forgeessentials.playerlogger.remote.serializer.BlockDataType;
 import com.forgeessentials.playerlogger.remote.serializer.PlayerDataType;
 import com.forgeessentials.playerlogger.remote.serializer.WorldDataType;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -32,7 +31,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-@FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class)
+@FEModule(name = "PlayerLogger", parentMod = ForgeEssentials.class, defaultModule = false)
 public class ModulePlayerLogger implements ConfigSaver
 {
     private static ForgeConfigSpec PLAYERLOGGER_CONFIG;
@@ -46,8 +45,7 @@ public class ModulePlayerLogger implements ConfigSaver
 
     private PlayerLoggerEventHandler eventHandler;
 
-    @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent e)
+    public ModulePlayerLogger()
     {
         DataManager.addDataType(new WorldDataType());
         DataManager.addDataType(new PlayerDataType());

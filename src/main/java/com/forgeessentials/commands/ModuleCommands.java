@@ -1,6 +1,5 @@
 package com.forgeessentials.commands;
 
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -54,7 +53,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.mojang.brigadier.CommandDispatcher;
 
@@ -69,14 +68,9 @@ public class ModuleCommands
     public static ModuleCommandsEventHandler eventHandler = new ModuleCommandsEventHandler();
 
     @SubscribeEvent
-    public void preLoad(FEModuleCommonSetupEvent e)
+    public void load(FEModuleServerStartingEvent event)
     {
-        MobTypeLoader.preLoad((FMLCommonSetupEvent) e.getFMLEvent());
-    }
-
-    @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent event)
-    {
+    	MobTypeLoader.init();
         APIRegistry.perms.registerPermissionDescription("fe.commands", "Permission nodes for FE commands module");
     }
 

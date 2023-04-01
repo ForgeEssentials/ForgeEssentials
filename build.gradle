@@ -148,7 +148,6 @@ ext.sharedManifest = manifest {
 		"BuildNumber": buildNumber,
 		"FMLCorePluginContainsFMLMod": "true",
 		"ForceLoadAsMod": "true",
-        "MixinCompatibilityLevel": "JAVA_8",
         "Specification-Title": "forgeessentials",
         "Specification-Vendor": "forgeessentials",
         "Specification-Version": "1", // We are version 1 of ourselves

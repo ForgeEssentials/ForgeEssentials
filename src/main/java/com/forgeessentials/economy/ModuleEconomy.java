@@ -7,6 +7,7 @@ import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.CommandFeSettings;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -52,8 +53,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -360,13 +363,13 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         APIRegistry.perms.registerPermissionProperty(getItemPricePermission(itemStack), Long.toString(price));
     }
 
-    public static ForgeConfigSpec.ConfigValue<Set<String>> FEitemTables;
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> FEitemTables;
     public static Map<String, Integer> itemTables;
 	@Override
 	public void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.comment("ItemTables").push(CATEGORY_ITEM);
-        FEitemTables = BUILDER.comment(CATEGORY_ITEM).define("exclude_patterns", new HashSet<String>());
+        FEitemTables = BUILDER.comment(CATEGORY_ITEM).defineList("exclude_patterns", new ArrayList<String>(), ConfigBase.stringValidator);
         BUILDER.pop();
         ShopManager.load(BUILDER, isReload);
     }
@@ -387,8 +390,10 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
                     break;
                 }
 		}
-		for (Entry<String, Integer> entry : itemTables.entrySet())
-            APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString((entry.getValue())));
+		if(!FEitemTables.get().isEmpty()) {
+			for (Entry<String, Integer> entry : itemTables.entrySet())
+	            APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString((entry.getValue())));
+		}
 		ShopManager.bakeConfig(reload);
 	}
 	

@@ -46,10 +46,12 @@ public class SignToolsModule extends ConfigLoaderBase
 
     private static boolean allowSignCommands, allowSignEdit;
 
+    public SignToolsModule() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
     @SubscribeEvent
     public void onLoad(FEModuleCommonSetupEvent e)
     {
-        MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.scripts.addScriptType(signinteractKey);
         APIRegistry.scripts.addScriptType(signeditKey);
     }

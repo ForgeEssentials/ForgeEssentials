@@ -32,7 +32,6 @@ import com.forgeessentials.teleport.commands.CommandTp;
 import com.forgeessentials.teleport.commands.CommandTppos;
 import com.forgeessentials.teleport.commands.CommandWarp;
 import com.forgeessentials.teleport.portal.PortalManager;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -84,11 +83,8 @@ public class TeleportModule extends ConfigLoaderBase
 
     private PortalManager portalManager;
 
-    @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent e)
-    {
+    public TeleportModule() {
         MinecraftForge.EVENT_BUS.register(this);
-
         portalManager = new PortalManager();
     }
 

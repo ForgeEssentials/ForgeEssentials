@@ -446,9 +446,6 @@ public class ModuleChat implements ConfigSaver
         for (String message : ChatConfig.loginMessage)
         {
             message = processChatReplacements(sender, message);
-            LoggingHandler.felog.info("Processing message2: "+message);
-            TextComponent message1 = filterChatLinks(message);
-            LoggingHandler.felog.info("Processing message3: "+message1.getString());
             ChatOutputHandler.sendMessage(sender, filterChatLinks(message));
         }
     }

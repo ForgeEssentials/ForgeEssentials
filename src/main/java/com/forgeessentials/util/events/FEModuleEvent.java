@@ -2,6 +2,7 @@ package com.forgeessentials.util.events;
 
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
@@ -13,20 +14,16 @@ public class FEModuleEvent extends Event
 {
 
     protected ServerLifecycleEvent event1;
-    protected FMLCommonSetupEvent event2;
+    protected FMLDedicatedServerSetupEvent event2;
 
     public ServerLifecycleEvent getServerLifecycleEvent()
     {
         return event1;
     }
-    public FMLCommonSetupEvent getFMLEvent()
-    {
-        return event2;
-    }
 
     public static class FEModuleCommonSetupEvent extends FEModuleEvent
     {
-        public FEModuleCommonSetupEvent(FMLCommonSetupEvent event)
+        public FEModuleCommonSetupEvent(FMLDedicatedServerSetupEvent event)
         {
             this.event2 = event;
         }

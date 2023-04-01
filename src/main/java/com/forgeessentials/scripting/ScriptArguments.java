@@ -346,7 +346,7 @@ public final class ScriptArguments
         {
             if (!(sender.getEntity() instanceof ServerPlayerEntity))
                 throw new MissingPlayerException();
-            return ((ServerPlayerEntity) sender.getEntity()).level.dimension().location().getNamespace();
+            return ((ServerPlayerEntity) sender.getEntity()).level.dimension().location().toString();
         }
 
         @Override

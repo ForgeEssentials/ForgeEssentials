@@ -12,7 +12,6 @@ import org.objectweb.asm.Type;
 
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 
 import com.forgeessentials.api.EnumMobType;
@@ -25,7 +24,7 @@ public class MobTypeLoader
 {
     private static final Type MOD = Type.getType(FEMob.class);
     
-    public static void preLoad(FMLCommonSetupEvent event)
+    public static void init()
     {
         LoggingHandler.felog.info("Discovering and loading FEMob data...");
         // started ASM handling for the module loading.

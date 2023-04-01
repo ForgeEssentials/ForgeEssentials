@@ -212,7 +212,6 @@ public class ForgeEssentials
 
         // Load submodules
         moduleLauncher.init();
-        MinecraftForge.EVENT_BUS.post(new FEModuleCommonSetupEvent(event));
         LoggingHandler.felog.info("Sent FEModuleCommonSetupEvent");
 
     }
@@ -233,6 +232,7 @@ public class ForgeEssentials
         }
 
         isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
+        MinecraftForge.EVENT_BUS.post(new FEModuleCommonSetupEvent(e));
 
     }
 

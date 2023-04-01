@@ -1,6 +1,7 @@
 package com.forgeessentials.core.misc;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +42,7 @@ public class FECommandManager implements ConfigLoader
 
     public static final int COMMANDS_VERSION = 5;
 
-    protected static Map<String, ForgeConfigSpec.ConfigValue<List<String>>> commandAlises = new HashMap<>();//fine
+    protected static Map<String, ForgeConfigSpec.ConfigValue<List<? extends String>>> commandAlises = new HashMap<>();//fine
 
     protected static Set<FEcommandData> loadedFEcommands = new HashSet<>();
     protected static Set<String> registeredFEcommands = new HashSet<>();
@@ -91,7 +92,7 @@ public class FECommandManager implements ConfigLoader
 
         //load from command config names
         configBuilder.push(category);
-        final ForgeConfigSpec.ConfigValue<List<String>> aliases;
+        final ForgeConfigSpec.ConfigValue<List<? extends String>> aliases;
         aliases = configBuilder.define("aliases", (commandData.getAliases()));
         configBuilder.pop();
         commandAlises.put(commandData.getName(), aliases);
@@ -105,7 +106,7 @@ public class FECommandManager implements ConfigLoader
         ConfigBase.registerConfigManual(configBuilder.build(), Paths.get(ForgeEssentials.getFEDirectory()+"/CommandSettings/"+commandData.getName()+".toml"),true);
 
         //load aliases and test for newMappings
-        List<String> aliasesProperty = commandAlises.getOrDefault(commandData.getName(), aliases).get();
+        List<String> aliasesProperty = new ArrayList<>(commandAlises.getOrDefault(commandData.getName(), aliases).get());
         if (newMappings) {
             aliasesProperty.clear();
             for(String alias : commandData.Aliases){

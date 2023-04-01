@@ -167,6 +167,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
         if (PlayerLoggerConfig.playerPositionInterval > 0)
             TaskRegistry.scheduleRepeated(playerPositionTimer, (int) (PlayerLoggerConfig.playerPositionInterval * 1000));
+        LoggingHandler.felog.info("PLAYERLOGGER created Database");
+
     }
 
     @Override

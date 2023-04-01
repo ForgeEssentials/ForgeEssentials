@@ -312,7 +312,10 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
             for (Map.Entry<String,Integer> entry : items.entrySet()) {
                 toWrite.add(entry.getKey()+"="+Integer.toString(entry.getValue()));
             }
-            ModuleEconomy.FEitemTables.set(toWrite);
+            List<String> aList = new ArrayList<>();
+            for (String x : toWrite)
+                aList.add(x);
+            ModuleEconomy.FEitemTables.set(aList);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Calculated and saved new price table");
         }
         else

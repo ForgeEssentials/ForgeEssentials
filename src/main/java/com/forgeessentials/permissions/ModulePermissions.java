@@ -37,7 +37,6 @@ import com.forgeessentials.permissions.persistence.SingleFileProvider;
 import com.forgeessentials.util.DBConnector;
 import com.forgeessentials.util.EnumDBType;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
@@ -89,14 +88,9 @@ public class ModulePermissions extends ConfigLoaderBase
         } else {
             LoggingHandler.felog.debug("FTBLib is not loaded!");
         }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void preLoad(FEModuleCommonSetupEvent e)
-    {
         itemPermissionManager = new ItemPermissionManager();
-
         MinecraftForge.EVENT_BUS.register(this);
+
     }
 
     @SubscribeEvent

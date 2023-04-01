@@ -44,6 +44,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.misc.FECommandManager;
@@ -51,7 +52,6 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -71,9 +71,8 @@ public class ModuleBackup extends ConfigLoaderBase
     private static ForgeConfigSpec BACKUP_CONFIG;
     private static final ConfigData data = new ConfigData("Backup", BACKUP_CONFIG, new ForgeConfigSpec.Builder());
 
-    public static final String WORLDS_HELP = "Add world configurations in the format \"B:1=true\"";
+    public static final String WORLDS_HELP = "Add world configurations in the format \"B:dim-true\"";
 
-    private static final String EXCLUDE_PATTERNS_HELP = "Define file patterns (regex) that should be excluded from each backup";
     public static final String[] DEFAULT_EXCLUDE_PATTERNS = new String[] { "DIM-?\\d+", "FEMultiworld", "FEData_backup", "DimensionalDoors", };
 
     public static final SimpleDateFormat FILE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH-mm");
@@ -117,10 +116,9 @@ public class ModuleBackup extends ConfigLoaderBase
 
     /* ------------------------------------------------------------ */
 
-    @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent e)
-    {
+    public ModuleBackup() {
         MinecraftForge.EVENT_BUS.register(this);
+
     }
 
     @SubscribeEvent
@@ -191,8 +189,8 @@ public class ModuleBackup extends ConfigLoaderBase
     static ForgeConfigSpec.IntValue FEdailyBackups;
     static ForgeConfigSpec.IntValue FEweeklyBackups;
     static ForgeConfigSpec.ConfigValue<String> FEbaseFolder;
-    static ForgeConfigSpec.ConfigValue<Map<String, Boolean>> FEbackupOverrides;
-    static ForgeConfigSpec.ConfigValue<List<String>> FEexludePatternValues;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEbackupOverrides;
+    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEexludePatternValues;
 
 
     @Override
@@ -219,7 +217,20 @@ public class ModuleBackup extends ConfigLoaderBase
                 LoggingHandler.felog.error(String.format("Invalid backup exclude pattern %s", pattern));
             }
         }
-        backupOverrides =FEbackupOverrides.get();
+        for(String pair : FEbackupOverrides.get()) {
+        	String[] parts = pair.split("-");
+        	if(parts[0]==null||parts[1]==null||(!parts[1].toLowerCase().equals("true")&&!parts[1].toLowerCase().equals("false"))) {
+            	throw new IllegalArgumentException("Expected diffrent from BackupOverrides field, please check your configs, got the value["+parts[1]+"]:key["+parts[0]+"]");
+        	}
+        	if(parts[1].toLowerCase().equals("true")) {
+    			backupOverrides.put(parts[0], true);
+    			continue;
+        	}
+        	if(parts[1].toLowerCase().equals("false")) {
+        		backupOverrides.put(parts[0], false);
+        		continue;
+        	}
+        }
         
         if (ServerLifecycleHooks.getCurrentServer() != null && ServerLifecycleHooks.getCurrentServer().isRunning())
             registerBackupTask();
@@ -243,11 +254,15 @@ public class ModuleBackup extends ConfigLoaderBase
         FEdailyBackups = BUILDER.comment("Keep at least one daily backup for this last number of last days").defineInRange("keep_daily_backups", 7, 0, Integer.MAX_VALUE);
         FEweeklyBackups = BUILDER.comment("Keep at least one daily backup for this last number of last days").defineInRange("keep_weekly_backups", 8, 0, Integer.MAX_VALUE);
         FEbaseFolder = BUILDER.comment("Folder to store the backups in. Can be anywhere writable in the file system.").define("base_folder", moduleDir.getPath());
+        FEexludePatternValues = BUILDER.comment("Define file patterns (regex) that should be excluded from each backup").define("exclude_patterns", new ArrayList<String>(Arrays.asList(DEFAULT_EXCLUDE_PATTERNS)));
         BUILDER.pop();
-        BUILDER.comment("Discord bot configuration").push(CONFIG_CAT_WORLDS);
-        Map<String, Boolean> worlds = new HashMap<String, Boolean>() {{put("overworld",true);}};
-        FEbackupOverrides= BUILDER.comment(WORLDS_HELP).define("backupOverrides",worlds);
-        FEexludePatternValues = BUILDER.comment(EXCLUDE_PATTERNS_HELP).define("exclude_patterns", new ArrayList<String>(Arrays.asList(DEFAULT_EXCLUDE_PATTERNS)));
+        BUILDER.comment("World Overide Config").push(CONFIG_CAT_WORLDS);
+        List<String> worlds = new ArrayList<String>();
+        for(Iterator<Entry<String, Boolean>> it = new HashMap<String, Boolean>() {{put("overworld",true);}}.entrySet().iterator(); it.hasNext();) {
+        	Entry<String, Boolean> world = it.next();
+        	worlds.add(new String(world.getKey()+"-"+String.valueOf(world.getValue())));
+        }
+        FEbackupOverrides= BUILDER.comment(WORLDS_HELP).defineList("backupOverrides",worlds, ConfigBase.stringValidator);
         BUILDER.pop();
 
     }
@@ -297,7 +312,7 @@ public class ModuleBackup extends ConfigLoaderBase
         final ServerWorld world = dimension;
         if (world == null)
         {
-            ModuleBackup.notify(Translator.format("Dimension %d does not exist or is not loaded", dimension));
+            ModuleBackup.notify(Translator.format("Dimension %s does not exist or is not loaded", dimension.dimension().toString()));
             return;
         }
         backupThread = new Thread(new Runnable() {
@@ -329,13 +344,16 @@ public class ModuleBackup extends ConfigLoaderBase
 
     private static synchronized void backup(ServerWorld world, boolean notify)
     {
+        //LoggingHandler.felog.info("Dim1"+world.dimension().location().toString());
+        //LoggingHandler.felog.info("Dim2"+world.dimension().location().getPath());
+        //LoggingHandler.felog.info("Dim2"+world.dimension().location().getNamespace());
         if (notify)
-            notify(String.format("Starting backup of dim %d...", world.dimension().location().toString()));
+            notify(String.format("Starting backup of dim %s...", world.dimension().location().toString()));
 
         // Save world
         if (!saveWorld(world))
         {
-            notify(String.format("Backup of dim %s failed: Could not save world", world.dimension().getRegistryName()));
+            notify(String.format("Backup of dim %s failed: Could not save world", world.dimension().location().toString()));
             return;
         }
 
@@ -346,7 +364,7 @@ public class ModuleBackup extends ConfigLoaderBase
         if (!backupDir.exists())
             if (!backupDir.mkdirs())
             {
-                notify(String.format("Backup of dim %s failed: Could not create backup directory", world.dimension().getRegistryName()));
+                notify(String.format("Backup of dim %s failed: Could not create backup directory", world.dimension().location().toString()));
                 return;
             }
 
@@ -354,8 +372,11 @@ public class ModuleBackup extends ConfigLoaderBase
         try (FileOutputStream fileStream = new FileOutputStream(backupFile); //
                 ZipOutputStream zipStream = new ZipOutputStream(fileStream);)
         {
-            LoggingHandler.felog.info(String.format("Listing files for backup of world %d", world.dimension().getRegistryName()));
+            LoggingHandler.felog.debug(String.format("Listing files for backup of world %s", world.dimension().location().toString()));
             notify(String.format("Backup failed - Error %s : Could not do shit", "666-666-6666"));
+            boolean stop = true;
+            if(stop)
+            	return;
             for (File file : enumWorldFiles(world, null , null ))//world.getChunkSaveLocation(), null))
             {
                 String relativePath = baseUri.relativize(file.toURI()).getPath();
@@ -374,10 +395,10 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         catch (Exception ex)
         {
-            LoggingHandler.felog.error(String.format("Severe error during backup of dim %d", world.dimension().getRegistryName()));
+            LoggingHandler.felog.error(String.format("Severe error during backup of dim %s", world.dimension().location().toString()));
             ex.printStackTrace();
             if (notify)
-                notify(String.format("Error during backup of dim %d", world.dimension().getRegistryName()));
+                notify(String.format("Error during backup of dim %s", world.dimension().location().toString()));
         }
 
         if (notify)
@@ -412,9 +433,9 @@ public class ModuleBackup extends ConfigLoaderBase
 
     private static File getBackupFile(ServerWorld world)
     {
-        return new File(baseFolder, String.format("%s/DIM_%d/%s.zip", //
-                world.dimension().getRegistryName(), //
-                world.dimension(), //
+        return new File(baseFolder, String.format("%s/DIM_%s/%s.zip", //
+        		world.dimension().location().getNamespace(), //
+        		world.dimension().location().getPath(), //
                 FILE_FORMAT.format(new Date())));
     }
 
@@ -429,7 +450,7 @@ public class ModuleBackup extends ConfigLoaderBase
         }
         catch (Exception e)
         {
-            LoggingHandler.felog.error(String.format("Could not save world %d", world.dimension().location().toString()));
+            LoggingHandler.felog.error(String.format("Could not save world %s", world.dimension().location().toString()));
             return false;
         }
         //catch (Exception e)
@@ -558,7 +579,7 @@ public class ModuleBackup extends ConfigLoaderBase
     private static void notify(String message)
     {
         TextComponent messageComponent = ChatOutputHandler.notification(message);
-        if (!ServerLifecycleHooks.getCurrentServer().isShutdown())
+        if (!ServerLifecycleHooks.getCurrentServer().isRunning())
             for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                 if (UserIdent.get(player).checkPermission(PERM_NOTIFY))
                     ChatOutputHandler.sendMessage(player.createCommandSourceStack(), messageComponent);
