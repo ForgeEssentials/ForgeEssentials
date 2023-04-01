@@ -213,6 +213,8 @@ public class ForgeEssentials
         // Load submodules
         moduleLauncher.init();
         MinecraftForge.EVENT_BUS.post(new FEModuleCommonSetupEvent(event));
+        LoggingHandler.felog.info("Sent FEModuleCommonSetupEvent");
+
     }
 
     public void loadServer(FMLDedicatedServerSetupEvent e)
@@ -232,7 +234,6 @@ public class ForgeEssentials
 
         isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
 
-        //APIRegistry.getFEEventBus().post(new FEModuleEvent.FEModuleCommonSetupEvent(e));
     }
 
     public void postLoad(FMLLoadCompleteEvent e)
@@ -306,7 +307,7 @@ public class ForgeEssentials
         LoggingHandler.felog.info("ForgeEssentials Server About to start");
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
-        APIRegistry.getFEEventBus().post(new FEModuleServerAboutToStartEvent(e));
+        MinecraftForge.EVENT_BUS.post(new FEModuleServerAboutToStartEvent(e));
         new BaublesCompat();
     }
 
@@ -323,14 +324,14 @@ public class ForgeEssentials
 
         //registerPermissions();
 
-        APIRegistry.getFEEventBus().post(new FEModuleServerStartingEvent(e));
+        MinecraftForge.EVENT_BUS.post(new FEModuleServerStartingEvent(e));
     }
 
     @SubscribeEvent
     public void serverStarted(FMLServerStartedEvent e)
     {
         LoggingHandler.felog.info("ForgeEssentials Server started");
-        APIRegistry.getFEEventBus().post(new FEModuleServerStartedEvent(e));
+        MinecraftForge.EVENT_BUS.post(new FEModuleServerStartedEvent(e));
 
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         // CommandSetChecker.remove();
@@ -355,7 +356,7 @@ public class ForgeEssentials
     public void serverStopping(FMLServerStoppingEvent e)
     {
         LoggingHandler.felog.info("ForgeEssentials Server stopping");
-        APIRegistry.getFEEventBus().post(new FEModuleServerStoppingEvent(e));
+        MinecraftForge.EVENT_BUS.post(new FEModuleServerStoppingEvent(e));
         PlayerInfo.discardAll();
     }
 
@@ -365,7 +366,7 @@ public class ForgeEssentials
         LoggingHandler.felog.info("ForgeEssentials server stopped");
         try
         {
-            APIRegistry.getFEEventBus().post(new FEModuleServerStoppedEvent(e));
+        	MinecraftForge.EVENT_BUS.post(new FEModuleServerStoppedEvent(e));
             FECommandManager.clearRegisteredCommands();
             Translator.save();
         } catch (RuntimeException ex) {
@@ -377,7 +378,7 @@ public class ForgeEssentials
     public void registerCommandEvent(final RegisterCommandsEvent event) 
     {
         LoggingHandler.felog.info("ForgeEssentials register command event");
-        //APIRegistry.getFEEventBus().post(new FERegisterCommandsEvent(event));
+        //MinecraftForge.EVENT_BUS.post(new FERegisterCommandsEvent(event));
     }
 
     protected void registerPermissions()

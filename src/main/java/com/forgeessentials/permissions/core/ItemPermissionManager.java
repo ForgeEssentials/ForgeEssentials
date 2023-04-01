@@ -16,10 +16,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.PermissionCheckEvent;
-import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
@@ -189,14 +185,14 @@ public class ItemPermissionManager extends ServerEventHandler
 
     static ForgeConfigSpec.BooleanValue FEenabled;
 
-	public void load(Builder BUILDER, boolean isReload)
+	public static void load(Builder BUILDER, boolean isReload)
     {
         BUILDER.push("ItemPermissions");
         FEenabled = BUILDER.comment(HELP).define("enabled", false);
         BUILDER.pop();
     }
 
-	public void bakeConfig(boolean reload)
+	public static void bakeConfig(boolean reload)
     {
         enabled = FEenabled.get();
 

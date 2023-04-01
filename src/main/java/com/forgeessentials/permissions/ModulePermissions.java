@@ -233,7 +233,7 @@ public class ModulePermissions extends ConfigLoaderBase
     	FEpersistenceBackend = BUILDER.comment(PERSISTENCE_HELP).define("persistenceBackend", "singlejson");
     	FEfakePlayerIsSpecialBunny = BUILDER.comment("Should we force override UUID for fake players? This is by default true because mods are randomly generating UUID each boot!").define("fakePlayerIsSpecialBunny", true);
     	BUILDER.pop();
-    	getItemPermissionManager().load(BUILDER, isReload);
+    	ItemPermissionManager.load(BUILDER, isReload);
 		PermissionScheduler.load(BUILDER, isReload);
     	dbConnector.loadOrGenerate(BUILDER, CONFIG_CAT+"-DBTypes");
     }
@@ -243,7 +243,7 @@ public class ModulePermissions extends ConfigLoaderBase
 	{
 		persistenceBackend = FEpersistenceBackend.get();
 		fakePlayerIsSpecialBunny = FEfakePlayerIsSpecialBunny.get();
-		getItemPermissionManager().bakeConfig(reload);
+		ItemPermissionManager.bakeConfig(reload);
 		PermissionScheduler.bakeConfig(reload);
         dbConnector.bakeConfig(reload);
 	}
