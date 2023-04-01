@@ -214,7 +214,6 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    @SuppressWarnings("unused")
     private ProtectionEventHandler protectionHandler;
 
     @SubscribeEvent

@@ -61,7 +61,7 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     @Override
     public Map<Currency, BigDecimal> balances(Set<Context> contexts)
     {
-        Map<Currency, BigDecimal> returned = new HashMap();
+        Map<Currency, BigDecimal> returned = new HashMap<Currency, BigDecimal>();
         returned.put(new FECurrency(), balance(new FECurrency(), contexts));
         return returned;
     }
@@ -77,7 +77,7 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
     @Override
     public Map<Currency, TransactionResult> resetBalances(Set<Context> contexts)
     {
-        Map<Currency, TransactionResult> returned = new HashMap();
+        Map<Currency, TransactionResult> returned = new HashMap<Currency, TransactionResult>();
         Currency currency = new FECurrency();
         APIRegistry.economy.getWallet(ident).set(defaultBalance(currency).longValue());
         returned.put(currency,
@@ -165,7 +165,7 @@ public class AccountWrapper implements UniqueAccount, VirtualAccount
         private final Account account;
         private final Currency currency;
         private final BigDecimal amount;
-        private final Set contexts;
+        private final Set<Context> contexts;
         private final ResultType result;
         private final TransactionType type;
 

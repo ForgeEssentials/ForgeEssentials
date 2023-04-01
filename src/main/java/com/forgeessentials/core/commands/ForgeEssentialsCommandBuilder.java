@@ -105,9 +105,6 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
         return aliases;
     }
 
-    /**
-     * @deprecated Use {@link ForgeEssentialsCommandBuilder#getPrimaryAlias()} instead for downstream classes     *
-     */
     public String getName() {
         String name = getPrimaryAlias();
         if (name.startsWith(PREFIX)) {

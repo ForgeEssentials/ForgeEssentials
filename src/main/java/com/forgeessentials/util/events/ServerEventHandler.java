@@ -2,7 +2,6 @@ package com.forgeessentials.util.events;
 
 import net.minecraftforge.common.MinecraftForge;
 
-import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 

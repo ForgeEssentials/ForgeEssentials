@@ -103,7 +103,6 @@ public class ScriptInstance
 
     private Invocable invocable;
 
-    @SuppressWarnings("unused")
     private Bindings exports;
 
     private Set<String> illegalFunctions = new HashSet<>();

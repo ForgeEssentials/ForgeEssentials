@@ -377,7 +377,7 @@ public class ForgeEssentials
     public void registerCommandEvent(final RegisterCommandsEvent event) 
     {
         LoggingHandler.felog.info("ForgeEssentials register command event");
-        APIRegistry.getFEEventBus().post(new FERegisterCommandsEvent(event));
+        //APIRegistry.getFEEventBus().post(new FERegisterCommandsEvent(event));
     }
 
     protected void registerPermissions()
@@ -469,6 +469,8 @@ public class ForgeEssentials
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void commandEvent(CommandEvent event) throws CommandSyntaxException
     {
+    	if(event.getParseResults().getContext().getNodes().isEmpty())
+            return;
         boolean perm = false;
         if(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity) {
             try

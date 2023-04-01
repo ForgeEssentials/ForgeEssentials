@@ -473,6 +473,8 @@ public class IrcHandler extends ListenerAdapter
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void handleSay(CommandEvent event)
     {
+    	if(event.getParseResults().getContext().getNodes().isEmpty())
+            return;
         if (event.getParseResults().getContext().getNodes().get(0).getNode().getName() == "say")
         {
             ircSendMessage(Translator.format(mcSayHeader, event.getParseResults().getContext().getSource().getTextName(),
