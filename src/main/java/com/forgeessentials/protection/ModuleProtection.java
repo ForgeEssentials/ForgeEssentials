@@ -231,18 +231,6 @@ public class ModuleProtection
         // FECommandManager.registerCommand(new CommandPlaceblock());
     }
 
-    public static String getItemName(Item item)
-    {
-        try
-        {
-            return item.getName(new ItemStack(item)).toString();
-        }
-        catch (Exception | NoClassDefFoundError e)
-        {
-            return item.getRegistryName().toString();
-        }
-    }
-
     @SubscribeEvent
     public void registerPermissions(FEModuleServerStartingEvent event)
     {
@@ -311,7 +299,15 @@ public class ModuleProtection
             if (!(item instanceof BlockItem))
             {
                 String itemPerm = "." + ServerUtil.getItemPermission(item) + Zone.ALL_PERMS;
-                String itemName = getItemName(item);
+                String itemName;
+                try
+                {
+                	itemName = item.getDescriptionId().toString();
+                }
+                catch (Exception | NoClassDefFoundError e)
+                {
+                	itemName = item.getRegistryName().toString();
+                }
                 APIRegistry.perms.registerPermission(PERM_USE + itemPerm, DefaultPermissionLevel.ALL, "USE " + itemName);
                 APIRegistry.perms.registerPermission(PERM_CRAFT + itemPerm, DefaultPermissionLevel.ALL, "CRAFT " + itemName);
                 APIRegistry.perms.registerPermission(PERM_EXIST + itemPerm, DefaultPermissionLevel.ALL, "EXIST " + itemName);
