@@ -33,8 +33,9 @@ public class WEIntegrationHandler
 					Field field = cls.getField("inst");
 					MinecraftForge.EVENT_BUS.unregister(field.get(cls)); //forces worldedit forge NOT to load
 				} catch (ClassNotFoundException | SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1) {
-					e1.printStackTrace();
-					ModuleLauncher.instance.unregister("WEIntegrationTools");
+	                LoggingHandler.felog.error("WorldEdit not found, unregistering WEIntegrationTools");
+                    ModuleLauncher.instance.unregister("WEIntegrationTools");
+				    e1.printStackTrace();
 				}
             }
             ModuleLauncher.instance.unregister("WEIntegrationTools");
@@ -55,19 +56,22 @@ public class WEIntegrationHandler
     public void serverStart(FEModuleServerStartingEvent e)
     {
         cuiComms = new CUIComms();
-        try {
-        	Class<?> callingClass = Class.forName("com.sk89q.worldedit.forge.ForgeWorldEdit");
-			Class<?> provider = Class.forName("com.sk89q.worldedit.forge.ForgePermissionsProvider");
+        if(!WEIntegration.stop) {
+            try {
+                Class<?> callingClass = Class.forName("com.sk89q.worldedit.forge.ForgeWorldEdit");
+                Class<?> provider = Class.forName("com.sk89q.worldedit.forge.ForgePermissionsProvider");
 
-			Field field = callingClass.getField("inst");
-			Class<?> instance = field.getClass();
+                Field field = callingClass.getField("inst");
+                Class<?> instance = field.getClass();
 
-			Method instanceMethod = instance.getMethod("setPermissionsProvider", provider);
-			instanceMethod.invoke(instance, new PermissionsHandler());
-		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchFieldException e1) {
-			e1.printStackTrace();
-		}
-        PermissionAPI.registerNode("worldedit.*", DefaultPermissionLevel.OP, "WorldEdit");
+                Method instanceMethod = instance.getMethod("setPermissionsProvider", provider);
+                instanceMethod.invoke(instance, new PermissionsHandler());
+            } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchFieldException e1) {
+                e1.printStackTrace();
+            }
+            PermissionAPI.registerNode("worldedit.*", DefaultPermissionLevel.OP, "WorldEdit");
+        }
+        
     }
 
 }

@@ -14,6 +14,7 @@ public class WEIntegration
 {
 
     protected static boolean disable;
+    public static boolean stop;
 
     public WEIntegration()
     {
@@ -41,11 +42,13 @@ public class WEIntegration
         if (getDevOverride())
         {
             disable = true;
+            stop = true;
             return false;
         }
 
         if (!Environment.hasWorldEdit())
         {
+            stop = true;
             LoggingHandler.felog.error("The FE integration tools for WorldEdit will not work without installing WorldEdit Forge.");
             LoggingHandler.felog.error("You are highly recommended to install WorldEdit Forge for the optimal FE experience.");
             return false;
@@ -59,6 +62,7 @@ public class WEIntegration
             }
             catch (ClassNotFoundException e)
             {
+                stop = true;
                 LoggingHandler.felog.error("ForgePermissionsProvider not found, are you using an old version of WorldEdit?");
                 LoggingHandler.felog.error("The FE integration tools for WorldEdit will not be loaded as your version of WorldEdit may be too old.");
                 return false;
