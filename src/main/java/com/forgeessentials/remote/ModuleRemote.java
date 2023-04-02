@@ -46,7 +46,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.remote.command.CommandRemote;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
@@ -126,10 +126,25 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
 
     /* ------------------------------------------------------------ */
 
+    /**
+     * Register remote module and basic handlers
+     */
+    public ModuleRemote() {
+        APIRegistry.remoteManager = this;
+    }
+
     @SubscribeEvent
-    public void getASMDataTable(FEModuleCommonSetupEvent event)
+    public void registerCommands(FERegisterCommandsEvent event)
     {
-        //ASMDataTable asmdata = ((FMLCommonSetupEvent) event.getFMLEvent()).getAsmData();
+        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandRemote(true), dispatcher);
+    }
+
+    /**
+     * Register FERemoteHandler types
+     */
+    public void getASMDataTable()
+    {
         
         final List<ModFileScanData.AnnotationData> data = ModList.get().getAllScanData().stream()
                 .map(ModFileScanData::getAnnotations)
@@ -174,32 +189,20 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
         }
     }
 
-    /**
-     * Register remote module and basic handlers
-     */
-    @SuppressWarnings("deprecation")
-    @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent event)
-    {
-        APIRegistry.remoteManager = this;
-        APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows login to remote module");
-        APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP,
-                "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void serverAboutToStart(FEModuleServerAboutToStartEvent event){
+    	getASMDataTable();
     }
-
-    @SubscribeEvent
-    public void registerCommands(FERegisterCommandsEvent event)
-    {
-        CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        FECommandManager.registerCommand(new CommandRemote(true), dispatcher);
-    }
-
+ 
     /**
      * Initialize passkeys, server and commands
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void serverStarting(FEModuleServerStartingEvent event)
     {
+    	APIRegistry.perms.registerPermission(PERM, DefaultPermissionLevel.OP, "Allows login to remote module");
+        APIRegistry.perms.registerPermission(PERM_CONTROL, DefaultPermissionLevel.OP,
+                "Allows to start / stop remote server and control users (regen passkeys, kick, block)");
         loadPasskeys();
         startServer();
         mcServerStarted = true;

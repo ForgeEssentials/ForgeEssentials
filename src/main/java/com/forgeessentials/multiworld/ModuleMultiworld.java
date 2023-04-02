@@ -20,7 +20,7 @@ public class ModuleMultiworld// extends ConfigLoaderBase
     private static MultiworldManager multiworldManager = new MultiworldManager();
 
     @SubscribeEvent
-    public void postLoad(FEModuleCommonSetupEvent e)
+    public void postLoad(e)
     {
         try
         {

@@ -102,7 +102,6 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.protection.commands.CommandItemPermission;
 import com.forgeessentials.protection.commands.CommandProtectionDebug;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
@@ -214,13 +213,7 @@ public class ModuleProtection
 
     /* ------------------------------------------------------------ */
 
-    private ProtectionEventHandler protectionHandler;
-
-    @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent e)
-    {
-        protectionHandler = new ProtectionEventHandler();
-    }
+    private ProtectionEventHandler protectionHandler = new ProtectionEventHandler();
 
     @SubscribeEvent
     public void registerCommands(FERegisterCommandsEvent event)

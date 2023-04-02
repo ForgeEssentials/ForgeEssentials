@@ -25,7 +25,6 @@ import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.ModuleDir;
 import com.forgeessentials.servervote.Votifier.VoteReceiver;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
@@ -53,14 +52,9 @@ public class ModuleServerVote extends ConfigLoaderBase
     }
 
     @SubscribeEvent
-    public void init(FEModuleCommonSetupEvent e)
-    {
-        APIRegistry.scripts.addScriptType(scriptKey);
-    }
-
-    @SubscribeEvent
     public void serverStarting(FEModuleServerStartingEvent event)
     {
+    	APIRegistry.scripts.addScriptType(scriptKey);
         try
         {
             votifier = new VoteReceiver(ConfigServerVote.hostname, ConfigServerVote.port);

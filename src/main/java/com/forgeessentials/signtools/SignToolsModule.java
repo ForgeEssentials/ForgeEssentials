@@ -29,7 +29,6 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -49,16 +48,12 @@ public class SignToolsModule extends ConfigLoaderBase
     public SignToolsModule() {
         MinecraftForge.EVENT_BUS.register(this);
     }
-    @SubscribeEvent
-    public void onLoad(FEModuleCommonSetupEvent e)
-    {
-        APIRegistry.scripts.addScriptType(signinteractKey);
-        APIRegistry.scripts.addScriptType(signeditKey);
-    }
 
     @SubscribeEvent
     public void registerPerms(FEModuleServerStartingEvent e)
     {
+        APIRegistry.scripts.addScriptType(signinteractKey);
+        APIRegistry.scripts.addScriptType(signeditKey);
         PermissionAPI.registerNode(COLORIZE_PERM, DefaultPermissionLevel.ALL, "Permission to colourize signs");
         PermissionAPI.registerNode(EDIT_PERM, DefaultPermissionLevel.ALL, "Permission to edit existing signs");
     }

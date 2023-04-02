@@ -17,7 +17,7 @@ import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.moduleLauncher.FEModule;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 
 @FEModule(name = "factions", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
@@ -69,7 +69,7 @@ public class ModuleFactions
     }
 
     @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent event)
+    public void load(FEModuleServerStartingEvent event)
     {
         APIRegistry.perms.registerPermissionDescription(PERM_DATA_NAME,
                 "Faction name (if this permission is set and the group name starts with \"faction_\", a group is considered a faction)");

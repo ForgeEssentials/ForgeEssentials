@@ -789,7 +789,7 @@ public class ProtectionEventHandler extends ServerEventHandler
     {
         if (!ident.hasPlayer()) // we can only send perm updates to players
             return;
-        if (!PlayerInfo.get(ident).getHasFEClient())
+        if (!PlayerInfo.get(ident).getHasFEClient()) // we can only send perm updates to players who have the client
             return;
 
         Set<Integer> placeIds = new HashSet<>();

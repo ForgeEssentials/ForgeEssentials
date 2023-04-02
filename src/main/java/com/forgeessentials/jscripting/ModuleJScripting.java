@@ -33,7 +33,6 @@ import com.forgeessentials.jscripting.wrapper.JsLocalStorage;
 import com.forgeessentials.jscripting.wrapper.ScriptExtensionRoot;
 import com.forgeessentials.jscripting.wrapper.mc.JsICommandSender;
 import com.forgeessentials.util.events.ConfigReloadEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -90,6 +89,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     public ModuleJScripting()
     {
         APIRegistry.scripts = this;
+        init();
     }
 
     public static ModuleJScripting instance()
@@ -109,8 +109,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
         return factory != null;
     }
 
-    @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent event)
+    public void init()
     {
         try
         {

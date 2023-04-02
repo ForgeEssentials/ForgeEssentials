@@ -42,7 +42,6 @@
 //import com.forgeessentials.core.misc.FECommandManager;
 //import com.forgeessentials.core.moduleLauncher.FEModule;
 //import com.forgeessentials.mapper.command.CommandMapper;
-//import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 //import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 //import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 //import com.forgeessentials.util.events.FERegisterCommandsEvent;
@@ -94,11 +93,6 @@
 //    public ModuleMapper()
 //    {
 //        MinecraftForge.EVENT_BUS.register(this);
-//    }
-//
-//    @SubscribeEvent
-//    public void load(FEModuleCommonSetupEvent event)
-//    {
 //        InputStream is = Object.class.getResourceAsStream("/mapper_colorscheme.txt");
 //        if (is != null)
 //            MapperUtil.loadColorScheme(is);

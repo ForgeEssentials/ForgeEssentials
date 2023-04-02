@@ -112,7 +112,7 @@ public class ModuleContainer implements Comparable<Object>
 
                 try
                 {
-                    if (!(boolean) m.invoke(c.getDeclaredConstructor().newInstance()))
+                    if (!((boolean) m.invoke(c.getDeclaredConstructor().newInstance())))
                     {
                         LoggingHandler.felog.debug("Disabled module " + name);
                         isLoadable = false;

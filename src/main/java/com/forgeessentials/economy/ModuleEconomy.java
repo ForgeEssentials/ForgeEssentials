@@ -22,7 +22,6 @@ import com.forgeessentials.protection.ProtectionEventHandler;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
@@ -55,11 +54,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -106,10 +103,8 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     /* ------------------------------------------------------------ */
     /* Module events */
 
-    @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent e)
-    {
-        APIRegistry.economy = this;
+    private ModuleEconomy() {
+    	APIRegistry.economy = this;
         plotManager = new PlotManager();
         shopManager = new ShopManager();
     }

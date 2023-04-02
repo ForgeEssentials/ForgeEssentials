@@ -76,7 +76,6 @@ import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
@@ -232,7 +231,6 @@ public class ForgeEssentials
         }
 
         isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
-        MinecraftForge.EVENT_BUS.post(new FEModuleCommonSetupEvent(e));
 
     }
 

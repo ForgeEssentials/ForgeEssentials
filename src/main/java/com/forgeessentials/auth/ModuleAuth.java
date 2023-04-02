@@ -21,7 +21,6 @@ import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleCommonSetupEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.mojang.brigadier.CommandDispatcher;
@@ -74,19 +73,16 @@ public class ModuleAuth extends ConfigLoaderBase
         return true;
     }
 
+    public ModuleAuth() {
+        NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
+    }
+
     @SubscribeEvent
     public void registerCommands(FERegisterCommandsEvent event)
     {
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         FECommandManager.registerCommand(new CommandAuth(true), dispatcher);
         FECommandManager.registerCommand(new CommandVIP(true), dispatcher);
-    }
-
-    @SubscribeEvent
-    public void load(FEModuleCommonSetupEvent e)
-    {
-        NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
-
     }
 
     @SubscribeEvent
