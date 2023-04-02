@@ -226,7 +226,7 @@ public class FECommandManager implements ConfigLoader
             registeredFEcommands.add(commandData.getName());
         }
         PermissionManager.registerCommandPermission(commandData.getName(), commandData.getData().getPermissionNode(), commandData.getData().getPermissionLevel());
-        
+        commandData.getData().registerExtraPermissions();
     }
 
     public static void deregister(FEcommandData commandData)

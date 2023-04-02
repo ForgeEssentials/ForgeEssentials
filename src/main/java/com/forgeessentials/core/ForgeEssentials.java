@@ -383,7 +383,8 @@ public class ForgeEssentials
     {
         APIRegistry.perms.registerPermission(PERM_VERSIONINFO, DefaultPermissionLevel.OP, "Shows notification to the player if FE version is outdated");
 
-        APIRegistry.perms.registerPermission("mc.help", DefaultPermissionLevel.ALL, "Help command");
+        PermissionManager.registerCommandPermission("help", "command.help", DefaultPermissionLevel.ALL);
+        APIRegistry.perms.registerPermission("command.help", DefaultPermissionLevel.ALL, "Help command");
 
         // Teleport
         APIRegistry.perms.registerPermissionProperty(TeleportHelper.TELEPORT_COOLDOWN, "5", "Allow bypassing teleport cooldown");

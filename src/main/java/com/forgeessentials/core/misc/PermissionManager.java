@@ -3,6 +3,9 @@ package com.forgeessentials.core.misc;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.forgeessentials.util.output.LoggingHandler;
 //import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
@@ -39,11 +42,12 @@ public class PermissionManager
         for (CommandNode<CommandSource> commandNode : dispatcher.getRoot().getChildren()) {
             if (commandNode.getRequirement() != null) {
                 String permission = stripNode(commandNode.getRequirement().toString());
-
-                if(commandName == commandNode.getUsageText().substring(1)) {
+                //LoggingHandler.felog.info("Compairing: " + commandNode.getUsageText() + " with: " + commandNode.getUsageText());
+                if(commandName == commandNode.getUsageText()) {
                     DefaultPermissionHandler.INSTANCE.getDefaultPermissionLevel(permission);
+                    break;
                 }
-                //System.out.println("Command: " + commandNode.getUsageText() + " - Permission: " + permission);
+                //LoggingHandler.felog.info("Command: " + commandNode.getUsageText() + " - Permission: " + permission);
             }
         }
         return DefaultPermissionLevel.OP;
@@ -98,11 +102,10 @@ public class PermissionManager
         for (CommandNode<CommandSource> commandNode : dispatcher.getRoot().getChildren()) {
             if (commandNode.getRequirement() != null) {
                 String permission = stripNode(commandNode.getRequirement().toString());
-
-                System.out.println("Found command: " + commandNode.getUsageText().substring(1) + " - Permission: " + permission);
+                LoggingHandler.felog.info("Found command: " + StringUtils.rightPad(commandNode.getUsageText(), 20) + " - Permission: " + permission);
             }
-            if (!commandPermissions.containsKey(commandNode.getUsageText().substring(1)))
-                registerCommandPermission(commandNode.getUsageText().substring(1));
+            if (!commandPermissions.containsKey(commandNode.getUsageText()))
+                registerCommandPermission(commandNode.getUsageText());
         }
     }
 

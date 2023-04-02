@@ -10,7 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
@@ -246,10 +245,10 @@ public class ModuleProtection
 
         APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow damaging entities");
         APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + Zone.ALL_PERMS, DefaultPermissionLevel.ALL, "Allow getting hurt by entities");
-        for (Class<?> entityClass : damageEntityClasses)
+        for (Entry<RegistryKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITIES.getEntries())
         {
-            APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + "." + entityClass.getSimpleName(), DefaultPermissionLevel.ALL, "");
-            APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + entityClass.getSimpleName(), DefaultPermissionLevel.ALL, "");
+            APIRegistry.perms.registerPermission(PERM_DAMAGE_TO + "." + e.getValue().getRegistryName().getPath(), DefaultPermissionLevel.ALL, "");
+            APIRegistry.perms.registerPermission(PERM_DAMAGE_BY + "." + e.getValue().getRegistryName().getPath(), DefaultPermissionLevel.ALL, "");
         }
         for (DamageSource dmgType : damageByTypes)
         {
@@ -266,11 +265,10 @@ public class ModuleProtection
                 "(global) Allow forced spawning of mobs (mob-spawners)");
 
         for (Entry<RegistryKey<EntityType<?>>, EntityType<?>> e : ForgeRegistries.ENTITIES.getEntries())
-            if (LivingEntity.class.isAssignableFrom(e.getValue().getClass()))
-            {
-                APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getKey(), DefaultPermissionLevel.ALL, "");
-                APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + e.getKey(), DefaultPermissionLevel.ALL, "");
-            }
+        {
+            APIRegistry.perms.registerPermission(PERM_MOBSPAWN_NATURAL + "." + e.getValue().getRegistryName().getPath(), DefaultPermissionLevel.ALL, "");
+            APIRegistry.perms.registerPermission(PERM_MOBSPAWN_FORCED + "." + e.getValue().getRegistryName().getPath(), DefaultPermissionLevel.ALL, "");
+        }
         for (MobType mobType : MobType.values())
         {
             APIRegistry.perms.registerPermission(mobType.getSpawnPermission(false), DefaultPermissionLevel.ALL, "");
