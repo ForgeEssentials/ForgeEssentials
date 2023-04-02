@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
+import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -54,8 +55,11 @@ public class NetworkUtils
 	}
 
 	private static <MSG extends IFEPacket> void registerMessage(int index, Class<MSG> type, Function<PacketBuffer, MSG> decoder, NetworkDirection networkDirection) {
-		HANDLER.registerMessage(index, type, IFEPacket::encode, decoder, IFEPacket::handle, Optional.of(networkDirection));
-		registeredMessages.add(index);
+		if(!registeredMessages.contains(index)) {
+	        LoggingHandler.felog.info("Registering Network Message id:"+Integer.toString(index)+", Class:"+type.getName());
+			HANDLER.registerMessage(index, type, IFEPacket::encode, decoder, IFEPacket::handle, Optional.of(networkDirection));
+			registeredMessages.add(index);
+		}
 	}
 	/**
 	 * Sends a packet to the server.<br> Must be called Client side.
