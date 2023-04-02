@@ -103,7 +103,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     /* ------------------------------------------------------------ */
     /* Module events */
 
-    private ModuleEconomy() {
+    public ModuleEconomy() {
     	APIRegistry.economy = this;
         plotManager = new PlotManager();
         shopManager = new ShopManager();

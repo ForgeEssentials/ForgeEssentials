@@ -183,7 +183,12 @@ public class ModuleLauncher
     public void unregister(String moduleName)
     {
         ModuleContainer container = containerMap.get(moduleName);
-        MinecraftForge.EVENT_BUS.unregister(container.module);
+        try {
+        	MinecraftForge.EVENT_BUS.unregister(container.module);
+        	LoggingHandler.felog.error("Un-Registered module:  " + moduleName);
+        }catch(NullPointerException e) {
+            LoggingHandler.felog.error("Failed to un-register module:  " + moduleName);
+        }
         containerMap.remove(moduleName);
     }
 
