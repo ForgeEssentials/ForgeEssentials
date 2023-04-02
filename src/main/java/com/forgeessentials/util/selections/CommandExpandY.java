@@ -29,7 +29,9 @@ public class CommandExpandY extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return null;
+        return builder
+                .executes(CommandContext -> execute(CommandContext)
+                        );
     }
 
     @Override

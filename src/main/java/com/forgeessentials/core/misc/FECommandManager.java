@@ -208,21 +208,23 @@ public class FECommandManager implements ConfigLoader
             dispatcher.register(commandData.getData().getBuilder());
             LoggingHandler.felog.info("Registered Command: "+commandData.getData().getName());
             if(commandData.getAliases() != null && !commandData.getAliases().isEmpty()) {
-                for (LiteralArgumentBuilder<CommandSource> builder : commandData.getData().getBuilders()) {
-                    if(registeredAiliases.contains(builder.getLiteral())) {
-                        LoggingHandler.felog.error(String.format("Command alias %s already registered!", builder.getLiteral()));
-                        continue;
+                try {
+                    for (LiteralArgumentBuilder<CommandSource> builder : commandData.getData().getBuilders()) {
+                        if(registeredAiliases.contains(builder.getLiteral())) {
+                            LoggingHandler.felog.error(String.format("Command alias %s already registered!", builder.getLiteral()));
+                            continue;
+                        }
+                        dispatcher.register(builder);
+                        LoggingHandler.felog.info("Registered Command: "+commandData.getData().getName()+"'s alias: "+commandData.getName());
+                        registeredAiliases.add(builder.getLiteral());
                     }
-                    dispatcher.register(builder);
-                    LoggingHandler.felog.info("Registered Command: "+commandData.getData().getName()+"'s alias: "+commandData.getName());
-                    registeredAiliases.add(builder.getLiteral());
+                }catch(NullPointerException e) {
+                    LoggingHandler.felog.error("Failed to register aliases",commandData.getAliases());
                 }
             }
             commandData.setRegistered(true);
             registeredFEcommands.add(commandData.getName());
         }
-
-
         PermissionManager.registerCommandPermission(commandData.getName(), commandData.getData().getPermissionNode(), commandData.getData().getPermissionLevel());
         
     }

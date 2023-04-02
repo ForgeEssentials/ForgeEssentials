@@ -282,7 +282,7 @@ public class ForgeEssentials
 
         CommandFeSettings settings = new CommandFeSettings(true);
         FECommandManager.registerCommand(settings, dispatcher);
-        APIRegistry.getFEEventBus().register(settings);
+        MinecraftForge.EVENT_BUS.register(settings);
 
         FECommandManager.registerCommand(new CommandWand(true), dispatcher);
         FECommandManager.registerCommand(new CommandUuid(true), dispatcher);
@@ -320,7 +320,7 @@ public class ForgeEssentials
 
         //ServerUtil.replaceCommand("help", new HelpFixer()); // Will be overwritten again by commands module
 
-        //registerPermissions();
+        registerPermissions();
 
         MinecraftForge.EVENT_BUS.post(new FEModuleServerStartingEvent(e));
     }
@@ -337,7 +337,7 @@ public class ForgeEssentials
 
         // Do permission registration in first server tick.
         // TODO This can be removed if the Permission API gets accepted!
-        //MinecraftForge.EVENT_BUS.register(new CommandPermissionRegistrationHandler());
+        MinecraftForge.EVENT_BUS.register(new CommandPermissionRegistrationHandler());
     }
 
     public static final class CommandPermissionRegistrationHandler
@@ -376,7 +376,7 @@ public class ForgeEssentials
     public void registerCommandEvent(final RegisterCommandsEvent event) 
     {
         LoggingHandler.felog.info("ForgeEssentials register command event");
-        //MinecraftForge.EVENT_BUS.post(new FERegisterCommandsEvent(event));
+        MinecraftForge.EVENT_BUS.post(new FERegisterCommandsEvent(event));
     }
 
     protected void registerPermissions()

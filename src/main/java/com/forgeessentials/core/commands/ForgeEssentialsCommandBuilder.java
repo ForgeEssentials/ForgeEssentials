@@ -32,7 +32,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
 		this.builder = Commands.literal(getName()).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
 		this.enabled = enabled;
 		for(String alias : getDefaultAliases()) {
-		    builders.add(Commands.literal(alias).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel()))));
+		    //builders.add(Commands.literal(alias).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel()))));
 		}
 		
 	}

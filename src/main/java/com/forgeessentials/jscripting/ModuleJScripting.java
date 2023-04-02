@@ -164,6 +164,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
     @SubscribeEvent
     public void reload(ConfigReloadEvent event)
     {
+        LoggingHandler.felog.info("Reloading scripts");
         reloadScripts(ServerLifecycleHooks.getCurrentServer().createCommandSourceStack());
     }
 

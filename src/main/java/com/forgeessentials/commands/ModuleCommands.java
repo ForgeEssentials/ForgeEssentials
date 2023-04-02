@@ -1,6 +1,7 @@
 package com.forgeessentials.commands;
 
 import net.minecraft.command.CommandSource;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import com.forgeessentials.api.APIRegistry;
@@ -80,7 +81,7 @@ public class ModuleCommands
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         CommandTime time = new CommandTime(true);
         FECommandManager.registerCommand(time, dispatcher);
-        APIRegistry.getFEEventBus().register(time);
+        MinecraftForge.EVENT_BUS.register(time);
         
         FECommandManager.registerCommand(new CommandEnchant(true), dispatcher);
         FECommandManager.registerCommand(new CommandDechant(true), dispatcher);
@@ -97,14 +98,14 @@ public class ModuleCommands
         //Kit
         CommandKit kit = new CommandKit(true);
         FECommandManager.registerCommand(kit, dispatcher);
-        APIRegistry.getFEEventBus().register(kit);
+        MinecraftForge.EVENT_BUS.register(kit);
         
         FECommandManager.registerCommand(new CommandEnderchest(true), dispatcher);
         FECommandManager.registerCommand(new CommandVirtualchest(true), dispatcher);
         //Craft
         CommandCraft craft = new CommandCraft(true);
         FECommandManager.registerCommand(craft, dispatcher);
-        APIRegistry.getFEEventBus().register(craft);
+        MinecraftForge.EVENT_BUS.register(craft);
 
         FECommandManager.registerCommand(new CommandPing(true), dispatcher);
         FECommandManager.registerCommand(new CommandInventorySee(true), dispatcher);
@@ -121,11 +122,11 @@ public class ModuleCommands
         //Weather
         CommandWeather weather = new CommandWeather(true);
         FECommandManager.registerCommand(weather, dispatcher);
-        APIRegistry.getFEEventBus().register(weather);
+        MinecraftForge.EVENT_BUS.register(weather);
         //Bind
         CommandBind bind = new CommandBind( true);
         FECommandManager.registerCommand(bind, dispatcher);
-        APIRegistry.getFEEventBus().register(bind);
+        MinecraftForge.EVENT_BUS.register(bind);
 
         FECommandManager.registerCommand(new CommandRename(true), dispatcher);
         FECommandManager.registerCommand(new CommandPush(true), dispatcher);
@@ -135,7 +136,7 @@ public class ModuleCommands
         //Bubble
         CommandBubble bubble = new CommandBubble(true);
         FECommandManager.registerCommand(bubble, dispatcher);
-        APIRegistry.getFEEventBus().register(bubble);
+        MinecraftForge.EVENT_BUS.register(bubble);
         
         FECommandManager.registerCommand(new CommandSpeed(true), dispatcher);
         FECommandManager.registerCommand(new CommandSeen(true), dispatcher);

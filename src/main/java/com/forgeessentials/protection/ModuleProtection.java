@@ -403,7 +403,7 @@ public class ModuleProtection
 
     public static String getBlockPermission(BlockState blockState)
     {
-        return getBlockPermission(blockState);
+        return getBlockPermission(blockState.getBlock());
     }
 
     public static String getBlockBkPermission(BlockState blockState)

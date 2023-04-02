@@ -43,7 +43,7 @@ public class PermissionManager
                 if(commandName == commandNode.getUsageText().substring(1)) {
                     DefaultPermissionHandler.INSTANCE.getDefaultPermissionLevel(permission);
                 }
-                System.out.println("Command: " + commandNode.getUsageText() + " - Permission: " + permission);
+                //System.out.println("Command: " + commandNode.getUsageText() + " - Permission: " + permission);
             }
         }
         return DefaultPermissionLevel.OP;

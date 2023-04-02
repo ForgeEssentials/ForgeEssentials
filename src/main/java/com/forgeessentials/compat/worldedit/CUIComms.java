@@ -36,6 +36,8 @@ public class CUIComms
     {
         if (e.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity)
         {
+            if(e.getParseResults().getContext().getNodes().isEmpty())
+                return;
             String cmd = e.getParseResults().getContext().getNodes().get(0).toString();
             for (String weCmd : worldEditSelectionCommands)
             {
