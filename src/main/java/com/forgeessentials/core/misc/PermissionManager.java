@@ -44,12 +44,13 @@ public class PermissionManager
                 String permission = stripNode(commandNode.getRequirement().toString());
                 //LoggingHandler.felog.info("Compairing: " + commandNode.getUsageText() + " with: " + commandNode.getUsageText());
                 if(commandName == commandNode.getUsageText()) {
-                    DefaultPermissionHandler.INSTANCE.getDefaultPermissionLevel(permission);
-                    break;
+                    DefaultPermissionLevel level = DefaultPermissionHandler.INSTANCE.getDefaultPermissionLevel(permission);
+                    LoggingHandler.felog.debug("Found Permission for command: {"+fromDefaultPermissionLevel(level)+"} " + commandNode.getUsageText());
+                    return level;
                 }
-                //LoggingHandler.felog.info("Command: " + commandNode.getUsageText() + " - Permission: " + permission);
             }
         }
+        LoggingHandler.felog.info("Failed to get Permission for command: " + commandName);
         return DefaultPermissionLevel.OP;
     }
 
@@ -61,6 +62,7 @@ public class PermissionManager
      */
     public static void registerCommandPermission(String commandName)
     {
+        commandPermissions.put(commandName, getCommandPermission(commandName));
         PermissionAPI.registerNode(getCommandPermission(commandName), getCommandLevel(commandName), "");
     }
 
@@ -101,8 +103,9 @@ public class PermissionManager
 
         for (CommandNode<CommandSource> commandNode : dispatcher.getRoot().getChildren()) {
             if (commandNode.getRequirement() != null) {
-                String permission = stripNode(commandNode.getRequirement().toString());
-                LoggingHandler.felog.info("Found command: " + StringUtils.rightPad(commandNode.getUsageText(), 20) + " - Permission: " + permission);
+                LoggingHandler.felog.info("Found command: " + StringUtils.rightPad(commandNode.getUsageText(), 20) + " - Permission: " + getCommandPermission(commandNode.getUsageText()));
+            }else {
+                LoggingHandler.felog.info("Bad CommandRe: " + StringUtils.rightPad(commandNode.getUsageText(), 20));
             }
             if (!commandPermissions.containsKey(commandNode.getUsageText()))
                 registerCommandPermission(commandNode.getUsageText());
