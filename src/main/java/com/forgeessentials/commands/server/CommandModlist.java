@@ -52,7 +52,7 @@ public class CommandModlist extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
 	{
-    	return builder
+    	return baseBuilder
     			.then(Commands.argument("num", IntegerArgumentType.integer(1, 40))
                         .executes(CommandContext -> execute(CommandContext))
                      );

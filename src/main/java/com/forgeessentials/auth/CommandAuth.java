@@ -39,7 +39,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
 
     public LiteralArgumentBuilder<CommandSource> setExecution()
 	{
-        return builder
+        return baseBuilder
                 .then(Commands.literal("help")
                         .executes(CommandContext -> execute(CommandContext, "help")
                                 )

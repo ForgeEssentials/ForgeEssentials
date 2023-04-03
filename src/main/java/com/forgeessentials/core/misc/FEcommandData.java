@@ -20,7 +20,7 @@ public class FEcommandData
     public FEcommandData(ForgeEssentialsCommandBuilder commandBuilder, CommandDispatcher<CommandSource> dispatcher)
     {
         name = commandBuilder.getName();
-        Aliases = commandBuilder.getDefaultAliases();
+        Aliases = commandBuilder.getAliases();
         registered= false;
         data = commandBuilder;
         disp = dispatcher;

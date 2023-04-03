@@ -63,7 +63,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("player", StringArgumentType.greedyString())
                         .then(Commands.argument("message", StringArgumentType.greedyString())
                                 .executes(CommandContext -> execute(CommandContext))

@@ -56,7 +56,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("toggle", BoolArgumentType.bool())
                         .executes(CommandContext -> execute(CommandContext)
                                 )

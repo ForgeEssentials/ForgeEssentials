@@ -27,7 +27,7 @@ public class CommandQuestionerNo extends ForgeEssentialsCommandBuilder
     @Override
     public String[] getDefaultSecondaryAliases()
     {
-        return new String[] { "decline", "deny" };
+        return new String[] { "decline" };
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CommandQuestionerNo extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .executes(CommandContext -> execute(CommandContext)
                         );
     }

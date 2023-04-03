@@ -49,7 +49,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("list")
                         .then(Commands.argument("page", IntegerArgumentType.integer(0, ModuleTickets.ticketList.size() / 7))
                                 .executes(CommandContext -> execute(CommandContext, "list")

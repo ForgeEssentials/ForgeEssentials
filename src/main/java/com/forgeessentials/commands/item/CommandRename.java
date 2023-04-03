@@ -50,7 +50,7 @@ public class CommandRename extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("name", StringArgumentType.greedyString())
                         .executes(CommandContext -> execute(CommandContext)
                                 )

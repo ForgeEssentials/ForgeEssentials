@@ -28,13 +28,13 @@ public class CommandDeselect extends ForgeEssentialsCommandBuilder
     @Override
     public String[] getDefaultSecondaryAliases()
     {
-        return new String[] { "/deselect", "/deselect", "/sel" };
+        return new String[] { "/deselect", "/sel" };
     }
 
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .executes(CommandContext -> execute(CommandContext)
                         );
     }

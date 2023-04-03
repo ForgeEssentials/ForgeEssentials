@@ -66,7 +66,7 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("pos", Vec3Argument.vec3())
                         .then(Commands.argument("count", IntegerArgumentType.integer(0, 64))
                                 .then(Commands.argument("item", ItemArgument.item())

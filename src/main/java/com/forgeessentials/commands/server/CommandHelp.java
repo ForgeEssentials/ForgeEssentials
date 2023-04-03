@@ -87,7 +87,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .executes(CommandContext -> execute(CommandContext, "empty"))
                 .then(Commands.argument("page", IntegerArgumentType.integer(0, 1000))
                         .executes(CommandContext -> execute(CommandContext, "page")

@@ -171,7 +171,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("help")
                         .executes(CommandContext -> execute(CommandContext, "help")
                                 )

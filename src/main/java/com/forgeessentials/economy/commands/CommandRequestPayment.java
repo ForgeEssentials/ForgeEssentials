@@ -33,7 +33,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("amount", IntegerArgumentType.integer())
                                 .executes(CommandContext -> execute(CommandContext, "login")

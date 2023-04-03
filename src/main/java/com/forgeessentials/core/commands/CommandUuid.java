@@ -48,7 +48,7 @@ public class CommandUuid extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         // TODO Auto-generated method stub
-        return builder
+        return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(CommandContext -> execute(CommandContext)
                                 )

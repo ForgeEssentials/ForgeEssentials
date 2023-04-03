@@ -75,7 +75,7 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("radius", IntegerArgumentType.integer(-1))
                         .then(Commands.argument("mob", StringArgumentType.greedyString())
                                 .suggests(mob_types)

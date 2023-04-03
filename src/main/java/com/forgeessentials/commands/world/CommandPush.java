@@ -55,7 +55,7 @@ public class CommandPush extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
                         .executes(CommandContext -> execute(CommandContext)
                                 )

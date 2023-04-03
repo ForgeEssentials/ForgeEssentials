@@ -37,7 +37,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("unbind")
                         .executes(CommandContext -> execute(CommandContext, "unbind")
                                 )

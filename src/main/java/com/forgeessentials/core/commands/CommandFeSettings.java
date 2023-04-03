@@ -77,7 +77,7 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder //implement
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .executes(CommandContext -> execute(CommandContext, "help")
                         );
     }

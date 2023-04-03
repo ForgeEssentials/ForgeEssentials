@@ -52,7 +52,7 @@ public class CommandDelayedAction extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("time", StringArgumentType.string())
                         .then(Commands.argument("command", StringArgumentType.greedyString())
                                 .executes(CommandContext -> execute(CommandContext)

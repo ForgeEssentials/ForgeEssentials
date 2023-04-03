@@ -66,7 +66,7 @@ public class CommandWallet extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.literal("add")
                                 .then(Commands.argument("amount", LongArgumentType.longArg())

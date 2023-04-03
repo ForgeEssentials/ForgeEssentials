@@ -28,7 +28,7 @@ public class CommandQuestionerYes extends ForgeEssentialsCommandBuilder
     @Override
     public String[] getDefaultSecondaryAliases()
     {
-        return new String[] { "accept", "allow" };
+        return new String[] { "accept" };
     }
 
     @Override
@@ -52,7 +52,7 @@ public class CommandQuestionerYes extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .executes(CommandContext -> execute(CommandContext)
                         );
     }

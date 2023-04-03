@@ -55,7 +55,7 @@ public class CommandHome extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("set")
                         .executes(CommandContext -> execute(CommandContext, "set")
                                 )

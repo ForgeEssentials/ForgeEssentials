@@ -57,7 +57,7 @@ public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("group", StringArgumentType.greedyString())
                         .suggests(SUGGEST_GROUPS)
                         .then(Commands.argument("message", StringArgumentType.greedyString())

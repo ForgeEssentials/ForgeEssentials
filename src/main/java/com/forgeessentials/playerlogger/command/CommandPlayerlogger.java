@@ -76,7 +76,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("stats")
                         .executes(CommandContext -> execute(CommandContext, "stats")
                                 )

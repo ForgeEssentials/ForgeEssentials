@@ -86,7 +86,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder implement
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .executes(CommandContext -> execute(CommandContext, "me")
                         )
                 .then(Commands.argument("player", EntityArgument.player())

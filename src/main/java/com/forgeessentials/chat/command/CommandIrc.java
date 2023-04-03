@@ -51,7 +51,7 @@ public class CommandIrc extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("message", StringArgumentType.greedyString())
                         .executes(CommandContext -> execute(CommandContext)
                                 )

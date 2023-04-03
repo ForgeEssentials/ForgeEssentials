@@ -57,7 +57,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("radius", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
                         .then(Commands.argument("position", BlockPosArgument.blockPos())
                                 .then(Commands.argument("dimension", DimensionArgument.dimension())

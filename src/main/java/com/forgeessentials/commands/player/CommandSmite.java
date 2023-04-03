@@ -64,7 +64,7 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("player")
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes(CommandContext -> execute(CommandContext, "player")

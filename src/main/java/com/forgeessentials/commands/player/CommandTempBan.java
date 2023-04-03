@@ -56,7 +56,7 @@ public class CommandTempBan extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("player", StringArgumentType.word())
                         .then(Commands.argument("duration", StringArgumentType.greedyString())
                                 .then(Commands.argument("reasion", StringArgumentType.greedyString())

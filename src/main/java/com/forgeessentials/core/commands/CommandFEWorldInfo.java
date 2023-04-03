@@ -58,7 +58,7 @@ public class CommandFEWorldInfo extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .executes(CommandContext -> execute(CommandContext)
                         );
     }

@@ -54,7 +54,7 @@ public class CommandPay extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("player", EntityArgument.entity())
                         .then(Commands.argument("amount", LongArgumentType.longArg(1))
                                 .executes(CommandContext -> execute(CommandContext)

@@ -50,7 +50,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("reset")
                         .executes(CommandContext -> execute(CommandContext, "reset")
                                 )

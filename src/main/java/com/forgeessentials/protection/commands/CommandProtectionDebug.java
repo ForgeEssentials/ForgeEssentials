@@ -51,7 +51,7 @@ public class CommandProtectionDebug extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("command", StringArgumentType.greedyString())
                         .executes(CommandContext -> execute(CommandContext, "setPass")
                                 )

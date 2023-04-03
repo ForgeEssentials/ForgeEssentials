@@ -74,7 +74,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("timeout")
                         .then(Commands.literal("group")
                                 .then(Commands.argument("group", StringArgumentType.word())

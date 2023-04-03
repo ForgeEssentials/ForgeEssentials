@@ -109,7 +109,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("select")
                         .then(Commands.argument("kit", StringArgumentType.greedyString())
                                 .suggests(SUGGEST_KITS)

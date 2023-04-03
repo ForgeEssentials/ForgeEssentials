@@ -61,7 +61,7 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("price", LongArgumentType.longArg())
                                 .executes(CommandContext -> execute(CommandContext, "tradeP")

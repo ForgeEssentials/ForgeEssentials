@@ -134,7 +134,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("rain")
                         .then(Commands.literal("enable")
                                 .executes(CommandContext -> execute(CommandContext, "rain-enable")

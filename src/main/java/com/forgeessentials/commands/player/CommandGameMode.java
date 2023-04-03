@@ -44,7 +44,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
     {
                 for(GameType gametype : GameType.values()) {
                     if (gametype != GameType.NOT_SET) {
-                        builder
+                        baseBuilder
                         .then(Commands.literal(gametype.getName())
                                 .executes(CommandContext -> execute(CommandContext, gametype.getName())
                                         )
@@ -57,7 +57,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
                                 );
                     }
                  };
-                 return builder;
+                 return baseBuilder;
     }
 
     @Override

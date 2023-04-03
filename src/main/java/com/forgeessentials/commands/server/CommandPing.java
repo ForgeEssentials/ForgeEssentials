@@ -50,7 +50,7 @@ public class CommandPing extends ForgeEssentialsCommandBuilder implements Config
 
     public LiteralArgumentBuilder<CommandSource> setExecution()
 	{
-        return builder
+        return baseBuilder
                 .executes(CommandContext -> execute(CommandContext)
                         );
 	}

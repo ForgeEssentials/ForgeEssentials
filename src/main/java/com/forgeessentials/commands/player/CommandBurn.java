@@ -54,7 +54,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("me")
                         .then(Commands.argument("time", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
                                 .executes(CommandContext -> execute(CommandContext, "meT")

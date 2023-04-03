@@ -63,7 +63,7 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("item", ItemArgument.item())
                         .then(Commands.argument("amount", IntegerArgumentType.integer())
                                 .executes(CommandContext -> execute(CommandContext, "sellamount")

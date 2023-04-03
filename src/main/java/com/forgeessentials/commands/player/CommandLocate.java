@@ -58,7 +58,7 @@ public class CommandLocate extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
                         .executes(CommandContext -> execute(CommandContext)
                                 )

@@ -101,7 +101,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("me")
                         .then(Commands.argument("potionID", PotionArgument.effect())
                                 .then(Commands.argument("duration", IntegerArgumentType.integer(0, Integer.MAX_VALUE))

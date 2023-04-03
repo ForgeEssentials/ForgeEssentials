@@ -95,7 +95,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("set")
                         .then(Commands.literal("day")
                                 .then(Commands.literal("all")

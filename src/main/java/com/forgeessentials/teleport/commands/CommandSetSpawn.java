@@ -55,7 +55,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("bed")
                         .then(Commands.literal("enable")
                                 .executes(CommandContext -> execute(CommandContext, "bed-enable")

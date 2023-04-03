@@ -65,7 +65,7 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("victim", EntityArgument.player())
                         .executes(CommandContext -> execute(CommandContext, "setPass")
                                 )

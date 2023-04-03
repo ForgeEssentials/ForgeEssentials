@@ -121,7 +121,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("list")
                         .then(Commands.literal("own")
                                 .executes(CommandContext -> execute(CommandContext, "list-own")

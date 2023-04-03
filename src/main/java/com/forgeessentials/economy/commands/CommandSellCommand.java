@@ -70,7 +70,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("item", ItemArgument.item())
                                 .then(Commands.argument("amount", IntegerArgumentType.integer())

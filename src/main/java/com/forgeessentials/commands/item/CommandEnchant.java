@@ -55,7 +55,7 @@ public class CommandEnchant extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("name", EnchantmentArgument.enchantment())
                         .then(Commands.literal("maxlevel")
                                 .executes(CommandContext -> execute(CommandContext, "maxlevel")

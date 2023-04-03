@@ -80,7 +80,7 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("save")
                         .executes(CommandContext -> execute(CommandContext, "save")
                                 )

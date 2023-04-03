@@ -71,7 +71,7 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("others")
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes(CommandContext -> execute(CommandContext, "others")

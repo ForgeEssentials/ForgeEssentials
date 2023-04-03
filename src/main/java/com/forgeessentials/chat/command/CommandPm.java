@@ -79,7 +79,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("setTarget")
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes(CommandContext -> execute(CommandContext, "setTarget")

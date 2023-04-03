@@ -20,25 +20,29 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
-	protected LiteralArgumentBuilder<CommandSource> builder;
-	protected List<LiteralArgumentBuilder<CommandSource>> builders;
+	protected LiteralArgumentBuilder<CommandSource> baseBuilder;
+	protected List<LiteralArgumentBuilder<CommandSource>> builders = new ArrayList<LiteralArgumentBuilder<CommandSource>>();
 
     boolean enabled;
 
     // ------------------------------------------------------------
     // Command usage
 
-	public ForgeEssentialsCommandBuilder(boolean enabled) {
-		this.builder = Commands.literal(getName()).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
+    public ForgeEssentialsCommandBuilder(boolean enabled) {
+        if(!getAliases().isEmpty()) {
+	       for(String alias : getAliases()) {
+	            LiteralArgumentBuilder<CommandSource> build = baseBuilder;
+	            build = Commands.literal(alias).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
+	            builders.add(build);
+	        }
+        }
+		this.baseBuilder = Commands.literal(getName()).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
 		this.enabled = enabled;
-		for(String alias : getDefaultAliases()) {
-		    //builders.add(Commands.literal(alias).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel()))));
-		}
 		
 	}
 
-	public LiteralArgumentBuilder<CommandSource> getBuilder() {
-		return builder;
+	public LiteralArgumentBuilder<CommandSource> getMainBuilder() {
+		return baseBuilder;
 	}
 
 	public List<LiteralArgumentBuilder<CommandSource>> getBuilders()
@@ -96,14 +100,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
         return new String[] {};
     }
 
-    public List<String> aliases = new ArrayList<>();
-
     protected final static String PREFIX="fe";
-
-    public List<String> getAliases()
-    {
-        return aliases;
-    }
 
     public String getName() {
         String name = getPrimaryAlias();
@@ -126,6 +123,11 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
         }
     }
 
+    public List<String> getAliases()
+    {
+        return Arrays.asList(getDefaultSecondaryAliases());
+    }
+
     public List<String> getDefaultAliases()
     {
         List<String> list = new ArrayList<>();
@@ -136,19 +138,6 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
         }
         list.addAll(Arrays.asList(getDefaultSecondaryAliases()));
         return list;
-    }
-
-    public void setAliases(String[] aliases)
-    {
-        if (aliases == null)
-            setAliases(new ArrayList<String>());
-        else
-            setAliases(Arrays.asList(aliases));
-    }
-
-    public void setAliases(List<String> aliases)
-    {
-    	this.aliases = aliases;
     }
 
     /**

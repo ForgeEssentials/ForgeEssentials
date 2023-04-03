@@ -88,14 +88,14 @@ public class FECommandManager implements ConfigLoader
     {
         //Create commandConfig
         ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
-        String category = "Command-" + commandData.getName();
+        String category = "Command-" + commandData.getData().getName();
 
         //load from command config names
         configBuilder.push(category);
         final ForgeConfigSpec.ConfigValue<List<? extends String>> aliases;
         aliases = configBuilder.define("aliases", (commandData.getAliases()));
         configBuilder.pop();
-        commandAlises.put(commandData.getName(), aliases);
+        commandAlises.put(commandData.getData().getName(), aliases);
 
         //load additional config items
         if (commandData instanceof ConfigurableCommand)
@@ -103,13 +103,13 @@ public class FECommandManager implements ConfigLoader
 
         //register the config
         FileUtils.getOrCreateDirectory(FMLPaths.GAMEDIR.get().resolve("ForgeEssentials/CommandSettings"), "ForgeEssentials/CommandSettings");
-        ConfigBase.registerConfigManual(configBuilder.build(), Paths.get(ForgeEssentials.getFEDirectory()+"/CommandSettings/"+commandData.getName()+".toml"),true);
+        ConfigBase.registerConfigManual(configBuilder.build(), Paths.get(ForgeEssentials.getFEDirectory()+"/CommandSettings/"+commandData.getData().getName()+".toml"),true);
 
         //load aliases and test for newMappings
-        List<String> aliasesProperty = new ArrayList<>(commandAlises.getOrDefault(commandData.getName(), aliases).get());
+        List<String> aliasesProperty = new ArrayList<>(commandAlises.getOrDefault(commandData.getData().getName(), aliases).get());
         if (newMappings) {
             aliasesProperty.clear();
-            for(String alias : commandData.Aliases){
+            for(String alias : commandData.getAliases()){
                 aliasesProperty.add(String.valueOf(alias));
                 }
         }
@@ -144,7 +144,7 @@ public class FECommandManager implements ConfigLoader
     {
         FEcommandData command=null;
         for(FEcommandData cmd : loadedFEcommands) {
-            if(cmd.getName()== name) {
+            if(cmd.getData().getName()== name) {
                 command = cmd;
                 break;
             }
@@ -161,14 +161,15 @@ public class FECommandManager implements ConfigLoader
 
     public static void registerAndLoadCommands()
     {
-        LoggingHandler.felog.debug("ForgeEssentials: Registering known commands");
+        LoggingHandler.felog.info("ForgeEssentials: Registering known commands");
         for (FEcommandData command : loadedFEcommands)
-            if (!registeredFEcommands.contains(command.getName()))
+            if (!registeredFEcommands.contains(command.getData().getName()))
             {
                 register(command);
                 if (command.getData() instanceof ConfigurableCommand)
                     ((ConfigurableCommand) command.getData()).loadData();
             }
+        LoggingHandler.felog.info("Registered "+Integer.toString(registeredFEcommands.size()+registeredAiliases.size())+" commands");
         //CommandFeSettings.getInstance().loadSettings();
     }
 
@@ -189,25 +190,27 @@ public class FECommandManager implements ConfigLoader
         if (ServerLifecycleHooks.getCurrentServer() == null)
             return;
 
+        String name = commandData.getData().getName();
         if(commandData.isRegistered()) {
-            LoggingHandler.felog.error(String.format("Tried to register command %s, but it is alredy registered", commandData.getName()));
+            LoggingHandler.felog.error(String.format("Tried to register command %s, but it is alredy registered", name));
             return;
         }
         if(commandData.getData().setExecution() == null) {
-            LoggingHandler.felog.error(String.format("Tried to register command %s with null execution", commandData.getName()));
+            LoggingHandler.felog.error(String.format("Tried to register command %s with null execution", name));
             return;
         }
         if (commandData.getData().isEnabled()) 
         {
+            
             CommandDispatcher<CommandSource> dispatcher = commandData.getDisp();
-            if(registeredFEcommands.contains(commandData.getName())) {
-                LoggingHandler.felog.error(String.format("Command %s already registered!", commandData.getName()));
+            if(registeredFEcommands.contains(name)) {
+                LoggingHandler.felog.error(String.format("Command %s already registered!", name));
                 return;
             }
 
-            dispatcher.register(commandData.getData().getBuilder());
-            LoggingHandler.felog.info("Registered Command: "+commandData.getData().getName());
-            if(commandData.getAliases() != null && !commandData.getAliases().isEmpty()) {
+            dispatcher.register(commandData.getData().getMainBuilder());
+            LoggingHandler.felog.info("Registered Command: "+name);
+            if(commandData.getData().getBuilders() != null && !commandData.getData().getBuilders().isEmpty()) {
                 try {
                     for (LiteralArgumentBuilder<CommandSource> builder : commandData.getData().getBuilders()) {
                         if(registeredAiliases.contains(builder.getLiteral())) {
@@ -215,17 +218,17 @@ public class FECommandManager implements ConfigLoader
                             continue;
                         }
                         dispatcher.register(builder);
-                        LoggingHandler.felog.info("Registered Command: "+commandData.getData().getName()+"'s alias: "+commandData.getName());
+                        LoggingHandler.felog.info("Registered Command: "+name+"'s alias: "+builder.getLiteral());
                         registeredAiliases.add(builder.getLiteral());
                     }
                 }catch(NullPointerException e) {
-                    LoggingHandler.felog.error("Failed to register aliases",commandData.getAliases());
+                    LoggingHandler.felog.error("Failed to register aliases for command: "+name);
                 }
             }
             commandData.setRegistered(true);
-            registeredFEcommands.add(commandData.getName());
+            registeredFEcommands.add(name);
         }
-        PermissionManager.registerCommandPermission(commandData.getName(), commandData.getData().getPermissionNode(), commandData.getData().getPermissionLevel());
+        PermissionManager.registerCommandPermission(name, commandData.getData().getPermissionNode(), commandData.getData().getPermissionLevel());
         commandData.getData().registerExtraPermissions();
     }
 

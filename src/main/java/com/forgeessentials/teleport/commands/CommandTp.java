@@ -42,7 +42,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("help")
                         .executes(CommandContext -> execute(CommandContext, "help")
                                 )

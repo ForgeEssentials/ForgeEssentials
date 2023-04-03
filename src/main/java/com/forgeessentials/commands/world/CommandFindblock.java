@@ -85,7 +85,7 @@ public class CommandFindblock extends ForgeEssentialsCommandBuilder implements C
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("block", BlockStateArgument.block())
                         .executes(CommandContext -> execute(CommandContext)
                                 )

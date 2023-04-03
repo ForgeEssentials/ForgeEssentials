@@ -48,7 +48,7 @@ public class CommandFly extends ForgeEssentialsCommandBuilder
 
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("toggle", BoolArgumentType.bool())
                         .executes(CommandContext -> execute(CommandContext)
                                 )

@@ -58,7 +58,7 @@ public class CommandDechant extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("name", EnchantmentArgument.enchantment())
                         .executes(CommandContext -> execute(CommandContext)
                                 )

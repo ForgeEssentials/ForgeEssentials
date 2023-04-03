@@ -36,7 +36,7 @@ public class CommandPos2 extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("atLocation")
                         .then(Commands.argument("location", BlockPosArgument.blockPos())
                                 .executes(CommandContext -> execute(CommandContext, "cord")

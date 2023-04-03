@@ -72,7 +72,7 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("clearSelf")
                         .executes(CommandContext -> execute(CommandContext, "delS")
                                 )

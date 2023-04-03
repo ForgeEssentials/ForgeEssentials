@@ -57,10 +57,10 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        builder.executes(CommandContext -> execute(CommandContext, "blank")
+        baseBuilder.executes(CommandContext -> execute(CommandContext, "blank")
                         );
                 for(String type : types) {
-                    builder
+                    baseBuilder
                     .then(Commands.literal(type)
                             .then(Commands.literal("allow")
                                     .then(Commands.literal("all")
@@ -100,7 +100,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
                                     )
                             );
                  };
-                 return builder;
+                 return baseBuilder;
     }
 
     @Override

@@ -69,7 +69,7 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("left")
                         .then(Commands.literal("command")
                                 .then(Commands.argument("command", StringArgumentType.greedyString())

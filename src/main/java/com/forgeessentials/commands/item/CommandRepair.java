@@ -59,7 +59,7 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("self")
                         .then(Commands.literal("Custom")
                                 .then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE))

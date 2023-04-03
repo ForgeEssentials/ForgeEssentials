@@ -78,7 +78,7 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("start")
                         .then(Commands.argument("time", StringArgumentType.greedyString())
                                 .executes(CommandContext -> execute(CommandContext, "start")

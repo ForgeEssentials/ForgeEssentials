@@ -29,7 +29,7 @@ public class CommandVIP extends ForgeEssentialsCommandBuilder
 
     public LiteralArgumentBuilder<CommandSource> setExecution()
 	{
-    	return builder
+    	return baseBuilder
     	        .then(Commands.literal("add")
     	                .then(Commands.argument("player", EntityArgument.player())
     	                        .executes(CommandContext -> execute(CommandContext, "add")

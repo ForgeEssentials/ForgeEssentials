@@ -88,7 +88,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("allowflight")
                         .then(Commands.literal("modify")
                                 .then(Commands.argument("toggle", BoolArgumentType.bool())

@@ -57,7 +57,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("read")
                         .executes(CommandContext -> execute(CommandContext, "read")
                                 )

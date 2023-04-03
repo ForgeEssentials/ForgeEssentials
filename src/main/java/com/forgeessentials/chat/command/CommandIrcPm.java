@@ -59,7 +59,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("ircUser", StringArgumentType.greedyString())
                         .suggests(SUGGEST_USERS)
                         .then(Commands.argument("message", StringArgumentType.greedyString())

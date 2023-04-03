@@ -55,7 +55,7 @@ public class CommandBackup extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
         .then(Commands.literal("all")
                 .executes(CommandContext -> execute(CommandContext, "all")
                         )

@@ -67,7 +67,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.literal("mode")
                         .then(Commands.argument("inventory", EntityArgument.player())
                                 .executes(context -> execute(context, "inventory")

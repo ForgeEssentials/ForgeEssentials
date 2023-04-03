@@ -33,7 +33,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        return builder
+        return baseBuilder
                 .then(Commands.argument("expand", IntegerArgumentType.integer())
                         .executes(CommandContext -> execute(CommandContext, "expand")
                                 )
