@@ -8,6 +8,7 @@ import net.minecraft.command.arguments.Vec3Argument;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.tileentity.DispenserTileEntity;
@@ -85,7 +86,7 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
         int y = (int) vector.y;
         int z = (int) vector.z;
 
-        if (source instanceof DedicatedServer)
+        if (source instanceof MinecraftServer)
         {
             world = ((DedicatedServer) source).getLevel(World.OVERWORLD);
         }

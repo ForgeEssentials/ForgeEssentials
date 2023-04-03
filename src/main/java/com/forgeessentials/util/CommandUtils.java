@@ -33,7 +33,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 public class CommandUtils 
 {
 	public static ICommandSource GetSource(CommandSource source) {
-		ICommandSource isource = ObfuscationReflectionHelper.getPrivateValue(CommandSource.class, source, "source");
+		ICommandSource isource = ObfuscationReflectionHelper.getPrivateValue(CommandSource.class, source, "field_197041_c");
 		return isource;
 	}
 	

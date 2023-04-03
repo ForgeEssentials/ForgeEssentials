@@ -251,7 +251,7 @@ public class UserIdent
         }
         else if (source instanceof PlayerEntity)
         {
-            return get((PlayerEntity) sender.getEntity());
+            return get((ServerPlayerEntity) sender.getEntity());
         }
         else
         {

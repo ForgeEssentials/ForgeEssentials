@@ -10,6 +10,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.rcon.RConConsoleSource;
 import net.minecraft.tileentity.CommandBlockLogic;
 
 public class CommandProcessing extends CommandUtils
@@ -27,6 +28,10 @@ public class CommandProcessing extends CommandUtils
         else if (source instanceof CommandBlockLogic)
         {
             processCommandBlock(ctx, params);
+        }
+        else if (source instanceof RConConsoleSource)
+        {
+            processCommandConsole(ctx, params);
         }
         else
         {
