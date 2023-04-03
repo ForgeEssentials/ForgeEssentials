@@ -65,7 +65,7 @@ public class CommandPing extends ForgeEssentialsCommandBuilder implements Config
     @Override
     public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
     {
-        ChatOutputHandler.chatNotification(ctx.getSource(), response.replaceAll("%time", ""));
+        ChatOutputHandler.chatNotification(ctx.getSource(), response.replaceAll("%time", "Server has blazing fast speeds!"));
         return Command.SINGLE_SUCCESS;
     }
 

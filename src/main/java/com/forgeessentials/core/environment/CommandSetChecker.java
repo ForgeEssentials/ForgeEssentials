@@ -14,7 +14,6 @@ package com.forgeessentials.core.environment;
 //import com.mojang.brigadier.Command;
 //
 //import net.minecraftforge.fml.common.FMLCommonHandler;
-//import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 //import net.minecraftforge.fml.relauncher.ReflectionHelper;
 //import net.minecraftforge.fml.server.ServerLifecycleHooks;
 //
@@ -35,7 +34,6 @@ package com.forgeessentials.core.environment;
 //                HashMap<String, ICommand> initials = new HashMap<String, ICommand>();
 //                HashMultimap<String, ICommand> duplicates = HashMultimap.create();
 //
-//                Set<ICommand> cmdList = ObfuscationReflectionHelper.getPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), FIELDNAME);
 //                LoggingHandler.felog.debug("commandSet size: " + cmdList.size());
 //
 //                ICommand keep;
@@ -105,7 +103,6 @@ package com.forgeessentials.core.environment;
 //
 //                cmdList.removeAll(toRemove);
 //                LoggingHandler.felog.debug("commandSet size: " + cmdList.size());
-//                ObfuscationReflectionHelper.setPrivateValue(CommandHandler.class, (CommandHandler) server.getCommandManager(), cmdList, FIELDNAME);
 //            }
 //            catch (Exception e)
 //            {

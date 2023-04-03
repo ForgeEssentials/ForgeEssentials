@@ -16,6 +16,13 @@ import com.forgeessentials.util.output.LoggingHandler;
 
 public final class ItemUtil
 {
+    public static ITextComponent[] getText(SignTileEntity sign) {
+        ITextComponent[] signT = ObfuscationReflectionHelper.getPrivateValue(SignTileEntity.class, sign, "field_145915_a");
+        return signT;
+    }
+    public static void setText(SignTileEntity sign, ITextComponent[] text) {
+        ObfuscationReflectionHelper.setPrivateValue(SignTileEntity.class, sign, text, "field_145915_a");
+    }
 
     public static int getItemDamage(ItemStack stack)
     {
@@ -54,7 +61,7 @@ public final class ItemUtil
         if (te instanceof SignTileEntity)
         {
             SignTileEntity sign = (SignTileEntity) te;
-            ITextComponent[] imessage = ObfuscationReflectionHelper.getPrivateValue(SignTileEntity.class, sign, "messages");
+            ITextComponent[] imessage = ItemUtil.getText(sign);
             return imessage;
         }
         return null;

@@ -35,7 +35,6 @@
 //import net.minecraftforge.event.world.ChunkEvent;
 //import net.minecraftforge.eventbus.api.EventPriority;
 //import net.minecraftforge.eventbus.api.SubscribeEvent;
-//import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 //import net.minecraftforge.fml.server.ServerLifecycleHooks;
 //
 //import com.forgeessentials.core.ForgeEssentials;
@@ -141,7 +140,6 @@
 //            return;
 //        ServerWorld world = (ServerWorld) event.world;
 //        ServerChunkProvider cSource = world.getChunkSource();
-//        Long2ObjectLinkedOpenHashMap<ChunkHolder> map = ObfuscationReflectionHelper.getPrivateValue(ChunkManager.class, cSource.chunkMap, "visibleChunkMap");
 //        Iterable<ChunkHolder> list = Iterables.unmodifiableIterable(map.values());
 //        for (ChunkHolder chunkH : list) {
 //            Chunk chunk = chunkH.getTickingChunk();

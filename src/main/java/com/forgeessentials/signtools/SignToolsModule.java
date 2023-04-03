@@ -15,7 +15,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fe.event.world.SignEditEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,6 +28,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -115,12 +115,12 @@ public class SignToolsModule extends ConfigLoaderBase
                             && SIGNS(event.getPlayer().getMainHandItem().getItem()))
                     {
                         // Convert Formatting back into FE format for easy use
-                        ITextComponent[] imessage = ObfuscationReflectionHelper.getPrivateValue(SignTileEntity.class, sign, "messages");
+                        ITextComponent[] imessage = ItemUtil.getText(sign);
                         for (int i = 0; i < imessage.length; i++)
                         {
                             imessage[i] = new StringTextComponent(
                                     imessage[i].getContents().replace(ChatOutputHandler.COLOR_FORMAT_CHARACTER, '&'));
-                            ObfuscationReflectionHelper.setPrivateValue(SignTileEntity.class, sign, imessage, "messages");
+                            ItemUtil.setText(sign, imessage);
                         }
 
                         ((ServerPlayerEntity)event.getPlayer()).openTextEdit((SignTileEntity) te);
@@ -129,7 +129,7 @@ public class SignToolsModule extends ConfigLoaderBase
                 }
 
             }
-            ITextComponent[] imessage = ObfuscationReflectionHelper.getPrivateValue(SignTileEntity.class, sign, "messages");
+            ITextComponent[] imessage = ItemUtil.getText(sign);
             String[] signText = getFormatted(imessage);
 
             if (APIRegistry.scripts.runEventScripts(signinteractKey, event.getPlayer().createCommandSourceStack(),

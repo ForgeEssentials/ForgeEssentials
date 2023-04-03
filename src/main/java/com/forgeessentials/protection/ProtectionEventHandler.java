@@ -2,7 +2,6 @@ package com.forgeessentials.protection;
 
 import static net.minecraftforge.eventbus.api.Event.Result.DENY;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +63,8 @@ import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToAccessFieldException;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.APIRegistry;
@@ -377,10 +378,13 @@ public class ProtectionEventHandler extends ServerEventHandler
         float size;
         
         try
-        {Field privateField = Explosion.class.getDeclaredField("radius"); privateField.setAccessible(true);
-            size = (float)privateField.get(explosion);
-        }catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e)
-        {e.printStackTrace(); size = 4;}
+        {
+            size = (float) ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "field_77280_f");
+        }catch (UnableToAccessFieldException e)
+        {
+            e.printStackTrace(); 
+            size = 4;
+        }
         
         int s = (int) Math.ceil(size);
 

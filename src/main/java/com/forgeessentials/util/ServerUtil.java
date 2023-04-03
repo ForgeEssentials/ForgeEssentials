@@ -422,8 +422,6 @@ public abstract class ServerUtil
         try
         {
             CommandHandler commandHandler = (CommandHandler) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager();
-            Map<String, ICommand> commandMap = ObfuscationReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, "commandMap", "a", "field_71562_a");
-            Set<ICommand> commandSet = ObfuscationReflectionHelper.getPrivateValue(CommandHandler.class, commandHandler, CommandSetChecker.FIELDNAME);
             for (Iterator<Entry<String, ICommand>> it = commandMap.entrySet().iterator(); it.hasNext();)
             {
                 Entry<String, ICommand> command = it.next();
