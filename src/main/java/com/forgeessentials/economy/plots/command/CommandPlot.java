@@ -958,8 +958,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             sellerWallet.add(price);
             if (plot.getOwner().hasPlayer())
             {
-                ChatOutputHandler.chatConfirmation(plot.getOwner().getPlayerMP(), Translator.format("You sold plot \"%s\" to %s for %s", //
-                        plot.getName(), ctx.getSource().getEntity().getName().getString(), priceStr));
+                ChatOutputHandler.chatConfirmation(plot.getOwner().getPlayerMP(), Translator.format("You sold plot \"%s\" to %s for %s", 
                         plot.getName(), ctx.getSource().getEntity().getDisplayName().getString(), priceStr));
                 ModuleEconomy.confirmNewWalletAmount(plot.getOwner(), sellerWallet);
             }

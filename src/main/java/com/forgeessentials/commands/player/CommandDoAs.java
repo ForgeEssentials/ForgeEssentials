@@ -95,7 +95,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
         ServerPlayerEntity player = (ServerPlayerEntity) UserIdent.getPlayerByMatchOrUsername(null, playerS);
         if (player != null)
         {
-            ChatOutputHandler.chatWarning(player, Translator.format("Player %s is attempting to issue a command as you.", ctx.getSource().getEntity().getName().getString()));
+            ChatOutputHandler.chatWarning(player, Translator.format("Player %s is attempting to issue a command as you.", ctx.getSource().getEntity().getDisplayName().getString()));
             ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(ctx.getSource(), message);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Successfully issued command as %s", playerS));
         }

@@ -193,7 +193,7 @@ public class PlayerInfo implements Loadable
 
     public static PlayerInfo get(PlayerEntity player)
     {
-        return get(player.getUUID(), player.getName().getString());
+        return get(player.getUUID(), player.getDisplayName().getString());
     }
 
     public static PlayerInfo get(UserIdent ident)

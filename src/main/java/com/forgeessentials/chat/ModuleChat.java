@@ -237,7 +237,7 @@ public class ModuleChat implements ConfigSaver
         }
 
         // Log chat message
-        logChatMessage(event.getPlayer().getName().getString(), event.getMessage());
+        logChatMessage(event.getPlayer().getDisplayName().getString(), event.getMessage());
 
         // Initialize parameters
         String message = processChatReplacements(event.getPlayer().createCommandSourceStack(), censor.filter(event.getMessage(), event.getPlayer()), false);
@@ -510,7 +510,7 @@ public class ModuleChat implements ConfigSaver
     {
         String nickname = PlayerUtil.getPersistedTag(player, false).getString("nickname");
         if (nickname == null || nickname.isEmpty())
-            nickname = player.getName().getString();
+            nickname = player.getDisplayName().getString();
         return nickname;
     }
 

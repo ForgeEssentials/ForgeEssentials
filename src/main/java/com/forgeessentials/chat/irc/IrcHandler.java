@@ -467,7 +467,7 @@ public class IrcHandler extends ListenerAdapter
         if (!(event.getEntityLiving() instanceof PlayerEntity))
             return;
         if (showGameEvents)
-            ircSendMessage(Translator.format("%s died", event.getEntityLiving().getName()));
+            ircSendMessage(Translator.format("%s died", event.getEntityLiving().getDisplayName().getString()));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

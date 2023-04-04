@@ -63,11 +63,11 @@ public class CommandMute extends ForgeEssentialsCommandBuilder
     {
         ServerPlayerEntity receiver = EntityArgument.getPlayer(ctx, "player");
         if (receiver.hasDisconnected())
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", receiver.getName().getString());
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", receiver.getDisplayName().getString());
 
         PlayerUtil.getPersistedTag(receiver, true).putBoolean("mute", true);
-        ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You muted %s.", receiver.getName().getString()));
-        ChatOutputHandler.chatError(receiver, Translator.format("You were muted by %s.", ctx.getSource().getEntity().getName().getString()));
+        ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You muted %s.", receiver.getDisplayName().getString()));
+        ChatOutputHandler.chatError(receiver, Translator.format("You were muted by %s.", ctx.getSource().getEntity()));
         return Command.SINGLE_SUCCESS;
     }
 }

@@ -127,7 +127,7 @@ public class UserIdent
         if (identPlayer != null)
         {
             uuid = identPlayer.getUUID();
-            username = identPlayer.getName().toString();
+            username = identPlayer.getDisplayName().getString();
             if (byUuid.containsKey(uuid))
             {
                 oldIdent = byUuid.get(uuid);
@@ -285,13 +285,13 @@ public class UserIdent
 
         if (player instanceof FakePlayer)
         {
-            return getNpc(player.getName().getString(), ModulePermissions.fakePlayerIsSpecialBunny ? null : player.getUUID());
+            return getNpc(player.getDisplayName().getString(), ModulePermissions.fakePlayerIsSpecialBunny ? null : player.getUUID());
         }
 
         UserIdent ident = byUuid.get(player.getUUID());
         if (ident == null)
         {
-            ident = byUsername.get(player.getName().getString());
+            ident = byUsername.get(player.getDisplayName().getString());
             if (ident != null)
             {
                 ident.uuid = player.getUUID();
@@ -302,7 +302,7 @@ public class UserIdent
         }
         else
         {
-            String name = player.getName().toString();
+            String name = player.getDisplayName().getString();
             if (name != null && !name.equals(ident.username))
             {
                 byUsername.remove(ident.username);
@@ -444,7 +444,7 @@ public class UserIdent
     public static synchronized void login(PlayerEntity player)
     {
         UserIdent ident = byUuid.get(player.getUUID());
-        UserIdent usernameIdent = byUsername.get(player.getName().getString());
+        UserIdent usernameIdent = byUsername.get(player.getDisplayName().getString());
 
         if (ident == null)
         {
@@ -457,7 +457,7 @@ public class UserIdent
             }
         }
         ident.player = new WeakReference<PlayerEntity>(player);
-        ident.username = player.getName().toString();
+        ident.username = player.getDisplayName().getString();
         ident.uuid = player.getUUID();
 
         if (usernameIdent != null && usernameIdent != ident)
@@ -466,7 +466,7 @@ public class UserIdent
 
             // Change data for already existing references to old UserIdent
             usernameIdent.player = new WeakReference<PlayerEntity>(player);
-            usernameIdent.username = player.getName().toString();
+            usernameIdent.username = player.getDisplayName().getString();
 
             // Replace entry in username map by the one from uuid map
             byUsername.remove(usernameIdent.username.toLowerCase());
@@ -605,7 +605,7 @@ public class UserIdent
         {
             if (!player.getGameProfile().isComplete())
             {
-                return new GameProfile(getOrGenerateUuid(), player.getName().getString());
+                return new GameProfile(getOrGenerateUuid(), player.getDisplayName().getString());
 
                 /*
                  * // Safeguard against stupid mods who set UUID to null UserIdent playerIdent = UserIdent.byUsername.get(player.getCommandSenderName()); if (playerIdent != this)

@@ -63,11 +63,11 @@ public class CommandUnmute extends ForgeEssentialsCommandBuilder
     {
         ServerPlayerEntity receiver = EntityArgument.getPlayer(ctx, "player");
         if (receiver.hasDisconnected())
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", receiver.getName().getString());
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", receiver.getDisplayName().getString());
 
         PlayerUtil.getPersistedTag(receiver, false).remove("mute");
-        ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You unmuted %s.", receiver.getName().getString()));
-        ChatOutputHandler.chatError(receiver, Translator.format("You were unmuted by %s.", ctx.getSource().getEntity().getName().getString()));
+        ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You unmuted %s.", receiver.getDisplayName().getString()));
+        ChatOutputHandler.chatError(receiver, Translator.format("You were unmuted by %s.", ctx.getSource().getEntity().getDisplayName().getString()));
         return Command.SINGLE_SUCCESS;
     }
 }
