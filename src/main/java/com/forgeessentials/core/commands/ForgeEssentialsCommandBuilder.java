@@ -19,7 +19,7 @@ import net.minecraft.tileentity.CommandBlockLogic;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-public abstract class ForgeEssentialsCommandBuilder extends CommandProcessing{
+public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor{
 	protected LiteralArgumentBuilder<CommandSource> baseBuilder;
 	protected List<LiteralArgumentBuilder<CommandSource>> builders = new ArrayList<LiteralArgumentBuilder<CommandSource>>();
 
