@@ -14,7 +14,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -100,8 +99,9 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
         CommandSource target = EntityArgument.getPlayer(ctx, "player").createCommandSourceStack();
         if (params.equals("setTarget"))
         {
-            if (ctx.getSource() == target)
-                throw new PlayerNotFoundException("commands.message.sameTarget");
+            if (ctx.getSource() == target) {
+                ChatOutputHandler.chatError(ctx.getSource(),"Cant send a pm to yourself");
+            }
             setTarget(ctx.getSource(), target);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set PM target to %s", target.getTextName()));
             return Command.SINGLE_SUCCESS;

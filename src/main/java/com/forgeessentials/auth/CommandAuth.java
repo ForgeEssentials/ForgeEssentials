@@ -13,7 +13,6 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.commands.PermissionDeniedException;
 import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
@@ -199,7 +198,8 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
             }
             else if (!isLogged)
             {
-                throw new PlayerNotFoundException("commands.generic.player.notFound");
+                ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s is currently online", player.getDisplayName().getString()));
+                return Command.SINGLE_SUCCESS;
             }
             else
             {

@@ -13,8 +13,7 @@ import java.util.List;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
-import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -79,21 +78,24 @@ public class CommandIrcPm extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (!IrcHandler.getInstance().isConnected())
-            throw new TranslatedCommandException("Not connected to IRC!");
+        if (!IrcHandler.getInstance().isConnected()) {
+            ChatOutputHandler.chatError(ctx.getSource(),"Not connected to IRC!");
+            return Command.SINGLE_SUCCESS;
+        }
         String name = StringArgumentType.getString(ctx, "ircUser");
         CommandSource target = IrcHandler.getInstance().getIrcUser(name);
         if (target == null)
         {
-            throw new PlayerNotFoundException("commands.generic.player.notFound");
+            ChatOutputHandler.chatError(ctx.getSource(),"Player not found");
+            return Command.SINGLE_SUCCESS;
         }
         else if (target == ctx.getSource())
         {
-            throw new PlayerNotFoundException("commands.message.sameTarget");
+            ChatOutputHandler.chatError(ctx.getSource(),"Cant send a pm to yourself");
+            return Command.SINGLE_SUCCESS;
         }
         else
         {
-            
         	TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "name"));
             ModuleChat.tell(ctx.getSource(), message, target);
         }

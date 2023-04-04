@@ -9,8 +9,8 @@ import net.minecraft.command.CommandSource;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IrcCommand;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
-import com.forgeessentials.core.misc.TranslatedCommandException.WrongUsageException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandReply implements IrcCommand
 {
@@ -42,15 +42,23 @@ public class CommandReply implements IrcCommand
     @Override
     public void processCommand(CommandSource sender, String[] args) throws CommandException
     {
-        if (args.length < 1)
-            throw new WrongUsageException("commands.message.usage", new Object[0]);
+        if (args.length < 1) {
+            ChatOutputHandler.chatError(sender, Translator.format("Invalid Syntax"));
+            return;
+        }
 
         CommandSource target = com.forgeessentials.chat.command.CommandReply.getReplyTarget(sender);
-        if (target == null)
-            throw new PlayerNotFoundException("commands.generic.player.notFound");
+        if (target == null) {
+            ChatOutputHandler.chatError(sender, Translator.format("Player not found"));
+            //return Command.SINGLE_SUCCESS;
+            return;
+        }
 
-        if (target == sender)
-            throw new PlayerNotFoundException("commands.message.sameTarget", new Object[0]);
+        if (target == sender) {
+            ChatOutputHandler.chatError(sender, "You can't send a message to your self");
+            //return Command.SINGLE_SUCCESS;
+            return;
+        }
 
         ModuleChat.tell(sender, ForgeEssentialsCommandBuilder.getChatComponentFromNthArg(args, 0), target);
     }

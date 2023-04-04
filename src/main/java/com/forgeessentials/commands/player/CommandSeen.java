@@ -7,7 +7,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -70,9 +69,10 @@ public class CommandSeen extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (!player.hasUuid() || !PlayerInfo.exists(player.getUuid()))
-            throw new PlayerNotFoundException("commands.generic.player.notFound");
-
+        if (!player.hasUuid() || !PlayerInfo.exists(player.getUuid())) {
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s is currently online", player.getUsername()));
+            return Command.SINGLE_SUCCESS;
+        }
         PlayerInfo pi = PlayerInfo.get(player.getUuid());
         long t = (System.currentTimeMillis() - pi.getLastLogout().getTime()) / 1000;
         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Player %s was last seen %s ago", player.getUsernameOrUuid(),

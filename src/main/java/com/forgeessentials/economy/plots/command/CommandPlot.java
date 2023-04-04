@@ -611,7 +611,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Removed %s from plot " + type, player.getUsernameOrUuid()));
             break;
         default:
-            throw new TranslatedCommandException.InvalidSyntaxException();
+            ChatOutputHandler.chatError(ctx.getSource(), "Invalid Arguments");
         }
     }
 

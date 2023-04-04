@@ -11,7 +11,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
-import com.forgeessentials.core.misc.TranslatedCommandException.PlayerNotFoundException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.DoAsCommandSender;
@@ -82,8 +81,10 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBuilder
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         UserIdent ident = UserIdent.get(EntityArgument.getPlayer(ctx, "player"));
-        if (!ident.hasPlayer())
-            throw new PlayerNotFoundException("commands.generic.player.notFound");
+        if (!ident.hasPlayer()) {
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s is currently online", ident.getUsername()));
+            return Command.SINGLE_SUCCESS;
+        }
 
         int amount = IntegerArgumentType.getInteger(ctx, "amount");
         Wallet wallet = APIRegistry.economy.getWallet(ident);
