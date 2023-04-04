@@ -83,9 +83,9 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder //implement
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("help"))
+        if (params.equals("help"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Available settings: " + StringUtils.join(aliases.keySet(), ", "));
             return Command.SINGLE_SUCCESS;

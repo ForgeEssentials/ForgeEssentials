@@ -53,7 +53,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
                                         )
                                 )
                         )
-                        .executes(CommandContext -> execute(CommandContext)
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 );
                     }
                  };
@@ -61,30 +61,30 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if(params.toString().isEmpty()) {
+        if(params.isEmpty()) {
             setGameMode(ctx.getSource(), getServerPlayer(ctx.getSource()));
         }
         try {
             Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(ctx, "target");
-            setGameModes(ctx.getSource(),players, GameType.byName(params.toString()), true);
+            setGameModes(ctx.getSource(),players, GameType.byName(params), true);
         }
         catch(CommandSyntaxException e){
-            setGameMode(ctx.getSource(), getServerPlayer(ctx.getSource()), GameType.byName(params.toString()));
+            setGameMode(ctx.getSource(), getServerPlayer(ctx.getSource()), GameType.byName(params));
         }
         return Command.SINGLE_SUCCESS;
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if(params.toString().isEmpty()) {
+        if(params.isEmpty()) {
             ChatOutputHandler.chatError(ctx.getSource(), "Cant set gamemode of the console");
         }
         try {
             Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(ctx, "target");
-            setGameModes(ctx.getSource(),players, GameType.byName(params.toString()), false);
+            setGameModes(ctx.getSource(),players, GameType.byName(params), false);
         }
         catch(CommandSyntaxException e){
             ChatOutputHandler.chatError(ctx.getSource(), "Cant set gamemode of the console");

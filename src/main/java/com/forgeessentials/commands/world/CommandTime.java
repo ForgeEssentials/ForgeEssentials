@@ -185,16 +185,16 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("blank"))
+        if (params.equals("blank"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/time set|add <t> [dim]");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/time freeze [dim]");
             return Command.SINGLE_SUCCESS;
         }
 
-        String[] arg = params.toString().split("-");
+        String[] arg = params.split("-");
         switch (arg[0])
         {
         case "freeze":

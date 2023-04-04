@@ -74,7 +74,7 @@ public class JsEntity<T extends Entity> extends JsWrapper<T>
 
     public String getName()
     {
-        return that.getName().getString();
+        return that.getDisplayName().getString();
     }
 
     public String getId()

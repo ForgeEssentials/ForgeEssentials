@@ -96,9 +96,9 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("empty"))
+        if (params.equals("empty"))
         {
             showHelpPage(ctx);
         }

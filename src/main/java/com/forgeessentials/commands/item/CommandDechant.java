@@ -60,13 +60,13 @@ public class CommandDechant extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("name", EnchantmentArgument.enchantment())
-                        .executes(CommandContext -> execute(CommandContext)
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 )
                         );
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
         if (stack == ItemStack.EMPTY)

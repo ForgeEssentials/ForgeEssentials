@@ -107,16 +107,16 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() =="blank")
+        if (params.equals("blank"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(),"/bind <left|right> <command...>: Bind command to an item");
             return Command.SINGLE_SUCCESS;
         }
 
-        String side = params.toString().split("-")[0];
-        String option = params.toString().split("-")[1];
+        String side = params.split("-")[0];
+        String option = params.split("-")[1];
         // If sub-command is "clear"
         if (side.equals("clear"))
         {

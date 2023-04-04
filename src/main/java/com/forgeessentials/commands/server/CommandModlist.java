@@ -54,12 +54,12 @@ public class CommandModlist extends ForgeEssentialsCommandBuilder
 	{
     	return baseBuilder
     			.then(Commands.argument("num", IntegerArgumentType.integer(1, 40))
-                        .executes(CommandContext -> execute(CommandContext))
+                        .executes(CommandContext -> execute(CommandContext, null))
                      );
 	}
     
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
         int num = IntegerArgumentType.getInteger(ctx,"lettercount");
         int size = ModList.get().size();

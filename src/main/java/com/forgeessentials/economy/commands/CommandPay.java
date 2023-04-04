@@ -57,14 +57,14 @@ public class CommandPay extends ForgeEssentialsCommandBuilder
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.entity())
                         .then(Commands.argument("amount", LongArgumentType.longArg(1))
-                                .executes(CommandContext -> execute(CommandContext)
+                                .executes(CommandContext -> execute(CommandContext, null)
                                         )
                                 )
                         );
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         UserIdent player = getIdent(EntityArgument.getPlayer(ctx, "player"));
         Long amount = LongArgumentType.getLong(ctx, "amount");

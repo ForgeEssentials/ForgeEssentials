@@ -66,14 +66,14 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext)
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 )
                         );
     
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity source = getServerPlayer(ctx.getSource());
 

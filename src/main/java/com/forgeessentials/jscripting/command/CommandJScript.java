@@ -76,10 +76,9 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        String subcmd = params.toString().toLowerCase();
-        switch (subcmd)
+        switch (params)
         {
         case "list":
             parseList(ctx);
@@ -91,7 +90,7 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
             ScriptUpgrader.upgradeOldScripts(ctx.getSource());
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
         }
         return Command.SINGLE_SUCCESS;
     }

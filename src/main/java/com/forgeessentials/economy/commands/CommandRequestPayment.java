@@ -36,14 +36,14 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBuilder
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("amount", IntegerArgumentType.integer())
-                                .executes(CommandContext -> execute(CommandContext, "login")
+                                .executes(CommandContext -> execute(CommandContext, null)
                                         )
                                 )
                         );
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         int amount = IntegerArgumentType.getInteger(ctx, "amount");
@@ -55,7 +55,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         int amount = IntegerArgumentType.getInteger(ctx, "amount");

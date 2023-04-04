@@ -79,7 +79,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
                         .then(Commands.literal("group")
                                 .then(Commands.argument("group", StringArgumentType.word())
                                         .then(Commands.argument("timeout", IntegerArgumentType.integer())
-                                                .executes(CommandContext -> execute(CommandContext, "timeout","G")
+                                                .executes(CommandContext -> execute(CommandContext, "timeout-G")
                                                         )
                                                 )
                                         )
@@ -87,7 +87,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
                         .then(Commands.literal("player")
                                 .then(Commands.argument("player", EntityArgument.player())
                                         .then(Commands.argument("timeout", IntegerArgumentType.integer())
-                                                .executes(CommandContext -> execute(CommandContext, "timeout","P")
+                                                .executes(CommandContext -> execute(CommandContext, "timeout-P")
                                                         )
                                                 )
                                         )
@@ -97,7 +97,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
                         .then(Commands.literal("group")
                                 .then(Commands.argument("group", StringArgumentType.string())
                                         .then(Commands.argument("yn", BoolArgumentType.bool())
-                                                .executes(CommandContext -> execute(CommandContext, "autokick","G")
+                                                .executes(CommandContext -> execute(CommandContext, "autokick-G")
                                                         )
                                                 )
                                         )
@@ -105,7 +105,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
                         .then(Commands.literal("player")
                                 .then(Commands.argument("player", EntityArgument.player())
                                         .then(Commands.argument("yn", BoolArgumentType.bool())
-                                                .executes(CommandContext -> execute(CommandContext, "autokick","P")
+                                                .executes(CommandContext -> execute(CommandContext, "autokick-P")
                                                         )
                                                 )
                                         )
@@ -116,16 +116,18 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         UserIdent ident = UserIdent.get(ctx.getSource());
 
      // expected syntax: /afk timeout <group|player> <timeout>
         // to set custom afk timeout for yourself, replace <player> with your own username
-        if ((params[0]).toString()==("timeout"))
+        String[] arg = params.toString().split("-");
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "{"+arg[0]+"}");
+        if (arg[0].equals("timeout"))
         {
             Integer amount = IntegerArgumentType.getInteger(ctx, "timeout");
-            if ((params[0]).toString()==("P"))
+            if ((arg[0]).equals("P"))
             {
                 UserIdent applyTo = UserIdent.get(EntityArgument.getPlayer(ctx, "player").getUUID().toString(), true);
                 APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOTIME, amount.toString());
@@ -136,10 +138,10 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
             }
         }
         // expected syntax: /afk timeout <group|player> [true|false}
-        else if ((params[0]).toString()==("autokick"))
+        else if (arg[0].equals("autokick"))
         {
             Boolean amount = BoolArgumentType.getBool(ctx, "yn");
-            if ((params[0]).toString()==("P"))
+            if (arg[0].equals("P"))
             {
                 UserIdent applyTo = UserIdent.get(EntityArgument.getPlayer(ctx, "player").getUUID().toString(), true);
                 APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOKICK, amount.toString());

@@ -60,13 +60,13 @@ public class CommandLocate extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext)
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 )
                         );
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         if (player == null)

@@ -59,7 +59,7 @@ public class CommandProtectionDebug extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
 
         ServerPlayerEntity player = getServerPlayer(ctx.getSource());

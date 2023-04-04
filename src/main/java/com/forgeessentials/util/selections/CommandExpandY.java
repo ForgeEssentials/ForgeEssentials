@@ -30,12 +30,12 @@ public class CommandExpandY extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .executes(CommandContext -> execute(CommandContext)
+                .executes(CommandContext -> execute(CommandContext, null)
                         );
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         Selection sel = SelectionHandler.getSelection(getServerPlayer(ctx.getSource()));
         if (sel == null)

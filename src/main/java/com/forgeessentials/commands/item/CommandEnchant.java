@@ -71,7 +71,7 @@ public class CommandEnchant extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
         if (stack == ItemStack.EMPTY)
@@ -83,7 +83,7 @@ public class CommandEnchant extends ForgeEssentialsCommandBuilder
         if (enchantment == null | !enchantment.canApplyAtEnchantingTable(stack))
             throw new TranslatedCommandException("Invalid enchantment %s!", enchantment);
 
-        if (params.toString() == "maxlevel")
+        if (params.equals("maxlevel"))
         {
             enchantments.put(enchantment, enchantment.getMaxLevel());
         }else 

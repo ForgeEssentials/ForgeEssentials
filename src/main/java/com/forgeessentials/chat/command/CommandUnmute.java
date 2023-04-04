@@ -53,13 +53,13 @@ public class CommandUnmute extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext)
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 )
                         );
     }
     
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity receiver = EntityArgument.getPlayer(ctx, "player");
         if (receiver.hasDisconnected())

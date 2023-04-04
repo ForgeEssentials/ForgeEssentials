@@ -65,14 +65,14 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = getServerPlayer(ctx.getSource());
         Selection sel = SelectionHandler.getSelection(player);
         if (sel == null)
             throw new TranslatedCommandException("Invalid selection.");
 
-        if (params.toString().equals("expand"))
+        if (params.equals("expand"))
         {
             int x = Math.round((float) player.getLookAngle().x);
             int y = Math.round((float) player.getLookAngle().y);
@@ -148,10 +148,10 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
             return Command.SINGLE_SUCCESS;
         }
-        else if (params.toString().equals("direction"))
+        else if (params.equals("direction"))
         {
             int expandby = IntegerArgumentType.getInteger(ctx, "expand");
-            if (params.toString().equals("north"))
+            if (params.equals("north"))
             {
                 if (sel.getStart().getZ() < sel.getEnd().getZ())
                 {
@@ -162,7 +162,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                     SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
                 }
             }
-            else if (params.toString().equals("east"))
+            else if (params.equals("east"))
             {
                 if (sel.getStart().getX() > sel.getEnd().getX())
                 {
@@ -173,7 +173,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                     SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
                 }
             }
-            else if (params.toString().equals("south"))
+            else if (params.equals("south"))
             {
                 if (sel.getStart().getZ() > sel.getEnd().getZ())
                 {
@@ -184,7 +184,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                     SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
                 }
             }
-            else if (params.toString().equals("west"))
+            else if (params.equals("west"))
             {
                 if (sel.getStart().getX() < sel.getEnd().getX())
                 {
@@ -195,7 +195,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                     SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
                 }
             }
-            else if (params.toString().equals("up"))
+            else if (params.equals("up"))
             {
                 if (sel.getStart().getZ() > sel.getEnd().getZ())
                 {
@@ -206,7 +206,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
                     SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
                 }
             }
-            else if (params.toString().equals("down"))
+            else if (params.equals("down"))
             {
                 if (sel.getStart().getY() < sel.getEnd().getY())
                 {

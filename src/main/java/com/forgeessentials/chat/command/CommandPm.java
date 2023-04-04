@@ -95,10 +95,10 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
     }
     
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         CommandSource target = EntityArgument.getPlayer(ctx, "player").createCommandSourceStack();
-        if (params.toString() == "setTarget")
+        if (params.equals("setTarget"))
         {
             if (ctx.getSource() == target)
                 throw new PlayerNotFoundException("commands.message.sameTarget");
@@ -106,7 +106,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set PM target to %s", target.getTextName()));
             return Command.SINGLE_SUCCESS;
         }
-        if (params.toString() == "clear")
+        if (params.equals("clear"))
         {
         	clearTarget(ctx.getSource());
             ChatOutputHandler.chatConfirmation(ctx.getSource(),("Cleared PM target"));

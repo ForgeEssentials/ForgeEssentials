@@ -94,9 +94,9 @@ public class CommandWallet extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("wallet"))
+        if (params.equals("wallet"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Your wallet contains %s", APIRegistry.economy.getWallet(getIdent(ctx.getSource())).toString()));
             return Command.SINGLE_SUCCESS;
@@ -107,7 +107,7 @@ public class CommandWallet extends ForgeEssentialsCommandBuilder
             checkPermission(ctx.getSource(), PERM_OTHERS);
 
         Wallet wallet = APIRegistry.economy.getWallet(player);
-        if (params.toString().equals("walletOther"))
+        if (params.equals("walletOther"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Wallet of %s contains %s", player.getUsernameOrUuid(), wallet.toString()));
             return Command.SINGLE_SUCCESS;
@@ -117,7 +117,7 @@ public class CommandWallet extends ForgeEssentialsCommandBuilder
 
         Long amount = LongArgumentType.getLong(ctx, "amount");
 
-        switch (params.toString())
+        switch (params)
         {
         case "set":
             wallet.set(amount);
@@ -136,7 +136,7 @@ public class CommandWallet extends ForgeEssentialsCommandBuilder
                     APIRegistry.economy.toString(amount), player.getUsernameOrUuid(), wallet.toString()));
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params.toString());
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
         }
         return Command.SINGLE_SUCCESS;
     }

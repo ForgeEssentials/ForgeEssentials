@@ -218,10 +218,10 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity Splayer = getServerPlayer(ctx.getSource());
-        if (params.toString() == "blank")
+        if (params.equals("blank"))
         {
             for (String rule : rules)
             {
@@ -229,7 +229,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
             }
             return Command.SINGLE_SUCCESS;
         }
-        else if (params.toString() == "book")
+        else if (params.equals("book"))
         {
             ListNBT pages = new ListNBT();
             ItemStack is = new ItemStack(Items.WRITTEN_BOOK);
@@ -255,7 +255,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
             Splayer.inventory.add(is);
             return Command.SINGLE_SUCCESS;
         }
-        else if (params.toString() == "help")
+        else if (params.equals("help"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules [#]");
             if (PermissionAPI.hasPermission(Splayer, getPermissionNode() + ".edit"))
@@ -267,7 +267,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
             }
             return Command.SINGLE_SUCCESS;
         }
-        else if (params.toString() == "page")
+        else if (params.equals("page"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), rules.get(parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size()) - 1));
             return Command.SINGLE_SUCCESS;
@@ -279,21 +279,21 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
 
         int index;
 
-        if (params.toString() == "remove")
+        if (params.equals("remove"))
         {
             index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
 
             rules.remove(index - 1);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule # %s removed", IntegerArgumentType.getInteger(ctx, "page")));
         }
-        else if (params.toString() == "add")
+        else if (params.equals("add"))
         {
             String newRule = StringArgumentType.getString(ctx, "rule");
             newRule = ChatOutputHandler.formatColors(newRule);
             rules.add(newRule);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule added as # %s.", StringArgumentType.getString(ctx, "rule")));
         }
-        else if (params.toString() == "move")
+        else if (params.equals("move"))
         {
             index = parseInt(IntegerArgumentType.getInteger(ctx, "page1"), 1, rules.size());
 
@@ -311,7 +311,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule # %1$s moved to last position.", IntegerArgumentType.getInteger(ctx, "page1")));
             }
         }
-        else if (params.toString() == "change")
+        else if (params.equals("change"))
         {
             index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
 
@@ -325,9 +325,9 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "blank")
+        if (params.equals("blank"))
         {
             for (String rule : rules)
             {
@@ -335,7 +335,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
             }
             return Command.SINGLE_SUCCESS;
         }
-        if (params.toString() == "help")
+        if (params.equals("help"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), " - /rules [#]");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), " - /rules &lt;#> [changedRule]");
@@ -344,28 +344,28 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
             ChatOutputHandler.chatConfirmation(ctx.getSource(), " - /rules move &lt;#> &lt;#>");
 
         }
-        if (params.toString() == "page")
+        if (params.equals("page"))
         {
             ChatOutputHandler.sendMessage(ctx.getSource(), rules.get(parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size()) - 1));
             return Command.SINGLE_SUCCESS;
         }
         int index;
 
-        if (params.toString() ==  "remove")
+        if (params.equals("remove"))
         {
             index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
 
             rules.remove(index - 1);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule # %s removed", IntegerArgumentType.getInteger(ctx, "page")));
         }
-        else if (params.toString() == "add")
+        else if (params.equals("add"))
         {
             String newRule = StringArgumentType.getString(ctx, "rule");
             newRule = ChatOutputHandler.formatColors(newRule);
             rules.add(newRule);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule added as # %s.", StringArgumentType.getString(ctx, "rule")));
         }
-        else if (params.toString() == "move")
+        else if (params.equals("move"))
         {
             index = parseInt(IntegerArgumentType.getInteger(ctx, "page1"), 1, rules.size());
 
@@ -383,7 +383,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Rule # %1$s moved to last position.", IntegerArgumentType.getInteger(ctx, "page1")));
             }
         }
-        else if (params.toString() == "change")
+        else if (params.equals("change"))
         {
             index = parseInt(IntegerArgumentType.getInteger(ctx, "page"), 1, rules.size());
 

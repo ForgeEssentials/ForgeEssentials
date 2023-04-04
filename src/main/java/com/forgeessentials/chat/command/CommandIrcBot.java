@@ -66,23 +66,23 @@ public class CommandIrcBot extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "connect")
+        if (params.equals("connect"))
         {
             //IDK this was empty in the 1.12.2 code
         }
-        if (params.toString() == "reconnect")
+        if (params.equals("reconnect"))
         {
             IrcHandler.getInstance().connect();
             return Command.SINGLE_SUCCESS;
         }
-        if (params.toString() == "disconnect")
+        if (params.equals("disconnect"))
         {
             IrcHandler.getInstance().disconnect();
             return Command.SINGLE_SUCCESS;
         }
-        if (params.toString() == "info")
+        if (params.equals("info"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("IRC bot is ", (IrcHandler.getInstance().isConnected() ? "online" : "offline")));
             return Command.SINGLE_SUCCESS;

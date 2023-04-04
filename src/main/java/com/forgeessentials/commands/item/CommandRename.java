@@ -52,13 +52,13 @@ public class CommandRename extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("name", StringArgumentType.greedyString())
-                        .executes(CommandContext -> execute(CommandContext)
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 )
                 );
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
 
         ItemStack is = getServerPlayer(ctx.getSource()).getMainHandItem();

@@ -104,11 +104,11 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
 
-        if (params.toString().equals("blank"))
+        if (params.equals("blank"))
         {
             if (stack == ItemStack.EMPTY)
                 throw new TranslatedCommandException("No item equipped in main hand!");
@@ -116,7 +116,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        String[] para = params.toString().split("-");
+        String[] para = params.split("-");
         if (!types.contains(para[1]))
             throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, para[1]);
 

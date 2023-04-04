@@ -103,9 +103,9 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "help")
+        if (params.equals("help"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tm add <message>: Add a message");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tm list: List all messages");
@@ -116,8 +116,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        String option = params.toString();
-        switch (option)
+        switch (params)
         {
         case "add":
             parseAdd(ctx);
@@ -138,7 +137,7 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
             parseShuffle(ctx);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, option);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
         }
         return Command.SINGLE_SUCCESS;
     }

@@ -50,13 +50,13 @@ public class CommandUuid extends ForgeEssentialsCommandBuilder
         // TODO Auto-generated method stub
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext)
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 )
                         );
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "UUID= "+ player.getStringUUID());

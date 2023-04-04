@@ -190,9 +190,9 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("blank"))
+        if (params.equals("blank"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/weather rain|storm enable|disable|force");
             return Command.SINGLE_SUCCESS;
@@ -201,7 +201,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
         ServerWorld world = getServerPlayer(ctx.getSource()).getLevel();
         String dim = world.dimension().location().toString();
 
-        String[] args = params.toString().split("-");
+        String[] args = params.split("-");
         WeatherType type = WeatherType.fromString(args[0]);
         String typeName = type.toString().toLowerCase();
 

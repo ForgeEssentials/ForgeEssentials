@@ -71,16 +71,16 @@ public class CommandHome extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("goHome"))
+        if (params.equals("goHome"))
         {
             WarpPoint home = PlayerInfo.get(getServerPlayer(ctx.getSource()).getUUID()).getHome();
             if (home == null)
                 throw new TranslatedCommandException("No home set. Use \"/home set\" first.");
             TeleportHelper.teleport(getServerPlayer(ctx.getSource()), home);
         }
-        if (params.toString().equals("set"))
+        if (params.equals("set"))
         {
             ServerPlayerEntity player = getServerPlayer(ctx.getSource());
 
@@ -93,7 +93,7 @@ public class CommandHome extends ForgeEssentialsCommandBuilder
             info.save();
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Home set to: %1.0f, %1.0f, %1.0f", p.getX(), p.getY(), p.getZ()));
         }
-        if (params.toString().equals("setOthers"))
+        if (params.equals("setOthers"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             if (player!= getServerPlayer(ctx.getSource())&&!PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_HOME_OTHER))

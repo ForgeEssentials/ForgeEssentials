@@ -87,13 +87,13 @@ public class CommandFindblock extends ForgeEssentialsCommandBuilder implements C
     {
         return baseBuilder
                 .then(Commands.argument("block", BlockStateArgument.block())
-                        .executes(CommandContext -> execute(CommandContext)
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 )
                         );
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         BlockState id = BlockStateArgument.getBlock(ctx, "block").getState();
         //int range = (args.length < 3) ? defaultRange : parseInt(args[2], 1, Integer.MAX_VALUE);

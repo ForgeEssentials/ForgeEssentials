@@ -45,9 +45,9 @@ public class CommandVIP extends ForgeEssentialsCommandBuilder
 	}
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        EntityArgument.getPlayer(ctx, "player").getName().getString();
+        EntityArgument.getPlayer(ctx, "player").getDisplayName().getString();
         PlayerEntity arg = null;
         try
         {
@@ -57,11 +57,11 @@ public class CommandVIP extends ForgeEssentialsCommandBuilder
         {
             e.printStackTrace();
         }
-        if (params.toString() == "add")
+        if (params.equals("add"))
         {
             APIRegistry.perms.setPlayerPermission(UserIdent.get(arg), "fe.auth.vip", true);
         }
-        else if (params.toString() == "remove")
+        else if (params.equals("remove"))
         {
             APIRegistry.perms.setPlayerPermission(UserIdent.get(arg), "fe.auth.vip", false);
         }

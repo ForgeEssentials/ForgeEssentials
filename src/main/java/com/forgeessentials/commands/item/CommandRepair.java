@@ -63,12 +63,12 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
                 .then(Commands.literal("self")
                         .then(Commands.literal("Custom")
                                 .then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
-                                        .executes(CommandContext -> execute(CommandContext, "Custom","Self")
+                                        .executes(CommandContext -> execute(CommandContext, "Custom-Self")
                                                 )
                                         )
                                 )
                         .then(Commands.literal("MaxValue")
-                                .executes(CommandContext -> execute(CommandContext, "Max", "Self")
+                                .executes(CommandContext -> execute(CommandContext, "Max-Self")
                                         )
                                 )
                         )
@@ -76,13 +76,13 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.literal("Custom")
                                         .then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
-                                                .executes(CommandContext -> execute(CommandContext, "Custom","Others")
+                                                .executes(CommandContext -> execute(CommandContext, "Custom-Others")
                                                         )
                                                 )
                                         )
                                 
                                 .then(Commands.literal("MaxValue")
-                                        .executes(CommandContext -> execute(CommandContext, "Max", "Others")
+                                        .executes(CommandContext -> execute(CommandContext, "Max-Others")
                                                 )
                                         )
                                 )
@@ -90,18 +90,19 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params[1].toString() =="self")
+    	String[] args = params.split("-");
+        if (args[1].equals("self"))
         {
-            if(params[0].toString() == "Max") 
+            if(args[0].equals("Max"))
             {
                 ItemStack item = getServerPlayer(ctx.getSource()).getMainHandItem();
                 if (item == null)
                     throw new TranslatedCommandException("You are not holding a reparable item.");
                 item.setDamageValue(0);
             }
-            else if (params[0].toString() == "Custom") 
+            else if (args[0].equals("Custom"))
             {
                 ItemStack item = getServerPlayer(ctx.getSource()).getMainHandItem();
                 if (item == null)
@@ -109,16 +110,16 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
                 item.setDamageValue(IntegerArgumentType.getInteger(ctx, "amount"));
             } 
         }
-        else if (params[1].toString() =="others" && PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
+        else if (args[1].equals("others") && PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-            if(params[0].toString() == "Max") 
+            if(args[0].equals("Max"))
             {
                 ItemStack item = player.getMainHandItem();
                 if (item != null)
                     item.setDamageValue(0);
             }
-            else if (params[0].toString() == "Custom") 
+            else if (args[0].equals("Custom"))
             {
                 ItemStack item = player.getMainHandItem();
                 if (item != null)
@@ -130,18 +131,19 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params[1].toString() =="others")
+    	String[] args = params.split("-");
+        if (args[1].equals("others"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-            if(params[0].toString() == "Max") 
+            if(args[0].equals("Max"))
             {
                 ItemStack item = player.getMainHandItem();
                 if (item != null)
                     item.setDamageValue(0);
             }
-            else if (params[0].toString() == "Custom") 
+            else if (args[0].equals("Custom"))
             {
                 ItemStack item = player.getMainHandItem();
                 if (item != null)

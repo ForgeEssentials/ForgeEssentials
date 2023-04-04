@@ -187,9 +187,9 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
       };
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("help"))
+        if (params.equals("help"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone list [page]: Lists all zones");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone select <zone>: Selects a zone");
@@ -200,7 +200,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        String[] arg = params.toString().split("-");
+        String[] arg = params.split("-");
         switch (arg[0])
         {
         case "select":
@@ -228,7 +228,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
             parseEntryExitMessage(ctx, false, params);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg.toString());
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -248,11 +248,11 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         return worldZone.getAreaZone(arg);
     }
 
-    public static void parseList(CommandContext<CommandSource> ctx, Object... params) throws CommandException
+    public static void parseList(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
 
         checkPermission(ctx.getSource(),PERM_LIST);
-        String[] arg = params.toString().split("-");
+        String[] arg = params.split("-");
         final int PAGE_SIZE = 12;
         int limit = 1;
         if (arg[1]=="Zones")
@@ -305,7 +305,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static void parseDefine(CommandContext<CommandSource> ctx, boolean redefine, Object... params) throws CommandException
+    public static void parseDefine(CommandContext<CommandSource> ctx, boolean redefine, String params) throws CommandException
     {
         checkPermission(ctx.getSource(), PERM_DEFINE);
 
@@ -352,7 +352,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         }
     }
 
-    public static void parseDelete(CommandContext<CommandSource> ctx, Object... params) throws CommandException
+    public static void parseDelete(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
         checkPermission(ctx.getSource(), PERM_DELETE);
 
@@ -366,7 +366,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area \"%s\" has been deleted.", areaZone.getName());
     }
 
-    public static void parseSelect(CommandContext<CommandSource> ctx, Object... params) throws CommandException
+    public static void parseSelect(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
         checkPermission(ctx.getSource(),PERM_INFO);
 
@@ -382,7 +382,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area \"%s\" has been selected.", areaName);
     }
 
-    public static void parseInfo(CommandContext<CommandSource> ctx, Object... params) throws CommandException
+    public static void parseInfo(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
         checkPermission(ctx.getSource(),PERM_INFO);
 
@@ -399,7 +399,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatNotification(ctx.getSource(), "  end   = " + area.getHighPoint().toString());
     }
 
-    public static void parseEntryExitMessage(CommandContext<CommandSource> ctx, boolean isEntry, Object... params) throws CommandException
+    public static void parseEntryExitMessage(CommandContext<CommandSource> ctx, boolean isEntry, String params) throws CommandException
     {
         checkPermission(ctx.getSource(), PERM_SETTINGS);
         String[] arg = params.toString().split("-");

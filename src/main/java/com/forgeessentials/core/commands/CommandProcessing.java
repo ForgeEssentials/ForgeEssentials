@@ -18,7 +18,7 @@ public class CommandProcessing extends CommandUtils
     // ------------------------------------------------------------
     // Command processing
 
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ICommandSource source = CommandUtils.GetSource(ctx.getSource());
         if (source instanceof ServerPlayerEntity)
@@ -40,17 +40,17 @@ public class CommandProcessing extends CommandUtils
         return Command.SINGLE_SUCCESS;
     }
 
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         throw new TranslatedCommandException("This command cannot be used as player");
     }
 
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
     }
 
-    public int processCommandBlock(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandBlock(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         return processCommandConsole(ctx, params);
     }

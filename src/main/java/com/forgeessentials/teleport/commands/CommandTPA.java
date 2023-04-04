@@ -92,9 +92,9 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("help"))
+        if (params.equals("help"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tpa <player>: Request being teleported to another player");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/tpa <player> <here|x y z>: Propose another player to be teleported");
@@ -102,7 +102,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
         }
 
         final UserIdent player = getIdent(EntityArgument.getPlayer(ctx, "player"));
-        if (params.toString().equals("toP"))
+        if (params.equals("toP"))
         {
             try
             {
@@ -139,7 +139,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
 
         final WarpPoint point;
         final String locationName;
-        if (params.toString().equals("here"))
+        if (params.equals("here"))
         {
             checkPermission(ctx.getSource(), PERM_HERE);
             point = new WarpPoint(getServerPlayer(ctx.getSource()));

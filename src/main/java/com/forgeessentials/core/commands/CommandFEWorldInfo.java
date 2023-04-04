@@ -21,7 +21,15 @@ public class CommandFEWorldInfo extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder
+                .executes(CommandContext -> execute(CommandContext, null)
+                        );
+    }
+
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatNotification(ctx.getSource(), "Showing all world provider names:");
         for (World world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
@@ -53,13 +61,5 @@ public class CommandFEWorldInfo extends ForgeEssentialsCommandBuilder
     public DefaultPermissionLevel getPermissionLevel()
     {
         return DefaultPermissionLevel.OP;
-    }
-
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        return baseBuilder
-                .executes(CommandContext -> execute(CommandContext)
-                        );
     }
 }

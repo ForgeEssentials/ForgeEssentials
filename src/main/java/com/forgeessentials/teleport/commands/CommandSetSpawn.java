@@ -87,9 +87,9 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        List<String> args = Arrays.asList(params.toString().split("-"));
+        List<String> args = Arrays.asList(params.split("-"));
         PermissionCommandParser.parseGroupSpawn(ctx, args, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone(), true);
         return Command.SINGLE_SUCCESS;
     }

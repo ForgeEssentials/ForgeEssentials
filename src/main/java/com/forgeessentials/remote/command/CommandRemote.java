@@ -90,9 +90,9 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        switch (params.toString())
+        switch (params)
         {
         case "help":
         {

@@ -129,10 +129,10 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
-        String[] arg = params.toString().split("-");
+        String[] arg = params.split("-");
         Effect ID;
         int dur = 0;
         int ampl = 0;
@@ -170,9 +170,9 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        String[] arg = params.toString().split("-");
+        String[] arg = params.split("-");
         Effect ID;
         int dur = 0;
         int ampl = 0;

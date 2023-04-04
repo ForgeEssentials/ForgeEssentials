@@ -100,15 +100,15 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "delS")
+        if (params.equals("delS"))
         {
             ModuleChat.setPlayerNickname((PlayerEntity) ctx.getSource().getEntity(), null);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Nickname removed.");
             return Command.SINGLE_SUCCESS;
         }
-        if(params.toString() == "setS")
+        if(params.equals("setS"))
         {
             String name = StringArgumentType.getString(ctx, "name");
             ModuleChat.setPlayerNickname((PlayerEntity) ctx.getSource().getEntity(), name);
@@ -120,13 +120,13 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
             throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
         
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (params.toString() == "delO")
+        if (params.equals("delO"))
         {
             ModuleChat.setPlayerNickname(player, null);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Removed nickname of %s", player));
             return Command.SINGLE_SUCCESS;
         }
-        if(params.toString() == "setO")
+        if(params.equals("setO"))
         {
         	String name = StringArgumentType.getString(ctx, "name");
             ModuleChat.setPlayerNickname(player, name);
@@ -137,22 +137,22 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "delS" || params.toString() == "setS")
+        if (params.equals("delS") || params.equals("setS"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Console can only modify player nicknames!"));
             return Command.SINGLE_SUCCESS;
         }
 
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (params.toString() == "delO")
+        if (params.equals("delO"))
         {
             ModuleChat.setPlayerNickname(player, null);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Removed nickname of %s", player));
             return Command.SINGLE_SUCCESS;
         }
-        if(params.toString() == "setO")
+        if(params.equals("setO"))
         {
         	String name = StringArgumentType.getString(ctx, "name");
             ModuleChat.setPlayerNickname(player, name);

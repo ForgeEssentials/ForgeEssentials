@@ -90,6 +90,7 @@ import com.forgeessentials.util.selections.CommandDeselect;
 import com.forgeessentials.util.selections.CommandExpand;
 import com.forgeessentials.util.selections.CommandExpandY;
 import com.forgeessentials.util.selections.CommandPos1;
+import com.forgeessentials.util.selections.CommandPos2;
 import com.forgeessentials.util.selections.CommandWand;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.google.gson.JsonParseException;
@@ -290,7 +291,7 @@ public class ForgeEssentials
         if (!ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
             FECommandManager.registerCommand(new CommandPos1(true), dispatcher);
-            FECommandManager.registerCommand(new CommandPos1(true), dispatcher);
+            FECommandManager.registerCommand(new CommandPos2(true), dispatcher);
             FECommandManager.registerCommand(new CommandDeselect(true), dispatcher);
             FECommandManager.registerCommand(new CommandExpand(true), dispatcher);
             FECommandManager.registerCommand(new CommandExpandY(true), dispatcher);
@@ -489,7 +490,7 @@ public class ForgeEssentials
 
         if (logCommandsToConsole)
         {
-            LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"/%s %s\"", event.getParseResults().getContext().getSource().getPlayerOrException().getName().getString(),
+            LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"/%s %s\"", event.getParseResults().getContext().getSource().getPlayerOrException().getDisplayName().getString(),
                     perm ? "used" : "tried to use", event.getParseResults().getContext().getNodes().get(0).getNode().getName(), StringUtils.join(event.getParseResults().getContext().getNodes().iterator().toString(), ".")));
         }
 

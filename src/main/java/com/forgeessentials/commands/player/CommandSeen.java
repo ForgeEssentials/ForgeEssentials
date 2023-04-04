@@ -60,7 +60,7 @@ public class CommandSeen extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         UserIdent player = UserIdent.get(StringArgumentType.getString(ctx, "player"),false);
 

@@ -285,9 +285,9 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         };
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "help")
+        if (params.equals("help"))
         {
             if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),Plot.PERM_LIST))
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "/plot list [own|sale|all]: List plots");
@@ -304,9 +304,8 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                     .translate("/plot buy [amount]: Buy the plot you are standing in. Owner needs to approve the transaction if plot is not up for sale"));
             return Command.SINGLE_SUCCESS;
         }
-        List<String> args = Arrays.asList(params.toString().split("-"));
-        String subcmd = params.toString();
-        switch (subcmd)
+        List<String> args = Arrays.asList(params.split("-"));
+        switch (params)
         {
         case "define":
             parseDefine(ctx);
@@ -347,7 +346,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         case "sell":
             throw new TranslatedCommandException("Not yet implemented. Use \"/plot set price\" instead.");
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -961,6 +960,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             {
                 ChatOutputHandler.chatConfirmation(plot.getOwner().getPlayerMP(), Translator.format("You sold plot \"%s\" to %s for %s", //
                         plot.getName(), ctx.getSource().getEntity().getName().getString(), priceStr));
+                        plot.getName(), ctx.getSource().getEntity().getDisplayName().getString(), priceStr));
                 ModuleEconomy.confirmNewWalletAmount(plot.getOwner(), sellerWallet);
             }
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s sold plot \"%s\" to you for %s", //

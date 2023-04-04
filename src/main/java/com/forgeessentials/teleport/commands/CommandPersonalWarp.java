@@ -124,9 +124,9 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
      };
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("blank"))
+        if (params.equals("blank"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/pwarp list: List personal warps");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/pwarp <warpname>: Teleport to the warp");
@@ -136,7 +136,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
 
         PersonalWarp warps = getWarps(getServerPlayer(ctx.getSource()));
 
-        if (params.toString().equals("list"))
+        if (params.equals("list"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Warps: " + StringUtils.join(warps.keySet(), ", "));
             return Command.SINGLE_SUCCESS;
@@ -144,7 +144,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
 
         String warpName = StringArgumentType.getString(ctx, "name");
 
-        if (params.toString().equals("set"))
+        if (params.equals("set"))
         {
 
             checkPermission(ctx.getSource(), PERM_SET);
@@ -159,7 +159,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
             DataManager.getInstance().save(warps, getServerPlayer(ctx.getSource()).getStringUUID());
             return Command.SINGLE_SUCCESS;
         }
-        if (params.toString().equals("delete"))
+        if (params.equals("delete"))
         {
             checkPermission(ctx.getSource(), PERM_DELETE);
             warps.remove(warpName);

@@ -178,20 +178,19 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if (!FMLEnvironment.dist.isDedicatedServer())
             ChatOutputHandler.chatError(ctx.getSource(), "You can use this command only on dedicated servers");
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 
-        if (params.toString() == "blank")
+        if (params.equals("blank"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("Options: %s", StringUtils.join(options, ", ")));
             return Command.SINGLE_SUCCESS;
         }
 
-        String subCmd = params.toString();
-        switch (subCmd)
+        switch (params)
         {
         case "allowflightV":
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow flight: %s", Boolean.toString(server.isFlightAllowed())));
@@ -258,7 +257,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
 
         default:
-            ChatOutputHandler.chatError(ctx.getSource(), Translator.format(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd));
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params));
         }
         return Command.SINGLE_SUCCESS;
     }

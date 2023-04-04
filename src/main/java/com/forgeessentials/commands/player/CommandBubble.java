@@ -80,16 +80,16 @@ public class CommandBubble extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         boolean toggleOn = false;
-        if (params.toString() == "toggle") 
+        if (params.equals("toggle"))
         {
             toggleOn = !APIRegistry.perms.getServerZone().getIncludedGroups(Zone.GROUP_DEFAULT).contains(BUBBLE_GROUP);
         }
         else
         {
-            switch(params.toString()) 
+            switch(params) 
             {
             case ("on"):
                 toggleOn = true;

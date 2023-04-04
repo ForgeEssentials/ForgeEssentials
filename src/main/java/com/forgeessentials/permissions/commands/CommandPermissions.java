@@ -942,13 +942,13 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
                        return ISuggestionProvider.suggest(listclear, builder);
                        };
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if(params.toString().equals("help")) {
+        if(params.equals("help")) {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feperm " + StringUtils.join(PermissionCommandParser.parseMainArgs, "|") + ": Displays help for the subcommands");
             return Command.SINGLE_SUCCESS;
         }
-        List<String> args = Arrays.asList(params.toString().split("-")); 
+        List<String> args = Arrays.asList(params.split("-")); 
         PermissionCommandParser.parseMain(ctx, args);
         return Command.SINGLE_SUCCESS;
     }

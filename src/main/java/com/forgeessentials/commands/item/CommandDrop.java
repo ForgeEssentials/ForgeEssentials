@@ -70,14 +70,14 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
                 .then(Commands.argument("pos", Vec3Argument.vec3())
                         .then(Commands.argument("count", IntegerArgumentType.integer(0, 64))
                                 .then(Commands.argument("item", ItemArgument.item())
-                                        .executes(CommandContext -> execute(CommandContext))
+                                        .executes(CommandContext -> execute(CommandContext, null))
                                         )
                                 )
                         );
     }
 
     @SuppressWarnings("deprecation")
-    public void processCommand(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public void processCommand(CommandContext<CommandSource> ctx, Object params) throws CommandSyntaxException
     {
         Vector3d vector = Vec3Argument.getVec3(ctx, "pos");
         ICommandSource source = CommandUtils.GetSource(ctx.getSource());
@@ -224,14 +224,14 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         processCommand(ctx, params);
         return Command.SINGLE_SUCCESS;
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         processCommand(ctx, params);
         return Command.SINGLE_SUCCESS;

@@ -98,9 +98,9 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        List<String> args = Arrays.asList(params.toString().split("-")); 
+        List<String> args = Arrays.asList(params.split("-")); 
         if (args.isEmpty())
         {
             calcPriceList(ctx, null, false);

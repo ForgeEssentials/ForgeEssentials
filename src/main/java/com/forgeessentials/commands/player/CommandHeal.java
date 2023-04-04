@@ -83,13 +83,13 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "blank")
+        if (params.equals("blank"))
         {
             heal(ctx.getSource().getPlayerOrException());
         }
-        else if (params.toString() == "others" && PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
+        else if (params.equals("others") && PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())
@@ -109,9 +109,9 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "others")
+        if (params.equals("others"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())
@@ -125,7 +125,7 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
         }
         else
         {
-            throw new TranslatedCommandException(getUsage(ctx.getSource().getPlayerOrException()));
+            throw new TranslatedCommandException(getUsage(getServerPlayer(ctx.getSource())));
         }
         return Command.SINGLE_SUCCESS;
     }

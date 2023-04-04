@@ -82,9 +82,9 @@ public class CommandPromote extends ForgeEssentialsCommandBuilder
      };
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("help"))
+        if (params.equals("help"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/promote <player> <group>");
             return Command.SINGLE_SUCCESS;

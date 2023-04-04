@@ -63,7 +63,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBuilder
                 .then(Commands.argument("ircUser", StringArgumentType.greedyString())
                         .suggests(SUGGEST_USERS)
                         .then(Commands.argument("message", StringArgumentType.greedyString())
-                                .executes(CommandContext -> execute(CommandContext, "help")
+                                .executes(CommandContext -> execute(CommandContext, null)
                                         )
                                 )
                         );
@@ -77,7 +77,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBuilder
      };
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if (!IrcHandler.getInstance().isConnected())
             throw new TranslatedCommandException("Not connected to IRC!");

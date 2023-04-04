@@ -62,10 +62,10 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
-        if (params.toString().equals("to"))
+        if (params.equals("to"))
         {
             ServerPlayerEntity target = EntityArgument.getPlayer(ctx, "player");
 
@@ -73,7 +73,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", target.getDisplayName().getString());
             TeleportHelper.teleport(sender, new WarpPoint(target));
         }
-        else if (params.toString().equals("others") && APIRegistry.perms.checkPermission(sender, TeleportModule.PERM_TP_OTHERS))
+        else if (params.equals("others") && APIRegistry.perms.checkPermission(sender, TeleportModule.PERM_TP_OTHERS))
         {
 
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
@@ -94,7 +94,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName().getString());
         }
-        else if (params.toString().equals("pos"))
+        else if (params.equals("pos"))
         {
             ServerPlayerEntity player = sender;
             BlockPos pos = BlockPosArgument.getOrLoadBlockPos(ctx, "pos");
@@ -102,7 +102,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
             playerInfo.setLastTeleportOrigin(new WarpPoint(player));
             TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.xRot, player.yRot));
         }
-        else if (params.toString().equals("posother"))
+        else if (params.equals("posother"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");;
             BlockPos pos = BlockPosArgument.getOrLoadBlockPos(ctx, "pos");
@@ -114,10 +114,10 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         CommandSource source = ctx.getSource();
-        if (params.toString().equals("others"))
+        if (params.equals("others"))
         {
 
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
@@ -138,7 +138,7 @@ public class CommandTp extends ForgeEssentialsCommandBuilder
             else
                 throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName().getString());
         }
-        else if (params.toString().equals("posother"))
+        else if (params.equals("posother"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");;
             BlockPos pos = BlockPosArgument.getOrLoadBlockPos(ctx, "pos");

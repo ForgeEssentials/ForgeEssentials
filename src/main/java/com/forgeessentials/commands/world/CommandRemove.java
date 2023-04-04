@@ -64,14 +64,14 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
                                         .executes(CommandContext -> execute(CommandContext,"dim")
                                                 )
                                         )
-                                .executes(CommandContext -> execute(CommandContext)
+                                .executes(CommandContext -> execute(CommandContext, null)
                                         )
                                 )
                         );
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         int radius = 10;
         double centerX;
@@ -98,7 +98,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         int radius = 0;
         WorldPoint center = new WorldPoint("minecraft:overworld", 0, 0, 0);
@@ -108,7 +108,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
         center.setY(BlockPosArgument.getLoadedBlockPos(ctx, "position").getY());
         center.setZ(BlockPosArgument.getLoadedBlockPos(ctx, "position").getZ());
 
-        if(params.toString().equals("dim")) {
+        if(params.equals("dim")) {
             center.setDimension(DimensionArgument.getDimension(ctx, "dimension").dimension().location().toString());
         }
 

@@ -136,9 +136,9 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "listAvaiable")
+        if (params.equals("listAvaiable"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Available kits: %s", StringUtils.join(getAvailableKits(ctx.getSource()), ", ")));
             return Command.SINGLE_SUCCESS;
@@ -147,7 +147,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
         final String kitName = StringArgumentType.getString(ctx, "kit");
         Kit kit = kits.get(kitName);
 
-        if (params.toString() == "select")
+        if (params.equals("select"))
         {
             if (kit == null)
                 throw new TranslatedCommandException("Kit %s does not exist", kitName);
@@ -159,8 +159,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
 
         APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),PERM_ADMIN);
 
-        String subCommand = params.toString();
-        switch (subCommand)
+        switch (params)
         {
         case "set":
             QuestionerCallback callback = new QuestionerCallback() {
@@ -198,7 +197,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Deleted kit %s", kitName));
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCommand);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
         }
         return Command.SINGLE_SUCCESS;
     }

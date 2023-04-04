@@ -66,7 +66,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
         return baseBuilder
                 .then(Commands.argument("player", StringArgumentType.greedyString())
                         .then(Commands.argument("message", StringArgumentType.greedyString())
-                                .executes(CommandContext -> execute(CommandContext))
+                                .executes(CommandContext -> execute(CommandContext, null))
                                 )
                         )
                 .executes(CommandContext -> execute(CommandContext, "blank")
@@ -74,7 +74,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         String playerS = StringArgumentType.getString(ctx, "player");
         String message = StringArgumentType.getString(ctx, "message");

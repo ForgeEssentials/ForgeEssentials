@@ -57,13 +57,13 @@ public class CommandPush extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                        .executes(CommandContext -> execute(CommandContext)
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 )
                         );
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         CommandSource sender = ctx.getSource();
         BlockPos posI = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
@@ -108,7 +108,7 @@ public class CommandPush extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity playermp = getServerPlayer(ctx.getSource());
         BlockPos posI = BlockPosArgument.getLoadedBlockPos(ctx, "pos");

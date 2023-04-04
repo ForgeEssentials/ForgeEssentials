@@ -37,7 +37,7 @@ public class CommandEnderchest extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
         if (player.containerMenu != player.inventoryMenu)
@@ -73,7 +73,7 @@ public class CommandEnderchest extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .executes(CommandContext -> execute(CommandContext)
+                .executes(CommandContext -> execute(CommandContext, null)
                         );
     }
 

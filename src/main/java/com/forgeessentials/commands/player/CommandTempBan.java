@@ -67,7 +67,7 @@ public class CommandTempBan extends ForgeEssentialsCommandBuilder
                         );
     }
 
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String... params) throws CommandSyntaxException
     {
         String name = StringArgumentType.getString(ctx, "player");
         String reason = StringArgumentType.getString(ctx, "reasion");

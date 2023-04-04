@@ -75,7 +75,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBuilder
                         .then(Commands.argument("item", ItemArgument.item())
                                 .then(Commands.argument("amount", IntegerArgumentType.integer())
                                         .then(Commands.argument("command", StringArgumentType.greedyString())
-                                                .executes(CommandContext -> execute(CommandContext)
+                                                .executes(CommandContext -> execute(CommandContext, null)
                                                         )
                                                 )
                                         )
@@ -84,7 +84,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         UserIdent ident = UserIdent.get(EntityArgument.getPlayer(ctx, "player"));
         ServerPlayerEntity player = ident.getPlayerMP();

@@ -90,16 +90,16 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder implement
                 .executes(CommandContext -> execute(CommandContext, "me")
                         )
                 .then(Commands.argument("player", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext)
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 )
                         );
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity playerServer;
-        if(params.toString().equals("me")) {
+        if(params.equals("me")) {
             playerServer = getServerPlayer(ctx.getSource());
         }
         else {

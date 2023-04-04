@@ -71,17 +71,17 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
         return ISuggestionProvider.suggest(modList, builder);
      };
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         String key = "*";
-        if (!params.toString().equals("all"))
+        if (!params.equals("all"))
         {
-            if (params.toString().equals("player")) 
+            if (params.equals("player")) 
             {
                 key = "p:" + EntityArgument.getPlayer(ctx, "players").getDisplayName().getString();
             }
 
-            if (params.toString().equals("modname")) 
+            if (params.equals("modname")) 
             {
                 List<ModContainer> modList = new ArrayList<>();
                 for(String id : ModList.get().applyForEachModContainer(ModContainer::getModId).collect(Collectors.toList())) {
@@ -106,7 +106,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         list(ctx, "*");
         return Command.SINGLE_SUCCESS;

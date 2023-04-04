@@ -69,15 +69,15 @@ public class CommandBackup extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "all")
+        if (params.equals("all"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Starting forced backup..."));
             ModuleBackup.backupAll();
             return Command.SINGLE_SUCCESS;
         }
-        else if (params.toString() == "dim")
+        else if (params.equals("dim"))
         {
             ServerWorld world = DimensionArgument.getDimension(ctx, "dim");
             ModuleBackup.backup(world);

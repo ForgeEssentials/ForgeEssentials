@@ -70,9 +70,9 @@ public class CommandFEInfo extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "blank")
+        if (params.equals("blank"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("Running ForgeEssentials %s-%s", BuildInfo.getFullVersion(), BuildInfo.getBuildType()));
             if (BuildInfo.isOutdated())
@@ -82,9 +82,8 @@ public class CommandFEInfo extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feinfo mixin: Show loaded mixin patches");
             return Command.SINGLE_SUCCESS;
         }
-        
-        String subCmd = params.toString();
-        switch (subCmd)
+
+        switch (params)
         {
         case "reload":
             CommandFeReload.reload(ctx.getSource());

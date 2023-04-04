@@ -75,9 +75,9 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("blank"))
+        if (params.equals("blank"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/trade <player> [price-per-item]:");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "  Trade the item you are holding in your main hand");
@@ -91,7 +91,7 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
             throw new TranslatedCommandException("You need to hold an item first!");
 
         final long price;
-        if (params.toString().equals("getdef"))
+        if (params.equals("getdef"))
         {
             Long p = ModuleEconomy.getItemPrice(itemStack, getIdent(ctx.getSource()));
             if (p == null)

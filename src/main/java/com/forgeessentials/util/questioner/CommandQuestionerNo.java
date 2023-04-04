@@ -52,12 +52,12 @@ public class CommandQuestionerNo extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .executes(CommandContext -> execute(CommandContext)
+                .executes(CommandContext -> execute(CommandContext, null)
                         );
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         Questioner.answer(ctx.getSource(), type);
         return Command.SINGLE_SUCCESS;

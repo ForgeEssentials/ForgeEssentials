@@ -47,17 +47,17 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
                         .executes(CommandContext -> execute(CommandContext, "here")
                                 )
                         )
-                .executes(CommandContext -> execute(CommandContext)
+                .executes(CommandContext -> execute(CommandContext, null)
                         );
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = getServerPlayer(ctx.getSource());
         int x, y, z;
 
-        if (params.toString().equals("here"))
+        if (params.equals("here"))
         {
             x = (int) player.position().x;
             y = (int) player.position().y;
@@ -69,7 +69,7 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (params.toString().equals("cord"))
+        if (params.equals("cord"))
         {
 
             x = BlockPosArgument.getLoadedBlockPos(ctx, "pos").getX();

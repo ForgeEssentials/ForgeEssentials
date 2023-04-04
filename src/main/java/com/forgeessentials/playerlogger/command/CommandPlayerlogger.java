@@ -344,9 +344,9 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
       };
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("help"))
+        if (params.equals("help"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl stats: Show playerlogger stats");
             ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl filter: Sets the players FilterConfig");
@@ -357,7 +357,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         FilterConfig fc = null;
-        String[] subCmd = params.toString().split("-");
+        String[] subCmd = params.split("-");
         boolean global = false;
         switch (subCmd[0])
         {

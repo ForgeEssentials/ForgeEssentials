@@ -71,7 +71,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBuilder
                 .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
                                 .then(Commands.argument("command", StringArgumentType.greedyString())
-                                        .executes(CommandContext -> execute(CommandContext)
+                                        .executes(CommandContext -> execute(CommandContext, null)
                                                 )
                                         )
                                 )
@@ -79,7 +79,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         UserIdent ident = UserIdent.get(EntityArgument.getPlayer(ctx, "player"));
         if (!ident.hasPlayer())

@@ -82,9 +82,9 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("player"))
+        if (params.equals("player"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             if(player == getServerPlayer(ctx.getSource())) {
@@ -112,7 +112,7 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
 
         }
 
-        if (params.toString().equals("location"))
+        if (params.equals("location"))
         {
             BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
             LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(ctx.getSource().getLevel());
@@ -122,7 +122,7 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "I hope that didn't start a fire.");
             return Command.SINGLE_SUCCESS;
         }
-        if(params.toString().equals("looking"))
+        if(params.equals("looking"))
         {
             RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(getServerPlayer(ctx.getSource()), 500);
             if (mop == null)
@@ -143,7 +143,7 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         if (!player.hasDisconnected())

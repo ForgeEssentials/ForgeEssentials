@@ -61,7 +61,7 @@ public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
                 .then(Commands.argument("group", StringArgumentType.greedyString())
                         .suggests(SUGGEST_GROUPS)
                         .then(Commands.argument("message", StringArgumentType.greedyString())
-                                .executes(CommandContext -> execute(CommandContext)
+                                .executes(CommandContext -> execute(CommandContext, null)
                                         )
                                 )
                         );
@@ -75,7 +75,7 @@ public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
      };
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         String group = StringArgumentType.getString(ctx, "group");
         APIRegistry.perms.getServerZone().getGroups();

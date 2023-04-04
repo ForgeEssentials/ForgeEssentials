@@ -35,12 +35,12 @@ public class CommandServerPerf extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .executes(CommandContext -> execute(CommandContext)
+                .executes(CommandContext -> execute(CommandContext, null)
                         );
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatNotification(ctx.getSource(), "Memory usage:");
         ChatOutputHandler.chatNotification(ctx.getSource(), "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");

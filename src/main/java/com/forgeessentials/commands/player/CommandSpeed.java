@@ -66,12 +66,12 @@ public class CommandSpeed extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatWarning(ctx.getSource(), "Here be dragons. Proceed at own risk. Use /speed reset to reset your speed..");
      // float speed = Float.parseFloat(args[0]);
         ServerPlayerEntity player = getServerPlayer(ctx.getSource());
-        if (params.toString() == "current")
+        if (params.equals("current"))
         {
             if(((player.getAttributeBaseValue(Attributes.MOVEMENT_SPEED))/0.05F)==1.0)
             {
@@ -89,7 +89,7 @@ public class CommandSpeed extends ForgeEssentialsCommandBuilder
             }
             return Command.SINGLE_SUCCESS;
         }
-        if (params.toString() == "reset")
+        if (params.equals("reset"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), "Resetting speed to regular walking speed.");
             player.setSpeed(0.0F);

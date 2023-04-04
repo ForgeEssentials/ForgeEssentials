@@ -58,12 +58,12 @@ public class CommandDuplicate extends ForgeEssentialsCommandBuilder
 )
                                 )
                         )
-                .executes(CommandContext -> execute(CommandContext)
+                .executes(CommandContext -> execute(CommandContext, null)
                         );
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         PlayerEntity player = (PlayerEntity) ctx.getSource().getEntity();
         ItemStack stack = player.getMainHandItem();
@@ -71,7 +71,7 @@ public class CommandDuplicate extends ForgeEssentialsCommandBuilder
             throw new TranslatedCommandException("No item equipped");
  
         int stackSize = 0;
-        if (params.toString() == "size")
+        if (params.equals("size"))
         {
             stackSize = IntegerArgumentType.getInteger(ctx, "size");
         }

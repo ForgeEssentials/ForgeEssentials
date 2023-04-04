@@ -51,19 +51,19 @@ public class CommandPing extends ForgeEssentialsCommandBuilder implements Config
     public LiteralArgumentBuilder<CommandSource> setExecution()
 	{
         return baseBuilder
-                .executes(CommandContext -> execute(CommandContext)
+                .executes(CommandContext -> execute(CommandContext, response)
                         );
 	}
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatNotification(ctx.getSource(), response.replaceAll("%time", ((ServerPlayerEntity) ctx.getSource().getEntity()).latency + "ms."));
         return Command.SINGLE_SUCCESS;
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatNotification(ctx.getSource(), response.replaceAll("%time", "Server has blazing fast speeds!"));
         return Command.SINGLE_SUCCESS;

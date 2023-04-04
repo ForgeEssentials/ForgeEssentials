@@ -55,14 +55,14 @@ public class CommandDelayedAction extends ForgeEssentialsCommandBuilder
         return baseBuilder
                 .then(Commands.argument("time", StringArgumentType.string())
                         .then(Commands.argument("command", StringArgumentType.greedyString())
-                                .executes(CommandContext -> execute(CommandContext)
+                                .executes(CommandContext -> execute(CommandContext, null)
                                         )
                                 )
                         );
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         long time = parseTimeReadable(StringArgumentType.getString(ctx, "time"));
         final String execute = StringArgumentType.getString(ctx, "command");

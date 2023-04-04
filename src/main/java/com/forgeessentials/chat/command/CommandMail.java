@@ -80,9 +80,9 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "blank")
+        if (params.equals("blank"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/mail read: Read next mail"));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/mail readall: Read all mails"));
@@ -90,7 +90,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (params.toString() == "read")
+        if (params.equals("read"))
         {
             if (!(ctx.getSource().getEntity() instanceof PlayerEntity))
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
@@ -101,7 +101,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
             Mailer.saveMails(getIdent(ctx.getSource()), mailBag);
             return Command.SINGLE_SUCCESS;
         }
-        if (params.toString() == "readall")
+        if (params.equals("readall"))
         {
             if (!(ctx.getSource().getEntity() instanceof PlayerEntity))
                 throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
@@ -114,7 +114,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
             Mailer.saveMails(getIdent(ctx.getSource()), mailBag);
             return Command.SINGLE_SUCCESS;
         }
-        if (params.toString() == "send")
+        if (params.equals("send"))
         {
             PlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             UserIdent receiver = UserIdent.get(player);

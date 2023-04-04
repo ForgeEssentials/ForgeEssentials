@@ -66,14 +66,14 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("me"))
+        if (params.equals("me"))
         {
             
             top(getServerPlayer(ctx.getSource()));
         }
-        else if (params.toString().equals("others") && PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_TOP_OTHERS))
+        else if (params.equals("others") && PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_TOP_OTHERS))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())
@@ -87,9 +87,9 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("me"))
+        if (params.equals("me"))
         {
             
             throw new TranslatedCommandException("You are not a player.");

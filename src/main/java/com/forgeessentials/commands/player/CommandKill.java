@@ -67,13 +67,13 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("victim", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext, "setPass")
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 )
                         );
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if (EntityArgument.getPlayer(ctx, "victim")!=getServerPlayer(ctx.getSource())&&PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
         {
@@ -95,7 +95,7 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "victim");
         if (!player.hasDisconnected())

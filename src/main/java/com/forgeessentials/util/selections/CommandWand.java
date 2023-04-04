@@ -48,7 +48,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
                         );
     }
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if (ModuleLauncher.getModuleList().contains("WEIntegrationTools"))
         {
@@ -82,7 +82,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
         PlayerInfo info = PlayerInfo.get(player.getUUID());
 
         // Check for unbind
-        if ((params.toString()=="unbind") && ((info.isWandEnabled() && info.getWandID().equals(wandId)) ))
+        if ((params.equals("unbind")) && ((info.isWandEnabled() && info.getWandID().equals(wandId)) ))
         {
             ChatOutputHandler.sendMessage(ctx.getSource(), TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
             info.setWandEnabled(false);

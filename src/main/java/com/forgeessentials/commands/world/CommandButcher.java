@@ -101,13 +101,13 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
         return ISuggestionProvider.suggest(typeList, builder);};
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if(params.toString().equals("help")) {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Use /butcher <radius> [type] [x y z] [world]");
             return Command.SINGLE_SUCCESS;
         }
-        List<String> args = Arrays.asList(params.toString().split("&")); 
+        List<String> args = Arrays.asList(params.split("&")); 
 
         ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
         int radius = -1;
@@ -151,7 +151,7 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         int radius = -1;
         double x = 0;
@@ -159,7 +159,7 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
         double z = 0;
         ServerWorld world = ServerLifecycleHooks.getCurrentServer().overworld();
         String mobType = ButcherMobType.HOSTILE.toString();
-        List<String> args = Arrays.asList(params.toString().split("&")); 
+        List<String> args = Arrays.asList(params.split("&")); 
 
         if (!args.isEmpty())
         {

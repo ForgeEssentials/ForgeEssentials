@@ -126,13 +126,13 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
       };
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ItemStack stack = getServerPlayer(ctx.getSource()).getItemInHand(null);
         if (stack == ItemStack.EMPTY)
             throw new TranslatedCommandException("No item equipped!");
 
-        if (params.toString().equals("help"))
+        if (params.equals("help"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/permitem mode inventory|equip"); // |use");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/permitem perm <perm> <value>");
@@ -141,7 +141,7 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        String[] subCmd = params.toString().split("-");
+        String[] subCmd = params.split("-");
         switch (subCmd[0])
         {
         case "mode":

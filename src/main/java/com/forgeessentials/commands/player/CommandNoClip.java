@@ -58,13 +58,13 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("toggle", BoolArgumentType.bool())
-                        .executes(CommandContext -> execute(CommandContext)
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 )
                         );
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         boolean toggle = BoolArgumentType.getBool(ctx, "toggle");
         ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();

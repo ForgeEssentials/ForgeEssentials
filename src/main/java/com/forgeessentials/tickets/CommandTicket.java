@@ -86,10 +86,10 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         String c = TextFormatting.DARK_AQUA.toString();
-        if (params.toString() == "blank")
+        if (params.equals("blank"))
         {
             String usage = "list|new|view";
             if (permcheck(ctx.getSource(), "tp"))
@@ -103,14 +103,14 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
             throw new TranslatedCommandException("Usage: /ticket <" + usage + ">");
         }
 
-        if (params.toString() == "view" && permcheck(ctx.getSource(), "view"))
+        if (params.equals("view") && permcheck(ctx.getSource(), "view"))
         {
             int id = IntegerArgumentType.getInteger(ctx, "id");
             Ticket t = ModuleTickets.getID(id);
             ChatOutputHandler.chatNotification(ctx.getSource(), c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
         }
 
-        if (params.toString() == "list" && permcheck(ctx.getSource(), "view"))
+        if (params.equals("list") && permcheck(ctx.getSource(), "view"))
         {
             int page = 0;
             int pages = IntegerArgumentType.getInteger(ctx, "page");
@@ -137,7 +137,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (params.toString() == "new" && permcheck(ctx.getSource(), "new"))
+        if (params.equals("new") && permcheck(ctx.getSource(), "new"))
         {
             String catagory = null;
             if (!ModuleTickets.categories.contains(catagory))
@@ -158,14 +158,14 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (params.toString() == "tp" && permcheck(ctx.getSource(), "tp"))
+        if (params.equals("tp") && permcheck(ctx.getSource(), "tp"))
         {
 
             int id = IntegerArgumentType.getInteger(ctx, "id");
             TeleportHelper.teleport((ServerPlayerEntity) ctx.getSource().getEntity(), ModuleTickets.getID(id).point);
         }
 
-        if (params.toString() == "del" || params.toString() == "close" && permcheck(ctx.getSource(), "admin"))
+        if (params.equals("del") || params.equals("close") && permcheck(ctx.getSource(), "admin"))
         {
             int id = IntegerArgumentType.getInteger(ctx, "id");
             Ticket toRemove = ModuleTickets.getID(id);

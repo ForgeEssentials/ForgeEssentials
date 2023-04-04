@@ -66,9 +66,9 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString().equals("others"));
+        if (params.equals("others"));
         {
             if (!PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_SPAWN_OTHERS))
             {
@@ -85,7 +85,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
                 throw new TranslatedCommandException("There is no spawnpoint set for that player.");
             TeleportHelper.teleport(player, point);
         }
-        if (params.toString().equals("me"));
+        if (params.equals("me"));
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
 
@@ -103,7 +103,7 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         if (!player.hasDisconnected())

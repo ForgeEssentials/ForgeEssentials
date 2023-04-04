@@ -80,13 +80,13 @@ public class CommandReply extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("message", StringArgumentType.greedyString())
-                        .executes(CommandContext -> execute(CommandContext, "message")
+                        .executes(CommandContext -> execute(CommandContext, null)
                                 )
                         );
     }
     
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
         CommandSource target = getReplyTarget(ctx.getSource());

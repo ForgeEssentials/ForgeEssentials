@@ -75,12 +75,12 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         final boolean holdingItem;
         final ItemStack itemStack;
         final int amount;
-        if (params.toString().equals("sell"))
+        if (params.equals("sell"))
         {
             holdingItem = true;
             itemStack = getServerPlayer(ctx.getSource()).getMainHandItem();

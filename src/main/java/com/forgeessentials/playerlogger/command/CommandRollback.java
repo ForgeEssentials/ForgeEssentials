@@ -124,10 +124,9 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        String arg = params.toString();
-        switch (arg)
+        switch (params)
         {
         case "help":
             help(ctx.getSource());

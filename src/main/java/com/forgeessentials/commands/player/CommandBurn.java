@@ -76,19 +76,19 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.toString() == "me")
+        if (params.equals("me"))
         {
             getServerPlayer(ctx.getSource()).setSecondsOnFire(15);
             ChatOutputHandler.chatError(ctx.getSource(), "Ouch! Hot!");
         }
-        if (params.toString() == "meT")
+        if (params.equals("meT"))
         {
             getServerPlayer(ctx.getSource()).setSecondsOnFire(IntegerArgumentType.getInteger(ctx, "time"));
             ChatOutputHandler.chatError(ctx.getSource(), "Ouch! Hot!");
         }
-        if (params.toString() == "others")
+        if (params.equals("others"))
         {
             if (PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
             {
@@ -104,7 +104,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
             else
                 throw new PermissionDeniedException();
         }
-        if (params.toString() == "othersT")
+        if (params.equals("othersT"))
         {
             if (PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
             {
@@ -124,15 +124,15 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, Object... params) throws CommandSyntaxException
+    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         int time = 15;
-        if (params.toString()=="othersT")
+        if (params.equals("othersT"))
         {
             time = IntegerArgumentType.getInteger(ctx, "time");
         }
 
-        if (params.toString() =="me")
+        if (params.equals("me"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Do you really want the server console to burn?.");
             return Command.SINGLE_SUCCESS;
