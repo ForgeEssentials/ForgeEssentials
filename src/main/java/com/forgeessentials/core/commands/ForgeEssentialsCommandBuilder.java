@@ -21,7 +21,6 @@ import net.minecraftforge.server.permission.PermissionAPI;
 
 public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor{
 	protected LiteralArgumentBuilder<CommandSource> baseBuilder;
-	protected List<LiteralArgumentBuilder<CommandSource>> builders = new ArrayList<LiteralArgumentBuilder<CommandSource>>();
 
     boolean enabled;
 
@@ -29,14 +28,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor{
     // Command usage
 
     public ForgeEssentialsCommandBuilder(boolean enabled) {
-        if(!getAliases().isEmpty()) {
-	       for(String alias : getAliases()) {
-	            LiteralArgumentBuilder<CommandSource> build = baseBuilder;
-	            build = Commands.literal(alias).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
-	            builders.add(build);
-	        }
-        }
-		this.baseBuilder = Commands.literal(getName()).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
+        this.baseBuilder = Commands.literal(getName()).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(getPermissionLevel())));
 		this.enabled = enabled;
 		
 	}
@@ -44,11 +36,6 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor{
 	public LiteralArgumentBuilder<CommandSource> getMainBuilder() {
 		return baseBuilder;
 	}
-
-	public List<LiteralArgumentBuilder<CommandSource>> getBuilders()
-    {
-        return builders;
-    }
 
 	public boolean isEnabled() {
 		return enabled;
