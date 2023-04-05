@@ -2,8 +2,12 @@ package com.forgeessentials.commands.player;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -19,6 +23,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 public class CommandAFK extends ForgeEssentialsCommandBuilder
 {
@@ -77,7 +82,8 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
         return baseBuilder
                 .then(Commands.literal("timeout")
                         .then(Commands.literal("group")
-                                .then(Commands.argument("group", StringArgumentType.word())
+                                .then(Commands.argument("group", StringArgumentType.string())
+                                        .suggests(SUGGEST_group)
                                         .then(Commands.argument("timeout", IntegerArgumentType.integer())
                                                 .executes(CommandContext -> execute(CommandContext, "timeout-G")
                                                         )
@@ -96,6 +102,7 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
                 .then(Commands.literal("autokick")
                         .then(Commands.literal("group")
                                 .then(Commands.argument("group", StringArgumentType.string())
+                                        .suggests(SUGGEST_group)
                                         .then(Commands.argument("yn", BoolArgumentType.bool())
                                                 .executes(CommandContext -> execute(CommandContext, "autokick-G")
                                                         )
@@ -115,6 +122,15 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
                         );
     }
 
+    public static final SuggestionProvider<CommandSource> SUGGEST_group = (ctx, builder) -> {
+        List<String> listgroup = new ArrayList<>();
+        for (String z : APIRegistry.perms.getServerZone().getGroups())
+        {
+            listgroup.add(z);
+        }
+        return ISuggestionProvider.suggest(listgroup, builder);
+        };
+
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
@@ -123,32 +139,39 @@ public class CommandAFK extends ForgeEssentialsCommandBuilder
      // expected syntax: /afk timeout <group|player> <timeout>
         // to set custom afk timeout for yourself, replace <player> with your own username
         String[] arg = params.toString().split("-");
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), "{"+arg[0]+"}");
         if (arg[0].equals("timeout"))
         {
             Integer amount = IntegerArgumentType.getInteger(ctx, "timeout");
-            if ((arg[0]).equals("P"))
+            if (arg[1].equals("P"))
             {
                 UserIdent applyTo = UserIdent.get(EntityArgument.getPlayer(ctx, "player").getUUID().toString(), true);
                 APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOTIME, amount.toString());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set player %s's timeout to %d", applyTo.getUsername(), amount));
+
             }
             else
             {
                 APIRegistry.perms.setGroupPermissionProperty(StringArgumentType.getString(ctx, "group"), PERM_AUTOTIME, amount.toString());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set group %s timeout to %d", StringArgumentType.getString(ctx, "group"), amount));
+
             }
         }
         // expected syntax: /afk timeout <group|player> [true|false}
         else if (arg[0].equals("autokick"))
         {
             Boolean amount = BoolArgumentType.getBool(ctx, "yn");
-            if (arg[0].equals("P"))
+            if (arg[1].equals("P"))
             {
                 UserIdent applyTo = UserIdent.get(EntityArgument.getPlayer(ctx, "player").getUUID().toString(), true);
                 APIRegistry.perms.setPlayerPermissionProperty(applyTo, PERM_AUTOKICK, amount.toString());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Toggled player %s's timeout to %b", applyTo.getUsername(), amount));
+
             }
             else
             {
                 APIRegistry.perms.setGroupPermissionProperty(StringArgumentType.getString(ctx, "group"), PERM_AUTOKICK, amount.toString());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Toggled group %s's autokick to %b", StringArgumentType.getString(ctx, "group"), amount));
+
             }
         }
         else
