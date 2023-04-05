@@ -18,7 +18,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.SeeablePlayerInventory;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -82,8 +82,10 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         ServerPlayerEntity victim = EntityArgument.getPlayer(ctx, "player");
-        if (victim.hasDisconnected())
-            throw new TranslatedCommandException("Player %s not found.", victim.getDisplayName());
+        if (victim.hasDisconnected()) {
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s not found.", victim.getDisplayName()));
+            return Command.SINGLE_SUCCESS;
+        }
 
         if (source.containerMenu != source.inventoryMenu)
         {
