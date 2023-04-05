@@ -34,7 +34,7 @@ public class CommandFEWorldInfo extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatNotification(ctx.getSource(), "Showing all world provider names:");
         for (World world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
         {
-            ChatOutputHandler.chatNotification(ctx.getSource(),Translator.format("%s - %s - %s", world.dimension(), world.dimension().getRegistryName(), world.dimension().location().toString()));
+            ChatOutputHandler.chatNotification(ctx.getSource(),Translator.format("%s - %s", world.dimension().location().getPath(), world.dimension().location().toString()));
         }
         return Command.SINGLE_SUCCESS;
     }
