@@ -232,6 +232,10 @@ public class UserIdent
 
     public static synchronized UserIdent get(CommandSource sender)
     {
+    	if (sender.getEntity() instanceof PlayerEntity)
+        {
+            return get((ServerPlayerEntity) sender.getEntity());
+        }
     	ICommandSource source = CommandUtils.GetSource(sender);
         if (source instanceof DoAsCommandSender)
         {
@@ -248,10 +252,6 @@ public class UserIdent
         else if (source instanceof CommandBlockLogic)
         {
             return APIRegistry.IDENT_CMDBLOCK;
-        }
-        else if (source instanceof PlayerEntity)
-        {
-            return get((ServerPlayerEntity) sender.getEntity());
         }
         else
         {
