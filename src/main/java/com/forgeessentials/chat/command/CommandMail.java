@@ -13,7 +13,6 @@ import com.forgeessentials.chat.Mailer.Mail;
 import com.forgeessentials.chat.Mailer.Mails;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -82,7 +81,7 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.equals("blank"))
+    	if (params.equals("blank"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/mail read: Read next mail"));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("/mail readall: Read all mails"));
@@ -92,22 +91,30 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
 
         if (params.equals("read"))
         {
-            if (!(ctx.getSource().getEntity() instanceof PlayerEntity))
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            if (!(ctx.getSource().getEntity() instanceof PlayerEntity)) {
+                ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
+                return Command.SINGLE_SUCCESS;
+            }
             Mails mailBag = Mailer.getMailBag(UserIdent.get(ctx.getSource()));
-            if (mailBag.mails.isEmpty())
-                throw new TranslatedCommandException("You have no mails to read");
+            if (mailBag.mails.isEmpty()){
+            	ChatOutputHandler.chatWarning(ctx.getSource(), "You have no mails to read");
+                return Command.SINGLE_SUCCESS;
+            }
             readMail(ctx.getSource(), mailBag.mails.remove(0));
             Mailer.saveMails(getIdent(ctx.getSource()), mailBag);
             return Command.SINGLE_SUCCESS;
         }
         if (params.equals("readall"))
         {
-            if (!(ctx.getSource().getEntity() instanceof PlayerEntity))
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            if (!(ctx.getSource().getEntity() instanceof PlayerEntity)) {
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
+                return Command.SINGLE_SUCCESS;
+            }
             Mails mailBag = Mailer.getMailBag(UserIdent.get(ctx.getSource()));
-            if (mailBag.mails.isEmpty())
-                throw new TranslatedCommandException("You have no mails to read");
+            if (mailBag.mails.isEmpty()) {
+            	ChatOutputHandler.chatWarning(ctx.getSource(), "You have no mails to read");
+                return Command.SINGLE_SUCCESS;
+            }
             for (Mail mail : mailBag.mails)
                 readMail(ctx.getSource(), mail);
             mailBag.mails.clear();
@@ -127,8 +134,10 @@ public class CommandMail extends ForgeEssentialsCommandBuilder
 
     public static void readMail(CommandSource sender, Mail mail)
     {
-        ChatOutputHandler.chatNotification(sender,
-                Translator.format("Mail from %s on the %s", mail.sender.getUsernameOrUuid(), FEConfig.FORMAT_DATE_TIME.format(mail.timestamp)));
+        ChatOutputHandler.chatNotification(sender, 
+        		Translator.format("Mail from %s on the %s", 
+        				mail.sender == null ? "server" : mail.sender.getUsernameOrUuid(), 
+        				FEConfig.FORMAT_DATE_TIME.format(mail.timestamp)));
         ChatOutputHandler.chatConfirmation(sender, ChatOutputHandler.formatColors(mail.message));
     }
 }
