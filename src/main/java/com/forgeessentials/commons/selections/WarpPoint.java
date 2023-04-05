@@ -1,4 +1,4 @@
- package com.forgeessentials.commons.selections;
+package com.forgeessentials.commons.selections;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.RegistryKey;
@@ -10,6 +10,8 @@ import net.minecraft.world.server.ServerWorld;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.annotations.Expose;
 
 public class WarpPoint
@@ -52,6 +54,7 @@ public class WarpPoint
         this.pitch = playerPitch;
         this.yaw = playerYaw;
     }
+
     public WarpPoint(ServerWorld world, BlockPos pos, float playerPitch, float playerYaw)
     {
         this.world = world;
@@ -67,6 +70,7 @@ public class WarpPoint
     {
         this(dimension, location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch, yaw);
     }
+
     public WarpPoint(RegistryKey<World> dimension, BlockPos location, float pitch, float yaw)
     {
         this(dimension.location().toString(), location.getX() + 0.5, location.getY(), location.getZ() + 0.5, pitch, yaw);
@@ -89,8 +93,7 @@ public class WarpPoint
 
     public WarpPoint(Entity entity)
     {
-        this(entity.level instanceof ServerWorld ? (ServerWorld) entity.level : null, entity.position().x, entity.position().y, entity.position().z, entity.yRot,
-                entity.xRot);
+        this(entity.level instanceof ServerWorld ? (ServerWorld) entity.level : null, entity.position().x, entity.position().y, entity.position().z, entity.xRot, entity.yRot);
     }
 
     public WarpPoint(WarpPoint point)
@@ -119,7 +122,7 @@ public class WarpPoint
     {
         return zd;
     }
-    
+
     public BlockPos getBlockPos()
     {
         return new BlockPos(getBlockX(), getBlockY(), getBlockZ());
@@ -167,9 +170,19 @@ public class WarpPoint
 
     public ServerWorld getWorld()
     {
-        if (world == null || world.dimension().location().toString() != dim)
-            world = world.getLevel();
-        return world;
+        if (world != null && world.dimension().location().toString() == dim)
+            return world.getLevel();
+        world = ServerUtil.getWorldFromString(dim);
+        if (world == null)
+        {
+            LoggingHandler.felog.debug("argument.dimension.invalid" + dim);
+            return null;
+        }
+        else
+        {
+            return world.getLevel();
+        }
+
     }
 
     public void setX(double value)

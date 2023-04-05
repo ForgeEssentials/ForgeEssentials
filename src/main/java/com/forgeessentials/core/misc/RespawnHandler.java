@@ -53,7 +53,7 @@ public class RespawnHandler
         if (doDefaultSpawn)
             return null;
         else
-            return new WarpPoint(((ServerPlayerEntity)player).getRespawnDimension().location().toString(), ((ServerPlayerEntity)player).getRespawnPosition(), player.yRot, player.xRot);
+            return new WarpPoint(((ServerPlayerEntity)player).getRespawnDimension().location().toString(), ((ServerPlayerEntity)player).getRespawnPosition(), player.xRot, player.yRot);
     }
 
     public static WarpPoint getSpawn(PlayerEntity player, WarpPoint location)
@@ -75,7 +75,7 @@ public class RespawnHandler
                 // Bed seems OK, so just return null to let default MC code handle respawn
                 if (doDefaultSpawn)
                     return null;
-                return new WarpPoint(player.level.dimension().location().toString(), spawn, player.yRot, player.xRot);
+                return new WarpPoint(player.level.dimension().location().toString(), spawn, player.xRot, player.yRot);
             }
         }
 

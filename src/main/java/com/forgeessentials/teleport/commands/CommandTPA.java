@@ -150,7 +150,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
             checkPermission(ctx.getSource(), PERM_LOCATION);
             point = new WarpPoint(getServerPlayer(ctx.getSource()).getLevel().dimension(), //
                     BlockPosArgument.getLoadedBlockPos(ctx, "pos"), //
-                    player.getPlayer().yRot, player.getPlayer().xRot);
+                    player.getPlayer().xRot, player.getPlayer().yRot);
             locationName = point.toReadableString();
         }
 

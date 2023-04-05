@@ -132,7 +132,7 @@ public class WorldPoint extends Point
     }
     
     public World getWorld(){
-        if (world != null && world.dimension().location().toString() != dim)
+        if (world != null && world.dimension().location().toString() == dim)
             return world;
         world = ServerUtil.getWorldFromString(dim);
         if (world == null) {
