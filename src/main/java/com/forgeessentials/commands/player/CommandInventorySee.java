@@ -16,7 +16,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
-import com.forgeessentials.commands.util.SeenPlayerInventory;
+import com.forgeessentials.commands.util.SeeablePlayerInventory;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -96,13 +96,13 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
             @Override
             public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity victim)
             {
-                return new ChestContainer(ContainerType.GENERIC_9x5, id, playerInventory, new SeenPlayerInventory(victim), 5);
+                return new ChestContainer(ContainerType.GENERIC_9x5, id, playerInventory, new SeeablePlayerInventory(victim), 5);
             }
 
             @Override
             public ITextComponent getDisplayName()
             {
-                return new StringTextComponent(victim.getName() + "'s inventory");
+                return new StringTextComponent(victim.getDisplayName().getString() + "'s inventory");
             }
             });
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Does the other player deserve this?");
