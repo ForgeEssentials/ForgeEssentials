@@ -10,15 +10,16 @@ import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.server.TicketType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.fe.event.entity.EntityPortalEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -121,12 +122,8 @@ public class TeleportHelper extends ServerEventHandler
     {
         if (point.getWorld() == null)
         {
-            ServerLifecycleHooks.getCurrentServer().getLevel(point.getWorld().dimension());
-            if (point.getWorld() == null)
-            {
-                ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target dimension does not exist"));
-                return;
-            }
+            ChatOutputHandler.chatError(player, Translator.translate("Unable to teleport! Target dimension does not exist"));
+            return;
         }
 
         // Check permissions
@@ -186,10 +183,10 @@ public class TeleportHelper extends ServerEventHandler
         BlockPos blockPos2 = new BlockPos(point.getBlockX(), point.getBlockY() + 1, point.getBlockZ());
         Block block1 = point.getWorld().getBlockState(blockPos1).getBlock();
         Block block2 = point.getWorld().getBlockState(blockPos2).getBlock();
-        AxisAlignedBB blockBounds1 = block1.getBlockSupportShape(block1.defaultBlockState(), point.getWorld(), blockPos1).bounds();
-        AxisAlignedBB blockBounds2 = block2.getBlockSupportShape(block2.defaultBlockState(), point.getWorld(), blockPos2).bounds();
-        boolean block1Free = !block1.isPossibleToRespawnInThis() || blockBounds1 == null || blockBounds1.maxX < 1 || blockBounds1.maxY > 0;
-        boolean block2Free = !block2.isPossibleToRespawnInThis() || blockBounds2 == null || blockBounds2.maxX < 1 || blockBounds2.maxY > 0;
+        //AxisAlignedBB blockBounds1 = block1.getBlockSupportShape(block1.defaultBlockState(), point.getWorld(), blockPos1).bounds();
+        //AxisAlignedBB blockBounds2 = block2.getBlockSupportShape(block2.defaultBlockState(), point.getWorld(), blockPos2).bounds();
+        boolean block1Free = block1.isPossibleToRespawnInThis();// || blockBounds1 == null || blockBounds1.maxX < 1 || blockBounds1.maxY > 0;
+        boolean block2Free = block2.isPossibleToRespawnInThis();// || blockBounds2 == null || blockBounds2.maxX < 1 || blockBounds2.maxY > 0;
         return block1Free && block2Free;
     }
 
@@ -223,13 +220,16 @@ public class TeleportHelper extends ServerEventHandler
         }
         // TODO: Handle teleportation of mounted entity
         player.stopRiding();
-
+        ChunkPos chunkpos = new ChunkPos(point.getBlockPos());
+        point.getWorld().getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkpos, 1, player.getId());
         if (player.level.dimension().location().toString() != point.getDimension())
         {
             //SimpleTeleporter teleporter = new SimpleTeleporter(point.getWorld());
-            player.changeDimension(point.getWorld());//, teleporter);
+            //player.changeDimension(point.getWorld());//, teleporter);
+            ((ServerPlayerEntity)player).teleportTo(point.getWorld(), point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
+
         }
-        player.absMoveTo(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
+        ((ServerPlayerEntity)player).connection.teleport(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }
 
     public static void doTeleportEntity(Entity entity, WarpPoint point)
