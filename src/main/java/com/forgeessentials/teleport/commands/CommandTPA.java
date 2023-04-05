@@ -82,9 +82,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
                                         )
                                 )
                         .then(Commands.literal("here")
-                                .then(Commands.argument("player", EntityArgument.player())
-                                        .executes(CommandContext -> execute(CommandContext, "here")
-                                                )
+                        		.executes(CommandContext -> execute(CommandContext, "here")
                                         )
                                 )
                         .executes(CommandContext -> execute(CommandContext, "toP")
@@ -142,7 +140,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
         final String locationName;
         if (params.equals("here"))
         {
-        	if(hasPermission(ctx.getSource(), PERM_HERE)) {
+        	if(!hasPermission(ctx.getSource(), PERM_HERE)) {
         		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
         		return Command.SINGLE_SUCCESS;
         	}
@@ -151,12 +149,12 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
         }
         else
         {
-        	if(hasPermission(ctx.getSource(), PERM_LOCATION)) {
+        	if(!hasPermission(ctx.getSource(), PERM_LOCATION)) {
         		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
         		return Command.SINGLE_SUCCESS;
         	}
-            point = new WarpPoint(getServerPlayer(ctx.getSource()).getLevel().dimension(), //
-                    BlockPosArgument.getLoadedBlockPos(ctx, "pos"), //
+            point = new WarpPoint(getServerPlayer(ctx.getSource()).getLevel().dimension(), 
+                    BlockPosArgument.getLoadedBlockPos(ctx, "pos"), 
                     player.getPlayer().xRot, player.getPlayer().yRot);
             locationName = point.toReadableString();
         }

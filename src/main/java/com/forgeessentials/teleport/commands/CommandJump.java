@@ -7,19 +7,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.teleport.TeleportModule;
 import com.forgeessentials.util.PlayerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -75,8 +74,11 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
     public void jump(ServerPlayerEntity player) throws CommandException
     {
         RayTraceResult mo = PlayerUtil.getPlayerLookingSpot(player, 500);
-        if (mo == null)
-            throw new TranslatedCommandException("The spot you are looking at is too far away to teleport.");
+        if (mo == null) {
+        	ChatOutputHandler.chatError(player, "The spot you are looking at is too far away to teleport.");
+        	return;
+		}
+
         BlockPos pos = new BlockPos(mo.getLocation().x, mo.getLocation().y, mo.getLocation().z);
         pos.offset(0, 1, 0);
         TeleportHelper.teleport(player, new WarpPoint(player.level.dimension(), pos, player.xRot, player.yRot));
@@ -92,16 +94,17 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
         ItemStack stack = event.getPlayer().getMainHandItem();
         if (stack == ItemStack.EMPTY || stack.getItem() != Items.COMPASS)
             return;
-        if (!PermissionAPI.hasPermission(event.getPlayer(), TeleportModule.PERM_JUMP_TOOL))
+        if (!hasPermission(event.getPlayer(), TeleportModule.PERM_JUMP_TOOL))
             return;
 
         try
         {
             jump((ServerPlayerEntity) event.getPlayer());
         }
-        catch (CommandException ce)
+        catch (Exception e)
         {
-            TranslationTextComponent msg = new TranslationTextComponent(ce.getMessage(), ce.getCause());
+        	e.printStackTrace();
+            StringTextComponent msg = new StringTextComponent(e.getCause() + e.getMessage());
             msg.getStyle().withColor(TextFormatting.RED);
             event.getPlayer().sendMessage(msg,event.getPlayer().getUUID());
         }

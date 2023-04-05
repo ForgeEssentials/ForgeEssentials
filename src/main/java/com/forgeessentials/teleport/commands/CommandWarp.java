@@ -1,21 +1,23 @@
 package com.forgeessentials.teleport.commands;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -24,6 +26,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 public class CommandWarp extends ForgeEssentialsCommandBuilder
 {
@@ -92,6 +95,7 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
         return baseBuilder
                 .then(Commands.literal("warp")
                         .then(Commands.argument("warp", StringArgumentType.word())
+                        		.suggests(SUGGEST_WARPS)
                                 .executes(CommandContext -> execute(CommandContext, "warp")
                                         )
                                 )
@@ -104,6 +108,7 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
                         )
                 .then(Commands.literal("delete")
                         .then(Commands.argument("warp", StringArgumentType.word())
+                        		.suggests(SUGGEST_WARPS)
                                 .executes(CommandContext -> execute(CommandContext, "delete")
                                         )
                                 )
@@ -112,24 +117,30 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
                         .executes(CommandContext -> execute(CommandContext, "list")
                                 )
                         )
-                .executes(CommandContext -> execute(CommandContext, "help")
+                .then(Commands.literal("help")
+                        .executes(CommandContext -> execute(CommandContext, "help")
+                                )
                         );
     }
+
+    public static final SuggestionProvider<CommandSource> SUGGEST_WARPS = (ctx, builder) -> {
+        return ISuggestionProvider.suggest(new ArrayList<String>(getWarps().keySet()), builder);
+     };
 
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("help"))
         {
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/warp warp <warpname>: Teleport to the warp");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/warp set|delete <warpname>: Modify your warps");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/warp list: List warps");
             return Command.SINGLE_SUCCESS;
         }
 
         Map<String, Warp> warps = getWarps();
-
         Set<String> completeList = new HashSet<>();
         completeList.addAll(warps.keySet());
-
 
         if (params.equals("list"))
         {
@@ -141,23 +152,31 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
         {
 
             WarpPoint point = warps.get(warpName);
-            if (point == null)
-                throw new TranslatedCommandException("Warp by this name does not exist");
-            if (!hasPermission(ctx.getSource(),PERM_WARP + "." + warpName))
-                throw new TranslatedCommandException("You don't have permission to use this warp");
+            if (point == null) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "Warp by this name does not exist");
+            	return Command.SINGLE_SUCCESS;
+            }
+            if (!hasPermission(ctx.getSource(), PERM_WARP + "." + warpName)){
+            	ChatOutputHandler.chatError(ctx.getSource(), "You don't have permission to use this warp");
+            	return Command.SINGLE_SUCCESS;
+            }
+
             TeleportHelper.teleport(getServerPlayer(ctx.getSource()), point);
             return Command.SINGLE_SUCCESS;
         }
         if (params.equals("set"))
         {
-        	if(hasPermission(ctx.getSource(), PERM_SET)) {
+        	if(!hasPermission(ctx.getSource(), PERM_SET)) {
         		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        		return Command.SINGLE_SUCCESS;
         	}
 
             // Check limit
             int limit = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(getIdent(ctx.getSource()), PERM_LIMIT), Integer.MAX_VALUE);
-            if (warps.size() >= limit)
-                throw new TranslatedCommandException("You reached the warp limit");
+            if (warps.size() >= limit){
+            	ChatOutputHandler.chatError(ctx.getSource(), "You reached the warp limit");
+            	return Command.SINGLE_SUCCESS;
+            }
 
             DataManager.getInstance().save(new Warp(getServerPlayer(ctx.getSource())), warpName);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set warp \"%s\" to current location", warpName);
@@ -165,7 +184,7 @@ public class CommandWarp extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("delete"))
         {
-        	if(hasPermission(ctx.getSource(), PERM_DELETE)) {
+        	if(!hasPermission(ctx.getSource(), PERM_DELETE)) {
         		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
         		return Command.SINGLE_SUCCESS;
         	}

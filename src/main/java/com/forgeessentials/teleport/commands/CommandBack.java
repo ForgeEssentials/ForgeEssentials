@@ -3,14 +3,13 @@ package com.forgeessentials.teleport.commands;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.teleport.TeleportModule;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -62,12 +61,14 @@ public class CommandBack extends ForgeEssentialsCommandBuilder
         ServerPlayerEntity player = getServerPlayer(ctx.getSource());
         PlayerInfo pi = PlayerInfo.get(player.getUUID());
         WarpPoint point = null;
-        if (PermissionAPI.hasPermission(player, TeleportModule.PERM_BACK_ONDEATH))
+        if (hasPermission(player, TeleportModule.PERM_BACK_ONDEATH))
             point = pi.getLastDeathLocation();
-        if (point == null)
+        if (point == null && hasPermission(player, TeleportModule.PERM_BACK_ONTP))
             point = pi.getLastTeleportOrigin();
-        if (point == null)
-            throw new TranslatedCommandException("You have nowhere to get back to");
+        if (point == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "You have nowhere to get back to");
+    		return Command.SINGLE_SUCCESS;
+        }
 
         TeleportHelper.teleport(player, point);
         return Command.SINGLE_SUCCESS;

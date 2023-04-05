@@ -9,14 +9,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.teleport.TeleportModule;
 import com.forgeessentials.util.PlayerInfo;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -67,18 +67,18 @@ public class CommandBed extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_BED_OTHERS))
+        if (hasPermission(ctx.getSource(), TeleportModule.PERM_BED_OTHERS))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-            if (!player.hasDisconnected())
-            {
+            if (!player.hasDisconnected()){
                 tp(player);
             }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+            else{
+            	ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName()));
+        		return Command.SINGLE_SUCCESS;
+            }
         }
-        else
-        {
+        else{
             tp(getServerPlayer(ctx.getSource()));
         }
         return Command.SINGLE_SUCCESS;
@@ -87,12 +87,16 @@ public class CommandBed extends ForgeEssentialsCommandBuilder
     private void tp(ServerPlayerEntity player) throws CommandException
     {
         World world = ServerLifecycleHooks.getCurrentServer().getLevel(player.getRespawnDimension());
-        if (world == null)
-            throw new TranslatedCommandException("No respawn dim found.");
+        if (world == null){
+        	ChatOutputHandler.chatError(player, "No respawn dim found.");
+    		return;
+        }
 
         BlockPos spawn = player.getRespawnPosition();
-        if (spawn == null)
-            throw new TranslatedCommandException("No respawn position found.");
+        if (spawn == null){
+        	ChatOutputHandler.chatError(player, "No respawn position found.");
+    		return;
+        }
 
         PlayerInfo.get(player.getUUID()).setLastTeleportOrigin(new WarpPoint(player));
         WarpPoint spawnPoint = new WarpPoint(world.dimension(), spawn, player.xRot, player.yRot);
@@ -103,12 +107,13 @@ public class CommandBed extends ForgeEssentialsCommandBuilder
     public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (!player.hasDisconnected())
-        {
+        if (!player.hasDisconnected()){
             tp(player);
         }
-        else
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+        else{
+        	ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName()));
+    		return Command.SINGLE_SUCCESS;
+        }
         return Command.SINGLE_SUCCESS;
     }
 

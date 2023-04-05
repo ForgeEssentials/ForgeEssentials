@@ -5,14 +5,13 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.teleport.TeleportModule;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -57,8 +56,8 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .then(Commands.argument("player", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext, "others")
+        		.then(Commands.argument("player", EntityArgument.player())
+                        .executes(CommandContext -> execute(CommandContext, "player")
                                 )
                         )
                 .executes(CommandContext -> execute(CommandContext, "me")
@@ -68,31 +67,35 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.equals("others"));
-        {
-            if (!PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_SPAWN_OTHERS))
+        if (params.equals("player")){
+            if (!hasPermission(ctx.getSource(), TeleportModule.PERM_SPAWN_OTHERS))
             {
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        		return Command.SINGLE_SUCCESS;
             }
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");;
-            if (!player.hasDisconnected())
+            if (player.hasDisconnected())
             {
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+            	ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName().getString()));
+        		return Command.SINGLE_SUCCESS;
             }
 
             WarpPoint point = RespawnHandler.getSpawn(player, null);
-            if (point == null)
-                throw new TranslatedCommandException("There is no spawnpoint set for that player.");
+            if (point == null){
+            	ChatOutputHandler.chatError(ctx.getSource(), "There is no spawnpoint set for that player.");
+        		return Command.SINGLE_SUCCESS;
+            }
+
             TeleportHelper.teleport(player, point);
         }
-        if (params.equals("me"));
-        {
-            ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
+        if (params.equals("me")){
+            ServerPlayerEntity player = getServerPlayer(ctx.getSource());
 
             WarpPoint point = RespawnHandler.getSpawn(player, null);
             if (point == null)
             {
-                throw new TranslatedCommandException("There is no spawnpoint set for that player.");
+            	ChatOutputHandler.chatError(ctx.getSource(), "You have no spawnpoint");
+        		return Command.SINGLE_SUCCESS;
             }
 
             PlayerInfo.get(player.getUUID()).setLastTeleportOrigin(new WarpPoint(player));
@@ -105,16 +108,22 @@ public class CommandSpawn extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
+    	if(params.equals("me")){
+    		ChatOutputHandler.chatError(ctx.getSource(), "You need to specify a player");
+    		return Command.SINGLE_SUCCESS;
+    	}
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (!player.hasDisconnected())
+        if (player.hasDisconnected())
         {
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+        	ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName().getString()));
+    		return Command.SINGLE_SUCCESS;
         }
 
         WarpPoint point = RespawnHandler.getSpawn(player, null);
         if (point == null)
         {
-            throw new TranslatedCommandException("There is no spawnpoint set for that player.");
+        	ChatOutputHandler.chatError(ctx.getSource(), "There is no spawnpoint set for that player.");
+    		return Command.SINGLE_SUCCESS;
         }
 
         TeleportHelper.teleport(player, point);

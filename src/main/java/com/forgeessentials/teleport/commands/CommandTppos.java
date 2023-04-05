@@ -9,11 +9,13 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.teleport.TeleportModule;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -69,6 +71,10 @@ public class CommandTppos extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
+    	if(!hasPermission(ctx.getSource(), TeleportModule.PERM_TPPOS)) {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+    		return Command.SINGLE_SUCCESS;
+    	}
         ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
         BlockPos pos = BlockPosArgument.getLoadedBlockPos(ctx, "pos");
         TeleportHelper.teleport(sender, new WarpPoint(sender.level.dimension(), pos, sender.xRot,

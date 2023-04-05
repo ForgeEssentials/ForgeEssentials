@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.google.common.base.Functions;
@@ -435,7 +434,12 @@ public class CommandUtils
 		else
 		    return true;
     }
-    
+
+    public static boolean hasPermission(PlayerEntity sender, String perm)
+    {
+    	return APIRegistry.perms.checkPermission(sender, perm);
+    }
+
     public WorldPoint getSenderPoint(CommandSource sender)
     {
         CommandSource s = sender != null ? sender : null;//server;

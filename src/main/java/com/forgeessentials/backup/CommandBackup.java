@@ -56,16 +56,16 @@ public class CommandBackup extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-        .then(Commands.literal("all")
-                .executes(CommandContext -> execute(CommandContext, "all")
-                        )
-                )
-        .then(Commands.literal("dim")
-                .then(Commands.argument("dim", DimensionArgument.dimension())
-                        .executes(CommandContext -> execute(CommandContext, "dim")
-                                )
-                        )
-                );
+        		.then(Commands.literal("all")
+        				.executes(CommandContext -> execute(CommandContext, "all")
+        						)
+        				)
+        		.then(Commands.literal("dim")
+        				.then(Commands.argument("dim", DimensionArgument.dimension())
+        						.executes(CommandContext -> execute(CommandContext, "dim")
+        								)
+        						)
+        				);
     }
 
     @Override

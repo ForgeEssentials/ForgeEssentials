@@ -22,7 +22,6 @@ import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.Kit;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;

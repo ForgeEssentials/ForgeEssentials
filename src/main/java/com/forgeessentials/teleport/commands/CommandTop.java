@@ -8,14 +8,14 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.teleport.TeleportModule;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -58,7 +58,7 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext, "others")
+                        .executes(CommandContext -> execute(CommandContext, "player")
                                 )
                         )
                 .executes(CommandContext -> execute(CommandContext, "me")
@@ -73,15 +73,17 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
             
             top(getServerPlayer(ctx.getSource()));
         }
-        else if (params.equals("others") && PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_TOP_OTHERS))
+        else if (params.equals("player") && hasPermission(ctx.getSource(), TeleportModule.PERM_TOP_OTHERS))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             if (!player.hasDisconnected())
             {
                 top(player);
             }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+            else{
+        		ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName()));
+        		return Command.SINGLE_SUCCESS;
+        	}
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -91,16 +93,18 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
     {
         if (params.equals("me"))
         {
-            
-            throw new TranslatedCommandException("You are not a player.");
+        	ChatOutputHandler.chatError(ctx.getSource(), "You are not a player.");
+            return Command.SINGLE_SUCCESS;
         }
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         if (!player.hasDisconnected())
         {
             top(player);
         }
-        else
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+        else{
+    		ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName()));
+    		return Command.SINGLE_SUCCESS;
+    	}
         return Command.SINGLE_SUCCESS;
     }
 

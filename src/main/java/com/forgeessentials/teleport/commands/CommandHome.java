@@ -5,12 +5,10 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.teleport.TeleportModule;
 import com.forgeessentials.util.PlayerInfo;
@@ -76,16 +74,20 @@ public class CommandHome extends ForgeEssentialsCommandBuilder
         if (params.equals("goHome"))
         {
             WarpPoint home = PlayerInfo.get(getServerPlayer(ctx.getSource()).getUUID()).getHome();
-            if (home == null)
-                throw new TranslatedCommandException("No home set. Use \"/home set\" first.");
+            if (home == null){
+            	ChatOutputHandler.chatError(ctx.getSource(), "No home set. Use \"/home set\" first.");
+        		return Command.SINGLE_SUCCESS;
+            }
             TeleportHelper.teleport(getServerPlayer(ctx.getSource()), home);
         }
         if (params.equals("set"))
         {
             ServerPlayerEntity player = getServerPlayer(ctx.getSource());
 
-            if (!PermissionAPI.hasPermission(player, TeleportModule.PERM_HOME_SET))
-                throw new TranslatedCommandException("You don't have the permission to set your home location.");
+            if (!hasPermission(player, TeleportModule.PERM_HOME_SET)){
+            	ChatOutputHandler.chatError(ctx.getSource(), "You don't have the permission to set your home location.");
+        		return Command.SINGLE_SUCCESS;
+            }
 
             WarpPoint p = new WarpPoint(player);
             PlayerInfo info = PlayerInfo.get(player.getUUID());
@@ -96,8 +98,10 @@ public class CommandHome extends ForgeEssentialsCommandBuilder
         if (params.equals("setOthers"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-            if (player!= getServerPlayer(ctx.getSource())&&!PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_HOME_OTHER))
-                throw new TranslatedCommandException("You don't have the permission to access other players home.");
+            if (player!= getServerPlayer(ctx.getSource())&&!hasPermission(getServerPlayer(ctx.getSource()), TeleportModule.PERM_HOME_OTHER)){
+            	ChatOutputHandler.chatError(ctx.getSource(), "You don't have the permission to access other players home.");
+        		return Command.SINGLE_SUCCESS;
+            }
 
             WarpPoint p = new WarpPoint(player);
             PlayerInfo info = PlayerInfo.get(player.getUUID());
