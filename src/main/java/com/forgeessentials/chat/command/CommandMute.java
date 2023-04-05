@@ -68,7 +68,7 @@ public class CommandMute extends ForgeEssentialsCommandBuilder
 
         PlayerUtil.getPersistedTag(receiver, true).putBoolean("mute", true);
         ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You muted %s.", receiver.getDisplayName().getString()));
-        ChatOutputHandler.chatError(receiver, Translator.format("You were muted by %s.", ctx.getSource().getEntity()));
+        ChatOutputHandler.chatError(receiver, Translator.format("You were muted by %s.", ctx.getSource().getEntity().getDisplayName().getString()));
         return Command.SINGLE_SUCCESS;
     }
 }
