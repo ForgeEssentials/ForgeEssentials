@@ -53,7 +53,7 @@ public class CommandChunkLoaderList extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("modname")
-                        .then(Commands.argument("modname", StringArgumentType.greedyString())
+                        .then(Commands.argument("modname", StringArgumentType.string())
                                 .suggests(SUGGEST_mods)
                                 .executes(CommandContext -> execute(CommandContext, "modname")
                                         )

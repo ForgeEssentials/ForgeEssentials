@@ -64,7 +64,7 @@ public class CommandPromote extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
-                        .then(Commands.argument("group", StringArgumentType.greedyString())
+                        .then(Commands.argument("group", StringArgumentType.string())
                                 .suggests(SUGGEST_GROUPS)
                                 .executes(context -> execute(context, "group")
                                         )

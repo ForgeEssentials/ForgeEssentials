@@ -99,7 +99,7 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
                         .executes(context -> execute(context, "login")
                                 )
                         )
-                .then(Commands.argument("name", StringArgumentType.greedyString())
+                .then(Commands.argument("name", StringArgumentType.string())
                         .suggests(SUGGEST_WARPS)
                         .then(Commands.literal("set")
                                 .executes(context -> execute(context, "set")

@@ -52,7 +52,7 @@ public class CommandSeen extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .then(Commands.argument("player", StringArgumentType.greedyString())
+                .then(Commands.argument("player", StringArgumentType.word())
                         .executes(CommandContext -> execute(CommandContext, "player")
                                 )
                         );

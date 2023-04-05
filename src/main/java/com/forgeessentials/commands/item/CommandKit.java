@@ -111,7 +111,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
     {
         return baseBuilder
                 .then(Commands.literal("select")
-                        .then(Commands.argument("kit", StringArgumentType.greedyString())
+                        .then(Commands.argument("kit", StringArgumentType.string())
                                 .suggests(SUGGEST_KITS)
                                 .executes(context -> execute(context, "select")
                                         )

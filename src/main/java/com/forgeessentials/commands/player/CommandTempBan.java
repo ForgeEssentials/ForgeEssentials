@@ -58,7 +58,7 @@ public class CommandTempBan extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("player", StringArgumentType.word())
-                        .then(Commands.argument("duration", StringArgumentType.greedyString())
+                        .then(Commands.argument("duration", StringArgumentType.word())
                                 .then(Commands.argument("reasion", StringArgumentType.greedyString())
                                         .executes(CommandContext -> execute(CommandContext)
                                                 )

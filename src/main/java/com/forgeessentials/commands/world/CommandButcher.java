@@ -77,7 +77,7 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("radius", IntegerArgumentType.integer(-1))
-                        .then(Commands.argument("mob", StringArgumentType.greedyString())
+                        .then(Commands.argument("mob", StringArgumentType.string())
                                 .suggests(mob_types)
                                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
                                         .then(Commands.argument("world", DimensionArgument.dimension())
