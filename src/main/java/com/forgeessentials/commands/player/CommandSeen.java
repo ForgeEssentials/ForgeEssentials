@@ -70,7 +70,7 @@ public class CommandSeen extends ForgeEssentialsCommandBuilder
         }
 
         if (!player.hasUuid() || !PlayerInfo.exists(player.getUuid())) {
-            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s is currently online", player.getUsername()));
+            ChatOutputHandler.chatError(ctx.getSource(), "Player not found");
             return Command.SINGLE_SUCCESS;
         }
         PlayerInfo pi = PlayerInfo.get(player.getUuid());
