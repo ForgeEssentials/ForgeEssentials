@@ -16,7 +16,8 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -69,8 +70,10 @@ public class CommandDechant extends ForgeEssentialsCommandBuilder
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
-        if (stack == ItemStack.EMPTY)
-            throw new TranslatedCommandException("You are not holding a valid item");
+        if (stack == ItemStack.EMPTY){
+            ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a valid item.");
+            return Command.SINGLE_SUCCESS;
+        }
         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
 
         List<Enchantment> validEnchantments = new ArrayList<>();
@@ -85,7 +88,10 @@ public class CommandDechant extends ForgeEssentialsCommandBuilder
         }
         Enchantment enchantmentC = EnchantmentArgument.getEnchantment(ctx, "name");
         if (enchantmentC == null | !validEnchantments.contains(enchantmentC))
-            throw new TranslatedCommandException("Invalid enchantment %s!", enchantmentC);
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Invalid enchantment %s!", enchantmentC));
+            return Command.SINGLE_SUCCESS;
+        }
         enchantments.remove(enchantmentC);
         EnchantmentHelper.setEnchantments(enchantments, stack);
         return Command.SINGLE_SUCCESS;

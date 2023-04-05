@@ -12,7 +12,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -116,9 +115,11 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (!PermissionAPI.hasPermission((PlayerEntity) ctx.getSource().getEntity(), PERM_OTHERS))
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
-        
+        if (!PermissionAPI.hasPermission((PlayerEntity) ctx.getSource().getEntity(), PERM_OTHERS)){
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+            return Command.SINGLE_SUCCESS;
+        }
+       
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         if (params.equals("delO"))
         {

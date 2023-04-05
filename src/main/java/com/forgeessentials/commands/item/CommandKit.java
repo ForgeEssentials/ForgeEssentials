@@ -149,10 +149,14 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
 
         if (params.equals("select"))
         {
-            if (kit == null)
-                throw new TranslatedCommandException("Kit %s does not exist", kitName);
-            if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),PERM + "." + kit.getName()))
-                throw new TranslatedCommandException("You are not allowed to use this kit");
+            if (kit == null){
+                ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Kit %s does not exist", kitName));
+                return Command.SINGLE_SUCCESS;
+            }
+            if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),PERM + "." + kit.getName())){
+                ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You are not allowed to use this kit"));
+                return Command.SINGLE_SUCCESS;
+            }
             kit.giveKit((PlayerEntity) ctx.getSource().getEntity());
             return Command.SINGLE_SUCCESS;
         }
@@ -197,7 +201,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Deleted kit %s", kitName));
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND);
         }
         return Command.SINGLE_SUCCESS;
     }

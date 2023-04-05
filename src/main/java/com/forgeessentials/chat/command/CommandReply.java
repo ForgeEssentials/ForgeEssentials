@@ -4,7 +4,6 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
@@ -14,6 +13,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -90,12 +90,14 @@ public class CommandReply extends ForgeEssentialsCommandBuilder
     {
         TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
         CommandSource target = getReplyTarget(ctx.getSource());
-        if (target == null)
-            throw new CommandException(Translator.translateITC("No reply target found"));
-
-        if (target == ctx.getSource())
-            throw new CommandException(Translator.translateITC("commands.message.sameTarget"));
-
+        if (target == null){
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.translate("No reply target found"));
+            return Command.SINGLE_SUCCESS;
+        }
+        if (target == ctx.getSource()){
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.translate("You can't be the recipient"));
+            return Command.SINGLE_SUCCESS;
+        }
         ModuleChat.tell(ctx.getSource(), message, target);
         return Command.SINGLE_SUCCESS;
     }

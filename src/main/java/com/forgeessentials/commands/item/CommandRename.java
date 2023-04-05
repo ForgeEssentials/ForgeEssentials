@@ -8,7 +8,8 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -62,8 +63,10 @@ public class CommandRename extends ForgeEssentialsCommandBuilder
     {
 
         ItemStack is = getServerPlayer(ctx.getSource()).getMainHandItem();
-        if (is == ItemStack.EMPTY)
-            throw new TranslatedCommandException("You are not holding a valid item.");
+        if (is == ItemStack.EMPTY){
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You are not holding a valid item."));
+            return Command.SINGLE_SUCCESS;
+        }
 
         String nameS = StringArgumentType.getString(ctx, "name").trim();
         is.setHoverName(new StringTextComponent(nameS));

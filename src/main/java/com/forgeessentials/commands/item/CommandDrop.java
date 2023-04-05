@@ -22,7 +22,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -80,23 +79,21 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
     public void processCommand(CommandContext<CommandSource> ctx, Object params) throws CommandSyntaxException
     {
         Vector3d vector = Vec3Argument.getVec3(ctx, "pos");
-        ICommandSource source = CommandUtils.GetSource(ctx.getSource());
         World world = null;
         int x = (int) vector.x;
         int y = (int) vector.y;
         int z = (int) vector.z;
 
-        if (source instanceof MinecraftServer)
-        {
-            world = ((DedicatedServer) source).getLevel(World.OVERWORLD);
-        }
-        else if (source instanceof ServerPlayerEntity)
+        if (ctx.getSource().getEntity() instanceof ServerPlayerEntity)
         {
             world = ((Entity) ctx.getSource().getEntity()).level;
         }
-        else if (source instanceof TileEntity)
-        {
-            world = ((TileEntity) source).getLevel();
+        else {
+            ICommandSource source = CommandUtils.GetSource(ctx.getSource());
+            if (source instanceof MinecraftServer)
+            {
+                world = ((DedicatedServer) source).getLevel(World.OVERWORLD);
+            }
         }
         BlockPos pos = new BlockPos(x, y, z);
 
@@ -214,11 +211,12 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
         }
         else
         {
-            throw new TranslatedCommandException("No viable container found to put item in.");
+            ChatOutputHandler.chatError(ctx.getSource(), "No viable container found to put item in.");
+
         }
         if (count > 0)
         {
-            throw new TranslatedCommandException("Not enough room for items.");
+            ChatOutputHandler.chatError(ctx.getSource(), "Not enough room for items.");
         }
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Items dropped into container.");
     }

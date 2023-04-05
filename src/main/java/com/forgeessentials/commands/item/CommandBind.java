@@ -20,7 +20,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -121,8 +120,10 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
         if (side.equals("clear"))
         {
             ItemStack is = ((PlayerEntity) ctx.getSource().getEntity()).getMainHandItem();
-            if (is == ItemStack.EMPTY)
-                throw new TranslatedCommandException("You are not holding a valid item.");
+            if (is == ItemStack.EMPTY){
+                ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a valid item.");
+                return Command.SINGLE_SUCCESS;
+            }
             CompoundNBT tag = is.getTag();
             if (tag != null)
                 tag.remove(TAG_NAME);
@@ -138,8 +139,10 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
         }
 
         ItemStack is = ((PlayerEntity) ctx.getSource().getEntity()).getMainHandItem();
-        if (is == ItemStack.EMPTY)
-            throw new TranslatedCommandException("You are not holding a valid item.");
+        if (is == ItemStack.EMPTY){
+            ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a valid item.");
+            return Command.SINGLE_SUCCESS;
+        }
         CompoundNBT tag = ItemUtil.getTagCompound(is);
         CompoundNBT bindTag = ItemUtil.getCompoundTag(tag, TAG_NAME);
         CompoundNBT display = tag.getCompound("display");

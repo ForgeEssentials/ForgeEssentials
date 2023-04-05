@@ -96,9 +96,10 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        CommandSource target = EntityArgument.getPlayer(ctx, "player").createCommandSourceStack();
         if (params.equals("setTarget"))
         {
+            CommandSource target = EntityArgument.getPlayer(ctx, "player").createCommandSourceStack();
+
             if (ctx.getSource() == target) {
                 ChatOutputHandler.chatError(ctx.getSource(),"Cant send a pm to yourself");
             }
@@ -113,7 +114,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
-        ModuleChat.tell(ctx.getSource(), message, target);
+        ModuleChat.tell(ctx.getSource(), message, getTarget(ctx.getSource()));
         return Command.SINGLE_SUCCESS;
     }
 }

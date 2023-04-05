@@ -8,8 +8,8 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -67,8 +67,10 @@ public class CommandDuplicate extends ForgeEssentialsCommandBuilder
     {
         PlayerEntity player = (PlayerEntity) ctx.getSource().getEntity();
         ItemStack stack = player.getMainHandItem();
-        if (stack == ItemStack.EMPTY)
-            throw new TranslatedCommandException("No item equipped");
+        if (stack == ItemStack.EMPTY){
+            ChatOutputHandler.chatError(ctx.getSource(), "No item equipped");
+            return Command.SINGLE_SUCCESS;
+        }
  
         int stackSize = 0;
         if (params.equals("size"))

@@ -12,7 +12,8 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -74,14 +75,18 @@ public class CommandEnchant extends ForgeEssentialsCommandBuilder
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ItemStack stack = getServerPlayer(ctx.getSource()).getMainHandItem();
-        if (stack == ItemStack.EMPTY)
-            throw new TranslatedCommandException("You are not holding a valid item");
+        if (stack == ItemStack.EMPTY){
+            ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a valid item");
+            return Command.SINGLE_SUCCESS;
+        }
 
         Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
 
         Enchantment enchantment = EnchantmentArgument.getEnchantment(ctx, "name");
-        if (enchantment == null | !enchantment.canApplyAtEnchantingTable(stack))
-            throw new TranslatedCommandException("Invalid enchantment %s!", enchantment);
+        if (enchantment == null | !enchantment.canApplyAtEnchantingTable(stack)){
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Invalid enchantment %s!", enchantment));
+            return Command.SINGLE_SUCCESS;
+        }
 
         if (params.equals("maxlevel"))
         {

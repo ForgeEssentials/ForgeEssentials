@@ -7,7 +7,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -62,8 +61,10 @@ public class CommandMute extends ForgeEssentialsCommandBuilder
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity receiver = EntityArgument.getPlayer(ctx, "player");
-        if (receiver.hasDisconnected())
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", receiver.getDisplayName().getString());
+        if (receiver.hasDisconnected()){
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", receiver.getDisplayName().getString()));
+            return Command.SINGLE_SUCCESS;
+        }
 
         PlayerUtil.getPersistedTag(receiver, true).putBoolean("mute", true);
         ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You muted %s.", receiver.getDisplayName().getString()));

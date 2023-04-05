@@ -11,7 +11,7 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -98,15 +98,19 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
             if(args[0].equals("Max"))
             {
                 ItemStack item = getServerPlayer(ctx.getSource()).getMainHandItem();
-                if (item == null)
-                    throw new TranslatedCommandException("You are not holding a reparable item.");
+                if (item == null){
+                    ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a reparable item.");
+                    return Command.SINGLE_SUCCESS;
+                }
                 item.setDamageValue(0);
             }
             else if (args[0].equals("Custom"))
             {
                 ItemStack item = getServerPlayer(ctx.getSource()).getMainHandItem();
-                if (item == null)
-                    throw new TranslatedCommandException("You are not holding a reparable item.");
+                if (item == null){
+                    ChatOutputHandler.chatError(ctx.getSource(), "You are not holding a reparable item.");
+                    return Command.SINGLE_SUCCESS;
+                }
                 item.setDamageValue(IntegerArgumentType.getInteger(ctx, "amount"));
             } 
         }
@@ -151,8 +155,10 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
             }
         }
         else //params[1].toString() =="self"
-        {
-            throw new TranslatedCommandException("You must select a player!");
+        {{
+            ChatOutputHandler.chatError(ctx.getSource(), "You must select a player!");
+            return Command.SINGLE_SUCCESS;
+        }
 
         }
         return Command.SINGLE_SUCCESS;
