@@ -9,6 +9,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
@@ -141,13 +142,19 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
         final String locationName;
         if (params.equals("here"))
         {
-            checkPermission(ctx.getSource(), PERM_HERE);
+        	if(hasPermission(ctx.getSource(), PERM_HERE)) {
+        		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        		return Command.SINGLE_SUCCESS;
+        	}
             point = new WarpPoint(getServerPlayer(ctx.getSource()));
             locationName = getServerPlayer(ctx.getSource()).getDisplayName().getString();
         }
         else
         {
-            checkPermission(ctx.getSource(), PERM_LOCATION);
+        	if(hasPermission(ctx.getSource(), PERM_LOCATION)) {
+        		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        		return Command.SINGLE_SUCCESS;
+        	}
             point = new WarpPoint(getServerPlayer(ctx.getSource()).getLevel().dimension(), //
                     BlockPosArgument.getLoadedBlockPos(ctx, "pos"), //
                     player.getPlayer().xRot, player.getPlayer().yRot);

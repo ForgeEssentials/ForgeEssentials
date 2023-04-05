@@ -104,7 +104,10 @@ public class CommandWallet extends ForgeEssentialsCommandBuilder
 
         UserIdent player = getIdent(EntityArgument.getPlayer(ctx, "player"));
         if (!player.equals(getIdent(ctx.getSource())))
-            checkPermission(ctx.getSource(), PERM_OTHERS);
+        	if(hasPermission(ctx.getSource(), PERM_OTHERS)) {
+        		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        		return Command.SINGLE_SUCCESS;
+        	}
 
         Wallet wallet = APIRegistry.economy.getWallet(player);
         if (params.equals("walletOther"))
@@ -112,8 +115,10 @@ public class CommandWallet extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Wallet of %s contains %s", player.getUsernameOrUuid(), wallet.toString()));
             return Command.SINGLE_SUCCESS;
         }
-
-        checkPermission(ctx.getSource(), PERM_MODIFY);
+        if(hasPermission(ctx.getSource(), PERM_MODIFY)) {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+    		return Command.SINGLE_SUCCESS;
+    	}
 
         Long amount = LongArgumentType.getLong(ctx, "amount");
 

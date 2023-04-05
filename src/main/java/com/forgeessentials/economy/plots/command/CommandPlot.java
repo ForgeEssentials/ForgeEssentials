@@ -353,7 +353,10 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
 
     public static void parseDefine(CommandContext<CommandSource> ctx) throws CommandException
     {
-        checkPermission(ctx.getSource(), Plot.PERM_DEFINE);
+    	if(hasPermission(ctx.getSource(), Plot.PERM_DEFINE)) {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+    	}
         if(!(ctx.getSource().getEntity() instanceof ServerPlayerEntity)) {
             ChatOutputHandler.chatWarning(ctx.getSource(), "Only a player can do this!");
             return;
@@ -403,7 +406,10 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
 
     public static void parseClaim(final CommandContext<CommandSource> ctx) throws CommandException
     {
-        checkPermission(ctx.getSource(), Plot.PERM_CLAIM);
+        if(hasPermission(ctx.getSource(), Plot.PERM_CLAIM)) {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+    	}
         if(!(ctx.getSource().getEntity() instanceof ServerPlayerEntity)) {
             ChatOutputHandler.chatWarning(ctx.getSource(), "Only a player can do this!");
             return;
@@ -504,7 +510,10 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
 
     public static void parseList(final CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-        checkPermission(ctx.getSource(), Plot.PERM_LIST);
+        if(hasPermission(ctx.getSource(), Plot.PERM_LIST)) {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+    	}
 
         PlotListingType listType = PlotListingType.OWN;
         if (params.isEmpty())
@@ -586,7 +595,10 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         String type = modifyUsers ? "users" : "mods";
         String group = modifyUsers ? Plot.GROUP_PLOT_USER : Plot.GROUP_PLOT_MOD;
 
-        checkPermission(ctx.getSource(), Plot.PERM_MODS);
+        if(hasPermission(ctx.getSource(), Plot.PERM_MODS)) {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+    	}
         if (params.isEmpty())
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/plot " + type + " add|remove <player>: Add / remove " + type);
@@ -665,7 +677,10 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Current plot is not up for sale");
             return;
         }
-        checkPermission(ctx.getSource(), Plot.PERM_SET_PRICE);
+        if(hasPermission(ctx.getSource(), Plot.PERM_SET_PRICE)) {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+    	}
 
         String priceStr = params.remove(0).toLowerCase();
         int price = -1;
@@ -695,7 +710,10 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Current plot fee: %s", APIRegistry.economy.toString(plot.getFee())));
             return;
         }
-        checkPermission(ctx.getSource(), Plot.PERM_SET_FEE);
+        if(hasPermission(ctx.getSource(), Plot.PERM_SET_FEE)) {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+    	}
 
         int amount = parseInt(params.remove(0));
         int timeout = parseInt(params.remove(0));
@@ -719,7 +737,10 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             return;
         }
         String name = params.toString();
-        checkPermission(ctx.getSource(), Plot.PERM_SET_NAME);
+        if(hasPermission(ctx.getSource(), Plot.PERM_SET_NAME)) {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+    	}
         plot.getZone().setGroupPermissionProperty(Plot.GROUP_ALL, Plot.PERM_NAME, name);
         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set plot name to \"%s\"", name));
     }
@@ -741,7 +762,10 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             return;
         }
         UserIdent newOwner = parsePlayer(params.remove(0), null, true, false);
-        checkPermission(ctx.getSource(), Plot.PERM_SET_OWNER);
+        if(hasPermission(ctx.getSource(), Plot.PERM_SET_OWNER)) {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+    	}
         plot.setOwner(newOwner);
         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set plot owner to \"%s\"", newOwner.getUsernameOrUuid()));
     }
@@ -749,8 +773,10 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
     public static void parsePerms(CommandContext<CommandSource> ctx, List<String> params, boolean userPerms) throws CommandException
     {
         final String[] tabCompletion = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
-
-        checkPermission(ctx.getSource(), Plot.PERM_PERMS);
+        if(hasPermission(ctx.getSource(), Plot.PERM_PERMS)) {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+    	}
         Plot plot = getPlot(ctx.getSource());
         if (params.isEmpty())
         {

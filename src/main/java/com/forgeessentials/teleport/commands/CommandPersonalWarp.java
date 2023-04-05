@@ -146,8 +146,10 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
 
         if (params.equals("set"))
         {
-
-            checkPermission(ctx.getSource(), PERM_SET);
+        	if(hasPermission(ctx.getSource(), PERM_SET)) {
+        		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        		return Command.SINGLE_SUCCESS;
+        	}
 
             // Check limit
             int limit = ServerUtil.parseIntDefault(APIRegistry.perms.getUserPermissionProperty(getIdent(ctx.getSource()), PERM_LIMIT), Integer.MAX_VALUE);
@@ -161,7 +163,10 @@ public class CommandPersonalWarp extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("delete"))
         {
-            checkPermission(ctx.getSource(), PERM_DELETE);
+        	if(hasPermission(ctx.getSource(), PERM_DELETE)) {
+        		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        		return Command.SINGLE_SUCCESS;
+        	}
             warps.remove(warpName);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted personal warp \"%s\"", warpName);
             DataManager.getInstance().save(warps, getServerPlayer(ctx.getSource()).getStringUUID());

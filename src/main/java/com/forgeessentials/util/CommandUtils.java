@@ -16,7 +16,6 @@ import com.google.common.base.Functions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
@@ -431,23 +430,10 @@ public class CommandUtils
 
     public static boolean hasPermission(CommandSource sender, String perm)
     {
-        try
-        {
-            if (sender.getEntityOrException() instanceof PlayerEntity)
-                return APIRegistry.perms.checkPermission(getServerPlayer(sender), perm);
-            else
-                return true;
-        }
-        catch (CommandSyntaxException e)
-        {
-            e.printStackTrace();
-        }
-        return false;
-    }
-    public static void checkPermission(CommandSource sender,String perm) throws CommandException
-    {
-        if (sender != null && !hasPermission(sender, perm))
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+        if (sender.getEntity() instanceof PlayerEntity)
+		    return APIRegistry.perms.checkPermission(getServerPlayer(sender), perm);
+		else
+		    return true;
     }
     
     public WorldPoint getSenderPoint(CommandSource sender)
