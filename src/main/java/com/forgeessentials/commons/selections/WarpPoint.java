@@ -262,7 +262,7 @@ public class WarpPoint
 
     public String toReadableString()
     {
-        return String.format("%.0f %.0f %.0f dim=%d", xd, yd, zd, dim);
+        return String.format("%.0f %.0f %.0f dim=%s", xd, yd, zd, dim);
     }
 
     @Override
@@ -299,7 +299,7 @@ public class WarpPoint
     }
 
     private static final Pattern fromStringPattern = Pattern.compile(
-            "\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=(-?\\d+),pitch=(-?[\\d.]+),yaw=(-?[\\d.]+)\\]");
+            "\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=(-?\\s+),pitch=(-?[\\d.]+),yaw=(-?[\\d.]+)\\]");
 
     public static WarpPoint fromString(String value)
     {
