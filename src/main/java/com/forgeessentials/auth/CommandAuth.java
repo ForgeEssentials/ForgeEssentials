@@ -11,8 +11,6 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.commands.PermissionDeniedException;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
@@ -91,14 +89,13 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
+        if (!ModuleAuth.isEnabled())
+        {
+            ChatOutputHandler.chatWarning(ctx.getSource(), "The authentication service has been disabled by your server admin.");
+            return Command.SINGLE_SUCCESS;
+        }
         if (params.equals("blank"))
         {
-            if (!ModuleAuth.isEnabled())
-            {
-                ChatOutputHandler.chatWarning(ctx.getSource(), "The authentication service has been disabled by your server admin.");
-                return Command.SINGLE_SUCCESS;
-            }
-
             if (ModuleAuth.isRegistered(((PlayerEntity) ctx.getSource().getEntity()).getUUID()))
             {
                 if (ModuleAuth.isAuthenticated(((PlayerEntity) ctx.getSource().getEntity()).getUUID()))
@@ -114,8 +111,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
             {
                 ChatOutputHandler.chatWarning(ctx.getSource(), "You are not registered with the auth service.");
             }
-
-            throw new TranslatedCommandException("command.auth.usage");
+            return Command.SINGLE_SUCCESS;
         }
 
         boolean hasAdmin = PermissionAPI.hasPermission((PlayerEntity) ctx.getSource().getEntity(), getPermissionNode() + ".admin");
@@ -141,8 +137,10 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         // parse login
         if (params.equals("login"))
         {
-            if (!ModuleAuth.isRegistered(((PlayerEntity) ctx.getSource().getEntity()).getUUID()))
-                throw new TranslatedCommandException("Player %s is not registered!", ((PlayerEntity) ctx.getSource().getEntity()).getUUID());
+            if (!ModuleAuth.isRegistered(((PlayerEntity) ctx.getSource().getEntity()).getUUID())) {
+                ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format("Player %s is not registered.", ctx.getSource().getEntity().getDisplayName().getString()));
+                return Command.SINGLE_SUCCESS;
+            }
 
             if (PasswordManager.checkPassword(((PlayerEntity) ctx.getSource().getEntity()).getUUID(), StringArgumentType.getString(ctx, "password")))
             {
@@ -154,7 +152,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
             else
             {
                 APIRegistry.getFEEventBus().post(new PlayerAuthLoginEvent.Failure((PlayerEntity) ctx.getSource().getEntity()));
-                throw new TranslatedCommandException("Login failed.");
+                ChatOutputHandler.chatWarning(ctx.getSource(), "Login failed.");
             }
 
             return Command.SINGLE_SUCCESS;
@@ -164,11 +162,16 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         // parse register
         if (params.equals("register"))
         {
-            if (ModuleAuth.isRegistered(((PlayerEntity) ctx.getSource().getEntity()).getUUID()))
-                throw new TranslatedCommandException("Player %s is already registered!", ((PlayerEntity) ctx.getSource().getEntity()).getUUID());
+            if (ModuleAuth.isRegistered(((PlayerEntity) ctx.getSource().getEntity()).getUUID())) {
+                ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format("Player %s is already registered!", ((PlayerEntity) ctx.getSource().getEntity()).getUUID().toString()));
+                return Command.SINGLE_SUCCESS;
 
-            if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineRegistration)
-                throw new TranslatedCommandException("Registrations have been disabled.");
+            }
+
+            if (ModuleAuth.isEnabled() && !ModuleAuth.allowOfflineRegistration) {
+                ChatOutputHandler.chatWarning(ctx.getSource(), Translator.translate("Registrations have been disabled."));
+                return Command.SINGLE_SUCCESS;
+            }
 
             PasswordManager.setPassword(((PlayerEntity) ctx.getSource().getEntity()).getUUID(), StringArgumentType.getString(ctx, "password"));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Registration successful.");
@@ -176,8 +179,10 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         }
 
         // stop if unlogged.
-        if (!ModuleAuth.isAuthenticated(((PlayerEntity) ctx.getSource().getEntity()).getUUID()))
-            throw new TranslatedCommandException("Login required. Try /auth help.");
+        if (!ModuleAuth.isAuthenticated(((PlayerEntity) ctx.getSource().getEntity()).getUUID())) {
+            ChatOutputHandler.chatWarning(ctx.getSource(), "Login required. Try /auth help.");
+            return Command.SINGLE_SUCCESS;
+        }
 
         boolean isLogged = true;
 
@@ -194,7 +199,8 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         {
             if (!hasAdmin)
             {
-                throw new PermissionDeniedException();
+                ChatOutputHandler.chatError(ctx.getSource(), Translator.translate("You don't have permissions for that."));
+                return Command.SINGLE_SUCCESS;
             }
             else if (!isLogged)
             {
@@ -215,20 +221,25 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         // parse ./auth unregister
         if (params.equals("unregister"))
         {
-            if (!hasAdmin)
-                throw new PermissionDeniedException();
+            if (!hasAdmin) {
+                ChatOutputHandler.chatError(ctx.getSource(), Translator.translate("You don't have permissions for that."));
+                return Command.SINGLE_SUCCESS;
+            }
 
-            if (!ModuleAuth.isRegistered(player.getUUID()))
-                throw new TranslatedCommandException("Player %s is not registered!", player.getName());
-
+            if (!ModuleAuth.isRegistered(player.getUUID())) {
+                ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format("Player %s is not registered.", player.getDisplayName().getString()));
+                return Command.SINGLE_SUCCESS;
+            }
             PasswordManager.setPassword(player.getUUID(), null);
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
                     Translator.format("Player %s has been removed from the authentication service.", player.getName()));
             return Command.SINGLE_SUCCESS;
         }
 
-        if (!ModuleAuth.isAuthenticated(((PlayerEntity) ctx.getSource().getEntity()).getUUID()))
-            throw new TranslatedCommandException("Login required. Try /auth help.");
+        if (!ModuleAuth.isAuthenticated(((PlayerEntity) ctx.getSource().getEntity()).getUUID())) {
+            ChatOutputHandler.chatWarning(ctx.getSource(), "Login required. Try /auth help.");
+            return Command.SINGLE_SUCCESS;
+        }
 
         // parse changePass
         if (params.equals("changepass"))
@@ -240,9 +251,10 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
                 return Command.SINGLE_SUCCESS;
             }
 
-            if (!ModuleAuth.isRegistered(((PlayerEntity) ctx.getSource().getEntity()).getUUID()))
-                throw new TranslatedCommandException("Player %s is not registered!", ((PlayerEntity) ctx.getSource().getEntity()).getDisplayName().getString());
-
+            if (!ModuleAuth.isRegistered(((PlayerEntity) ctx.getSource().getEntity()).getUUID())) {
+                ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format("Player %s is not registered.", player.getDisplayName().getString()));
+                return Command.SINGLE_SUCCESS;
+            }
             if (!PasswordManager.checkPassword(((PlayerEntity) ctx.getSource().getEntity()).getUUID(), StringArgumentType.getString(ctx, "passwordOld")))
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Could not change the password - your old password is wrong");
@@ -258,8 +270,10 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         // parse setPass
         if (params.equals("setPass"))
         {
-            if (!hasAdmin)
-                throw new PermissionDeniedException();
+            if (!hasAdmin) {
+                ChatOutputHandler.chatError(ctx.getSource(), Translator.translate("You don't have permissions for that."));
+                return Command.SINGLE_SUCCESS;
+            }
             PasswordManager.setPassword(player.getUUID(), StringArgumentType.getString(ctx, "passwordNew"));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Password set for %s", player.getName()));
         }
@@ -269,13 +283,13 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (params.equals("blank") || params.equals("login") || params.equals("register") || params.equals("changepass"))
+        if (!ModuleAuth.isEnabled())
         {
-            throw new TranslatedCommandException("/auth help");
+            ChatOutputHandler.chatWarning(ctx.getSource(), "The authentication service has been disabled on this server.");
+            return Command.SINGLE_SUCCESS;
         }
-
         // help.
-        if (params.equals("help"))
+        if (params.equals("help") || params.equals("blank") || params.equals("login") || params.equals("register") || params.equals("changepass"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), " - /auth kick <player>  - forces the player to login again");
             ChatOutputHandler.chatNotification(ctx.getSource(), " - /auth setpass <player> <password>  - sets the players password to the specified");
@@ -286,7 +300,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         boolean isLogged = true;
 
         // check if the player is logged.
-        PlayerEntity player = UserIdent.getPlayerByMatchOrUsername(ctx.getSource(), EntityArgument.getPlayer(ctx, "player").getDisplayName().getString());
+        PlayerEntity player = UserIdent.get(EntityArgument.getPlayer(ctx, "player")).getPlayer();
         if (player == null)
         {
             ChatOutputHandler.chatWarning(ctx.getSource(), "A player of that name is not on the server. Doing the action anyways.");
@@ -298,13 +312,14 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         {
             if (!isLogged)
             {
-                throw new TranslatedCommandException("/auth kick <player");
+                ChatOutputHandler.chatError(player.createCommandSourceStack(), Translator.format("Player %s is not logged in", player.getDisplayName().getString()));
+                return Command.SINGLE_SUCCESS;
             }
             else
             {
                 ModuleAuth.deauthenticate(player.getUUID());
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                        Translator.format("Player %s was logged out from the authentication service.", player.getName()));
+                        Translator.format("Player %s was logged out from the authentication service.", player.getDisplayName().getString()));
                 ChatOutputHandler.chatWarning(player.createCommandSourceStack(),
                         "You have been logged out from the authentication service. Please login again.");
                 return Command.SINGLE_SUCCESS;
@@ -313,8 +328,10 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
 
         if (params.equals("unregister"))
         {
-            if (!ModuleAuth.isRegistered(player.getUUID()))
-                throw new TranslatedCommandException("message.auth.error.notregisterred", player.getName());
+            if (!ModuleAuth.isRegistered(player.getUUID())) {
+                ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format("Player %s is not registered.", player.getDisplayName().getString()));
+                return Command.SINGLE_SUCCESS;
+            }
             PasswordManager.setPassword(player.getUUID(), null);
             return Command.SINGLE_SUCCESS;
         }
