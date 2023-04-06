@@ -47,7 +47,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder implement
             ContainerType.GENERIC_9x5, ContainerType.GENERIC_9x6);
 
     public static int size = 54;
-    public static int rowCount = 54;
+    public static int rowCount = 6;
     static ForgeConfigSpec.IntValue FEsize;
     
     public static String name = "Vault 13";
