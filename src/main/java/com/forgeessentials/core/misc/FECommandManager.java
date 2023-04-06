@@ -16,6 +16,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.FileUtils;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
+import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.config.ConfigBase;
@@ -211,19 +212,21 @@ public class FECommandManager implements ConfigLoader
 
             LiteralCommandNode<CommandSource> literalcommandnode = dispatcher.register(commandData.getData().getMainBuilder());
             LoggingHandler.felog.info("Registered Command: "+name);
-            if(commandData.getData().getAliases() != null && !commandData.getData().getAliases().isEmpty()) {
-                try {
-                    for (String alias : commandData.getData().getAliases()) {
-                        if(registeredAiliases.contains(alias)) {
-                            LoggingHandler.felog.error(String.format("Command alias %s already registered!", alias));
-                            continue;
+            if(FEConfig.enableCommandAliases){
+                if(commandData.getData().getAliases() != null && !commandData.getData().getAliases().isEmpty()) {
+                    try {
+                        for (String alias : commandData.getData().getAliases()) {
+                            if(registeredAiliases.contains(alias)) {
+                                LoggingHandler.felog.error(String.format("Command alias %s already registered!", alias));
+                                continue;
+                            }
+                            dispatcher.register(Commands.literal(alias).redirect(literalcommandnode));
+                            LoggingHandler.felog.info("Registered Command: "+name+"'s alias: "+alias);
+                            registeredAiliases.add(alias);
                         }
-                        dispatcher.register(Commands.literal(alias).redirect(literalcommandnode));
-                        LoggingHandler.felog.info("Registered Command: "+name+"'s alias: "+alias);
-                        registeredAiliases.add(alias);
+                    }catch(NullPointerException e) {
+                        LoggingHandler.felog.error("Failed to register aliases for command: "+name);
                     }
-                }catch(NullPointerException e) {
-                    LoggingHandler.felog.error("Failed to register aliases for command: "+name);
                 }
             }
             commandData.setRegistered(true);

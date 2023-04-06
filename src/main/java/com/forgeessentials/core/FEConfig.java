@@ -25,6 +25,8 @@ public class FEConfig extends ConfigLoaderBase
 
     public static boolean checkSpacesInNames;
 
+    public static boolean enableCommandAliases;
+
     public static SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
     public static SimpleDateFormat FORMAT_DATE_TIME = new SimpleDateFormat("dd.MM HH:mm");
@@ -46,6 +48,7 @@ public class FEConfig extends ConfigLoaderBase
     static ForgeConfigSpec.ConfigValue<String> FEmodlistLocation;
     static ForgeConfigSpec.IntValue FEmajoritySleep;
     static ForgeConfigSpec.BooleanValue FEcheckSpacesInNames;
+    static ForgeConfigSpec.BooleanValue FEenableCommandAliases;
 
 	@Override
 	public void load(Builder BUILDER, boolean isReload)
@@ -65,6 +68,8 @@ public class FEConfig extends ConfigLoaderBase
                 .define("format_gson_compat", "MMM d, yyyy h:mm:ss aa");
         FEmodlistLocation = BUILDER.comment("Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.")
                 .define("modlistLocation", "modlist.txt");
+        FEenableCommandAliases = BUILDER.comment("Enable Command Ailases for FE commands")
+                .define("enableAilases", true);
         BUILDER = ForgeEssentials.load(BUILDER, isReload);
         BUILDER.pop();
 
@@ -89,6 +94,7 @@ public class FEConfig extends ConfigLoaderBase
 
         majoritySleep = FEmajoritySleep.get();
         checkSpacesInNames = FEcheckSpacesInNames.get();
+        enableCommandAliases = FEenableCommandAliases.get();
         ForgeEssentials.bakeConfig(reload);
         ChatOutputHandler.bakeConfig(reload);
     }
