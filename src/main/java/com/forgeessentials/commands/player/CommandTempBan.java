@@ -9,7 +9,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -73,10 +72,12 @@ public class CommandTempBan extends ForgeEssentialsCommandBuilder
         String reason = StringArgumentType.getString(ctx, "reasion");
         String durationS = StringArgumentType.getString(ctx, "duration");
         UserIdent ident = UserIdent.get(name, ctx.getSource(), true);
-        if (ident == null || !ident.hasUuid())
-            throw new TranslatedCommandException("Player %s not found", name);
-        else if (!ident.hasPlayer())
-            throw new TranslatedCommandException("Player %s is not online", name);
+        if (ident == null || !ident.hasUuid()){
+        	ChatOutputHandler.chatError(ctx.getSource(), "Player %s not found", name);
+        }
+        else if (!ident.hasPlayer()){
+        	ChatOutputHandler.chatError(ctx.getSource(), "Player %s is not online", name);
+        }
 
         long duration = parseTimeReadable(durationS);
 
