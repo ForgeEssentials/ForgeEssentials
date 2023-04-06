@@ -155,7 +155,7 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
         }
         else
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName().getString());
         return Command.SINGLE_SUCCESS;
     }
 

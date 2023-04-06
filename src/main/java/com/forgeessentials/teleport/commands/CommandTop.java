@@ -81,7 +81,7 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
                 top(player);
             }
             else{
-        		ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName()));
+        		ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName().getString()));
         		return Command.SINGLE_SUCCESS;
         	}
         }
@@ -102,7 +102,7 @@ public class CommandTop extends ForgeEssentialsCommandBuilder
             top(player);
         }
         else{
-    		ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName()));
+    		ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName().getString()));
     		return Command.SINGLE_SUCCESS;
     	}
         return Command.SINGLE_SUCCESS;

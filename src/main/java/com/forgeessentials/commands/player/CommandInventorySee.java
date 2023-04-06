@@ -83,7 +83,7 @@ public class CommandInventorySee extends ForgeEssentialsCommandBuilder
         }
         ServerPlayerEntity victim = EntityArgument.getPlayer(ctx, "player");
         if (victim.hasDisconnected()) {
-            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s not found.", victim.getDisplayName()));
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s not found.", victim.getDisplayName().getString()));
             return Command.SINGLE_SUCCESS;
         }
 

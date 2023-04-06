@@ -257,7 +257,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
                 try
                 {
                     Questioner.add(player.createCommandSourceStack(), message, callback);
-                    arguments.confirm("Requested %s to accept your join request", player.getDisplayName());
+                    arguments.confirm("Requested %s to accept your join request", player.getDisplayName().getString());
                     return;
                 }
                 catch (QuestionerStillActiveException e)

@@ -84,7 +84,7 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
                 ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
             else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName().getString());
         }
         else
         {
@@ -104,7 +104,7 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
         }
         else
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName().getString());
         return Command.SINGLE_SUCCESS;
     }
 }

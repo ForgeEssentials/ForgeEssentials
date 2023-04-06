@@ -98,7 +98,7 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
             }
             else
             {
-                ChatOutputHandler.chatError(ctx.getSource(), String.format("Player %s does not exist, or is not online.", player.getDisplayName()));
+                ChatOutputHandler.chatError(ctx.getSource(), String.format("Player %s does not exist, or is not online.", player.getDisplayName().getString()));
             }
         }
         else
@@ -120,7 +120,7 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
             }
             else
             {
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName().getString());
             }
         }
         else
