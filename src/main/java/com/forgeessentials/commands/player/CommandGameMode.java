@@ -46,10 +46,10 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
                     if (gametype != GameType.NOT_SET) {
                         baseBuilder
                         .then(Commands.literal(gametype.getName())
-                                .executes(CommandContext -> execute(CommandContext, gametype.getName())
+                                .executes(CommandContext -> execute(CommandContext, "single-"+gametype.getName())
                                         )
                         .then(Commands.argument("target", EntityArgument.players())
-                                .executes(CommandContext -> execute(CommandContext, gametype.getName())
+                                .executes(CommandContext -> execute(CommandContext, "other-"+gametype.getName())
                                         )
                                 )
                         )
@@ -63,38 +63,35 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if(params.isEmpty()) {
+        if(params==null) {
             setGameMode(ctx.getSource(), getServerPlayer(ctx.getSource()));
+            return Command.SINGLE_SUCCESS;
         }
-        try {
-            Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(ctx, "target");
-            setGameModes(ctx.getSource(),players, GameType.byName(params), true);
+        String[] args = params.split("-");
+        if(args[0].equals("single")) {
+            setGameMode(ctx.getSource(), getServerPlayer(ctx.getSource()), GameType.byName(args[1]));
+            return Command.SINGLE_SUCCESS;
         }
-        catch(CommandSyntaxException e){
-            setGameMode(ctx.getSource(), getServerPlayer(ctx.getSource()), GameType.byName(params));
-        }
+        Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(ctx, "target");
+        setGameModes(ctx.getSource(),players, GameType.byName(args[1]), true);
         return Command.SINGLE_SUCCESS;
     }
 
     @Override
     public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if(params.isEmpty()) {
+        if(params==null) {
             ChatOutputHandler.chatError(ctx.getSource(), "Cant set gamemode of the console");
+            return Command.SINGLE_SUCCESS;
         }
-        try {
-            Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(ctx, "target");
-            setGameModes(ctx.getSource(),players, GameType.byName(params), false);
+        String[] args = params.split("-");
+        if(args[0].equals("single")) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "Cant set gamemode of the console");
+        	return Command.SINGLE_SUCCESS;
         }
-        catch(CommandSyntaxException e){
-            ChatOutputHandler.chatError(ctx.getSource(), "Cant set gamemode of the console");
-        }
+        Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(ctx, "target");
+        setGameModes(ctx.getSource(),players, GameType.byName(args[1]), false);
         return Command.SINGLE_SUCCESS;
-    }
-
-    public void setGameMode(ServerPlayerEntity sender)
-    {
-        setGameMode(sender.createCommandSourceStack(), sender, sender.isCreative() ? GameType.SURVIVAL : GameType.CREATIVE);
     }
 
     public void setGameMode(CommandSource sender, ServerPlayerEntity target)
@@ -108,7 +105,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
         if (target.gameMode.getGameModeForPlayer() != mode) {
             target.setGameMode(mode);
             target.fallDistance = 0.0F;
-            ChatOutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getName(), mode.getName()));
+            ChatOutputHandler.chatNotification(sender, Translator.format("%1$s's gamemode was changed to %2$s.", target.getDisplayName().getString(), mode.getName()));
         }
     }
 
@@ -122,7 +119,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
             }
             if (serverplayerentity.gameMode.getGameModeForPlayer() != mode) {
                 serverplayerentity.setGameMode(mode);
-                ChatOutputHandler.chatNotification(source, Translator.format("%1$s's gamemode was changed to %2$s.", serverplayerentity.getName(), mode.getName()));
+                ChatOutputHandler.chatNotification(source, Translator.format("%1$s's gamemode was changed to %2$s.", serverplayerentity.getDisplayName().getString(), mode.getName()));
             }
         }
     }
