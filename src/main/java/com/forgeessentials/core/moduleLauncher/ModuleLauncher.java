@@ -58,7 +58,6 @@ public class ModuleLauncher
         for (ModFileScanData.AnnotationData asm : data) {
             LoggingHandler.felog.info("Found FEModule {}", asm.getMemberName());
         }
-        LoggingHandler.felog.info("");
         // started ASM handling for the module loading
         //Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());
         
@@ -166,11 +165,11 @@ public class ModuleLauncher
         }
 
         ConfigBase.getModuleConfig().setCreated();
-        // TODO Check if this works
+
         ForgeEssentials.getConfigManager().loadAllRegisteredConfigs();
         ForgeEssentials.getConfigManager().buildAllRegisteredConfigs();
-        // TODO Check if this works
-        ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs(false);
+        //Moved to ServerAboutToStart Event in Main Class
+        //ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs(false);
     }
 
     public void reloadConfigs()

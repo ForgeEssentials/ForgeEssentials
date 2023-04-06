@@ -89,6 +89,7 @@ public class ModulePermissions extends ConfigLoaderBase
             LoggingHandler.felog.debug("FTBLib is not loaded!");
         }
         itemPermissionManager = new ItemPermissionManager();
+        permissionScheduler = new PermissionScheduler();
         MinecraftForge.EVENT_BUS.register(this);
 
     }
@@ -106,7 +107,7 @@ public class ModulePermissions extends ConfigLoaderBase
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void serverStarting(FEModuleServerStartingEvent e)
     {
-        permissionScheduler = new PermissionScheduler();
+        //permissionScheduler = new PermissionScheduler();
         // Backup FEData directory
         try
         {

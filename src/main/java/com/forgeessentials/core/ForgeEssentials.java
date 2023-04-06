@@ -212,7 +212,6 @@ public class ForgeEssentials
 
         // Load submodules
         moduleLauncher.init();
-        LoggingHandler.felog.info("Sent FEModuleCommonSetupEvent");
 
     }
 
@@ -304,6 +303,7 @@ public class ForgeEssentials
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
         LoggingHandler.felog.info("ForgeEssentials Server About to start");
+        ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs(false);
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
         MinecraftForge.EVENT_BUS.post(new FEModuleServerAboutToStartEvent(e));
