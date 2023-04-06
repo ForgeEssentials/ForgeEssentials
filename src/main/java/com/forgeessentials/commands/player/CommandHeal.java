@@ -11,7 +11,6 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -72,10 +71,8 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .then(Commands.literal("others")
-                        .then(Commands.argument("player", EntityArgument.player())
-                                .executes(CommandContext -> execute(CommandContext, "others")
-                                        )
+        		.then(Commands.argument("player", EntityArgument.player())
+                        .executes(CommandContext -> execute(CommandContext, "others")
                                 )
                         )
                 .executes(CommandContext -> execute(CommandContext, "blank")
@@ -99,11 +96,13 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
             else
             {
                 ChatOutputHandler.chatError(ctx.getSource(), String.format("Player %s does not exist, or is not online.", player.getDisplayName().getString()));
+                return Command.SINGLE_SUCCESS;
             }
         }
         else
         {
-            throw new TranslatedCommandException(getUsage(ctx.getSource().getPlayerOrException()));
+        	ChatOutputHandler.chatError(ctx.getSource(), getUsage(getServerPlayer(ctx.getSource())));
+        	return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -120,12 +119,14 @@ public class CommandHeal extends ForgeEssentialsCommandBuilder
             }
             else
             {
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName().getString());
+            	ChatOutputHandler.chatError(ctx.getSource(), String.format("Player %s does not exist, or is not online.", player.getDisplayName().getString()));
+                return Command.SINGLE_SUCCESS;
             }
         }
         else
         {
-            throw new TranslatedCommandException(getUsage(getServerPlayer(ctx.getSource())));
+        	ChatOutputHandler.chatError(ctx.getSource(), getUsage(getServerPlayer(ctx.getSource())));
+        	return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
     }
