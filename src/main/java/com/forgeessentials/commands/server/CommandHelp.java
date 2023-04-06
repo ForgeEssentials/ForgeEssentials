@@ -46,11 +46,11 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
 
     private static List<String> messages;
 
-    private static Integer entriesPerPage;
+    private static Integer entriesPerPage=8;
 
-    private static Integer commandColor;
+    private static Integer commandColor=2;
 
-    private static Integer subCommandColor;
+    private static Integer subCommandColor=7;
     
     public HelpFixer fixer;
 
@@ -120,7 +120,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
 
     public void showHelpPage(CommandContext<CommandSource> ctx) throws CommandException
     {
-        if (messages.size() == 0)
+        if (messages==null||messages.size()==0)
             showHelpPage(ctx, 1);
         for (int i = 0; i < messages.size(); i++)
             ChatOutputHandler.chatConfirmation(ctx.getSource(), ScriptArguments.processSafe(messages.get(i), ctx.getSource()));
@@ -138,7 +138,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
         Collections.sort(scmds);
         int amountperpage = entriesPerPage;
         int totalcount = scmds.size();
-        int totalpages = (int)Math.ceil(totalcount / (float)amountperpage) + 1;
+        int totalpages = (int)Math.ceil(totalcount / (float)amountperpage);
         
         if (page > totalpages) {
             page = totalpages;
@@ -147,7 +147,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
         TextFormatting commandcolour = TextFormatting.getById(commandColor);
         TextFormatting subcommandcolour = TextFormatting.getById(subCommandColor);
         
-        ChatOutputHandler.sendMessage(ctx.getSource(), " ", TextFormatting.WHITE);
+        ChatOutputHandler.sendMessage(ctx.getSource(), "#####################################################", TextFormatting.WHITE);
         
         for (int n = 0; n < ((amountperpage * page)); n++) {
             if (n >= ((amountperpage * page) - amountperpage)) {
@@ -172,8 +172,8 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
                 
                 ChatOutputHandler.sendMessage(ctx.getSource(), tc);
             }
-            ChatOutputHandler.sendMessage(ctx.getSource(), " Page " + page + " / " + totalpages + ", /help <page>", TextFormatting.YELLOW);
         }
+        ChatOutputHandler.sendMessage(ctx.getSource(), " Page " + page + " / " + totalpages + ", /help <page>", TextFormatting.YELLOW);
     }
 
     static ForgeConfigSpec.ConfigValue<List<? extends String>> FEmessages;

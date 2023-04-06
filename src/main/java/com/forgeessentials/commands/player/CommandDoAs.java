@@ -86,8 +86,10 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
         if ((ctx.getSource().getEntity() instanceof ServerPlayerEntity) && playerS.equalsIgnoreCase("[CONSOLE]"))
         {
             ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
-            if (!PermissionAPI.hasPermission(player, "fe.commands.doas.console"))
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            if (!PermissionAPI.hasPermission(player, "fe.commands.doas.console")){
+                ChatOutputHandler.chatWarning(player, FEPermissions.MSG_NO_COMMAND_PERM);
+                return Command.SINGLE_SUCCESS;
+            }
             
             ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player.createCommandSourceStack()).createCommandSourceStack(), message);
         }
@@ -99,8 +101,10 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
             ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(ctx.getSource(), message);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Successfully issued command as %s", playerS));
         }
-        else
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", playerS);
+        else{
+            ChatOutputHandler.chatWarning(player, Translator.format("Player %s does not exist, or is not online.", playerS));
+            return Command.SINGLE_SUCCESS;
+        }
         return Command.SINGLE_SUCCESS;
     }
 }
