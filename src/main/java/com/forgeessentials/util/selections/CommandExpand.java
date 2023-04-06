@@ -8,7 +8,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -27,7 +26,7 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
     @Override
     public String getPrimaryAlias()
     {
-        return "/expand";
+        return "SELexpand";
     }
 
     @Override
@@ -69,8 +68,10 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
     {
         ServerPlayerEntity player = getServerPlayer(ctx.getSource());
         Selection sel = SelectionHandler.getSelection(player);
-        if (sel == null)
-            throw new TranslatedCommandException("Invalid selection.");
+        if (sel == null){
+            ChatOutputHandler.chatError(player, "Invalid selection.");
+            return Command.SINGLE_SUCCESS;
+        }
 
         if (params.equals("expand"))
         {
@@ -148,84 +149,75 @@ public class CommandExpand extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
             return Command.SINGLE_SUCCESS;
         }
-        else if (params.equals("direction"))
+        int expandby = IntegerArgumentType.getInteger(ctx, "expand");
+        if (params.equals("north"))
         {
-            int expandby = IntegerArgumentType.getInteger(ctx, "expand");
-            if (params.equals("north"))
+            if (sel.getStart().getZ() < sel.getEnd().getZ())
             {
-                if (sel.getStart().getZ() < sel.getEnd().getZ())
-                {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() - expandby));
-                }
-                else
-                {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
-                }
-            }
-            else if (params.equals("east"))
-            {
-                if (sel.getStart().getX() > sel.getEnd().getX())
-                {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX() + expandby, sel.getStart().getY(), sel.getStart().getZ()));
-                }
-                else
-                {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
-                }
-            }
-            else if (params.equals("south"))
-            {
-                if (sel.getStart().getZ() > sel.getEnd().getZ())
-                {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() + expandby));
-                }
-                else
-                {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
-                }
-            }
-            else if (params.equals("west"))
-            {
-                if (sel.getStart().getX() < sel.getEnd().getX())
-                {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX() - expandby, sel.getStart().getY(), sel.getStart().getZ()));
-                }
-                else
-                {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
-                }
-            }
-            else if (params.equals("up"))
-            {
-                if (sel.getStart().getZ() > sel.getEnd().getZ())
-                {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() + expandby, sel.getStart().getZ()));
-                }
-                else
-                {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
-                }
-            }
-            else if (params.equals("down"))
-            {
-                if (sel.getStart().getY() < sel.getEnd().getY())
-                {
-                    SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() - expandby, sel.getStart().getZ()));
-                }
-                else
-                {
-                    SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
-                }
+                SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() - expandby));
             }
             else
-                throw new TranslatedCommandException("Invalid Direction");
-            ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
-            return Command.SINGLE_SUCCESS;
+            {
+                SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() - expandby));
+            }
         }
-        else
+        else if (params.equals("east"))
         {
-
+            if (sel.getStart().getX() > sel.getEnd().getX())
+            {
+                SelectionHandler.setStart(player, new Point(sel.getStart().getX() + expandby, sel.getStart().getY(), sel.getStart().getZ()));
+            }
+            else
+            {
+                SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() + expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
+            }
         }
+        else if (params.equals("south"))
+        {
+            if (sel.getStart().getZ() > sel.getEnd().getZ())
+            {
+                SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY(), sel.getStart().getZ() + expandby));
+            }
+            else
+            {
+                SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY(), sel.getEnd().getZ() + expandby));
+            }
+        }
+        else if (params.equals("west"))
+        {
+            if (sel.getStart().getX() < sel.getEnd().getX())
+            {
+                SelectionHandler.setStart(player, new Point(sel.getStart().getX() - expandby, sel.getStart().getY(), sel.getStart().getZ()));
+            }
+            else
+            {
+                SelectionHandler.setEnd(player, new Point(sel.getEnd().getX() - expandby, sel.getEnd().getY(), sel.getEnd().getZ()));
+            }
+        }
+        else if (params.equals("up"))
+        {
+            if (sel.getStart().getZ() > sel.getEnd().getZ())
+            {
+                SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() + expandby, sel.getStart().getZ()));
+            }
+            else
+            {
+                SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() + expandby, sel.getEnd().getZ()));
+            }
+        }
+        else if (params.equals("down"))
+        {
+            if (sel.getStart().getY() < sel.getEnd().getY())
+            {
+                SelectionHandler.setStart(player, new Point(sel.getStart().getX(), sel.getStart().getY() - expandby, sel.getStart().getZ()));
+            }
+            else
+            {
+                SelectionHandler.setEnd(player, new Point(sel.getEnd().getX(), sel.getEnd().getY() - expandby, sel.getEnd().getZ()));
+            }
+        }
+
+        ChatOutputHandler.chatConfirmation(player, "Region expanded by: " + expandby);
         return Command.SINGLE_SUCCESS;
     }
 

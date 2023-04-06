@@ -11,7 +11,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -31,7 +30,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
     @Override
     public String getPrimaryAlias()
     {
-        return "/fewand";
+        return "SELwand";
     }
 
     @Override
@@ -90,8 +89,10 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
         }else 
         {
             // Check for permissions
-            if (!checkCommandPermission(ctx.getSource()))
-                throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+            if (!checkCommandPermission(ctx.getSource())){
+                ChatOutputHandler.chatError(player, FEPermissions.MSG_NO_COMMAND_PERM);
+                return Command.SINGLE_SUCCESS;
+            }
 
             // Bind wand
             info.setWandEnabled(true);

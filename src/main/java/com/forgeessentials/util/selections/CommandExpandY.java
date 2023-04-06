@@ -5,7 +5,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -23,7 +22,7 @@ public class CommandExpandY extends ForgeEssentialsCommandBuilder
     @Override
     public String getPrimaryAlias()
     {
-        return "/expandY";
+        return "SELexpandY";
     }
 
     @Override
@@ -38,8 +37,10 @@ public class CommandExpandY extends ForgeEssentialsCommandBuilder
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         Selection sel = SelectionHandler.getSelection(getServerPlayer(ctx.getSource()));
-        if (sel == null)
-            throw new TranslatedCommandException("Invalid selection.");
+        if (sel == null){
+            ChatOutputHandler.chatError(ctx.getSource(), "Invalid selection.");
+            return Command.SINGLE_SUCCESS;
+        }
         SelectionHandler.setStart(getServerPlayer(ctx.getSource()), sel.getStart().setY(0));
         SelectionHandler.setEnd(getServerPlayer(ctx.getSource()), sel.getEnd().setY(ctx.getSource().getLevel().getMaxBuildHeight()));
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Selection expanded from bottom to top.");

@@ -12,7 +12,6 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -30,7 +29,7 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
     @Override
     public String getPrimaryAlias()
     {
-        return "/fepos1";
+        return "SELfepos1";
     }
 
     @Override
@@ -84,16 +83,20 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
 
         RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(player);
 
-        if (mop == null)
-            throw new TranslatedCommandException("You must first look at the ground!");
+        if (mop == null){
+            ChatOutputHandler.chatError(player, "You must first look at the ground!");
+            return Command.SINGLE_SUCCESS;
+        }
 
         x = (int) mop.getLocation().x;
         y = (int) mop.getLocation().y;
         z = (int) mop.getLocation().z;
 
         WorldPoint point = new WorldPoint(player.level, x, y, z);
-        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point, getPermissionNode()))
-            throw new TranslatedCommandException("Insufficient permissions.");
+        if (!APIRegistry.perms.checkUserPermission(UserIdent.get(player), point, getPermissionNode())){
+            ChatOutputHandler.chatError(player, "Insufficient permissions.");
+            return Command.SINGLE_SUCCESS;
+        }
 
         SelectionHandler.setStart(player, point);
 

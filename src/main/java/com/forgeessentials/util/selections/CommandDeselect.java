@@ -22,7 +22,7 @@ public class CommandDeselect extends ForgeEssentialsCommandBuilder
     @Override
     public String getPrimaryAlias()
     {
-        return "/desel";
+        return "SELdesel";
     }
 
     @Override
