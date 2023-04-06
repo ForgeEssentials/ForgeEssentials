@@ -8,10 +8,10 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.commands.PermissionDeniedException;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -90,7 +90,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("others"))
         {
-            if (PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
+            if (hasPermission(ctx.getSource(), getPermissionNode() + ".others"))
             {
                 ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
                 if (!player.hasDisconnected())
@@ -98,11 +98,15 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
                     ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
                     player.setSecondsOnFire(15);
                 }
-                else
-                    throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+                else{
+                    ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName().getString()));
+                    return Command.SINGLE_SUCCESS;
+                }
             }
-            else
-                throw new PermissionDeniedException();
+            else{
+                ChatOutputHandler.chatWarning(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+                return Command.SINGLE_SUCCESS;
+            }
         }
         if (params.equals("othersT"))
         {
@@ -114,11 +118,15 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
                     player.setSecondsOnFire(IntegerArgumentType.getInteger(ctx, "time"));
                     ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
                 }
-                else
-                    throw new TranslatedCommandException("Player does not exist, or is not online.", player.getDisplayName());
+                else{
+                    ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName().getString()));
+                    return Command.SINGLE_SUCCESS;
+                }
             }
-            else
-                throw new PermissionDeniedException();
+            else{
+                ChatOutputHandler.chatWarning(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+                return Command.SINGLE_SUCCESS;
+            }
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -134,7 +142,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
 
         if (params.equals("me"))
         {
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Do you really want the server console to burn?.");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Do you really want the server console to burn?");
             return Command.SINGLE_SUCCESS;
         }
 
@@ -144,8 +152,10 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
             player.setSecondsOnFire(time);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
         }
-        else
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName());
+        else{
+            ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format("Player %s does not exist, or is not online.", player.getDisplayName().getString()));
+            return Command.SINGLE_SUCCESS;
+        }
         return Command.SINGLE_SUCCESS;
     }
 
