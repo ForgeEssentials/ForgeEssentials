@@ -9,7 +9,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -69,12 +68,13 @@ public class CommandLocate extends ForgeEssentialsCommandBuilder
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
-        if (player == null)
-            throw new TranslatedCommandException("Player does not exist, or is not online.");
+        if (player == null){
+        	ChatOutputHandler.chatError(ctx.getSource(), "Player does not exist, or is not online.");
+        }
 
         WorldPoint point = new WorldPoint(player);
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s is at %d, %d, %d in dim %d with gamemode %s", //
-                player.getName(), point.getX(), point.getY(), point.getZ(), point.getDimension(), //
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s is at %d, %d, %d in dim %s with gamemode %s", //
+                player.getDisplayName().getString(), point.getX(), point.getY(), point.getZ(), point.getDimension(), //
                 player.gameMode.getGameModeForPlayer().getName()));
         return Command.SINGLE_SUCCESS;
     }
