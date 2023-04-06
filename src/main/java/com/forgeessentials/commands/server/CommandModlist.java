@@ -53,19 +53,21 @@ public class CommandModlist extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
 	{
     	return baseBuilder
-    			.then(Commands.argument("num", IntegerArgumentType.integer(1, 40))
-                        .executes(CommandContext -> execute(CommandContext, null))
-                     );
+    			.then(Commands.argument("page", IntegerArgumentType.integer(1, 40))
+                        .executes(CommandContext -> execute(CommandContext, "select"))
+                     )
+    			.executes(CommandContext -> execute(CommandContext, "one"));
 	}
     
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-        int num = IntegerArgumentType.getInteger(ctx,"lettercount");
+        int num = 0;
+        if(params.equals("select")) {num = IntegerArgumentType.getInteger(ctx,"page");}
         int size = ModList.get().size();
         int perPage = 7;
         int pages = (int) Math.ceil(size / (float) perPage);
-        int page =  num == 0 ? 0 : parseInt(Integer.toString(num), 1, pages) - 1;
+        int page =  num == 0 ? 0 : (num>pages ? pages : num)-1;
         int min = Math.min(page * perPage, size);
 
         ChatOutputHandler.chatNotification(ctx.getSource(), String.format("--- Showing modlist page %1$d of %2$d ---", page + 1, pages));
@@ -74,7 +76,7 @@ public class CommandModlist extends ForgeEssentialsCommandBuilder
         {
             if (i >= size)
             {
-               // break;
+               break;
             }
             ModInfo mod = mods.get(i);
             ChatOutputHandler.chatNotification(ctx.getSource(), mod.getDisplayName() + " - " + mod.getVersion());
