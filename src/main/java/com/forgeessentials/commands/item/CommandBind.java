@@ -152,6 +152,7 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
             bindTag.remove(side);
             display.put("Lore", new ListNBT());
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Cleared " + side + " bound command from item"));
+            return Command.SINGLE_SUCCESS;
         }
         else
         {
@@ -168,12 +169,12 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
                 {
                     lore.set(i, loreTag);
                     ChatOutputHandler.chatConfirmation(ctx.getSource(), "Bound command to item");
-                    return Command.SINGLE_SUCCESS;
                 }
             }
             lore.add(loreTag);
             display.put("Lore", lore);
             tag.put("display", display);
+            //is.setTag(tag);
         }
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Bound command to item");
         return Command.SINGLE_SUCCESS;
