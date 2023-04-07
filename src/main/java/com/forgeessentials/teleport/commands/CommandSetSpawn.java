@@ -63,7 +63,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBuilder
                                         )
                                 )
                         .then(Commands.literal("disable")
-                                .executes(CommandContext -> execute(CommandContext, "-bed-disable")
+                                .executes(CommandContext -> execute(CommandContext, "bed-disable")
                                         )
                                 )
                         )
@@ -82,8 +82,10 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("help")
-                        .executes(CommandContext -> execute(CommandContext, "")
+                        .executes(CommandContext -> execute(CommandContext, "help")
                                 )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "help")
                         );
     }
 

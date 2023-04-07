@@ -865,12 +865,13 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseGroupSpawn(CommandContext<CommandSource> ctx, List<String> params, String group, Zone zone, boolean commandSetspawn) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_GROUP_SPAWN)) {
+    	if(!hasPermission(ctx.getSource(), PERM_GROUP_SPAWN)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
-        if (params.isEmpty())
+        if (params.get(0).equals("help"))
         {
+        	params.remove(0);
             if (commandSetspawn)
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "/setspawn here|clear|<x> <y> <z> <dim>: Set spawn location");
@@ -889,14 +890,18 @@ public class PermissionCommandParser extends CommandUtils
         switch (loc)
         {
         case "here":
-            if (getServerPlayer(ctx.getSource()) == null)
-                throw new TranslatedCommandException("[here] cannot be used from console.");
+            if (getServerPlayer(ctx.getSource()) == null){
+            	ChatOutputHandler.chatError(ctx.getSource(), "[here] cannot be used from console.");
+            	return;
+            }
             point = new WarpPoint(getServerPlayer(ctx.getSource()));
             break;
         case "bed":
         {
-            if (params.isEmpty())
-                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            if (params.isEmpty()){
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            	return;
+            }
             String val = params.remove(0).toLowerCase();
             if (val.equals("true") | val.equals("enable"))
             {
@@ -916,8 +921,10 @@ public class PermissionCommandParser extends CommandUtils
             point = null;
             break;
         default:
-            if (params.size() < 3)
-                throw new TranslatedCommandException("Too few arguments!");
+            if (params.size() < 3){
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            	return;
+            }
             try
             {
                 int x = CommandUtils.parseInt(loc);
