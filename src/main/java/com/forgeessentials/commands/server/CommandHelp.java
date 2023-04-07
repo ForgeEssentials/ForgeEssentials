@@ -44,7 +44,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
 
     }
 
-    private static List<String> messages;
+    private static List<String> messages=new ArrayList<>();
 
     private static Integer entriesPerPage=8;
 
