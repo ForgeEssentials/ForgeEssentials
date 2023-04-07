@@ -74,9 +74,9 @@ public final class ChatOutputHandler
         Entity entity = recipient.getEntity();
         if (entity instanceof FakePlayer && ((ServerPlayerEntity) entity).connection.getConnection() == null)
             LoggingHandler.felog.info(String.format("Fakeplayer %s: %s", entity.getDisplayName().getString(), message.plainCopy()));
-        else if(entity instanceof ServerPlayerEntity)
-        	((ServerPlayerEntity) entity).sendMessage(message, entity.getUUID());
-            //recipient.getServer().getPlayerList().broadcastMessage(message, ChatType.CHAT, entity.getUUID());
+        else if(entity instanceof ServerPlayerEntity){
+        	recipient.sendSuccess(message, false);
+        }
         else
         	recipient.sendSuccess(message, false);
     }
