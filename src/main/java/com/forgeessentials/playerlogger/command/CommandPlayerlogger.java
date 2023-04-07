@@ -371,7 +371,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             }
             global = getServerPlayer(ctx.getSource()) == null || global;
             fc = global ? FilterConfig.globalConfig : new FilterConfig();
-            List<String> arg1 = Arrays.asList(subCmd); 
+            List<String> arg1 = new ArrayList<String>(Arrays.asList(subCmd)); 
             arg1.remove(0);
             fc.parse(ctx, arg1);
             if (!global)
@@ -424,7 +424,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             {
                 ChatOutputHandler.chatWarning(ctx.getSource(), "This subCommand has not been ported yet!");
                 fc = new FilterConfig();
-                List<String> arg2 = Arrays.asList(subCmd); 
+                List<String> arg2 = new ArrayList<String>(Arrays.asList(subCmd)); 
                 arg2.remove(0);
                 arg2.remove(1);
                 fc.parse(ctx, arg2);

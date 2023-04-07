@@ -107,7 +107,7 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Use /butcher <radius> [type] [x y z] [world]");
             return Command.SINGLE_SUCCESS;
         }
-        List<String> args = Arrays.asList(params.split("&")); 
+        List<String> args = new ArrayList<String>(Arrays.asList(params.split("&&"))); 
 
         ServerPlayerEntity sender = getServerPlayer(ctx.getSource());
         int radius = -1;
@@ -159,7 +159,7 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
         double z = 0;
         ServerWorld world = ServerLifecycleHooks.getCurrentServer().overworld();
         String mobType = ButcherMobType.HOSTILE.toString();
-        List<String> args = Arrays.asList(params.split("&")); 
+        List<String> args =  new ArrayList<String>(Arrays.asList(params.split("&&"))); 
 
         if (!args.isEmpty())
         {

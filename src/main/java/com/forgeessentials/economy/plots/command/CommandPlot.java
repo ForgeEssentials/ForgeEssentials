@@ -304,7 +304,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                     .translate("/plot buy [amount]: Buy the plot you are standing in. Owner needs to approve the transaction if plot is not up for sale"));
             return Command.SINGLE_SUCCESS;
         }
-        List<String> args = Arrays.asList(params.split("-"));
+        List<String> args = new ArrayList<String>(Arrays.asList(params.split("-")));
         switch (params)
         {
         case "define":

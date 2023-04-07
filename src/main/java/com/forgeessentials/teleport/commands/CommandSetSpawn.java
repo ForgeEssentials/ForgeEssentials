@@ -6,6 +6,7 @@ import net.minecraft.command.arguments.BlockPosArgument;
 import net.minecraft.command.arguments.DimensionArgument;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -89,7 +90,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        List<String> args = Arrays.asList(params.split("-"));
+        List<String> args = new ArrayList<String>(Arrays.asList(params.split("-")));
         PermissionCommandParser.parseGroupSpawn(ctx, args, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone(), true);
         return Command.SINGLE_SUCCESS;
     }

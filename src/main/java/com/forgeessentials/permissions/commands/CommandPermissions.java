@@ -948,7 +948,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feperm " + StringUtils.join(PermissionCommandParser.parseMainArgs, "|") + ": Displays help for the subcommands");
             return Command.SINGLE_SUCCESS;
         }
-        List<String> args = Arrays.asList(params.split("-")); 
+        List<String> args = new ArrayList<String>(Arrays.asList(params.split("-"))); 
         PermissionCommandParser.parseMain(ctx, args);
         return Command.SINGLE_SUCCESS;
     }
