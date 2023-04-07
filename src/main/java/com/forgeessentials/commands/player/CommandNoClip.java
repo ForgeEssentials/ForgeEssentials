@@ -1,13 +1,5 @@
 package com.forgeessentials.commands.player;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
-
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.Packet5Noclip;
@@ -16,6 +8,13 @@ import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.server.permission.DefaultPermissionLevel;
+import net.minecraftforge.server.permission.PermissionAPI;
 
 public class CommandNoClip extends ForgeEssentialsCommandBase
 {
@@ -61,9 +60,16 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
         }
 
         if (!player.capabilities.isFlying && !player.noClip)
+        {
             throw new TranslatedCommandException("You must be flying.");
+        }
 
         PlayerInfo pi = PlayerInfo.get(player);
+        if (player.noClip && !pi.isNoClip())
+        {
+            throw new TranslatedCommandException("Unable to enable noClip, another mod is using this functionality!");
+        }
+
         if (args.length == 0)
         {
             pi.setNoClip(!pi.isNoClip());
@@ -72,8 +78,12 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
         {
             pi.setNoClip(Boolean.parseBoolean(args[0]));
         }
+
+        player.noClip = pi.isNoClip();
         if (!pi.isNoClip())
+        {
             WorldUtil.placeInWorld(player);
+        }
 
         NetworkUtils.netHandler.sendTo(new Packet5Noclip(pi.isNoClip()), player);
         ChatOutputHandler.chatConfirmation(player, "Noclip " + (pi.isNoClip() ? "enabled" : "disabled"));
@@ -87,6 +97,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBase
             if (!player.capabilities.isFlying)
             {
                 pi.setNoClip(false);
+                player.noClip = false;
                 WorldUtil.placeInWorld(player);
                 if (!player.world.isRemote)
                 {
