@@ -1,5 +1,6 @@
 package com.forgeessentials.commands.world;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -133,9 +134,9 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
         {
             if (args.size() < 3)
                 throw new TranslatedCommandException("Improper syntax: <radius> [type] [x y z] [world]");
-            x = parseDouble(args.remove(0), sender.position().x);
-            y = parseDouble(args.remove(0), sender.position().y);
-            z = parseDouble(args.remove(0), sender.position().z);
+            x = parseDouble(args.remove(0));
+            y = parseDouble(args.remove(0));
+            z = parseDouble(args.remove(0));
         }
 
         if (!args.isEmpty())
