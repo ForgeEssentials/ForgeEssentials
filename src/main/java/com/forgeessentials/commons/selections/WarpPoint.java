@@ -299,7 +299,7 @@ public class WarpPoint
     }
 
     private static final Pattern fromStringPattern = Pattern.compile(
-            "\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=(-?\\s+),pitch=(-?[\\d.]+),yaw=(-?[\\d.]+)\\]");
+            "\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=([A-Za-z0-9:]+),pitch=(-?[\\d.]+),yaw=(-?[\\d.]+)\\]");
 
     public static WarpPoint fromString(String value)
     {

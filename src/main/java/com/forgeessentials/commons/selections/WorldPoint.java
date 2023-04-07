@@ -166,7 +166,7 @@ public class WorldPoint extends Point
         return "[" + x + "," + y + "," + z + ",dim=" + dim + "]";
     }
 
-    private static final Pattern fromStringPattern = Pattern.compile("\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=(-?\\d+)\\]");
+    private static final Pattern fromStringPattern = Pattern.compile("\\[(-?[\\d.]+),(-?[\\d.]+),(-?[\\d.]+),dim=([A-Za-z0-9:]+)\\]");
 
     public static WorldPoint fromString(String value)
     {
