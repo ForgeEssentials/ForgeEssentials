@@ -1,33 +1,28 @@
 package com.forgeessentials.core.misc;
 
-import java.util.List;
-
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandSource;
 
-public class FEcommandData
+public class FECommandData
 {
-    public FEcommandData(String mainName, List<String> aliases, ForgeEssentialsCommandBuilder commandData, CommandDispatcher<CommandSource> dispatcher)
+    public FECommandData(String mainName, ForgeEssentialsCommandBuilder commandData, CommandDispatcher<CommandSource> dispatcher)
     {
         name = mainName;
-        Aliases = aliases;
         registered= false;
         data =commandData;
         disp = dispatcher;
     }
-    public FEcommandData(ForgeEssentialsCommandBuilder commandBuilder, CommandDispatcher<CommandSource> dispatcher)
+    public FECommandData(ForgeEssentialsCommandBuilder commandBuilder, CommandDispatcher<CommandSource> dispatcher)
     {
         name = commandBuilder.getName();
-        Aliases = commandBuilder.getAliases();
         registered= false;
         data = commandBuilder;
         disp = dispatcher;
     }
 
     private String name;
-    protected List<String> Aliases;
     private boolean registered;
     private ForgeEssentialsCommandBuilder data;
     private CommandDispatcher<CommandSource> disp;
@@ -35,14 +30,6 @@ public class FEcommandData
     public String getName()
     {
         return name;
-    }
-    public List<String> getAliases()
-    {
-        return Aliases;
-    }
-    public void setAliases(List<String> aliases)
-    {
-        Aliases = aliases;
     }
     public ForgeEssentialsCommandBuilder getData()
     {

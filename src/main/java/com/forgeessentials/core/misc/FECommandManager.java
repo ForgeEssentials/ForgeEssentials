@@ -46,7 +46,7 @@ public class FECommandManager implements ConfigLoader
 
     protected static Map<String, ForgeConfigSpec.ConfigValue<List<? extends String>>> commandAlises = new HashMap<>();//fine
 
-    protected static Set<FEcommandData> loadedFEcommands = new HashSet<>();
+    protected static Set<FECommandData> loadedFEcommands = new HashSet<>();
     protected static Set<String> registeredFEcommands = new HashSet<>();
     protected static Set<String> registeredAiliases = new HashSet<>();
 
@@ -86,7 +86,7 @@ public class FECommandManager implements ConfigLoader
 		return data;
 	}
 
-    private static void loadCommandConfig(FEcommandData commandData)
+    private static void loadCommandConfig(FECommandData commandData)
     {
         //Create commandConfig
         ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
@@ -132,7 +132,7 @@ public class FECommandManager implements ConfigLoader
 
     public static void registerCommand(ForgeEssentialsCommandBuilder commandBuilder, boolean registerNow, CommandDispatcher<CommandSource> dispatcher)
     {
-        FEcommandData command = new FEcommandData(commandBuilder, dispatcher);
+        FECommandData command = new FECommandData(commandBuilder, dispatcher);
         loadedFEcommands.add(command);
         if (useSingleConfigFile = false)
         {
@@ -144,8 +144,8 @@ public class FECommandManager implements ConfigLoader
 
     public static void deegisterCommand(String name)
     {
-        FEcommandData command=null;
-        for(FEcommandData cmd : loadedFEcommands) {
+        FECommandData command=null;
+        for(FECommandData cmd : loadedFEcommands) {
             if(cmd.getData().getName()== name) {
                 command = cmd;
                 break;
@@ -164,7 +164,7 @@ public class FECommandManager implements ConfigLoader
     public static void registerAndLoadCommands()
     {
         LoggingHandler.felog.info("ForgeEssentials: Registering known commands");
-        for (FEcommandData command : loadedFEcommands)
+        for (FECommandData command : loadedFEcommands)
             if (!registeredFEcommands.contains(command.getData().getName()))
             {
                 register(command);
@@ -186,7 +186,7 @@ public class FECommandManager implements ConfigLoader
     /**
      * Registers this command and it's permission node
      */
-    public static void register(FEcommandData commandData)
+    public static void register(FECommandData commandData)
     {
         
         if (ServerLifecycleHooks.getCurrentServer() == null)
@@ -236,7 +236,7 @@ public class FECommandManager implements ConfigLoader
         commandData.getData().registerExtraPermissions();
     }
 
-    public static void deregister(FEcommandData commandData)
+    public static void deregister(FECommandData commandData)
     {
         /*
         if (ServerLifecycleHooks.getCurrentServer() == null)
