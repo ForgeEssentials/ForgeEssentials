@@ -77,7 +77,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBuilder
                         )
                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
                         .then(Commands.argument("dim", DimensionArgument.dimension())
-                                .executes(CommandContext -> execute(CommandContext, Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getX())+"-"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getY())+"-"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getZ())+"-"+DimensionArgument.getDimension(CommandContext, "dim").dimension().location().toString())
+                                .executes(CommandContext -> execute(CommandContext, Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getX())+"&&"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getY())+"&&"+Integer.toString(BlockPosArgument.getLoadedBlockPos(CommandContext, "pos").getZ())+"&&"+DimensionArgument.getDimension(CommandContext, "dim").dimension().location().toString())
                                         )
                                 )
                         )
@@ -92,7 +92,7 @@ public class CommandSetSpawn extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        List<String> args = new ArrayList<String>(Arrays.asList(params.split("-")));
+        List<String> args = new ArrayList<String>(Arrays.asList(params.split("&&")));
         PermissionCommandParser.parseGroupSpawn(ctx, args, Zone.GROUP_DEFAULT, APIRegistry.perms.getServerZone(), true);
         return Command.SINGLE_SUCCESS;
     }
