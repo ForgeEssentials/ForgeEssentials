@@ -55,8 +55,13 @@ repositories {
     }
 
 	maven {
-		name "Sonatype (Cubic Chunks)"
-		url "https://oss.sonatype.org/content/repositories/public/"
+		name = "CurseForge"
+		url = "https://minecraft.curseforge.com/api/maven/"
+	}
+
+	maven {
+		name = "sk89q"
+		url = "https://maven.enginehub.org/repo/"
 	}
 
 	maven {
@@ -64,25 +69,21 @@ repositories {
 		url = "https://repo.spongepowered.org/maven/"
 	}
 
-	maven {
-		name = "CurseForge"
-		url = "https://minecraft.curseforge.com/api/maven/"
-	}
-
     maven {
         name = "JEI"
         url "http://dvs1.progwml6.com/files/maven"
 		allowInsecureProtocol = true
     }
-	maven {
-		name = "sk89q"
-		url = "https://maven.enginehub.org/repo/"
-	}
 
     maven {
         name = "forge"
         url = "https://files.minecraftforge.net/maven"
     }
+
+	maven {
+		name "Sonatype (Cubic Chunks)"
+		url "https://oss.sonatype.org/content/repositories/public/"
+	}
 }
 
 apply plugin: 'net.minecraftforge.gradle'
