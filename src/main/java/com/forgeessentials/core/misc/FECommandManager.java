@@ -53,7 +53,7 @@ public class FECommandManager implements ConfigLoader
 
     public FECommandManager()
     {
-        ForgeEssentials.getConfigManager().registerSpecs(this);
+        //ForgeEssentials.getConfigManager().registerSpecs(this);
         aliaseManager = new FEAliasesManager();
     }
 
@@ -75,8 +75,6 @@ public class FECommandManager implements ConfigLoader
             newMappings = true;
             FECversion.set(COMMANDS_VERSION);
         }
-        //for (ForgeEssentialsCommandBuilder command : commands.values())
-        //    loadCommandConfig(command);
     }
 
 	@Override
