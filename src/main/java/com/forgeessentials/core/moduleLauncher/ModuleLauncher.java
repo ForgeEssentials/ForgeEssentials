@@ -156,7 +156,7 @@ public class ModuleLauncher
             if (module.module instanceof ConfigLoader)
             {
                 LoggingHandler.felog.debug("Registering configuration for FE module " + module.name);
-                ForgeEssentials.getConfigManager().registerSpecs(module.name, (ConfigLoader) module.module);
+                ForgeEssentials.getConfigManager().registerSpecs((ConfigLoader) module.module);
             }
             else
             {

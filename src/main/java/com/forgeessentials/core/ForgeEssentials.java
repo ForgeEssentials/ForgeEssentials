@@ -254,7 +254,7 @@ public class ForgeEssentials
 
         ConfigBase.getModuleConfig().loadModuleConfig();
         ConfigBase.getModuleConfig().setCreated();
-        configManager.registerSpecs(configManager.getMainConfigName(), new FEConfig());
+        configManager.registerSpecs(new FEConfig());
     }
 
     private void registerNetworkMessages()

@@ -38,7 +38,7 @@ public class ConfigBase
         moduleConfig = new ModuleConfig();
     }
 
-    public void registerSpecs(String configName, ConfigLoader loader)
+    public void registerSpecs(ConfigLoader loader)
     {
     	//make list of unique specs or config files
     	if (!loaders.contains(loader))

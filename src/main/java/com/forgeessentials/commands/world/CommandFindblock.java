@@ -42,7 +42,7 @@ public class CommandFindblock extends ForgeEssentialsCommandBuilder implements C
     @Override
     public void loadData()
     {
-    	
+        /* do nothing */
     }
 
     @Override

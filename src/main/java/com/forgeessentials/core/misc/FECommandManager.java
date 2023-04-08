@@ -56,7 +56,7 @@ public class FECommandManager implements ConfigLoader
 
     public FECommandManager()
     {
-        ForgeEssentials.getConfigManager().registerSpecs("Commands", this);
+        ForgeEssentials.getConfigManager().registerSpecs(this);
     }
 
     static ForgeConfigSpec.IntValue FECversion;

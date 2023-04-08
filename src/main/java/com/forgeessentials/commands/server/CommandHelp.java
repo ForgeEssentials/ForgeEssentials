@@ -215,7 +215,7 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
     @Override
     public void loadData()
     {
-        
+        /* do nothing */
     }
 
 }
