@@ -25,6 +25,7 @@ import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -326,10 +327,10 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
 
     public static void save()
     {
-        DataManager.getInstance().deleteAll(WeatherData.class);
+        DataManager.getInstance().deleteAll(TimeData.class);
         for (Entry<String, TimeData> state : timeData.entrySet())
         {
-            DataManager.getInstance().save(state.getValue(), state.getKey().toString());
+            DataManager.getInstance().save(state.getValue(), state.getKey().toString().replace(":", "-"));
         }
     }
 
@@ -344,7 +345,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
                 continue;
             try
             {
-                timeData.put(state.getKey(), state.getValue());
+                timeData.put(state.getKey().replace("-", ":"), state.getValue());
             }
             catch (NumberFormatException e)
             {
