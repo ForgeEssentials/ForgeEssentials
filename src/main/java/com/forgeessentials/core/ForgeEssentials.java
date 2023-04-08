@@ -335,7 +335,7 @@ public class ForgeEssentials
 
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         // CommandSetChecker.remove();
-        FECommandManager.registerAndLoadCommands();
+        FECommandManager.registerLoadedCommands();
 
         // Do permission registration in first server tick.
         // TODO This can be removed if the Permission API gets accepted!

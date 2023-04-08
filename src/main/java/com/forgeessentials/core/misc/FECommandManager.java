@@ -13,7 +13,6 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.core.FEConfig;
-import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoader;
@@ -109,10 +108,10 @@ public class FECommandManager implements ConfigLoader
         }
     }
 
-    public static void registerAndLoadCommands()
+    public static void registerLoadedCommands()
     {
         LoggingHandler.felog.info("ForgeEssentials: Registering known commands");
-        for (FECommandData command : loadedFEcommands)
+        for (FECommandData command : loadedFEcommands) {
             if (!registeredFEcommands.contains(command.getData().getName()))
             {
             	FEAliasesManager.bakeCommandConfig(command);
@@ -121,6 +120,7 @@ public class FECommandManager implements ConfigLoader
                     ((ConfigurableCommand) command.getData()).loadData();
             }
         LoggingHandler.felog.info("Registered "+Integer.toString(registeredFEcommands.size()+registeredAiliases.size())+" commands");
+        }
         //CommandFeSettings.getInstance().loadSettings();
     }
 

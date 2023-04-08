@@ -23,15 +23,14 @@ public class ConfigBase
 
     private Set<ConfigLoader> builtLoaders = new HashSet<>();
 
-    private static File rootDirectory;
 
     public static Predicate<Object> stringValidator = a -> a instanceof String;
     public static Predicate<Object> intValidator = b -> b instanceof Integer;
     public static Predicate<Object> booleanValidator = c -> c instanceof Boolean;
 
-    public ConfigBase(File rootDirectory)
+    public ConfigBase(File rootDirectory1)
     {
-        ConfigBase.rootDirectory = rootDirectory;
+        //rootDirectory = rootDirectory1;
         moduleConfig = new ModuleConfig();
     }
 
