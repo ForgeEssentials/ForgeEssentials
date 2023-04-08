@@ -235,7 +235,7 @@ public abstract class ServerUtil
         if (Environment.isClient())
             return new File(ServerLifecycleHooks.getCurrentServer().getFile("saves"), ServerLifecycleHooks.getCurrentServer().getWorldData().getLevelName());
         else
-            return ServerLifecycleHooks.getCurrentServer().getServerDirectory();
+            return new File(ServerLifecycleHooks.getCurrentServer().getServerDirectory(),"world");
     }
 
     /* ------------------------------------------------------------ */
