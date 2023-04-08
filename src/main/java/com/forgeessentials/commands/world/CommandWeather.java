@@ -208,7 +208,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
         if (args[1]=="info")
         {
             WeatherState state = getWeatherState(dim, type);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s is %s in world %d", StringUtils.capitalize(typeName), state.toString().toLowerCase(), dim));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s is %s in world %s", StringUtils.capitalize(typeName), state.toString().toLowerCase(), dim));
             return Command.SINGLE_SUCCESS;
         }
 
@@ -223,7 +223,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
             {
                 world.setWeatherParameters(0, 0, true, true);
             }
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started %s in world %d", typeName, dim);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started %s in world %s", typeName, dim);
             break;
         case STOP:
             if (type == WeatherType.RAIN)
@@ -233,7 +233,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
                 boolean rain = world.isRaining();
                 world.setWeatherParameters(0, 0, rain, false);
             }
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped %s in world %d", typeName, dim);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Stopped %s in world %s", typeName, dim);
             break;
         default:
             WeatherData worldData = weatherStates.get(dim);
@@ -245,7 +245,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
 
             worldData.put(type, state);
             save();
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s %s in world %d", StringUtils.capitalize(state.toString().toLowerCase()), typeName, dim));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%s %s in world %s", StringUtils.capitalize(state.toString().toLowerCase()), typeName, dim));
             updateWorld(world);
             break;
         }
@@ -307,7 +307,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
         DataManager.getInstance().deleteAll(WeatherData.class);
         for (Entry<String, WeatherData> state : weatherStates.entrySet())
         {
-            DataManager.getInstance().save(state.getValue(), state.getKey().toString());
+            DataManager.getInstance().save(state.getValue(), state.getKey().toString().replace(":", "-"));
         }
     }
 
@@ -322,7 +322,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
                 continue;
             try
             {
-                weatherStates.put(state.getKey(), state.getValue());
+                weatherStates.put(state.getKey().replace("-", ":"), state.getValue());
             }
             catch (NumberFormatException e)
             {

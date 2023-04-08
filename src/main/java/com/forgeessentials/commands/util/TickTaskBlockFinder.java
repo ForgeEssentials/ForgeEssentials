@@ -64,7 +64,7 @@ public class TickTaskBlockFinder implements TickTask
         blockState = blockstateT;
 
         stack = new ItemStack(block, 1);
-        blockName = !stack.isEmpty() ? stack.getDisplayName().toString() : ServerUtil.getBlockName(block);
+        blockName = !stack.isEmpty() ? stack.getDisplayName().getString() : ServerUtil.getBlockName(block);
 
         msg("Start the hunt for " + blockName);
         TaskRegistry.schedule(this);
