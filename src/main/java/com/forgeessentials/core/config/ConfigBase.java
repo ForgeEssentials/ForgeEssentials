@@ -1,13 +1,10 @@
 package com.forgeessentials.core.config;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
 import com.forgeessentials.util.output.LoggingHandler;
 
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -44,6 +41,23 @@ public class ConfigBase
     	if (!loaders.contains(loader))
     	    loaders.add(loader);
     }
+    public void loadNBuildSpec(ConfigLoader loader)
+    {
+    	//make list of unique specs or config files
+    	if (!loaders.contains(loader))
+    	    loaders.add(loader);
+    	loadConfig(loader);
+    	buildConfig(loader);
+    }
+    public void loadNBuildNBakeSpec(ConfigLoader loader)
+    {
+    	//make list of unique specs or config files
+    	if (!loaders.contains(loader))
+    	    loaders.add(loader);
+    	loadConfig(loader);
+    	buildConfig(loader);
+    	bakeConfig(loader, false);
+    }
 
     /*
      * Should only be called once
@@ -69,6 +83,21 @@ public class ConfigBase
         }
 
         LoggingHandler.felog.debug("Finished loading configuration files");
+    }
+    public void loadConfig(ConfigLoader loader)
+    {
+        if (loadedLoaders.contains(loader)) {
+    	    LoggingHandler.felog.error("Configuration file: "+loader.returnData().getName()+" is alredy loaded");
+            return;
+    	}
+    	if (builtLoaders.contains(loader)) {
+            LoggingHandler.felog.error("Configuration file: "+loader.returnData().getName()+" is alredy built");
+            return;
+        }
+
+    	loadedLoaders.add(loader);
+        LoggingHandler.felog.debug("Loading configuration file: "+loader.returnData().getName());
+        loader.load(loader.returnData().getSpecBuilder(), false);
     }
 
     /*
@@ -96,9 +125,29 @@ public class ConfigBase
         }
         LoggingHandler.felog.debug("Finished building configuration files");
     }
+    public void buildConfig(ConfigLoader loader)
+    {
+    	if(!loadedLoaders.contains(loader))
+        {
+            builtLoaders.add(loader);
+            LoggingHandler.felog.error("Cant Build config: "+loader.returnData().getName()+" because it hasen't been loaded");
+            return;
+        }
+        if(builtLoaders.contains(loader)) {
+            LoggingHandler.felog.error("Configuration file: "+loader.returnData().getName()+" is alredy built");
+            return;
+        }else {
+            LoggingHandler.felog.debug("Building configuration file : "+loader.returnData().getName());
+            loader.returnData().setSpec(loader.returnData().getSpecBuilder().build());
+            builtLoaders.add(loader);
+            registerConfigManual(loader.returnData().getSpec(),loader.returnData().getName(),true);
+        }
+    }
 
     /*
      * Can be called any number of times
+     * loading, building, and baking needing to be done after this is called
+     * use ForgeEssentials.getConfigManager().loadNBuildNBakeSpec(ConfigLoader);
      * */
     public void bakeAllRegisteredConfigs(boolean reload)
     {
@@ -121,7 +170,22 @@ public class ConfigBase
         
         LoggingHandler.felog.debug("Finished baking configuration files");
     }
-
+    public void bakeConfig(ConfigLoader loader,boolean reload)
+    {
+        if(!loadedLoaders.contains(loader))
+        {
+            builtLoaders.add(loader);
+            LoggingHandler.felog.error("Cant Bake config: "+loader.returnData().getName()+" because it hasen't been loaded");
+            return;
+        }
+        if(!builtLoaders.contains(loader)) {
+            LoggingHandler.felog.error("Cant Bake config: "+loader.returnData().getName()+" because it hasen't been built");
+            return;
+        }
+        LoggingHandler.felog.info("Baked config:"+loader.returnData().getName());
+        loader.bakeConfig(reload);
+    }
+/*
     public static void registerConfigManual(ForgeConfigSpec spec, Path path, boolean autoSave)
     {
     	LoggingHandler.felog.debug("Registering configuration fileZYA: "+path);
@@ -142,7 +206,7 @@ public class ConfigBase
             spec.setConfig(configData);
         }
     }
-
+*/
     public static void registerConfigManual(ForgeConfigSpec spec, String name, boolean autoSave)
     {
     	LoggingHandler.felog.debug("Registering configuration fileM: "+name);
