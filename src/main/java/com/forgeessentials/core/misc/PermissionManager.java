@@ -103,7 +103,7 @@ public class PermissionManager
 
         for (CommandNode<CommandSource> commandNode : dispatcher.getRoot().getChildren()) {
             if (commandNode.getRequirement() != null) {
-                LoggingHandler.felog.info("Found command: " + StringUtils.rightPad(commandNode.getUsageText(), 20) + " - Permission: " + getCommandPermission(commandNode.getUsageText()));
+                LoggingHandler.felog.debug("Found command: " + StringUtils.rightPad(commandNode.getUsageText(), 20) + " - Permission: " + getCommandPermission(commandNode.getUsageText()));
             }else {
                 LoggingHandler.felog.info("Bad CommandRe: " + StringUtils.rightPad(commandNode.getUsageText(), 20));
             }

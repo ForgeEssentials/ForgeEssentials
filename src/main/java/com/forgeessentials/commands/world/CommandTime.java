@@ -10,7 +10,6 @@ import net.minecraft.command.arguments.DimensionArgument;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -350,17 +349,5 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
                 /* do nothing or log message */
             }
         }
-    }
-
-    @Override
-    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
-    {
-        /* do nothing */
-    }
-
-    @Override
-    public void bakeConfig(boolean reload)
-    {
-    	/* do nothing */
     }
 }

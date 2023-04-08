@@ -11,14 +11,10 @@ import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.compat.HelpFixer;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.config.ConfigBase;
-import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.scripting.ScriptArguments;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -29,7 +25,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 
-public class CommandHelp extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
+public class CommandHelp extends ForgeEssentialsCommandBuilder
 {
     CommandDispatcher<CommandSource> dispatcher;
     public CommandHelp(boolean enabled, CommandDispatcher<CommandSource> disp)
@@ -44,13 +40,13 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
 
     }
 
-    private static List<String> messages=new ArrayList<>();
+    public static List<String> messages=new ArrayList<>();
 
-    private static Integer entriesPerPage=8;
+    public static Integer entriesPerPage=8;
 
-    private static Integer commandColor=2;
+    public static Integer commandColor=2;
 
-    private static Integer subCommandColor=7;
+    public static Integer subCommandColor=7;
     
     public HelpFixer fixer;
 
@@ -175,47 +171,4 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder implements Config
         }
         ChatOutputHandler.sendMessage(ctx.getSource(), " Page " + page + " / " + totalpages + ", /help <page>", TextFormatting.YELLOW);
     }
-
-    static ForgeConfigSpec.ConfigValue<List<? extends String>> FEmessages;
-    static ForgeConfigSpec.IntValue FEentriesPerPage;
-    static ForgeConfigSpec.IntValue FEcommandColor;
-    static ForgeConfigSpec.IntValue FEsubCommandColor;
-
-    @Override
-    public void loadConfig(Builder BUILDER, String category)
-    {
-        BUILDER.comment("Configure ForgeEssentials Help Command.").push(category);
-        FEmessages = BUILDER.comment("Add custom messages here that will appear when /help is run")
-                .defineList("custom_help", new ArrayList<String>(),ConfigBase.stringValidator);
-        FEentriesPerPage = BUILDER.comment("Amount to commands to show per help page")
-                .defineInRange("commandPerPage", 8, 1, 50);
-        FEcommandColor = BUILDER.comment("Color for the command in /help. The possible values are; "
-                + "0: black, 1: dark_blue, 2: dark_green, 3: dark_aqua, 4: dark_red, "
-                + "5: dark_purple, 6: gold, 7: gray, 8: dark_gray, 9: blue, "
-                + "10: green, 11: aqua, 12: red, 13: light_purple, 14: yellow, 15: white.")
-                .defineInRange("commandColor", 2, 0, 15);
-        FEsubCommandColor = BUILDER.comment("Color for the subcommand in /help. The possible values are; "
-                + "0: black, 1: dark_blue, 2: dark_green, 3: dark_aqua, 4: dark_red, "
-                + "5: dark_purple, 6: gold, 7: gray, 8: dark_gray, 9: blue, "
-                + "10: green, 11: aqua, 12: red, 13: light_purple, 14: yellow, 15: white.")
-                .defineInRange("subCommandColor", 7, 0, 15);
-        BUILDER.pop();
-    }
-
-	@Override
-	public void bakeConfig(boolean reload)
-    {
-        messages = new ArrayList<>(FEmessages.get());
-        entriesPerPage = FEentriesPerPage.get();
-        commandColor = FEcommandColor.get();
-        subCommandColor = FEsubCommandColor.get();
-        
-    }
-
-    @Override
-    public void loadData()
-    {
-        /* do nothing */
-    }
-
 }

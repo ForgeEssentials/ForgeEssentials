@@ -238,7 +238,6 @@ public class ForgeEssentials
     {
         LoggingHandler.felog.info("ForgeEssentials LoadCompleteEvent");
         commandManager = new FECommandManager();
-        getConfigManager().loadNBuildSpec(commandManager);
     }
 
     /* ------------------------------------------------------------ */
@@ -305,6 +304,7 @@ public class ForgeEssentials
     {
         LoggingHandler.felog.info("ForgeEssentials Server About to start");
         ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs(false);//any config baking needing to be done after here must use getConfigManager().loadNBuildNBakeSpec();
+        //ConfigBase.registerConfigManual(FEAliasesManager.returnData().getSpecBuilder().build(), FEAliasesManager.returnData().getName(), true);
         // Initialize data manager once server begins to start
         DataManager.setInstance(new DataManager(new File(ServerUtil.getWorldPath(), "FEData/json")));
         MinecraftForge.EVENT_BUS.post(new FEModuleServerAboutToStartEvent(e));

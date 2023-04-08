@@ -4,19 +4,17 @@ import net.minecraft.block.BlockState;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockStateArgument;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.TickTaskBlockFinder;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandFindblock extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
+public class CommandFindblock extends ForgeEssentialsCommandBuilder
 {
 
     public CommandFindblock(boolean enabled)
@@ -27,30 +25,6 @@ public class CommandFindblock extends ForgeEssentialsCommandBuilder implements C
     public static final int defaultCount = 1;
     public static int defaultRange = 20 * 16;
     public static int defaultSpeed = 16 * 16;
-    ForgeConfigSpec.IntValue FEdefaultRange;
-    ForgeConfigSpec.IntValue FEdefaultSpeed;
-
-    @Override
-    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
-    {
-    	BUILDER.push(category);
-    	FEdefaultRange = BUILDER.comment("Default max distance used.").defineInRange("defaultRange", defaultRange, 0, Integer.MAX_VALUE);
-    	FEdefaultSpeed = BUILDER.comment("Default speed used.").defineInRange("defaultSpeed", defaultSpeed, 0, Integer.MAX_VALUE);
-        BUILDER.pop();
-    }
-
-    @Override
-    public void loadData()
-    {
-        /* do nothing */
-    }
-
-    @Override
-    public void bakeConfig(boolean reload)
-    {
-    	defaultRange = FEdefaultRange.get();
-    	defaultSpeed= FEdefaultSpeed.get();
-    }
 
     @Override
     public String getPrimaryAlias()

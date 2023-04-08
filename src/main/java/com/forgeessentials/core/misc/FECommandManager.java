@@ -1,52 +1,31 @@
 package com.forgeessentials.core.misc;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
-public class FECommandManager implements ConfigLoader
+public class FECommandManager
 {
-    private static ForgeConfigSpec COMMAND_CONFIG;
-	private static final ConfigData data = new ConfigData("Commands", COMMAND_CONFIG, new ForgeConfigSpec.Builder());
 	
     public static interface ConfigurableCommand
     {
-
-        public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category);
-
         public void loadData();
-
-        public void bakeConfig(boolean reload);
-        
     }
-
-    public static final int COMMANDS_VERSION = 5;
-
-    protected static Map<String, ForgeConfigSpec.ConfigValue<List<? extends String>>> commandAlises = new HashMap<>();//fine
 
     protected static Set<FECommandData> loadedFEcommands = new HashSet<>();
     protected static Set<String> registeredFEcommands = new HashSet<>();
     protected static Set<String> registeredAiliases = new HashSet<>();
 
     //protected static boolean useSingleConfigFile = false;
-    
-    protected static boolean newMappings;
 
     public static FEAliasesManager aliaseManager;
 
@@ -56,36 +35,11 @@ public class FECommandManager implements ConfigLoader
         aliaseManager = new FEAliasesManager();
     }
 
-    static ForgeConfigSpec.IntValue FECversion;
-
-	@Override
-	public void load(Builder BUILDER, boolean isReload)
-    {
-        BUILDER.push("CommandsConfig");
-        FECversion = BUILDER.comment("Don't change this value!").defineInRange("version", COMMANDS_VERSION, 0, Integer.MAX_VALUE);
-        BUILDER.pop();
-    }
-
-	@Override
-	public void bakeConfig(boolean reload)
-    {
-        if (FECversion.get() < COMMANDS_VERSION)
-        {
-            newMappings = true;
-            FECversion.set(COMMANDS_VERSION);
-        }
-    }
-
-	@Override
-	public ConfigData returnData() {
-		return data;
-	}
- 
     public static void registerCommand(ForgeEssentialsCommandBuilder commandBuilder, CommandDispatcher<CommandSource> dispatcher)
     {
         FECommandData command = new FECommandData(commandBuilder, dispatcher);
         loadedFEcommands.add(command);
-        FEAliasesManager.loadCommandConfig(command);
+        //FEAliasesManager.loadCommandConfig(command);
         //if (useSingleConfigFile = false){}
     }
 
@@ -114,13 +68,13 @@ public class FECommandManager implements ConfigLoader
         for (FECommandData command : loadedFEcommands) {
             if (!registeredFEcommands.contains(command.getData().getName()))
             {
-            	FEAliasesManager.bakeCommandConfig(command);
+            	//FEAliasesManager.bakeCommandConfig(command);
                 register(command);
                 if (command.getData() instanceof ConfigurableCommand)
                     ((ConfigurableCommand) command.getData()).loadData();
             }
-        LoggingHandler.felog.info("Registered "+Integer.toString(registeredFEcommands.size()+registeredAiliases.size())+" commands");
         }
+        LoggingHandler.felog.info("Registered "+Integer.toString(registeredFEcommands.size()+registeredAiliases.size())+" commands");
         //CommandFeSettings.getInstance().loadSettings();
     }
 
@@ -160,7 +114,7 @@ public class FECommandManager implements ConfigLoader
             }
 
             LiteralCommandNode<CommandSource> literalcommandnode = dispatcher.register(commandData.getData().getMainBuilder());
-            LoggingHandler.felog.info("Registered Command: "+name);
+            LoggingHandler.felog.debug("Registered Command: "+name);
             if(FEConfig.enableCommandAliases){
                 if(commandData.getData().getAliases() != null && !commandData.getData().getAliases().isEmpty()) {
                     try {
@@ -169,7 +123,7 @@ public class FECommandManager implements ConfigLoader
                                 LoggingHandler.felog.error(String.format("Command alias %s already registered!", alias));
                                 continue;
                             }
-                            dispatcher.register(Commands.literal(alias).redirect(literalcommandnode));
+                            dispatcher.register(Commands.literal(alias).redirect(literalcommandnode).requires(source -> source.hasPermission(PermissionManager.fromDefaultPermissionLevel(commandData.getData().getPermissionLevel()))));
                             LoggingHandler.felog.info("Registered Command: "+name+"'s alias: "+alias);
                             registeredAiliases.add(alias);
                         }

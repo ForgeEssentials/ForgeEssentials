@@ -2,27 +2,24 @@ package com.forgeessentials.commands.server;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandPing extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
+public class CommandPing extends ForgeEssentialsCommandBuilder
 {
     public CommandPing(boolean enabled)
     {
         super(enabled);
     }
 
-    public String response = "Pong! %time";
-    static ForgeConfigSpec.ConfigValue<String> FEresponse;
+    public static String response = "Pong! %time";
 
     @Override
     public String getPrimaryAlias()
@@ -67,25 +64,5 @@ public class CommandPing extends ForgeEssentialsCommandBuilder implements Config
     {
         ChatOutputHandler.chatNotification(ctx.getSource(), response.replaceAll("%time", "Server has blazing fast speeds!"));
         return Command.SINGLE_SUCCESS;
-    }
-
-    @Override
-    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
-    {
-    	BUILDER.push(category);
-    	FEresponse = BUILDER.comment("Response Format for command must include %time.").define("response", "Pong! %time");
-    	BUILDER.pop();
-    }
-
-    @Override
-    public void loadData()
-    {
-        /* do nothing */
-    }
-
-    @Override
-    public void bakeConfig(boolean reload)
-    {
-    	response = FEresponse.get();
     }
 }

@@ -8,7 +8,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -330,17 +329,4 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
             }
         }
     }
-
-    @Override
-    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
-    {
-        /* do nothing */
-    }
-
-    //@Override
-    public void bakeConfig(boolean reload)
-    {
-    	/* do nothing */
-    }
-
 }

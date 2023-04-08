@@ -21,16 +21,12 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -41,7 +37,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class CommandRules extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
+public class CommandRules extends ForgeEssentialsCommandBuilder
 {
 
     public CommandRules(boolean enabled)
@@ -53,7 +49,7 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
     public static ArrayList<String> rules = new ArrayList<String>();;
     public static File rulesFile = new File(ForgeEssentials.getFEDirectory(), "rules.txt");
 
-    public ArrayList<String> loadRules()
+    public static ArrayList<String> loadRules()
     {
         ArrayList<String> rules = new ArrayList<>();
 
@@ -258,12 +254,12 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
         else if (params.equals("help"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules [#]");
-            if (PermissionAPI.hasPermission(Splayer, getPermissionNode() + ".edit"))
+            if (hasPermission(Splayer, getPermissionNode() + ".edit"))
             {
-                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules &lt;#> [changedRule]");
-                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules add &lt;newRule>");
-                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules remove &lt;#>");
-                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules move &lt;#> &lt;#>");
+                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules <#> [changedRule]");
+                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules add <newRule>");
+                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules remove <#>");
+                ChatOutputHandler.chatNotification(ctx.getSource(), " - /rules move <#> <#>");
             }
             return Command.SINGLE_SUCCESS;
         }
@@ -273,9 +269,10 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
             return Command.SINGLE_SUCCESS;
         }
 
-        if (!PermissionAPI.hasPermission(ctx.getSource().getPlayerOrException(), getPermissionNode() + ".edit"))
-            throw new TranslatedCommandException(
-                    "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
+        if (!hasPermission(ctx.getSource(), getPermissionNode() + ".edit")) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "You have insufficient permissions to do that. If you believe you received this message in error, please talk to a server admin.");
+        	return Command.SINGLE_SUCCESS;
+        }
 
         int index;
 
@@ -394,27 +391,5 @@ public class CommandRules extends ForgeEssentialsCommandBuilder implements Confi
         }
         saveRules();
         return Command.SINGLE_SUCCESS;
-    }
-
-    static ForgeConfigSpec.ConfigValue<String> name;
-    @Override
-    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
-    {
-    	BUILDER.push(category);
-    	name = BUILDER.comment("Name for rules file").define("filename", "rules.txt");
-    	BUILDER.pop();
-    }
-
-    @Override
-    public void loadData()
-    {
-        /* do nothing */
-    }
-
-    @Override
-    public void bakeConfig(boolean reload)
-    {
-    	rulesFile = new File(ForgeEssentials.getFEDirectory(), name.get());
-    	rules = loadRules();
     }
 }

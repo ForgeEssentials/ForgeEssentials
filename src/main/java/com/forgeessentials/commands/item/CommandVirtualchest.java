@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.Objects;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
 import com.forgeessentials.util.PlayerUtil;
 import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.Command;
@@ -32,7 +30,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 /**
  * Opens a configurable virtual chest
  */
-public class CommandVirtualchest extends ForgeEssentialsCommandBuilder implements ConfigurableCommand
+public class CommandVirtualchest extends ForgeEssentialsCommandBuilder
 {
     public CommandVirtualchest(boolean enabled)
     {
@@ -48,10 +46,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder implement
 
     public static int size = 54;
     public static int rowCount = 6;
-    static ForgeConfigSpec.IntValue FEsize;
-    
     public static String name = "Vault 13";
-    static ForgeConfigSpec.ConfigValue<String> FEname;
 
     @Override
     public String getPrimaryAlias()
@@ -115,30 +110,6 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder implement
                 Objects.requireNonNull(getVirtualChest(1, playerServer)), CommandVirtualchest.rowCount), new StringTextComponent(CommandVirtualchest.name)));
         return Command.SINGLE_SUCCESS;
     }
-    
-    
-    @Override
-    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
-    {
-    	BUILDER.push(category);
-    	FEsize = BUILDER.comment("1 row = 9 slots. 3 = 1 chest, 6 = double chest (max size!).").defineInRange("VirtualChestRows", 6, 1, 6);
-    	FEname = BUILDER.comment("Don't use special stuff....").define("VirtualChestName", "Vault 13");
-    	BUILDER.pop();
-    }
-
-    @Override
-    public void loadData()
-    {
-        /* do nothing */
-    }
-
-	@Override
-	public void bakeConfig(boolean reload) {
-		size = FEsize.get() * 9;
-		rowCount = FEsize.get();
-		name = FEname.get();
-		
-	}
 
 	 public static Inventory getVirtualChest(int id, PlayerEntity player) {
 	     //TODO add multiple virtualChests

@@ -42,20 +42,14 @@ public class ConfigBase
     }
     public void loadNBuildSpec(ConfigLoader loader)
     {
-    	//make list of unique specs or config files
-    	if (!loaders.contains(loader))
-    	    loaders.add(loader);
-    	loadConfig(loader);
-    	buildConfig(loader);
+    	loadConfigForced(loader);
+    	buildConfigForced(loader);
     }
     public void loadNBuildNBakeSpec(ConfigLoader loader)
     {
-    	//make list of unique specs or config files
-    	if (!loaders.contains(loader))
-    	    loaders.add(loader);
-    	loadConfig(loader);
-    	buildConfig(loader);
-    	bakeConfig(loader, false);
+    	loadConfigForced(loader);
+    	buildConfigForced(loader);
+    	bakeConfigForced(loader, false);
     }
 
     /*
@@ -83,17 +77,8 @@ public class ConfigBase
 
         LoggingHandler.felog.debug("Finished loading configuration files");
     }
-    public void loadConfig(ConfigLoader loader)
+    public void loadConfigForced(ConfigLoader loader)
     {
-        if (loadedLoaders.contains(loader)) {
-    	    LoggingHandler.felog.error("Configuration file: "+loader.returnData().getName()+" is alredy loaded");
-            return;
-    	}
-    	if (builtLoaders.contains(loader)) {
-            LoggingHandler.felog.error("Configuration file: "+loader.returnData().getName()+" is alredy built");
-            return;
-        }
-
     	loadedLoaders.add(loader);
         LoggingHandler.felog.debug("Loading configuration file: "+loader.returnData().getName());
         loader.load(loader.returnData().getSpecBuilder(), false);
@@ -124,23 +109,12 @@ public class ConfigBase
         }
         LoggingHandler.felog.debug("Finished building configuration files");
     }
-    public void buildConfig(ConfigLoader loader)
+    public void buildConfigForced(ConfigLoader loader)
     {
-    	if(!loadedLoaders.contains(loader))
-        {
-            builtLoaders.add(loader);
-            LoggingHandler.felog.error("Cant Build config: "+loader.returnData().getName()+" because it hasen't been loaded");
-            return;
-        }
-        if(builtLoaders.contains(loader)) {
-            LoggingHandler.felog.error("Configuration file: "+loader.returnData().getName()+" is alredy built");
-            return;
-        }else {
-            LoggingHandler.felog.debug("Building configuration file : "+loader.returnData().getName());
-            loader.returnData().setSpec(loader.returnData().getSpecBuilder().build());
-            builtLoaders.add(loader);
-            registerConfigManual(loader.returnData().getSpec(),loader.returnData().getName(),true);
-        }
+    	LoggingHandler.felog.debug("Building configuration file : "+loader.returnData().getName());
+        loader.returnData().setSpec(loader.returnData().getSpecBuilder().build());
+        builtLoaders.add(loader);
+        registerConfigManual(loader.returnData().getSpec(),loader.returnData().getName(),true);
     }
 
     /*
@@ -166,21 +140,10 @@ public class ConfigBase
             LoggingHandler.felog.info("Baked config:"+loader.returnData().getName());
             loader.bakeConfig(reload);
         }
-        
         LoggingHandler.felog.debug("Finished baking configuration files");
     }
-    public void bakeConfig(ConfigLoader loader,boolean reload)
+    public void bakeConfigForced(ConfigLoader loader,boolean reload)
     {
-        if(!loadedLoaders.contains(loader))
-        {
-            builtLoaders.add(loader);
-            LoggingHandler.felog.error("Cant Bake config: "+loader.returnData().getName()+" because it hasen't been loaded");
-            return;
-        }
-        if(!builtLoaders.contains(loader)) {
-            LoggingHandler.felog.error("Cant Bake config: "+loader.returnData().getName()+" because it hasen't been built");
-            return;
-        }
         LoggingHandler.felog.info("Baked config:"+loader.returnData().getName());
         loader.bakeConfig(reload);
     }

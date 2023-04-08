@@ -10,7 +10,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -52,7 +51,6 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
     public static final String PERM_ADMIN = ModuleCommands.PERM + ".admin";
     public static final String PERM_BYPASS_COOLDOWN = PERM + ".bypasscooldown";
 
-    static ForgeConfigSpec.ConfigValue<String> FEkitForNewPlayers;
     public static String kitForNewPlayers;
 
     public static Map<String, Kit> kits = new HashMap<>();
@@ -211,20 +209,6 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
         Kit kit = kits.get(kitForNewPlayers);
         if (kit != null)
             kit.giveKit(event.getPlayer());
-    }
-
-    @Override
-    public void loadConfig(ForgeConfigSpec.Builder BUILDER, String category)
-    {
-    	BUILDER.push(category);
-    	FEkitForNewPlayers = BUILDER.comment("Name of kit to issue to new players. If this is left blank, it will be ignored.").define("kitForNewPlayers", "");
-    	BUILDER.pop();
-    }
-    
-    @Override
-    public void bakeConfig(boolean reload)
-    {
-    	kitForNewPlayers = FEkitForNewPlayers.get();
     }
 
     @Override
