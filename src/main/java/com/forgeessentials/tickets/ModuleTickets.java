@@ -97,6 +97,8 @@ public class ModuleTickets implements ConfigSaver
         {
             DataManager.getInstance().save(ticket, Integer.toString(ticket.id));
         }
+        FEcategories.set(ModuleTickets.categories);
+        FEcurrentID.set(ModuleTickets.currentID);
     }
 
     public static Ticket getID(int i)

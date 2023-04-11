@@ -5,17 +5,16 @@ import java.util.List;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TeleportHelper;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
@@ -26,6 +25,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 
 public class CommandTicket extends ForgeEssentialsCommandBuilder
 {
@@ -51,32 +51,36 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.literal("list")
-                        .then(Commands.argument("page", IntegerArgumentType.integer(0, ModuleTickets.ticketList.size() / 7))
+                        .then(Commands.argument("page", IntegerArgumentType.integer(1, (int) Math.ceil((double)ModuleTickets.ticketList.size() / 7)))
                                 .executes(CommandContext -> execute(CommandContext, "list")
                                         )
                                 )
+                        .executes(CommandContext -> execute(CommandContext, "list-one")
+                                )
                         )
                 .then(Commands.literal("new")
-                        //.then(Commands.argument("catagory", ModuleTickets.categories)//TODO add constructor string
-                        .then(Commands.argument("message", StringArgumentType.greedyString())
-                                .executes(CommandContext -> execute(CommandContext, "new"))
+                        .then(Commands.argument("category", StringArgumentType.word())
+                                .suggests(SUGGEST_category)
+                                .then(Commands.argument("message", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "new")
+                                                )
                                         )
-                               // )
+                                )
                         )
                 .then(Commands.literal("view")
-                        .then(Commands.argument("id", IntegerArgumentType.integer(0, ModuleTickets.currentID + 1))
+                        .then(Commands.argument("id", IntegerArgumentType.integer(1))
                                 .executes(CommandContext -> execute(CommandContext, "view")
                                         )
                                 )
                         )
                 .then(Commands.literal("tp")
-                        .then(Commands.argument("id", IntegerArgumentType.integer(0, ModuleTickets.currentID + 1))
+                        .then(Commands.argument("id", IntegerArgumentType.integer(1))
                                 .executes(CommandContext -> execute(CommandContext, "tp")
                                         )
                                 )
                         )
                 .then(Commands.literal("del")
-                        .then(Commands.argument("id", IntegerArgumentType.integer(0, ModuleTickets.currentID ))
+                        .then(Commands.argument("id", IntegerArgumentType.integer(1))
                                 .executes(CommandContext -> execute(CommandContext, "del")
                                         )
                                 )
@@ -84,6 +88,10 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
                 .executes(CommandContext -> execute(CommandContext, "blank")
                         );
     }
+
+    public static final SuggestionProvider<CommandSource> SUGGEST_category = (ctx, builder) -> {
+        return ISuggestionProvider.suggest(ModuleTickets.categories, builder);
+     };
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
@@ -100,20 +108,29 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
             {
                 usage += "|del <id>";
             }
-            throw new TranslatedCommandException("Usage: /ticket <" + usage + ">");
+            ChatOutputHandler.chatError(ctx.getSource(), "Usage: /ticket <" + usage + ">");
+            return Command.SINGLE_SUCCESS;
         }
 
         if (params.equals("view") && permcheck(ctx.getSource(), "view"))
         {
             int id = IntegerArgumentType.getInteger(ctx, "id");
             Ticket t = ModuleTickets.getID(id);
+            if(t==null) {
+                ChatOutputHandler.chatError(ctx.getSource(), Translator.format("No such ticket with ID %d!", id));
+                return Command.SINGLE_SUCCESS;
+            }
             ChatOutputHandler.chatNotification(ctx.getSource(), c + "#" + t.id + " : " + t.creator + " - " + t.category + " - " + t.message);
+            return Command.SINGLE_SUCCESS;
         }
 
-        if (params.equals("list") && permcheck(ctx.getSource(), "view"))
+        if ((params.equals("list")||params.equals("list-one"))&& permcheck(ctx.getSource(), "view"))
         {
-            int page = 0;
-            int pages = IntegerArgumentType.getInteger(ctx, "page");
+            int page = 1;
+            int pages = (int) Math.ceil((double)ModuleTickets.ticketList.size() / 7);
+            if(params.equals("list")) {
+                page = IntegerArgumentType.getInteger(ctx, "page");
+            }
 
             if (ModuleTickets.ticketList.size() == 0)
             {
@@ -121,7 +138,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
                 return Command.SINGLE_SUCCESS;
             }
             ChatOutputHandler.chatNotification(ctx.getSource(), c + "--- Ticket List ---");
-            for (int i = page * 7; i < (page + 1) * 7; i++)
+            for (int i = (page * 7)-7; i < (page + 1) * 7; i++)
             {
                 try
                 {
@@ -133,19 +150,23 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
                     break;
                 }
             }
-            ChatOutputHandler.chatNotification(ctx.getSource(), c + Translator.format("--- Page %1$d of %2$d ---", page + 1, pages + 1));
+            ChatOutputHandler.chatNotification(ctx.getSource(), c + Translator.format("--- Page %1$d of %2$d ---", page, pages));
             return Command.SINGLE_SUCCESS;
         }
 
         if (params.equals("new") && permcheck(ctx.getSource(), "new"))
         {
-            String catagory = null;
-            if (!ModuleTickets.categories.contains(catagory))
-                throw new TranslatedCommandException("message.error.illegalCategory", catagory);
+            String catagory = StringArgumentType.getString(ctx, "category");
+            if (!ModuleTickets.categories.contains(catagory)) {
+                ChatOutputHandler.chatError(ctx.getSource(), "message.error.illegalCategory", catagory);
+                return Command.SINGLE_SUCCESS;
+            }
 
             String msg = StringArgumentType.getString(ctx, "message");
             Ticket t = new Ticket(ctx.getSource(), catagory, msg);
             ModuleTickets.ticketList.add(t);
+            DataManager.getInstance().save(t, Integer.toString(t.id));
+            ModuleTickets.FEcurrentID.set(ModuleTickets.currentID);
             ChatOutputHandler.chatNotification(ctx.getSource(), c + Translator.format("Your ticket with ID %d has been posted.", t.id));
 
             // notify any ticket-admins that are online
@@ -162,21 +183,27 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
         {
 
             int id = IntegerArgumentType.getInteger(ctx, "id");
-            TeleportHelper.teleport((ServerPlayerEntity) ctx.getSource().getEntity(), ModuleTickets.getID(id).point);
+            Ticket t = ModuleTickets.getID(id);
+            if(t==null) {
+                ChatOutputHandler.chatError(ctx.getSource(),  Translator.format("No such ticket with ID %d!", id));
+                return Command.SINGLE_SUCCESS;
+            }
+            TeleportHelper.teleport((ServerPlayerEntity) ctx.getSource().getEntity(), t.point);
+            return Command.SINGLE_SUCCESS;
         }
 
         if (params.equals("del") || params.equals("close") && permcheck(ctx.getSource(), "admin"))
         {
             int id = IntegerArgumentType.getInteger(ctx, "id");
             Ticket toRemove = ModuleTickets.getID(id);
-            if (toRemove == null)
-            {
+            if (toRemove == null){
                 ChatOutputHandler.chatError(ctx.getSource(), Translator.format("No such ticket with ID %d!", id));
                 return Command.SINGLE_SUCCESS;
             }
             ModuleTickets.ticketList.remove(toRemove);
             DataManager.getInstance().delete(Ticket.class, String.valueOf(id));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), c + Translator.format("Your ticket with ID %d has been removed.", id));
+            return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -207,7 +234,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
     {
         if (sender.getEntity() instanceof PlayerEntity)
         {
-            return PermissionAPI.hasPermission((PlayerEntity) sender.getEntity(), ModuleTickets.PERMBASE + "." + perm);
+            return hasPermission(sender, ModuleTickets.PERMBASE + "." + perm);
         }
         else
         {
