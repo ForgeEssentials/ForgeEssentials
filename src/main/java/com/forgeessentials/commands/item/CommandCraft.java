@@ -16,7 +16,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -75,16 +74,13 @@ public class CommandCraft extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        ChatOutputHandler.chatNotification(ctx.getSource(),"This feature is currently unimplimented");
-        ChatOutputHandler.chatNotification(ctx.getSource(),"as forge made it impossable to make a custom");
-        ChatOutputHandler.chatNotification(ctx.getSource(),"crafting gui without modifications on the client.");
-        ServerPlayerEntity player = ctx.getSource().getPlayerOrException();
+        ServerPlayerEntity player = getServerPlayer(ctx.getSource());
         ctx.getSource().getPlayerOrException().openMenu(new SimpleNamedContainerProvider((i, playerInventory, playerEntity) ->
                 new WorkbenchContainer(i, playerInventory, IWorldPosCallable.create(player.getCommandSenderWorld(), player.blockPosition())) {
                     public boolean stillValid(PlayerEntity p_75145_1_) {
                         return true;
                      }
-                }, new TranslationTextComponent("container.crafting")));
+                }, new TranslationTextComponent("FE Virtual Crafting")));
         return Command.SINGLE_SUCCESS;
     }
 }
