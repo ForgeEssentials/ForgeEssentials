@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.mixin.tileentity;
+package com.forgeessentials.core.mixin.tileentity;
 /*
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;

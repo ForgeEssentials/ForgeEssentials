@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.mixin.item.crafting;
+package com.forgeessentials.core.mixin.item.crafting;
 
 //@Mixin(CraftingManager.class)
 public abstract class MixinCraftingManager

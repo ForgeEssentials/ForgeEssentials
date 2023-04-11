@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.mixin.entity;
+package com.forgeessentials.core.mixin.entity;
 //
 //import org.spongepowered.asm.mixin.Mixin;
 //import org.spongepowered.asm.mixin.injection.At;

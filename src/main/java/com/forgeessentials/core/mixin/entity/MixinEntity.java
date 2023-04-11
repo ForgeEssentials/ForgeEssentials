@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.mixin.entity;
+package com.forgeessentials.core.mixin.entity;
 //
 //import net.minecraft.entity.Entity;
 //import net.minecraftforge.common.MinecraftForge;

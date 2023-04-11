@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.mixin.network;
+package com.forgeessentials.core.mixin.network;
 //
 //import net.minecraft.block.BlockState;
 //import net.minecraft.entity.player.ServerPlayerEntity;

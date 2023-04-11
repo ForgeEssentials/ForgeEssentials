@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.mixin.entity.player;
+package com.forgeessentials.core.mixin.entity.player;
 //
 //import net.minecraft.entity.player.PlayerEntity;
 //import net.minecraftforge.server.permission.PermissionAPI;

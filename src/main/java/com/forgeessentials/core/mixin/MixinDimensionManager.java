@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.mixin;
+package com.forgeessentials.core.mixin;
 /*
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;

@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.mixin;
+package com.forgeessentials.core.mixin;
 
 import java.util.ArrayList;
 import java.util.List;

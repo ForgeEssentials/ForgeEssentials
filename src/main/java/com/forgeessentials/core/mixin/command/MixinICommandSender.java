@@ -1,4 +1,4 @@
-package com.forgeessentials.core.preloader.mixin.command;
+package com.forgeessentials.core.mixin.command;
 /*
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
