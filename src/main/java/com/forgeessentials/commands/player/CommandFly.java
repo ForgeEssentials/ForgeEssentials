@@ -50,18 +50,28 @@ public class CommandFly extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("toggle", BoolArgumentType.bool())
-                        .executes(CommandContext -> execute(CommandContext, "blank")
+                        .executes(CommandContext -> execute(CommandContext, "set")
                                 )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "toggle")
                         );
     }
 
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        boolean toggle = BoolArgumentType.getBool(ctx, "toggle");
         ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
-        
-        player.abilities.mayfly = toggle;
+        if (params.equals("toggle"))
+        {
+            if (!player.abilities.mayfly)
+                player.abilities.mayfly = true;
+            else
+                player.abilities.mayfly = false;
+        }
+        else
+        {
+            player.abilities.mayfly = BoolArgumentType.getBool(ctx, "toggle");
+        }
         
         if (!player.isOnGround())
             player.abilities.flying = player.abilities.mayfly;
