@@ -85,7 +85,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder
                 .executes(CommandContext -> execute(CommandContext, "me")
                         )
                 .then(Commands.argument("player", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext, null)
+                        .executes(CommandContext -> execute(CommandContext, "blank")
                                 )
                         );
     }
@@ -130,7 +130,7 @@ public class CommandVirtualchest extends ForgeEssentialsCommandBuilder
              for (int i = 0; i < inv.getContainerSize(); i++)
                  stacks.add(inv.getItem(i).save(new CompoundNBT()));
              virtualchests.add(id-1, stacks);
-             PlayerUtil.getPersistedTag(player, true).put(VIRTUALCHEST_TAG, new CompoundNBT().put(VIRTUALCHEST_TAG, virtualchests));
+             PlayerUtil.getPersistedTag(player, true).put(VIRTUALCHEST_TAG, virtualchests);
          });
          return inv;
 	    }
