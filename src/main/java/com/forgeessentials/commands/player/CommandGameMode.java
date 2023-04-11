@@ -53,7 +53,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
                                         )
                                 )
                         )
-                        .executes(CommandContext -> execute(CommandContext, null)
+                        .executes(CommandContext -> execute(CommandContext, "blank")
                                 );
                     }
                  };
@@ -63,7 +63,7 @@ public class CommandGameMode extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if(params==null) {
+        if(params.equals("blank")) {
             setGameMode(ctx.getSource(), getServerPlayer(ctx.getSource()));
             return Command.SINGLE_SUCCESS;
         }

@@ -52,7 +52,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext, null)
+                        .executes(CommandContext -> execute(CommandContext, "blank")
                                 )
                         );
     }

@@ -89,7 +89,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .executes(CommandContext -> execute(CommandContext, null)
+                .executes(CommandContext -> execute(CommandContext, "blank")
                         );
     }
 

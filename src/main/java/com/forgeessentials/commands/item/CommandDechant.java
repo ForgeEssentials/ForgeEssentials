@@ -61,7 +61,7 @@ public class CommandDechant extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("name", EnchantmentArgument.enchantment())
-                        .executes(CommandContext -> execute(CommandContext, null)
+                        .executes(CommandContext -> execute(CommandContext, "blank")
                                 )
                         );
     }

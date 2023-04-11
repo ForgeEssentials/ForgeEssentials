@@ -55,7 +55,7 @@ public class CommandDelayedAction extends ForgeEssentialsCommandBuilder
         return baseBuilder
                 .then(Commands.argument("time", StringArgumentType.string())
                         .then(Commands.argument("command", StringArgumentType.greedyString())
-                                .executes(CommandContext -> execute(CommandContext, null)
+                                .executes(CommandContext -> execute(CommandContext, "blank")
                                         )
                                 )
                         );

@@ -62,7 +62,7 @@ public class CommandIrcPm extends ForgeEssentialsCommandBuilder
                 .then(Commands.argument("ircUser", StringArgumentType.string())
                         .suggests(SUGGEST_USERS)
                         .then(Commands.argument("message", StringArgumentType.greedyString())
-                                .executes(CommandContext -> execute(CommandContext, null)
+                                .executes(CommandContext -> execute(CommandContext, "blank")
                                         )
                                 )
                         );

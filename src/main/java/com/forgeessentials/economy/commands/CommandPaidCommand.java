@@ -70,7 +70,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBuilder
                 .then(Commands.argument("player", EntityArgument.player())
                         .then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
                                 .then(Commands.argument("command", StringArgumentType.greedyString())
-                                        .executes(CommandContext -> execute(CommandContext, null)
+                                        .executes(CommandContext -> execute(CommandContext, "blank")
                                                 )
                                         )
                                 )

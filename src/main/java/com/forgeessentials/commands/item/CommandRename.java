@@ -53,7 +53,7 @@ public class CommandRename extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("name", StringArgumentType.greedyString())
-                        .executes(CommandContext -> execute(CommandContext, null)
+                        .executes(CommandContext -> execute(CommandContext, "blank")
                                 )
                 );
     }

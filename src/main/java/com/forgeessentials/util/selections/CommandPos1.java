@@ -46,7 +46,7 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
                         .executes(CommandContext -> execute(CommandContext, "here")
                                 )
                         )
-                .executes(CommandContext -> execute(CommandContext, null)
+                .executes(CommandContext -> execute(CommandContext, "lookPos")
                         );
     }
 

@@ -61,7 +61,7 @@ public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
                 .then(Commands.argument("group", StringArgumentType.string())
                         .suggests(SUGGEST_GROUPS)
                         .then(Commands.argument("message", StringArgumentType.greedyString())
-                                .executes(CommandContext -> execute(CommandContext, null)
+                                .executes(CommandContext -> execute(CommandContext, "blank")
                                         )
                                 )
                         );

@@ -64,7 +64,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
                                         .executes(CommandContext -> execute(CommandContext,"dim")
                                                 )
                                         )
-                                .executes(CommandContext -> execute(CommandContext, null)
+                                .executes(CommandContext -> execute(CommandContext, "blank")
                                         )
                                 )
                         );

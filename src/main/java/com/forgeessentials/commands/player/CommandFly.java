@@ -50,7 +50,7 @@ public class CommandFly extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("toggle", BoolArgumentType.bool())
-                        .executes(CommandContext -> execute(CommandContext, null)
+                        .executes(CommandContext -> execute(CommandContext, "blank")
                                 )
                         );
     }

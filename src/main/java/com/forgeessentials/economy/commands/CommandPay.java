@@ -57,7 +57,7 @@ public class CommandPay extends ForgeEssentialsCommandBuilder
         return baseBuilder
                 .then(Commands.argument("player", EntityArgument.entity())
                         .then(Commands.argument("amount", LongArgumentType.longArg(1))
-                                .executes(CommandContext -> execute(CommandContext, null)
+                                .executes(CommandContext -> execute(CommandContext, "blank")
                                         )
                                 )
                         );

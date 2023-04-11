@@ -53,7 +53,7 @@ public final class ChatOutputHandler
     }
 
     /**
-     * Sends a message to a {@link ICommandSender} and performs some security checks
+     * Sends a message to a {@link CommandSource} and performs some security checks
      * 
      * @param recipient
      * @param message
@@ -64,7 +64,7 @@ public final class ChatOutputHandler
     }
 
     /**
-     * Sends a message to a {@link ICommandSender} and performs some security checks
+     * Sends a message to a {@link CommandSource} and performs some security checks
      * 
      * @param recipient
      * @param message
@@ -85,7 +85,7 @@ public final class ChatOutputHandler
      * actually sends the color-formatted message to the sender
      *
      * @param recipient
-     *            CommandSender to chat to.
+     *            CommandSource to chat to.
      * @param message
      *            The message to be sent
      * @param color
@@ -184,7 +184,7 @@ public final class ChatOutputHandler
      * outputs an error message to the chat box of the given sender.
      *
      * @param sender
-     *            CommandSender to chat to.
+     *            CommandSource to chat to.
      * @param msg
      *            the message to be sent
      */
@@ -207,7 +207,7 @@ public final class ChatOutputHandler
      * outputs a confirmation message to the chat box of the given sender.
      *
      * @param sender
-     *            CommandSender to chat to.
+     *            CommandSource to chat to.
      * @param msg
      *            the message to be sent
      */
@@ -230,7 +230,7 @@ public final class ChatOutputHandler
      * outputs a warning message to the chat box of the given sender.
      *
      * @param sender
-     *            CommandSender to chat to.
+     *            CommandSource to chat to.
      * @param msg
      *            the message to be sent
      */
@@ -253,7 +253,7 @@ public final class ChatOutputHandler
      * outputs a notification message to the chat box of the given sender.
      * 
      * @param sender
-     *            CommandSender to chat to.
+     *            CommandSource to chat to.
      * @param msg
      */
     public static void chatNotification(CommandSource sender, String msg, Object... args)

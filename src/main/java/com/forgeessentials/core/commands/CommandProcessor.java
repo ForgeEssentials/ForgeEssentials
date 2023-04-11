@@ -3,6 +3,7 @@ package com.forgeessentials.core.commands;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandUtils;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
@@ -22,6 +23,12 @@ public class CommandProcessor extends CommandUtils
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         try {
+            if(params==null) {
+                ChatOutputHandler.chatError(ctx.getSource(), "Command sent with null args Please report this!");
+                LoggingHandler.felog.error("Command Sent with null args by: " + ctx.getSource().getDisplayName().getString());
+                LoggingHandler.felog.error("Please report this to the devs");
+                return Command.SINGLE_SUCCESS;
+            }
             ICommandSource source = CommandUtils.GetSource(ctx.getSource());
             if (source instanceof ServerPlayerEntity)
             {

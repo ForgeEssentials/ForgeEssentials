@@ -58,7 +58,7 @@ public class CommandDuplicate extends ForgeEssentialsCommandBuilder
 )
                                 )
                         )
-                .executes(CommandContext -> execute(CommandContext, null)
+                .executes(CommandContext -> execute(CommandContext, "blank")
                         );
     }
 

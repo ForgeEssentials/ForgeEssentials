@@ -61,7 +61,7 @@ public class CommandFindblock extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("block", BlockStateArgument.block())
-                        .executes(CommandContext -> execute(CommandContext, null)
+                        .executes(CommandContext -> execute(CommandContext, "blank")
                                 )
                         );
     }

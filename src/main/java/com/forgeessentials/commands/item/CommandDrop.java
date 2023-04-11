@@ -69,14 +69,13 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
                 .then(Commands.argument("pos", Vec3Argument.vec3())
                         .then(Commands.argument("count", IntegerArgumentType.integer(0, 64))
                                 .then(Commands.argument("item", ItemArgument.item())
-                                        .executes(CommandContext -> execute(CommandContext, null))
+                                        .executes(CommandContext -> execute(CommandContext, "blank"))
                                         )
                                 )
                         );
     }
 
-    @SuppressWarnings("deprecation")
-    public void processCommand(CommandContext<CommandSource> ctx, Object params) throws CommandSyntaxException
+    public void processCommand(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         Vector3d vector = Vec3Argument.getVec3(ctx, "pos");
         World world = null;

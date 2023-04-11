@@ -57,7 +57,7 @@ public class CommandPush extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                        .executes(CommandContext -> execute(CommandContext, null)
+                        .executes(CommandContext -> execute(CommandContext, "blank")
                                 )
                         );
     }

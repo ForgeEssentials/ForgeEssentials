@@ -67,7 +67,7 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("victim", EntityArgument.player())
-                        .executes(CommandContext -> execute(CommandContext, null)
+                        .executes(CommandContext -> execute(CommandContext, "blank")
                                 )
                         );
     }

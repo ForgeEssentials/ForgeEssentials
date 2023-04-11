@@ -53,7 +53,7 @@ public class CommandIrc extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("message", StringArgumentType.greedyString())
-                        .executes(CommandContext -> execute(CommandContext, null)
+                        .executes(CommandContext -> execute(CommandContext, "blank")
                                 )
                         );
     }

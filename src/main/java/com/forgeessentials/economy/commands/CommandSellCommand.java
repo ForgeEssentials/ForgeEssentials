@@ -75,7 +75,7 @@ public class CommandSellCommand extends ForgeEssentialsCommandBuilder
                         .then(Commands.argument("item", ItemArgument.item())
                                 .then(Commands.argument("amount", IntegerArgumentType.integer())
                                         .then(Commands.argument("command", StringArgumentType.greedyString())
-                                                .executes(CommandContext -> execute(CommandContext, null)
+                                                .executes(CommandContext -> execute(CommandContext, "blank")
                                                         )
                                                 )
                                         )
