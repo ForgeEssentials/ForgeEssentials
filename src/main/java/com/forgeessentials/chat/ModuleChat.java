@@ -529,8 +529,8 @@ public class ModuleChat implements ConfigSaver
                 message.copy() });
         TranslationTextComponent senderMsg = new TranslationTextComponent("commands.message.display.outgoing",
                 new Object[] { target.getDisplayName().getString(), message });
-        sentMsg.getStyle().withColor(TextFormatting.GRAY).withItalic(Boolean.valueOf(true));
-        senderMsg.getStyle().withColor(TextFormatting.GRAY).withItalic(Boolean.valueOf(true));
+        sentMsg.withStyle(TextFormatting.GRAY).withStyle(TextFormatting.ITALIC);
+        senderMsg.withStyle(TextFormatting.GRAY).withStyle(TextFormatting.ITALIC);
         ChatOutputHandler.sendMessage(target, sentMsg);
         ChatOutputHandler.sendMessage(sender, senderMsg);
         CommandReply.messageSent(sender, target);

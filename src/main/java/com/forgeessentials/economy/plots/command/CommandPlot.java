@@ -305,7 +305,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         List<String> args = new ArrayList<String>(Arrays.asList(params.split("-")));
-        switch (params)
+        switch (args.remove(0))
         {
         case "define":
             parseDefine(ctx);
@@ -346,7 +346,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         case "sell":
             throw new TranslatedCommandException("Not yet implemented. Use \"/plot set price\" instead.");
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
+            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, args.get(0));
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -516,7 +516,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
     	}
 
         PlotListingType listType = PlotListingType.OWN;
-        if (params.isEmpty())
+        if (!params.isEmpty())
         {
             try
             {

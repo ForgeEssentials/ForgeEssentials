@@ -16,8 +16,6 @@ public class CommandQuestionerNo extends ForgeEssentialsCommandBuilder
         super(enabled);
     }
 
-    private final boolean type = false;
-
     @Override
     public String getPrimaryAlias()
     {
@@ -59,7 +57,7 @@ public class CommandQuestionerNo extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        Questioner.answer(ctx.getSource(), type);
+        Questioner.answer(ctx.getSource(), false);
         return Command.SINGLE_SUCCESS;
     }
 }

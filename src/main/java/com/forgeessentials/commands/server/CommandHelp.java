@@ -109,8 +109,8 @@ public class CommandHelp extends ForgeEssentialsCommandBuilder
     public void sendCommandUsageMessage(CommandSource sender, ICommand command, TextFormatting color)
     {
         ITextComponent chatMsg = new TranslationTextComponent(command.getUsage(sender));
-        chatMsg.getStyle().withColor(color);
-        chatMsg.getStyle().withClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getName() + " "));
+        chatMsg.withStyle(color);
+        chatMsg.withClickEvent(new ClickEvent(Action.SUGGEST_COMMAND, "/" + command.getName() + " "));
         ChatOutputHandler.sendMessage(sender, chatMsg);
     }*/
 

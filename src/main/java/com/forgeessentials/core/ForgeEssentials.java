@@ -498,7 +498,7 @@ public class ForgeEssentials
         if (!perm) {
             event.setCanceled(true);
             TranslationTextComponent textcomponenttranslation2 = new TranslationTextComponent("commands.generic.permission", new Object[0]);
-            textcomponenttranslation2.getStyle().withColor(TextFormatting.RED);
+            textcomponenttranslation2.withStyle(TextFormatting.RED);
             event.getParseResults().getContext().getSource().getPlayerOrException().sendMessage(textcomponenttranslation2, event.getParseResults().getContext().getSource().getPlayerOrException().getUUID());
         }
     }

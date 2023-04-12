@@ -298,7 +298,7 @@ public class ShopManager extends ServerEventHandler
             if (ModuleEconomy.countInventoryItems(event.getPlayer(), transactionStack) < transactionStack.getCount())
             {
                 TranslationTextComponent msg = new TranslationTextComponent("You do not have enough %s", itemName);
-                msg.getStyle().withColor(ChatOutputHandler.chatConfirmationColor);
+                msg.withStyle(ChatOutputHandler.chatConfirmationColor);
                 ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), msg);
                 return;
             }
@@ -317,7 +317,7 @@ public class ShopManager extends ServerEventHandler
 
             String price = APIRegistry.economy.toString(shop.sellPrice);
             TranslationTextComponent msg = new TranslationTextComponent("Sold %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
-            msg.getStyle().withColor(ChatOutputHandler.chatConfirmationColor);
+            msg.withStyle(ChatOutputHandler.chatConfirmationColor);
             ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), msg);
         }
         else
@@ -338,7 +338,7 @@ public class ShopManager extends ServerEventHandler
             PlayerUtil.give(event.getPlayer(), transactionStack);
             String price = APIRegistry.economy.toString(shop.buyPrice);
             TranslationTextComponent msg = new TranslationTextComponent("Bought %s x %s for %s (wallet: %s)", shop.amount, itemName, price, wallet.toString());
-            msg.getStyle().withColor(ChatOutputHandler.chatConfirmationColor);
+            msg.withStyle(ChatOutputHandler.chatConfirmationColor);
             ChatOutputHandler.sendMessage(event.getPlayer().createCommandSourceStack(), msg);
         }
     }

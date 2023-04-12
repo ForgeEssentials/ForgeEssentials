@@ -304,7 +304,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             {
                 event.setCanceled(true);
                 TranslationTextComponent textcomponenttranslation2 = new TranslationTextComponent("You do not have enough money to use this command.", new Object[0]);
-                textcomponenttranslation2.getStyle().withColor(TextFormatting.RED);
+                textcomponenttranslation2.withStyle(TextFormatting.RED);
                 event.getParseResults().getContext().getSource().sendFailure(textcomponenttranslation2);
             }
             break;

@@ -80,6 +80,7 @@ import net.minecraft.entity.passive.horse.SkeletonHorseEntity;
 import net.minecraft.entity.passive.horse.ZombieHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.item.BlockItem;
@@ -386,9 +387,11 @@ public class ModuleProtection
             return;
 
         TranslationTextComponent msg = new TranslationTextComponent(permission);
-        msg.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission));
-        msg.getStyle().withColor(ChatOutputHandler.chatNotificationColor);
-        msg.getStyle().setUnderlined(true);
+        ClickEvent click = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission);
+        msg.withStyle((style) -> {
+            return style.withClickEvent(click);});
+        msg.withStyle(TextFormatting.UNDERLINE);
+        msg.withStyle(ChatOutputHandler.chatNotificationColor);
         ChatOutputHandler.sendMessage(player.createCommandSourceStack(), msg);
     }
 

@@ -105,8 +105,10 @@ public class Questioner extends ServerEventHandler
     public static synchronized void answer(CommandSource target, Boolean answer) throws CommandException
     {
         QuestionData question = questions.remove(target);
-        if (question != null)
+        if (question != null) {
             question.doAnswer(answer);
+            ChatOutputHandler.chatConfirmation(target, "Responded: "+ (answer ? "yes" : "no"));
+        }
         else
             ChatOutputHandler.chatError(target, Translator.translate("There is no question to answer!"));
     }
