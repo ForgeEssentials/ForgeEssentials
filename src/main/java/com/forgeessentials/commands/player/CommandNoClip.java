@@ -11,7 +11,6 @@ import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet5Noclip;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -60,13 +59,14 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
                 .then(Commands.argument("toggle", BoolArgumentType.bool())
                         .executes(CommandContext -> execute(CommandContext, "blank")
                                 )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "toggle")
                         );
     }
 
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        boolean toggle = BoolArgumentType.getBool(ctx, "toggle");
         ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
         if (!PlayerInfo.get(player).getHasFEClient())
         {
@@ -75,11 +75,26 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (!player.abilities.flying && !player.noPhysics)
-            throw new TranslatedCommandException("You must be flying.");
-
+        if (!player.abilities.flying && !player.noPhysics) {
+            ChatOutputHandler.chatError(ctx.getSource(), "You must be flying.");
+            return Command.SINGLE_SUCCESS;
+        }
+        
         PlayerInfo pi = PlayerInfo.get(player);
-        pi.setNoClip(toggle);
+        if (player.noPhysics&& !pi.isNoClip())
+        {
+            ChatOutputHandler.chatError(ctx.getSource(), "Unable to enable noClip, another mod is using this functionality!");
+            return Command.SINGLE_SUCCESS;
+        }
+        if (params.equals("toggle"))
+        {
+            pi.setNoClip(!pi.isNoClip());
+        }
+        else
+        {
+            pi.setNoClip(BoolArgumentType.getBool(ctx, "toggle"));
+        }
+
         if (!pi.isNoClip())
             WorldUtil.placeInWorld(player);
         NetworkUtils.sendTo(new Packet5Noclip(pi.isNoClip()), player);
