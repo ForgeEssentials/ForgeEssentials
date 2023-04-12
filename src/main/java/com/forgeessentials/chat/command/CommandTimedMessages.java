@@ -2,12 +2,14 @@ package com.forgeessentials.chat.command;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
@@ -74,13 +76,13 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("delete")
-                        .then(Commands.argument("number", IntegerArgumentType.integer(0, ModuleChat.timedMessages.getMessages().size()-1))
+                        .then(Commands.argument("number", IntegerArgumentType.integer(0))
                                 .executes(CommandContext -> execute(CommandContext, "delete")
                                         )
                                 )
                         )
                 .then(Commands.literal("send")
-                        .then(Commands.argument("number", IntegerArgumentType.integer(0,ModuleChat.timedMessages.getMessages().size()-1))
+                        .then(Commands.argument("number", IntegerArgumentType.integer(0))
                                 .executes(CommandContext -> execute(CommandContext, "send")
                                         )
                                 )
@@ -158,13 +160,20 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
     public void parseList(CommandContext<CommandSource> ctx) throws CommandSyntaxException
     {
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "List of messages:");
-        for (int i = 0; i < ModuleChat.timedMessages.getMessages().size(); i++)
-            ChatOutputHandler.sendMessage(ctx.getSource(),new TranslationTextComponent(String.format("%d: %s", i, ModuleChat.timedMessages.formatMessage(ModuleChat.timedMessages.getMessages().get(i)))));
+        for (int i = 0; i < ModuleChat.timedMessages.getMessages().size(); i++){
+            TextComponent message = new StringTextComponent(String.format("%d: ",i));
+            message.append( ModuleChat.timedMessages.formatMessage(ModuleChat.timedMessages.getMessages().get(i)));
+            ChatOutputHandler.sendMessage(ctx.getSource(), message);
+       }
     }
 
     public void parseDelete(CommandContext<CommandSource> ctx) throws CommandSyntaxException
     {
         int num = IntegerArgumentType.getInteger(ctx, "number");
+        if(num>ModuleChat.timedMessages.getMessages().size()-1) {
+            ChatOutputHandler.chatError(ctx.getSource(),  Translator.format("No such message with Index %d!", num));
+            return;
+        }
         ModuleChat.timedMessages.getMessages().remove(num);
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Removed message");
         ModuleChat.timedMessages.save(false);
@@ -173,6 +182,10 @@ public class CommandTimedMessages extends ForgeEssentialsCommandBuilder
     public void parseSend(CommandContext<CommandSource> ctx) throws CommandSyntaxException
     {
         int index = IntegerArgumentType.getInteger(ctx, "number");
+        if(index>ModuleChat.timedMessages.getMessages().size()-1) {
+            ChatOutputHandler.chatError(ctx.getSource(),  Translator.format("No such message with Index %d!", index));
+            return;
+        }
         ModuleChat.timedMessages.broadcastMessage(index);
     }
 
