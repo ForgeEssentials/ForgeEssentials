@@ -398,13 +398,13 @@ jar {
  * Deobfuscated server jar
  * Dependency name for maven = com.forgeessentials:forgeessentials:<version>:
  * */
-/*
+
 task deobfJar(dependsOn: "classes", type: Jar) {
 	classifier = "dev"
 	appendix = project.minecraftVersion
 	
 	from sourceSets.main.output
-	from sourceSets.utils.output
+	//from sourceSets.utils.output
 	
 	from (sourceSets.main.java) {
 		into ("src/")
@@ -413,7 +413,7 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 	manifest {
 		from serverManifest
 	}
-}*/
+}
 //
 //task sourceJar(type: Jar) {
 //	classifier = "sources"
@@ -449,8 +449,11 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 //reobf {
 //    clientJar { classpath.from(sourceSets.main.compileClasspath) }
 //}
-jar.finalizedBy('reobfJar')
-
+// Example configuration to allow publishing using the maven-publish task
+// This is the preferred method to reobfuscate your jar file
+jar.finalizedBy('reobfJar') 
+// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+//publish.dependsOn('reobfJar')
 /************************************************************
  * Configure Annotations for IDEs Jar
  */
@@ -493,6 +496,6 @@ task Annotations(type: Jar) {
 
  // Add default artifacts for task "build"
 artifacts {
-	//archives deobfJar
+	archives deobfJar
 	archives Annotations
 }
