@@ -257,13 +257,19 @@ public class AuthEventHandler extends ServerEventHandler
             NetworkUtils.netHandler.sendTo(new Packet6AuthLogin(2, token.toString()), e.getPlayer());
             PasswordManager.addSession(e.getPlayer().getPersistentID(), token);
         }
-        APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_SUCCESS, e.getPlayer());
+        if (APIRegistry.scripts != null)
+        {
+            APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_SUCCESS, e.getPlayer());
+        }
     }
 
     @SubscribeEvent
     public void onAuthLoginFail(PlayerAuthLoginEvent.Failure e)
     {
-        APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_FAILURE, e.getPlayer());
+        if (APIRegistry.scripts != null)
+        {
+            APIRegistry.scripts.runEventScripts(ModuleAuth.SCRIPT_KEY_FAILURE, e.getPlayer());
+        }
     }
 
 }

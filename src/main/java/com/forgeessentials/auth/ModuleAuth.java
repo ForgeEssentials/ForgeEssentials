@@ -87,8 +87,11 @@ public class ModuleAuth extends ConfigLoaderBase
             handler = new AuthEventHandler();
             handler.enable(true);
         }
-        APIRegistry.scripts.addScriptType(SCRIPT_KEY_SUCCESS);
-        APIRegistry.scripts.addScriptType(SCRIPT_KEY_FAILURE);
+        if (APIRegistry.scripts != null)
+        {
+            APIRegistry.scripts.addScriptType(SCRIPT_KEY_SUCCESS);
+            APIRegistry.scripts.addScriptType(SCRIPT_KEY_FAILURE);
+        }
     }
 
     public static boolean isEnabled()
