@@ -149,7 +149,7 @@ public class DiscordHandler extends ConfigLoaderBase
                 String suffix = String.format("<%s> %s", event.getMember().getEffectiveName(),
                         event.getMessage().getContentDisplay());
                 String msg = selectedChannel.equals(event.getChannel().getName()) ? suffix : String.format("#%s %s", event.getChannel().getName(), suffix);
-                ChatOutputHandler.broadcast(msg);
+                ChatOutputHandler.broadcast(msg, false);
             }
         }
     }
