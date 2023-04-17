@@ -292,7 +292,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
         if (!isConnected())
             return;
         // ignore messages to jtv
-        if (twitchMode && user.getNick() == "jtv")
+        if (twitchMode &&  "jtv".equals(user.getNick()))
             return;
         user.send().message(message);
     }
@@ -403,7 +403,7 @@ public class IrcHandler extends ListenerAdapter<PircBotX> implements ConfigLoade
 
     /* ------------------------------------------------------------ */
 
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void chatEvent(ServerChatEvent event)
     {
         if (isConnected() && sendMessages)
