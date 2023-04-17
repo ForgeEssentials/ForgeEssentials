@@ -31,6 +31,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 import com.forgeessentials.playerlogger.PlayerLoggerEventHandler;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
@@ -75,7 +76,6 @@ public class DiscordHandler extends ConfigLoaderBase
         APIRegistry.getFEEventBus().register(this);
 
     }
-
     @Override
     public void load(Configuration config, boolean isReload)
     {
@@ -106,13 +106,13 @@ public class DiscordHandler extends ConfigLoaderBase
 
         String token = config.getString("token", CATEGORY, "", "Discord Token for bot login");
 
-        serverID = Long.parseLong(config.getString("serverID", CATEGORY, "", "Server ID"));
+        serverID = ServerUtil.parseLongDefault(config.getString("serverID", CATEGORY, "", "Server ID"), 0);
 
         showGameEvents = config.get(CATEGORY, "showGameEvents", true, "Show game events in Discord (e.g., join, leave, death, etc.)").getBoolean();
         showMessages = config.get(CATEGORY, "showMessages", true, "Show chat messages from Discord ingame").getBoolean();
         sendMessages = config.get(CATEGORY, "sendMessages", true, "If enabled, ingame messages will be sent to Discord as well").getBoolean();
 
-        if (!"".equals(token))
+        if (!"".equals(token) && serverID != 0)
         {
             if (jda != null)
             {
