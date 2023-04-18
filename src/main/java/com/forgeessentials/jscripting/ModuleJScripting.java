@@ -51,7 +51,7 @@ public class ModuleJScripting extends ServerEventHandler implements ScriptHandle
 
     public static final String PERM = "fe.jscript";
 
-    private static final ScriptEngineManager SEM = new ScriptEngineManager();
+    private static final ScriptEngineManager SEM = new ScriptEngineManager(null);
 
     @FEModule.Instance
     protected static ModuleJScripting instance;
