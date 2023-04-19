@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -122,8 +123,8 @@ public class DiscordHandler extends ConfigLoaderBase
 
             jda = JDABuilder.createDefault(token)
                     .enableIntents(GatewayIntent.MESSAGE_CONTENT)
-                    //.setActivity(Activity.playing(String.format("ForgeEssentials %s", BuildInfo.BASE_VERSION)))
                     .build();
+            jda.getPresence().setActivity(Activity.playing(MinecraftServer.getServer().getMOTD()));
             jda.addEventListener(new MessageListener());
         }
     }
