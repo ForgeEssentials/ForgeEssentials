@@ -17,7 +17,6 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -85,7 +84,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("select")
-                        .then(Commands.argument("zones", StringArgumentType.string())
+                        .then(Commands.argument("Zone", StringArgumentType.string())
                                 .suggests(SUGGEST_WORLDZONES)
                                 .executes(context -> execute(context, "select")
                                         )
@@ -100,14 +99,14 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("info")
-                        .then(Commands.argument("zones", StringArgumentType.string())
+                        .then(Commands.argument("Zone", StringArgumentType.string())
                                 .suggests(SUGGEST_WORLDZONES)
                                 .executes(context -> execute(context, "info")
                                         )
                                 )
                         )
                 .then(Commands.literal("define")
-                        .then(Commands.argument("zones", StringArgumentType.string())
+                        .then(Commands.argument("Zone", StringArgumentType.string())
                                 .suggests(SUGGEST_WORLDZONES)
                                 .then(Commands.argument("type", StringArgumentType.string())
                                         .suggests(SUGGEST_AREATYPES)
@@ -117,7 +116,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("redefine")
-                        .then(Commands.argument("zones", StringArgumentType.string())
+                        .then(Commands.argument("Zone", StringArgumentType.string())
                                 .suggests(SUGGEST_WORLDZONES)
                                 .then(Commands.argument("type", StringArgumentType.string())
                                         .suggests(SUGGEST_AREATYPES)
@@ -127,38 +126,44 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("delete")
-                        .then(Commands.argument("zones", StringArgumentType.string())
+                        .then(Commands.argument("Zone", StringArgumentType.string())
                                 .suggests(SUGGEST_WORLDZONES)
                                 .executes(context -> execute(context, "delete")
                                         )
                                 )
                         )
-                .then(Commands.literal("exit")
-                        .then(Commands.argument("zones", StringArgumentType.string())
-                                .suggests(SUGGEST_WORLDZONES)
-                                .executes(context -> execute(context, "exit-empty")
-                                        )
-                                .then(Commands.literal("clear")
-                                        .executes(context -> execute(context, "exit-clear")
+                .then(Commands.literal("message")
+                        .then(Commands.literal("exit")
+                                .then(Commands.argument("Zone", StringArgumentType.string())
+                                        .suggests(SUGGEST_WORLDZONES)
+                                        .then(Commands.literal("get")
+                                                .executes(context -> execute(context, "exit-get")
+                                                        )
                                                 )
-                                        )
-                                .then(Commands.argument("message", StringArgumentType.greedyString())
-                                        .executes(context -> execute(context, "exit-message")
+                                        .then(Commands.literal("clear")
+                                                .executes(context -> execute(context, "exit-clear")
+                                                        )
+                                                )
+                                        .then(Commands.argument("message", StringArgumentType.greedyString())
+                                                .executes(context -> execute(context, "exit-message")
+                                                        )
                                                 )
                                         )
                                 )
-                        )
-                .then(Commands.literal("entry")
-                        .then(Commands.argument("zones", StringArgumentType.string())
-                                .suggests(SUGGEST_WORLDZONES)
-                                .executes(context -> execute(context, "entry-empty")
-                                        )
-                                .then(Commands.literal("clear")
-                                        .executes(context -> execute(context, "entry-clear")
+                        .then(Commands.literal("entry")
+                                .then(Commands.argument("Zone", StringArgumentType.string())
+                                        .suggests(SUGGEST_WORLDZONES)
+                                        .then(Commands.literal("get")
+                                                .executes(context -> execute(context, "entry-get")
+                                                        )
                                                 )
-                                        )
-                                .then(Commands.argument("message", StringArgumentType.greedyString())
-                                        .executes(context -> execute(context, "entry-message")
+                                        .then(Commands.literal("clear")
+                                                .executes(context -> execute(context, "entry-clear")
+                                                        )
+                                                )
+                                        .then(Commands.argument("message", StringArgumentType.greedyString())
+                                                .executes(context -> execute(context, "entry-message")
+                                                        )
                                                 )
                                         )
                                 )
@@ -193,10 +198,10 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone list [page]: Lists all zones");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone select <zone>: Selects a zone");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone info <zone>|here: Zone information");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone info <zone>: Zone information");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone define|redefine <zone-name>: define or redefine a zone.");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone delete <zone-id>: Delete a zone.");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone entry|exit <zone-id> <message|clear>: Set the zone entry/exit message.");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone message entry|exit <zone-id> <get|message|clear>: Set the zone entry/exit message.");
             return Command.SINGLE_SUCCESS;
         }
 
@@ -228,7 +233,8 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
             parseEntryExitMessage(ctx, false, params);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg.toString());
+            ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg.toString());
+            return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -264,8 +270,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "List of areas (page #" + limit + "):");
         limit *= PAGE_SIZE;
 
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).level);
-        
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
         if (worldZone == null)
         {
             for (WorldZone wz : APIRegistry.perms.getServerZone().getWorldZones().values())
@@ -289,6 +294,9 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         }
         else
         {
+            if(worldZone.getAreaZones().isEmpty()) {
+                ChatOutputHandler.chatNotification(ctx.getSource(), "No areazones found");
+            }
             for (AreaZone areaZone : worldZone.getAreaZones())
             {
                 if (areaZone.isHidden())
@@ -316,20 +324,26 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
         String areaName = StringArgumentType.getString(ctx, "Zone");
 
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).level);
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
         AreaZone area = getAreaZone(worldZone, areaName);
-        if (!redefine && area != null)
-            throw new TranslatedCommandException(String.format("Area \"%s\" already exists!", areaName));
-        if (redefine && area == null)
-            throw new TranslatedCommandException(String.format("Area \"%s\" does not exist!", areaName));
+        if (!redefine && area != null) {
+            ChatOutputHandler.chatError(ctx.getSource(), "Area %s already exists!", areaName);
+            return;
+        }
+        if (redefine && area == null) {
+            ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
+            return;
+        }
 
         AreaShape shape = AreaShape.getByName(StringArgumentType.getString(ctx, "type"));
         if (shape == null)
             shape = AreaShape.BOX;
 
         AreaBase selection = SelectionHandler.getSelection(getServerPlayer(ctx.getSource()));
-        if (selection == null)
-            throw new TranslatedCommandException("No selection available. Please select a region first.");
+        if (selection == null) {
+            ChatOutputHandler.chatError(ctx.getSource(), "No selection available. Please select a region first.");
+            return;
+        }
 
         //arguments.context = new AreaContext(getServerPlayer(ctx.getSource()), selection.toAxisAlignedBB()); what this do? it isn't being called from commandparcerargs
         if(!hasPermission(ctx.getSource(), PERM_DEFINE)) {
@@ -342,7 +356,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
             area.setArea(selection);
             if (shape != null)
                 area.setShape(shape);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area \"%s\" has been redefined.", areaName);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been redefined.", areaName);
         }
         else
         {
@@ -351,11 +365,12 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                 area = new AreaZone(worldZone, areaName, selection);
                 if (shape != null)
                     area.setShape(shape);
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area \"%s\" has been defined.", areaName);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been defined.", areaName);
             }
             catch (EventCancelledException e)
             {
-                throw new TranslatedCommandException("Defining area \"%s\" has been cancelled.", areaName);
+                ChatOutputHandler.chatError(ctx.getSource(), "Defining area %s has been cancelled.", areaName);
+                return;
             }
         }
     }
@@ -369,12 +384,14 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
         String areaName = StringArgumentType.getString(ctx, "Zone");
 
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).level);
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
         AreaZone areaZone = getAreaZone(worldZone, areaName);
-        if (areaZone == null)
-            throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
+        if (areaZone == null) {
+            ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
+            return;
+        }
         areaZone.getWorldZone().removeAreaZone(areaZone);
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area \"%s\" has been deleted.", areaZone.getName());
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been deleted.", areaZone.getName());
     }
 
     public static void parseSelect(CommandContext<CommandSource> ctx, String params) throws CommandException
@@ -386,14 +403,16 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
         String areaName = StringArgumentType.getString(ctx, "Zone");
 
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).level);
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
         AreaZone areaZone = getAreaZone(worldZone, areaName);
-        if (areaZone == null)
-            throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
+        if (areaZone == null) {
+            ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
+            return;
+        }
 
         AreaBase area = areaZone.getArea();
         SelectionHandler.select(getServerPlayer(ctx.getSource()), worldZone.getDimensionID(), area);
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area \"%s\" has been selected.", areaName);
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s has been selected.", areaName);
     }
 
     public static void parseInfo(CommandContext<CommandSource> ctx, String params) throws CommandException
@@ -402,16 +421,17 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
-
         String areaName = StringArgumentType.getString(ctx, "Zone");
 
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).level);
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
         AreaZone areaZone = getAreaZone(worldZone, areaName);
-        if (areaZone == null)
-            throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
+        if (areaZone == null) {
+            ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
+            return;
+        }
         AreaBase area = areaZone.getArea();
 
-        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area \"%s\"", areaZone.getName());
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Area %s", areaZone.getName());
         ChatOutputHandler.chatNotification(ctx.getSource(), "  start = " + area.getLowPoint().toString());
         ChatOutputHandler.chatNotification(ctx.getSource(), "  end   = " + area.getHighPoint().toString());
     }
@@ -425,12 +445,14 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         String[] arg = params.toString().split("-");
         String areaName = StringArgumentType.getString(ctx, "Zone");
 
-        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).level);
+        WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(getServerPlayer(ctx.getSource()).getLevel());
         AreaZone areaZone = getAreaZone(worldZone, areaName);
-        if (areaZone == null)
-            throw new TranslatedCommandException("Area \"%s\" has does not exist!", areaName);
+        if (areaZone == null) {
+            ChatOutputHandler.chatError(ctx.getSource(), "Area %s does not exist!", areaName);
+            return;
+        }
 
-        if (arg[1]=="empty")
+        if (arg[1].equals("empty"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format((isEntry ? "Entry" : "Exit") + " message for area %s:", areaZone.getName()));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), areaZone.getGroupPermission(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE));
@@ -438,10 +460,13 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
         }
 
         String msg = "";
-        if(arg[1].equalsIgnoreCase("clear")) {
+        if(arg[1].equals("clear")) {
             msg = null;
-        }else {
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Cleared message for area %s", areaZone.getName());
+        }else if(arg[1].equals("message")){
             msg = StringArgumentType.getString(ctx, "message");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set message for area %s:", areaZone.getName());
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), msg);
         }
 
         areaZone.setGroupPermissionProperty(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE, msg);
