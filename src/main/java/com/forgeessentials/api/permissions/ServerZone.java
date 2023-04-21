@@ -470,9 +470,11 @@ public class ServerZone extends Zone implements Loadable
     {
         WorldZone w = getWorldZone(worldPoint.getDimension());
         List<Zone> result = new ArrayList<Zone>();
-        for (AreaZone zone : w.getAreaZones())
-            if (zone.isInZone(worldPoint))
-                result.add(zone);
+        for (AreaZone zone : w.getAreaZones()) {
+        	if (zone.isInZone(worldPoint)) {
+        		result.add(zone);
+        	}
+        }
         result.add(w);
         result.add(this);
         result.add(rootZone);

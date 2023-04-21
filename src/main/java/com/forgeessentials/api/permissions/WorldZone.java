@@ -54,31 +54,31 @@ public class WorldZone extends Zone implements Loadable
     @Override
     public boolean isPlayerInZone(PlayerEntity player)
     {
-        return player.level.dimension().location().toString() == dimensionID;
+        return player.level.dimension().location().toString().equals(dimensionID);
     }
 
     @Override
     public boolean isInZone(WorldPoint point)
     {
-        return point.getDimension() == dimensionID;
+        return point.getDimension().equals(dimensionID);
     }
 
     @Override
     public boolean isInZone(WorldArea area)
     {
-        return area.getDimension() == dimensionID;
+        return area.getDimension().equals(dimensionID);
     }
 
     @Override
     public boolean isPartOfZone(WorldArea area)
     {
-        return area.getDimension() == dimensionID;
+        return area.getDimension().equals(dimensionID);
     }
 
     @Override
     public String getName()
     {
-        return "WORLD_" + dimensionID;
+        return dimensionID;
     }
 
     @Override

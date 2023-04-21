@@ -85,7 +85,7 @@ public class JsEntityPlayer extends JsEntityLivingBase<PlayerEntity>
     public JsPoint<?> getBedLocation(String dimension)
     {
         BlockPos coord = ((ServerPlayerEntity) that).getRespawnPosition();
-        if(((ServerPlayerEntity) that).getRespawnDimension().location().toString() == dimension) {
+        if(((ServerPlayerEntity) that).getRespawnDimension().location().toString().equals(dimension)) {
             return coord != null ? new JsWorldPoint<>(new WorldPoint(dimension, coord)) : null;
         }
         return null;

@@ -170,7 +170,7 @@ public class WarpPoint
 
     public ServerWorld getWorld()
     {
-        if (world != null && world.dimension().location().toString() == dim)
+        if (world != null && world.dimension().location().toString().equals(dim))
             return world.getLevel();
         world = ServerUtil.getWorldFromString(dim);
         if (world == null)
@@ -281,7 +281,7 @@ public class WarpPoint
         if (object instanceof WorldPoint)
         {
             WorldPoint p = (WorldPoint) object;
-            return dim == p.getDimension() && (int) xd == p.getX() && (int) yd == p.getY() && (int) zd == p.getZ();
+            return dim.equals(p.getDimension()) && (int) xd == p.getX() && (int) yd == p.getY() && (int) zd == p.getZ();
         }
         return false;
     }

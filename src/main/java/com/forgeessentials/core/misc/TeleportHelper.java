@@ -132,7 +132,7 @@ public class TeleportHelper extends ServerEventHandler
             throw new TranslatedCommandException("You are not allowed to teleport from here.");
         if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_TO))
             throw new TranslatedCommandException("You are not allowed to teleport to that location.");
-        if (player.level.dimension().location().toString() != point.getDimension())
+        if (!player.level.dimension().location().toString().equals(point.getDimension()))
         {
             if (!APIRegistry.perms.checkPermission(player, TELEPORT_CROSSDIM_FROM))
                 throw new TranslatedCommandException("You are not allowed to teleport from this dimension.");
@@ -222,7 +222,7 @@ public class TeleportHelper extends ServerEventHandler
         player.stopRiding();
         ChunkPos chunkpos = new ChunkPos(point.getBlockPos());
         point.getWorld().getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkpos, 1, player.getId());
-        if (player.level.dimension().location().toString() != point.getDimension())
+        if (!player.level.dimension().location().toString().equals(point.getDimension()))
         {
             //SimpleTeleporter teleporter = new SimpleTeleporter(point.getWorld());
             //player.changeDimension(point.getWorld());//, teleporter);
@@ -239,7 +239,7 @@ public class TeleportHelper extends ServerEventHandler
             doTeleport((PlayerEntity) entity, point);
             return;
         }
-        if (entity.level.dimension().location().toString() != point.getDimension())
+        if (!entity.level.dimension().location().toString().equals(point.getDimension()))
             entity.changeDimension(point.getWorld());
         entity.absMoveTo(point.getX(), point.getY(), point.getZ(), point.getYaw(), point.getPitch());
     }

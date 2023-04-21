@@ -23,7 +23,7 @@ public class EffectKnockback extends WorldBorderEffect
     public void playerMove(WorldBorder border, PlayerMoveEvent event)
     {
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
-        if (event.before.getDimension() != event.after.getDimension())
+        if (!event.before.getDimension().equals(event.after.getDimension()))
         {
             // Cancel event if player was teleported
             event.setCanceled(true);

@@ -534,14 +534,14 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             @Override
             public int compare(Plot a, Plot b)
             {
-                if (a.getDimension() != playerRef.getDimension())
+                if (!a.getDimension().equals(playerRef.getDimension()))
                 {
-                    if (b.getDimension() == playerRef.getDimension())
+                    if (b.getDimension().equals(playerRef.getDimension()))
                         return 1;
                 }
                 else
                 {
-                    if (b.getDimension() != playerRef.getDimension())
+                    if (!b.getDimension().equals(playerRef.getDimension()))
                         return -1;
                 }
                 double aDist = a.getZone().getArea().getCenter().setY(0).distance(playerRef);

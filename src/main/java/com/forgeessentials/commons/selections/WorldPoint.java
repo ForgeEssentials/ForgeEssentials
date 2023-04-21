@@ -132,7 +132,7 @@ public class WorldPoint extends Point
     }
     
     public World getWorld(){
-        if (world != null && world.dimension().location().toString() == dim)
+        if (world != null && world.dimension().location().toString().equals(dim))
             return world;
         world = ServerUtil.getWorldFromString(dim);
         if (world == null) {
@@ -196,12 +196,12 @@ public class WorldPoint extends Point
         if (object instanceof WorldPoint)
         {
             WorldPoint p = (WorldPoint) object;
-            return dim == p.dim && x == p.x && y == p.y && z == p.z;
+            return dim.equals(p.dim) && x == p.x && y == p.y && z == p.z;
         }
         if (object instanceof WarpPoint)
         {
             WarpPoint p = (WarpPoint) object;
-            return dim == p.dim && x == p.getBlockX() && y == p.getBlockY() && z == p.getBlockZ();
+            return dim.equals(p.dim) && x == p.getBlockX() && y == p.getBlockY() && z == p.getBlockZ();
         }
         return false;
     }

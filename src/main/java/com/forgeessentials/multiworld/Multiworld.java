@@ -72,7 +72,7 @@ public class Multiworld
         ServerWorld overworld = ServerLifecycleHooks.getCurrentServer().overworld();
         for (ServerPlayerEntity player : ServerUtil.getPlayerList())
         {
-            if (player.level.dimension() == dimensionId)
+            if (player.level.dimension().equals(dimensionId))
             {
                 BlockPos playerPos = player.blockPosition();
                 int y = WorldUtil.placeInWorld(player.level, playerPos.getX(), playerPos.getY(), playerPos.getZ());

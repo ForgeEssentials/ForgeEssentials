@@ -118,7 +118,7 @@ public class RespawnHandler
             WarpPoint p = getPlayerSpawn(player, null, true);
             if (p != null)
             {
-                if (player.level.dimension().location().toString() != p.getDimension())
+                if (!player.level.dimension().location().toString().equals(p.getDimension()))
                     respawnPlayers.add(player);
                 else
                     player.moveTo(p.getX(), p.getY(), p.getZ(), p.getYaw(), p.getPitch());

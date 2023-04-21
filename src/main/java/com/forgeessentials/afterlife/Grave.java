@@ -131,7 +131,7 @@ public class Grave implements Loadable
 
     public void updateBlocks()
     {
-        if (point.getDimension() == null)
+        if (point.getDimension().equals(null))
         {//!DimensionManager.isDimensionRegistered(point.getDimension())
             ServerWorld dworld = ServerLifecycleHooks.getCurrentServer().getLevel(point.getWorld().dimension());
             if (dworld.isLoaded(point.getBlockPos())) {
@@ -259,7 +259,7 @@ public class Grave implements Loadable
         graves.clear();
         for (Grave grave : DataManager.getInstance().loadAll(Grave.class).values())
         {
-            if (grave.getPosition().getDimension() == null)
+            if (grave.getPosition().getDimension().equals(null))
                 continue;
             graves.put(grave.getPosition(), grave);
         }
