@@ -250,7 +250,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
     public static void parseList(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_LIST)) {
+    	if(!hasPermission(ctx.getSource(), PERM_LIST)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -309,7 +309,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
     public static void parseDefine(CommandContext<CommandSource> ctx, boolean redefine, String params) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_DEFINE)) {
+    	if(!hasPermission(ctx.getSource(), PERM_DEFINE)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -332,7 +332,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
             throw new TranslatedCommandException("No selection available. Please select a region first.");
 
         //arguments.context = new AreaContext(getServerPlayer(ctx.getSource()), selection.toAxisAlignedBB()); what this do? it isn't being called from commandparcerargs
-        if(hasPermission(ctx.getSource(), PERM_DEFINE)) {
+        if(!hasPermission(ctx.getSource(), PERM_DEFINE)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -362,7 +362,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
     public static void parseDelete(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_DELETE)) {
+    	if(!hasPermission(ctx.getSource(), PERM_DELETE)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -379,7 +379,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
     public static void parseSelect(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_INFO)) {
+    	if(!hasPermission(ctx.getSource(), PERM_INFO)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -398,7 +398,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
     public static void parseInfo(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_INFO)) {
+    	if(!hasPermission(ctx.getSource(), PERM_INFO)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -418,7 +418,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
 
     public static void parseEntryExitMessage(CommandContext<CommandSource> ctx, boolean isEntry, String params) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_SETTINGS)) {
+    	if(!hasPermission(ctx.getSource(), PERM_SETTINGS)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}

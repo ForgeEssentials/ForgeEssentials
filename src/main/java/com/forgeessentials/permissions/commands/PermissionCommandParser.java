@@ -94,7 +94,7 @@ public class PermissionCommandParser extends CommandUtils
             parseSave(ctx, params);
             break;
         case "reload":
-        	if(hasPermission(ctx.getSource(), PERM_RELOAD)) {
+        	if(!hasPermission(ctx.getSource(), PERM_RELOAD)) {
         		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
         		return;
         	}
@@ -119,7 +119,7 @@ public class PermissionCommandParser extends CommandUtils
             parseGlobal(ctx, params);
             break;
         case "debug":
-        	if(hasPermission(ctx.getSource(), PERM_DEBUG)) {
+        	if(!hasPermission(ctx.getSource(), PERM_DEBUG)) {
         		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
         		return;
         	}
@@ -142,7 +142,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseSave(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_SAVE)) {
+    	if(!hasPermission(ctx.getSource(), PERM_SAVE)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -225,7 +225,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseTest(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_TEST)) {
+    	if(!hasPermission(ctx.getSource(), PERM_TEST)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -258,7 +258,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseUser(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_USER)) {
+    	if(!hasPermission(ctx.getSource(), PERM_USER)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -375,7 +375,7 @@ public class PermissionCommandParser extends CommandUtils
             parseUserPermissions(ctx, params, ident, zone, PermissionAction.VALUE);
             break;
         case "denydefault":
-        	if(hasPermission(ctx.getSource(), PERM_USER_PERMS)) {
+        	if(!hasPermission(ctx.getSource(), PERM_USER_PERMS)) {
         		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
         		return;
         	}
@@ -388,7 +388,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseUserFormat(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident, Zone zone, boolean isPlayer) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_USER_FIX)) {
+    	if(!hasPermission(ctx.getSource(), PERM_USER_FIX)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -400,7 +400,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseUserPrefixSuffix(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident, Zone zone, boolean isSuffix) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_USER_FIX)) {
+    	if(!hasPermission(ctx.getSource(), PERM_USER_FIX)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -431,7 +431,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseUserPermissions(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident, Zone zone, PermissionAction type) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_USER_PERMS)) {
+    	if(!hasPermission(ctx.getSource(), PERM_USER_PERMS)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -480,7 +480,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseUserSpawn(CommandContext<CommandSource> ctx, List<String> params, UserIdent ident, Zone zone) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_USER_SPAWN)) {
+    	if(!hasPermission(ctx.getSource(), PERM_USER_SPAWN)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -620,7 +620,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseGlobal(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_GROUP)) {
+    	if(!hasPermission(ctx.getSource(), PERM_GROUP)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -628,7 +628,7 @@ public class PermissionCommandParser extends CommandUtils
     }
     public static void parseGroup(CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_GROUP)) {
+    	if(!hasPermission(ctx.getSource(), PERM_GROUP)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -770,7 +770,7 @@ public class PermissionCommandParser extends CommandUtils
             parseGroupPermissions(ctx, params, group, zone, PermissionAction.VALUE);
             break;
         case "denydefault":
-        	if(hasPermission(ctx.getSource(), PERM_GROUP_PERMS)) {
+        	if(!hasPermission(ctx.getSource(), PERM_GROUP_PERMS)) {
         		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
         		return;
         	}
@@ -783,7 +783,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseGroupPrefixSuffix(CommandContext<CommandSource> ctx, List<String> params, String group, Zone zone, boolean isSuffix) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_GROUP_FIX)) {
+    	if(!hasPermission(ctx.getSource(), PERM_GROUP_FIX)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -814,7 +814,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseGroupPermissions(CommandContext<CommandSource> ctx, List<String> params, String group, Zone zone, PermissionAction type) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_GROUP_PERMS)) {
+    	if(!hasPermission(ctx.getSource(), PERM_GROUP_PERMS)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -955,7 +955,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseGroupPriority(CommandContext<CommandSource> ctx, List<String> params, String group) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_GROUP_PERMS)) {
+    	if(!hasPermission(ctx.getSource(), PERM_GROUP_PERMS)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -978,7 +978,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void parseGroupInclude(CommandContext<CommandSource> ctx, List<String> params, String group, boolean isParent) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), PERM_GROUP_PERMS)) {
+    	if(!hasPermission(ctx.getSource(), PERM_GROUP_PERMS)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}

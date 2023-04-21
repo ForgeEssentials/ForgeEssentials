@@ -353,7 +353,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
 
     public static void parseDefine(CommandContext<CommandSource> ctx) throws CommandException
     {
-    	if(hasPermission(ctx.getSource(), Plot.PERM_DEFINE)) {
+    	if(!hasPermission(ctx.getSource(), Plot.PERM_DEFINE)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -406,7 +406,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
 
     public static void parseClaim(final CommandContext<CommandSource> ctx) throws CommandException
     {
-        if(hasPermission(ctx.getSource(), Plot.PERM_CLAIM)) {
+        if(!hasPermission(ctx.getSource(), Plot.PERM_CLAIM)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -510,7 +510,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
 
     public static void parseList(final CommandContext<CommandSource> ctx, List<String> params) throws CommandException
     {
-        if(hasPermission(ctx.getSource(), Plot.PERM_LIST)) {
+        if(!hasPermission(ctx.getSource(), Plot.PERM_LIST)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -595,7 +595,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         String type = modifyUsers ? "users" : "mods";
         String group = modifyUsers ? Plot.GROUP_PLOT_USER : Plot.GROUP_PLOT_MOD;
 
-        if(hasPermission(ctx.getSource(), Plot.PERM_MODS)) {
+        if(!hasPermission(ctx.getSource(), Plot.PERM_MODS)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -677,7 +677,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Current plot is not up for sale");
             return;
         }
-        if(hasPermission(ctx.getSource(), Plot.PERM_SET_PRICE)) {
+        if(!hasPermission(ctx.getSource(), Plot.PERM_SET_PRICE)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -710,7 +710,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Current plot fee: %s", APIRegistry.economy.toString(plot.getFee())));
             return;
         }
-        if(hasPermission(ctx.getSource(), Plot.PERM_SET_FEE)) {
+        if(!hasPermission(ctx.getSource(), Plot.PERM_SET_FEE)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -737,7 +737,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             return;
         }
         String name = params.toString();
-        if(hasPermission(ctx.getSource(), Plot.PERM_SET_NAME)) {
+        if(!hasPermission(ctx.getSource(), Plot.PERM_SET_NAME)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -762,7 +762,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             return;
         }
         UserIdent newOwner = parsePlayer(params.remove(0), null, true, false);
-        if(hasPermission(ctx.getSource(), Plot.PERM_SET_OWNER)) {
+        if(!hasPermission(ctx.getSource(), Plot.PERM_SET_OWNER)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
@@ -773,7 +773,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
     public static void parsePerms(CommandContext<CommandSource> ctx, List<String> params, boolean userPerms) throws CommandException
     {
         final String[] tabCompletion = new String[] { "build", "interact", "use", "chest", "button", "lever", "door", "animal" };
-        if(hasPermission(ctx.getSource(), Plot.PERM_PERMS)) {
+        if(!hasPermission(ctx.getSource(), Plot.PERM_PERMS)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
