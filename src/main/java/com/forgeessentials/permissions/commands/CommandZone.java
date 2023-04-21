@@ -79,6 +79,8 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
+        		.executes(CommandContext -> execute(CommandContext, "help")
+                        )
                 .then(Commands.literal("help")
                         .executes(CommandContext -> execute(CommandContext, "help")
                                 )
@@ -144,10 +146,13 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                                                 .executes(context -> execute(context, "exit-clear")
                                                         )
                                                 )
-                                        .then(Commands.argument("message", StringArgumentType.greedyString())
-                                                .executes(context -> execute(context, "exit-message")
+                                        .then(Commands.literal("set")
+                                        		.then(Commands.argument("message", StringArgumentType.greedyString())
+                                                        .executes(context -> execute(context, "exit-message")
+                                                                )
                                                         )
                                                 )
+
                                         )
                                 )
                         .then(Commands.literal("entry")
@@ -161,8 +166,10 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
                                                 .executes(context -> execute(context, "entry-clear")
                                                         )
                                                 )
-                                        .then(Commands.argument("message", StringArgumentType.greedyString())
-                                                .executes(context -> execute(context, "entry-message")
+                                        .then(Commands.literal("set")
+                                        		.then(Commands.argument("message", StringArgumentType.greedyString())
+                                                        .executes(context -> execute(context, "entry-message")
+                                                                )
                                                         )
                                                 )
                                         )
@@ -201,7 +208,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone info <zone>: Zone information");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone define|redefine <zone-name>: define or redefine a zone.");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone delete <zone-id>: Delete a zone.");
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone message entry|exit <zone-id> <get|message|clear>: Set the zone entry/exit message.");
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "/zone message entry|exit <zone-id> <get|clear|set <message>>: Set the zone entry/exit message.");
             return Command.SINGLE_SUCCESS;
         }
 
@@ -452,7 +459,7 @@ public class CommandZone extends ForgeEssentialsCommandBuilder
             return;
         }
 
-        if (arg[1].equals("empty"))
+        if (arg[1].equals("get"))
         {
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format((isEntry ? "Entry" : "Exit") + " message for area %s:", areaZone.getName()));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), areaZone.getGroupPermission(Zone.GROUP_DEFAULT, isEntry ? FEPermissions.ZONE_ENTRY_MESSAGE : FEPermissions.ZONE_EXIT_MESSAGE));
