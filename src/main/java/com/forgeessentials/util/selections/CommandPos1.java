@@ -37,7 +37,7 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.literal("atLocation")
-                        .then(Commands.argument("location", BlockPosArgument.blockPos())
+                        .then(Commands.argument("pos", BlockPosArgument.blockPos())
                                 .executes(CommandContext -> execute(CommandContext, "cord")
                                         )
                                 )
