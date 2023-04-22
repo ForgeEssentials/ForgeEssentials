@@ -31,8 +31,5 @@ public class Packet0Handshake implements IFEPacket
     }
 
     @Override
-    public void handle(Context context)
-    {
-        // TODO Auto-generated method stub
-    }
+    public void handle(Context context) {}
 }

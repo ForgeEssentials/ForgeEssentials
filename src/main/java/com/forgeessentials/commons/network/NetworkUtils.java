@@ -26,34 +26,23 @@ public class NetworkUtils
 			.simpleChannel();
     private static Set<Integer> registeredMessages = new HashSet<>();
 
-    
-    
-    
-    
-/*
-    public static class NullMessageHandler<MSG extends SimpleChannel> implements IMessageHandler<MSG, SimpleChannel>
-    {
-        @Override
-        public SimpleChannel onMessage(MSG message, MessageContext ctx)
-        {
-            return null;
-        }
-
-    }
-
-    public static <MSG extends SimpleChannel> void registerMessageProxy(Class<MSG> requestMessageType, int discriminator, Dist side, NullMessageHandler<MSG> nmh)
-    {
-        if (!registeredMessages.contains(discriminator))
-            netHandler.registerMessage(nmh, requestMessageType, discriminator, side);
-    }*/
+	/**
+	 * Register a network packet.<br> Must be called Client side.
+	 */
     public static <MSG extends IFEPacket> void registerClientToServer(int index, Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
 		registerMessage(index, type, decoder, NetworkDirection.PLAY_TO_SERVER);
 	}
 
+    /**
+	 * Register a network packet.<br> Must be called Server side.
+	 */
 	public static <MSG extends IFEPacket> void registerServerToClient(int index, Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
 		registerMessage(index, type, decoder, NetworkDirection.PLAY_TO_CLIENT);
 	}
 
+	/**
+	 * INTERNAL METHOD, DO NOT CALL.
+	 */
 	private static <MSG extends IFEPacket> void registerMessage(int index, Class<MSG> type, Function<PacketBuffer, MSG> decoder, NetworkDirection networkDirection) {
 		if(!registeredMessages.contains(index)) {
 	        LoggingHandler.felog.info("Registering Network Message id:"+Integer.toString(index)+", Class:"+type.getName());

@@ -1,6 +1,7 @@
 package com.forgeessentials.commons.network.packets;
 
 import com.forgeessentials.commons.network.IFEPacket;
+import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -18,13 +19,10 @@ public class Packet1SelectionUpdate implements IFEPacket
 
     public static Packet1SelectionUpdate decode(PacketBuffer byteBuf)
     {
-    	/* Since dimensions are not by int anymore, i can't receive by int.
     	Selection selection = new Selection(
                 byteBuf.readUtf(),
                 byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble()) : null,
                 byteBuf.readBoolean() ? new Point(byteBuf.readDouble(), byteBuf.readDouble(), byteBuf.readDouble()) : null);
-        */
-    	Selection selection = new Selection(null,null,null);
         return new Packet1SelectionUpdate(selection);
     }
 
@@ -71,7 +69,5 @@ public class Packet1SelectionUpdate implements IFEPacket
     }
 
 	@Override
-	public void handle(Context context) {
-		// TODO Auto-generated method stub
-	}
+	public void handle(Context context) {}
 }
