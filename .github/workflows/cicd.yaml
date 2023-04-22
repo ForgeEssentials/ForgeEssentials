@@ -6,15 +6,21 @@ name: Java CI with Gradle
 on:
   push: {}
   pull_request: {}
+  release:
+    types: released
 env:
   BUILD_NUMBER: 'UNOFFICIAL-${{ github.sha }}'
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
+      - name: Get Build Number from Release
+        if: ${{ event.release }}
+        run: |
+          FULL_VERSION=($(echo ${{ event.release.tag_name }} | tr "." "\n"))
+          BUILD_NUMBER="BUILD_NUMBER=${FULL_VERSION[2]}" >> $GITHUB_ENV
+
       - name: Set up JDK 8
         uses: actions/setup-java@v2
         with:
@@ -27,7 +33,7 @@ jobs:
          ./gradlew build
       - uses: actions/upload-artifact@v2
         with:
-          name: binaries-${{ github.sha }}
+          name: binaries-${{ env.BUILD_NUMBER }}
           path: ./build/libs/
       - uses: actions/upload-artifact@v2
         with:

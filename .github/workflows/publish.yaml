@@ -9,7 +9,6 @@ on:
     types:
       - completed
 env:
-  BUILD_NUMBER: 'UNOFFICIAL-${{ github.event.workflow_run.head_sha }}'
   WORKFLOW_GITHUB_REF: ${{ github.event.workflow_run.head_repository.full_name }}/${{ github.event.workflow_run.head_branch }}
 jobs:
   publish:
@@ -29,6 +28,7 @@ jobs:
           cache: gradle
       - name: 'Download artifact'
         uses: actions/github-script@v3.1.0
+        id: download-artifact
         with:
           script: |
             var artifacts = await github.actions.listWorkflowRunArtifacts({
@@ -47,6 +47,14 @@ jobs:
             });
             var fs = require('fs');
             fs.writeFileSync('${{github.workspace}}/binaries.zip', Buffer.from(download.data));
+            var artifactSplit = matchArtifact.name.split("-");
+            version = artifactSplit[1];
+            if ( version == 'UNOFFICIAL') {
+              version += `-${artifactSplit[2]}`;
+            } else if (version == '${{ github.event.workflow_run.head_sha }}') {
+              version = `UNOFFICIAL-${version}`;
+            }
+            return version;
       - run: |
           mkdir -p build/libs
           unzip binaries.zip -d build/libs
@@ -55,6 +63,7 @@ jobs:
         env:
           DISCORD_TOKEN: '${{ secrets.DISCORD_TOKEN }}'
           CHANNEL_ID: '${{ secrets.CHANNEL_ID }}'
+          BUILD_NUMBER: '${{ steps.download-artifact.outputs.result }}'
         run: |
           chmod +x gradlew
           ./gradlew publishToDiscord -i
