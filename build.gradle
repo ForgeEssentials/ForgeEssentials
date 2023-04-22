@@ -33,6 +33,7 @@ buildscript {
 
 plugins {
     id 'org.sonarqube' version '2.5'
+    id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
 apply plugin: 'jacoco'
@@ -104,6 +105,35 @@ if (System.getenv("BUILD_NUMBER") != null) {
 
 }
 
+ext.set 'changelog', System.getenv("CHANGE_LOG")
+ext.set 'releaseType', 'release'
+ext.set 'srcFile',file("../build/libs/$archivesBaseName-$minecraftVersion-$baseVersion.$buildNumber-server.jar")
+
+curseforge {
+    apiKey = System.getenv("CF_APIKEY")
+    if (apiKey) {
+        project {
+            id = projectID
+            changelog = project.changelog
+            releaseType = project.releaseType
+            addGameVersion minecraftVersion
+            addGameVersion 'Forge'
+            addGameVersion 'Java 8'
+
+            mainArtifact(project.builtFile) {
+                displayName = "$archivesBaseName-$minecraftVersion-$baseVersion.$buildNumber"
+                relations {
+                    optionalDependency 'baubles'
+                }
+            }
+        }
+    }
+    options {
+        javaVersionAutoDetect = false
+        forgeGradleIntegration = false
+        javaIntegration = false
+    }
+}
 // Get commit hash
 
 def repo = Grgit.open(project.file("."))

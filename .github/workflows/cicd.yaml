@@ -38,3 +38,10 @@ jobs:
         with:
           name: ts-files-${{ github.sha }}
           path: jscripting/*.d.ts
+      - env:
+          CF_APIKEY: ${{ secrets.CF_APIKEY }}
+          CHANGE_LOG: ${{ github.event.release.body }}
+        if: ${{ github.event.release }}
+        run: |
+          chmod +x gradlew
+          ./gradlew curseforge

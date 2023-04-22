@@ -55,6 +55,7 @@ jobs:
               version = `UNOFFICIAL-${version}`;
             }
             return version;
+        result-encoding: string
       - run: |
           mkdir -p build/libs
           unzip binaries.zip -d build/libs
