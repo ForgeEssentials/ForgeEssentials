@@ -13,8 +13,8 @@ import com.forgeessentials.api.permissions.IPermissionsHelper;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
-import com.forgeessentials.core.ForgeEssentials;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 /**
@@ -67,8 +67,14 @@ public class APIRegistry
     /**
      * The FE internal event-bus
      */
-    public static final IEventBus FE_EVENTBUS = ForgeEssentials.modMain;
-
+    @Deprecated
+    public static final IEventBus FE_EVENTBUS = MinecraftForge.EVENT_BUS;
+    /**
+     * Gets the Mod event bus
+     * @deprecated
+     * The events fail to pick up a post if running on the mod event bus
+     * bus is being redirected to the FORGE EVENT_BUS.
+     */
     public static IEventBus getFEEventBus()
     {
         return FE_EVENTBUS;
