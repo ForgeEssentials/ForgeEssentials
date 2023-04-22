@@ -42,10 +42,9 @@ public class ServerZone extends Zone implements Loadable
 
     private Map<String, WorldZone> worldZones = new HashMap<String, WorldZone>();
 
-    @Expose(serialize = false)
-    private int maxZoneID;
-
     private Map<UserIdent, Set<String>> playerGroups = new HashMap<UserIdent, Set<String>>();
+
+    private int maxZoneID;
 
     @Expose(serialize = false)
     private Set<UserIdent> knownPlayers = new HashSet<UserIdent>();
