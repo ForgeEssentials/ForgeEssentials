@@ -16,12 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Get Build Number from Release
+        if: ${{ github.event.release }}
         run: |
-          if [[ "${{ event.release }}" != "" ]]
-          then
-            FULL_VERSION=($(echo ${{ event.release.tag_name }} | tr "." "\n"))
-            BUILD_NUMBER="BUILD_NUMBER=${FULL_VERSION[2]}" >> $GITHUB_ENV
-          fi
+          FULL_VERSION=($(echo ${{ github.event.release.tag_name }} | tr "." "\n"))
+          BUILD_NUMBER="BUILD_NUMBER=${FULL_VERSION[2]}" >> $GITHUB_ENV
       - name: Set up JDK 8
         uses: actions/setup-java@v2
         with:
