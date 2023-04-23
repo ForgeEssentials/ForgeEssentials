@@ -120,7 +120,7 @@ curseforge {
             addGameVersion 'Forge'
             addGameVersion 'Java 8'
 
-            mainArtifact(project.builtFile) {
+            mainArtifact(project.srcFile) {
                 displayName = "$archivesBaseName-$minecraftVersion-$baseVersion.$buildNumber"
                 relations {
                     optionalDependency 'baubles'

@@ -4,7 +4,9 @@
 name: Java CI with Gradle
 
 on:
-  push: {}
+  push:
+    branches:
+      - '**'
   pull_request: {}
   release:
     types: released
