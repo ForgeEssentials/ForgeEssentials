@@ -107,7 +107,19 @@ if (System.getenv("BUILD_NUMBER") != null) {
 
 ext.set 'changelog', System.getenv("CHANGE_LOG")
 ext.set 'releaseType', 'release'
-ext.set 'srcFile',file("../build/libs/$archivesBaseName-$minecraftVersion-$baseVersion.$buildNumber-server.jar")
+ext.set 'srcFile',file("./build/libs/$archivesBaseName-$minecraftVersion-$baseVersion.$buildNumber-server.jar")
+
+// Get commit hash
+
+def repo = Grgit.open(project.file("."))
+ext.gitCommitHash = repo.log().find().abbreviatedId
+
+// Set build properties
+version = "$baseVersion.$buildNumber"
+group = "com.forgeessentials"
+archivesBaseName = "forgeessentials"
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 curseforge {
     apiKey = System.getenv("CF_APIKEY")
@@ -134,18 +146,6 @@ curseforge {
         javaIntegration = false
     }
 }
-// Get commit hash
-
-def repo = Grgit.open(project.file("."))
-ext.gitCommitHash = repo.log().find().abbreviatedId
-
-// Set build properties
-version = "$baseVersion.$buildNumber"
-group = "com.forgeessentials"
-archivesBaseName = "forgeessentials"
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 // Set up forge options
 minecraft {
     mappings channel: 'snapshot', version: "20180304-1.12"
