@@ -17,12 +17,12 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.server.CommandMessage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.ClickEvent.Action;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -47,6 +47,7 @@ import com.forgeessentials.chat.command.CommandPm;
 import com.forgeessentials.chat.command.CommandReply;
 import com.forgeessentials.chat.command.CommandTimedMessages;
 import com.forgeessentials.chat.command.CommandUnmute;
+import com.forgeessentials.chat.discord.DiscordHandler;
 import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -107,6 +108,8 @@ public class ModuleChat
 
     public IrcHandler ircHandler;
 
+    public DiscordHandler discordHandler;
+
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
@@ -117,6 +120,8 @@ public class ModuleChat
         ForgeEssentials.getConfigManager().registerLoader(CONFIG_FILE, new ChatConfig());
 
         ircHandler = new IrcHandler();
+        discordHandler = new DiscordHandler();
+
         censor = new Censor();
         mailer = new Mailer();
 
@@ -189,6 +194,7 @@ public class ModuleChat
     @SubscribeEvent
     public void serverStarted(FEModuleServerPostInitEvent e)
     {
+        discordHandler.serverStarted(e);
         ServerUtil.replaceCommand(CommandMessage.class, new CommandMessageReplacement());
     }
 
@@ -197,6 +203,7 @@ public class ModuleChat
     {
         closeLog();
         ircHandler.disconnect();
+        discordHandler.serverStopping(e);
     }
 
     /* ------------------------------------------------------------ */

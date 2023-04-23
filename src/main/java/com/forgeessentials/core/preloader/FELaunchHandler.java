@@ -36,7 +36,7 @@ public class FELaunchHandler implements ITweaker
 
     public static final String FE_DIRECTORY = "ForgeEssentials";
 
-    public static final String FE_LIB_VERSION = "3";
+    public static final String FE_LIB_VERSION = "4";
 
     public static final FilenameFilter JAR_FILTER = new FilenameFilter() {
         @Override

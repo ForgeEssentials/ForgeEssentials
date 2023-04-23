@@ -228,6 +228,7 @@ dependencies {
         exclude module: 'commons-codec'
     }
 
+    serverLib('net.dv8tion:JDA:5.0.0-beta.8')
     // Shade Mixin library
     shade (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
         exclude group: 'org.ow2.asm', module: 'asm-tree'

@@ -10,9 +10,9 @@ import java.util.regex.Pattern;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 
 public final class ChatOutputHandler extends ConfigLoaderBase
@@ -92,7 +93,21 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void broadcast(String message)
     {
-        broadcast(new TextComponentString(message));;
+        broadcast(message, true);;
+    }
+
+
+    /**
+     * Sends a message to all clients
+     *
+     * @param message
+     *            The message to send
+     * @param sendToDiscord
+     *            Broadcast Message to discord
+     */
+    public static void broadcast(String message, boolean sendToDiscord)
+    {
+        broadcast(new TextComponentString(message), sendToDiscord);;
     }
 
     /**
@@ -103,7 +118,24 @@ public final class ChatOutputHandler extends ConfigLoaderBase
      */
     public static void broadcast(ITextComponent message)
     {
+        broadcast(message, true);
+    }
+
+    /**
+     * Sends a message to all clients
+     *
+     * @param message
+     *            The message to send
+     * @param sendToDiscord
+     *            Broadcast Message to discord
+     */
+    public static void broadcast(ITextComponent message, boolean sendToDiscord)
+    {
         FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().sendMessage(message);
+        if (sendToDiscord && ModuleChat.instance != null)
+        {
+            ModuleChat.instance.discordHandler.sendMessage(message.getUnformattedText());
+        }
     }
 
     /* ------------------------------------------------------------ */
