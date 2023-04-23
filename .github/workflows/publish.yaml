@@ -55,7 +55,7 @@ jobs:
               version = `UNOFFICIAL-${version}`;
             }
             return version;
-        result-encoding: string
+          result-encoding: string
       - run: |
           mkdir -p build/libs
           unzip binaries.zip -d build/libs
@@ -63,7 +63,8 @@ jobs:
         working-directory: DiscordGradleBot
         env:
           DISCORD_TOKEN: '${{ secrets.DISCORD_TOKEN }}'
-          CHANNEL_ID: '${{ secrets.CHANNEL_ID }}'
+          DEV_BUILD_CHANNEL_ID: '${{ vars.DEV_BUILD_CHANNEL_ID }}'
+          RELEASE_CHANNEL_ID: '${{ vars.RELEASE_CHANNEL_ID }}'
           BUILD_NUMBER: '${{ steps.download-artifact.outputs.result }}'
         run: |
           chmod +x gradlew
