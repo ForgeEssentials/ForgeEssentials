@@ -1,7 +1,11 @@
 package com.forgeessentialsclient;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -106,13 +110,16 @@ public class ForgeEssentialsClient
     @SubscribeEvent
     public void getServerMods(NetworkEvent.LoginPayloadEvent e)
     {
-	PacketBuffer payload= e.getPayload();
-	S2CModList list = FMLHandshakeMessages.S2CModList.decode(payload);
-        if (list.getModList().contains("forgeessentials"))
-        {
-        	serverHasFE = true;
-            feclientlog.info("The server is running ForgeEssentials.");
-        }
+		PacketBuffer payload= e.getPayload();
+		S2CModList list = FMLHandshakeMessages.S2CModList.decode(payload);
+		for(String mod :list.getModList()) {
+			feclientlog.info(mod);
+		}
+	
+		if (list.getModList().contains("forgeessentials")){
+			serverHasFE = true;
+			feclientlog.info("The server is running ForgeEssentials.");
+		}
     }
 
     public void commonsetup(FMLCommonSetupEvent event) {
@@ -174,6 +181,35 @@ public class ForgeEssentialsClient
 		}
 	}
 
+    /**
+     * A temporary fix since forge does not have client commands in 1.16.5
+     * */
+    @SubscribeEvent
+    public void fecommandevent(ClientChatEvent event) {
+    	if(event.getOriginalMessage().equals("feclient")) {
+    		Minecraft instance = Minecraft.getInstance();
+    		TextComponent msg = new StringTextComponent("/feclient info: Get FE client info");
+        	instance.gui.getChat().addMessage(msg);
+        	TextComponent msg2 = new StringTextComponent("/feclient reinit: Redo server handshake");
+        	instance.gui.getChat().addMessage(msg2);
+        	event.setCanceled(true);
+    	}
+    	if(event.getOriginalMessage().equals("feclient reinit")) {
+    		Minecraft instance = Minecraft.getInstance();
+    		ForgeEssentialsClient.resendHandshake();
+        	TextComponent msg = new StringTextComponent("Resent handshake packet to server.");
+        	instance.gui.getChat().addMessage(msg);
+        	event.setCanceled(true);
+    	}
+    	if(event.getOriginalMessage().equals("feclient info")) {
+    		Minecraft instance = Minecraft.getInstance();
+    		TextComponent msg = new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
+        	instance.gui.getChat().addMessage(msg);
+        	TextComponent msg2 = new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
+        	instance.gui.getChat().addMessage(msg2);
+        	event.setCanceled(true);
+    	}
+    }
     /* ------------------------------------------------------------ */
 
     public static boolean serverHasFE()

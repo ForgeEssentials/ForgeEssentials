@@ -65,8 +65,7 @@ public class FEClientCommand extends BaseCommand {
             }
             if (num == 2)
             {
-            	TextComponent msg = new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", //
-                        BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
+            	TextComponent msg = new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
             	instance.gui.getChat().addMessage(msg);
             	TextComponent msg2 = new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
             	instance.gui.getChat().addMessage(msg2);
