@@ -42,8 +42,10 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("rebind")
-                        .executes(CommandContext -> execute(CommandContext, "rebind")
+                        .executes(CommandContext -> execute(CommandContext, "bind")
                                 )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "bind")
                         );
     }
     @Override
@@ -59,18 +61,12 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
         // Get the wand item (or hands)
         Item wandItem;
         String wandId, wandName;
-        int wandDmg = 0;
         PlayerEntity player = getServerPlayer(ctx.getSource());
         if (getServerPlayer(ctx.getSource()).getMainHandItem() != null)
         {
             wandName = player.getMainHandItem().getDisplayName().getString();
             wandItem = player.getMainHandItem().getItem();
-            wandDmg = player.getMainHandItem().getDamageValue();
-            wandId = wandItem.getRegistryName().getNamespace();
-            if (wandDmg == -1)
-            {
-                wandDmg = 0;
-            }
+            wandId = wandItem.getRegistryName().getPath();
         }
         else
         {
@@ -85,6 +81,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
         {
             ChatOutputHandler.sendMessage(ctx.getSource(), TextFormatting.LIGHT_PURPLE + "Wand unbound from " + wandName);
             info.setWandEnabled(false);
+            
             return Command.SINGLE_SUCCESS;
         }else 
         {
@@ -97,7 +94,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
             // Bind wand
             info.setWandEnabled(true);
             info.setWandID(wandId);
-            info.setWandDmg(wandDmg);
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), wandId);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Wand bound to " + wandName);
             return Command.SINGLE_SUCCESS;
         }

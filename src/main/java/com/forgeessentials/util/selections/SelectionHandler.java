@@ -63,9 +63,7 @@ public class SelectionHandler extends ServerEventHandler
         }
         else
         {
-            if (!(player.getMainHandItem().getItem().getName(player.getMainHandItem()).toString().equals(info.getWandID())))
-                return;
-            if (player.getMainHandItem().getDamageValue() != info.getWandDmg())
+            if (!(player.getMainHandItem().getItem().getRegistryName().getPath().equals(info.getWandID())))
                 return;
         }
 
@@ -101,9 +99,7 @@ public class SelectionHandler extends ServerEventHandler
         }
         else
         {
-            if (!(player.getMainHandItem().getItem().getName(player.getMainHandItem()).toString().equals(info.getWandID())))
-                return;
-            if (player.getMainHandItem().getDamageValue() != info.getWandDmg())
+            if (!(player.getMainHandItem().getItem().getRegistryName().getPath().equals(info.getWandID())))
                 return;
         }
 

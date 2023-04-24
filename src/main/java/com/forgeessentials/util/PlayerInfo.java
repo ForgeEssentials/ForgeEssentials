@@ -67,9 +67,6 @@ public class PlayerInfo implements Loadable
     @Expose(serialize = false)
     private String wandID;
 
-    @Expose(serialize = false)
-    private int wandDmg;
-
     /* ------------------------------------------------------------ */
     /* Inventory groups */
 
@@ -371,16 +368,6 @@ public class PlayerInfo implements Loadable
     public void setWandID(String wandID)
     {
         this.wandID = wandID;
-    }
-
-    public int getWandDmg()
-    {
-        return wandDmg;
-    }
-
-    public void setWandDmg(int wandDmg)
-    {
-        this.wandDmg = wandDmg;
     }
 
     /* ------------------------------------------------------------ */

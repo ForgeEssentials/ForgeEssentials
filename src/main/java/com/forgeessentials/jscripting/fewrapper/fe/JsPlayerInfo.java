@@ -99,16 +99,6 @@ public class JsPlayerInfo extends JsWrapper<PlayerInfo>
         that.setWandID(wandID);
     }
 
-    public int getWandDmg()
-    {
-        return that.getWandDmg();
-    }
-
-    public void setWandDmg(int wandDmg)
-    {
-        that.setWandDmg(wandDmg);
-    }
-
     public JsPoint getSel1()
     {
         return new JsPoint(that.getSel1());
