@@ -47,7 +47,7 @@ public class Selection extends WorldArea
 
     public boolean isValid()
     {
-        return start != null && end != null;
+        return start != null && end != null && dim != null;
     }
 
 }
