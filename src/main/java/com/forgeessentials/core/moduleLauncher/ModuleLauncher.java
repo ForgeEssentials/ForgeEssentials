@@ -187,6 +187,7 @@ public class ModuleLauncher
         	LoggingHandler.felog.error("Un-Registered module:  " + moduleName);
         }catch(NullPointerException e) {
             LoggingHandler.felog.error("Failed to un-register module:  " + moduleName);
+            LoggingHandler.felog.error("This could be a major issue, if anything unexpected happens please contact the ForgeEssentials team!");
         }
         containerMap.remove(moduleName);
     }
