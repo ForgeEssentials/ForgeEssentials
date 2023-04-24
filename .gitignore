@@ -41,4 +41,3 @@ modlist.txt
 *.launch
 ForgeEssentials-Client/build.gradle.old
 /.apt_generated_tests/
-ForgeEssentials-DevelopingThirdPartyModules

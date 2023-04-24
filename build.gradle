@@ -400,7 +400,7 @@ jar {
  * */
 
 task deobfJar(dependsOn: "classes", type: Jar) {
-	classifier = "dev"
+	classifier = "dev-"+gitCommitHash
 	appendix = project.minecraftVersion
 	
 	from sourceSets.main.output
