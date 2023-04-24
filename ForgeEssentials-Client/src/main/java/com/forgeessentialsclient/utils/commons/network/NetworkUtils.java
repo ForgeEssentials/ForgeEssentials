@@ -16,13 +16,13 @@ import net.minecraft.util.ResourceLocation;
 
 public class NetworkUtils
 {
-	public static final String PROTOCOL_VERSION = "FE1";
-	public static final SimpleChannel HANDLER = NetworkRegistry.ChannelBuilder
-			.named(new ResourceLocation("forgeessentials", "fe-network"))
-			.clientAcceptedVersions(NetworkRegistry.ABSENT::equals)
-			.serverAcceptedVersions(NetworkRegistry.ABSENT::equals)
-			.networkProtocolVersion(() -> PROTOCOL_VERSION)
-			.simpleChannel();
+	private static final String PROTOCOL_VERSION = "FE1";
+    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
+        new ResourceLocation("forgeessentials", "fe-network"),
+        () -> PROTOCOL_VERSION,
+        NetworkRegistry.acceptMissingOr(PROTOCOL_VERSION),
+        NetworkRegistry.acceptMissingOr(PROTOCOL_VERSION)
+    );
     private static Set<Integer> registeredMessages = new HashSet<>();
 
     
@@ -54,14 +54,14 @@ public class NetworkUtils
 	}
 
 	private static <MSG extends IFEPacket> void registerMessage(int index, Class<MSG> type, Function<PacketBuffer, MSG> decoder, NetworkDirection networkDirection) {
-		HANDLER.registerMessage(index, type, IFEPacket::encode, decoder, IFEPacket::handle, Optional.of(networkDirection));
+		INSTANCE.registerMessage(index, type, IFEPacket::encode, decoder, IFEPacket::handle, Optional.of(networkDirection));
 		registeredMessages.add(index);
 	}
 	/**
 	 * Sends a packet to the server.<br> Must be called Client side.
 	 */
 	public static <MSG extends IFEPacket> void sendToServer(MSG msg) {
-		HANDLER.sendToServer(msg);
+		INSTANCE.sendToServer(msg);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class NetworkUtils
 	 */
 	public static <MSG extends IFEPacket> void sendTo(MSG msg, ServerPlayerEntity player) {
 		if (!(player instanceof FakePlayer)) {
-			HANDLER.sendTo(msg, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+			INSTANCE.sendTo(msg, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 		}
 	}
 }
