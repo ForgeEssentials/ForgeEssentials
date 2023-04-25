@@ -19,7 +19,9 @@ public abstract class MixinPlayerEntity extends Entity
     }
 
     @Shadow public abstract boolean isSpectator();
-    @Redirect(method = "onUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
+    @Redirect(
+    		method = "tick", 
+    		at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
     private boolean onUpdate_NoClip(PlayerEntity _this) {
         return isSpectator() || noPhysics;
     }

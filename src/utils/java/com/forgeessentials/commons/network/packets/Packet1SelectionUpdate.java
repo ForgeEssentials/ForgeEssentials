@@ -35,8 +35,7 @@ public class Packet1SelectionUpdate implements IFEPacket
             byteBuf.writeBoolean(false);
             return;
         }
-        String s = sel.getDimension().toString();
-        byteBuf.writeUtf(s);
+        byteBuf.writeUtf(sel.getDimension());
 
         if (sel.getStart() != null)
         {
