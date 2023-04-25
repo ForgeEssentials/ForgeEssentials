@@ -1,4 +1,4 @@
-package com.forgeessentials.commons.network;
+package com.forgeessentials.core.misc;
 
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
 import com.forgeessentials.util.PlayerInfo;

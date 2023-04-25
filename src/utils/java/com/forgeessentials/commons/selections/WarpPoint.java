@@ -2,16 +2,17 @@ package com.forgeessentials.commons.selections;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.annotations.Expose;
 
 public class WarpPoint
@@ -172,10 +173,10 @@ public class WarpPoint
     {
         if (world != null && world.dimension().location().toString().equals(dim))
             return world.getLevel();
-        world = ServerUtil.getWorldFromString(dim);
+        world = ServerLifecycleHooks.getCurrentServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
         if (world == null)
         {
-            LoggingHandler.felog.debug("argument.dimension.invalid" + dim);
+            System.out.print("argument.dimension.invalid"+ dim);
             return null;
         }
         else

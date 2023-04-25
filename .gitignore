@@ -27,8 +27,6 @@
 *.iws
 out/
 
-!/jars/coremods/
-
 *.sh
 *.db
 CHANGELOG
@@ -39,5 +37,4 @@ modlist.txt
 /src/*/generated/
 /jscripting/tsconfig.json
 *.launch
-ForgeEssentials-Client/build.gradle.old
 /.apt_generated_tests/

@@ -249,12 +249,12 @@ sourceSets {
         configurations.compileClasspath,
         configurations.runtimeClasspath
 	]
-	//utils {
-	//	compileClasspath = files(configurations.compile)
-	//	compileClasspath += files deps
-	//}
+	utils {
+		compileClasspath = files(configurations.compile)
+		compileClasspath += files deps
+	}
 	main {
-		compileClasspath = files(configurations.compile)//, sourceSets.utils.output)
+		compileClasspath = files(configurations.compile, sourceSets.utils.output)
 		compileClasspath += files deps
         //refMap = "mixins.forgeessentials.refmap.json"
 	}
@@ -312,15 +312,15 @@ task tsd(type: JavaExec) {
 }*/
 
 // Pack libraries as zip file to include them in the jar file
-task serverLibArchive(type: Zip) {
-	archiveName = "libraries.zip"
-	destinationDir = jar.destinationDir
-
-	from (configurations.serverLib.copyRecursive()) { into("ForgeEssentials/lib") }
-}
+//task serverLibArchive(type: Zip) {
+//	archiveName = "libraries.zip"
+//	destinationDir = jar.destinationDir
+//
+//	from (configurations.serverLib.copyRecursive()) { into("ForgeEssentials/lib") }
+//}
 
 jar.doLast {
-	delete (serverLibArchive.archivePath)
+	///delete (serverLibArchive.archivePath)
 	delete (shadowJar.archivePath)
 }
 
@@ -348,22 +348,22 @@ shadowJar {
 	classifier = "shadow"
 
 	from sourceSets.main.output
-	//from sourceSets.utils.output
 	//exclude('com/forgeessentials/client/**')
+	from sourceSets.utils.output
 }
 // Configure server jar (default)
 jar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
-	dependsOn "serverLibArchive"
+	//dependsOn "serverLibArchive"
 	dependsOn shadowJar
     //dependsOn "tsd"
 	classifier = "server"
 	appendix = project.minecraftVersion
 	
 	from sourceSets.main.output
-	//from sourceSets.utils.output
     //exclude('com/forgeessentials/client/**')
-    from fileTree(serverLibArchive.archivePath)
+	from sourceSets.utils.output
+    //from fileTree(serverLibArchive.archivePath)
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
 
@@ -404,7 +404,7 @@ task deobfJar(dependsOn: "classes", type: Jar) {
 	appendix = project.minecraftVersion
 	
 	from sourceSets.main.output
-	//from sourceSets.utils.output
+	from sourceSets.utils.output
 	
 	from (sourceSets.main.java) {
 		into ("src/")
