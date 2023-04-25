@@ -126,6 +126,18 @@ minecraft {
 	mappings channel: 'official', version: '1.16.5'
     accessTransformer = file('src/main/resources/META-INF/forgeessentials_at.cfg')
     runs {
+	    client {
+	            workingDirectory project.file('rundir')
+	
+	            // Recommended logging data for a userdev environment
+	            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+	
+	            // Recommended logging level for the console
+	            property 'forge.logging.console.level', 'debug'
+	
+	            mods {
+	            }
+	        }
         server {
             workingDirectory project.file('rundir')
 
@@ -174,10 +186,11 @@ ext.serverManifest = manifest {
 // Create dependency configurations
 configurations {
 	shade
+	shadeClient
 	serverLib
 	buildDep
 	shadowLib
-	compile.extendsFrom buildDep, shade, serverLib, shadowLib
+	compile.extendsFrom buildDep, shade, shadeClient, serverLib, shadowLib
     mavenDeps
 }
 
@@ -222,7 +235,9 @@ dependencies {
     //    exclude module: 'gson'
     //    exclude module: 'commons-io'
     //    exclude module: 'log4j-core'
-        
+    //shadeClient (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
+    //    exclude group: 'org.ow2.asm', module: 'asm-tree'
+    //}
 	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
 	compileOnly 'org.spongepowered:spongeapi:8.0.0'
 	implementation 'net.kyori:adventure-api:4.11.0'
@@ -258,6 +273,16 @@ sourceSets {
 		compileClasspath += files deps
         //refMap = "mixins.forgeessentials.refmap.json"
 	}
+	client {
+		compileClasspath = files(configurations.compile, sourceSets.utils.output)
+		compileClasspath += files deps
+        //refMap = "mixins.forgeessentials.client.refmap.json"
+	}
+
+    //test {
+    //    compileClasspath = files(configurations.compile, sourceSets.utils.output, sourceSets.main.output)
+    //    compileClasspath += files deps
+    //}
 }
 /*
 project.compileUtilsJava {
@@ -281,6 +306,18 @@ project.processResources {
 			'mod_download': mod_download,
 			'buildHash': gitCommitHash,
 			'buildNumber': buildNumber,
+		)
+	}
+}
+
+// Configure client resource processing
+project.processClientResources {
+	from (sourceSets.client.resources.srcDirs) {
+		include 'META-INF/mods.toml'
+		duplicatesStrategy = DuplicatesStrategy.INCLUDE
+		expand (
+			'version': "$mod_version",
+			'mod_name': mod_name_client
 		)
 	}
 }
@@ -348,8 +385,8 @@ shadowJar {
 	classifier = "shadow"
 
 	from sourceSets.main.output
-	//exclude('com/forgeessentials/client/**')
 	from sourceSets.utils.output
+	exclude('com/forgeessentials/client/**')
 }
 // Configure server jar (default)
 jar {
@@ -361,8 +398,8 @@ jar {
 	appendix = project.minecraftVersion
 	
 	from sourceSets.main.output
-    //exclude('com/forgeessentials/client/**')
 	from sourceSets.utils.output
+    exclude('com/forgeessentials/client/**')
     //from fileTree(serverLibArchive.archivePath)
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
 		from (zipTree(artifact))
@@ -391,6 +428,28 @@ jar {
 	
 	manifest {
 		from serverManifest
+	}
+}
+
+/************************************************************
+ * Configure client jar
+ */
+
+task clientJar (dependsOn: "clientClasses", type: Jar) {
+	classifier = "client"
+	appendix = project.minecraftVersion
+	
+	from sourceSets.client.output
+	from sourceSets.utils.output
+	configurations.shadeClient.copyRecursive().setTransitive(false).each { artifact ->
+		from (zipTree(artifact))
+	}
+	
+	manifest {
+		from sharedManifest
+		attributes (
+			"MixinConfigs": "mixins.forgeessentials.client.json"
+		)
 	}
 }
 
@@ -497,5 +556,6 @@ task Annotations(type: Jar) {
  // Add default artifacts for task "build"
 artifacts {
 	archives deobfJar
+	archives clientJar
 	archives Annotations
 }
