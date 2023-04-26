@@ -27,7 +27,7 @@ public class MixinNetHandlerPlayServer
     @Shadow
     public ServerPlayerEntity player;
     @Shadow
-    private Logger LOGGER;
+    private static Logger LOGGER;
   //TODO overwrite updateSignText from ServerPlayNetHandler void net.minecraft.network.play.ServerPlayNetHandler.updateSignText()
     /**
      * Post {@link SignEditEvent} to the event bus.

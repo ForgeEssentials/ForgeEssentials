@@ -42,14 +42,15 @@ public abstract class MixinEntityPlayer
      * @author Maximuslotro
      * @reason stuff
      */
+    /*
     @Inject(
-            method = "isSpectator",
+            method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/entity/player/PlayerEntity;tick()V")
+                    target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()V")
             )
     public void onUpdate_NoClip(CallbackInfoReturnable<Boolean> callback)
     {
     	callback.setReturnValue(isSpectator() || PlayerInfo.get(gameProfile.getId()).isNoClip());
-    }
+    }*/
 }

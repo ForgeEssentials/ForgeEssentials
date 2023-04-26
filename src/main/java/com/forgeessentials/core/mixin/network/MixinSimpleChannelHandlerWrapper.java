@@ -8,7 +8,6 @@ import net.minecraft.network.ThreadQuickExitException;
 import net.minecraft.network.play.ServerPlayNetHandler;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,16 +26,13 @@ import io.netty.channel.SimpleChannelInboundHandler;
 public abstract class MixinSimpleChannelHandlerWrapper extends SimpleChannelInboundHandler<IPacket<?>>
 {
     @Shadow
-    @Final
     private INetHandler packetListener;
     @Shadow
-    @Final
     private Channel channel;
     @Shadow
-    @Final
     private int receivedPackets;
     @Shadow
-    protected <T extends INetHandler> void genericsFtw(IPacket<T> p_197664_0_, INetHandler p_197664_1_) {}
+    protected static <T extends INetHandler> void genericsFtw(IPacket<T> p_197664_0_, INetHandler p_197664_1_) {}
 
     @Inject(at = @At("HEAD"), 
             method = "channelRead0", 
