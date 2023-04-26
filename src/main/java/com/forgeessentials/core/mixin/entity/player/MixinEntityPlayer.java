@@ -43,13 +43,13 @@ public abstract class MixinEntityPlayer
      * @reason stuff
      */
     @Inject(
-            method = "tick",
+            method = "isSpectator",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"),
-            cancellable = true)
+                    target = "Lnet/minecraft/entity/player/PlayerEntity;tick()V")
+            )
     public void onUpdate_NoClip(CallbackInfoReturnable<Boolean> callback)
     {
-        callback.setReturnValue(isSpectator() || PlayerInfo.get(gameProfile.getId()).isNoClip());
+    	callback.setReturnValue(isSpectator() || PlayerInfo.get(gameProfile.getId()).isNoClip());
     }
 }

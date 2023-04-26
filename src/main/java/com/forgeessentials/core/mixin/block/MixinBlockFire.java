@@ -19,7 +19,7 @@ import java.util.Random;
 @Mixin(FireBlock.class)
 public class MixinBlockFire
 {
-
+/*
     @Inject(
             method = "tryCatchFire",
             at = @At(
@@ -27,7 +27,8 @@ public class MixinBlockFire
                     target = "Lnet/minecraftforge/common/extensions/IForgeBlockState;catchFire(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/Direction;Lnet/minecraft/entity/LivingEntity;)V"
             ),
             cancellable = true,
-            remap = false)
+            remap=false
+            )
     public void handleTryCatchFire(World world, BlockPos pos, int chance, Random random, int argValue1, Direction face, CallbackInfo ci)
     {
         BlockPos source = pos.offset(face.getStepX(), face.getStepY(), face.getStepZ());
@@ -43,7 +44,8 @@ public class MixinBlockFire
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/server/ServerWorld;removeBlock(Lnet/minecraft/util/math/BlockPos;Z)Z"),
             cancellable = true,
-            remap = false)
+            remap=false
+            )
     public void handleBlockDestroyOntryCatchFire(World world, BlockPos pos, int p_176536_3_, Random p_176536_4_, int p_176536_5_, Direction face, CallbackInfo ci)
     {
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))
@@ -51,14 +53,14 @@ public class MixinBlockFire
             ci.cancel();
         }
     }
-
+*/
     @Inject(
             method = "tick",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/server/ServerWorld;removeBlock(Lnet/minecraft/util/math/BlockPos;Z)Z"),
-            cancellable = true,
-            remap = false)
+            cancellable = true
+            )
     public void handleBlockDestroyOnTick(BlockState p_225534_1_, ServerWorld world, BlockPos pos, Random random, CallbackInfo ci)
     {
         if (MinecraftForge.EVENT_BUS.post(new FireEvent.Destroy(world, pos)))
