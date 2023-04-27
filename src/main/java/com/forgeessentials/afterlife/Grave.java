@@ -151,7 +151,7 @@ public class Grave implements Loadable
         }
 
         BlockState graveBlock = point.getWorld().getBlockState(point.getBlockPos());
-        if (graveBlock != blockState && graveBlock.getBlock() != Blocks.CHEST)
+        if (graveBlock != blockState && graveBlock.getBlock() != block)
         {
             // Grave is destroyed - repair if protection is still active
             if (isProtected)
