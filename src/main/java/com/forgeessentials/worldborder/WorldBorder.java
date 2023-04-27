@@ -149,14 +149,14 @@ public class WorldBorder implements Loadable
     {
         // TODO: Better way to identify dimensions
         String key = dimID;
-        DataManager.getInstance().save(this, key);
+        DataManager.getInstance().save(this, key.replace(":", "-"));
     }
 
     public static WorldBorder load(World world)
     {
         // TODO: Better way to identify dimensions
         String key = world.dimension().location().toString();
-        return DataManager.getInstance().load(WorldBorder.class, key);
+        return DataManager.getInstance().load(WorldBorder.class, key.replace(":", "-"));
     }
 
 }

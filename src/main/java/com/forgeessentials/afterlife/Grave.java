@@ -50,7 +50,8 @@ public class Grave implements Loadable
 
     protected boolean isProtected = true;
 
-    protected Block block = Blocks.PLAYER_HEAD;
+    @Expose(serialize = false)
+    private Block block = Blocks.PLAYER_HEAD;
 
     @Expose(serialize = false)
     private boolean opened;
@@ -135,7 +136,7 @@ public class Grave implements Loadable
         {//!DimensionManager.isDimensionRegistered(point.getDimension())
             ServerWorld dworld = ServerLifecycleHooks.getCurrentServer().getLevel(point.getWorld().dimension());
             if (dworld.isLoaded(point.getBlockPos())) {
-                DataManager.getInstance().delete(Grave.class, point.toString());
+                DataManager.getInstance().delete(Grave.class, point.toString().replace(":", "-"));
                 graves.remove(point);
             }
             return;
@@ -250,7 +251,7 @@ public class Grave implements Loadable
                 point.getWorld().removeBlock(fencePos, false);
         }
 
-        DataManager.getInstance().delete(Grave.class, point.toString());
+        DataManager.getInstance().delete(Grave.class, point.toString().replace(":", "-"));
         graves.remove(point);
     }
 
@@ -268,7 +269,7 @@ public class Grave implements Loadable
     public static void saveAll()
     {
         for (Grave grave : graves.values())
-            DataManager.getInstance().save(grave, grave.getPosition().toString());
+            DataManager.getInstance().save(grave, grave.getPosition().toString().replace(":", "-"));
     }
 
 }
