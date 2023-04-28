@@ -298,7 +298,7 @@ public abstract class Zone
         PermissionList map = getPlayerPermissions(ident);
         if (map != null)
         {
-            return map.get(permissionNode);
+            return map.get(fixPerms(permissionNode));
         }
         return null;
     }
@@ -327,7 +327,7 @@ public abstract class Zone
         PermissionList map = getPlayerPermissions(ident);
         if (map != null)
         {
-            String permValue = map.get(permissionNode);
+            String permValue = map.get(fixPerms(permissionNode));
             return !PERMISSION_FALSE.equalsIgnoreCase(permValue);
         }
         return null;
@@ -342,14 +342,14 @@ public abstract class Zone
      */
     public boolean setPlayerPermissionProperty(UserIdent ident, String permissionNode, String value)
     {
-        if (ident != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyPermission(getServerZone(), ident, this, permissionNode, value)))
+        if (ident != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyPermission(getServerZone(), ident, this, fixPerms(permissionNode), value)))
         {
             getServerZone().registerPlayer(ident);
             PermissionList map = getOrCreatePlayerPermissions(ident);
             if (value == null)
-                map.remove(permissionNode);
+                map.remove(fixPerms(permissionNode));
             else
-                map.put(permissionNode, value);
+                map.put(fixPerms(permissionNode), value);
             setDirty();
             return true;
         }
@@ -379,9 +379,9 @@ public abstract class Zone
         if (ident != null)
         {
             PermissionList map = getPlayerPermissions(ident);
-            if (map != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyPermission(getServerZone(), ident, this, permissionNode, null)))
+            if (map != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.User.ModifyPermission(getServerZone(), ident, this, fixPerms(permissionNode), null)))
             {
-                map.remove(permissionNode);
+                map.remove(fixPerms(permissionNode));
                 return true;
             }
         }
@@ -502,7 +502,7 @@ public abstract class Zone
         PermissionList map = getGroupPermissions(group);
         if (map != null)
         {
-            return map.get(permissionNode);
+            return map.get(fixPerms(permissionNode));
         }
         return null;
     }
@@ -519,7 +519,7 @@ public abstract class Zone
         PermissionList map = getGroupPermissions(group);
         if (map != null)
         {
-            String permValue = map.get(permissionNode);
+            String permValue = map.get(fixPerms(permissionNode));
             return !PERMISSION_FALSE.equalsIgnoreCase(permValue);
         }
         return null;
@@ -534,13 +534,13 @@ public abstract class Zone
      */
     public boolean setGroupPermissionProperty(String group, String permissionNode, String value)
     {
-        if (group != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, value)))
+        if (group != null && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, fixPerms(permissionNode), value)))
         {
             PermissionList map = getOrCreateGroupPermissions(group);
             if (value == null)
-                map.remove(permissionNode);
+                map.remove(fixPerms(permissionNode));
             else
-                map.put(permissionNode, value);
+                map.put(fixPerms(permissionNode), value);
             setDirty();
             return true;
         }
@@ -571,9 +571,9 @@ public abstract class Zone
         {
             PermissionList map = getGroupPermissions(group);
             if (map != null
-                    && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, permissionNode, null)))
+                    && !APIRegistry.getFEEventBus().post(new PermissionEvent.Group.ModifyPermission(getServerZone(), group, this, fixPerms(permissionNode), null)))
             {
-                map.remove(permissionNode);
+                map.remove(fixPerms(permissionNode));
                 return true;
             }
         }
@@ -635,4 +635,10 @@ public abstract class Zone
         return perms;
     }
 
+    public String fixPerms(String perm) {
+    	if(perm.contains("+")) {
+    		perm = perm.replace("+", "*");
+    	}
+    	return perm;
+    }
 }

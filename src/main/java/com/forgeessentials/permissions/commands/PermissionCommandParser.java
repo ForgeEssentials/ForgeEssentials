@@ -1221,7 +1221,7 @@ public class PermissionCommandParser extends CommandUtils
         {
             if (zone.isHidden())
                 continue;
-            ChatOutputHandler.chatNotification(sender, String.format("  %s (%d): #%d / %s", APIRegistry.namedWorldHandler.getWorldName(zone.getDimensionID()),
+            ChatOutputHandler.chatNotification(sender, String.format("  %s (%s): #%d / %s", APIRegistry.namedWorldHandler.getWorldName(zone.getDimensionID()),
                     zone.getDimensionID(), zone.getId(), zone.toString()));
         }
     }

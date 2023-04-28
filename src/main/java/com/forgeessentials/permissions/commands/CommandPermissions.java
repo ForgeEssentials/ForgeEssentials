@@ -873,7 +873,7 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
          {
              listzones.add(z.getName());
          }
-         for (String n : APIRegistry.namedWorldHandler.getWorldNames())
+         for (String n : APIRegistry.namedWorldHandler.getShortWorldNames())
          {
              listzones.add(n);
          }
@@ -892,6 +892,11 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
            for (String z : APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions())
            {
                listperm.add(z);
+           }
+           for(int index=0;index<listperm.size();index++) {
+        	   if(listperm.get(index).contains("*")) {
+        		   listperm.set(index, listperm.get(index).replace("*", "+"));
+        	   }
            }
            return ISuggestionProvider.suggest(listperm, builder);
            };
