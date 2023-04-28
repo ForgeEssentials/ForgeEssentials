@@ -18,6 +18,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ChestContainer;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -54,7 +55,7 @@ public class Grave implements Loadable
     private Block block = Blocks.PLAYER_HEAD;
 
     @Expose(serialize = false)
-    private boolean opened;
+    private boolean open;
 
     @Expose(serialize = false)
     private long lastTick;
@@ -132,10 +133,10 @@ public class Grave implements Loadable
 
     public void updateBlocks()
     {
-        if (point.getDimension().equals(null))
-        {//!DimensionManager.isDimensionRegistered(point.getDimension())
-            ServerWorld dworld = ServerLifecycleHooks.getCurrentServer().getLevel(point.getWorld().dimension());
-            if (dworld.isLoaded(point.getBlockPos())) {
+        if (point.getWorld()==null)
+        {
+            ServerWorld dworld = ServerLifecycleHooks.getCurrentServer().getLevel(ServerUtil.getWorldKeyFromString(point.getDimension()));
+            if (dworld==null) {
                 DataManager.getInstance().delete(Grave.class, point.toString().replace(":", "-"));
                 graves.remove(point);
             }
@@ -144,7 +145,7 @@ public class Grave implements Loadable
         if (isProtected)
         {
             long currentTimeMillis = System.currentTimeMillis();
-            protTime -= currentTimeMillis - lastTick;
+            protTime -= (currentTimeMillis - lastTick)/1000;
             lastTick = currentTimeMillis;
             if (protTime < 0)
                 isProtected = false;
@@ -178,7 +179,7 @@ public class Grave implements Loadable
 
     public boolean canOpen(PlayerEntity player)
     {
-        if (opened)
+        if (open)
             return false;
         if (!isProtected)
             return true;
@@ -189,14 +190,14 @@ public class Grave implements Loadable
         return false;
     }
 
-    public void setOpen(boolean open)
+    public void setOpen(boolean openT)
     {
-        opened = open;
+        open = openT;
     }
 
     public boolean isOpen()
     {
-        return opened;
+        return open;
     }
 
     public WorldPoint getPosition()
@@ -206,6 +207,10 @@ public class Grave implements Loadable
 
     public void interact(ServerPlayerEntity player)
     {
+    	if (isOpen())
+        {
+            return;
+        }
         if (!canOpen(player))
         {
             ChatOutputHandler.chatWarning(player.createCommandSourceStack(), "This grave is still under divine protection.");
@@ -223,7 +228,7 @@ public class Grave implements Loadable
         if (player.containerMenu != player.inventoryMenu)
             player.closeContainer();
         player.nextContainerCounter();
-        player.openMenu(new SimpleNamedContainerProvider((i, inv, p) -> ChestContainer.threeRows(i, inv, invGrave), invGrave.getDisplayName()));
+        player.openMenu(new SimpleNamedContainerProvider((i, inv, p) -> new ChestContainer(ContainerType.GENERIC_9x5, i, inv, invGrave, 5), invGrave.getDisplayName()));
     }
 
     protected void dropItems()

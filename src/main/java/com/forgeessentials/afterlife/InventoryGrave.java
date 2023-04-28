@@ -1,6 +1,7 @@
 package com.forgeessentials.afterlife;
 
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.commons.selections.WorldPoint;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -15,7 +16,7 @@ public class InventoryGrave extends Inventory
     private String name;
     public InventoryGrave(Grave grave)
     {
-        super(Math.min(36, ((grave.inventory.size() - 1) / 9 + 1) * 9));
+        super(45);
         name = UserIdent.get(grave.owner).getUsername() + "'s grave.";
         this.grave = grave;
     }
@@ -39,9 +40,12 @@ public class InventoryGrave extends Inventory
                 grave.inventory.add(is);
         }
         grave.setOpen(false);
-        if (grave.inventory.isEmpty())
-            grave.remove(false);
         super.stopOpen(player);
+        if (grave.inventory.isEmpty()) {
+            WorldPoint point = grave.point;
+            grave.remove(false);
+            point.getWorld().removeBlock(point.getBlockPos(), false);
+        }
     }
 
     public ITextComponent getDisplayName()

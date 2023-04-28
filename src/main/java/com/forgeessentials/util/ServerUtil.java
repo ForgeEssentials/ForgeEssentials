@@ -384,8 +384,11 @@ public abstract class ServerUtil
 
     public static ServerWorld getWorldFromString(String dim)
     {
-        ServerWorld world = ServerLifecycleHooks.getCurrentServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
-        return world;
+    	return ServerLifecycleHooks.getCurrentServer().getLevel(getWorldKeyFromString(dim));
+    }
+    public static RegistryKey<World> getWorldKeyFromString(String dim)
+    {
+        return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim));
     }
 
     /* ------------------------------------------------------------ */
