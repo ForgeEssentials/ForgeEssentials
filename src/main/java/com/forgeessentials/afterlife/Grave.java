@@ -111,7 +111,7 @@ public class Grave implements Loadable
         if (hasFencePost)
         {
             player.level.setBlockAndUpdate(point.getBlockPos(), Blocks.OAK_FENCE.defaultBlockState());
-            LoggingHandler.felog.debug(String.format("Placing graveFence for player %s at %s", player.getName(), point.getBlockPos()));
+            LoggingHandler.felog.debug(String.format("Placing graveFence for player %s at %s", player.getDisplayName().getString(), point.getBlockPos()));
             point.setY(point.getY() + 1);
         }
         player.level.setBlockAndUpdate(point.getBlockPos(), blockState);
@@ -119,7 +119,7 @@ public class Grave implements Loadable
         {
             TileEntitySkullGrave skull = new TileEntitySkullGrave(UserIdent.getGameProfileByUuid(owner));
             player.level.setBlockEntity(point.getBlockPos(), skull);
-            LoggingHandler.felog.debug(String.format("Placing playerHead for player %s at %s", player.getName(), point.getBlockPos()));
+            LoggingHandler.felog.debug(String.format("Placing playerHead for player %s at %s", player.getDisplayName().getString(), point.getBlockPos()));
         }
     }
 

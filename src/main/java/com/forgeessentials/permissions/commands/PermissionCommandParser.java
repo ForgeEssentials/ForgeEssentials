@@ -1247,7 +1247,7 @@ public class PermissionCommandParser extends CommandUtils
 
         ChatOutputHandler.chatNotification(sender, "Online players:");
         for (ServerPlayerEntity player : ServerUtil.getPlayerList())
-            ChatOutputHandler.chatNotification(sender, " - " + player.getName());
+            ChatOutputHandler.chatNotification(sender, " - " + player.getDisplayName().getString());
     }
 
     public static void listGroupUsers(CommandSource sender, String group)

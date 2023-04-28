@@ -68,7 +68,7 @@ public class MixinNetHandlerPlayServer
                 }
             }
             if (!signtileentity.isEditable() || signtileentity.getPlayerWhoMayEdit() != this.player) {
-               LOGGER.warn("Player {} just tried to change non-editable sign", (Object)this.player.getName().getString());
+               LOGGER.warn("Player {} just tried to change non-editable sign", (Object)this.player.getDisplayName().getString());
                return;
             }
 

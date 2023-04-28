@@ -211,7 +211,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
             {
                 ModuleAuth.deauthenticate(player.getUUID());
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                        Translator.format("Player %s was logged out from the authentication service.", player.getName()));
+                        Translator.format("Player %s was logged out from the authentication service.", player.getDisplayName().getString()));
                 ChatOutputHandler.chatWarning(player.createCommandSourceStack(),
                         "You have been logged out from the authentication service. Please login again.");
                 return Command.SINGLE_SUCCESS;
@@ -232,7 +232,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
             }
             PasswordManager.setPassword(player.getUUID(), null);
             ChatOutputHandler.chatConfirmation(ctx.getSource(),
-                    Translator.format("Player %s has been removed from the authentication service.", player.getName()));
+                    Translator.format("Player %s has been removed from the authentication service.", player.getDisplayName().getString()));
             return Command.SINGLE_SUCCESS;
         }
 
@@ -275,7 +275,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
                 return Command.SINGLE_SUCCESS;
             }
             PasswordManager.setPassword(player.getUUID(), StringArgumentType.getString(ctx, "passwordNew"));
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Password set for %s", player.getName()));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Password set for %s", player.getDisplayName().getString()));
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -340,7 +340,7 @@ public class CommandAuth extends ForgeEssentialsCommandBuilder
         if (params.equals("setPass"))
         {
             PasswordManager.setPassword(player.getUUID(), StringArgumentType.getString(ctx, "passwordNew"));
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Password set for %s", player.getName()));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Password set for %s", player.getDisplayName().getString()));
         }
         return Command.SINGLE_SUCCESS;
     }

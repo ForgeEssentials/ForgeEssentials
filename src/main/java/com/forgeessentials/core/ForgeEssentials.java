@@ -428,7 +428,7 @@ public class ForgeEssentials
                 Matcher matcher = pattern.matcher(player.getGameProfile().getName());
                 if (matcher.find())
                 {
-                    String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.getPlayer().getName());
+                    String msg = Translator.format("Invalid name \"%s\" containing spaces. Please change your name!", event.getPlayer().getDisplayName().getString());
                     Entity entity = event.getEntity();
                     if (entity instanceof ServerPlayerEntity == false) {
             			return;
