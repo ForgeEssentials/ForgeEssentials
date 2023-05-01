@@ -4,13 +4,11 @@ import static com.forgeessentials.permissions.core.ItemPermissionManager.TAG_MOD
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -68,16 +66,16 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.literal("mode")
-                        .then(Commands.argument("inventory", EntityArgument.player())
-                                .executes(context -> execute(context, "inventory")
+                        .then(Commands.literal("inventory")
+                                .executes(context -> execute(context, "mode-inventory")
                                         )
                                 )
-                        .then(Commands.argument("equip", EntityArgument.player())
-                                .executes(context -> execute(context, "equip")
+                        .then(Commands.literal("equip")
+                                .executes(context -> execute(context, "mode-equip")
                                         )
                                 )
-                        .then(Commands.argument("use", EntityArgument.player())
-                                .executes(context -> execute(context, "use")
+                        .then(Commands.literal("use")
+                                .executes(context -> execute(context, "mode-use")
                                         )
                                 )
                         )
@@ -115,13 +113,17 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
      };
 
      public static final SuggestionProvider<CommandSource> SUGGEST_PERMS = (ctx, builder) -> {
-         Set<String> permissionSet = APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions();
-         List<String> result = new ArrayList<>();
-         for (String perm : permissionSet)
+         List<String> listperm = new ArrayList<>();
+         for (String z : APIRegistry.perms.getServerZone().getRootZone().enumRegisteredPermissions())
          {
-             result.add(perm);
+             listperm.add(z);
          }
-         return ISuggestionProvider.suggest(result, builder);
+         for(int index=0;index<listperm.size();index++) {
+      	   if(listperm.get(index).contains("*")) {
+      		   listperm.set(index, listperm.get(index).replace("*", "+"));
+      	   }
+         }
+         return ISuggestionProvider.suggest(listperm, builder);
       };
 
     @Override
