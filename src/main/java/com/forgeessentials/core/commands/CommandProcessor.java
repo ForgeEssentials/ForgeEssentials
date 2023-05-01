@@ -1,7 +1,6 @@
 package com.forgeessentials.core.commands;
 
 import com.forgeessentials.api.permissions.FEPermissions;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
@@ -59,12 +58,14 @@ public class CommandProcessor extends CommandUtils
 
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        throw new TranslatedCommandException("This command cannot be used as player");
+    	ChatOutputHandler.chatError(ctx.getSource(), "This command cannot be used as player");
+    	return Command.SINGLE_SUCCESS;
     }
 
     public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+    	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
+    	return Command.SINGLE_SUCCESS;
     }
 
     public int processCommandBlock(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException

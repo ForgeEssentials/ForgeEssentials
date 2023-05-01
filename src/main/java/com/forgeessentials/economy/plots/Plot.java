@@ -26,7 +26,6 @@ import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.CommandFeSettings;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.ServerUtil;
@@ -377,13 +376,14 @@ public class Plot
         plots.put(plot.getZone().getId(), plot);
     }
 
-    public static Plot define(WorldArea area, UserIdent owner) throws EventCancelledException
+    public static boolean define(WorldArea area, UserIdent owner) throws EventCancelledException
     {
         WorldZone worldZone = APIRegistry.perms.getServerZone().getWorldZone(area.getDimension());
         for (Plot zone : plots.values())
             if (zone.getZone().getArea().contains(area) || zone.getZone().getArea().intersectsWith(area))
             {
-            	throw new TranslatedCommandException("There is already a plot defined in this area");
+            	ChatOutputHandler.chatError(owner.getPlayer(), "There is already a plot defined in this area");
+            	return false;
             }
 
         if (isColumnMode(area.getDimension()))
@@ -395,7 +395,7 @@ public class Plot
         registerPlot(plot);
         zone.setHidden(true);
         plot.setDefaultPermissions();
-        return plot;
+        return true;
     }
 
     public static void loadPlots()

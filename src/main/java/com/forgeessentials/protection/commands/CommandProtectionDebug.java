@@ -7,7 +7,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -63,8 +62,10 @@ public class CommandProtectionDebug extends ForgeEssentialsCommandBuilder
     {
 
         ServerPlayerEntity player = getServerPlayer(ctx.getSource());
-        if (player == null)
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+        if (player == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
+        	return Command.SINGLE_SUCCESS;
+        }
 
         if (ModuleProtection.isDebugMode(player))
         {

@@ -15,7 +15,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -105,7 +104,8 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
                     ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
                 }
                 else {
-                    throw new TranslatedCommandException("You don't have permission to smite other players");
+                	ChatOutputHandler.chatError(ctx.getSource(), "You don't have permission to smite other players");
+                	return Command.SINGLE_SUCCESS;
                 }
                 return Command.SINGLE_SUCCESS;
             }
@@ -155,7 +155,7 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "You should feel bad about doing that.");
         }
         else
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName().getString());
+        	ChatOutputHandler.chatError(ctx.getSource(), "Player %s does not exist, or is not online.", player.getDisplayName().getString());
         return Command.SINGLE_SUCCESS;
     }
 

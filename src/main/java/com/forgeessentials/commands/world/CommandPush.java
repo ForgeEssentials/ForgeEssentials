@@ -2,7 +2,6 @@ package com.forgeessentials.commands.world;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -90,7 +89,8 @@ public class CommandPush extends ForgeEssentialsCommandBuilder
         if ((state == Blocks.AIR.defaultBlockState()) || !(state.getBlock() instanceof StoneButtonBlock)
                 || !(state.getBlock() instanceof WoodButtonBlock) && !(state.getBlock() instanceof LeverBlock))
         {
-            throw new TranslatedCommandException("Button/Lever Not Found");
+        	ChatOutputHandler.chatError(ctx.getSource(), "Button/Lever Not Found");
+        	return Command.SINGLE_SUCCESS;
         }
         else
         {
@@ -123,7 +123,8 @@ public class CommandPush extends ForgeEssentialsCommandBuilder
         
         if ((state == Blocks.AIR.defaultBlockState() || !(state.getBlock() instanceof AbstractButtonBlock) && !(state.getBlock() instanceof LeverBlock)))
         {
-            throw new TranslatedCommandException("Button/Lever Not Found");
+        	ChatOutputHandler.chatError(ctx.getSource(), "Button/Lever Not Found");
+        	return Command.SINGLE_SUCCESS;
         }
         else
         {

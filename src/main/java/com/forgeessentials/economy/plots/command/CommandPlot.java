@@ -375,7 +375,9 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         {
             if (!Plot.hasPlots(selection))
             {
-                Plot.define(selection, getIdent(ctx.getSource()));
+            	if(!Plot.define(selection, getIdent(ctx.getSource()))) {
+            		return;
+            	}
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Plot created!");
             }
             else
@@ -455,7 +457,9 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
 
                     try
                     {
-                        Plot.define(selection, getIdent(ctx.getSource()));
+                    	if(!Plot.define(selection, getIdent(ctx.getSource()))) {
+                    		return;
+                    	}
                         wallet.withdraw(price);
                         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Plot created for %s!", APIRegistry.economy.toString(price)));
                     }

@@ -20,7 +20,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -205,7 +204,7 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
             parseTime(ctx, true, arg);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg[0]);
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg[0]);
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -250,7 +249,8 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
         {
             if (addTime)
             {
-                throw new TranslatedCommandException("Add time does not accept time values in the form of day, midday, etc");
+            	ChatOutputHandler.chatError(ctx.getSource(), "Add time does not accept time values in the form of day, midday, etc");
+            	return;
             }
             switch (arg[1])
             {
@@ -270,7 +270,8 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
                 time = 18 * 1000;
                 break;
             default:
-                throw new TranslatedCommandException("Invalid Time format");
+            	ChatOutputHandler.chatError(ctx.getSource(), "Invalid Time format");
+            	return;
             }
         }
 

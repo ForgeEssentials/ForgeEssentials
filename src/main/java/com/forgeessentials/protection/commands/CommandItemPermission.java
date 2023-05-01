@@ -12,7 +12,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -110,15 +109,19 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
 
         if (params.equals("blank"))
         {
-            if (stack == ItemStack.EMPTY)
-                throw new TranslatedCommandException("No item equipped in main hand!");
+            if (stack == ItemStack.EMPTY) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "No item equipped in main hand!");
+            	return Command.SINGLE_SUCCESS;
+            }
             ChatOutputHandler.chatNotification(ctx.getSource(), ModuleProtection.getItemPermission(stack));
             return Command.SINGLE_SUCCESS;
         }
 
         String[] para = params.split("-");
-        if (!types.contains(para[1]))
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, para[1]);
+        if (!types.contains(para[0])) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, para[0]);
+        	return Command.SINGLE_SUCCESS;
+        }
 
         Boolean value;
         switch (para[1])
@@ -133,11 +136,14 @@ public class CommandItemPermission extends ForgeEssentialsCommandBuilder
             value = null;
             break;
         default:
-            throw new TranslatedCommandException("Need to specify allow, deny or clear");
+        	ChatOutputHandler.chatError(ctx.getSource(), "Need to specify allow, deny or clear");
+        	return Command.SINGLE_SUCCESS;
         }
 
-        if (stack == ItemStack.EMPTY)
-            throw new TranslatedCommandException("No item equipped!");
+        if (stack == ItemStack.EMPTY) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "No item equipped!");
+        	return Command.SINGLE_SUCCESS;
+        }
 
         String permStart = ModuleProtection.BASE_PERM + '.';
         String permEnd;

@@ -128,16 +128,24 @@ public class TeleportHelper extends ServerEventHandler
 
         // Check permissions
         UserIdent ident = UserIdent.get(player);
-        if (!APIRegistry.perms.checkPermission(player, TELEPORT_FROM))
-            throw new TranslatedCommandException("You are not allowed to teleport from here.");
-        if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_TO))
-            throw new TranslatedCommandException("You are not allowed to teleport to that location.");
+        if (!APIRegistry.perms.checkPermission(player, TELEPORT_FROM)) {
+        	ChatOutputHandler.chatError(player, "You are not allowed to teleport from here.");
+        	return;
+        }
+        if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_TO)) {
+        	ChatOutputHandler.chatError(player, "You are not allowed to teleport to that location.");
+        	return;
+        }
         if (!player.level.dimension().location().toString().equals(point.getDimension()))
         {
-            if (!APIRegistry.perms.checkPermission(player, TELEPORT_CROSSDIM_FROM))
-                throw new TranslatedCommandException("You are not allowed to teleport from this dimension.");
-            if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_CROSSDIM_TO))
-                throw new TranslatedCommandException("You are not allowed to teleport to that dimension.");
+            if (!APIRegistry.perms.checkPermission(player, TELEPORT_CROSSDIM_FROM)) {
+            	ChatOutputHandler.chatError(player, "You are not allowed to teleport from this dimension.");
+            	return;
+            }
+            if (!APIRegistry.perms.checkUserPermission(ident, point.toWorldPoint(), TELEPORT_CROSSDIM_TO)) {
+            	ChatOutputHandler.chatError(player, "You are not allowed to teleport to that dimension.");
+            	return;
+            }
         }
 
         // Get and check teleport cooldown
