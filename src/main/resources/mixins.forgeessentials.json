@@ -8,6 +8,7 @@
       "block.MixinBlockEndPortal",
       "block.MixinBlockFire",
       "block.MixinBlockPortal",
+      "block.MixinBlockFarmland",
       "command.MixinCommandHandler",
       "entity.MixinEntity",
       "entity.MixinEntityTracker",

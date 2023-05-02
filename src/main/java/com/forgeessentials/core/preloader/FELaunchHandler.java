@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
@@ -38,7 +40,7 @@ public class FELaunchHandler implements ITweaker
 
     public static final String FE_DIRECTORY = "ForgeEssentials";
 
-    public static final String FE_LIB_VERSION = "3";
+    public static final String FE_LIB_VERSION = "5";
 
     public static final FilenameFilter JAR_FILTER = new FilenameFilter() {
         @Override
@@ -60,6 +62,8 @@ public class FELaunchHandler implements ITweaker
 
     private static File jarLocation;
 
+    public static boolean isCauldron;
+
     /* ------------------------------------------------------------ */
 
     @Override
@@ -80,6 +84,12 @@ public class FELaunchHandler implements ITweaker
     {
         // initialize mixin, if someone hasn't already done it for us
         ArrayList<String> tweaks = (ArrayList<String>) Launch.blackboard.get("TweakClasses");
+        try {
+            Class.forName("org.bukkit.Bukkit", false, this.getClass().getClassLoader());
+            isCauldron = true;
+        } catch (ClassNotFoundException e) {
+
+        }
         if (!tweaks.contains("org.spongepowered.asm.launch.MixinTweaker"))
         {
             tweaks.add("org.spongepowered.asm.launch.MixinTweaker");

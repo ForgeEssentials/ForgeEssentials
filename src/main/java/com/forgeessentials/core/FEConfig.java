@@ -31,6 +31,8 @@ public class FEConfig extends ConfigLoaderBase
 
     public static SimpleDateFormat FORMAT_TIME_SECONDS = new SimpleDateFormat("HH:mm:ss");
 
+    public static SimpleDateFormat FORMAT_GSON_COMPAT = new SimpleDateFormat("MMM d, yyyy h:mm:ss aa");
+
     @Override
     public void load(Configuration config, boolean isReload)
     {
@@ -43,7 +45,7 @@ public class FEConfig extends ConfigLoaderBase
                 "Date and time format with seconds").getString());
         FORMAT_TIME = new SimpleDateFormat(config.get(CONFIG_CAT, "format_time", "HH:mm", "Time-only format").getString());
         FORMAT_TIME_SECONDS = new SimpleDateFormat(config.get(CONFIG_CAT, "format_time", "HH:mm:ss", "Time-only format with seconds").getString());
-
+        FORMAT_GSON_COMPAT = new SimpleDateFormat(config.get(CONFIG_CAT, "format_gson_compat", "MMM d, yyyy h:mm:ss aa", "Extra Time format to Load GSON data from a different locale and convert it!").getString());
         modlistLocation = config.get(CONFIG_CAT, "modlistLocation", "modlist.txt",
                 "Specify the file where the modlist will be written to. This path is relative to the ForgeEssentials folder.").getString();
 
