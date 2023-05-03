@@ -125,7 +125,7 @@ public class CommandSmite extends ForgeEssentialsCommandBuilder
         if(params.equals("looking"))
         {
             RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(getServerPlayer(ctx.getSource()), 500);
-            if (mop == null)
+            if (mop.getType()==RayTraceResult.Type.MISS)
             {
                 ChatOutputHandler.chatError(ctx.getSource(), "You must first look at the ground!");
             }

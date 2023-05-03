@@ -225,7 +225,7 @@ public class ShopManager extends ServerEventHandler
             if (!(equippedItem instanceof BlockItem))
                 return;
             RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(event.getPlayer());
-            if (mop == null)
+            if (mop.getType() == RayTraceResult.Type.MISS)
                 return;
             point = new WorldPoint(event.getWorld(), new BlockPos(mop.getLocation()));
         }

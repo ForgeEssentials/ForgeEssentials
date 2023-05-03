@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -73,7 +72,7 @@ public class PermissionOverlay extends AbstractGui
         	float height = instance.getWindow().getGuiScaledHeight();
 
             RayTraceResult mop = instance.hitResult;
-            if (mop != null && mop.hitInfo == Type.BLOCK)
+            if (mop.getType() == RayTraceResult.Type.BLOCK)
             {
                 BlockState block = instance.level.getBlockState(new BlockPos(mop.getLocation()));
                 int blockId = Block.getId(block);

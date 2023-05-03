@@ -450,9 +450,9 @@ public class ProtectionEventHandler extends ServerEventHandler
         if (event instanceof RightClickItem)
         {
             RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(event.getPlayer());
-            if (mop == null && event.getPos().getX() == 0 && event.getPos().getY() == 0 && event.getPos().getZ() == 0)
+            if (mop.getType() == RayTraceResult.Type.MISS && event.getPos().getX() == 0 && event.getPos().getY() == 0 && event.getPos().getZ() == 0)
                 point = new WorldPoint(event.getPlayer());
-            else if (mop == null)
+            else if (mop.getType() == RayTraceResult.Type.MISS)
                 point = new WorldPoint(event.getPlayer().level, event.getPos());
             else
                 point = new WorldPoint(event.getPlayer().level, new BlockPos(mop.getLocation().x, mop.getLocation().y, mop.getLocation().z));

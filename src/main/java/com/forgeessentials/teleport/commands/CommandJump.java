@@ -74,7 +74,7 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
     public void jump(ServerPlayerEntity player) throws CommandException
     {
         RayTraceResult mo = PlayerUtil.getPlayerLookingSpot(player, 500);
-        if (mo == null) {
+        if (mo.getType() == RayTraceResult.Type.MISS) {
         	ChatOutputHandler.chatError(player, "The spot you are looking at is too far away to teleport.");
         	return;
 		}

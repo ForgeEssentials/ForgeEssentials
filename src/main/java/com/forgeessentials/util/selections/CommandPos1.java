@@ -83,7 +83,7 @@ public class CommandPos1 extends ForgeEssentialsCommandBuilder
 
         RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(player);
 
-        if (mop == null){
+        if (mop.getType() == RayTraceResult.Type.MISS){
             ChatOutputHandler.chatError(player, "You must first look at the ground!");
             return Command.SINGLE_SUCCESS;
         }
