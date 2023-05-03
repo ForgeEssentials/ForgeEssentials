@@ -6,7 +6,8 @@ import javax.persistence.EntityManager;
 
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action01Block;
@@ -32,7 +33,7 @@ public class LogEventInteract extends PlayerLoggerEvent<PlayerInteractEvent>
         action.world = getWorld(event.getPlayer().level.dimension().location().toString());
         // action.block = getBlock(block);
         // action.metadata = metadata;
-        action.type = (event instanceof LeftClickEmpty) ? ActionBlockType.USE_LEFT : ActionBlockType.USE_RIGHT;
+        action.type = (event instanceof RightClickBlock||event instanceof RightClickItem) ? ActionBlockType.USE_RIGHT : ActionBlockType.USE_LEFT;
         action.x = event.getPos().getX();
         action.y = event.getPos().getY();
         action.z = event.getPos().getZ();

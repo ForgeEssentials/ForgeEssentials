@@ -11,9 +11,8 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -191,9 +190,9 @@ public class CommandBind extends ForgeEssentialsCommandBuilder
         CompoundNBT nbt = stack.getTag().getCompound(TAG_NAME);
 
         String command;
-        if (event instanceof LeftClickBlock || event instanceof LeftClickEmpty)
+        if (event instanceof LeftClickBlock)
             command = nbt.getString("left");
-        else if (event instanceof RightClickBlock || event instanceof RightClickEmpty)
+        else if (event instanceof RightClickBlock || event instanceof RightClickItem)
             command = nbt.getString("right");
         else
             return;

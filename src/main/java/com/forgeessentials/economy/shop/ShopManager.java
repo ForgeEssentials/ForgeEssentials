@@ -27,8 +27,7 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -214,14 +213,14 @@ public class ShopManager extends ServerEventHandler
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteractEvent(final PlayerInteractEvent event)
     {
-        if (event instanceof LeftClickBlock || event instanceof LeftClickEmpty || ServerLifecycleHooks.getCurrentServer().isSingleplayer())
+        if (event instanceof LeftClickBlock || ServerLifecycleHooks.getCurrentServer().isSingleplayer())
             return;
 
         ItemStack equippedStack = event.getPlayer().getMainHandItem();
         Item equippedItem = equippedStack != ItemStack.EMPTY ? equippedStack.getItem() : null;
 
         WorldPoint point;
-        if (event instanceof RightClickEmpty)
+        if (event instanceof RightClickItem)
         {
             if (!(equippedItem instanceof BlockItem))
                 return;

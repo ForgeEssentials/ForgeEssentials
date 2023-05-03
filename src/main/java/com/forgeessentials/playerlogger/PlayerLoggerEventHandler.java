@@ -4,7 +4,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -29,8 +28,6 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
     {
         ItemStack stack = event.getItemStack();
         if (stack == ItemStack.EMPTY || stack.getItem() != Items.CLOCK)
-            return;
-        if (event instanceof RightClickEmpty)
             return;
         if (!APIRegistry.perms.checkPermission(event.getPlayer(), ModulePlayerLogger.PERM_WAND))
             return;

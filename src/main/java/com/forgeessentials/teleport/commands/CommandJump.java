@@ -89,7 +89,7 @@ public class CommandJump extends ForgeEssentialsCommandBuilder
     {
         if (!(event.getPlayer() instanceof ServerPlayerEntity))
             return;
-        if (!(event instanceof PlayerInteractEvent.RightClickEmpty) && !(event instanceof PlayerInteractEvent.RightClickBlock))
+        if (!(event instanceof PlayerInteractEvent.RightClickItem) && !(event instanceof PlayerInteractEvent.RightClickBlock))
             return;
         ItemStack stack = event.getPlayer().getMainHandItem();
         if (stack == ItemStack.EMPTY || stack.getItem() != Items.COMPASS)

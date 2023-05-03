@@ -47,7 +47,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickEmpty;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -448,7 +447,7 @@ public class ProtectionEventHandler extends ServerEventHandler
         UserIdent ident = UserIdent.get(event.getPlayer());
 
         WorldPoint point;
-        if (event instanceof RightClickEmpty || event instanceof RightClickItem)
+        if (event instanceof RightClickItem)
         {
             RayTraceResult mop = PlayerUtil.getPlayerLookingSpot(event.getPlayer());
             if (mop == null && event.getPos().getX() == 0 && event.getPos().getY() == 0 && event.getPos().getZ() == 0)
