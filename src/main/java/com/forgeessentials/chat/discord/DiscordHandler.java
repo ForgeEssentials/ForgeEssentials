@@ -1,5 +1,6 @@
 package com.forgeessentials.chat.discord;
 
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,6 +39,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.LoggingHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
@@ -159,14 +162,19 @@ public class DiscordHandler extends ConfigLoaderBase
     {
         if (isConnected())
         {
-            Guild guild = jda.getGuildById(serverID);
-            if (guild != null)
+            try
             {
-                List<TextChannel> resolvedChannels = guild.getTextChannelsByName(selectedChannel, true);
-                if (!resolvedChannels.isEmpty())
+                Guild guild = jda.getGuildById(serverID);
+                if (guild != null)
                 {
-                    resolvedChannels.get(0).sendMessage(msg).complete();
+                    List<TextChannel> resolvedChannels = guild.getTextChannelsByName(selectedChannel, true);
+                    if (!resolvedChannels.isEmpty())
+                    {
+                        resolvedChannels.get(0).sendMessage(msg).complete();
+                    }
                 }
+            } catch (ErrorResponseException e) {
+                LoggingHandler.felog.warn("Error Sending Discord Message: " + e.getMessage(), e);
             }
         }
     }
