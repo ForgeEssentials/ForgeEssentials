@@ -89,7 +89,7 @@ public class ModuleConfig
         }
     }
 
-    private void saveConfig() {
+    public void saveConfig() {
         File configFile = new File(ForgeEssentials.getFEDirectory()+"/Modules.cfg");
         
         try {

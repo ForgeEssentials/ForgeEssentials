@@ -164,7 +164,7 @@ public class ModuleLauncher
             }
         }
 
-        ConfigBase.getModuleConfig().setCreated();
+        ConfigBase.getModuleConfig().saveConfig();
 
         ForgeEssentials.getConfigManager().loadAllRegisteredConfigs();
         ForgeEssentials.getConfigManager().buildAllRegisteredConfigs();

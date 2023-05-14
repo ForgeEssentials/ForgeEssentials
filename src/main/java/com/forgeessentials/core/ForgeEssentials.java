@@ -253,7 +253,7 @@ public class ForgeEssentials
         configManager = new ConfigBase(feDirectory);
 
         ConfigBase.getModuleConfig().loadModuleConfig();
-        ConfigBase.getModuleConfig().setCreated();
+        ConfigBase.getModuleConfig().saveConfig();
         configManager.registerSpecs(new FEConfig());
     }
 
@@ -369,6 +369,7 @@ public class ForgeEssentials
         	MinecraftForge.EVENT_BUS.post(new FEModuleServerStoppedEvent(e));
             FECommandManager.clearRegisteredCommands();
             Translator.save();
+            ConfigBase.getModuleConfig().saveConfig();
         } catch (RuntimeException ex) {
             LoggingHandler.felog.fatal("Caught Runtime Exception During Server Stop event! Suppressing Fire!", ex);
         }
