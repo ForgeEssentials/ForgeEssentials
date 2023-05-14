@@ -24,6 +24,7 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder //implement
     public CommandFeSettings(boolean enabled)
     {
         super(enabled);
+        instance=this;
     }
 
     public static final String CONFIG_FILE = "Settings";
@@ -32,11 +33,11 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder //implement
 
     public static Map<String, String> values = new HashMap<>();
 
-    private static CommandFeSettings instache;
+    private static CommandFeSettings instance;
 
     public static CommandFeSettings getInstance()
     {
-        return instache;
+        return instance;
     }
 
     public static void addSetting(String category, String alias, String permissionNode)

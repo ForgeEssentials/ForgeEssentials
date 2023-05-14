@@ -8,6 +8,7 @@ import net.minecraft.command.Commands;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.core.FEConfig;
+import com.forgeessentials.core.commands.CommandFeSettings;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
@@ -31,7 +32,6 @@ public class FECommandManager
 
     public FECommandManager()
     {
-        //ForgeEssentials.getConfigManager().registerSpecs(this);
         aliaseManager = new FEAliasesManager();
     }
 
@@ -75,7 +75,7 @@ public class FECommandManager
             }
         }
         LoggingHandler.felog.info("Registered "+Integer.toString(registeredFEcommands.size()+registeredAiliases.size())+" commands");
-        //CommandFeSettings.getInstance().loadSettings();
+        CommandFeSettings.getInstance().loadSettings();
     }
 
     public static void clearRegisteredCommands()
