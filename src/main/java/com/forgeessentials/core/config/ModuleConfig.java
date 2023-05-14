@@ -5,20 +5,34 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.forgeessentials.core.ForgeEssentials;
 
 public class ModuleConfig
 {
-    private HashMap<String, Boolean> modules = new HashMap<String, Boolean>();
+    private TreeMap<String, Boolean> modules = new TreeMap<String, Boolean>();
 
     private Boolean fileNotFound;
     private Boolean needsSaving;
     
-    private Properties props = new Properties();
+    private Properties props = new Properties(){
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public synchronized Enumeration<Object> keys() {
+
+            return Collections.enumeration(new TreeSet<Object>(super
+                    .keySet()));
+        }
+
+    };
 
     /*
      * Only call when ModuleLauncher is done loading modules.
