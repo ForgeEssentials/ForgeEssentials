@@ -107,9 +107,9 @@ public class ModuleCommands implements ConfigLoader
         FECommandManager.registerCommand(new CommandRemove(true), dispatcher);
         //Afk
         FECommandManager.registerCommand(new CommandAFK(true), dispatcher);
-        CommandFeSettings.addAlias("Afk", "timeout", CommandAFK.PERM_AUTOTIME);
-        CommandFeSettings.addAlias("Afk", "auto_kick", CommandAFK.PERM_AUTOKICK);
-        CommandFeSettings.addAlias("Afk", "warmup", CommandAFK.PERM_WARMUP);
+        CommandFeSettings.addSetting("Afk", "timeout", CommandAFK.PERM_AUTOTIME);
+        CommandFeSettings.addSetting("Afk", "auto_kick", CommandAFK.PERM_AUTOKICK);
+        CommandFeSettings.addSetting("Afk", "warmup", CommandAFK.PERM_WARMUP);
         //Kit
         CommandKit kit = new CommandKit(true);
         FECommandManager.registerCommand(kit, dispatcher);

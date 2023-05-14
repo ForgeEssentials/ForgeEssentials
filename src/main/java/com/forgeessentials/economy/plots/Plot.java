@@ -467,12 +467,12 @@ public class Plot
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_PERMS, true);
         root.setGroupPermission(GROUP_PLOT_OWNER, PERM_MODS, true);
 
-        CommandFeSettings.addAlias(CATEGORY, "price", PERM_PRICE);
-        CommandFeSettings.addAlias(CATEGORY, "limit.count", PERM_LIMIT_COUNT);
-        CommandFeSettings.addAlias(CATEGORY, "limit.size", PERM_LIMIT_SIZE);
-        CommandFeSettings.addAlias(CATEGORY, "columnMode", PERM_COLUMN);
-        CommandFeSettings.addAlias(CATEGORY, "size.min", PERM_SIZE_MIN);
-        CommandFeSettings.addAlias(CATEGORY, "size.max", PERM_SIZE_MAX);
+        CommandFeSettings.addSetting(CATEGORY, "price", PERM_PRICE);
+        CommandFeSettings.addSetting(CATEGORY, "limit.count", PERM_LIMIT_COUNT);
+        CommandFeSettings.addSetting(CATEGORY, "limit.size", PERM_LIMIT_SIZE);
+        CommandFeSettings.addSetting(CATEGORY, "columnMode", PERM_COLUMN);
+        CommandFeSettings.addSetting(CATEGORY, "size.min", PERM_SIZE_MIN);
+        CommandFeSettings.addSetting(CATEGORY, "size.max", PERM_SIZE_MAX);
     }
 
 }

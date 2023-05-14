@@ -81,14 +81,14 @@ public class ModuleAfterlife extends ServerEventHandler
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHCHEST_SAFETIME, "300",
                 "Time in seconds a grave is protected. After this time anyone can take all stuff");
 
-        CommandFeSettings.addAlias("Afterlife", "respawn_hp", PERM_HP);
-        CommandFeSettings.addAlias("Afterlife", "respawn_food", PERM_FOOD);
-        CommandFeSettings.addAlias("Afterlife", "respawn_debuffs", PERM_DEBUFFS);
-        CommandFeSettings.addAlias("Grave", "enable", PERM_DEATHCHEST);
-        CommandFeSettings.addAlias("Grave", "safetime", PERM_DEATHCHEST_SAFETIME);
-        CommandFeSettings.addAlias("Grave", "recoverable_xp", PERM_DEATHCHEST_XP);
-        CommandFeSettings.addAlias("Grave", "fence", PERM_DEATHCHEST_FENCE);
-        CommandFeSettings.addAlias("Grave", "block", PERM_DEATHCHEST_BLOCK);
+        CommandFeSettings.addSetting("Afterlife", "respawn_hp", PERM_HP);
+        CommandFeSettings.addSetting("Afterlife", "respawn_food", PERM_FOOD);
+        CommandFeSettings.addSetting("Afterlife", "respawn_debuffs", PERM_DEBUFFS);
+        CommandFeSettings.addSetting("Grave", "enable", PERM_DEATHCHEST);
+        CommandFeSettings.addSetting("Grave", "safetime", PERM_DEATHCHEST_SAFETIME);
+        CommandFeSettings.addSetting("Grave", "recoverable_xp", PERM_DEATHCHEST_XP);
+        CommandFeSettings.addSetting("Grave", "fence", PERM_DEATHCHEST_FENCE);
+        CommandFeSettings.addSetting("Grave", "block", PERM_DEATHCHEST_BLOCK);
     }
 
     @SubscribeEvent

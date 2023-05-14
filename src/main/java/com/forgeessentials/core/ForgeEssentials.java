@@ -402,8 +402,8 @@ public class ForgeEssentials
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALFROM, DefaultPermissionLevel.ALL, "Allow being teleported from a certain location / dimension via a portal");
         APIRegistry.perms.registerPermission(TeleportHelper.TELEPORT_PORTALTO, DefaultPermissionLevel.ALL, "Allow being teleported to a certain location / dimension via a portal");
 
-        CommandFeSettings.addAlias("Teleport", "warmup", TeleportHelper.TELEPORT_WARMUP);
-        CommandFeSettings.addAlias("Teleport", "cooldown", TeleportHelper.TELEPORT_COOLDOWN);
+        CommandFeSettings.addSetting("Teleport", "warmup", TeleportHelper.TELEPORT_WARMUP);
+        CommandFeSettings.addSetting("Teleport", "cooldown", TeleportHelper.TELEPORT_COOLDOWN);
     }
 
     /* ------------------------------------------------------------ */

@@ -142,11 +142,11 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         APIRegistry.perms.registerPermissionProperty(PERM_DEATHTOLL, "",
                 "Penalty for players to pay when they die. If set to lesser than 1, value is taken as a factor of the player's wallet balance.");
 
-        CommandFeSettings.addAlias("Economy", "money_per_xp", PERM_XP_MULTIPLIER);
-        CommandFeSettings.addAlias("Economy", "start_budget", PERM_STARTBUDGET);
-        CommandFeSettings.addAlias("Economy", "currency_name", PERM_CURRENCY);
-        CommandFeSettings.addAlias("Economy", "currency_name_singular", PERM_CURRENCY_SINGULAR);
-        CommandFeSettings.addAlias("Economy", "death_toll", PERM_DEATHTOLL);
+        CommandFeSettings.addSetting("Economy", "money_per_xp", PERM_XP_MULTIPLIER);
+        CommandFeSettings.addSetting("Economy", "start_budget", PERM_STARTBUDGET);
+        CommandFeSettings.addSetting("Economy", "currency_name", PERM_CURRENCY);
+        CommandFeSettings.addSetting("Economy", "currency_name_singular", PERM_CURRENCY_SINGULAR);
+        CommandFeSettings.addSetting("Economy", "death_toll", PERM_DEATHTOLL);
 
         PlotManager.serverStarting();
     }

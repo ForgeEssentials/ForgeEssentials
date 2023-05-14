@@ -39,9 +39,9 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder //implement
         return instache;
     }
 
-    public static void addAlias(String category, String alias, String permission)
+    public static void addSetting(String category, String alias, String permissionNode)
     {
-        aliases.put((category + "." + alias).toLowerCase(), permission);
+        aliases.put((category + "." + alias).toLowerCase(), permissionNode);
     }
 
     @Override
