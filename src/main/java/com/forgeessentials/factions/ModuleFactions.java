@@ -20,7 +20,7 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 
-@FEModule(name = "factions", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
+@FEModule(name = "Factions", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
 public class ModuleFactions
 {
 

@@ -18,11 +18,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import net.minecraftforge.server.permission.PermissionAPI;
 
-@FEModule(name = "perftools", parentMod = ForgeEssentials.class, defaultModule = false)
+@FEModule(name = "Perftools", parentMod = ForgeEssentials.class, defaultModule = false)
 public class PerfToolsModule extends ConfigLoaderBase
 {
     private static ForgeConfigSpec PERF_CONFIG;
-	private static final ConfigData data = new ConfigData("perftools", PERF_CONFIG, new ForgeConfigSpec.Builder());
+	private static final ConfigData data = new ConfigData("Perftools", PERF_CONFIG, new ForgeConfigSpec.Builder());
 	
     private MemoryWatchdog watchdog;
 
