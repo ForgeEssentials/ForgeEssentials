@@ -49,6 +49,18 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder
     public static Map<String, String> aliases = new HashMap<>();
 
     public static Map<String, String> printMap = new TreeMap<>();
+    private Properties props = new Properties(){
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public synchronized Enumeration<Object> keys() {
+
+            return Collections.enumeration(new TreeSet<Object>(super
+                    .keySet()));
+        }
+
+    };
 
     private static CommandFeSettings instance;
 
@@ -225,7 +237,6 @@ public class CommandFeSettings extends ForgeEssentialsCommandBuilder
         try {
             for (Map.Entry<String, String> entry : printMap.entrySet()) {
                 props.setProperty(entry.getKey(), entry.getValue());
-                System.out.print(entry.getKey()+";"+entry.getValue().toString());
                 //String help = String.format("%s = %s\n%s", setting.getValue(), defaultValue, desc);
                 //String[] aliasParts = setting.getKey().split("\\.", 2);
                 //config.get(aliasParts[0], aliasParts[1], "").set(value);
