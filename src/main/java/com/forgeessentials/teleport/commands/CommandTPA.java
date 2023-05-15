@@ -101,6 +101,10 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
         }
 
         final UserIdent player = getIdent(EntityArgument.getPlayer(ctx, "player"));
+        if(player.getPlayerMP().equals(getServerPlayer(ctx.getSource()))) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "Can't TPA to yourself!");
+        	return Command.SINGLE_SUCCESS;
+        }
         if (params.equals("toP"))
         {
             try
