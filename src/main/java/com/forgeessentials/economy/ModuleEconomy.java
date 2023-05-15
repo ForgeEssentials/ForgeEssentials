@@ -11,7 +11,6 @@ import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.core.misc.FECommandManager;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
@@ -396,13 +395,4 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 	public ConfigData returnData() {
 		return data;
 	}
-    /* ------------------------------------------------------------ */
-
-    public static class CantAffordException extends TranslatedCommandException
-    {
-        public CantAffordException()
-        {
-            super("You can't afford that");
-        }
-    }
 }

@@ -18,7 +18,7 @@ import com.forgeessentials.teleport.TeleportModule;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException;
+import com.forgeessentials.util.questioner.QuestionerException;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -128,9 +128,10 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
                             }
                         }, 20);
             }
-            catch (QuestionerStillActiveException.CommandException e)
+            catch (QuestionerException.QuestionerStillActiveException e)
             {
-                throw new QuestionerStillActiveException.CommandException();
+            	ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
+            	return Command.SINGLE_SUCCESS;
             }
             return Command.SINGLE_SUCCESS;
         }
@@ -181,9 +182,10 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
                 }
             }, 20);
         }
-        catch (QuestionerStillActiveException.CommandException e)
+        catch (QuestionerException.QuestionerStillActiveException e)
         {
-            throw new QuestionerStillActiveException.CommandException();
+        	ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
+        	return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
     }

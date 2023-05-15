@@ -5,10 +5,10 @@ import java.util.List;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.events.PlayerMoveEvent;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException.CommandException;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
 public class EffectKnockback extends WorldBorderEffect

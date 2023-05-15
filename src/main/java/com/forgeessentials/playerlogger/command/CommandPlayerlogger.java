@@ -33,6 +33,7 @@ import com.forgeessentials.playerlogger.entity.Action;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -468,8 +469,13 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                 };
                 if (GetSource(ctx.getSource()) instanceof MinecraftServer)
                     handler.respond(true);
-                else
-                    Questioner.addChecked(ctx.getSource(), Translator.format("Really purge all playerlogger data before %s?", startTimeStr), handler);
+				else
+					try {
+						Questioner.addChecked(ctx.getSource(), Translator.format("Really purge all playerlogger data before %s?", startTimeStr), handler);
+					} catch (QuestionerStillActiveException e) {
+						ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
+		            	return Command.SINGLE_SUCCESS;
+					}
             }
             break;
         default:

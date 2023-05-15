@@ -19,7 +19,7 @@ import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException;
+import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -183,9 +183,10 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
                     Questioner.addChecked(buyer.getPlayerMP().createCommandSourceStack(), message, buyerHandler, 60);
                     ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("Waiting on %s...", buyer.getUsernameOrUuid()));
                 }
-                catch (QuestionerStillActiveException.CommandException e)
+                catch (QuestionerStillActiveException e)
                 {
-                    throw new QuestionerStillActiveException.CommandException();
+                	ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
+                	return;
                 }
             }
         };
@@ -196,7 +197,12 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
         else
             message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.getCount(), itemStack.getDisplayName(),
                     APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.getCount()), buyer.getUsernameOrUuid());
-        Questioner.addChecked(ctx.getSource(), message, sellerHandler, 20);
+        try {
+			Questioner.addChecked(ctx.getSource(), message, sellerHandler, 20);
+		} catch (QuestionerStillActiveException e) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
+        	return Command.SINGLE_SUCCESS;
+		}
         return Command.SINGLE_SUCCESS;
     }
 }

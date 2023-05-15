@@ -40,6 +40,7 @@ import com.forgeessentials.util.events.EventCancelledException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -451,7 +452,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                 {
                     Wallet wallet = APIRegistry.economy.getWallet(getIdent(ctx.getSource()));
                     if (!wallet.covers(price))
-                        throw new ModuleEconomy.CantAffordException();
+                    	ChatOutputHandler.chatError(ctx.getSource(), "You can't afford that");
 
                     checkLimits(ctx, selection);
 
@@ -481,7 +482,12 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             return;
         }
         String message = Translator.format("Really claim this plot for %s", APIRegistry.economy.toString(price));
-        Questioner.addChecked(ctx.getSource(), message, handler, 30);
+        try {
+			Questioner.addChecked(ctx.getSource(), message, handler, 30);
+		} catch (QuestionerStillActiveException e) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
+        	return;
+		}
 
     }
 
@@ -997,7 +1003,12 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                             buyPlot(ctx, plot, plotPrice);
                         }
                     };
-                    Questioner.addChecked(plot.getOwner().getPlayerMP().createCommandSourceStack(), message, handler, 60);
+                    try {
+						Questioner.addChecked(plot.getOwner().getPlayerMP().createCommandSourceStack(), message, handler, 60);
+					} catch (QuestionerStillActiveException e) {
+						ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
+		            	return;
+					}
                 }
                 else
                 {
@@ -1011,7 +1022,12 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             return;
         }
         String message = Translator.format("Really buy this plot for %s", buyPriceStr);
-        Questioner.addChecked(ctx.getSource(), message, handler, 30);
+        try {
+			Questioner.addChecked(ctx.getSource(), message, handler, 30);
+		} catch (QuestionerStillActiveException e) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
+        	return;
+		}
     }
 
     public static void buyPlot(CommandContext<CommandSource> ctx, Plot plot, long price) throws CommandException

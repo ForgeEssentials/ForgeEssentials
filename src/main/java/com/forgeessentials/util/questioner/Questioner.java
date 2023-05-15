@@ -40,65 +40,65 @@ public class Questioner extends ServerEventHandler
         FECommandManager.registerCommand(new CommandQuestionerNo(true), dispatcher);
     }
 
-    public static synchronized void add(QuestionData question) throws QuestionerStillActiveException
+    public static synchronized void add(QuestionData question) throws QuestionerException
     {
         if (questions.containsKey(question.getTarget()))
-            throw new QuestionerStillActiveException();
+            throw new QuestionerException();
         questions.put(question.getTarget(), question);
         question.sendQuestion();
     }
 
     public static void add(CommandSource target, String question, QuestionerCallback callback, int timeout, CommandSource source)
-            throws QuestionerStillActiveException
+            throws QuestionerException
     {
         add(new QuestionData(target, question, callback, timeout, source));
     }
 
-    public static void add(CommandSource target, String question, QuestionerCallback callback, int timeout) throws QuestionerStillActiveException
+    public static void add(CommandSource target, String question, QuestionerCallback callback, int timeout) throws QuestionerException
     {
         add(target, question, callback, timeout, null);
     }
 
-    public static void add(CommandSource target, String question, QuestionerCallback callback) throws QuestionerStillActiveException
+    public static void add(CommandSource target, String question, QuestionerCallback callback) throws QuestionerException
     {
         add(target, question, callback, DEFAULT_TIMEOUT);
     }
 
     public static void addChecked(CommandSource target, String question, QuestionerCallback callback, int timeout, CommandSource source)
-            throws QuestionerStillActiveException.CommandException
+            throws QuestionerException.QuestionerStillActiveException
     {
         try
         {
             add(new QuestionData(target, question, callback, timeout, source));
         }
-        catch (QuestionerStillActiveException e)
+        catch (QuestionerException e)
         {
-            throw new QuestionerStillActiveException.CommandException();
+            throw new QuestionerException.QuestionerStillActiveException();
         }
     }
 
     public static void addChecked(CommandSource target, String question, QuestionerCallback callback, int timeout)
-            throws QuestionerStillActiveException.CommandException
+            throws QuestionerException.QuestionerStillActiveException
     {
         try
         {
             add(target, question, callback, timeout, null);
         }
-        catch (QuestionerStillActiveException e)
+        catch (QuestionerException e)
         {
-            throw new QuestionerStillActiveException.CommandException();
+            throw new QuestionerException.QuestionerStillActiveException();
         }
     }
 
-    public static void addChecked(CommandSource target, String question, QuestionerCallback callback) throws QuestionerStillActiveException.CommandException
+    public static void addChecked(CommandSource target, String question, QuestionerCallback callback) throws QuestionerException.QuestionerStillActiveException
     {
         try
         {
             add(target, question, callback, DEFAULT_TIMEOUT);
         }
-        catch (QuestionerStillActiveException e)
+        catch (QuestionerException e)
         {
-            throw new QuestionerStillActiveException.CommandException();
+            throw new QuestionerException.QuestionerStillActiveException();
         }
     }
 

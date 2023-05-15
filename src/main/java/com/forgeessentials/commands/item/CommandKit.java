@@ -27,6 +27,7 @@ import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -190,8 +191,13 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
             };
             if (kit == null)
                 callback.respond(true);
-            else
-                Questioner.addChecked(ctx.getSource(), Translator.format("Overwrite kit %s?", kitName), callback);
+			else
+				try {
+					Questioner.addChecked(ctx.getSource(), Translator.format("Overwrite kit %s?", kitName), callback);
+				} catch (QuestionerStillActiveException e) {
+					ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
+	            	return Command.SINGLE_SUCCESS;
+				}
             break;
         case "delete":
             removeKit(kit);

@@ -16,6 +16,7 @@ import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
+import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -149,7 +150,12 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
             handler.respond(true);
             return Command.SINGLE_SUCCESS;
         }
-        Questioner.addChecked(ctx.getSource(), message, handler, 20);
+        try {
+			Questioner.addChecked(ctx.getSource(), message, handler, 20);
+		} catch (QuestionerStillActiveException e) {
+			ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
+        	return Command.SINGLE_SUCCESS;
+		}
         return Command.SINGLE_SUCCESS;
     }
 }
