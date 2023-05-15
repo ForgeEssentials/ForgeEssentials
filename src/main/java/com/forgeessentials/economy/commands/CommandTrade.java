@@ -164,11 +164,11 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
                         String priceStr = APIRegistry.economy.toString(price);
                         String totalPriceStr = APIRegistry.economy.toString(price * itemStack.getCount());
                         String buyerMsg = Translator.format("Bought %d x %s from %s for %s each (%s)", //
-                                itemStack.getCount(), itemStack.getDisplayName(), //
+                                itemStack.getCount(), itemStack.getDisplayName().getString(), //
                                 getIdent(ctx.getSource()).getUsernameOrUuid(), //
                                 priceStr, totalPriceStr);
                         String sellerMsg = Translator.format("Sold %d x %s to %s for %s each (%s)", //
-                                itemStack.getCount(), itemStack.getDisplayName(), //
+                                itemStack.getCount(), itemStack.getDisplayName().getString(), //
                                 buyer.getUsernameOrUuid(), //
                                 priceStr, totalPriceStr);
                         ChatOutputHandler.chatNotification(ctx.getSource(), sellerMsg);
@@ -179,10 +179,10 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
                 {
                     String message;
                     if (itemStack.getCount() == 1)
-                        message = Translator.format("Buy one %s for %s from %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price),
+                        message = Translator.format("Buy one %s for %s from %s?", itemStack.getDisplayName().getString(), APIRegistry.economy.toString(price),
                                 getServerPlayer(ctx.getSource()).getDisplayName().getString());
                     else
-                        message = Translator.format("Buy %d x %s each for %s (total: %s) from %s?", itemStack.getCount(), itemStack.getDisplayName(),
+                        message = Translator.format("Buy %d x %s each for %s (total: %s) from %s?", itemStack.getCount(), itemStack.getDisplayName().getString(),
                                 APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.getCount()),
                                 getServerPlayer(ctx.getSource()).getDisplayName().getString());
                     Questioner.addChecked(buyer.getPlayerMP(), message, buyerHandler, 60);
@@ -198,7 +198,7 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
         String message;
         if (itemStack.getCount() == 1)
             message = Translator
-                    .format("Sell one %s for %s to %s?", itemStack.getDisplayName(), APIRegistry.economy.toString(price), buyer.getUsernameOrUuid());
+                    .format("Sell one %s for %s to %s?", itemStack.getDisplayName().getString(), APIRegistry.economy.toString(price), buyer.getUsernameOrUuid());
         else
             message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.getCount(), itemStack.getDisplayName(),
                     APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.getCount()), buyer.getUsernameOrUuid());
