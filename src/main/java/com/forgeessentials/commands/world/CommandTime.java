@@ -232,9 +232,9 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
             TimeData td = getTimeData(world.dimension());
             td.frozenTime = (td.frozenTime == null) ? world.getLevelData().getDayTime() : null;
             if (td.frozenTime != null)
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Froze time");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Froze time in %s", world.dimension());
             else
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Unfroze time");
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Unfroze time in %s", world.dimension());
         }
         save();
     }
