@@ -1,7 +1,7 @@
 package com.forgeessentials.util.questioner;
 
 import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
@@ -13,9 +13,9 @@ import com.forgeessentials.util.output.ChatOutputHandler;
 public class QuestionData
 {
 
-    private CommandSource target;
+    private PlayerEntity target;
 
-    private CommandSource source;
+    private PlayerEntity source;
 
     private String question;
 
@@ -25,7 +25,7 @@ public class QuestionData
 
     private QuestionerCallback callback;
 
-    public QuestionData(CommandSource target, String question, QuestionerCallback callback, int timeout, CommandSource source)
+    public QuestionData(PlayerEntity target, String question, QuestionerCallback callback, int timeout, PlayerEntity source)
     {
         this.target = target;
         this.timeout = timeout;
@@ -37,21 +37,21 @@ public class QuestionData
 
     public void sendQuestion()
     {
-        ChatOutputHandler.sendMessage(target, question);
+        ChatOutputHandler.sendMessage(target.createCommandSourceStack(), question);
         sendYesNoMessage();
     }
 
     public void sendYesNoMessage()
     {
-        TextComponent yesMessage = new StringTextComponent("/yes");
-        ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/yes");
+        TextComponent yesMessage = new StringTextComponent("/feyes");
+        ClickEvent click = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feyes");
         yesMessage.withStyle((style) -> {
             return style.withClickEvent(click);});
         yesMessage.withStyle(TextFormatting.RED);
         yesMessage.withStyle(TextFormatting.UNDERLINE);
 
-        TextComponent noMessage = new StringTextComponent("/no");
-        ClickEvent click1 = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/no");
+        TextComponent noMessage = new StringTextComponent("/feno");
+        ClickEvent click1 = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/feno");
         noMessage.withStyle((style) -> {
             return style.withClickEvent(click1);});
         noMessage.withStyle(TextFormatting.RED);
@@ -63,7 +63,7 @@ public class QuestionData
         yesNoMessage.append(noMessage);
         yesNoMessage.append(new StringTextComponent(" " + Translator.format("(timeout: %d)", timeout)));
 
-        ChatOutputHandler.sendMessage(target, yesNoMessage);
+        ChatOutputHandler.sendMessage(target.createCommandSourceStack(), yesNoMessage);
     }
 
     protected void doAnswer(Boolean answer) throws CommandException
@@ -91,12 +91,12 @@ public class QuestionData
 
     /* ------------------------------------------------------------ */
 
-    public CommandSource getTarget()
+    public PlayerEntity getTarget()
     {
         return target;
     }
 
-    public CommandSource getSource()
+    public PlayerEntity getSource()
     {
         return source;
     }

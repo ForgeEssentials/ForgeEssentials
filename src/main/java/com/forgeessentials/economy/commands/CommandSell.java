@@ -154,7 +154,7 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         try {
-			Questioner.addChecked(ctx.getSource(), message, handler, 20);
+			Questioner.addChecked(getServerPlayer(ctx.getSource()), message, handler, 20);
 		} catch (QuestionerStillActiveException e) {
 			ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
         	return Command.SINGLE_SUCCESS;

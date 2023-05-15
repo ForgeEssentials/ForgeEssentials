@@ -477,7 +477,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                     handler.respond(true);
 				else
 					try {
-						Questioner.addChecked(ctx.getSource(), Translator.format("Really purge all playerlogger data before %s?", startTimeStr), handler);
+						Questioner.addChecked(getServerPlayer(ctx.getSource()), Translator.format("Really purge all playerlogger data before %s?", startTimeStr), handler);
 					} catch (QuestionerStillActiveException e) {
 						ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
 		            	return Command.SINGLE_SUCCESS;

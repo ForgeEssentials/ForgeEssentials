@@ -106,7 +106,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
             try
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Waiting for response by %s", player.getUsernameOrUuid()));
-                Questioner.addChecked(player.getPlayer().createCommandSourceStack(),
+                Questioner.addChecked(player.getPlayer(),
                         Translator.format("Allow teleporting %s to your location?", getServerPlayer(ctx.getSource()).getDisplayName().getString()),
                         new QuestionerCallback() {
                             @Override
@@ -162,7 +162,7 @@ public class CommandTPA extends ForgeEssentialsCommandBuilder
 
         try
         {
-            Questioner.addChecked(player.getPlayer().createCommandSourceStack(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback() {
+            Questioner.addChecked(player.getPlayer(), Translator.format("Do you want to be teleported to %s?", locationName), new QuestionerCallback() {
                 @Override
                 public void respond(Boolean response)
                 {

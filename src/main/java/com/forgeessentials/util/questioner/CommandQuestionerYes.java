@@ -43,7 +43,7 @@ public class CommandQuestionerYes extends ForgeEssentialsCommandBuilder
     @Override
     public boolean canConsoleUseCommand()
     {
-        return true;
+        return false;
     }
 
     @Override
@@ -55,9 +55,9 @@ public class CommandQuestionerYes extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        Questioner.answer(ctx.getSource(), true);
+        Questioner.answer(getServerPlayer(ctx.getSource()), true);
         return Command.SINGLE_SUCCESS;
     }
 }

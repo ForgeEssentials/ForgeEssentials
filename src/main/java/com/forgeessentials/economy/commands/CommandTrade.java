@@ -74,7 +74,7 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("blank"))
         {
@@ -185,7 +185,7 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
                         message = Translator.format("Buy %d x %s each for %s (total: %s) from %s?", itemStack.getCount(), itemStack.getDisplayName(),
                                 APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.getCount()),
                                 getServerPlayer(ctx.getSource()).getDisplayName().getString());
-                    Questioner.addChecked(buyer.getPlayerMP().createCommandSourceStack(), message, buyerHandler, 60);
+                    Questioner.addChecked(buyer.getPlayerMP(), message, buyerHandler, 60);
                     ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("Waiting on %s...", buyer.getUsernameOrUuid()));
                 }
                 catch (QuestionerStillActiveException e)
@@ -203,7 +203,7 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
             message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.getCount(), itemStack.getDisplayName(),
                     APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.getCount()), buyer.getUsernameOrUuid());
         try {
-			Questioner.addChecked(ctx.getSource(), message, sellerHandler, 20);
+			Questioner.addChecked(getServerPlayer(ctx.getSource()), message, sellerHandler, 20);
 		} catch (QuestionerStillActiveException e) {
 			ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
         	return Command.SINGLE_SUCCESS;

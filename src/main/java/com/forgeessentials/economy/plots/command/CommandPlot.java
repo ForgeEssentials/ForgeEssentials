@@ -289,7 +289,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         };
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("help"))
         {
@@ -484,7 +484,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         }
         String message = Translator.format("Really claim this plot for %s", APIRegistry.economy.toString(price));
         try {
-			Questioner.addChecked(ctx.getSource(), message, handler, 30);
+			Questioner.addChecked(getServerPlayer(ctx.getSource()), message, handler, 30);
 		} catch (QuestionerStillActiveException e) {
 			ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
         	return;
@@ -1022,7 +1022,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
                         }
                     };
                     try {
-						Questioner.addChecked(plot.getOwner().getPlayerMP().createCommandSourceStack(), message, handler, 60);
+						Questioner.addChecked(plot.getOwner().getPlayerMP(), message, handler, 60);
 					} catch (QuestionerStillActiveException e) {
 						ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
 		            	return;
@@ -1041,7 +1041,7 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         }
         String message = Translator.format("Really buy this plot for %s", buyPriceStr);
         try {
-			Questioner.addChecked(ctx.getSource(), message, handler, 30);
+			Questioner.addChecked(getServerPlayer(ctx.getSource()), message, handler, 30);
 		} catch (QuestionerStillActiveException e) {
 			ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
         	return;
