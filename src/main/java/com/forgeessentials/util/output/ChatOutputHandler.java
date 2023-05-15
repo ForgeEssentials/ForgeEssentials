@@ -52,6 +52,11 @@ public final class ChatOutputHandler
         sendMessageI(recipient, new StringTextComponent(message));
     }
 
+    public static void sendMessage(PlayerEntity recipient, String message)
+    {
+        sendMessageI(recipient.createCommandSourceStack(), new StringTextComponent(message));
+    }
+
     /**
      * Sends a message to a {@link CommandSource} and performs some security checks
      * 
@@ -61,6 +66,11 @@ public final class ChatOutputHandler
     public static void sendMessage(CommandSource recipient, TextComponent message)
     {
     	sendMessageI(recipient, message);
+    }
+
+    public static void sendMessage(PlayerEntity recipient, TextComponent message)
+    {
+    	sendMessageI(recipient.createCommandSourceStack(), message);
     }
 
     /**
@@ -102,6 +112,12 @@ public final class ChatOutputHandler
         }
         else
             sendMessage(recipient, stripFormatting(message));
+    }
+    public static void sendMessage(PlayerEntity recipient, String message, TextFormatting color)
+    {
+    	TextComponent component = new StringTextComponent(message);
+        component.withStyle(color);
+        sendMessage(recipient, component);
     }
 
     /**
@@ -198,9 +214,14 @@ public final class ChatOutputHandler
         sendMessage(sender, msg, chatErrorColor);
     }
 
+    public static void chatError(PlayerEntity sender, String msg, Object... args)
+    {
+        sendMessage(sender, Translator.format(msg, args), chatErrorColor);
+    }
+
     public static void chatError(PlayerEntity sender, String msg)
     {
-        chatError(sender.createCommandSourceStack(), msg);
+        chatError(sender, msg);
     }
 
     /**
@@ -221,9 +242,14 @@ public final class ChatOutputHandler
         sendMessage(sender, msg, chatConfirmationColor);
     }
 
+    public static void chatConfirmation(PlayerEntity sender, String msg, Object... args)
+    {
+        sendMessage(sender, Translator.format(msg, args), chatConfirmationColor);
+    }
+
     public static void chatConfirmation(PlayerEntity sender, String msg)
     {
-        sendMessage(sender.createCommandSourceStack(), msg);
+        sendMessage(sender, msg);
     }
 
     /**
@@ -244,9 +270,14 @@ public final class ChatOutputHandler
         sendMessage(sender, msg, chatWarningColor);
     }
 
+    public static void chatWarning(PlayerEntity sender, String msg, Object... args)
+    {
+        sendMessage(sender, Translator.format(msg, args), chatWarningColor);
+    }
+
     public static void chatWarning(PlayerEntity sender, String msg)
     {
-        sendMessage(sender.createCommandSourceStack(), msg);
+        sendMessage(sender, msg);
     }
 
     /**
@@ -266,9 +297,14 @@ public final class ChatOutputHandler
         sendMessage(sender, msg, chatNotificationColor);
     }
 
+    public static void chatNotification(PlayerEntity sender, String msg, Object... args)
+    {
+        sendMessage(sender, Translator.format(msg, args), chatNotificationColor);
+    }
+
     public static void chatNotification(PlayerEntity sender, String msg)
     {
-        sendMessage(sender.createCommandSourceStack(), msg);
+        sendMessage(sender, msg);
     }
     /* ------------------------------------------------------------ */
 
