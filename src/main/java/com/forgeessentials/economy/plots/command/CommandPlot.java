@@ -29,6 +29,7 @@ import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.commons.selections.WorldArea;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.economy.plots.Plot;
@@ -639,7 +640,13 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         }
         String action = params.remove(0).toLowerCase();
 
-        UserIdent player = parsePlayer(params.remove(0),null, true, false);
+        UserIdent player;
+		try {
+			player = parsePlayer(params.remove(0),null, true, false);
+		} catch (FECommandParsingException e) {
+			ChatOutputHandler.chatError(ctx.getSource(), e.error);
+			return;
+		}
 
         switch (action)
         {
@@ -802,7 +809,13 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Current plot owner: %s", owner.getUsernameOrUuid()));
             return;
         }
-        UserIdent newOwner = parsePlayer(params.remove(0), null, true, false);
+        UserIdent newOwner;
+		try {
+			newOwner = parsePlayer(params.remove(0), null, true, false);
+		} catch (FECommandParsingException e) {
+			ChatOutputHandler.chatError(ctx.getSource(), e.error);
+			return;
+		}
         if(!hasPermission(ctx.getSource(), Plot.PERM_SET_OWNER)) {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
@@ -929,7 +942,12 @@ public class CommandPlot extends ForgeEssentialsCommandBuilder
         final long buyPrice;
         if (!params.isEmpty())
         {
-            buyPrice = parseLong(params.remove(0));
+            try {
+				buyPrice = parseLong(params.remove(0));
+			} catch (FECommandParsingException e) {
+				ChatOutputHandler.chatError(ctx.getSource(), e.error);
+				return;
+			}
             if (sellPrice >= 0 && sellPrice < buyPrice)
                 ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("%s is above the plots default price of %s", APIRegistry.economy.toString(buyPrice),
                         APIRegistry.economy.toString(sellPrice)));

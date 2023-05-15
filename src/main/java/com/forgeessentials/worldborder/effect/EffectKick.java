@@ -1,12 +1,11 @@
 package com.forgeessentials.worldborder.effect;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.List;
 
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -24,10 +23,10 @@ public class EffectKick extends WorldBorderEffect
     private int timeout = 0;
 
     @Override
-    public void provideArguments(List<String> args) throws CommandException
+    public void provideArguments(List<String> args) throws FECommandParsingException
     {
         if (args.isEmpty())
-            throw new TranslatedCommandException("Missing interval argument");
+            throw new FECommandParsingException("Missing interval argument");
         timeout = CommandUtils.parseInt(args.remove(0));
     }
 

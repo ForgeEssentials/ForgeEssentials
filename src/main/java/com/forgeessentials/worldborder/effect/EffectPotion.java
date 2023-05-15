@@ -1,13 +1,12 @@
 package com.forgeessentials.worldborder.effect;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 
 import java.util.List;
 
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.PlayerInfo;
@@ -33,22 +32,22 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
     }
 
     @Override
-    public void provideArguments(List<String> args) throws CommandException
+    public void provideArguments(List<String> args) throws FECommandParsingException
     {
         if (args.isEmpty())
-            throw new TranslatedCommandException("Missing interval argument");
+            throw new FECommandParsingException("Missing interval argument");
         interval = CommandUtils.parseInt(args.remove(0));
 
         if (args.isEmpty())
-            throw new TranslatedCommandException("Missing potion id argument");
+            throw new FECommandParsingException("Missing potion id argument");
         id = CommandUtils.parseInt(args.remove(0));;
 
         if (args.isEmpty())
-            throw new TranslatedCommandException("Missing duration id argument");
+            throw new FECommandParsingException("Missing duration id argument");
         duration = CommandUtils.parseInt(args.remove(0));
 
         if (args.isEmpty())
-            throw new TranslatedCommandException("Missing modifier id argument");
+            throw new FECommandParsingException("Missing modifier id argument");
         modifier =CommandUtils.parseInt(args.remove(0));
     }
 

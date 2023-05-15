@@ -8,6 +8,7 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -64,7 +65,13 @@ public class CommandDelayedAction extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        long time = parseTimeReadable(StringArgumentType.getString(ctx, "time"));
+        long time;
+		try {
+			time = parseTimeReadable(StringArgumentType.getString(ctx, "time"));
+		} catch (FECommandParsingException e) {
+			ChatOutputHandler.chatError(ctx.getSource(), e.error);
+			return Command.SINGLE_SUCCESS;
+		}
         final String execute = StringArgumentType.getString(ctx, "command");
         TaskRegistry.schedule(new TimerTask() {
             @Override

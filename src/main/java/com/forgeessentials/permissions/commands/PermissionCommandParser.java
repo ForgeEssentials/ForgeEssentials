@@ -26,6 +26,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
@@ -283,7 +284,13 @@ public class PermissionCommandParser extends CommandUtils
         }
 
         // Parse player
-        UserIdent ident = parsePlayer(params.remove(0), null, false, false);
+        UserIdent ident;
+		try {
+			ident = parsePlayer(params.remove(0), null, false, false);
+		} catch (FECommandParsingException e) {
+			ChatOutputHandler.chatError(ctx.getSource(), e.error);
+			return;
+		}
         if (!ident.hasUuid())
             ChatOutputHandler.chatError(ctx.getSource(), "Player %s not found. playername will be used, but may be inaccurate.", ident.getUsername());
         else if (!ident.hasUsername())

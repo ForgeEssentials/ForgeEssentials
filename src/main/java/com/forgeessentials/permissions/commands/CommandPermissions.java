@@ -18,6 +18,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -931,21 +932,22 @@ public class CommandPermissions extends ForgeEssentialsCommandBuilder
                    return ISuggestionProvider.suggest(listclear, builder);
                    };
     public static final SuggestionProvider<CommandSource> SUGGEST_PlayerPerm = (ctx, builder) -> {
-                       List<String> listclear = new ArrayList<>();
-                       Zone zone;
-                       try {
-                           zone = PermissionCommandParser.parseZoneSafe(ctx.getSource(), StringArgumentType.getString(ctx, "zone"));
-                       }
-                       catch(IllegalArgumentException e) {
-                           zone = APIRegistry.perms.getServerZone();
-                       }
-                       UserIdent ident = parsePlayer(StringArgumentType.getString(ctx, "player"),null,false, false);
-                       for (String z : zone.getPlayerPermissions(ident).keySet())
-                       {
-                           listclear.add(z);
-                       }
-                       return ISuggestionProvider.suggest(listclear, builder);
-                       };
+    	List<String> listclear = new ArrayList<>();
+    	Zone zone;
+    	try {
+    		zone = PermissionCommandParser.parseZoneSafe(ctx.getSource(), StringArgumentType.getString(ctx, "zone"));
+    	}
+    	catch(IllegalArgumentException e) {
+    		zone = APIRegistry.perms.getServerZone();
+    	}
+    	try {
+    		UserIdent ident = parsePlayer(StringArgumentType.getString(ctx, "player"),null,false, false);
+    		for (String z : zone.getPlayerPermissions(ident).keySet()) {
+    			listclear.add(z);
+    		}
+    	} catch (FECommandParsingException e) {}
+    	return ISuggestionProvider.suggest(listclear, builder);
+    	};
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {

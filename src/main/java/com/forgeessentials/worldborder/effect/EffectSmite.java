@@ -1,6 +1,5 @@
 package com.forgeessentials.worldborder.effect;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -9,7 +8,7 @@ import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.List;
 
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.worldborder.WorldBorder;
@@ -24,10 +23,10 @@ public class EffectSmite extends WorldBorderEffect
     public int interval;
 
     @Override
-    public void provideArguments(List<String> args) throws CommandException
+    public void provideArguments(List<String> args) throws FECommandParsingException
     {
         if (args.isEmpty())
-            throw new TranslatedCommandException("Missing interval argument");
+            throw new FECommandParsingException("Missing interval argument");
         interval = CommandUtils.parseInt(args.remove(0));
     }
 

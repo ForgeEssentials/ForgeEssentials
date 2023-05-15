@@ -20,6 +20,7 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
+import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -243,7 +244,12 @@ public class CommandTime extends ForgeEssentialsCommandBuilder implements Config
         long time;
         if (arg[1]=="time")
         {
-            time = mcParseTimeReadable(StringArgumentType.getString(ctx, "time"));
+            try {
+				time = mcParseTimeReadable(StringArgumentType.getString(ctx, "time"));
+			} catch (FECommandParsingException e) {
+				ChatOutputHandler.chatError(ctx.getSource(), e.error);
+				return;
+			}
         }
         else
         {

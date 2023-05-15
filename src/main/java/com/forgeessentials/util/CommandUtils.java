@@ -10,13 +10,12 @@ import java.util.regex.Pattern;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.core.misc.FECommandParsingException;
 import com.google.common.base.Functions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,13 +34,13 @@ public class CommandUtils
 		return isource;
 	}
 	
-    public static UserIdent parsePlayer(String name, CommandSource sender, boolean mustExist, boolean mustBeOnline) throws CommandException
+    public static UserIdent parsePlayer(String name, CommandSource sender, boolean mustExist, boolean mustBeOnline) throws FECommandParsingException
     {
         UserIdent ident = UserIdent.get(name, sender, mustExist);
         if (mustExist && (ident == null || !ident.hasUuid()))
-            throw new TranslatedCommandException("Player %s not found", name);
+            throw new FECommandParsingException("Player %s not found", name);
         else if (mustBeOnline && !ident.hasPlayer())
-            throw new TranslatedCommandException("Player %s is not online", name);
+            throw new FECommandParsingException("Player %s is not online", name);
         return ident;
     }
     public static List<String> getAllPlayernames()
@@ -73,7 +72,7 @@ public class CommandUtils
             throw new NumberFormatException();
         }
     }
-    public static long parseLong(String input) throws CommandException
+    public static long parseLong(String input) throws FECommandParsingException
     {
         try
         {
@@ -81,7 +80,7 @@ public class CommandUtils
         }
         catch (NumberFormatException e)
         {
-            throw new TranslatedCommandException("Invalid number: %s", input);
+            throw new FECommandParsingException("Invalid number: %s", input);
         }
     }
     public static double parseDouble(String input, double min) throws NumberFormatException
@@ -318,14 +317,14 @@ public class CommandUtils
      * @return
      * @throws CommandException
      */
-    public static Long mcParseTimeReadable(String mcTime) throws CommandException
+    public static Long mcParseTimeReadable(String mcTime) throws FECommandParsingException
     {
         String timeStr = mcTime;
 
         Matcher m = timeFormatPattern.matcher(timeStr);
         if (!m.find())
         {
-            throw new TranslatedCommandException("Invalid time format: %s", timeStr);
+            throw new FECommandParsingException("Invalid time format: %s", timeStr);
         }
 
         double resultPart = Double.parseDouble(m.group(1));
@@ -351,19 +350,19 @@ public class CommandUtils
                 resultPart *= mcHour;
                 break;
             default:
-                throw new TranslatedCommandException("Invalid time format: %s", timeStr);
+                throw new FECommandParsingException("Invalid time format: %s", timeStr);
             }
         }
         return Math.round(resultPart);
     }
 
-    public static long parseTimeReadable(String time) throws CommandException
+    public static long parseTimeReadable(String time) throws FECommandParsingException
     {
         String value = time;
         Matcher m = timeFormatPattern.matcher(value);
         if (!m.find())
         {
-            throw new TranslatedCommandException("Invalid time format: %s", value);
+            throw new FECommandParsingException("Invalid time format: %s", value);
         }
 
         long result = 0;
@@ -407,7 +406,7 @@ public class CommandUtils
                     resultPart *= (long) 1000 * 60 * 60 * 24 * 30;
                     break;
                 default:
-                    throw new TranslatedCommandException("Invalid time format: %s", value);
+                    throw new FECommandParsingException("Invalid time format: %s", value);
                 }
             }
 

@@ -9,6 +9,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -79,7 +80,13 @@ public class CommandTempBan extends ForgeEssentialsCommandBuilder
         	ChatOutputHandler.chatError(ctx.getSource(), "Player %s is not online", name);
         }
 
-        long duration = parseTimeReadable(durationS);
+        long duration;
+		try {
+			duration = parseTimeReadable(durationS);
+		} catch (FECommandParsingException e) {
+			ChatOutputHandler.chatError(ctx.getSource(), e.error);
+			return Command.SINGLE_SUCCESS;
+		}
 
         PlayerInfo pi = PlayerInfo.get(ident.getUuid());
         pi.startTimeout("tempban", duration);

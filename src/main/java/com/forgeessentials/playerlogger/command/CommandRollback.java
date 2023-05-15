@@ -18,6 +18,7 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
+import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
@@ -209,7 +210,12 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
         	return;
         }
 
-        sec = (int) (parseTimeReadable(StringArgumentType.getString(ctx, "time")) / 1000) * sec;
+        try {
+			sec = (int) (parseTimeReadable(StringArgumentType.getString(ctx, "time")) / 1000) * sec;
+		} catch (FECommandParsingException e) {
+			ChatOutputHandler.chatError(ctx.getSource(), e.error);
+			return;
+		}
 
 
         RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getUUID());

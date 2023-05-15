@@ -12,6 +12,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.arguments.BlockStateArgument;
 
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.context.CommandContext;
@@ -135,7 +136,12 @@ public class FilterConfig
                     parseWhitelist(ctx, args, false);
                     break;
                 case "player":
-                    player = CommandUtils.parsePlayer(args.remove(0),ctx.getSource(), true, false);
+                    try {
+						player = CommandUtils.parsePlayer(args.remove(0),ctx.getSource(), true, false);
+					} catch (FECommandParsingException e) {
+						ChatOutputHandler.chatError(ctx.getSource(), e.error);
+						return;
+					}
                     break;
                 default:
                 	ChatOutputHandler.chatError(ctx.getSource(), "Expected Keyword here!");
@@ -241,7 +247,12 @@ public class FilterConfig
             else
             {
                 before = 0;
-                before += CommandUtils.parseTimeReadable(args.remove(0));
+                try {
+					before += CommandUtils.parseTimeReadable(args.remove(0));
+				} catch (FECommandParsingException e) {
+					ChatOutputHandler.chatError(ctx.getSource(), e.error);
+					return;
+				}
             }
         }
         else {
@@ -261,7 +272,12 @@ public class FilterConfig
             else
             {
                 after = 0;
-                after += CommandUtils.parseTimeReadable(args.remove(0));
+                try {
+					after += CommandUtils.parseTimeReadable(args.remove(0));
+				} catch (FECommandParsingException e) {
+					ChatOutputHandler.chatError(ctx.getSource(), e.error);
+					return;
+				}
             }
         }
         else {
