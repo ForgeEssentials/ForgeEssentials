@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
@@ -120,21 +119,28 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
                                 )
                         )
                 .then(Commands.literal("modify")
-                        .then(Commands.literal("set")
-                                .then(Commands.argument("cooldown", IntegerArgumentType.integer(0))
-                                        .executes(CommandContext -> execute(CommandContext, "set")
+                        .then(Commands.literal("create")
+                        		.then(Commands.argument("kit", StringArgumentType.string())
+                        				.then(Commands.argument("cooldown", IntegerArgumentType.integer(0))
+                                                .executes(CommandContext -> execute(CommandContext, "createCooldown")
+                                                        )
+                                                )
+                                        .executes(CommandContext -> execute(CommandContext, "create")
                                                 )
                                         )
                                 )
                         .then(Commands.literal("delete")
-                                .executes(CommandContext -> execute(CommandContext, "listAvaiable")
+                        		.then(Commands.argument("kit", StringArgumentType.string())
+                                        .suggests(SUGGEST_KITS)
+                                        .executes(context -> execute(context, "delete")
+                                                )
                                         )
                                 )
                         );
     }
 
     @Override
-    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         if (params.equals("listAvaiable"))
         {
@@ -151,7 +157,7 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
                 ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Kit %s does not exist", kitName));
                 return Command.SINGLE_SUCCESS;
             }
-            if (APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(),PERM + "." + kit.getName())){
+            if (!APIRegistry.perms.checkPermission((PlayerEntity) ctx.getSource().getEntity(), PERM + "." + kit.getName())){
                 ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You are not allowed to use this kit"));
                 return Command.SINGLE_SUCCESS;
             }
@@ -163,7 +169,8 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
 
         switch (params)
         {
-        case "set":
+        case "create":
+        case "createCooldown":
             QuestionerCallback callback = new QuestionerCallback() {
                 @Override
                 public void respond(Boolean response)
@@ -172,16 +179,12 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
                         ChatOutputHandler.chatError(ctx.getSource(), "Question timed out");
                     else if (!response)
                         return;
+
                     int cooldown = -1;
-                    if (true)//!arguments.isEmpty()) idk todo here
-                        try
-                        {
-                            cooldown = IntegerArgumentType.getInteger(ctx, "cooldown");
-                        }
-                        catch (CommandException e)
-                        {
-                            ChatOutputHandler.chatError(ctx.getSource(), e.getMessage());
-                        }
+                    if(params.equals("createCooldown")) {
+                        cooldown = IntegerArgumentType.getInteger(ctx, "cooldown");
+                    }
+
                     addKit(new Kit((PlayerEntity) ctx.getSource().getEntity(), kitName, cooldown));
                     if (cooldown < 0)
                         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Kit %s saved for one-time-use", kitName));
@@ -193,13 +196,17 @@ public class CommandKit extends ForgeEssentialsCommandBuilder implements Configu
                 callback.respond(true);
 			else
 				try {
-					Questioner.addChecked(ctx.getSource(), Translator.format("Overwrite kit %s?", kitName), callback);
+					Questioner.addChecked(getServerPlayer(ctx.getSource()), Translator.format("Overwrite kit %s?", kitName), callback);
 				} catch (QuestionerStillActiveException e) {
 					ChatOutputHandler.chatError(ctx.getSource(), "Cannot run command because player is still answering a question. Please wait a moment");
 	            	return Command.SINGLE_SUCCESS;
 				}
             break;
         case "delete":
+            if (kit == null){
+                ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Kit %s does not exist", kitName));
+                return Command.SINGLE_SUCCESS;
+            }
             removeKit(kit);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Deleted kit %s", kitName));
             break;
