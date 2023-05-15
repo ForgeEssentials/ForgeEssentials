@@ -18,7 +18,6 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.commons.selections.Selection;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
@@ -153,23 +152,28 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
             stopRollback(ctx);
             break;
         default:
-            throw new TranslatedCommandException("Unknown subcommand");
+        	ChatOutputHandler.chatError(ctx.getSource(), "Unknown subcommand %s", params);
+        	return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
     }
 
-    @SuppressWarnings("deprecation")
     private void startRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
-        if(!hasPermission(ctx.getSource(),PERM_PREVIEW)) {throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);}
+        if(!hasPermission(ctx.getSource(),PERM_PREVIEW)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
 
 
         if (rollbacks.containsKey(getServerPlayer(ctx.getSource()).getUUID()))
             cancelRollback(ctx);
 
         Selection area = SelectionHandler.getSelection(getServerPlayer(ctx.getSource()));
-        if (area == null)
-            throw new TranslatedCommandException("No selection available. Please select a region first.");
+        if (area == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "No selection available. Please select a region first.");
+        	return;
+        }
 
         int step = -60;
         String time = StringArgumentType.getString(ctx, "time");
@@ -186,7 +190,8 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
         }
         catch (ParseException e)
         {
-            throw new TranslatedCommandException("Invalid time format: %s", time);
+        	ChatOutputHandler.chatError(ctx.getSource(), "Invalid time format: %s", time);
+        	return;
         }
 
         RollbackInfo rb = new RollbackInfo(getServerPlayer(ctx.getSource()), area);
@@ -199,14 +204,19 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
     private void stepRollback(CommandContext<CommandSource> ctx, int sec) throws CommandException
     {
-        if(!hasPermission(ctx.getSource(),PERM_PREVIEW)) {throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);}
+        if(!hasPermission(ctx.getSource(),PERM_PREVIEW)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
 
         sec = (int) (parseTimeReadable(StringArgumentType.getString(ctx, "time")) / 1000) * sec;
 
 
         RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getUUID());
-        if (rb == null)
-            throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
+        if (rb == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
+        	return;
+        }
 
         rb.step(sec);
         rb.previewChanges();
@@ -215,11 +225,16 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
     private void confirmRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
-        if(!hasPermission(ctx.getSource(),PERM)) {throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);}
+        if(!hasPermission(ctx.getSource(),PERM)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
 
         RollbackInfo rb = rollbacks.remove(getServerPlayer(ctx.getSource()).getUUID());
-        if (rb == null)
-            throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
+        if (rb == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
+        	return;
+        }
 
         rb.confirm();
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Successfully restored changes");
@@ -228,8 +243,10 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
     private void cancelRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
         RollbackInfo rb = rollbacks.remove(getServerPlayer(ctx.getSource()).getUUID());
-        if (rb == null)
-            throw new TranslatedCommandException("No rollback in progress.");
+        if (rb == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress.");
+        	return;
+        }
 
         rb.cancel();
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Cancelled active rollback");
@@ -237,7 +254,10 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
     private void playRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
-        if(!hasPermission(ctx.getSource(),PERM_PREVIEW)) {throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);}
+        if(!hasPermission(ctx.getSource(),PERM_PREVIEW)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
 
         int speed = 1;
         speed = IntegerArgumentType.getInteger(ctx, "speed");
@@ -248,8 +268,10 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
 
         RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getUUID());
-        if (rb == null)
-            throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
+        if (rb == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
+        	return;
+        }
 
         if (rb.task != null)
         {
@@ -267,14 +289,21 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
     private void stopRollback(CommandContext<CommandSource> ctx) throws CommandException
     {
-        if(!hasPermission(ctx.getSource(),PERM_PREVIEW)) {throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);}
+        if(!hasPermission(ctx.getSource(),PERM_PREVIEW)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
 
 
         RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getUUID());
-        if (rb == null)
-            throw new TranslatedCommandException("No rollback in progress. Start with /rollback first.");
-        if (rb.task == null)
-            throw new TranslatedCommandException("No playback running");
+        if (rb == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
+        	return;
+        }
+        if (rb.task == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "No playback running");
+        	return;
+        }
 
         rb.task.cancel();
         rb.task = null;

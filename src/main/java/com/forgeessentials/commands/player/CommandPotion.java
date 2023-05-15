@@ -15,7 +15,7 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -163,8 +163,10 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
             {
                 player.addEffect(eff);
             }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName().getString());
+            else {
+            	ChatOutputHandler.chatError(ctx.getSource(), "Player %s does not exist, or is not online.", player.getDisplayName().getString());
+            	return Command.SINGLE_SUCCESS;
+            }
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -183,7 +185,8 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
         }
         if (arg[0].equalsIgnoreCase("me"))
         {
-            throw new TranslatedCommandException("Cant use console as the target");
+        	ChatOutputHandler.chatError(ctx.getSource(), "Cant use console as the target");
+        	return Command.SINGLE_SUCCESS;
         }
 
         ID = PotionArgument.getEffect(ctx, "potionID");
@@ -196,8 +199,10 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
         {
             player.addEffect(eff);
         }
-        else
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName().getString());
+        else {
+        	ChatOutputHandler.chatError(ctx.getSource(), "Player %s does not exist, or is not online.", player.getDisplayName().getString());
+        	return Command.SINGLE_SUCCESS;
+        }
         return Command.SINGLE_SUCCESS;
     }
 

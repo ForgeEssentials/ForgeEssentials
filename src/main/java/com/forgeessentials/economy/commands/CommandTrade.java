@@ -12,7 +12,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.PlayerUtil;
@@ -87,15 +86,19 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
         final UserIdent buyer = getIdent(EntityArgument.getPlayer(ctx, "player"));
 
         final ItemStack itemStack = getServerPlayer(ctx.getSource()).getMainHandItem();
-        if (itemStack == ItemStack.EMPTY)
-            throw new TranslatedCommandException("You need to hold an item first!");
+        if (itemStack == ItemStack.EMPTY) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "You need to hold an item first!");
+        	return Command.SINGLE_SUCCESS;
+        }
 
         final long price;
         if (params.equals("getdef"))
         {
             Long p = ModuleEconomy.getItemPrice(itemStack, getIdent(ctx.getSource()));
-            if (p == null)
-                throw new TranslatedCommandException("No default price available. Please specify price.");
+            if (p == null) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "No default price available. Please specify price.");
+            	return Command.SINGLE_SUCCESS;
+            }
             price = p;
         }
         else
@@ -104,8 +107,10 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
         final Wallet sellerWallet = APIRegistry.economy.getWallet(getIdent(ctx.getSource()));
         final Wallet buyerWallet = APIRegistry.economy.getWallet(buyer);
 
-        if (!buyerWallet.covers(price * itemStack.getCount()))
-            throw new TranslatedCommandException("%s can't affort that!", buyer.getUsernameOrUuid());
+        if (!buyerWallet.covers(price * itemStack.getCount())) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "%s can't affort that!", buyer.getUsernameOrUuid());
+        	return Command.SINGLE_SUCCESS;
+        }
 
         QuestionerCallback sellerHandler = new QuestionerCallback() {
             @Override

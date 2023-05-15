@@ -29,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.TaskRegistry.TickTask;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
@@ -94,7 +93,8 @@ public class CommandButcherTickTask implements TickTask
         }
         catch (IllegalArgumentException e)
         {
-            throw new TranslatedCommandException("Unknown mob type. Mob types are " + StringUtils.join(CommandButcherTickTask.ButcherMobType.values(), ", "));
+        	ChatOutputHandler.chatError(sender, "Unknown mob type. Mob types are " + StringUtils.join(CommandButcherTickTask.ButcherMobType.values(), ", "));
+        	return;
         }
     }
 

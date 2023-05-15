@@ -30,7 +30,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.LoggingHandler;
 import com.google.common.collect.Lists;
@@ -100,8 +99,10 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         if (EntityArgument.getPlayer(ctx, "player")!=getServerPlayer(ctx.getSource()))
         {
-            if (!hasPermission(ctx.getSource(),PERM_OTHERS))
-                throw new TranslatedCommandException("You don't have permission to vanish other players");
+            if (!hasPermission(ctx.getSource(),PERM_OTHERS)) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "You don't have permission to vanish other players");
+                return Command.SINGLE_SUCCESS;
+            }
             player = EntityArgument.getPlayer(ctx, "player");
         }
 

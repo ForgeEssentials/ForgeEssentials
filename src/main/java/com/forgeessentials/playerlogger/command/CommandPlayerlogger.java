@@ -22,7 +22,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.TaskRegistry;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.playerlogger.FilterConfig;
 import com.forgeessentials.playerlogger.ModulePlayerLogger;
@@ -479,7 +478,8 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             }
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd.toString());
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subCmd.toString());
+        	return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
     }

@@ -10,7 +10,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -85,8 +84,10 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
         {
             holdingItem = true;
             itemStack = getServerPlayer(ctx.getSource()).getMainHandItem();
-            if (itemStack == ItemStack.EMPTY)
-                throw new TranslatedCommandException("You need to hold an item first!");
+            if (itemStack == ItemStack.EMPTY) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "You need to hold an item first!");
+            	return Command.SINGLE_SUCCESS;
+            }
             amount = itemStack.getCount();
         }
         else
@@ -102,8 +103,10 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
         }
 
         final Long price = ModuleEconomy.getItemPrice(itemStack, getIdent(ctx.getSource()));
-        if (price == null || price <= 0)
-            throw new TranslatedCommandException("This item cannot be sold");
+        if (price == null || price <= 0) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "This item cannot be sold");
+        	return Command.SINGLE_SUCCESS;
+        }
 
         final Wallet wallet = APIRegistry.economy.getWallet(getIdent(ctx.getSource()));
 

@@ -9,7 +9,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.jscripting.ModuleJScripting;
 import com.forgeessentials.jscripting.ScriptInstance;
 import com.forgeessentials.jscripting.ScriptUpgrader;
@@ -90,7 +89,8 @@ public class CommandJScript extends ForgeEssentialsCommandBuilder
             ScriptUpgrader.upgradeOldScripts(ctx.getSource());
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
+        	return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
     }

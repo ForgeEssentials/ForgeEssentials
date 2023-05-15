@@ -15,7 +15,6 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -94,12 +93,17 @@ public class CommandPromote extends ForgeEssentialsCommandBuilder
 
         String groupName = StringArgumentType.getString(ctx, "group");
 
-        if (!APIRegistry.perms.groupExists(groupName))
-            throw new TranslatedCommandException("Group %s does not exist", groupName);
+        if (!APIRegistry.perms.groupExists(groupName)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "Group %s does not exist", groupName);
+        	return Command.SINGLE_SUCCESS;
+        }
 
         if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(groupName, FEPermissions.GROUP_PROMOTION)))
-            throw new TranslatedCommandException("Group %s is not available for promotion. Allow %s on the group first.", groupName,
+        {
+        	ChatOutputHandler.chatError(ctx.getSource(), "Group %s is not available for promotion. Allow %s on the group first.", groupName,
                     FEPermissions.GROUP_PROMOTION);
+        	return Command.SINGLE_SUCCESS;
+        }
 
         for (GroupEntry group : APIRegistry.perms.getServerZone().getStoredPlayerGroupEntries(ident))
             if (!Zone.PERMISSION_TRUE.equals(APIRegistry.perms.getServerZone().getGroupPermission(group.getGroup(), FEPermissions.GROUP_PROMOTION)))

@@ -11,11 +11,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.UserIdent;
+import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet7Remote;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.remote.ModuleRemote;
 import com.forgeessentials.util.PlayerInfo;
@@ -107,7 +107,10 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         case "regen":
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player"); 
-            if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {return Command.SINGLE_SUCCESS;}
+            if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+            	return Command.SINGLE_SUCCESS;
+            }
             ModuleRemote.getInstance().setPasskey(getIdent(player), ModuleRemote.getInstance().generatePasskey());
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Generated new passkey");
             showPasskey(ctx.getSource(), getIdent(player), false);
@@ -117,7 +120,10 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             String key = StringArgumentType.getString(ctx, "key");
-            if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {return Command.SINGLE_SUCCESS;}
+            if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+            	return Command.SINGLE_SUCCESS;
+            }
             ModuleRemote.getInstance().setPasskey(getIdent(player), key);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Passkey of %s changed to %s", getIdent(player).getUsernameOrUuid(), key));
             showPasskey(ctx.getSource(), getIdent(player), true);
@@ -126,9 +132,14 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         case "block":
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player"); 
-            if (!getIdent(player).hasUuid())
-                throw new TranslatedCommandException("Player %s not found", getIdent(player).getUsernameOrUuid());
-            if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {return Command.SINGLE_SUCCESS;}
+            if (!getIdent(player).hasUuid()) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "Player %s not found", getIdent(player).getUsernameOrUuid());
+            	return Command.SINGLE_SUCCESS;
+            }
+            if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+            	return Command.SINGLE_SUCCESS;
+            }
             ModuleRemote.getInstance().setPasskey(getIdent(player), null);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("User %s has been blocked from remote until he generates a new passkey", getIdent(player).getUsernameOrUuid()));
             return Command.SINGLE_SUCCESS;
@@ -136,9 +147,14 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         case "kick":
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player"); 
-            if (!getIdent(player).hasUuid())
-                throw new TranslatedCommandException("Player %s not found", getIdent(player).getUsernameOrUuid());
-            if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {return Command.SINGLE_SUCCESS;}
+            if (!getIdent(player).hasUuid()) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "Player %s not found", getIdent(player).getUsernameOrUuid());
+            	return Command.SINGLE_SUCCESS;
+            }
+            if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+            	return Command.SINGLE_SUCCESS;
+            }
             RemoteSession session = ModuleRemote.getInstance().getServer().getSession(getIdent(player));
             if (session == null)
             {
@@ -151,9 +167,14 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         }
         case "start":
         {
-            if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {return Command.SINGLE_SUCCESS;}
-            if (ModuleRemote.getInstance().getServer() != null)
-                throw new TranslatedCommandException("Server already running on port " + ModuleRemote.getInstance().getPort());
+            if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+            	return Command.SINGLE_SUCCESS;
+            }
+            if (ModuleRemote.getInstance().getServer() != null) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "Server already running on port " + ModuleRemote.getInstance().getPort());
+            	return Command.SINGLE_SUCCESS;
+            }
             ModuleRemote.getInstance().startServer();
             if (ModuleRemote.getInstance().getServer() == null)
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Error starting remote server");
@@ -163,9 +184,14 @@ public class CommandRemote extends ForgeEssentialsCommandBuilder
         }
         case "stop":
         {
-            if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {return Command.SINGLE_SUCCESS;}
-            if (ModuleRemote.getInstance().getServer() == null)
-                throw new TranslatedCommandException("Server not running");
+            if(!hasPermission(ctx.getSource(), ModuleRemote.PERM_CONTROL)) {
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+            	return Command.SINGLE_SUCCESS;
+            }
+            if (ModuleRemote.getInstance().getServer() == null) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "Server not running");
+            	return Command.SINGLE_SUCCESS;
+            }
             ModuleRemote.getInstance().stopServer();
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Server stopped");
             return Command.SINGLE_SUCCESS;

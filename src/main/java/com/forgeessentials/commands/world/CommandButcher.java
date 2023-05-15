@@ -21,7 +21,6 @@ import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commands.util.CommandButcherTickTask;
 import com.forgeessentials.commands.util.CommandButcherTickTask.ButcherMobType;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -132,8 +131,10 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
 
         if (!args.isEmpty())
         {
-            if (args.size() < 3)
-                throw new TranslatedCommandException("Improper syntax: <radius> [type] [x y z] [world]");
+            if (args.size() < 3) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "Improper syntax: <radius> [type] [x y z] [world]");
+                return Command.SINGLE_SUCCESS;
+            }
             x = parseDouble(args.remove(0));
             y = parseDouble(args.remove(0));
             z = parseDouble(args.remove(0));
@@ -142,8 +143,10 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
         if (!args.isEmpty())
         {
             world = ServerUtil.getWorldFromString(args.remove(0));
-            if (world == null)
-                throw new TranslatedCommandException("The specified dimension does not exist");
+            if (world == null) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "The specified dimension does not exist");
+                return Command.SINGLE_SUCCESS;
+            }
         }
 
         AxisAlignedBB pool = new AxisAlignedBB(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
@@ -176,8 +179,10 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
 
         if (!args.isEmpty())
         {
-            if (args.size() < 3)
-                throw new TranslatedCommandException("Improper syntax: <radius> [type] [x y z] [world]");
+            if (args.size() < 3) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "Improper syntax: <radius> [type] [x y z] [world]");
+                return Command.SINGLE_SUCCESS;
+            }
             x = parseInt(args.remove(0));
             y = parseInt(args.remove(0));
             z = parseInt(args.remove(0));
@@ -198,8 +203,10 @@ public class CommandButcher extends ForgeEssentialsCommandBuilder
         if (!args.isEmpty())
         {
             world = ServerUtil.getWorldFromString(args.remove(0));
-            if (world == null)
-                throw new TranslatedCommandException("This dimension does not exist");
+            if (world == null) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "This dimension does not exist");
+                return Command.SINGLE_SUCCESS;
+            }
         }
         AxisAlignedBB pool = new AxisAlignedBB(x - radius, y - radius, z - radius, x + radius + 1, y + radius + 1, z + radius + 1);
         CommandButcherTickTask.schedule(ctx.getSource(), world, mobType, pool, radius);

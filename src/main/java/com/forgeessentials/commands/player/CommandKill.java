@@ -11,7 +11,6 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
@@ -83,8 +82,10 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
                 player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
                 ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
             }
-            else
-                throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName().getString());
+            else {
+            	ChatOutputHandler.chatError(ctx.getSource(),"Player %s does not exist, or is not online.", player.getDisplayName().getString());
+            }
+            return Command.SINGLE_SUCCESS;
         }
         else
         {
@@ -103,8 +104,9 @@ public class CommandKill extends ForgeEssentialsCommandBuilder
             player.hurt(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);
             ChatOutputHandler.chatError(player, Translator.translate("You were killed. You probably deserved it."));
         }
-        else
-            throw new TranslatedCommandException("Player %s does not exist, or is not online.", player.getDisplayName().getString());
+        else {
+        	ChatOutputHandler.chatError(ctx.getSource(),"Player %s does not exist, or is not online.", player.getDisplayName().getString());
+        }
         return Command.SINGLE_SUCCESS;
     }
 }

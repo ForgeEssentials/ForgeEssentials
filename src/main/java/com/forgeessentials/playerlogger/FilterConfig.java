@@ -12,8 +12,8 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.arguments.BlockStateArgument;
 
 import com.forgeessentials.api.UserIdent;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.util.CommandUtils;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.context.CommandContext;
 
 public class FilterConfig
@@ -138,7 +138,8 @@ public class FilterConfig
                     player = CommandUtils.parsePlayer(args.remove(0),ctx.getSource(), true, false);
                     break;
                 default:
-                    throw new TranslatedCommandException("Expected Keyword here!");
+                	ChatOutputHandler.chatError(ctx.getSource(), "Expected Keyword here!");
+                	return;
 
                 }
 
@@ -205,7 +206,8 @@ public class FilterConfig
                 }
                 catch (IllegalArgumentException e)
                 {
-                    throw new TranslatedCommandException("Invalid Action");
+                	ChatOutputHandler.chatError(ctx.getSource(), "Invalid Action");
+                	return;
                 }
             }
 
@@ -242,8 +244,10 @@ public class FilterConfig
                 before += CommandUtils.parseTimeReadable(args.remove(0));
             }
         }
-        else
-            throw new TranslatedCommandException("A time must be specified here!");
+        else {
+        	ChatOutputHandler.chatError(ctx.getSource(), "A time must be specified here!");
+        	return;
+        }
     }
 
     public void parseAfter(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
@@ -260,8 +264,10 @@ public class FilterConfig
                 after += CommandUtils.parseTimeReadable(args.remove(0));
             }
         }
-        else
-            throw new TranslatedCommandException("A time must be specified here!");
+        else {
+        	ChatOutputHandler.chatError(ctx.getSource(), "A time must be specified here!");
+        	return;
+        }
     }
 
     public void parseRange(CommandContext<CommandSource> ctx, List<String> args) throws CommandException
@@ -270,8 +276,10 @@ public class FilterConfig
         {
             pickerRange = CommandUtils.parseInt(args.remove(0));
         }
-        else
-            throw new TranslatedCommandException("A integer must be specified here!");
+        else {
+        	ChatOutputHandler.chatError(ctx.getSource(), "A integer must be specified here!");
+        	return;
+        }
     }
 
     public String toReadableString()

@@ -18,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandManager.ConfigurableCommand;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -39,7 +38,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     {
         RAIN, THUNDER;
 
-        public static WeatherType fromString(String name) throws CommandException
+        public static WeatherType fromString(CommandSource source, String name) throws CommandException
         {
             name = name.toLowerCase();
             switch (name)
@@ -50,7 +49,8 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
             case "storm":
                 return WeatherType.THUNDER;
             default:
-                throw new TranslatedCommandException("Unknown weather type %s", name);
+            	ChatOutputHandler.chatError(source, "Unknown weather type %s", name);
+            	return null;
             }
         }
 
@@ -60,7 +60,7 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
     {
         FORCE, ENABLED, DISABLED, START, STOP;
 
-        public static WeatherState fromString(String name) throws CommandException
+        public static WeatherState fromString(CommandSource source, String name) throws CommandException
         {
             name = name.toLowerCase();
             switch (name)
@@ -78,7 +78,8 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
             case "stop":
                 return WeatherState.STOP;
             default:
-                throw new TranslatedCommandException("Unknown weather state %s", name);
+            	ChatOutputHandler.chatError(source, "Unknown weather state %s", name);
+            	return null;
             }
         }
 
@@ -201,7 +202,10 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
         String dim = world.dimension().location().toString();
 
         String[] args = params.split("-");
-        WeatherType type = WeatherType.fromString(args[0]);
+        WeatherType type = WeatherType.fromString(ctx.getSource(), args[0]);
+        if(type==null) {
+        	return Command.SINGLE_SUCCESS;
+        }
         String typeName = type.toString().toLowerCase();
 
         if (args[1]=="info")
@@ -211,8 +215,11 @@ public class CommandWeather extends ForgeEssentialsCommandBuilder implements Con
             return Command.SINGLE_SUCCESS;
         }
 
-        WeatherState state = WeatherState.fromString(args[1]);
-
+        WeatherState state = WeatherState.fromString(ctx.getSource(), args[1]);
+        if(state==null) {
+        	return Command.SINGLE_SUCCESS;
+        }
+        
         switch (state)
         {
         case START:

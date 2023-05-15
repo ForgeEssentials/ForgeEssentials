@@ -26,7 +26,6 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.permissions.Zone.PermissionList;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.commons.selections.WorldPoint;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.permissions.ModulePermissions;
 import com.forgeessentials.permissions.persistence.FlatfileProvider;
@@ -178,7 +177,8 @@ public class PermissionCommandParser extends CommandUtils
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), "Permissions saved to json format");
                 break;
             default:
-                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, action);
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, action);
+        		return;
             }
         }
     }
@@ -199,16 +199,20 @@ public class PermissionCommandParser extends CommandUtils
             switch (arg)
             {
             case "zones":
-                if (getServerPlayer(ctx.getSource()) == null)
-                    throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+                if (getServerPlayer(ctx.getSource()) == null) {
+            		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            		return;
+            	}
                 listZones(ctx.getSource(), new WorldPoint(getServerPlayer(ctx.getSource())));
                 break;
             case "worlds":
                 listWorlds(ctx.getSource());
                 break;
             case "perms":
-                if (getServerPlayer(ctx.getSource()) == null)
-                    throw new TranslatedCommandException(FEPermissions.MSG_NO_CONSOLE_COMMAND);
+                if (getServerPlayer(ctx.getSource()) == null) {
+            		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
+            		return;
+            	}
                 listUserPermissions(ctx.getSource(), UserIdent.get(getServerPlayer(ctx.getSource())), true);
                 break;
             case "users":
@@ -218,7 +222,8 @@ public class PermissionCommandParser extends CommandUtils
                 listGroups(ctx.getSource());
                 break;
             default:
-                throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, arg);
+        		return;
             }
         }
     }
@@ -229,8 +234,10 @@ public class PermissionCommandParser extends CommandUtils
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
-        if (params.isEmpty())
-            throw new TranslatedCommandException("Missing permission argument!");
+        if (params.isEmpty()) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "Missing permission argument!");
+    		return;
+        }
 
         UserIdent ident = getIdent(ctx.getSource());
         if (CommandUtils.GetSource(ctx.getSource()) instanceof DoAsCommandSender)
@@ -382,7 +389,8 @@ public class PermissionCommandParser extends CommandUtils
             denyDefault(zone.getPlayerPermissions(ident));
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_INVALID_SYNTAX);
+    		return;
         }
     }
 
@@ -435,8 +443,10 @@ public class PermissionCommandParser extends CommandUtils
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
-        if (params.isEmpty())
-            throw new TranslatedCommandException("Missing permission argument!");
+        if (params.isEmpty()) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "Missing permission argument!");
+    		return;
+        }
 
         // Apply permissions
         //while (!arguments.args.isEmpty())
@@ -496,14 +506,18 @@ public class PermissionCommandParser extends CommandUtils
         switch (loc)
         {
         case "here":
-            if (getServerPlayer(ctx.getSource()) == null)
-                throw new TranslatedCommandException("[here] cannot be used from console.");
+            if (getServerPlayer(ctx.getSource()) == null) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "[here] cannot be used from console.");
+        		return;
+            }
             point = new WarpPoint(getServerPlayer(ctx.getSource()));
             break;
         case "bed":
         {
-            if (params.isEmpty())
-                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            if (params.isEmpty()) {
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+        		return;
+            }
             String val = params.remove(0).toLowerCase();
             if (val.equals("true") | val.equals("enable"))
             {
@@ -523,8 +537,10 @@ public class PermissionCommandParser extends CommandUtils
             point = null;
             break;
         default:
-            if (params.size() < 3)
-                throw new TranslatedCommandException(FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+            if (params.size() < 3) {
+            	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NOT_ENOUGH_ARGUMENTS);
+        		return;
+            }
             try
             {
                 int x = CommandUtils.parseInt(loc);
@@ -656,8 +672,10 @@ public class PermissionCommandParser extends CommandUtils
             else
             {
                 String groupArg = params.remove(0);
-                if (!groupArg.equalsIgnoreCase("create"))
-                    throw new TranslatedCommandException("Group %s does not exist", group);
+                if (!groupArg.equalsIgnoreCase("create")) {
+                	ChatOutputHandler.chatError(ctx.getSource(), "Group %s does not exist", group);
+            		return;
+                }
                 if (APIRegistry.perms.createGroup(group))
                     ChatOutputHandler.chatConfirmation(ctx.getSource(), "Created group %s", group);
                 else
@@ -777,7 +795,8 @@ public class PermissionCommandParser extends CommandUtils
             denyDefault(zone.getGroupPermissions(group));
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_INVALID_SYNTAX);
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_INVALID_SYNTAX);
+    		return;
         }
     }
 
@@ -818,8 +837,10 @@ public class PermissionCommandParser extends CommandUtils
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
     	}
-        if (params.isEmpty())
-            throw new TranslatedCommandException("Missing permission argument!");
+        if (params.isEmpty()) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "Missing permission argument!");
+    		return;
+        }
 
         // Apply permissions
         //while (!arguments.args.isEmpty())
@@ -1124,8 +1145,10 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void listUserPermissions(CommandSource sender, UserIdent ident, boolean showGroupPerms) throws CommandException
     {
-        if (ident.isPlayer() && !PermissionAPI.hasPermission(ident.getPlayer(), PERM_LIST_PERMS))
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+        if (ident.isPlayer() && !PermissionAPI.hasPermission(ident.getPlayer(), PERM_LIST_PERMS)) {
+        	ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+        }
 
         ChatOutputHandler.chatNotification(sender, ident.getUsernameOrUuid() + " permissions:");
 
@@ -1228,8 +1251,10 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void listGroups(CommandSource sender) throws CommandException
     {
-        if (sender.getEntity() instanceof PlayerEntity && !PermissionAPI.hasPermission(getServerPlayer(sender), PERM_LIST_GROUPS))
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+        if (sender.getEntity() instanceof PlayerEntity && !PermissionAPI.hasPermission(getServerPlayer(sender), PERM_LIST_GROUPS)) {
+        	ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+        }
 
         ChatOutputHandler.chatNotification(sender, "Groups:");
         for (String group : APIRegistry.perms.getServerZone().getGroups())
@@ -1238,8 +1263,10 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void listUsers(CommandSource sender) throws CommandException
     {
-        if (sender.getEntity() instanceof PlayerEntity && !PermissionAPI.hasPermission(getServerPlayer(sender), PERM_LIST_USERS))
-            throw new TranslatedCommandException(FEPermissions.MSG_NO_COMMAND_PERM);
+        if (sender.getEntity() instanceof PlayerEntity && !PermissionAPI.hasPermission(getServerPlayer(sender), PERM_LIST_USERS)) {
+        	ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+        }
 
         ChatOutputHandler.chatNotification(sender, "Known players:");
         for (UserIdent ident : APIRegistry.perms.getServerZone().getKnownPlayers())

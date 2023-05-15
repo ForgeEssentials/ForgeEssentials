@@ -10,7 +10,6 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.economy.Wallet;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.util.output.ChatOutputHandler;
@@ -130,18 +129,18 @@ public class CommandWallet extends ForgeEssentialsCommandBuilder
             break;
         case "add":
             wallet.add(amount);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Added %s to %s's wallet. It now contains %s", //
-                    APIRegistry.economy.toString(amount), player.getUsernameOrUuid(), wallet.toString()));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Added %s to %s's wallet. It now contains %s", APIRegistry.economy.toString(amount), player.getUsernameOrUuid(), wallet.toString()));
             break;
         case "remove":
-            if (!wallet.withdraw(amount))
-                throw new TranslatedCommandException("Player %s does not have enough %s in his wallet", //
-                        player.getUsernameOrUuid(), APIRegistry.economy.currency(2));
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Removed %s from %s's wallet. It now contains %s", //
-                    APIRegistry.economy.toString(amount), player.getUsernameOrUuid(), wallet.toString()));
+            if (!wallet.withdraw(amount)) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "Player %s does not have enough %s in his wallet", player.getUsernameOrUuid(), APIRegistry.economy.currency(2));
+            	return Command.SINGLE_SUCCESS;
+            }
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Removed %s from %s's wallet. It now contains %s", APIRegistry.economy.toString(amount), player.getUsernameOrUuid(), wallet.toString()));
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params);
+        	return Command.SINGLE_SUCCESS;
         }
         return Command.SINGLE_SUCCESS;
     }
