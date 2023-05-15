@@ -81,10 +81,7 @@ public class DoAsCommandSender extends FakePlayer
 	@Override
 	public void sendMessage(ITextComponent message, UUID p_145747_2_) {
 		if (!hideChatMessages)
-		    //TODO see which one works
 		    ChatOutputHandler.sendMessageI(sender, message);
-		    getServer().getPlayerList().broadcastMessage(message, ChatType.SYSTEM, p_145747_2_);
-            //sender.sendMessage(message, p_145747_2_);
 		
 	}
 
