@@ -101,7 +101,8 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
             CommandSource target = EntityArgument.getPlayer(ctx, "player").createCommandSourceStack();
 
             if (ctx.getSource() == target) {
-                ChatOutputHandler.chatError(ctx.getSource(),"Cant send a pm to yourself");
+                ChatOutputHandler.chatError(ctx.getSource(), "Cant send a pm to yourself");
+                return Command.SINGLE_SUCCESS;
             }
             setTarget(ctx.getSource(), target);
             ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set PM target to %s", target.getTextName()));
@@ -110,7 +111,7 @@ public class CommandPm extends ForgeEssentialsCommandBuilder
         if (params.equals("clear"))
         {
         	clearTarget(ctx.getSource());
-            ChatOutputHandler.chatConfirmation(ctx.getSource(),("Cleared PM target"));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Cleared PM target");
             return Command.SINGLE_SUCCESS;
         }
         TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
