@@ -64,8 +64,8 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
                 .then(Commands.argument("player", StringArgumentType.word())
-                        .then(Commands.argument("message", StringArgumentType.greedyString())
-                                .executes(CommandContext -> execute(CommandContext, "blank"))
+                        .then(Commands.argument("command", StringArgumentType.greedyString())
+                                .executes(CommandContext -> execute(CommandContext, "commandto"))
                                 )
                         )
                 .executes(CommandContext -> execute(CommandContext, "blank")
@@ -76,7 +76,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         String playerS = StringArgumentType.getString(ctx, "player");
-        String message = StringArgumentType.getString(ctx, "message");
+        String message = StringArgumentType.getString(ctx, "command");
         if (params.toString() == "blank")
         {
             ChatOutputHandler.chatError(ctx.getSource(), "/doas <player> <command> Run a command as another player.");
@@ -84,13 +84,14 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
         }
         if ((ctx.getSource().getEntity() instanceof ServerPlayerEntity) && playerS.equalsIgnoreCase("[CONSOLE]"))
         {
-            ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
+            ServerPlayerEntity player = getServerPlayer(ctx.getSource());
             if (!PermissionAPI.hasPermission(player, "fe.commands.doas.console")){
                 ChatOutputHandler.chatWarning(player, FEPermissions.MSG_NO_COMMAND_PERM);
                 return Command.SINGLE_SUCCESS;
             }
             
             ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(APIRegistry.IDENT_SERVER, player.createCommandSourceStack()).createCommandSourceStack(), message);
+            return Command.SINGLE_SUCCESS;
         }
 
         ServerPlayerEntity player = (ServerPlayerEntity) UserIdent.getPlayerByMatchOrUsername(null, playerS);

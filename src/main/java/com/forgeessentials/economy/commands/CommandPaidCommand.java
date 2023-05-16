@@ -82,7 +82,7 @@ public class CommandPaidCommand extends ForgeEssentialsCommandBuilder
     {
         UserIdent ident = UserIdent.get(EntityArgument.getPlayer(ctx, "player"));
         if (!ident.hasPlayer()) {
-            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s is currently online", ident.getUsername()));
+            ChatOutputHandler.chatError(ctx.getSource(), Translator.format("Player %s is currently offline", ident.getUsername()));
             return Command.SINGLE_SUCCESS;
         }
 

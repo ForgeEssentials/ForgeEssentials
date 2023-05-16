@@ -49,8 +49,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBuilder
         int amount = IntegerArgumentType.getInteger(ctx, "amount");
         ChatOutputHandler.chatConfirmation(ctx.getSource(),
                 Translator.format("You requested %s to pay %s", player.getDisplayName().getString(), APIRegistry.economy.toString(amount)));
-        ChatOutputHandler.chatConfirmation(player,
-                Translator.format("You have been requested to pay %s by %s", APIRegistry.economy.toString(amount), getServerPlayer(ctx.getSource()).getDisplayName().getString()));
+        ChatOutputHandler.chatNotification(player,"You have been requested to pay %s by %s", APIRegistry.economy.toString(amount), getServerPlayer(ctx.getSource()).getDisplayName().getString());
         return Command.SINGLE_SUCCESS;
     }
 
@@ -61,8 +60,7 @@ public class CommandRequestPayment extends ForgeEssentialsCommandBuilder
         int amount = IntegerArgumentType.getInteger(ctx, "amount");
         ChatOutputHandler.chatConfirmation(ctx.getSource(),
                 Translator.format("You requested %s to pay %s", player.getDisplayName().getString(), APIRegistry.economy.toString(amount)));
-        ChatOutputHandler.chatConfirmation(player,
-                Translator.format("You have been requested to pay %s by the server", APIRegistry.economy.toString(amount), getServerPlayer(ctx.getSource()).getDisplayName().getString()));
+        ChatOutputHandler.chatNotification(player, "You have been requested to pay %s by the server", APIRegistry.economy.toString(amount), getServerPlayer(ctx.getSource()).getDisplayName().getString());
         return Command.SINGLE_SUCCESS;
     }
 

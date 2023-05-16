@@ -142,11 +142,11 @@ public class CommandSell extends ForgeEssentialsCommandBuilder
 
                 wallet.add(removedAmount * price);
                 ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("You have sold %d %s to the server for %s", //
-                        removedAmount, itemStack.getDisplayName(), APIRegistry.economy.toString(removedAmount * price)));
+                        removedAmount, itemStack.getDisplayName().getString(), APIRegistry.economy.toString(removedAmount * price)));
                 ModuleEconomy.confirmNewWalletAmount(getIdent(ctx.getSource()), wallet);
             }
         };
-        String message = Translator.format("Sell %d x %s each for %s (total: %s)?", amount, itemStack.getDisplayName(), APIRegistry.economy.toString(price),
+        String message = Translator.format("Sell %d x %s each for %s (total: %s)?", amount, itemStack.getDisplayName().getString(), APIRegistry.economy.toString(price),
                 APIRegistry.economy.toString(amount * price));
         if (APIRegistry.perms.checkPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".noconfirm"))
         {

@@ -94,6 +94,8 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
                                                 )
                                         )
                                 )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "")
                         );
     }
 

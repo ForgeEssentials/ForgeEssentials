@@ -200,7 +200,7 @@ public class CommandTrade extends ForgeEssentialsCommandBuilder
             message = Translator
                     .format("Sell one %s for %s to %s?", itemStack.getDisplayName().getString(), APIRegistry.economy.toString(price), buyer.getUsernameOrUuid());
         else
-            message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.getCount(), itemStack.getDisplayName(),
+            message = Translator.format("Sell %d x %s each for %s (total: %s) to %s?", itemStack.getCount(), itemStack.getDisplayName().getString(),
                     APIRegistry.economy.toString(price), APIRegistry.economy.toString(price * itemStack.getCount()), buyer.getUsernameOrUuid());
         try {
 			Questioner.addChecked(getServerPlayer(ctx.getSource()), message, sellerHandler, 20);

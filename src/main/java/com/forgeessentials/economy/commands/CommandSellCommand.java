@@ -105,12 +105,12 @@ public class CommandSellCommand extends ForgeEssentialsCommandBuilder
 
         if (foundStacks < amount)
         {
-            ChatOutputHandler.chatError(player, Translator.format("You do not have enough %s to afford this", itemStack.getDisplayName()));
+            ChatOutputHandler.chatError(player, Translator.format("You do not have enough %s to afford this", itemStack.getDisplayName().getString()));
             return Command.SINGLE_SUCCESS;
         }
 
         ChatOutputHandler.chatConfirmation(player, Translator.format("You paid %d x %s", //
-                amount, itemStack.getDisplayName(), APIRegistry.economy.getWallet(UserIdent.get(player)).toString()));
+                amount, itemStack.getDisplayName().getString(), APIRegistry.economy.getWallet(UserIdent.get(player)).toString()));
 
         ServerLifecycleHooks.getCurrentServer().getCommands().performCommand(new DoAsCommandSender(ModuleEconomy.ECONOMY_IDENT, player.createCommandSourceStack()).createCommandSourceStack(), StringArgumentType.getString(ctx, "command"));
 
