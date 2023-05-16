@@ -40,11 +40,6 @@ public final class ItemUtil
         }
     }
 
-    public static String getItemIdentifier(ItemStack itemStack)
-    {
-        return itemStack.getDescriptionId();
-    }
-
     public static boolean isItemFrame(HangingEntity entity)
     {
         return entity instanceof ItemFrameEntity;

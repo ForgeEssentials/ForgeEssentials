@@ -114,7 +114,7 @@ public class CommandUtils
         }
         catch (NumberFormatException var2)
         {
-            throw new NumberFormatException();
+            throw new NumberFormatException(var2.getMessage());
         }
     }
 

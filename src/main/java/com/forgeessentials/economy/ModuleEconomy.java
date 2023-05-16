@@ -87,7 +87,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public static final String PERM_BOUNTY_MESSAGE = PERM_BOUNTY + ".message";
 
     public static final String CONFIG_CATEGORY = "Economy";
-    public static final String CATEGORY_ITEM = CONFIG_CATEGORY + "-" + "ItemPrices";
 
     public static final int DEFAULT_ITEM_PRICE = 0;
 
@@ -344,26 +343,31 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     public static String getItemPricePermission(ItemStack itemStack)
     {
-        return PERM_PRICE + "." + ItemUtil.getItemIdentifier(itemStack);
+        return PERM_PRICE + "." + ServerUtil.getItemName(itemStack);
     }
 
     public static Long getItemPrice(ItemStack itemStack, UserIdent ident)
     {
-        return ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, getItemPricePermission(itemStack)));
+        return ServerUtil.tryParseLong(APIRegistry.perms.getGlobalPermissionProperty(getItemPricePermission(itemStack)));
     }
 
     public static void setItemPrice(ItemStack itemStack, long price)
     {
-        APIRegistry.perms.registerPermissionProperty(getItemPricePermission(itemStack), Long.toString(price));
+    	setItemPrice(getItemPricePermission(itemStack), Long.toString(price));
+    }
+    public static void setItemPrice(String node, String price)
+    {
+        APIRegistry.perms.registerPermissionProperty(node, price);
+        System.out.println("Registered :"+node+"; "+price);
     }
 
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> FEitemTables;
-    public static Map<String, Integer> itemTables;
+    public static Map<String, Integer> itemTables = new HashMap<String, Integer>();
 	@Override
 	public void load(Builder BUILDER, boolean isReload)
     {
-        BUILDER.comment("ItemTables").push(CATEGORY_ITEM);
-        FEitemTables = BUILDER.comment(CATEGORY_ITEM).defineList("exclude_patterns", new ArrayList<String>(), ConfigBase.stringValidator);
+        BUILDER.push(CONFIG_CATEGORY);
+        FEitemTables = BUILDER.comment("Itemprices for the economy module").defineList("Itemprices", new ArrayList<String>(), ConfigBase.stringValidator);
         BUILDER.pop();
         ShopManager.load(BUILDER, isReload);
     }
@@ -373,20 +377,21 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 		for(String itemValue :FEitemTables.get()) {
 		    String[] values = itemValue.split("=");
 		    int price;
-		    try {price = CommandUtils.parseInt(values[0]);
-		    }catch(NumberFormatException e) 
-		    {LoggingHandler.felog.error("Incorrect Prive value", e); price = DEFAULT_ITEM_PRICE;}
+		    try {
+		    	price = CommandUtils.parseInt(values[1]);
+		    }catch(NumberFormatException e) {
+		    	LoggingHandler.felog.error("Incorrect Price value", e); 
+		    	price = DEFAULT_ITEM_PRICE;}
 		    for (Item item : ForgeRegistries.ITEMS)
-                if (values[0].equals(item.getDescriptionId()))
+                if (values[0].equals(ServerUtil.getItemName(item)))
                 {
-                    String id = ServerUtil.getItemName(item);
-                    itemTables.put(id, price);
+                    itemTables.put(ServerUtil.getItemName(item), price);
                     break;
                 }
 		}
 		if(!FEitemTables.get().isEmpty()) {
 			for (Entry<String, Integer> entry : itemTables.entrySet())
-	            APIRegistry.perms.registerPermissionProperty(PERM_PRICE + "." + entry.getKey(), Integer.toString((entry.getValue())));
+				setItemPrice(PERM_PRICE + "." + entry.getKey(), Integer.toString((entry.getValue())));
 		}
 		ShopManager.bakeConfig(reload);
 	}
