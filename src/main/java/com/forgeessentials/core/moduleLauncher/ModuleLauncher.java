@@ -56,7 +56,7 @@ public class ModuleLauncher
         data.stream().filter(a -> MOD.equals(a.getAnnotationType())).forEach(info -> classModIds.put(info.getClassType(), (String)info.getAnnotationData().get("value")));
         LoggingHandler.felog.info("Found {} FEModule annotations", data.size());
         for (ModFileScanData.AnnotationData asm : data) {
-            LoggingHandler.felog.info("Found FEModule {}", asm.getMemberName());
+            LoggingHandler.felog.debug("Found FEModule {}", asm.getMemberName());
         }
         // started ASM handling for the module loading
         //Set<ASMData> data = e.getAsmData().getAll(FEModule.class.getName());

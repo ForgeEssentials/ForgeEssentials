@@ -137,14 +137,14 @@ public class ConfigBase
                 LoggingHandler.felog.error("Cant Bake config: "+loader.returnData().getName()+" because it hasen't been built");
                 continue;
             }
-            LoggingHandler.felog.info("Baked config:"+loader.returnData().getName());
+            LoggingHandler.felog.debug("Baked config:"+loader.returnData().getName());
             loader.bakeConfig(reload);
         }
         LoggingHandler.felog.debug("Finished baking configuration files");
     }
     public void bakeConfigForced(ConfigLoader loader,boolean reload)
     {
-        LoggingHandler.felog.info("Baked config:"+loader.returnData().getName());
+        LoggingHandler.felog.debug("Baked config:"+loader.returnData().getName());
         loader.bakeConfig(reload);
     }
 /*
