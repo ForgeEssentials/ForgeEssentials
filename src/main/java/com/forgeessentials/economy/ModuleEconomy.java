@@ -358,7 +358,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     public static void setItemPrice(String node, String price)
     {
         APIRegistry.perms.registerPermissionProperty(node, price);
-        System.out.println("Registered :"+node+"; "+price);
     }
 
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> FEitemTables;
