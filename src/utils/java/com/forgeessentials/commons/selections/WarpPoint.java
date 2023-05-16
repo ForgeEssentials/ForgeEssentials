@@ -176,7 +176,7 @@ public class WarpPoint
         world = ServerLifecycleHooks.getCurrentServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dim)));
         if (world == null)
         {
-            System.out.print("argument.dimension.invalid"+ dim);
+            System.out.println("argument.dimension.invalid"+ dim);
             return null;
         }
         else

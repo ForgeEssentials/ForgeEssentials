@@ -43,7 +43,7 @@ public class NetworkUtils
 	 */
 	private static <MSG extends IFEPacket> void registerMessage(int index, Class<MSG> type, Function<PacketBuffer, MSG> decoder, NetworkDirection networkDirection) {
 		if(!registeredMessages.contains(index)) {
-	        System.out.print("Registering Network Message id:"+Integer.toString(index)+", Class:"+type.getName());
+	        System.out.println("Registering Network Message id:"+Integer.toString(index)+", Class:"+type.getName());
 	        INSTANCE.registerMessage(index, type, IFEPacket::encode, decoder, IFEPacket::handle, Optional.of(networkDirection));
 			registeredMessages.add(index);
 		}
