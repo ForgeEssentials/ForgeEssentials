@@ -221,7 +221,7 @@ public final class ChatOutputHandler
 
     public static void chatError(PlayerEntity sender, String msg)
     {
-        chatError(sender, msg);
+    	sendMessage(sender, msg, chatErrorColor);
     }
 
     /**
@@ -249,7 +249,7 @@ public final class ChatOutputHandler
 
     public static void chatConfirmation(PlayerEntity sender, String msg)
     {
-        sendMessage(sender, msg);
+        sendMessage(sender, msg, chatConfirmationColor);
     }
 
     /**
@@ -277,7 +277,7 @@ public final class ChatOutputHandler
 
     public static void chatWarning(PlayerEntity sender, String msg)
     {
-        sendMessage(sender, msg);
+        sendMessage(sender, msg, chatWarningColor);
     }
 
     /**
@@ -304,7 +304,7 @@ public final class ChatOutputHandler
 
     public static void chatNotification(PlayerEntity sender, String msg)
     {
-        sendMessage(sender, msg);
+        sendMessage(sender, msg, chatNotificationColor);
     }
     /* ------------------------------------------------------------ */
 
@@ -470,14 +470,14 @@ public final class ChatOutputHandler
     public static enum ChatFormat
     {
 
-        PLAINTEXT, /* HTML, */ MINECRAFT, DETAIL;
+        PLAINTEXT,  HTML,  MINECRAFT, DETAIL;
 
         public Object format(TextComponent message)
         {
             switch (this)
             {
-            // case HTML:
-            // return ChatOutputHandler.formatHtml(message);
+             case HTML:
+            	 return ChatOutputHandler.formatHtml(message.getString());
             case MINECRAFT:
                 return ChatOutputHandler.getFormattedMessage(message);
             case DETAIL:
