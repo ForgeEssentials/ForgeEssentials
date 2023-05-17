@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,6 +53,13 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
     }
 
     private static File priceFile = new File(ForgeEssentials.getFEDirectory(), "prices.txt");
+    public static List<String> colors = Arrays.asList(
+    		"white", "orange", "magenta", 
+    		"light_blue", "yellow", "lime", 
+    		"pink", "gray", "light_gray", 
+    		"cyan", "purple", "blue", 
+    		"brown", "green", "red", "black");
+    public static List<String> woodTypes = Arrays.asList("oak", "spruce", "birch", "jungle", "acacia", "dark_oak");
 
     @Override
     public String getPrimaryAlias()
@@ -397,97 +405,98 @@ public class CommandSellprice extends ForgeEssentialsCommandBuilder
     }
     private static void initializeDefaultPrices(Map<String, Double> priceMap)
     {
-//        //TODO re-evaluate these prices
-//        priceMap.put("minecraft:wool", 48.0);
-//        for (int i = 1; i <= 15; i++)
-//            priceMap.put("minecraft:wool:" + i, 48.0);
-//
-//        priceMap.put("minecraft:log", 32.0);
-//        for (int i = 1; i <= 6; i++)
-//            priceMap.put("minecraft:log:" + i, 32.0);
-//        priceMap.put("minecraft:log2", 32.0);
-//        for (int i = 1; i <= 6; i++)
-//            priceMap.put("minecraft:log2:" + i, 32.0);
-//
+        //TODO re-evaluate these prices
+        for (String col : colors)
+            priceMap.put("minecraft:"+col+"_wool", 48.0);
+
+        for (String type : woodTypes)
+            priceMap.put("minecraft:"+type+"_log", 32.0);
+
 //        priceMap.put("minecraft:red_flower", 16.0);
 //        for (int i = 1; i <= 8; i++)
 //            priceMap.put("minecraft:red_flower:" + i, 16.0);
-//
-//        priceMap.put("minecraft:dye", 8.0);
-//        for (int i = 1; i <= 15; i++)
-//            priceMap.put("minecraft:dye:" + i, 8.0);
-//
-//        priceMap.put("minecraft:deadbush", 1.0);
-//        priceMap.put("minecraft:dirt", 1.0);
-//        priceMap.put("minecraft:grass", 1.0);
-//        priceMap.put("minecraft:ice", 1.0);
-//        priceMap.put("minecraft:leaves", 1.0);
-//        priceMap.put("minecraft:leaves2", 1.0);
-//        priceMap.put("minecraft:mycelium", 1.0);
-//        priceMap.put("minecraft:netherrack", 1.0);
-//        priceMap.put("minecraft:sand", 1.0);
-//        priceMap.put("minecraft:snow", 1.0);
-//        priceMap.put("minecraft:stone", 1.0);
-//        priceMap.put("minecraft:tallgrass", 1.0);
-//        priceMap.put("minecraft:end_stone", 1.0);
-//
-//        priceMap.put("minecraft:apple", 128.0);
-//        priceMap.put("minecraft:beef", 64.0);
-//        priceMap.put("minecraft:blaze_rod", 1536.0);
-//        priceMap.put("minecraft:bone", 144.0);
-//        priceMap.put("minecraft:brown_mushroom", 32.0);
-//        priceMap.put("minecraft:cactus", 8.0);
-//        priceMap.put("minecraft:chicken", 64.0);
-//        priceMap.put("minecraft:clay_ball", 16.0);
-//        priceMap.put("minecraft:coal", 128.0);
-//        priceMap.put("minecraft:coal:1", 32.0);
-//        priceMap.put("minecraft:cobblestone", 1.0);
-//        priceMap.put("minecraft:cocoa", 128.0);
-//        priceMap.put("minecraft:diamond", 8192.0);
-//        priceMap.put("minecraft:dye:4", 864.0);
-//        priceMap.put("minecraft:emerald", 8192.0);
-//        priceMap.put("minecraft:feather", 48.0);
-//        priceMap.put("minecraft:fish", 64.0);
-//        priceMap.put("minecraft:flint", 4.0);
-//        priceMap.put("minecraft:glass", 1.0);
-//        priceMap.put("minecraft:glowstone_dust", 384.0);
-//        priceMap.put("minecraft:gold_ingot", 225.0);
-//        priceMap.put("minecraft:gravel", 4.0);
-//        priceMap.put("minecraft:egg", 32.0);
-//        priceMap.put("minecraft:ender_pearl", 1024.0);
-//        priceMap.put("minecraft:ghast_tear", 4096.0);
-//        priceMap.put("minecraft:gunpowder", 192.0);
-//        priceMap.put("minecraft:iron_ingot", 256.0);
-//        priceMap.put("minecraft:lava_bucket", 832.0);
-//        priceMap.put("minecraft:leather", 64.0);
-//        priceMap.put("minecraft:magma_cream", 792.0);
-//        priceMap.put("minecraft:melon", 16.0);
-//        priceMap.put("minecraft:melon_block", 144.0);
-//        priceMap.put("minecraft:milk_bucket", 833.0);
-//        priceMap.put("minecraft:obsidian", 64.0);
-//        priceMap.put("minecraft:porkchop", 64.0);
-//        priceMap.put("minecraft:pumpkin", 144.0);
-//        priceMap.put("minecraft:red_mushroom", 32.0);
-//        priceMap.put("minecraft:redstone", 64.0);
-//        priceMap.put("minecraft:reeds", 32.0);
-//        priceMap.put("minecraft:rotten_flesh", 24.0);
-//        priceMap.put("minecraft:sapling", 32.0);
-//        priceMap.put("minecraft:slime_ball", 24.0);
-//        priceMap.put("minecraft:soul_sand", 49.0);
-//        priceMap.put("minecraft:spider_eye", 128.0);
-//        priceMap.put("minecraft:string", 16.0);
-//        priceMap.put("minecraft:vine", 8.0);
-//        priceMap.put("minecraft:water_bucket", 769.0);
-//        priceMap.put("minecraft:waterlily", 16.0);
-//        priceMap.put("minecraft:web", 12.0);
-//        priceMap.put("minecraft:wheat", 24.0);
-//        priceMap.put("minecraft:yellow_flower", 16.0);
-//
-//        // TODO: Prices below mainly guessed - should evaluate if these are good defaults
-//        priceMap.put("minecraft:potato", 16.0);
-//        priceMap.put("minecraft:carrot", 16.0);
-//        priceMap.put("minecraft:quartz", 128.0);
-//        priceMap.put("minecraft:sponge", 256.0);
+
+        for (String type : woodTypes)
+            priceMap.put("minecraft:"+type+"_sapling", 32.0);
+
+        for (String type : woodTypes)
+            priceMap.put("minecraft:"+type+"_leaves", 1.0);
+
+        for (String col : colors)
+            priceMap.put("minecraft:"+col+"_dye", 8.0);
+
+        priceMap.put("minecraft:dead_bush", 1.0);
+        priceMap.put("minecraft:dirt", 1.0);
+        priceMap.put("minecraft:grass_block", 1.0);
+        priceMap.put("minecraft:grass_path", 1.0);
+        priceMap.put("minecraft:ice", 1.0);
+        priceMap.put("minecraft:mycelium", 1.0);
+        priceMap.put("minecraft:netherrack", 1.0);
+        priceMap.put("minecraft:sand", 1.0);
+        priceMap.put("minecraft:red_sand", 1.0);
+        priceMap.put("minecraft:snow_block", 1.0);
+        priceMap.put("minecraft:stone", 1.0);
+        priceMap.put("minecraft:grass", 1.0);
+        priceMap.put("minecraft:sea_grass", 1.0);
+        priceMap.put("minecraft:tall_grass", 1.0);
+        priceMap.put("minecraft:end_stone", 1.0);
+
+        priceMap.put("minecraft:apple", 128.0);
+        priceMap.put("minecraft:beef", 64.0);
+        priceMap.put("minecraft:blaze_rod", 1536.0);
+        priceMap.put("minecraft:bone", 144.0);
+        priceMap.put("minecraft:brown_mushroom", 32.0);
+        priceMap.put("minecraft:cactus", 8.0);
+        priceMap.put("minecraft:chicken", 64.0);
+        priceMap.put("minecraft:clay_ball", 16.0);
+        priceMap.put("minecraft:coal", 128.0);
+        priceMap.put("minecraft:charcoal", 32.0);
+        priceMap.put("minecraft:cobblestone", 1.0);
+        priceMap.put("minecraft:cocoa_beans", 128.0);
+        priceMap.put("minecraft:diamond", 8192.0);
+        priceMap.put("minecraft:lapis_lazuli", 864.0);
+        priceMap.put("minecraft:emerald", 8192.0);
+        priceMap.put("minecraft:feather", 48.0);
+        priceMap.put("minecraft:cod", 64.0);
+        priceMap.put("minecraft:salmon", 64.0);
+        priceMap.put("minecraft:flint", 4.0);
+        priceMap.put("minecraft:glass", 1.0);
+        priceMap.put("minecraft:glowstone_dust", 384.0);
+        priceMap.put("minecraft:gold_ingot", 225.0);
+        priceMap.put("minecraft:gravel", 4.0);
+        priceMap.put("minecraft:egg", 32.0);
+        priceMap.put("minecraft:ender_pearl", 1024.0);
+        priceMap.put("minecraft:ghast_tear", 4096.0);
+        priceMap.put("minecraft:gunpowder", 192.0);
+        priceMap.put("minecraft:iron_ingot", 256.0);
+        priceMap.put("minecraft:lava_bucket", 832.0);
+        priceMap.put("minecraft:leather", 64.0);
+        priceMap.put("minecraft:magma_cream", 792.0);
+        priceMap.put("minecraft:melon_slice", 16.0);
+        priceMap.put("minecraft:melon", 144.0);
+        priceMap.put("minecraft:milk_bucket", 833.0);
+        priceMap.put("minecraft:obsidian", 64.0);
+        priceMap.put("minecraft:porkchop", 64.0);
+        priceMap.put("minecraft:pumpkin", 144.0);
+        priceMap.put("minecraft:red_mushroom", 32.0);
+        priceMap.put("minecraft:redstone", 64.0);
+        priceMap.put("minecraft:sugar_cane", 32.0);
+        priceMap.put("minecraft:rotten_flesh", 24.0);
+        priceMap.put("minecraft:slime_ball", 24.0);
+        priceMap.put("minecraft:soul_sand", 49.0);
+        priceMap.put("minecraft:soul_soil", 49.0);
+        priceMap.put("minecraft:spider_eye", 128.0);
+        priceMap.put("minecraft:string", 16.0);
+        priceMap.put("minecraft:vine", 8.0);
+        priceMap.put("minecraft:water_bucket", 769.0);
+        priceMap.put("minecraft:lily_pad", 16.0);
+        priceMap.put("minecraft:cobweb", 12.0);
+        priceMap.put("minecraft:wheat", 24.0);
+        priceMap.put("minecraft:dandelion", 16.0);
+        priceMap.put("minecraft:potato", 16.0);
+        priceMap.put("minecraft:carrot", 16.0);
+        priceMap.put("minecraft:quartz", 128.0);
+        priceMap.put("minecraft:sponge", 256.0);
     }
 
     private static void writeMap(Map<String, Double> priceMap, File file)
