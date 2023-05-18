@@ -21,11 +21,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerPropertiesProvider;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -34,6 +37,10 @@ import com.forgeessentials.core.environment.Environment;
 
 public abstract class ServerUtil
 {
+
+	public static ServerPropertiesProvider getServerPropProvider(DedicatedServer currentServer) {
+		return ObfuscationReflectionHelper.getPrivateValue(DedicatedServer.class, currentServer, "field_71340_o");
+	}
 
     /**
      * Try to parse integer or return defaultValue on failure
