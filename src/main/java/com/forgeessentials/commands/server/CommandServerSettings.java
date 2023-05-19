@@ -11,8 +11,6 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -368,7 +366,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow nether is set to: %s", Boolean.toString(server.isNetherEnabled())));
 			    return Command.SINGLE_SUCCESS;
 			case "allow-netherT":
-			    settings.getProperties().allowNether=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_218991_D"), BoolArgumentType.getBool(ctx, "toggle")); 
+			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set allow-nether to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
 
@@ -376,7 +375,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow broadcast-console-to-ops: %s", Boolean.toString(Dserver.shouldInformAdmins())));
 			    return Command.SINGLE_SUCCESS;
 			case "broadcast-console-to-opsT":
-			    settings.getProperties().broadcastConsoleToOps=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219003_P"), BoolArgumentType.getBool(ctx, "toggle"));
+			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set broadcast-console-to-ops to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
 
@@ -384,7 +384,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow broadcast-rcon-to-ops: %s", Boolean.toString(Dserver.shouldRconBroadcast())));
 			    return Command.SINGLE_SUCCESS;
 			case "broadcast-rcon-to-opsT":
-			    settings.getProperties().broadcastRconToOps=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219002_O"), BoolArgumentType.getBool(ctx, "toggle"));
+			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set broadcast-rcon-to-ops to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
 
@@ -394,7 +395,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			case "difficultyT":
 			    Difficulty difficulty = Difficulty.byId(IntegerArgumentType.getInteger(ctx, "difficulity"));
 			    server.setDifficulty(difficulty, true);
-			    settings.getProperties().difficulty=difficulty; settings.forceSave();
+			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219019_m"), BoolArgumentType.getBool(ctx, "toggle"));
+			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set difficulty to %s", difficulty.name()));
 			    return Command.SINGLE_SUCCESS;
 
@@ -402,7 +404,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow enable-command-block is set to: %s", Boolean.toString(Dserver.isCommandBlockEnabled())));
 			    return Command.SINGLE_SUCCESS;
 			case "enable-command-blockT":
-			    settings.getProperties().enableCommandBlock=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_218995_H"), BoolArgumentType.getBool(ctx, "toggle"));
+			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set enable-command-block to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
 
@@ -431,7 +434,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("enable-status is set to: %s", Boolean.toString(Dserver.repliesToStatus())));
 			    return Command.SINGLE_SUCCESS;
 			case "enable-statusT":
-			    settings.getProperties().enableStatus=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+				ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_241080_Q_"), BoolArgumentType.getBool(ctx, "toggle"));
+			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set enable-status to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
 
@@ -439,7 +443,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow enforce-whitelist is set to: %s", Boolean.toString(settings.getProperties().enforceWhitelist)));
 			    return Command.SINGLE_SUCCESS;
 			case "enforce-whitelistT":
-			    settings.getProperties().enforceWhitelist=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219017_k"), BoolArgumentType.getBool(ctx, "toggle"));
+			    settings.forceSave();
 			    server.setEnforceWhitelist(BoolArgumentType.getBool(ctx, "toggle"));
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set enforce-whitelist to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
@@ -448,7 +453,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("entity-broadcast-range-percentage is set to: %s", Boolean.toString(Dserver.repliesToStatus())));
 			    return Command.SINGLE_SUCCESS;
 			case "entity-broadcast-range-percentageT":
-			    settings.getProperties().entityBroadcastRangePercentage=IntegerArgumentType.getInteger(ctx, "percentage"); settings.forceSave();
+				ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_241081_R_"), IntegerArgumentType.getInteger(ctx, "percentage"));
+			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set entity-broadcast-range-percentage to %s", Integer.toString(IntegerArgumentType.getInteger(ctx, "percentage"))));
 			    return Command.SINGLE_SUCCESS;
 
@@ -456,7 +462,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("force-gamemode is set to: %s", Boolean.toString(server.getForceGameType())));
 			    return Command.SINGLE_SUCCESS;
 			case "force-gamemodeT":
-			    settings.getProperties().forceGameMode=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+				ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219016_j"), BoolArgumentType.getBool(ctx, "toggle"));
+			    settings.forceSave();
 			    server.setForceGameType(BoolArgumentType.getBool(ctx, "toggle"));
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set force-gamemode to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
@@ -465,7 +472,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("function-permission-level is set to: %s", Integer.toString(Dserver.getFunctionCompilationLevel())));
 			    return Command.SINGLE_SUCCESS;
 			case "function-permission-levelT":
-			    settings.getProperties().functionPermissionLevel=IntegerArgumentType.getInteger(ctx, "level"); settings.forceSave();
+				ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_225395_K"), IntegerArgumentType.getInteger(ctx, "level"));
+			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set function-permission-level to %s", Integer.toString(IntegerArgumentType.getInteger(ctx, "level"))));
 			    return Command.SINGLE_SUCCESS;
 
@@ -475,7 +483,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			case "gamemodeT":
 			    GameType gamemode = GameType.byId(IntegerArgumentType.getInteger(ctx, "gamemode"));
 			    server.setDefaultGameType(gamemode);
-			    settings.getProperties().gamemode=gamemode; settings.forceSave();
+			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219020_n"), gamemode);
+			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set default gamemode to %s", gamemode.getName()));
 			    return Command.SINGLE_SUCCESS;
 
