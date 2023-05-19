@@ -11,6 +11,7 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameType;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -281,27 +282,51 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
                                         )
                                 )
                         )
-                .then(Commands.literal("allowpvp")
+                .then(Commands.literal("max-build-height")
                         .then(Commands.literal("modify")
-                                .then(Commands.argument("toggle", BoolArgumentType.bool())
-                                        .executes(CommandContext -> execute(CommandContext, "allowpvpT")
+                                .then(Commands.argument("buildlimit", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                        .executes(CommandContext -> execute(CommandContext, "max-build-heightT")
                                                 )
                                         )
                                 )
                         .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "allowpvpV")
+                                .executes(CommandContext -> execute(CommandContext, "max-build-heightV")
                                         )
                                 )
                         )
-                .then(Commands.literal("buildlimit")
+                .then(Commands.literal("max-players")
                         .then(Commands.literal("modify")
-                                .then(Commands.argument("buildlimit", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
-                                        .executes(CommandContext -> execute(CommandContext, "buildlimitT")
+                                .then(Commands.argument("max", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                        .executes(CommandContext -> execute(CommandContext, "max-playersT")
                                                 )
                                         )
                                 )
                         .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "buildlimitV")
+                                .executes(CommandContext -> execute(CommandContext, "max-playersV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("max-tick-time")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("max", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                        .executes(CommandContext -> execute(CommandContext, "max-tick-timeT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "max-tick-timeV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("max-world-size")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("maxSize", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                        .executes(CommandContext -> execute(CommandContext, "max-world-sizeT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "max-world-sizeV")
                                         )
                                 )
                         )
@@ -314,6 +339,18 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
                                 )
                         .then(Commands.literal("view")
                                 .executes(CommandContext -> execute(CommandContext, "motdV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("allowpvp")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "allowpvpT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "allowpvpV")
                                         )
                                 )
                         )
@@ -502,15 +539,42 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("hardcore can only be set from server.properties file before launch!"));
 			    return Command.SINGLE_SUCCESS;
 
-			case "buildlimitV":
-			        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set build limit to %d", server.getMaxBuildHeight()));
+			case "max-build-heightV":
+			        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("build limit is set to: %d", server.getMaxBuildHeight()));
 			        return Command.SINGLE_SUCCESS;
-			case "buildlimitT":
-			    int buildLimit = IntegerArgumentType.getInteger(ctx, "buildlimit");
-			    server.setMaxBuildHeight(buildLimit);
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set max-build-height to %d", buildLimit));
+			case "max-build-heightT":
+			    server.setMaxBuildHeight(IntegerArgumentType.getInteger(ctx, "buildlimit"));
+			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219026_t"), IntegerArgumentType.getInteger(ctx, "buildlimit"));
+			    settings.forceSave();
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set max-build-height to %d", IntegerArgumentType.getInteger(ctx, "buildlimit")));
 			    return Command.SINGLE_SUCCESS;
-			    
+
+			case "max-playersV":
+		        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("maximum amount of players is set to: %d", server.getMaxPlayers()));
+		        return Command.SINGLE_SUCCESS;
+			case "max-playersT":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("maximum amount of players can only be set from server.properties file before launch!"));
+			    return Command.SINGLE_SUCCESS;
+
+			case "max-tick-timeV":
+		        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("max-tick-time is set to: %d", Dserver.getMaxTickLength()));
+		        return Command.SINGLE_SUCCESS;
+			case "max-tick-timeT":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("max-tick-time can only be set from server.properties file before launch!"));
+			    return Command.SINGLE_SUCCESS;
+
+			case "max-world-sizeV":
+		        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("max-world-size is set to: %d", Dserver.getAbsoluteMaxWorldSize()));
+		        return Command.SINGLE_SUCCESS;
+			case "max-world-sizeT":
+				for(ServerWorld world : server.getAllLevels()) {
+					world.getWorldBorder().setAbsoluteMaxSize(IntegerArgumentType.getInteger(ctx, "maxSize"));
+				}
+			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219004_Q"), IntegerArgumentType.getInteger(ctx, "maxSize"));
+			    settings.forceSave();
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set max-world-size to %d", IntegerArgumentType.getInteger(ctx, "maxSize")));
+			    return Command.SINGLE_SUCCESS;
+
 			case "motdV":
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("MotD = %s", server.getMotd()));
 			    return Command.SINGLE_SUCCESS;
@@ -518,9 +582,11 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    String motd = ScriptArguments.process(StringArgumentType.getString(ctx, "motd"), null);
 			    server.getStatus().setDescription(new StringTextComponent(ChatOutputHandler.formatColors(motd)));
 			    server.setMotd(motd);
+			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219015_i"), motd);
+			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set MotD to %s", motd));
 			    return Command.SINGLE_SUCCESS;
-			    
+
 			case "spawnprotectionV":
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Spawn protection size: %d", server.getSpawnProtectionRadius()));
 			    return Command.SINGLE_SUCCESS;
