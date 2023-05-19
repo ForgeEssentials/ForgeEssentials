@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,6 +41,14 @@ public abstract class ServerUtil
 
 	public static ServerPropertiesProvider getServerPropProvider(DedicatedServer currentServer) {
 		return ObfuscationReflectionHelper.getPrivateValue(DedicatedServer.class, currentServer, "field_71340_o");
+	}
+
+	public static void changeFinalField(Field field, Object newValue) throws Exception {
+		field.setAccessible(true);
+		Field modifiersField = Field.class.getDeclaredField("modifiers");
+	      modifiersField.setAccessible(true);
+	      modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+	      field.set(null, newValue);
 	}
 
     /**
