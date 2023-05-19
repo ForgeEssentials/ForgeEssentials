@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerPropertiesProvider;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.Difficulty;
@@ -23,6 +24,8 @@ import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.scripting.ScriptArguments;
+import com.forgeessentials.scripting.ScriptParser.ScriptException;
+import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
@@ -72,32 +75,211 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
         return ModuleCommands.PERM + ".serversettings";
     }
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
-    public void doSetProperty(String id, Object value)
-    {
-        DedicatedServer server = (DedicatedServer) ServerLifecycleHooks.getCurrentServer();
-        server.getProperties();//TODO add a save to save values
-    }
-
-    public void setProperty(String id, Object value)
-    {
-        if (FMLEnvironment.dist == Dist.DEDICATED_SERVER)
-            doSetProperty(id, value);
-    }
-
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .then(Commands.literal("allowflight")
+                .then(Commands.literal("allow-flight")
                         .then(Commands.literal("modify")
                                 .then(Commands.argument("toggle", BoolArgumentType.bool())
-                                        .executes(CommandContext -> execute(CommandContext, "allowflightT")
+                                        .executes(CommandContext -> execute(CommandContext, "allow-flightT")
                                                 )
                                         )
                                 )
                         .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "allowflightV")
+                                .executes(CommandContext -> execute(CommandContext, "allow-flightV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("allow-nether")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "allow-netherT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "allow-netherV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("broadcast-console-to-ops")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "broadcast-console-to-opsT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "broadcast-console-to-opsV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("broadcast-rcon-to-ops")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "broadcast-rcon-to-opsT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "broadcast-rcon-to-opsV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("difficulty")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("difficulity", IntegerArgumentType.integer(0, 3))
+                                        .executes(CommandContext -> execute(CommandContext, "difficultyT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "difficultyV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("enable-command-block")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "enable-command-blockT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "enable-command-blockV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("enable-jmx-monitoring")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "enable-jmx-monitoringT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "enable-jmx-monitoringV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("enable-query")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "enable-queryT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "enable-queryV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("enable-rcon")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "enable-rconT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "enable-rconV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("enable-status")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "enable-statusT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "enable-statusV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("enforce-whitelist")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "enforce-whitelistT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "enforce-whitelistV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("entity-broadcast-range-percentage")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("percentage", IntegerArgumentType.integer(10, 1000))
+                                        .executes(CommandContext -> execute(CommandContext, "entity-broadcast-range-percentageT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "entity-broadcast-range-percentageV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("force-gamemode")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "force-gamemodeT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "force-gamemodeV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("function-permission-level")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("level", IntegerArgumentType.integer(1, 4))
+                                        .executes(CommandContext -> execute(CommandContext, "function-permission-levelT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "function-permission-levelV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("gamemode")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("gamemode", IntegerArgumentType.integer(0, 3))
+                                        .executes(CommandContext -> execute(CommandContext, "gamemodeT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "gamemodeV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("generate-structures")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "generate-structuresT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "generate-structuresV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("hardcore")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "hardcoreT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "hardcoreV")
                                         )
                                 )
                         )
@@ -122,30 +304,6 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
                                 )
                         .then(Commands.literal("view")
                                 .executes(CommandContext -> execute(CommandContext, "buildlimitV")
-                                        )
-                                )
-                        )
-                .then(Commands.literal("difficulty")
-                        .then(Commands.literal("modify")
-                                .then(Commands.argument("difficulity", IntegerArgumentType.integer(0, 3))
-                                        .executes(CommandContext -> execute(CommandContext, "difficultyT")
-                                                )
-                                        )
-                                )
-                        .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "difficultyV")
-                                        )
-                                )
-                        )
-                .then(Commands.literal("gamemode")
-                        .then(Commands.literal("modify")
-                                .then(Commands.argument("gamemode", IntegerArgumentType.integer(0, 3))
-                                        .executes(CommandContext -> execute(CommandContext, "gamemodeT")
-                                                )
-                                        )
-                                )
-                        .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "gamemodeV")
                                         )
                                 )
                         )
@@ -180,85 +338,203 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (!FMLEnvironment.dist.isDedicatedServer())
+        if (!FMLEnvironment.dist.isDedicatedServer()) {
             ChatOutputHandler.chatError(ctx.getSource(), "You can use this command only on dedicated servers");
+            return Command.SINGLE_SUCCESS;
+        }
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        DedicatedServer Dserver = (DedicatedServer) ServerLifecycleHooks.getCurrentServer();
 
         if (params.equals("blank"))
         {
             ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("Options: %s", StringUtils.join(options, ", ")));
             return Command.SINGLE_SUCCESS;
         }
+        ServerPropertiesProvider settings= ServerUtil.getServerPropProvider((DedicatedServer) ServerLifecycleHooks.getCurrentServer());
+        try {
+			switch (params)
+			{
+			case "allow-flightV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow flight  is set to: %s", Boolean.toString(server.isFlightAllowed())));
+			    return Command.SINGLE_SUCCESS;
+			case "allow-flightT":
+			    server.setFlightAllowed(BoolArgumentType.getBool(ctx, "toggle"));
+			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219013_g"), BoolArgumentType.getBool(ctx, "toggle"));
+			    settings.forceSave();
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set allow-flight to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
 
-        switch (params)
-        {
-        case "allowflightV":
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow flight: %s", Boolean.toString(server.isFlightAllowed())));
-            return Command.SINGLE_SUCCESS;
-        case "allowflightT":
-            boolean allowFlight = BoolArgumentType.getBool(ctx, "toggle");
-            server.setFlightAllowed(allowFlight);
-            setProperty("allow-flight", allowFlight);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set allow-flight to %s", Boolean.toString(allowFlight)));
-            return Command.SINGLE_SUCCESS;
-        case "allowpvpV":
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow PvP: %s", Boolean.toString(server.isPvpAllowed())));
-            return Command.SINGLE_SUCCESS;
-        case "allowpvpT":
-            boolean allowPvP = BoolArgumentType.getBool(ctx, "toggle");
-            server.setPvpAllowed(allowPvP);
-            setProperty("pvp", allowPvP);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set pvp to %s", Boolean.toString(allowPvP)));
-            return Command.SINGLE_SUCCESS;
-        case "buildlimitV":
-                ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set build limit to %d", server.getMaxBuildHeight()));
-                return Command.SINGLE_SUCCESS;
-        case "buildlimitT":
-            int buildLimit = IntegerArgumentType.getInteger(ctx, "buildlimit");
-            server.setMaxBuildHeight(buildLimit);
-            setProperty("max-build-height", buildLimit);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set max-build-height to %d", buildLimit));
-            return Command.SINGLE_SUCCESS;
-        case "motdV":
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("MotD = %s", server.getMotd()));
-            return Command.SINGLE_SUCCESS;
-        case "motdT":
-            String motd = ScriptArguments.process(StringArgumentType.getString(ctx, "motd"), null);
-            server.getStatus().setDescription(new StringTextComponent(ChatOutputHandler.formatColors(motd)));
-            server.setMotd(motd);
-            setProperty("motd", motd);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set MotD to %s", motd));
-            return Command.SINGLE_SUCCESS;
-        case "spawnprotectionV":
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Spawn protection size: %d", server.getSpawnProtectionRadius()));
-            return Command.SINGLE_SUCCESS;
-        case "spawnprotectionT":
-            int spawnSize = IntegerArgumentType.getInteger(ctx, "radius");
-            setProperty("spawn-protection", spawnSize);
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set spawn-protection to %d", spawnSize));
-            return Command.SINGLE_SUCCESS;
-        case "gamemodeV":
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Default gamemode set to %s", server.getDefaultGameType().getName()));
-            return Command.SINGLE_SUCCESS;
-        case "gamemodeT":
-            GameType gamemode = GameType.byId(IntegerArgumentType.getInteger(ctx, "gamemode"));
-            server.setDefaultGameType(gamemode);
-            setProperty("gamemode", gamemode.ordinal());
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set default gamemode to %s", gamemode.getName()));
-            return Command.SINGLE_SUCCESS;
-        case "difficultyV":
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Difficulty set to %s", server.getWorldData().getDifficulty()));
-            return Command.SINGLE_SUCCESS;
-        case "difficultyT":
-            Difficulty difficulty = Difficulty.byId(IntegerArgumentType.getInteger(ctx, "difficulity"));
-            server.setDifficulty(difficulty, false);
-            setProperty("difficulty", difficulty.ordinal());
-            ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set difficulty to %s", difficulty.name()));
-            return Command.SINGLE_SUCCESS;
+			case "allow-netherV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow nether is set to: %s", Boolean.toString(server.isNetherEnabled())));
+			    return Command.SINGLE_SUCCESS;
+			case "allow-netherT":
+			    settings.getProperties().allowNether=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set allow-nether to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
 
-        default:
-            ChatOutputHandler.chatError(ctx.getSource(), Translator.format(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params));
-        }
+			case "broadcast-console-to-opsV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow broadcast-console-to-ops: %s", Boolean.toString(Dserver.shouldInformAdmins())));
+			    return Command.SINGLE_SUCCESS;
+			case "broadcast-console-to-opsT":
+			    settings.getProperties().broadcastConsoleToOps=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set broadcast-console-to-ops to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "broadcast-rcon-to-opsV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow broadcast-rcon-to-ops: %s", Boolean.toString(Dserver.shouldRconBroadcast())));
+			    return Command.SINGLE_SUCCESS;
+			case "broadcast-rcon-to-opsT":
+			    settings.getProperties().broadcastRconToOps=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set broadcast-rcon-to-ops to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "difficultyV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Difficulty is set to: %s", server.getWorldData().getDifficulty()));
+			    return Command.SINGLE_SUCCESS;
+			case "difficultyT":
+			    Difficulty difficulty = Difficulty.byId(IntegerArgumentType.getInteger(ctx, "difficulity"));
+			    server.setDifficulty(difficulty, true);
+			    settings.getProperties().difficulty=difficulty; settings.forceSave();
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set difficulty to %s", difficulty.name()));
+			    return Command.SINGLE_SUCCESS;
+
+			case "enable-command-blockV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow enable-command-block is set to: %s", Boolean.toString(Dserver.isCommandBlockEnabled())));
+			    return Command.SINGLE_SUCCESS;
+			case "enable-command-blockT":
+			    settings.getProperties().enableCommandBlock=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set enable-command-block to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "enable-jmx-monitoringV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow jmx-monitoring is set to: %s", Boolean.toString(settings.getProperties().enableJmxMonitoring)));
+			    return Command.SINGLE_SUCCESS;
+			case "enable-jmx-monitoringT":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("jmx-monitoring can only be set from server.properties file before launch!"));
+			    return Command.SINGLE_SUCCESS;
+
+			case "enable-queryV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow enable-query is set to: %s", Boolean.toString(settings.getProperties().enableQuery)));
+			    return Command.SINGLE_SUCCESS;
+			case "enable-queryT":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("enable-query can only be set from server.properties file before launch!"));
+			    return Command.SINGLE_SUCCESS;
+
+			case "enable-rconV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow enable-rcon is set to: %s", Boolean.toString(settings.getProperties().enableRcon)));
+			    return Command.SINGLE_SUCCESS;
+			case "enable-rconT":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("enable-rcon can only be set from server.properties file before launch!"));
+			    return Command.SINGLE_SUCCESS;
+
+			case "enable-statusV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("enable-status is set to: %s", Boolean.toString(Dserver.repliesToStatus())));
+			    return Command.SINGLE_SUCCESS;
+			case "enable-statusT":
+			    settings.getProperties().enableStatus=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set enable-status to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "enforce-whitelistV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow enforce-whitelist is set to: %s", Boolean.toString(settings.getProperties().enforceWhitelist)));
+			    return Command.SINGLE_SUCCESS;
+			case "enforce-whitelistT":
+			    settings.getProperties().enforceWhitelist=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+			    server.setEnforceWhitelist(BoolArgumentType.getBool(ctx, "toggle"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set enforce-whitelist to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "entity-broadcast-range-percentageV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("entity-broadcast-range-percentage is set to: %s", Boolean.toString(Dserver.repliesToStatus())));
+			    return Command.SINGLE_SUCCESS;
+			case "entity-broadcast-range-percentageT":
+			    settings.getProperties().entityBroadcastRangePercentage=IntegerArgumentType.getInteger(ctx, "percentage"); settings.forceSave();
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set entity-broadcast-range-percentage to %s", Integer.toString(IntegerArgumentType.getInteger(ctx, "percentage"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "force-gamemodeV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("force-gamemode is set to: %s", Boolean.toString(server.getForceGameType())));
+			    return Command.SINGLE_SUCCESS;
+			case "force-gamemodeT":
+			    settings.getProperties().forceGameMode=BoolArgumentType.getBool(ctx, "toggle"); settings.forceSave();
+			    server.setForceGameType(BoolArgumentType.getBool(ctx, "toggle"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set force-gamemode to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "function-permission-levelV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("function-permission-level is set to: %s", Integer.toString(Dserver.getFunctionCompilationLevel())));
+			    return Command.SINGLE_SUCCESS;
+			case "function-permission-levelT":
+			    settings.getProperties().functionPermissionLevel=IntegerArgumentType.getInteger(ctx, "level"); settings.forceSave();
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set function-permission-level to %s", Integer.toString(IntegerArgumentType.getInteger(ctx, "level"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "gamemodeV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Default gamemode is set to: %s", server.getDefaultGameType().getName()));
+			    return Command.SINGLE_SUCCESS;
+			case "gamemodeT":
+			    GameType gamemode = GameType.byId(IntegerArgumentType.getInteger(ctx, "gamemode"));
+			    server.setDefaultGameType(gamemode);
+			    settings.getProperties().gamemode=gamemode; settings.forceSave();
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set default gamemode to %s", gamemode.getName()));
+			    return Command.SINGLE_SUCCESS;
+
+			case "generate-structuresV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow generate-structures is set to: %s", Boolean.toString(server.getWorldData().worldGenSettings().generateFeatures())));
+			    return Command.SINGLE_SUCCESS;
+			case "generate-structuresT":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("generate-structures can only be set from server.properties file before launch!"));
+			    return Command.SINGLE_SUCCESS;
+
+			case "hardcoreV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("hardcore is set to: %s", Boolean.toString(Dserver.isHardcore())));
+			    return Command.SINGLE_SUCCESS;
+			case "hardcoreT":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("hardcore can only be set from server.properties file before launch!"));
+			    return Command.SINGLE_SUCCESS;
+
+			case "buildlimitV":
+			        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set build limit to %d", server.getMaxBuildHeight()));
+			        return Command.SINGLE_SUCCESS;
+			case "buildlimitT":
+			    int buildLimit = IntegerArgumentType.getInteger(ctx, "buildlimit");
+			    server.setMaxBuildHeight(buildLimit);
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set max-build-height to %d", buildLimit));
+			    return Command.SINGLE_SUCCESS;
+			    
+			case "motdV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("MotD = %s", server.getMotd()));
+			    return Command.SINGLE_SUCCESS;
+			case "motdT":
+			    String motd = ScriptArguments.process(StringArgumentType.getString(ctx, "motd"), null);
+			    server.getStatus().setDescription(new StringTextComponent(ChatOutputHandler.formatColors(motd)));
+			    server.setMotd(motd);
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set MotD to %s", motd));
+			    return Command.SINGLE_SUCCESS;
+			    
+			case "spawnprotectionV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Spawn protection size: %d", server.getSpawnProtectionRadius()));
+			    return Command.SINGLE_SUCCESS;
+			case "spawnprotectionT":
+			    int spawnSize = IntegerArgumentType.getInteger(ctx, "radius");
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set spawn-protection to %d", spawnSize));
+			    return Command.SINGLE_SUCCESS;
+			default:
+			    ChatOutputHandler.chatError(ctx.getSource(), Translator.format(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params));
+			}
+		} catch (NoSuchFieldException e) {
+		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting!");
+			e.printStackTrace();
+		} catch (SecurityException e) {
+		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting!");
+			e.printStackTrace();
+		} catch (ScriptException e) {
+		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting!");
+			e.printStackTrace();
+		} catch (Exception e) {
+		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting!");
+			e.printStackTrace();
+		}
         return Command.SINGLE_SUCCESS;
     }
 }
