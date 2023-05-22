@@ -45,6 +45,8 @@ public class Multiworld
 
     protected boolean mapFeaturesEnabled = true;
 
+    protected boolean loadOnServerStart = true;
+
     @Expose(serialize = false)
     protected boolean worldLoaded;
 
