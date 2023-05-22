@@ -2,16 +2,20 @@ package com.forgeessentials.commands.server;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerPropertiesProvider;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.dedicated.PropertyManager;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameType;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -377,8 +381,6 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatError(ctx.getSource(), "You can use this command only on dedicated servers");
             return Command.SINGLE_SUCCESS;
         }
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        DedicatedServer Dserver = (DedicatedServer) ServerLifecycleHooks.getCurrentServer();
 
         if (params.equals("blank"))
         {
@@ -386,6 +388,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
         ServerPropertiesProvider settings= ServerUtil.getServerPropProvider((DedicatedServer) ServerLifecycleHooks.getCurrentServer());
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        DedicatedServer Dserver = (DedicatedServer) ServerLifecycleHooks.getCurrentServer();
         try {
 			switch (params)
 			{
@@ -394,7 +398,8 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    return Command.SINGLE_SUCCESS;
 			case "allow-flightT":
 			    server.setFlightAllowed(BoolArgumentType.getBool(ctx, "toggle"));
-			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219013_g"), BoolArgumentType.getBool(ctx, "toggle"));
+			    ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), "field_219013_g", BoolArgumentType.getBool(ctx, "toggle"));
+			    
 			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set allow-flight to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
@@ -403,8 +408,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow nether is set to: %s", Boolean.toString(server.isNetherEnabled())));
 			    return Command.SINGLE_SUCCESS;
 			case "allow-netherT":
-			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_218991_D"), BoolArgumentType.getBool(ctx, "toggle")); 
-			    settings.forceSave();
+			    saveSettings("allow-nether", "field_218991_D", BoolArgumentType.getBool(ctx, "toggle")); 
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set allow-nether to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
 
@@ -412,7 +416,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow broadcast-console-to-ops: %s", Boolean.toString(Dserver.shouldInformAdmins())));
 			    return Command.SINGLE_SUCCESS;
 			case "broadcast-console-to-opsT":
-			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219003_P"), BoolArgumentType.getBool(ctx, "toggle"));
+			    ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), "field_219003_P", BoolArgumentType.getBool(ctx, "toggle"));
 			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set broadcast-console-to-ops to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
@@ -421,7 +425,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow broadcast-rcon-to-ops: %s", Boolean.toString(Dserver.shouldRconBroadcast())));
 			    return Command.SINGLE_SUCCESS;
 			case "broadcast-rcon-to-opsT":
-			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219002_O"), BoolArgumentType.getBool(ctx, "toggle"));
+			    ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), "field_219002_O", BoolArgumentType.getBool(ctx, "toggle"));
 			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set broadcast-rcon-to-ops to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
@@ -432,7 +436,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			case "difficultyT":
 			    Difficulty difficulty = Difficulty.byId(IntegerArgumentType.getInteger(ctx, "difficulity"));
 			    server.setDifficulty(difficulty, true);
-			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219019_m"), BoolArgumentType.getBool(ctx, "toggle"));
+			    ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), "field_219019_m", BoolArgumentType.getBool(ctx, "toggle"));
 			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set difficulty to %s", difficulty.name()));
 			    return Command.SINGLE_SUCCESS;
@@ -441,7 +445,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow enable-command-block is set to: %s", Boolean.toString(Dserver.isCommandBlockEnabled())));
 			    return Command.SINGLE_SUCCESS;
 			case "enable-command-blockT":
-			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_218995_H"), BoolArgumentType.getBool(ctx, "toggle"));
+			    ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), "field_218995_H", BoolArgumentType.getBool(ctx, "toggle"));
 			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set enable-command-block to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
@@ -471,7 +475,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("enable-status is set to: %s", Boolean.toString(Dserver.repliesToStatus())));
 			    return Command.SINGLE_SUCCESS;
 			case "enable-statusT":
-				ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_241080_Q_"), BoolArgumentType.getBool(ctx, "toggle"));
+				ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), "field_241080_Q_", BoolArgumentType.getBool(ctx, "toggle"));
 			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set enable-status to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
@@ -480,7 +484,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow enforce-whitelist is set to: %s", Boolean.toString(settings.getProperties().enforceWhitelist)));
 			    return Command.SINGLE_SUCCESS;
 			case "enforce-whitelistT":
-			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219017_k"), BoolArgumentType.getBool(ctx, "toggle"));
+			    ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), "field_219017_k", BoolArgumentType.getBool(ctx, "toggle"));
 			    settings.forceSave();
 			    server.setEnforceWhitelist(BoolArgumentType.getBool(ctx, "toggle"));
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set enforce-whitelist to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
@@ -490,7 +494,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("entity-broadcast-range-percentage is set to: %s", Boolean.toString(Dserver.repliesToStatus())));
 			    return Command.SINGLE_SUCCESS;
 			case "entity-broadcast-range-percentageT":
-				ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_241081_R_"), IntegerArgumentType.getInteger(ctx, "percentage"));
+				ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), "field_241081_R_", IntegerArgumentType.getInteger(ctx, "percentage"));
 			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set entity-broadcast-range-percentage to %s", Integer.toString(IntegerArgumentType.getInteger(ctx, "percentage"))));
 			    return Command.SINGLE_SUCCESS;
@@ -499,7 +503,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("force-gamemode is set to: %s", Boolean.toString(server.getForceGameType())));
 			    return Command.SINGLE_SUCCESS;
 			case "force-gamemodeT":
-				ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219016_j"), BoolArgumentType.getBool(ctx, "toggle"));
+				ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), "field_219016_j", BoolArgumentType.getBool(ctx, "toggle"));
 			    settings.forceSave();
 			    server.setForceGameType(BoolArgumentType.getBool(ctx, "toggle"));
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set force-gamemode to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
@@ -509,7 +513,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("function-permission-level is set to: %s", Integer.toString(Dserver.getFunctionCompilationLevel())));
 			    return Command.SINGLE_SUCCESS;
 			case "function-permission-levelT":
-				ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_225395_K"), IntegerArgumentType.getInteger(ctx, "level"));
+				ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), "field_225395_K", IntegerArgumentType.getInteger(ctx, "level"));
 			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set function-permission-level to %s", Integer.toString(IntegerArgumentType.getInteger(ctx, "level"))));
 			    return Command.SINGLE_SUCCESS;
@@ -520,7 +524,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			case "gamemodeT":
 			    GameType gamemode = GameType.byId(IntegerArgumentType.getInteger(ctx, "gamemode"));
 			    server.setDefaultGameType(gamemode);
-			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219020_n"), gamemode);
+			    ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(),"field_219020_n", gamemode);
 			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set default gamemode to %s", gamemode.getName()));
 			    return Command.SINGLE_SUCCESS;
@@ -544,7 +548,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			        return Command.SINGLE_SUCCESS;
 			case "max-build-heightT":
 			    server.setMaxBuildHeight(IntegerArgumentType.getInteger(ctx, "buildlimit"));
-			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219026_t"), IntegerArgumentType.getInteger(ctx, "buildlimit"));
+			    ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(),"field_219026_t", IntegerArgumentType.getInteger(ctx, "buildlimit"));
 			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set max-build-height to %d", IntegerArgumentType.getInteger(ctx, "buildlimit")));
 			    return Command.SINGLE_SUCCESS;
@@ -570,7 +574,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 				for(ServerWorld world : server.getAllLevels()) {
 					world.getWorldBorder().setAbsoluteMaxSize(IntegerArgumentType.getInteger(ctx, "maxSize"));
 				}
-			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219004_Q"), IntegerArgumentType.getInteger(ctx, "maxSize"));
+			    ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), "field_219004_Q", IntegerArgumentType.getInteger(ctx, "maxSize"));
 			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set max-world-size to %d", IntegerArgumentType.getInteger(ctx, "maxSize")));
 			    return Command.SINGLE_SUCCESS;
@@ -582,7 +586,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    String motd = ScriptArguments.process(StringArgumentType.getString(ctx, "motd"), null);
 			    server.getStatus().setDescription(new StringTextComponent(ChatOutputHandler.formatColors(motd)));
 			    server.setMotd(motd);
-			    ServerUtil.changeFinalField(settings.getProperties().getClass().getField("field_219015_i"), motd);
+			    ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), "field_219015_i", motd);
 			    settings.forceSave();
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set MotD to %s", motd));
 			    return Command.SINGLE_SUCCESS;
@@ -598,18 +602,34 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatError(ctx.getSource(), Translator.format(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params));
 			}
 		} catch (NoSuchFieldException e) {
-		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting!");
+		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting NSFE!");
 			e.printStackTrace();
 		} catch (SecurityException e) {
-		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting!");
+		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting SeE!");
 			e.printStackTrace();
 		} catch (ScriptException e) {
-		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting!");
+		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting ScE!");
 			e.printStackTrace();
 		} catch (Exception e) {
-		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting!");
+		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting E!");
 			e.printStackTrace();
 		}
         return Command.SINGLE_SUCCESS;
+    }
+    public static void saveSettings(String propertiesName,  String settingsFieldName, Object newValue) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    	//save changed setting to ServerProperties
+    	ServerPropertiesProvider settings= ServerUtil.getServerPropProvider((DedicatedServer) ServerLifecycleHooks.getCurrentServer());
+    	ServerUtil.changeFinalFieldNonStaticField(settings.getProperties(), settingsFieldName, newValue);
+    	//save changed setting to server.properties file
+    	Properties props = ObfuscationReflectionHelper.getPrivateValue(PropertyManager.class, settings.getProperties(), "field_73672_b");
+    	props.put(propertiesName, Objects.toString(newValue));
+    	ObfuscationReflectionHelper.setPrivateValue(PropertyManager.class, settings.getProperties(), props, "field_73672_b");
+    	settings.forceSave();
+    	//try (OutputStream outputstream = Files.newOutputStream(ObfuscationReflectionHelper.getPrivateValue(ServerPropertiesProvider.class, settings, "field_219036_a"))) {
+    	//	net.minecraftforge.common.util.SortedProperties.store(props, outputstream, "Minecraft server properties");
+    	//} catch (IOException ioexception) {
+    	//	ChatOutputHandler.chatError(source, "Failed to save properties config");
+    	//	ioexception.printStackTrace();
+    	//}
     }
 }
