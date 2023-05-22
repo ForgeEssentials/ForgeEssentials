@@ -324,7 +324,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
                         )
                 .then(Commands.literal("max-world-size")
                         .then(Commands.literal("modify")
-                                .then(Commands.argument("maxSize", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                .then(Commands.argument("maxSize", IntegerArgumentType.integer(1, 29999984))
                                         .executes(CommandContext -> execute(CommandContext, "max-world-sizeT")
                                                 )
                                         )
@@ -346,15 +346,75 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
                                         )
                                 )
                         )
-                .then(Commands.literal("allowpvp")
+                .then(Commands.literal("network-compression-threshold")
                         .then(Commands.literal("modify")
-                                .then(Commands.argument("toggle", BoolArgumentType.bool())
-                                        .executes(CommandContext -> execute(CommandContext, "allowpvpT")
+                                .then(Commands.argument("threshold", IntegerArgumentType.integer(0, 1500))
+                                        .executes(CommandContext -> execute(CommandContext, "network-compression-thresholdT")
                                                 )
                                         )
                                 )
                         .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "allowpvpV")
+                                .executes(CommandContext -> execute(CommandContext, "network-compression-thresholdV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("online-mode")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "online-modeT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "online-modeV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("op-permission-level")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("level", IntegerArgumentType.integer(0, 4))
+                                        .executes(CommandContext -> execute(CommandContext, "op-permission-levelT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "op-permission-levelV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("player-idle-timeout")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("timeout", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                        .executes(CommandContext -> execute(CommandContext, "player-idle-timeoutT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "player-idle-timeoutV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("prevent-proxy-connections")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "prevent-proxy-connectionsT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "prevent-proxy-connectionsV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("pvp")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "pvpT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "pvpV")
                                         )
                                 )
                         )
@@ -583,6 +643,59 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    int spawnSize = IntegerArgumentType.getInteger(ctx, "radius");
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set spawn-protection to %d", spawnSize));
 			    return Command.SINGLE_SUCCESS;
+
+			case "network-compression-thresholdV":
+		        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("network-compression-threshold is set to: %d", Dserver.getCompressionThreshold()));
+		        return Command.SINGLE_SUCCESS;
+			case "network-compression-thresholdT":
+			    saveSettings("network-compression-threshold", "field_219001_N", IntegerArgumentType.getInteger(ctx, "threshold"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set network-compression-threshold to %d", IntegerArgumentType.getInteger(ctx, "threshold")));
+			    return Command.SINGLE_SUCCESS;
+
+			case "online-modeV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("online-mode is set to: %s", Boolean.toString(server.usesAuthentication())));
+			    return Command.SINGLE_SUCCESS;
+			case "online-modeT":
+				saveSettings("online-mode", "field_219007_a", BoolArgumentType.getBool(ctx, "toggle"));
+			    server.setUsesAuthentication(BoolArgumentType.getBool(ctx, "toggle"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set online-mode to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "op-permission-levelV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("op-permission-level is set to: %s", Integer.toString(Dserver.getOperatorUserPermissionLevel())));
+			    return Command.SINGLE_SUCCESS;
+			case "op-permission-levelT":
+				saveSettings("op-permission-level", "field_218997_J", IntegerArgumentType.getInteger(ctx, "level"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set op-permission-level to %s", Integer.toString(IntegerArgumentType.getInteger(ctx, "level"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "player-idle-timeoutV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("player-idle-timeout is set to: %s", Integer.toString(Dserver.getPlayerIdleTimeout())));
+			    return Command.SINGLE_SUCCESS;
+			case "player-idle-timeoutT":
+				saveSettings("player-idle-timeout", "field_219005_R", IntegerArgumentType.getInteger(ctx, "timeout"));
+				server.setPlayerIdleTimeout(IntegerArgumentType.getInteger(ctx, "timeout"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set player-idle-timeout to %s", Integer.toString(IntegerArgumentType.getInteger(ctx, "timeout"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "prevent-proxy-connectionsV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("prevent-proxy-connections is set to: %s", Boolean.toString(server.getPreventProxyConnections())));
+			    return Command.SINGLE_SUCCESS;
+			case "prevent-proxy-connectionsT":
+				saveSettings("prevent-proxy-connections", "field_219008_b", BoolArgumentType.getBool(ctx, "toggle"));
+			    server.setPreventProxyConnections(BoolArgumentType.getBool(ctx, "toggle"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set prevent-proxy-connections to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "pvpV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("pvp is set to: %s", Boolean.toString(server.isPvpAllowed())));
+			    return Command.SINGLE_SUCCESS;
+			case "pvpT":
+				saveSettings("pvp", "field_219012_f", BoolArgumentType.getBool(ctx, "toggle"));
+			    server.setPvpAllowed(BoolArgumentType.getBool(ctx, "toggle"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set pvp to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
+
 			default:
 			    ChatOutputHandler.chatError(ctx.getSource(), Translator.format(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params));
 			}
