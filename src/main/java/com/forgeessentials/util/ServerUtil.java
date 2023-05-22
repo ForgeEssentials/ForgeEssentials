@@ -43,12 +43,20 @@ public abstract class ServerUtil
 		return ObfuscationReflectionHelper.getPrivateValue(DedicatedServer.class, currentServer, "field_71340_o");
 	}
 
-	public static void changeFinalField(Field field, Object newValue) throws Exception {
+	public static void changeFinalFieldStaticField(Field field, Object newValue) throws Exception {
 		field.setAccessible(true);
 		Field modifiersField = Field.class.getDeclaredField("modifiers");
-	      modifiersField.setAccessible(true);
-	      modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-	      field.set(null, newValue);
+	    modifiersField.setAccessible(true);
+	    modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+	    field.set(null, newValue);
+	}
+	public static void changeFinalFieldNonStaticField(Object object, String fieldName, Object newValue) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field field= object.getClass().getField(fieldName);
+		field.setAccessible(true);
+		Field modifiersField = Field.class.getDeclaredField("modifiers");
+	    modifiersField.setAccessible(true);
+	    modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+	    field.set(object, newValue);
 	}
 
     /**
