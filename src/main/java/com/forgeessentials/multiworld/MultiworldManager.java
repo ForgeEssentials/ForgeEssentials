@@ -131,7 +131,9 @@ public class MultiworldManager extends ServerEventHandler implements NamedWorldH
             try
             {
                 registerWorld(world);
-                loadWorld(world);
+                if (world.loadOnServerStart) {
+                    loadWorld(world);
+                }
             }
             catch (MultiworldException e)
             {
