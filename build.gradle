@@ -33,6 +33,7 @@ buildscript {
 
 plugins {
 	id 'com.github.johnrengelman.shadow' version '4.0.2'
+    id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
 // Set up FE required repositories
@@ -60,6 +61,9 @@ if (System.getenv("BUILD_NUMBER") != null) {
 
 }
 
+ext.set 'changelog', System.getenv("CHANGE_LOG")
+ext.set 'releaseType', 'release'
+
 // Get commit hash
 import org.ajoberstar.grgit.Grgit
 def repo = Grgit.open(project.file("."))
@@ -67,11 +71,41 @@ ext.gitCommitHash = repo.log().find().abbreviatedId
 
 // Set build properties
 ext.baseVersion = "1.4.7"
+ext.projectID=74735
 version = baseVersion + "." + buildNumber
 group = "com.forgeessentials"
 archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+ext.set 'srcFile',file("./build/libs/$archivesBaseName-$minecraft.version-$baseVersion.$buildNumber-server.jar")
+
+curseforge {
+    apiKey = System.getenv("CF_APIKEY")
+    if (apiKey) {
+        project {
+            id = projectID
+            changelog = project.changelog + "\n\nNote: Java 17+ requires another mod (lwjgl3ify) to bootstrap Forge."
+            releaseType = project.releaseType
+            addGameVersion minecraft.version
+            addGameVersion 'Forge'
+            addGameVersion 'Java 17'
+            addGameVersion 'Java 8'
+
+            mainArtifact(project.srcFile) {
+                displayName = "$archivesBaseName-$minecraft.version-$baseVersion.$buildNumber"
+                relations {
+                    optionalDependency 'baubles'
+                }
+            }
+        }
+    }
+    options {
+        javaVersionAutoDetect = false
+        forgeGradleIntegration = false
+        javaIntegration = false
+    }
+}
 
 // Set up forge options
 minecraft {
