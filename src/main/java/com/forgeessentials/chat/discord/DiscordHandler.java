@@ -12,35 +12,37 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 
+import net.minecraft.command.CommandSource;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.config.ConfigBase;
+import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerPostInitEvent;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStopEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
-public class DiscordHandler extends ConfigLoaderBase
+public class DiscordHandler
 {
-    private static final String CATEGORY = ModuleChat.CONFIG_CATEGORY + ".DISCORD";
-
+    private static final String CATEGORY = "DISCORD";
     private static final String CHANNELS_HELP = "List of channels to connect to, not including the # character";
 
     private static final String ADMINS_HELP = "List of privileged users that can use more commands via the Discord bot";
@@ -58,22 +60,21 @@ public class DiscordHandler extends ConfigLoaderBase
 
     public String selectedChannel;
 
-    public Property selectedChannelConfig;
+    public ForgeConfigSpec.ConfigValue<String> selectedChannelConfig;
 
     JDA jda = null;
 
     public DiscordHandler()
     {
-        ForgeEssentials.getConfigManager().registerLoader(ModuleChat.CONFIG_FILE, this);
         MinecraftForge.EVENT_BUS.register(this);
         APIRegistry.getFEEventBus().register(this);
 
     }
-    @Override
-    public void load(Configuration config, boolean isReload)
+    public void load(ForgeConfigSpec.Builder BUILDER, boolean isReload)
     {
-        config.addCustomCategoryComment(CATEGORY, "Configure the built-in Discord bot here -- Incubating, subject to change!");
+        BUILDER.comment("Configure the built-in Discord bot here -- Incubating, subject to change!").push(CATEGORY);
 
+        //TODO: Convert to use config builder
         channels.clear();
         selectedChannelConfig = config.get(CATEGORY, "selectedChannel", "",
                 "The bot will send messages to this channel!  You can switch channels in game with `/discord select (channel)");
@@ -121,8 +122,14 @@ public class DiscordHandler extends ConfigLoaderBase
         }
     }
 
-    @Override public void save(Configuration config)
+    public void bakeConfig(boolean reload)
     {
+
+    }
+
+    public void save(boolean reload)
+    {
+
         selectedChannelConfig.set(selectedChannel);
     }
 
@@ -216,7 +223,7 @@ public class DiscordHandler extends ConfigLoaderBase
         }
     }
 
-    public void serverStarted(FEModuleServerPostInitEvent e)
+    public void serverStarted(FEModuleServerAboutToStartEvent e)
     {
         if (showGameEvents)
         {
@@ -224,7 +231,7 @@ public class DiscordHandler extends ConfigLoaderBase
         }
     }
 
-    public void serverStopping(FEModuleServerStopEvent e)
+    public void serverStopping(FEModuleServerStoppingEvent e)
     {
         if (showGameEvents)
         {

@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.forgeessentials.chat.ModuleChat;
-import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
+import com.forgeessentials.core.config.ConfigLoaderBase;
 
 import com.forgeessentials.core.misc.Translator;
 
@@ -150,7 +150,7 @@ public final class ChatOutputHandler
 
         if (sendToDiscord && ModuleChat.instance != null)
         {
-            ModuleChat.instance.discordHandler.sendMessage(message.getUnformattedText());
+//            ModuleChat.instance.discordHandler.sendMessage(message.getUnformattedText());
         }
     }
 
@@ -182,7 +182,7 @@ public final class ChatOutputHandler
 
         if (sendToDiscord && ModuleChat.instance != null)
         {
-            ModuleChat.instance.discordHandler.sendMessage(message.getUnformattedText());
+//            ModuleChat.instance.discordHandler.sendMessage(message.getUnformattedText());
         }
     }
 

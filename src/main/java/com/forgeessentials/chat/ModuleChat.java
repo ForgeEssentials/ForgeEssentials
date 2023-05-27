@@ -594,6 +594,7 @@ public class ModuleChat implements ConfigSaver
 	    censor.load(BUILDER, isReload);
 	    timedMessages.load(BUILDER, isReload);
 	    ircHandler.load(BUILDER, isReload);
+        discordHandler.load(BUILDER, isReload);
 	}
 
 	@Override
@@ -601,6 +602,7 @@ public class ModuleChat implements ConfigSaver
 		censor.bakeConfig(reload);
 	    timedMessages.bakeConfig(reload);
 	    ircHandler.bakeConfig(reload);
+        discordHandler.bakeConfig(reload);
 	    ChatConfig.bakeConfig(reload);
 	}
 
@@ -612,6 +614,6 @@ public class ModuleChat implements ConfigSaver
 	@Override
 	public void save(boolean reload) {
 	    timedMessages.save(reload);
-
+        discordHandler.save(reload);
 	}
 }
