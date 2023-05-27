@@ -475,12 +475,12 @@ public class IrcHandler extends ListenerAdapter
     {
     	if(event.getParseResults().getContext().getNodes().isEmpty())
             return;
-        if (event.getParseResults().getContext().getNodes().get(0).getNode().getName() == "say")
+        if (event.getParseResults().getContext().getNodes().get(0).getNode().getName().equals("say"))
         {
             ircSendMessage(Translator.format(mcSayHeader, event.getParseResults().getContext().getSource().getTextName(),
                     StringUtils.join(event.getParseResults().getReader().toString().substring(5+event.getParseResults().getContext().getSource().getTextName().length()+1))));
         }
-        else if (event.getParseResults().getContext().getNodes().get(0).getNode().getName() == "me")
+        else if (event.getParseResults().getContext().getNodes().get(0).getNode().getName().equals("me"))
         {
             ircSendMessage(
                     Translator.format("* %s %s", event.getParseResults().getContext().getSource().getTextName(), event.getParseResults().getReader().toString().substring(4+event.getParseResults().getContext().getSource().getTextName().length()+1)));

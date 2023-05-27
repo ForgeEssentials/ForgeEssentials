@@ -636,14 +636,6 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set MotD to %s", motd));
 			    return Command.SINGLE_SUCCESS;
 
-			case "spawnprotectionV":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Spawn protection size: %d", server.getSpawnProtectionRadius()));
-			    return Command.SINGLE_SUCCESS;
-			case "spawnprotectionT":
-			    int spawnSize = IntegerArgumentType.getInteger(ctx, "radius");
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set spawn-protection to %d", spawnSize));
-			    return Command.SINGLE_SUCCESS;
-
 			case "network-compression-thresholdV":
 		        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("network-compression-threshold is set to: %d", Dserver.getCompressionThreshold()));
 		        return Command.SINGLE_SUCCESS;
@@ -696,6 +688,14 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set pvp to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
 
+
+			case "spawnprotectionV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Spawn protection size: %d", server.getSpawnProtectionRadius()));
+			    return Command.SINGLE_SUCCESS;
+			case "spawnprotectionT":
+				saveSettings("spawn-protection", "field_218996_I", IntegerArgumentType.getInteger(ctx, "radius"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set spawn-protection to %d", IntegerArgumentType.getInteger(ctx, "radius")));
+			    return Command.SINGLE_SUCCESS;
 			default:
 			    ChatOutputHandler.chatError(ctx.getSource(), Translator.format(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params));
 			}

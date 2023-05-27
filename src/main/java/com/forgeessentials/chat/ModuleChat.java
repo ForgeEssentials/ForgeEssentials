@@ -48,6 +48,7 @@ import com.forgeessentials.chat.command.CommandReply;
 import com.forgeessentials.chat.command.CommandTimedMessages;
 import com.forgeessentials.chat.command.CommandUnmute;
 import com.forgeessentials.chat.discord.DiscordHandler;
+import com.forgeessentials.chat.discord.command.CommandDiscord;
 import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -195,6 +196,8 @@ public class ModuleChat implements ConfigSaver
         FECommandManager.registerCommand(new CommandIrc(true), dispatcher);
         FECommandManager.registerCommand(new CommandIrcPm(true), dispatcher);
         FECommandManager.registerCommand(new CommandIrcBot(true), dispatcher);
+        
+        FECommandManager.registerCommand(new CommandDiscord(true), dispatcher);
     }
 
     @SubscribeEvent
