@@ -47,6 +47,7 @@ import com.forgeessentials.chat.command.CommandPm;
 import com.forgeessentials.chat.command.CommandReply;
 import com.forgeessentials.chat.command.CommandTimedMessages;
 import com.forgeessentials.chat.command.CommandUnmute;
+import com.forgeessentials.chat.discord.DiscordHandler;
 import com.forgeessentials.chat.irc.IrcHandler;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
 import com.forgeessentials.commons.selections.WorldPoint;
@@ -73,7 +74,7 @@ public class ModuleChat implements ConfigSaver
 {
 	private static ForgeConfigSpec CHAT_CONFIG;
 	public static final ConfigData data = new ConfigData("Chat", CHAT_CONFIG, new ForgeConfigSpec.Builder());
-	
+
     public static final String CONFIG_FILE = "Chat";
 
     public static final String PERM = "fe.chat";
@@ -113,10 +114,13 @@ public class ModuleChat implements ConfigSaver
 
     public IrcHandler ircHandler;
 
+    public DiscordHandler discordHandler;
+
     /* ------------------------------------------------------------ */
 
     public ModuleChat() {
     	ircHandler = new IrcHandler();
+        discordHandler = new DiscordHandler();
         censor = new Censor();
         timedMessages = new TimedMessages();
         mailer = new Mailer();
@@ -196,6 +200,7 @@ public class ModuleChat implements ConfigSaver
     @SubscribeEvent
     public void serverStarted(FEModuleServerStartedEvent e)
     {
+        discordHandler.serverStarted(e);
         //ServerUtil.replaceCommand(MessageCommand.class, new CommandMessageReplacement());
     }
 
@@ -204,6 +209,7 @@ public class ModuleChat implements ConfigSaver
     {
         closeLog();
         ircHandler.disconnect();
+        discordHandler.serverStopping(e);
     }
 
     /* ------------------------------------------------------------ */
@@ -606,6 +612,6 @@ public class ModuleChat implements ConfigSaver
 	@Override
 	public void save(boolean reload) {
 	    timedMessages.save(reload);
-		
+
 	}
 }

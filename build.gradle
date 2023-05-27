@@ -34,6 +34,7 @@ buildscript {
 
 plugins {
     id 'org.sonarqube' version '2.5'
+    id "com.matthewprenger.cursegradle" version "1.4.0"
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -59,18 +60,18 @@ repositories {
     }
 
 	maven {
-		name "Sonatype (Cubic Chunks)"
-		url "https://oss.sonatype.org/content/repositories/public/"
+		name = "CurseForge"
+		url = "https://minecraft.curseforge.com/api/maven/"
+	}
+
+	maven {
+		name = "sk89q"
+		url = "https://maven.enginehub.org/repo/"
 	}
 
 	maven {
 		name = "sponge"
 		url = "https://repo.spongepowered.org/maven/"
-	}
-
-	maven {
-		name = "CurseForge"
-		url = "https://minecraft.curseforge.com/api/maven/"
 	}
 
     maven {
@@ -81,15 +82,16 @@ repositories {
         }
 		allowInsecureProtocol = true
     }
-	maven {
-		name = "sk89q"
-		url = "https://maven.enginehub.org/repo/"
-	}
 
     maven {
         name = "forge"
         url = "https://files.minecraftforge.net/maven"
     }
+
+	maven {
+		name "Sonatype (Cubic Chunks)"
+		url "https://oss.sonatype.org/content/repositories/public/"
+	}
 }
 
 
@@ -107,6 +109,9 @@ if (System.getenv("BUILD_NUMBER") != null) {
 
 }
 
+ext.set 'changelog', System.getenv("CHANGE_LOG")
+ext.set 'releaseType', 'alpha'
+
 // Get commit hash
 
 def repo = Grgit.open(project.file("."))
@@ -121,6 +126,33 @@ targetCompatibility = 1.8
 //java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
+ext.set 'srcFile',file("./build/libs/$archivesBaseName-$minecraftVersion-$baseVersion.$buildNumber-server.jar")
+
+curseforge {
+    apiKey = System.getenv("CF_APIKEY")
+    if (apiKey) {
+        project {
+            id = projectID
+            changelog = project.changelog
+            releaseType = project.releaseType
+            addGameVersion minecraftVersion
+            addGameVersion 'Forge'
+            addGameVersion 'Java 8'
+
+            mainArtifact(project.srcFile) {
+                displayName = "$archivesBaseName-$minecraftVersion-$baseVersion.$buildNumber"
+                relations {
+                    optionalDependency 'baubles'
+                }
+            }
+        }
+    }
+    options {
+        javaVersionAutoDetect = false
+        forgeGradleIntegration = false
+        javaIntegration = false
+    }
+}
 // Set up forge options
 minecraft {
 	mappings channel: 'official', version: '1.16.5'
@@ -128,13 +160,13 @@ minecraft {
     runs {
 	    client {
 	            workingDirectory project.file('rundir')
-	
+
 	            // Recommended logging data for a userdev environment
 	            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-	
+
 	            // Recommended logging level for the console
 	            property 'forge.logging.console.level', 'debug'
-	
+
 	            mods {
 	            }
 	        }
@@ -209,6 +241,8 @@ dependencies {
         exclude module: 'commons-codec'
     }
 
+    shadowLib('net.dv8tion:JDA:5.0.0-beta.8')
+
 	// Database libraries
 	shadowLib group: 'com.h2database', 	name: 'h2', 					version: '1.3.175'
 	shadowLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
@@ -252,7 +286,7 @@ dependencies {
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
     compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
-    compile 'org.apache.commons:commons-text:1.10.0'	
+    compile 'org.apache.commons:commons-text:1.10.0'
 	compile 'javax.xml.bind:jaxb-api:2.3.1'
 }
 
@@ -430,7 +464,7 @@ jar {
 			name -> "com.forgeessentials.thirdparty.$name"
 		}
 	}
-	
+
 	manifest {
 		from serverManifest
 	}
@@ -515,7 +549,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 //}
 // Example configuration to allow publishing using the maven-publish task
 // This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar') 
+jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 //publish.dependsOn('reobfJar')
 /************************************************************

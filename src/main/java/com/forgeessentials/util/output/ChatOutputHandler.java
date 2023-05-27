@@ -24,7 +24,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-//import org.apache.commons.text.StringEscapeUtils;
+import com.forgeessentials.chat.ModuleChat;
+import com.forgeessentials.core.moduleLauncher.config.ConfigLoaderBase;
 
 import com.forgeessentials.core.misc.Translator;
 
@@ -59,7 +60,7 @@ public final class ChatOutputHandler
 
     /**
      * Sends a message to a {@link CommandSource} and performs some security checks
-     * 
+     *
      * @param recipient
      * @param message
      */
@@ -128,7 +129,7 @@ public final class ChatOutputHandler
      */
     public static void broadcast(String message)
     {
-        broadcast(new StringTextComponent(message));;
+        broadcast(new StringTextComponent(message), true);;
     }
 
     /**
@@ -136,12 +137,20 @@ public final class ChatOutputHandler
      *
      * @param message
      *            The message to send
+     * @param sendToDiscord
+     *            Broadcast Message to discord
      */
-    public static void broadcast(TextComponent message)
+    public static void broadcast(TextComponent message, boolean sendToDiscord)
     {
+        //TODO: merge ITexcComponent and TextComponent methods to avoid duplication
         for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
         {
             ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT, p.getUUID());
+        }
+
+        if (sendToDiscord && ModuleChat.instance != null)
+        {
+            ModuleChat.instance.discordHandler.sendMessage(message.getUnformattedText());
         }
     }
 
@@ -153,9 +162,27 @@ public final class ChatOutputHandler
      */
     public static void broadcast(ITextComponent message)
     {
+        broadcast(message, true);
+    }
+
+    /**
+     * Sends a message to all clients
+     *
+     * @param message
+     *            The message to send
+     * @param sendToDiscord
+     *            Broadcast Message to discord
+     */
+    public static void broadcast(ITextComponent message, boolean sendToDiscord)
+    {
         for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers())
         {
             ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.CHAT, p.getUUID());
+        }
+
+        if (sendToDiscord && ModuleChat.instance != null)
+        {
+            ModuleChat.instance.discordHandler.sendMessage(message.getUnformattedText());
         }
     }
 

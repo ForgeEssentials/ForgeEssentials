@@ -79,7 +79,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatError(ctx.getSource(), "You must be flying.");
             return Command.SINGLE_SUCCESS;
         }
-        
+
         PlayerInfo pi = PlayerInfo.get(player);
         if (player.noPhysics&& !pi.isNoClip())
         {
@@ -95,8 +95,13 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
             pi.setNoClip(BoolArgumentType.getBool(ctx, "toggle"));
         }
 
+
+        player.noPhysics = pi.isNoClip();
         if (!pi.isNoClip())
+        {
             WorldUtil.placeInWorld(player);
+        }
+
         NetworkUtils.sendTo(new Packet5Noclip(pi.isNoClip()), player);
         ChatOutputHandler.chatConfirmation(player, "Noclip " + (pi.isNoClip() ? "enabled" : "disabled"));
         return Command.SINGLE_SUCCESS;
@@ -110,6 +115,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
             if (!player.abilities.flying)
             {
                 pi.setNoClip(false);
+                player.noPhysics = false;
                 WorldUtil.placeInWorld(player);
                 if (player.isControlledByLocalInstance())
                 {
