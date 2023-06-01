@@ -350,7 +350,7 @@ public class ModuleChat implements ConfigSaver
     public static TextComponent clickChatComponent(String text, Action action, String uri)
     {
         TextComponent component = new StringTextComponent(ChatOutputHandler.formatColors(text));
-        ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, uri);
+        ClickEvent click = new ClickEvent(action, uri);
         component.withStyle((style) -> {
             return style.withClickEvent(click);});
         return component;
