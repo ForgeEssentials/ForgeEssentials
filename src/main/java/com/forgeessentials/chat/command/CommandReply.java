@@ -6,13 +6,13 @@ import java.util.WeakHashMap;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -28,16 +28,16 @@ public class CommandReply extends ForgeEssentialsCommandBuilder
         super(enabled);
     }
 
-    public static Map<CommandSource, WeakReference<CommandSource>> replyMap = new WeakHashMap<>();
+    public static Map<PlayerEntity, WeakReference<PlayerEntity>> replyMap = new WeakHashMap<>();
 
-    public static void messageSent(CommandSource argFrom, CommandSource argTo)
+    public static void messageSent(PlayerEntity argFrom, PlayerEntity argTo)
     {
-        replyMap.put(argTo, new WeakReference<CommandSource>(argFrom));
+        replyMap.put(argTo, new WeakReference<PlayerEntity>(argFrom));
     }
 
-    public static CommandSource getReplyTarget(CommandSource sender)
+    public static PlayerEntity getReplyTarget(PlayerEntity sender)
     {
-        WeakReference<CommandSource> replyTarget = replyMap.get(sender);
+        WeakReference<PlayerEntity> replyTarget = replyMap.get(sender);
         if (replyTarget == null)
             return null;
         return replyTarget.get();
@@ -88,17 +88,17 @@ public class CommandReply extends ForgeEssentialsCommandBuilder
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
-        CommandSource target = getReplyTarget(ctx.getSource());
+        PlayerEntity target = getReplyTarget(getServerPlayer(ctx.getSource()));
         if (target == null){
-            ChatOutputHandler.chatError(ctx.getSource(), Translator.translate("No reply target found"));
+            ChatOutputHandler.chatError(ctx.getSource(), "No reply target found");
             return Command.SINGLE_SUCCESS;
         }
-        if (target == ctx.getSource()){
-            ChatOutputHandler.chatError(ctx.getSource(), Translator.translate("You can't be the recipient"));
+        if (target.equals(getServerPlayer(ctx.getSource()))){
+            ChatOutputHandler.chatError(ctx.getSource(), "You can't be the recipient");
             return Command.SINGLE_SUCCESS;
         }
-        ModuleChat.tell(ctx.getSource(), message, target);
+        TextComponent message = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
+        ModuleChat.tell(ctx.getSource(), message, target.createCommandSourceStack());
         return Command.SINGLE_SUCCESS;
     }
 }

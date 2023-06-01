@@ -3,8 +3,6 @@ package com.forgeessentials.chat.command;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import java.util.ArrayList;
@@ -78,10 +76,8 @@ public class CommandGroupMessage extends ForgeEssentialsCommandBuilder
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         String group = StringArgumentType.getString(ctx, "group");
-        APIRegistry.perms.getServerZone().getGroups();
 
-        TextComponent msgComponent = new StringTextComponent(StringArgumentType.getString(ctx, "message"));
-        ModuleChat.tellGroup(ctx.getSource(), msgComponent.getString(), group, getIdent(ctx.getSource()).checkPermission(ModuleChat.PERM_COLOR));
+        ModuleChat.tellGroup(ctx.getSource(), StringArgumentType.getString(ctx, "message"), group, getIdent(ctx.getSource()).checkPermission(ModuleChat.PERM_COLOR));
         return Command.SINGLE_SUCCESS;
     }
 }

@@ -10,6 +10,7 @@ import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.chat.irc.IrcCommand;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class CommandReply implements IrcCommand
@@ -47,7 +48,7 @@ public class CommandReply implements IrcCommand
             return;
         }
 
-        CommandSource target = com.forgeessentials.chat.command.CommandReply.getReplyTarget(sender);
+        CommandSource target = com.forgeessentials.chat.command.CommandReply.getReplyTarget(CommandUtils.getServerPlayer(sender)).createCommandSourceStack();
         if (target == null) {
             ChatOutputHandler.chatError(sender, Translator.format("Player not found"));
             //return Command.SINGLE_SUCCESS;

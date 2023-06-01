@@ -236,11 +236,11 @@ public class ModuleChat implements ConfigSaver
             return;
         }
 
-        if (CommandPm.getTarget(event.getPlayer().createCommandSourceStack()) != null)
+        if (CommandPm.getTarget(event.getPlayer()) != null)
         {
         	TextComponent message = new StringTextComponent("");
         	message.append(event.getComponent());
-        	tell(event.getPlayer().createCommandSourceStack(), message, CommandPm.getTarget(event.getPlayer().createCommandSourceStack()));
+        	tell(event.getPlayer().createCommandSourceStack(), message, CommandPm.getTarget(event.getPlayer()).createCommandSourceStack());
         	event.setCanceled(true);
         	return;
         }
@@ -542,7 +542,9 @@ public class ModuleChat implements ConfigSaver
         senderMsg.withStyle(TextFormatting.GRAY).withStyle(TextFormatting.ITALIC);
         ChatOutputHandler.sendMessage(target, sentMsg);
         ChatOutputHandler.sendMessage(sender, senderMsg);
-        CommandReply.messageSent(sender, target);
+        if(sender.getEntity() instanceof PlayerEntity&&target.getEntity() instanceof PlayerEntity) {
+        	CommandReply.messageSent((PlayerEntity) sender.getEntity(), (PlayerEntity) target.getEntity());
+        }
         try
         {
             ModuleCommandsEventHandler.checkAfkMessage(target, message);
