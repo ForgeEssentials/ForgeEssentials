@@ -52,11 +52,9 @@ public class CommandDuplicate extends ForgeEssentialsCommandBuilder
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
         return baseBuilder
-                .then(Commands.literal("size")
-                        .then(Commands.argument("size", IntegerArgumentType.integer(0, 64))
-                                .executes(CommandContext -> execute(CommandContext, "size")
-)
-                                )
+        		.then(Commands.argument("size", IntegerArgumentType.integer(0, 64))
+                        .executes(CommandContext -> execute(CommandContext, "size")
+                        		)
                         )
                 .executes(CommandContext -> execute(CommandContext, "blank")
                         );
