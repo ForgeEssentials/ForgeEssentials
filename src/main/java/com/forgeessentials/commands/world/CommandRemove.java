@@ -35,6 +35,12 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
     {
         return "remove";
     }
+    
+    @Override
+    public String[] getDefaultSecondaryAliases()
+    {
+        return new String[] { "clearGroundItems" };
+    }
 
     @Override
     public boolean canConsoleUseCommand()
@@ -90,8 +96,8 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
         for (int i = 0; i < entityList.size(); i++)
         {
             ItemEntity entity = entityList.get(i);
-            counter++;
-            entity.remove();;
+            counter+=entity.getItem().getCount();
+            entity.remove();
         }
         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%d items removed.", counter));
         return Command.SINGLE_SUCCESS;
@@ -123,7 +129,7 @@ public class CommandRemove extends ForgeEssentialsCommandBuilder
         for (int i = 0; i < entityList.size(); i++)
         {
             ItemEntity entity = entityList.get(i);
-            counter++;
+            counter+=entity.getItem().getCount();
             entity.remove();
         }
         ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("%d items removed.", counter));
