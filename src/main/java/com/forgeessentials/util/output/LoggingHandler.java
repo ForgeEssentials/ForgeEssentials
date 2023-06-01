@@ -97,6 +97,7 @@ public class LoggingHandler
             }
             context.updateLoggers();
         }
+    	logCache.start();
 	}
 
 }
