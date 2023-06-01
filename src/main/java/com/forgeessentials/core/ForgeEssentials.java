@@ -43,7 +43,6 @@ import net.minecraftforge.server.permission.DefaultPermissionLevel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Logger;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -199,9 +198,9 @@ public class ForgeEssentials
 
         // Set up logger level
         if (debugMode)
-            ((Logger) LoggingHandler.felog).setLevel(Level.ALL);
+        	LoggingHandler.setLevel(Level.DEBUG);
         else
-            ((Logger) LoggingHandler.felog).setLevel(Level.ALL);
+        	LoggingHandler.setLevel(Level.INFO);
         // Register core submodules
         factory = new ForgeEssentialsEventFactory();
         teleportHelper = new TeleportHelper();

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -79,5 +81,22 @@ public class LoggingHandler
             lines.add(iterator.next());
         return lines;
     }
+
+	public static void setLevel(Level level) {
+		((Logger) LoggingHandler.felog).setLevel(level);
+
+		logCache.stop();
+    	for (LoggerContext context : ((Log4jContextFactory) LogManager.getFactory()).getSelector().getLoggerContexts())
+        {
+            Configuration rootConfig = context.getConfiguration();
+            for (LoggerConfig loggerConfig : rootConfig.getLoggers().values()) {
+            	if(loggerConfig.getAppenders().containsKey("fe_server_log_queue")) {
+            		loggerConfig.removeAppender("fe_server_log_queue");
+            		loggerConfig.addAppender(logCache, level, null);
+            	}
+            }
+            context.updateLoggers();
+        }
+	}
 
 }
