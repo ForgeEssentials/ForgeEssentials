@@ -73,7 +73,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         PlayerAFKEvent event = new PlayerAFKEvent(player.getPlayerMP(), true);
         APIRegistry.getFEEventBus().post(event);
 
-        player.getPlayerMP().abilities.invulnerable = true;
+        player.getPlayer().abilities.invulnerable = true;
         if (player.checkPermission(CommandAFK.PERM_ANNOUNCE))
             ChatOutputHandler.broadcast(ChatOutputHandler.confirmation(Translator.format("Player %s is now AFK", player.getUsernameOrUuid())));
         else
