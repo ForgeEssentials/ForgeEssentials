@@ -1,7 +1,5 @@
 package com.forgeessentials.commands.server;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -9,6 +7,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerPropertiesProvider;
+import net.minecraft.server.dedicated.DedicatedPlayerList;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.dedicated.PropertyManager;
 import net.minecraft.util.text.StringTextComponent;
@@ -20,9 +19,6 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.Translator;
@@ -45,8 +41,6 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
     {
         super(enabled);
     }
-
-    public static List<String> options = Arrays.asList("allowFlight", "allowPVP", "buildLimit", "difficulty", "MotD", "spawnProtection", "gamemode");
 
     @Override
     public String getPrimaryAlias()
@@ -155,41 +149,17 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("enable-jmx-monitoring")
-                        .then(Commands.literal("modify")
-                                .then(Commands.argument("toggle", BoolArgumentType.bool())
-                                        .executes(CommandContext -> execute(CommandContext, "enable-jmx-monitoringT")
-                                                )
-                                        )
+                		.executes(CommandContext -> execute(CommandContext, "enable-jmx-monitoring")
                                 )
-                        .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "enable-jmx-monitoringV")
-                                        )
-                                )
-                        )
+                		)
                 .then(Commands.literal("enable-query")
-                        .then(Commands.literal("modify")
-                                .then(Commands.argument("toggle", BoolArgumentType.bool())
-                                        .executes(CommandContext -> execute(CommandContext, "enable-queryT")
-                                                )
-                                        )
+                		.executes(CommandContext -> execute(CommandContext, "enable-query")
                                 )
-                        .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "enable-queryV")
-                                        )
-                                )
-                        )
+                		)
                 .then(Commands.literal("enable-rcon")
-                        .then(Commands.literal("modify")
-                                .then(Commands.argument("toggle", BoolArgumentType.bool())
-                                        .executes(CommandContext -> execute(CommandContext, "enable-rconT")
-                                                )
-                                        )
+                		.executes(CommandContext -> execute(CommandContext, "enable-rcon")
                                 )
-                        .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "enable-rconV")
-                                        )
-                                )
-                        )
+                		)
                 .then(Commands.literal("enable-status")
                         .then(Commands.literal("modify")
                                 .then(Commands.argument("toggle", BoolArgumentType.bool())
@@ -263,29 +233,29 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("generate-structures")
-                        .then(Commands.literal("modify")
-                                .then(Commands.argument("toggle", BoolArgumentType.bool())
-                                        .executes(CommandContext -> execute(CommandContext, "generate-structuresT")
-                                                )
-                                        )
+                		.executes(CommandContext -> execute(CommandContext, "generate-structures")
                                 )
-                        .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "generate-structuresV")
-                                        )
+                		)
+                .then(Commands.literal("generator-settings")
+                		.executes(CommandContext -> execute(CommandContext, "generator-settings")
                                 )
-                        )
+                		)
                 .then(Commands.literal("hardcore")
-                        .then(Commands.literal("modify")
-                                .then(Commands.argument("toggle", BoolArgumentType.bool())
-                                        .executes(CommandContext -> execute(CommandContext, "hardcoreT")
-                                                )
-                                        )
+                		.executes(CommandContext -> execute(CommandContext, "hardcore")
                                 )
-                        .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "hardcoreV")
-                                        )
+                		)
+                .then(Commands.literal("level-name")
+                		.executes(CommandContext -> execute(CommandContext, "level-name")
                                 )
-                        )
+                		)
+                .then(Commands.literal("level-seed")
+                		.executes(CommandContext -> execute(CommandContext, "level-seed")
+                                )
+                		)
+                .then(Commands.literal("level-type")
+                		.executes(CommandContext -> execute(CommandContext, "level-type")
+                                )
+                		)
                 .then(Commands.literal("max-build-height")
                         .then(Commands.literal("modify")
                                 .then(Commands.argument("buildlimit", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
@@ -299,46 +269,26 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
                                 )
                         )
                 .then(Commands.literal("max-players")
-                        .then(Commands.literal("modify")
-                                .then(Commands.argument("max", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
-                                        .executes(CommandContext -> execute(CommandContext, "max-playersT")
-                                                )
-                                        )
+                		.executes(CommandContext -> execute(CommandContext, "max-players")
                                 )
-                        .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "max-playersV")
-                                        )
-                                )
-                        )
+                		)
                 .then(Commands.literal("max-tick-time")
-                        .then(Commands.literal("modify")
-                                .then(Commands.argument("max", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
-                                        .executes(CommandContext -> execute(CommandContext, "max-tick-timeT")
-                                                )
-                                        )
+                		.executes(CommandContext -> execute(CommandContext, "max-tick-time")
                                 )
-                        .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "max-tick-timeV")
-                                        )
-                                )
-                        )
+                		)
                 .then(Commands.literal("max-world-size")
-                        .then(Commands.literal("modify")
-                                .then(Commands.argument("maxSize", IntegerArgumentType.integer(1, 29999984))
-                                        .executes(CommandContext -> execute(CommandContext, "max-world-sizeT")
-                                                )
-                                        )
+                		.executes(CommandContext -> execute(CommandContext, "max-world-size")
                                 )
-                        .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "max-world-sizeV")
-                                        )
-                                )
-                        )
+                		)
                 .then(Commands.literal("motd")
                         .then(Commands.literal("modify")
                                 .then(Commands.argument("motd", StringArgumentType.greedyString())
                                         .executes(CommandContext -> execute(CommandContext, "motdT")
                                                 )
+                                        )
+                                )
+                        .then(Commands.literal("clear")
+                                .executes(CommandContext -> execute(CommandContext, "motdC")
                                         )
                                 )
                         .then(Commands.literal("view")
@@ -418,15 +368,147 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
                                         )
                                 )
                         )
-                .then(Commands.literal("spawnprotection")
+                .then(Commands.literal("query.port")
+                		.executes(CommandContext -> execute(CommandContext, "level-type")
+                                )
+                		)
+                .then(Commands.literal("rate-limit")
+                		.executes(CommandContext -> execute(CommandContext, "level-type")
+                                )
+                		)
+                .then(Commands.literal("rcon.password")
+                		.executes(CommandContext -> execute(CommandContext, "level-type")
+                                )
+                		)
+                .then(Commands.literal("rcon.port")
+                		.executes(CommandContext -> execute(CommandContext, "level-type")
+                                )
+                		)
+                .then(Commands.literal("resource-pack")
+                		.then(Commands.literal("modify")
+                                .then(Commands.argument("PackName", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "resource-packT")
+                                                )
+                                        )
+                                )
+                		.then(Commands.literal("clear")
+                                .executes(CommandContext -> execute(CommandContext, "resource-packC")
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "resource-packV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("resource-pack-sha1")
+                		.then(Commands.literal("modify")
+                                .then(Commands.argument("sha1", StringArgumentType.greedyString())
+                                        .executes(CommandContext -> execute(CommandContext, "resource-pack-sha1T")
+                                                )
+                                        )
+                                )
+                		.then(Commands.literal("clear")
+                                .executes(CommandContext -> execute(CommandContext, "resource-pack-sha1C")
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "resource-pack-sha1V")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("server-ip")
+                		.executes(CommandContext -> execute(CommandContext, "server-ip")
+                                )
+                		)
+                .then(Commands.literal("server-ip")
+                		.executes(CommandContext -> execute(CommandContext, "server-port")
+                                )
+                		)
+                .then(Commands.literal("snooper-enabled")
+                		.executes(CommandContext -> execute(CommandContext, "snooper-enabled")
+                                )
+                		)
+                .then(Commands.literal("spawn-animals")
                         .then(Commands.literal("modify")
-                                .then(Commands.argument("radius", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
-                                        .executes(CommandContext -> execute(CommandContext, "spawnprotectionT")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "spawn-animalsT")
                                                 )
                                         )
                                 )
                         .then(Commands.literal("view")
-                                .executes(CommandContext -> execute(CommandContext, "spawnprotectionV")
+                                .executes(CommandContext -> execute(CommandContext, "spawn-animalsV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("spawn-monsters")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "spawn-monstersT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "spawn-monstersV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("spawn-npcs")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "spawn-npcsT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "spawn-npcsV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("spawn-protection")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("radius", IntegerArgumentType.integer(0, Integer.MAX_VALUE))
+                                        .executes(CommandContext -> execute(CommandContext, "spawn-protectionT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "spawn-protectionV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("sync-chunk-writes")
+                		.executes(CommandContext -> execute(CommandContext, "sync-chunk-writes")
+                                )
+                		)
+                .then(Commands.literal("text-filtering-config")
+                		.executes(CommandContext -> execute(CommandContext, "text-filtering-config")
+                                )
+                		)
+                .then(Commands.literal("use-native-transport")
+                		.executes(CommandContext -> execute(CommandContext, "text-filtering-config")
+                                )
+                		)
+                .then(Commands.literal("view-distance")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("distance", IntegerArgumentType.integer(3, 32))
+                                        .executes(CommandContext -> execute(CommandContext, "view-distanceT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "view-distanceV")
+                                        )
+                                )
+                        )
+                .then(Commands.literal("white-list")
+                        .then(Commands.literal("modify")
+                                .then(Commands.argument("toggle", BoolArgumentType.bool())
+                                        .executes(CommandContext -> execute(CommandContext, "white-listT")
+                                                )
+                                        )
+                                )
+                        .then(Commands.literal("view")
+                                .executes(CommandContext -> execute(CommandContext, "white-listV")
                                         )
                                 )
                         )
@@ -444,7 +526,7 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 
         if (params.equals("blank"))
         {
-            ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("Options: %s", StringUtils.join(options, ", ")));
+            ChatOutputHandler.chatNotification(ctx.getSource(), "Usage: /serversettings <setting> <option>");
             return Command.SINGLE_SUCCESS;
         }
         ServerPropertiesProvider settings= ServerUtil.getServerPropProvider((DedicatedServer) ServerLifecycleHooks.getCurrentServer());
@@ -504,27 +586,6 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set enable-command-block to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
 
-			case "enable-jmx-monitoringV":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow jmx-monitoring is set to: %s", Boolean.toString(settings.getProperties().enableJmxMonitoring)));
-			    return Command.SINGLE_SUCCESS;
-			case "enable-jmx-monitoringT":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("jmx-monitoring can only be set from server.properties file before launch!"));
-			    return Command.SINGLE_SUCCESS;
-
-			case "enable-queryV":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow enable-query is set to: %s", Boolean.toString(settings.getProperties().enableQuery)));
-			    return Command.SINGLE_SUCCESS;
-			case "enable-queryT":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("enable-query can only be set from server.properties file before launch!"));
-			    return Command.SINGLE_SUCCESS;
-
-			case "enable-rconV":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow enable-rcon is set to: %s", Boolean.toString(settings.getProperties().enableRcon)));
-			    return Command.SINGLE_SUCCESS;
-			case "enable-rconT":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("enable-rcon can only be set from server.properties file before launch!"));
-			    return Command.SINGLE_SUCCESS;
-
 			case "enable-statusV":
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("enable-status is set to: %s", Boolean.toString(Dserver.repliesToStatus())));
 			    return Command.SINGLE_SUCCESS;
@@ -577,20 +638,6 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set default gamemode to %s", gamemode.getName()));
 			    return Command.SINGLE_SUCCESS;
 
-			case "generate-structuresV":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Allow generate-structures is set to: %s", Boolean.toString(server.getWorldData().worldGenSettings().generateFeatures())));
-			    return Command.SINGLE_SUCCESS;
-			case "generate-structuresT":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("generate-structures can only be set from server.properties file before launch!"));
-			    return Command.SINGLE_SUCCESS;
-
-			case "hardcoreV":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("hardcore is set to: %s", Boolean.toString(Dserver.isHardcore())));
-			    return Command.SINGLE_SUCCESS;
-			case "hardcoreT":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("hardcore can only be set from server.properties file before launch!"));
-			    return Command.SINGLE_SUCCESS;
-
 			case "max-build-heightV":
 			        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("build limit is set to: %d", server.getMaxBuildHeight()));
 			        return Command.SINGLE_SUCCESS;
@@ -600,33 +647,14 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set max-build-height to %d", IntegerArgumentType.getInteger(ctx, "buildlimit")));
 			    return Command.SINGLE_SUCCESS;
 
-			case "max-playersV":
-		        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("maximum amount of players is set to: %d", server.getMaxPlayers()));
-		        return Command.SINGLE_SUCCESS;
-			case "max-playersT":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("maximum amount of players can only be set from server.properties file before launch!"));
-			    return Command.SINGLE_SUCCESS;
-
-			case "max-tick-timeV":
-		        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("max-tick-time is set to: %d", Dserver.getMaxTickLength()));
-		        return Command.SINGLE_SUCCESS;
-			case "max-tick-timeT":
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("max-tick-time can only be set from server.properties file before launch!"));
-			    return Command.SINGLE_SUCCESS;
-
-			case "max-world-sizeV":
-		        ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("max-world-size is set to: %d", Dserver.getAbsoluteMaxWorldSize()));
-		        return Command.SINGLE_SUCCESS;
-			case "max-world-sizeT":
-				for(ServerWorld world : server.getAllLevels()) {
-					world.getWorldBorder().setAbsoluteMaxSize(IntegerArgumentType.getInteger(ctx, "maxSize"));
-				}
-			    saveSettings("max-world-size", "field_219004_Q", IntegerArgumentType.getInteger(ctx, "maxSize"));
-			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set max-world-size to %d", IntegerArgumentType.getInteger(ctx, "maxSize")));
-			    return Command.SINGLE_SUCCESS;
-
 			case "motdV":
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("MotD = %s", server.getMotd()));
+			    return Command.SINGLE_SUCCESS;
+			case "motdC":
+			    server.getStatus().setDescription(new StringTextComponent("A Minecraft Server"));
+			    server.setMotd("A Minecraft Server");
+			    saveSettings("motd", "field_219015_i", "A Minecraft Server");
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set MotD to %s", "A Minecraft Server"));
 			    return Command.SINGLE_SUCCESS;
 			case "motdT":
 			    String motd = ScriptArguments.process(StringArgumentType.getString(ctx, "motd"), null);
@@ -688,28 +716,120 @@ public class CommandServerSettings extends ForgeEssentialsCommandBuilder
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set pvp to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
 			    return Command.SINGLE_SUCCESS;
 
+			case "resource-packV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("resource-pack is set to: %s", server.getResourcePack()));
+			    return Command.SINGLE_SUCCESS;
+			case "resource-packC":
+				saveSettings("resource-pack", "field_219014_h", "");
+			    server.setResourcePack("", server.getResourcePackHash());
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set resource-pack to %s", ""));
+			    return Command.SINGLE_SUCCESS;
+			case "resource-packT":
+				saveSettings("resource-pack", "field_219014_h", StringArgumentType.getString(ctx, "PackName"));
+			    server.setResourcePack(StringArgumentType.getString(ctx, "PackName"), server.getResourcePackHash());
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set resource-pack to %s", StringArgumentType.getString(ctx, "PackName")));
+			    return Command.SINGLE_SUCCESS;
 
-			case "spawnprotectionV":
+			case "resource-pack-sha1V":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("resource-pack-sha1 is set to: %s", server.getResourcePackHash()));
+			    return Command.SINGLE_SUCCESS;
+			case "resource-pack-sha1C":
+				saveSettings("resource-pack-sha1", "field_218989_B", "");
+			    server.setResourcePack(server.getResourcePack(), "");
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set resource-pack-sha1 to %s", ""));
+			    return Command.SINGLE_SUCCESS;
+			case "resource-pack-sha1T":
+				saveSettings("resource-pack-sha1", "field_218989_B", StringArgumentType.getString(ctx, "sha1"));
+			    server.setResourcePack(server.getResourcePack(), StringArgumentType.getString(ctx, "sha1"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set resource-pack-sha1 to %s", StringArgumentType.getString(ctx, "sha1")));
+			    return Command.SINGLE_SUCCESS;
+
+			case "snooper-enabled":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("snooper-enabled is currently un-implimented by mojang"));
+			    return Command.SINGLE_SUCCESS;
+
+			case "spawn-animalsV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("spawn-animals is set to: %s", Boolean.toString(server.isSpawningAnimals())));
+			    return Command.SINGLE_SUCCESS;
+			case "spawn-animalsT":
+				saveSettings("spawn-animals", "field_219010_d", BoolArgumentType.getBool(ctx, "toggle"));
+				for(ServerWorld serverworld : server.getAllLevels()) {
+					serverworld.setSpawnSettings(server.getWorldData().getDifficulty() != Difficulty.PEACEFUL, BoolArgumentType.getBool(ctx, "toggle"));
+				}
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set spawn-animals to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "spawn-monstersV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("spawn-monsters is set to: %s", Boolean.toString(Dserver.isSpawningMonsters())));
+			    return Command.SINGLE_SUCCESS;
+			case "spawn-monstersT":
+				saveSettings("spawn-monsters", "field_218992_E", BoolArgumentType.getBool(ctx, "toggle"));
+				for(ServerWorld serverworld : server.getAllLevels()) {
+					serverworld.setSpawnSettings(BoolArgumentType.getBool(ctx, "toggle"), server.isSpawningAnimals());
+				}
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set spawn-monsters to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
+
+			case "spawn-npcsV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("spawn-npcs is set to: %s", Boolean.toString(Dserver.areNpcsEnabled())));
+			    return Command.SINGLE_SUCCESS;
+			case "spawn-npcsT":
+				saveSettings("spawn-npcs", "field_219011_e", BoolArgumentType.getBool(ctx, "toggle"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set spawn-npcs to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
+ 
+			case "spawn-protectionV":
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Spawn protection size: %d", server.getSpawnProtectionRadius()));
 			    return Command.SINGLE_SUCCESS;
-			case "spawnprotectionT":
+			case "spawn-protectionT":
 				saveSettings("spawn-protection", "field_218996_I", IntegerArgumentType.getInteger(ctx, "radius"));
 			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set spawn-protection to %d", IntegerArgumentType.getInteger(ctx, "radius")));
 			    return Command.SINGLE_SUCCESS;
+
+			case "text-filtering-config":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("text-filtering-config is currently un-implimented by mojang"));
+			    return Command.SINGLE_SUCCESS;
+
+			case "view-distanceV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("view-distance is set to: %d", server.getPlayerList().getViewDistance()));
+			    return Command.SINGLE_SUCCESS;
+			case "view-distanceT":
+				saveSettings("view-distance", "field_218999_L", IntegerArgumentType.getInteger(ctx, "distance"));
+				server.getPlayerList().setViewDistance(IntegerArgumentType.getInteger(ctx, "distance"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set view-distance to %d", IntegerArgumentType.getInteger(ctx, "distance")));
+			    return Command.SINGLE_SUCCESS;
+
+			case "white-listV":
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("white-list is set to: %s", Boolean.toString(server.getPlayerList().isUsingWhitelist())));
+			    return Command.SINGLE_SUCCESS;
+			case "white-listT":
+				saveSettings("white-list", "field_219006_S", BoolArgumentType.getBool(ctx, "toggle"));
+				if(server.getPlayerList() instanceof DedicatedPlayerList) {
+					((DedicatedPlayerList) server.getPlayerList()).setUsingWhiteList(BoolArgumentType.getBool(ctx, "toggle"));
+
+				}
+				else {
+					server.getPlayerList().setUsingWhiteList(BoolArgumentType.getBool(ctx, "toggle"));
+
+				}
+				saveSettings("white-list", "field_219006_S", BoolArgumentType.getBool(ctx, "toggle"));
+			    ChatOutputHandler.chatConfirmation(ctx.getSource(), Translator.format("Set white-list to %s", Boolean.toString(BoolArgumentType.getBool(ctx, "toggle"))));
+			    return Command.SINGLE_SUCCESS;
 			default:
-			    ChatOutputHandler.chatError(ctx.getSource(), Translator.format(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, params));
+			    ChatOutputHandler.chatError(ctx.getSource(), Translator.format("%s can only be set from server.properties file before launch!", params));
+			    return Command.SINGLE_SUCCESS;
 			}
 		} catch (NoSuchFieldException e) {
-		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting NSFE!");
+		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting NoSuchFieldException!");
 			e.printStackTrace();
 		} catch (SecurityException e) {
-		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting SeE!");
+		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting SecurityException!");
 			e.printStackTrace();
 		} catch (ScriptException e) {
-		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting ScE!");
+		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting ScriptException!");
 			e.printStackTrace();
 		} catch (Exception e) {
-		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting E!");
+		    ChatOutputHandler.chatError(ctx.getSource(), "Failed to change setting Exception!");
 			e.printStackTrace();
 		}
         return Command.SINGLE_SUCCESS;
