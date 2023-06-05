@@ -43,15 +43,14 @@ public class CommandServerPerf extends ForgeEssentialsCommandBuilder
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ChatOutputHandler.chatNotification(ctx.getSource(), "Memory usage:");
-        ChatOutputHandler.chatNotification(ctx.getSource(), "Max: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
-        ChatOutputHandler.chatNotification(ctx.getSource(), "Total: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
-        ChatOutputHandler.chatNotification(ctx.getSource(), "Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
-        long used = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        ChatOutputHandler.chatNotification(ctx.getSource(), "Used: " + (used / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Max Allowed: " + (Runtime.getRuntime().maxMemory() / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Total Allocated: " + (Runtime.getRuntime().totalMemory() / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Amount Used: " + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024) + " MiB");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "Amount Free: " + (Runtime.getRuntime().freeMemory() / 1024 / 1024) + " MiB");
+
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        ChatOutputHandler.chatNotification(ctx.getSource(),
-                "Average tick time: " + formatNumbers.format(this.func_120035_a(server.tickTimes) * 1.0E-6D) + " ms");
-        ChatOutputHandler.chatNotification(ctx.getSource(), "For TPS information, run /forge tps.");
+        ChatOutputHandler.chatNotification(ctx.getSource(),"Average tick time: " + formatNumbers.format(this.func_120035_a(server.tickTimes) * 1.0E-6D) + " ms");
+        ChatOutputHandler.chatNotification(ctx.getSource(), "For Better TPS information, run /forge tps.");
         return Command.SINGLE_SUCCESS;
     }
 
