@@ -86,7 +86,7 @@ public class CommandWand extends ForgeEssentialsCommandBuilder
         }else 
         {
             // Check for permissions
-            if (!checkCommandPermission(ctx.getSource())){
+            if (!hasPermission(ctx.getSource(), getPermissionNode())){
                 ChatOutputHandler.chatError(player, FEPermissions.MSG_NO_COMMAND_PERM);
                 return Command.SINGLE_SUCCESS;
             }

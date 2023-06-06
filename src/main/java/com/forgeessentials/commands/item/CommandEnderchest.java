@@ -37,6 +37,14 @@ public class CommandEnderchest extends ForgeEssentialsCommandBuilder
     }
 
     @Override
+    public LiteralArgumentBuilder<CommandSource> setExecution()
+    {
+        return baseBuilder
+                .executes(CommandContext -> execute(CommandContext, "blank")
+                        );
+    }
+
+    @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         ServerPlayerEntity player = (ServerPlayerEntity) ctx.getSource().getEntity();
@@ -67,14 +75,6 @@ public class CommandEnderchest extends ForgeEssentialsCommandBuilder
     public String getPermissionNode()
     {
         return ModuleCommands.PERM + ".enderchest";
-    }
-
-    @Override
-    public LiteralArgumentBuilder<CommandSource> setExecution()
-    {
-        return baseBuilder
-                .executes(CommandContext -> execute(CommandContext, "blank")
-                        );
     }
 
 }

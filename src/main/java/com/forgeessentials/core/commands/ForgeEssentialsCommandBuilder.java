@@ -45,8 +45,8 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor{
 
     // ------------------------------------------------------------
     // Permissions
-
-    public boolean checkPermission(MinecraftServer server, CommandSource sender)
+	@Deprecated
+    public boolean checkPermission(CommandSource sender)
     {
         if (!canConsoleUseCommand() && !(sender.getEntity() instanceof PlayerEntity))
             return false;
@@ -56,6 +56,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor{
     public abstract boolean canConsoleUseCommand();
 
 	/**
+	 * @deprecated
      * Check, if the sender has permissions to use this command
      */
     public boolean checkCommandPermission(CommandSource sender)
