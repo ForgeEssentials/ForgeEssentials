@@ -1,5 +1,5 @@
 package com.forgeessentials.factions;
-/*TODO REIMPLEMENT
+/*
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -7,6 +7,7 @@ import java.util.Set;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -14,14 +15,14 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
-import com.forgeessentials.core.misc.TranslatedCommandException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.questioner.QuestionerCallback;
-import com.forgeessentials.util.questioner.QuestionerStillActiveException;
+import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -67,30 +68,75 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
     @Override
     public boolean canConsoleUseCommand()
     {
-        return true;
+        return false;
     }
 
     @Override
     public LiteralArgumentBuilder<CommandSource> setExecution()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return baseBuilder
+                .then(Commands.literal("list")
+                        .executes(CommandContext -> execute(CommandContext, "single-")
+                                )
+                        )
+                .then(Commands.literal("create")
+                        .executes(CommandContext -> execute(CommandContext, "single-")
+                                )
+                        )
+                .then(Commands.literal("join")
+                        .executes(CommandContext -> execute(CommandContext, "single-")
+                                )
+                        )
+                .then(Commands.literal("leave")
+                        .executes(CommandContext -> execute(CommandContext, "single-")
+                                )
+                        )
+                .then(Commands.literal("invite")
+                        .executes(CommandContext -> execute(CommandContext, "single-")
+                                )
+                        )
+                .then(Commands.literal("ally")
+                        .executes(CommandContext -> execute(CommandContext, "single-")
+                                )
+                        )
+                .then(Commands.literal("unally")
+                        .executes(CommandContext -> execute(CommandContext, "single-")
+                                )
+                        )
+                .then(Commands.literal("members")
+                        .executes(CommandContext -> execute(CommandContext, "single-")
+                                )
+                        )
+                .then(Commands.literal("ff")
+                        .executes(CommandContext -> execute(CommandContext, "single-")
+                                )
+                        )
+                .then(Commands.literal("bonus")
+                        .executes(CommandContext -> execute(CommandContext, "single-")
+                                )
+                        )
+                .then(Commands.literal("delete")
+                        .executes(CommandContext -> execute(CommandContext, "single-")
+                                )
+                        )
+                .executes(CommandContext -> execute(CommandContext, "help")
+                        );
     }
 
     @Override
     public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
-        if (arguments.isEmpty())
+        if (params.equals("help"))
         {
-            if (arguments.hasPermission(ModuleFactions.PERM_LIST))
-                arguments.confirm("/faction list");
+            if (hasPermission(ctx.getSource(),ModuleFactions.PERM_LIST)) {
+            	ChatOutputHandler.chatConfirmation(ctx.getSource(), "/faction list");
+            }
             return Command.SINGLE_SUCCESS;
         }
-
         String faction = null;
-        if (arguments.hasPlayer())
+        if (getServerPlayer(ctx.getSource()) != null)
         {
-            List<String> factions = ModuleFactions.getFaction(arguments.ident);
+            List<String> factions = ModuleFactions.getFaction(getIdent(ctx.getSource()));
             if (!factions.isEmpty())
                 faction = factions.get(0);
         }
@@ -131,120 +177,142 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
         switch (subcmd)
         {
         case "list":
-            parseList(arguments);
+            parseList(ctx, params);
             break;
         case "create":
-            parseCreate(arguments);
+            parseCreate(ctx, params);
             break;
         case "join":
-            parseJoin(arguments);
+            parseJoin(ctx, params);
             break;
         case "leave":
-            parseLeave(arguments, faction);
+            parseLeave(ctx, params, faction);
             break;
         case "invite":
-            parseInvite(arguments, faction);
+            parseInvite(ctx, params, faction);
             break;
         case "ally":
-            parseAlly(arguments, faction, true);
+            parseAlly(ctx, params, faction, true);
             break;
         case "unally":
-            parseAlly(arguments, faction, false);
+            parseAlly(ctx, params, faction, false);
             break;
         case "members":
-            parseMembers(arguments, faction);
+            parseMembers(ctx, params, faction);
             break;
         case "ff":
-            parseFrindlyFire(arguments, faction);
+            parseFrindlyFire(ctx, params, faction);
             break;
         case "bonus":
-            parseBonus(arguments, faction);
+            parseBonus(ctx, params, faction);
             break;
         case "delete":
-            if (faction == null)
-                throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
-            parseDelete(arguments, faction);
+            if (faction == null) {
+            	ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
+            	return Command.SINGLE_SUCCESS;
+            }
+            parseDelete(ctx, params, faction);
             break;
         default:
-            throw new TranslatedCommandException(FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_UNKNOWN_SUBCOMMAND, subcmd);
+        	return Command.SINGLE_SUCCESS;
         }
+        return Command.SINGLE_SUCCESS;
     }
 
-    public static void parseList(CommandParserArgs arguments) throws CommandException
+    public static void parseList(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-        arguments.checkPermission(ModuleFactions.PERM_LIST);
-        if (arguments.isTabCompletion)
-            return;
+    	if(!hasPermission(ctx.getSource(),ModuleFactions.PERM_LIST)) {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+    		return;
+    	}
 
         // TODO
-        throw new TranslatedCommandException("Not yet implemented");
+		ChatOutputHandler.chatError(ctx.getSource(), "Not yet implemented");
     }
 
-    public static void parseCreate(CommandParserArgs arguments) throws CommandException
+    public static void parseCreate(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-        if (arguments.isTabCompletion)
+        if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_CREATE)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
+        if (arguments.isEmpty()) {
+            subCommandHelp(ctx, "create <id> [name...]: Create a new faction");
             return;
-        arguments.checkPermission(ModuleFactions.PERM_CREATE);
-        if (arguments.isEmpty())
-            subCommandHelp(arguments, "create <id> [name...]: Create a new faction");
+        }
 
         String faction = arguments.remove();
         String name = arguments.toString();
         if (name.isEmpty())
             name = faction;
 
-        if (ModuleFactions.isFaction(faction))
-            throw new TranslatedCommandException(MSG_FACTION_EXISTS, faction);
-        if (arguments.senderPlayer != null)
+        if (ModuleFactions.isFaction(faction)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_EXISTS, faction);
+        	return;
+        }
+        if (getServerPlayer(ctx.getSource()) != null)
         {
-            if (!ModuleFactions.getFaction(arguments.ident).isEmpty())
-                throw new TranslatedCommandException("You are already in a faction!");
-            APIRegistry.perms.getServerZone().addPlayerToGroup(arguments.ident, ModuleFactions.getFactionGroup(faction));
-            ModuleFactions.setRank(arguments.ident, ModuleFactions.RANK_OWNER);
+            if (!ModuleFactions.getFaction(getIdent(ctx.getSource())).isEmpty()) {
+            	ChatOutputHandler.chatError(ctx.getSource(), "You are already in a faction!");
+            	return;
+            }
+            APIRegistry.perms.getServerZone().addPlayerToGroup(getIdent(ctx.getSource()), ModuleFactions.getFactionGroup(faction));
+            ModuleFactions.setRank(getIdent(ctx.getSource()), ModuleFactions.RANK_OWNER);
         }
         ModuleFactions.setFactionName(faction, name);
-        arguments.confirm("Created faction [%s] \"%s\"", faction, name);
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), "Created faction [%s] \"%s\"", faction, name);
     }
 
-    public static void parseJoin(final CommandParserArgs arguments) throws CommandException
+    public static void parseJoin(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-        arguments.needsPlayer();
-        arguments.checkPermission(ModuleFactions.PERM_JOIN);
-        if (arguments.isEmpty())
-            subCommandHelp(arguments, "join <faction>: Request to join a faction");
+    	if (getServerPlayer(ctx.getSource()) != null)
+        {
+    		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
+        	return;
+        }
+    	
+        if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_JOIN)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
+        if (arguments.isEmpty()) {
+            subCommandHelp(ctx, "join <faction>: Request to join a faction");
+            return;
+        }
 
         arguments.tabComplete(ModuleFactions.getFactions());
         final String faction = arguments.remove();
-        if (!ModuleFactions.isFaction(faction))
-            throw new TranslatedCommandException(MSG_UNKNOWN_FACTION, faction);
-        if (arguments.isTabCompletion)
-            return;
+        if (!ModuleFactions.isFaction(faction)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), MSG_UNKNOWN_FACTION, faction);
+        	return;
+        }
 
         // Check if the player is allowed to join
         boolean locked = ModuleFactions.isLockedFaction(faction);
-        if (locked && arguments.hasPermission(ModuleFactions.PERM_JOIN_ANY))
+        if (locked && hasPermission(ctx.getSource(), ModuleFactions.PERM_JOIN_ANY))
             locked = false;
 
         if (!locked)
         {
-            APIRegistry.perms.getServerZone().addPlayerToGroup(arguments.ident, ModuleFactions.getFactionGroup(faction));
-            arguments.confirm(MSG_JOINED_FACTION, ModuleFactions.getFactionName(faction));
+            APIRegistry.perms.getServerZone().addPlayerToGroup(getIdent(ctx.getSource()), ModuleFactions.getFactionGroup(faction));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), MSG_JOINED_FACTION, ModuleFactions.getFactionName(faction));
             return;
         }
 
-        String message = Translator.format("Allow %s to join the faction %s?", arguments.ident.getUsernameOrUuid(), faction);
+        String message = Translator.format("Allow %s to join the faction %s?", getIdent(ctx.getSource()).getUsernameOrUuid(), faction);
         QuestionerCallback callback = new QuestionerCallback() {
             @Override
             public void respond(Boolean response)
             {
                 if (response == null)
-                    arguments.error("Join request timed out");
+                	ChatOutputHandler.chatError(ctx.getSource(), "Join request timed out");
                 else if (!response)
-                    arguments.error("Join request denied");
+                	ChatOutputHandler.chatError(ctx.getSource(), "Join request denied");
                 else
                 {
-                    APIRegistry.perms.getServerZone().addPlayerToGroup(arguments.ident, ModuleFactions.getFactionGroup(faction));
-                    arguments.confirm(MSG_JOINED_FACTION, ModuleFactions.getFactionName(faction));
+                    APIRegistry.perms.getServerZone().addPlayerToGroup(getIdent(ctx.getSource()), ModuleFactions.getFactionGroup(faction));
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), MSG_JOINED_FACTION, ModuleFactions.getFactionName(faction));
                 }
             }
         };
@@ -256,8 +324,8 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
             {
                 try
                 {
-                    Questioner.add(player.createCommandSourceStack(), message, callback);
-                    arguments.confirm("Requested %s to accept your join request", player.getDisplayName().getString());
+                    Questioner.add(player, message, callback);
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "Requested %s to accept your join request", player.getDisplayName().getString());
                     return;
                 }
                 catch (QuestionerStillActiveException e)
@@ -265,107 +333,133 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
                 }
             }
         }
-        arguments.error("No player found to accept join request");
+        ChatOutputHandler.chatError(ctx.getSource(), "No player found to accept join request");
     }
 
-    public static void parseLeave(CommandParserArgs arguments, String faction) throws CommandException
+    public static void parseLeave(CommandContext<CommandSource> ctx, String params, String faction) throws CommandException
     {
-        if (arguments.isTabCompletion)
-            return;
-        if (faction == null)
-            throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
-        if (ModuleFactions.hasFactionRank(arguments.ident, ModuleFactions.RANK_OWNER))
-            throw new TranslatedCommandException("Owners cannot leave factions (use delete instead)");
-        arguments.checkPermission(ModuleFactions.PERM_LEAVE);
-        APIRegistry.perms.getServerZone().removePlayerFromGroup(arguments.ident, ModuleFactions.getFactionGroup(faction));
-        arguments.confirm(MSG_LEFT_FACTION, ModuleFactions.getFactionName(faction));
+        if (faction == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
+        	return;
+        }
+        if (ModuleFactions.hasFactionRank(getIdent(ctx.getSource()), ModuleFactions.RANK_OWNER)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), "Owners cannot leave factions (use delete instead)");
+        	return;
+        }
+        if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_LEAVE)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
+        APIRegistry.perms.getServerZone().removePlayerFromGroup(getIdent(ctx.getSource()), ModuleFactions.getFactionGroup(faction));
+        ChatOutputHandler.chatConfirmation(ctx.getSource(), MSG_LEFT_FACTION, ModuleFactions.getFactionName(faction));
     }
 
-    public static void parseInvite(CommandParserArgs arguments, String faction) throws CommandException
+    public static void parseInvite(CommandContext<CommandSource> ctx, String params, String faction) throws CommandException
     {
-        if (faction == null)
-            throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
-        arguments.checkPermission(ModuleFactions.PERM_INVITE);
-        if (arguments.isEmpty())
-            subCommandHelp(arguments, "invite <player>: Invite a player to your faction");
-
-        if (arguments.isTabCompletion)
-            return;
-
-        // TODO
-        throw new TranslatedCommandException("Not yet implemented");
-    }
-
-    public static void parseAlly(CommandParserArgs arguments, String faction, boolean ally) throws CommandException
-    {
-        if (faction == null)
-            throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
-        arguments.checkPermission(ModuleFactions.PERM_ALLY);
-        if (arguments.isEmpty())
-            subCommandHelp(arguments, (ally ? "ally" : "unally") + " <faction>: Ally with other factions");
-
-        if (arguments.isTabCompletion)
-            return;
-
-        // TODO
-        throw new TranslatedCommandException("Not yet implemented");
-    }
-
-    public static void parseMembers(CommandParserArgs arguments, String faction) throws CommandException
-    {
-        if (faction == null)
-            throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
-        arguments.checkPermission(ModuleFactions.PERM_MEMBERS);
-        if (arguments.isEmpty())
-        {
-            arguments.confirm("/faction members kick|promote|deomote");
-            if (arguments.hasPermission(ModuleFactions.PERM_MEMBERS_ADD))
-                arguments.confirm("/faction members add|owner");
+        if (faction == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
+        	return;
+        }
+        if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_INVITE)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
+        if (arguments.isEmpty()) {
+            subCommandHelp(ctx, "invite <player>: Invite a player to your faction");
             return;
         }
 
-        if (arguments.isTabCompletion)
-            return;
-
         // TODO
-        throw new TranslatedCommandException("Not yet implemented");
+		ChatOutputHandler.chatError(ctx.getSource(), "Not yet implemented");
     }
 
-    public static void parseFrindlyFire(CommandParserArgs arguments, String faction) throws CommandException
+    public static void parseAlly(CommandContext<CommandSource> ctx, String params, String faction, boolean ally) throws CommandException
     {
-        if (faction == null)
-            throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
-        arguments.checkPermission(ModuleFactions.PERM_FF);
+        if (faction == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
+        	return;
+        }
+        if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_ALLY)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
+        if (arguments.isEmpty()) {
+            subCommandHelp(ctx, (ally ? "ally" : "unally") + " <faction>: Ally with other factions");
+            return;
+        }
+
+        // TODO
+		ChatOutputHandler.chatError(ctx.getSource(), "Not yet implemented");
+    }
+
+    public static void parseMembers(CommandContext<CommandSource> ctx, String params, String faction) throws CommandException
+    {
+        if (faction == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
+        	return;
+        }
+        if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_MEMBERS)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
         if (arguments.isEmpty())
-            subCommandHelp(arguments, "ff on|off: Toggle in-faction PvP");
-
-        if (arguments.isTabCompletion)
+        {
+        	ChatOutputHandler.chatConfirmation(ctx.getSource(), "/faction members kick|promote|deomote");
+            if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_MEMBERS_ADD)) {
+            	ChatOutputHandler.chatConfirmation(ctx.getSource(), "/faction members add|owner");
+            	return;
+            }
             return;
+        }
 
         // TODO
-        throw new TranslatedCommandException("Not yet implemented");
+		ChatOutputHandler.chatError(ctx.getSource(), "Not yet implemented");
     }
 
-    public static void parseBonus(CommandParserArgs arguments, String faction) throws CommandException
+    public static void parseFrindlyFire(CommandContext<CommandSource> ctx, String params, String faction) throws CommandException
     {
-        if (faction == null)
-            throw new TranslatedCommandException(MSG_FACTION_REQUIRED);
-        arguments.checkPermission(ModuleFactions.PERM_BONUS);
-        if (arguments.isEmpty())
-            subCommandHelp(arguments, "bonus <id> <duration>: Control faction bonuses");
-
-        if (arguments.isTabCompletion)
+        if (faction == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
+        	return;
+        }
+        if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_FF)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
+        if (arguments.isEmpty()) {
+            subCommandHelp(ctx, "ff on|off: Toggle in-faction PvP");
             return;
+        }
 
         // TODO
-        throw new TranslatedCommandException("Not yet implemented");
+		ChatOutputHandler.chatError(ctx.getSource(), "Not yet implemented");
     }
 
-    public static void parseDelete(final CommandParserArgs arguments, final String faction) throws CommandException
+    public static void parseBonus(CommandContext<CommandSource> ctx, String params, String faction) throws CommandException
     {
-        if (arguments.isTabCompletion)
+        if (faction == null) {
+        	ChatOutputHandler.chatError(ctx.getSource(), MSG_FACTION_REQUIRED);
+        	return;
+        }
+        if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_BONUS)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
+        if (arguments.isEmpty()) {
+            subCommandHelp(ctx, "bonus <id> <duration>: Control faction bonuses");
             return;
-        arguments.checkPermission(ModuleFactions.PERM_DELETE);
+        }
+
+        // TODO
+		ChatOutputHandler.chatError(ctx.getSource(), "Not yet implemented");
+    }
+
+    public static void parseDelete(CommandContext<CommandSource> ctx, String params, final String faction) throws CommandException
+    {
+    	if (!hasPermission(ctx.getSource(), ModuleFactions.PERM_DELETE)) {
+        	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
+        	return;
+        }
 
         QuestionerCallback callback = new QuestionerCallback() {
             @Override
@@ -394,7 +488,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
                             it.remove();
                 }
                 APIRegistry.perms.getServerZone().getGroupPermissions().remove(factionGroup);
-                arguments.confirm("Deleted faction %s", faction);
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Deleted faction %s", faction);
             }
         };
         try
@@ -403,14 +497,13 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
         }
         catch (QuestionerStillActiveException e)
         {
-            arguments.error(Questioner.MSG_STILL_ACTIVE);
+        	ChatOutputHandler.chatError(ctx.getSource(), Questioner.MSG_STILL_ACTIVE);
         }
     }
 
-    public static void subCommandHelp(CommandParserArgs arguments, String msg) throws CommandException
+    public static void subCommandHelp(CommandContext<CommandSource> ctx, String msg) throws CommandException
     {
-        arguments.confirm("/faction " + msg);
-        throw new CancelParsingException();
+    	ChatOutputHandler.chatConfirmation(ctx.getSource(), "/faction " + msg);
+    	return;
     }
-}
-*/
+}*/
