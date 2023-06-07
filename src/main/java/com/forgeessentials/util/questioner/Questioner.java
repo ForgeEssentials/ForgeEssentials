@@ -16,6 +16,7 @@ import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.questioner.QuestionerException.QuestionerStillActiveException;
 import com.mojang.brigadier.CommandDispatcher;
 
 public class Questioner extends ServerEventHandler
@@ -48,22 +49,29 @@ public class Questioner extends ServerEventHandler
         question.sendQuestion();
     }
 
-    public static void add(PlayerEntity target, String question, QuestionerCallback callback, int timeout, PlayerEntity source) throws QuestionerException
+    public static void add(PlayerEntity target, String question, QuestionerCallback callback, int timeout, PlayerEntity source) throws QuestionerStillActiveException
     {
-        add(new QuestionData(target, question, callback, timeout, source));
+    	try
+        {
+    		add(new QuestionData(target, question, callback, timeout, source));
+        }
+        catch (QuestionerException e)
+        {
+            throw new QuestionerException.QuestionerStillActiveException();
+        }
     }
 
-    public static void add(PlayerEntity target, String question, QuestionerCallback callback, int timeout) throws QuestionerException
+    public static void add(PlayerEntity target, String question, QuestionerCallback callback, int timeout) throws QuestionerStillActiveException
     {
         add(target, question, callback, timeout, null);
     }
 
-    public static void add(PlayerEntity target, String question, QuestionerCallback callback) throws QuestionerException
+    public static void add(PlayerEntity target, String question, QuestionerCallback callback) throws QuestionerStillActiveException
     {
         add(target, question, callback, DEFAULT_TIMEOUT);
     }
 
-    public static void addChecked(PlayerEntity target, String question, QuestionerCallback callback, int timeout, PlayerEntity source) throws QuestionerException.QuestionerStillActiveException
+    public static void addChecked(PlayerEntity target, String question, QuestionerCallback callback, int timeout, PlayerEntity source) throws QuestionerStillActiveException
     {
         try
         {
@@ -75,7 +83,7 @@ public class Questioner extends ServerEventHandler
         }
     }
 
-    public static void addChecked(PlayerEntity target, String question, QuestionerCallback callback, int timeout) throws QuestionerException.QuestionerStillActiveException
+    public static void addChecked(PlayerEntity target, String question, QuestionerCallback callback, int timeout) throws QuestionerStillActiveException
     {
         try
         {
@@ -87,7 +95,7 @@ public class Questioner extends ServerEventHandler
         }
     }
 
-    public static void addChecked(PlayerEntity target, String question, QuestionerCallback callback) throws QuestionerException.QuestionerStillActiveException
+    public static void addChecked(PlayerEntity target, String question, QuestionerCallback callback) throws QuestionerStillActiveException
     {
         try
         {

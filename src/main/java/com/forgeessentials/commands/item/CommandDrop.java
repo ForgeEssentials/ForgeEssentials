@@ -75,7 +75,8 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
                         );
     }
 
-    public void processCommand(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
+    @Override
+    public int execute(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
         Vector3d vector = Vec3Argument.getVec3(ctx, "pos");
         World world = null;
@@ -211,26 +212,15 @@ public class CommandDrop extends ForgeEssentialsCommandBuilder
         else
         {
             ChatOutputHandler.chatError(ctx.getSource(), "No viable container found to put item in.");
-
+            return Command.SINGLE_SUCCESS;
         }
         if (count > 0)
         {
-            ChatOutputHandler.chatError(ctx.getSource(), "Not enough room for items.");
+            ChatOutputHandler.chatError(ctx.getSource(), "Not enough room for all the items.");
         }
         ChatOutputHandler.chatConfirmation(ctx.getSource(), "Items dropped into container.");
+        return Command.SINGLE_SUCCESS;
+
     }
 
-    @Override
-    public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
-    {
-        processCommand(ctx, params);
-        return Command.SINGLE_SUCCESS;
-    }
-
-    @Override
-    public int processCommandConsole(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
-    {
-        processCommand(ctx, params);
-        return Command.SINGLE_SUCCESS;
-    }
 }
