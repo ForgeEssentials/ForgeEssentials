@@ -330,7 +330,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
 
     public static void parseJoin(CommandContext<CommandSource> ctx, String params) throws CommandException
     {
-    	if (getServerPlayer(ctx.getSource()) != null)
+    	if (getServerPlayer(ctx.getSource()) == null)
         {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
         	return;
@@ -521,7 +521,7 @@ public class CommandFaction extends ForgeEssentialsCommandBuilder
         	ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
         	return;
         }
-    	if (getServerPlayer(ctx.getSource()) != null)
+    	if (getServerPlayer(ctx.getSource()) == null)
         {
     		ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_CONSOLE_COMMAND);
         	return;
