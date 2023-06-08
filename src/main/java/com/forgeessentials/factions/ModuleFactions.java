@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
@@ -16,9 +17,11 @@ import com.forgeessentials.api.permissions.FEPermissions;
 import com.forgeessentials.api.permissions.GroupEntry;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.ForgeEssentials;
+import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
+import com.mojang.brigadier.CommandDispatcher;
 
 @FEModule(name = "Factions", parentMod = ForgeEssentials.class, canDisable = true, defaultModule = false)
 public class ModuleFactions
@@ -106,9 +109,8 @@ public class ModuleFactions
     @SubscribeEvent
     public void registerCommands(FERegisterCommandsEvent event)
     {
-        //CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
-        //FECommandManager.registerCommand(new CommandFaction(true), dispatcher);
-        //TODO MASS HIDE
+    	CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
+        FECommandManager.registerCommand(new CommandFaction(true), dispatcher);
     }
 
     @SubscribeEvent
