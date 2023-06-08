@@ -26,7 +26,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import java.util.*;
 import static java.util.stream.Collectors.toList;
@@ -65,7 +64,7 @@ public class Grave implements Loadable
 
     public static Grave createGrave(PlayerEntity player, Collection<ItemEntity> drops)
     {
-        if (!PermissionAPI.hasPermission(player, ModuleAfterlife.PERM_DEATHCHEST))
+        if (!APIRegistry.perms.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST))
             return null;
 
         int xp = 0;
@@ -90,7 +89,7 @@ public class Grave implements Loadable
     {
         this.xp = xp;
         this.owner = player.getUUID();
-        this.hasFencePost = PermissionAPI.hasPermission(player, ModuleAfterlife.PERM_DEATHCHEST_FENCE);
+        this.hasFencePost = APIRegistry.perms.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_FENCE);
         this.lastTick = System.currentTimeMillis();
         this.protTime = ServerUtil.parseIntDefault(APIRegistry.perms.getPermissionProperty(player, ModuleAfterlife.PERM_DEATHCHEST_SAFETIME), 0);
         if (protTime <= 0)
@@ -185,7 +184,7 @@ public class Grave implements Loadable
             return true;
         if (player.getUUID().equals(owner))
             return true;
-        if (PermissionAPI.hasPermission(player, ModuleAfterlife.PERM_DEATHCHEST_BYPASS))
+        if (APIRegistry.perms.checkPermission(player, ModuleAfterlife.PERM_DEATHCHEST_BYPASS))
             return true;
         return false;
     }

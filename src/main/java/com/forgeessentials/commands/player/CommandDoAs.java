@@ -5,7 +5,6 @@ import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -56,7 +55,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
     @Override
     public void registerExtraPermissions()
     {
-        PermissionAPI.registerNode("fe.commands.doas.console", DefaultPermissionLevel.OP, "Use /doas as the console");
+        APIRegistry.perms.registerPermission("fe.commands.doas.console", DefaultPermissionLevel.OP, "Use /doas as the console");
     }
 
     @Override
@@ -85,7 +84,7 @@ public class CommandDoAs extends ForgeEssentialsCommandBuilder
         if ((ctx.getSource().getEntity() instanceof ServerPlayerEntity) && playerS.equalsIgnoreCase("[CONSOLE]"))
         {
             ServerPlayerEntity player = getServerPlayer(ctx.getSource());
-            if (!PermissionAPI.hasPermission(player, "fe.commands.doas.console")){
+            if (!hasPermission(player, "fe.commands.doas.console")){
                 ChatOutputHandler.chatWarning(player, FEPermissions.MSG_NO_COMMAND_PERM);
                 return Command.SINGLE_SUCCESS;
             }

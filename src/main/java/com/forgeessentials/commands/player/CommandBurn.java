@@ -5,7 +5,6 @@ import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -110,7 +109,7 @@ public class CommandBurn extends ForgeEssentialsCommandBuilder
         }
         if (params.equals("othersT"))
         {
-            if (PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
+            if (hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
             {
                 ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
                 if (!player.hasDisconnected())

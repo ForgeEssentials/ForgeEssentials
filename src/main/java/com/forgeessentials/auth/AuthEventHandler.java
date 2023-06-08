@@ -18,7 +18,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -213,7 +212,7 @@ public class AuthEventHandler extends ServerEventHandler
             ChatOutputHandler.chatError(event.getPlayer().createCommandSourceStack(), "Login required. Try /auth help.");
         }
 
-        if (!PermissionAPI.hasPermission(event.getPlayer(), "fe.auth.isVIP"))
+        if (!APIRegistry.perms.checkPermission(event.getPlayer(), "fe.auth.isVIP"))
         {
             int onlinePlayers = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayerCount();
             int availableSlots = ServerLifecycleHooks.getCurrentServer().getPlayerList().getMaxPlayers() - vipSlots - reservedSlots;

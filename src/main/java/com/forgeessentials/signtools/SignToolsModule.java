@@ -19,7 +19,6 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import java.util.ArrayList;
 
@@ -54,8 +53,8 @@ public class SignToolsModule extends ConfigLoaderBase
     {
         APIRegistry.scripts.addScriptType(signinteractKey);
         APIRegistry.scripts.addScriptType(signeditKey);
-        PermissionAPI.registerNode(COLORIZE_PERM, DefaultPermissionLevel.ALL, "Permission to colourize signs");
-        PermissionAPI.registerNode(EDIT_PERM, DefaultPermissionLevel.ALL, "Permission to edit existing signs");
+        APIRegistry.perms.registerNode(COLORIZE_PERM, DefaultPermissionLevel.ALL, "Permission to colourize signs");
+        APIRegistry.perms.registerNode(EDIT_PERM, DefaultPermissionLevel.ALL, "Permission to edit existing signs");
     }
 
     /**
@@ -71,7 +70,7 @@ public class SignToolsModule extends ConfigLoaderBase
             e.setCanceled(true);
         }
 
-        if (!PermissionAPI.hasPermission(e.editor, COLORIZE_PERM))
+        if (!APIRegistry.perms.checkPermission(e.editor, COLORIZE_PERM))
         {
             return;
         }
@@ -110,8 +109,8 @@ public class SignToolsModule extends ConfigLoaderBase
             {
                 if (event.getPlayer().getMainHandItem() != ItemStack.EMPTY)
                 {
-                    if (PermissionAPI.hasPermission(event.getPlayer(), EDIT_PERM)
-                            && PermissionAPI.hasPermission(event.getPlayer(), "fe.protection.use.minecraft.sign")
+                    if (APIRegistry.perms.checkPermission(event.getPlayer(), EDIT_PERM)
+                            && APIRegistry.perms.checkPermission(event.getPlayer(), "fe.protection.use.minecraft.sign")
                             && SIGNS(event.getPlayer().getMainHandItem().getItem()))
                     {
                         // Convert Formatting back into FE format for easy use

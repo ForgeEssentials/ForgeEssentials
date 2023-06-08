@@ -6,7 +6,6 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.ModuleCommands;
@@ -114,7 +113,7 @@ public class CommandRepair extends ForgeEssentialsCommandBuilder
                 item.setDamageValue(IntegerArgumentType.getInteger(ctx, "amount"));
             } 
         }
-        else if (args[1].equals("others") && PermissionAPI.hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
+        else if (args[1].equals("others") && hasPermission(getServerPlayer(ctx.getSource()), getPermissionNode() + ".others"))
         {
             ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
             if(args[0].equals("Max"))

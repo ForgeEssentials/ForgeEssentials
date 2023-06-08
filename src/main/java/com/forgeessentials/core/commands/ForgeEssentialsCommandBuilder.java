@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.core.misc.PermissionManager;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -17,7 +18,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockLogic;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor{
 	protected LiteralArgumentBuilder<CommandSource> baseBuilder;
@@ -66,7 +66,7 @@ public abstract class ForgeEssentialsCommandBuilder extends CommandProcessor{
             return true;
         if (source instanceof MinecraftServer || source instanceof CommandBlockLogic)
             return true;
-        return PermissionAPI.hasPermission(UserIdent.get(((PlayerEntity) sender.getEntity()).getGameProfile()).getPlayer(),getPermissionNode());
+        return APIRegistry.perms.checkPermission(UserIdent.get(((PlayerEntity) sender.getEntity()).getGameProfile()).getPlayer(),getPermissionNode());
     }
 
 

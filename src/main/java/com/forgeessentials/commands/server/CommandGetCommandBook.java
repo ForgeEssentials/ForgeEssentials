@@ -14,7 +14,6 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -117,7 +116,7 @@ public class CommandGetCommandBook extends ForgeEssentialsCommandBuilder
         Map<CommandNode<CommandSource>, String> map = dis.getSmartUsage(dis.getRoot(),ctx.getSource());
         for (CommandNode<CommandSource> cmdObj : map.keySet())
         {
-            if (!PermissionAPI.hasPermission(sender, cmdObj.toString()))
+            if (!hasPermission(sender, cmdObj.toString()))
                 continue;
 
             Set<String> commands = new HashSet<>();

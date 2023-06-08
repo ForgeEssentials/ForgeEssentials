@@ -5,8 +5,8 @@ import java.util.List;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.server.permission.PermissionAPI;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commands.item.CommandKit;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
@@ -66,7 +66,7 @@ public class Kit
 
     public void giveKit(PlayerEntity player)
     {
-        if (!PermissionAPI.hasPermission(player, CommandKit.PERM_BYPASS_COOLDOWN))
+        if (!APIRegistry.perms.checkPermission(player, CommandKit.PERM_BYPASS_COOLDOWN))
         {
             PlayerInfo pi = PlayerInfo.get(player.getUUID());
             long timeout = pi.getRemainingTimeout("KIT_" + name);

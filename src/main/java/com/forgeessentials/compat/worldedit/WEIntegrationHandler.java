@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
@@ -14,7 +15,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 public class WEIntegrationHandler
 {
@@ -69,7 +69,7 @@ public class WEIntegrationHandler
             } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchFieldException e1) {
                 e1.printStackTrace();
             }
-            PermissionAPI.registerNode("worldedit.*", DefaultPermissionLevel.OP, "WorldEdit");
+            APIRegistry.perms.registerNode("worldedit.*", DefaultPermissionLevel.OP, "WorldEdit");
         }
         
     }

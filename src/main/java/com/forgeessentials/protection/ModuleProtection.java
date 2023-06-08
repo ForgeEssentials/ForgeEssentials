@@ -91,7 +91,6 @@ import net.minecraft.util.RegistryKey;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.Zone;
@@ -526,7 +525,7 @@ public class ModuleProtection
             return true;
         String permission = ModuleProtection.getCraftingPermission(result);
         debugPermission(player, permission);
-        return PermissionAPI.hasPermission(player, permission);
+        return APIRegistry.perms.checkPermission(player, permission);
     }
 
 }

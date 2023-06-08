@@ -1,12 +1,12 @@
 package com.forgeessentials.core.mixin.entity.player;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
+import com.forgeessentials.api.APIRegistry;
 import com.mojang.authlib.GameProfile;
 
 @Mixin(PlayerEntity.class)
@@ -30,7 +30,7 @@ public abstract class MixinEntityPlayer
     @Overwrite
     public boolean canUseGameMasterBlocks()
     {
-        return isCreative() && PermissionAPI.hasPermission((PlayerEntity) (Object) this, "mc.commandblock");
+        return isCreative() && APIRegistry.perms.checkPermission((PlayerEntity) (Object) this, "mc.commandblock");
     }
 
     /**

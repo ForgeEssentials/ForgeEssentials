@@ -28,7 +28,6 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 @FEModule(name = "Tickets", parentMod = ForgeEssentials.class)
 public class ModuleTickets implements ConfigSaver
@@ -116,7 +115,7 @@ public class ModuleTickets implements ConfigSaver
     @SubscribeEvent
     public void loadData(PlayerEvent.PlayerLoggedInEvent e)
     {
-        if (PermissionAPI.hasPermission(e.getPlayer(), ModuleTickets.PERMBASE + ".admin"))
+        if (APIRegistry.perms.checkPermission(e.getPlayer(), ModuleTickets.PERMBASE + ".admin"))
         {
             if (!ModuleTickets.ticketList.isEmpty())
             {

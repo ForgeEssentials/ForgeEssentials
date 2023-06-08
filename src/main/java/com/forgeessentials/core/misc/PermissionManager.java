@@ -5,8 +5,8 @@ import java.util.WeakHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.output.LoggingHandler;
-//import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 
@@ -14,7 +14,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.DefaultPermissionHandler;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 /**
  * Transition class to the new Permissions API
@@ -63,7 +62,7 @@ public class PermissionManager
     public static void registerCommandPermission(String commandName)
     {
         commandPermissions.put(commandName, getCommandPermission(commandName));
-        PermissionAPI.registerNode(getCommandPermission(commandName), getCommandLevel(commandName), "");
+        APIRegistry.perms.registerNode(getCommandPermission(commandName), getCommandLevel(commandName), "");
     }
 
     /**
@@ -76,7 +75,7 @@ public class PermissionManager
     public static void registerCommandPermission(String commandName, String permission, DefaultPermissionLevel permissionLevel)
     {
         commandPermissions.put(commandName, permission);
-        PermissionAPI.registerNode(permission, permissionLevel, "");
+        APIRegistry.perms.registerNode(permission, permissionLevel, "");
     }
 
     /**

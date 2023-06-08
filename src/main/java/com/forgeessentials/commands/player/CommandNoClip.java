@@ -5,7 +5,6 @@ import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -110,7 +109,7 @@ public class CommandNoClip extends ForgeEssentialsCommandBuilder
     public static void checkClip(PlayerEntity player)
     {
         PlayerInfo pi = PlayerInfo.get(player);
-        if (pi.isNoClip() && PermissionAPI.hasPermission(player, ModuleCommands.PERM + ".noclip"))
+        if (pi.isNoClip() && hasPermission(player, ModuleCommands.PERM + ".noclip"))
         {
             if (!player.abilities.flying)
             {

@@ -1,5 +1,6 @@
 package com.forgeessentials.perftools;
 
+import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.FEConfig;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigData;
@@ -16,7 +17,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 @FEModule(name = "Perftools", parentMod = ForgeEssentials.class, defaultModule = false)
 public class PerfToolsModule extends ConfigLoaderBase
@@ -45,7 +45,7 @@ public class PerfToolsModule extends ConfigLoaderBase
         if (warn)
         {
             watchdog = new MemoryWatchdog();
-            PermissionAPI.registerNode(PERM_WARN, DefaultPermissionLevel.OP, "Warn server ops when high server resource usage is detected");
+            APIRegistry.perms.registerNode(PERM_WARN, DefaultPermissionLevel.OP, "Warn server ops when high server resource usage is detected");
             TaskRegistry.scheduleRepeated(watchdog, checkInterval * 60 * 1000);
         }
     }

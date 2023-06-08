@@ -11,7 +11,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -1152,7 +1151,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void listUserPermissions(CommandSource sender, UserIdent ident, boolean showGroupPerms) throws CommandException
     {
-        if (ident.isPlayer() && !PermissionAPI.hasPermission(ident.getPlayer(), PERM_LIST_PERMS)) {
+        if (ident.isPlayer() && !hasPermission(ident.getPlayer(), PERM_LIST_PERMS)) {
         	ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
         }
@@ -1258,7 +1257,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void listGroups(CommandSource sender) throws CommandException
     {
-        if (sender.getEntity() instanceof PlayerEntity && !PermissionAPI.hasPermission(getServerPlayer(sender), PERM_LIST_GROUPS)) {
+        if (sender.getEntity() instanceof PlayerEntity && !hasPermission(getServerPlayer(sender), PERM_LIST_GROUPS)) {
         	ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
         }
@@ -1270,7 +1269,7 @@ public class PermissionCommandParser extends CommandUtils
 
     public static void listUsers(CommandSource sender) throws CommandException
     {
-        if (sender.getEntity() instanceof PlayerEntity && !PermissionAPI.hasPermission(getServerPlayer(sender), PERM_LIST_USERS)) {
+        if (sender.getEntity() instanceof PlayerEntity && !hasPermission(getServerPlayer(sender), PERM_LIST_USERS)) {
         	ChatOutputHandler.chatError(sender, FEPermissions.MSG_NO_COMMAND_PERM);
     		return;
         }

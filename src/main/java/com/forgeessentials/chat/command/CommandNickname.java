@@ -6,7 +6,6 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.permissions.FEPermissions;
@@ -115,7 +114,7 @@ public class CommandNickname extends ForgeEssentialsCommandBuilder
             return Command.SINGLE_SUCCESS;
         }
 
-        if (!PermissionAPI.hasPermission((PlayerEntity) ctx.getSource().getEntity(), PERM_OTHERS)){
+        if (!hasPermission((PlayerEntity) ctx.getSource().getEntity(), PERM_OTHERS)){
             ChatOutputHandler.chatError(ctx.getSource(), FEPermissions.MSG_NO_COMMAND_PERM);
             return Command.SINGLE_SUCCESS;
         }
