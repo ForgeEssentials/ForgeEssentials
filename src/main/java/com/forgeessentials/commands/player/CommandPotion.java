@@ -159,7 +159,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
         	ChatOutputHandler.chatConfirmation(ctx.getSource(), "Removed all effects from all target(s)");
         	return Command.SINGLE_SUCCESS;
         }
-        if(params.equals("clear-target")) {
+        if(params.equals("clear-effect")) {
         	for(Entity entity : EntityArgument.getEntities(ctx, "targets")) {
                 if (entity instanceof LivingEntity) {
                     if(entity instanceof PlayerEntity && ((PlayerEntity) entity).equals(getServerPlayer(ctx.getSource()))) {
@@ -209,7 +209,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
         for(Entity entity : targets) {
             if (entity instanceof LivingEntity) {
                 if(entity instanceof PlayerEntity && ((PlayerEntity) entity).equals(getServerPlayer(ctx.getSource()))) {
-                    EffectInstance effectinstance = new EffectInstance(ID, dur, ampl, false, hideParticals);
+                    EffectInstance effectinstance = new EffectInstance(ID, dur, ampl, false, !hideParticals);
                     ((LivingEntity)entity).addEffect(effectinstance);
                 }
                 else {
@@ -217,7 +217,7 @@ public class CommandPotion extends ForgeEssentialsCommandBuilder
                         ChatOutputHandler.chatWarning(ctx.getSource(), Translator.format("You dont have permission to give effects to %s", entity.getDisplayName().getString()));
                         continue;
                     }
-                    EffectInstance effectinstance = new EffectInstance(ID, dur, ampl, false, hideParticals);
+                    EffectInstance effectinstance = new EffectInstance(ID, dur, ampl, false, !hideParticals);
                     ((LivingEntity)entity).addEffect(effectinstance); 
                 }
             }
