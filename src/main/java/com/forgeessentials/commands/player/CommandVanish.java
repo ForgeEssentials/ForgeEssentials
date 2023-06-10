@@ -96,6 +96,7 @@ public class CommandVanish extends ForgeEssentialsCommandBuilder
     @Override
     public int processCommandPlayer(CommandContext<CommandSource> ctx, String params) throws CommandSyntaxException
     {
+        ChatOutputHandler.chatWarning(ctx.getSource(), "This command currently will break your player's movments, use at your own risk!");
         ServerPlayerEntity player = EntityArgument.getPlayer(ctx, "player");
         if (EntityArgument.getPlayer(ctx, "player")!=getServerPlayer(ctx.getSource()))
         {
