@@ -555,9 +555,7 @@ jar.finalizedBy('reobfJar')
 /************************************************************
  * Configure Annotations for IDEs Jar
  */
-
-// util.jar
-task Annotations(type: Jar) {
+task annotations(type: Jar) {
 	classifier = "annonations"
 	appendix = project.minecraftVersion
 	
@@ -596,5 +594,5 @@ task Annotations(type: Jar) {
 artifacts {
 	archives deobfJar
 	archives clientJar
-	archives Annotations
+	archives annotations
 }
