@@ -544,14 +544,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 	manifest { from sharedManifest }
 }*/
 
-//reobf {
-//    clientJar { classpath.from(sourceSets.main.compileClasspath) }
-//}
-// Example configuration to allow publishing using the maven-publish task
-// This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar')
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-//publish.dependsOn('reobfJar')
 /************************************************************
  * Configure Annotations for IDEs Jar
  */
@@ -589,6 +581,11 @@ task annotations(type: Jar) {
 /************************************************************
  * Others
  */
+
+reobf {
+	jar{}
+    clientJar{}
+}
 
  // Add default artifacts for task "build"
 artifacts {
