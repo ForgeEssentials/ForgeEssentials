@@ -167,7 +167,7 @@ public class ForgeEssentialsClient
         NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::decode);
 		//NetworkUtils.registerServerToClient(2, Packet4Economy.class, Packet4Economy::decode); //heck why not add something to space 4
         NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::decode);
-        NetworkUtils.registerServerToClient(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
+        NetworkUtils.registerBiDirectional(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
         NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::decode);
     }
     private void onConfigLoad(ModConfigEvent configEvent) {
