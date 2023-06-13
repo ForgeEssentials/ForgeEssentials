@@ -192,6 +192,8 @@ public class ForgeEssentialsClient
         	instance.gui.getChat().addMessage(msg);
         	TextComponent msg2 = new StringTextComponent("/feclient reinit: Redo server handshake");
         	instance.gui.getChat().addMessage(msg2);
+        	TextComponent msg3 = new StringTextComponent("/feclient reinit force: Force send server handshake");
+        	instance.gui.getChat().addMessage(msg3);
         	event.setCanceled(true);
     	}
     	if(event.getOriginalMessage().equals("feclient reinit")) {
@@ -207,6 +209,14 @@ public class ForgeEssentialsClient
         	instance.gui.getChat().addMessage(msg);
         	TextComponent msg2 = new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
         	instance.gui.getChat().addMessage(msg2);
+        	event.setCanceled(true);
+    	}
+    	if(event.getOriginalMessage().equals("feclient reinit force")) {
+    		Minecraft instance = Minecraft.getInstance();
+    		sentHandshake = true;
+    		NetworkUtils.sendToServer(new Packet0Handshake());
+        	TextComponent msg = new StringTextComponent("Force Sent handshake packet to server.");
+        	instance.gui.getChat().addMessage(msg);
         	event.setCanceled(true);
     	}
     }
@@ -238,11 +248,16 @@ public class ForgeEssentialsClient
     {
         if (ForgeEssentialsClient.serverHasFE())
         {
-            ForgeEssentialsClient.feclientlog.info("Sending Handshake Packet to FE Server");
+    		Minecraft instance = Minecraft.getInstance();
+        	TextComponent msg = new StringTextComponent("Sending Handshake Packet to FE Server");
+        	instance.gui.getChat().addMessage(msg);
             NetworkUtils.sendToServer(new Packet0Handshake());
         }
         else
         {
+    		Minecraft instance = Minecraft.getInstance();
+        	TextComponent msg = new StringTextComponent("Server Does not have FE, can't send initialization Packet");
+        	instance.gui.getChat().addMessage(msg);
             ForgeEssentialsClient.feclientlog.warn("Server Does not have FE, can't send initialization Packet");
         }
     }
