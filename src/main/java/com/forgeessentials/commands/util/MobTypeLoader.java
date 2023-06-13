@@ -17,7 +17,7 @@ import net.minecraftforge.forgespi.language.ModFileScanData;
 import com.forgeessentials.api.EnumMobType;
 import com.forgeessentials.api.EnumMobType.FEMob;
 import com.forgeessentials.api.EnumMobType.FEMob.IsTamed;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.common.collect.Maps;
 
 public class MobTypeLoader

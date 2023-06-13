@@ -17,7 +17,7 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import com.forgeessentials.data.v2.DataManager.DataType;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;

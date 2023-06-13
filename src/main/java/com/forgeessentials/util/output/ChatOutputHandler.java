@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import com.forgeessentials.chat.ModuleChat;
 
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 public final class ChatOutputHandler
 {

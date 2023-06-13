@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;

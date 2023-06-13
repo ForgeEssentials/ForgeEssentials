@@ -8,7 +8,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
 
 import net.minecraftforge.common.MinecraftForge;

@@ -7,7 +7,7 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.selections.ISelectionProvider;
 import com.forgeessentials.util.selections.SelectionHandler;
 import com.sk89q.worldedit.IncompleteRegionException;

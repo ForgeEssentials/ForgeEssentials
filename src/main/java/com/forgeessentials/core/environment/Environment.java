@@ -2,7 +2,7 @@ package com.forgeessentials.core.environment;
 
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;

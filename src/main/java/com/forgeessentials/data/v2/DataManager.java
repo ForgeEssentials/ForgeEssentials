@@ -20,7 +20,7 @@ import com.forgeessentials.data.v2.types.BlockType;
 import com.forgeessentials.data.v2.types.ItemStackType;
 import com.forgeessentials.data.v2.types.NBTTagCompoundType;
 import com.forgeessentials.data.v2.types.UserIdentType;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.*;
 import com.google.gson.annotations.Expose;
 import com.google.gson.stream.JsonReader;

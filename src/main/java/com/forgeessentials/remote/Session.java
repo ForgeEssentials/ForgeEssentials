@@ -16,9 +16,9 @@ import com.forgeessentials.api.remote.RemoteHandler.RemoteException;
 import com.forgeessentials.api.remote.RemoteManager;
 import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteRequest.JsonRemoteRequest;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
-import com.forgeessentials.util.output.LoggingHandler;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 

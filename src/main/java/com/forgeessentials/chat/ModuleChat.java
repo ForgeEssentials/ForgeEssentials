@@ -66,7 +66,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 

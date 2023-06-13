@@ -3,6 +3,8 @@ package com.forgeessentials.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.forgeessentials.util.output.logger.LoggingHandler;
+
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -10,8 +12,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.RayTraceResult;
-
-import com.forgeessentials.util.output.LoggingHandler;
 
 public abstract class PlayerUtil
 {

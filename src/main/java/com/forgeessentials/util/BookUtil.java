@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.forgeessentials.util.output.logger.LoggingHandler;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.TextFormatting;
-
-import com.forgeessentials.util.output.LoggingHandler;
 
 public abstract class BookUtil
 {

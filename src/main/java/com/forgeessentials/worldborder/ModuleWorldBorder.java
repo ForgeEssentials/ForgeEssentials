@@ -19,10 +19,10 @@ import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.LoggingHandler;
 import com.forgeessentials.worldborder.effect.EffectBlock;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;

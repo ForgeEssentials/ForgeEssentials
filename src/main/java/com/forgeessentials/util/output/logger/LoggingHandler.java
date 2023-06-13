@@ -1,4 +1,4 @@
-package com.forgeessentials.util.output;
+package com.forgeessentials.util.output.logger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,9 +26,10 @@ public class LoggingHandler
     // TODO: Make STDERR appear in log!
     public static final QueueLogAppender logCache = new QueueLogAppender("fe_server_log_queue", null, MC_PATTERN, true, MAX_LOG_LENGTH);
 
-    public static final org.apache.logging.log4j.Logger felog = LogManager.getLogger(ForgeEssentials.MODID);
+    public static final org.apache.logging.log4j.Logger feloger = LogManager.getLogger(ForgeEssentials.MODID);
 
-
+    public static final FEConfigurableLogger felog = new FEConfigurableLogger();
+    
     static
     {
         addAppenderToAllConfigurations(logCache);
@@ -83,7 +84,7 @@ public class LoggingHandler
     }
 
 	public static void setLevel(Level level) {
-		((Logger) LoggingHandler.felog).setLevel(level);
+		((Logger) LoggingHandler.feloger).setLevel(level);
 
 		logCache.stop();
     	for (LoggerContext context : ((Log4jContextFactory) LogManager.getFactory()).getSelector().getLoggerContexts())

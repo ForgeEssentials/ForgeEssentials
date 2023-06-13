@@ -20,8 +20,8 @@ import com.forgeessentials.playerlogger.remote.serializer.WorldDataType;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
-import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.command.CommandSource;

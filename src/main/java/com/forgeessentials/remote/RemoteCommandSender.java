@@ -19,7 +19,7 @@ import com.forgeessentials.remote.network.ChatResponse;
 import com.forgeessentials.util.DoAsCommandSender;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 public class RemoteCommandSender extends DoAsCommandSender
 {

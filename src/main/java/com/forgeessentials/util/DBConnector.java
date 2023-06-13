@@ -6,9 +6,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.Level;
 
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
@@ -230,7 +229,7 @@ public class DBConnector
         }
         catch (Exception e)
         {
-            LoggingHandler.felog.log(Level.WARN, "[FE+SQL] " + name + " In-House check failed, going to default.", e);
+            LoggingHandler.felog.warn("[FE+SQL] " + name + " In-House check failed, going to default.", e);
         }
 
         try

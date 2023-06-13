@@ -40,7 +40,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.servervote.ConfigServerVote;
 import com.forgeessentials.servervote.VoteEvent;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 /**
  * Like 90% copied from Votifier github: https://github.com/vexsoftware/votifier I only changed the init code and the event stuff.

@@ -92,7 +92,7 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 public class ProtectionEventHandler extends ServerEventHandler
 {

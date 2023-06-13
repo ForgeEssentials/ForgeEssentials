@@ -78,7 +78,7 @@ import com.forgeessentials.playerlogger.event.LogEventPostInteract;
 import com.forgeessentials.playerlogger.event.LogEventWorldLoad;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

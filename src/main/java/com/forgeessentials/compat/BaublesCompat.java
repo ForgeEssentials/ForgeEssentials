@@ -5,8 +5,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import com.forgeessentials.util.events.FEPlayerEvent.InventoryGroupChange;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.events.ServerEventHandler;
-import com.forgeessentials.util.output.LoggingHandler;
 
 import lazy.baubles.api.BaublesAPI;
 

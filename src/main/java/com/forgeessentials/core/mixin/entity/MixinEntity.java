@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 @Mixin(Entity.class)
 public abstract class MixinEntity

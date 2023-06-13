@@ -40,8 +40,8 @@ import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
-import com.forgeessentials.util.output.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 
 @FEModule(name = "Permissions", parentMod = ForgeEssentials.class, canDisable = false)

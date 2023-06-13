@@ -28,7 +28,7 @@ import com.forgeessentials.commons.selections.AreaBase;
 import com.forgeessentials.commons.selections.AreaShape;
 import com.forgeessentials.permissions.core.ZonePersistenceProvider;
 import com.forgeessentials.util.EnumDBType;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 //FIXME: This class should be modified to use PreparedStatements instead of dynamic sql
 public class SQLProvider extends ZonePersistenceProvider

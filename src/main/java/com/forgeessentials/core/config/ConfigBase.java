@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -57,7 +57,7 @@ public class ConfigBase
      * */
     public void loadAllRegisteredConfigs()
     {
-        LoggingHandler.felog.info("Loading configuration files");
+        LoggingHandler.felog.debug("Loading configuration files");
         
         for (ConfigLoader loader : loaders)
         {
@@ -88,7 +88,7 @@ public class ConfigBase
      * Should only be called once
      * */
     public void buildAllRegisteredConfigs() {
-    	LoggingHandler.felog.info("Building configuration files");
+    	LoggingHandler.felog.debug("Building configuration files");
     	for(ConfigLoader loader : loaders)
         {
     	    if(!loadedLoaders.contains(loader))
@@ -124,7 +124,7 @@ public class ConfigBase
      * */
     public void bakeAllRegisteredConfigs(boolean reload)
     {
-        LoggingHandler.felog.info("Baking configuration files");
+        LoggingHandler.felog.debug("Baking configuration files");
         for (ConfigLoader loader : loaders)
         {
             if(!loadedLoaders.contains(loader))

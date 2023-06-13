@@ -11,7 +11,7 @@ import com.forgeessentials.api.remote.RemoteRequest;
 import com.forgeessentials.api.remote.RemoteResponse;
 import com.forgeessentials.api.remote.RemoteSession;
 import com.forgeessentials.remote.RemoteMessageID;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 @FERemoteHandler(id = RemoteMessageID.QUERY_SERVER_LOG)
 public class QueryServerLog extends GenericRemoteHandler<Integer>

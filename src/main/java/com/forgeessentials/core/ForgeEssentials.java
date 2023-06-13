@@ -83,7 +83,7 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.questioner.Questioner;
 import com.forgeessentials.util.selections.CommandDeselect;
 import com.forgeessentials.util.selections.CommandExpand;

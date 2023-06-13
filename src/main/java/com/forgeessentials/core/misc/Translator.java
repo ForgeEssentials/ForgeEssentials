@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.common.base.Charsets;
 
 import net.minecraft.util.text.StringTextComponent;

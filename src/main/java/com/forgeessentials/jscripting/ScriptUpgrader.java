@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 public class ScriptUpgrader
 {

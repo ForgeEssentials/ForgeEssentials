@@ -9,7 +9,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.JsonParseException;
 
 import net.minecraft.util.text.ITextComponent;

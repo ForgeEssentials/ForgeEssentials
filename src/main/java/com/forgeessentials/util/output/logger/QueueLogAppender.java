@@ -1,4 +1,4 @@
-package com.forgeessentials.util.output;
+package com.forgeessentials.util.output.logger;
 
 import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;

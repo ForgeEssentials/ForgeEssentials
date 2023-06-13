@@ -17,7 +17,7 @@ import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigLoader;
 import com.forgeessentials.util.events.ConfigReloadEvent;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.common.collect.Maps;
 
 import net.minecraftforge.common.MinecraftForge;

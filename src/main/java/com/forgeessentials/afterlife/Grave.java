@@ -9,7 +9,7 @@ import com.forgeessentials.data.v2.Loadable;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.annotations.Expose;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

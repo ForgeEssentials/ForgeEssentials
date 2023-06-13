@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.forgeessentials.auth.ModuleAuth;
 import com.forgeessentials.data.v2.DataManager;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -51,7 +51,7 @@ public abstract class MixinSimpleChannelHandlerWrapper extends SimpleChannelInbo
                 else
                 {
                     LoggingHandler.felog.debug("Message '{}' from user '{}' ignored because player is not authenticated!", DataManager.getGson().toJson(packet),
-                            player.getDisplayName());
+                            player.getDisplayName().getString());
                     callbackInfo.cancel();
                 }
             } catch (ThreadQuickExitException threadquickexitexception) {

@@ -8,7 +8,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.DoAsCommandSender;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 

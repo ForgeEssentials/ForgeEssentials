@@ -10,7 +10,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.output.ChatOutputHandler;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 /**
  * Warns those with permission when the memory usage passes a certain percentage threshold

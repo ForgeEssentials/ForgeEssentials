@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 

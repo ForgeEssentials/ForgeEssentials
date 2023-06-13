@@ -8,7 +8,7 @@ import java.util.Map;
 import com.forgeessentials.commands.ModuleCommands;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.config.ConfigData;
-import com.forgeessentials.util.output.LoggingHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
