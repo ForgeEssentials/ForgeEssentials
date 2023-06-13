@@ -44,6 +44,7 @@ public class Packet6AuthLogin implements IFEPacket
 
     public static void handler(final Packet6AuthLogin message, Supplier<NetworkEvent.Context> ctx)
     {
+        NetworkUtils.feletworklog.info("Recieved Packet6AuthLogin");
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }

@@ -40,6 +40,7 @@ public class Packet5Noclip implements IFEPacket
 
     public static void handler(final Packet5Noclip message, Supplier<NetworkEvent.Context> ctx)
     {
+        NetworkUtils.feletworklog.info("Recieved Packet5Noclip");
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }

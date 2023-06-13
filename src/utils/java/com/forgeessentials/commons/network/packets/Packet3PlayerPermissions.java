@@ -76,6 +76,7 @@ public class Packet3PlayerPermissions implements IFEPacket
 
     public static void handler(final Packet3PlayerPermissions message, Supplier<NetworkEvent.Context> ctx)
     {
+        NetworkUtils.feletworklog.info("Recieved Packet3PlayerPermissions");
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }

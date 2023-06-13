@@ -35,6 +35,7 @@ public class Packet7Remote implements IFEPacket
 
     public static void handler(final Packet7Remote message, Supplier<NetworkEvent.Context> ctx)
     {
+        NetworkUtils.feletworklog.info("Recieved Packet7Remote");
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }

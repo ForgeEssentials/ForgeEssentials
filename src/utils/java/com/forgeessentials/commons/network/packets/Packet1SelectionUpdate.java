@@ -77,6 +77,7 @@ public class Packet1SelectionUpdate implements IFEPacket
 
     public static void handler(final Packet1SelectionUpdate message, Supplier<NetworkEvent.Context> ctx)
     {
+        NetworkUtils.feletworklog.info("Recieved Packet1SelectionUpdate");
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }

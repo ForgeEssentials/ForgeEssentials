@@ -28,6 +28,7 @@ public class Packet0Handshake implements IFEPacket
 
     public static void handler(final Packet0Handshake message, Supplier<NetworkEvent.Context> ctx)
     {
+        NetworkUtils.feletworklog.info("Recieved Packet0Handshake");
         ctx.get().enqueueWork(() -> message.handle(ctx.get()));
         ctx.get().setPacketHandled(true);
     }
