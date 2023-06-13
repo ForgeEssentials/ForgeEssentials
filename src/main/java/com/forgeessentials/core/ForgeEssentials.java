@@ -48,7 +48,6 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
-import com.forgeessentials.commons.network.packets.Packet0Handshake;
 import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.packets.Packet5Noclip;
@@ -65,6 +64,7 @@ import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.FECommandManager;
+import com.forgeessentials.core.misc.Packet0Handler;
 import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -260,14 +260,14 @@ public class ForgeEssentials
     {
         LoggingHandler.felog.info("ForgeEssentials Regestering network Packets");
         // Load network packages
-        NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::encode, Packet0Handshake::decode);
-        NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::encode, Packet1SelectionUpdate::decode);
+        NetworkUtils.registerClientToServer(0, Packet0Handler.class, Packet0Handler::encode, Packet0Handler::decode, Packet0Handler::handler);
+        NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::encode, Packet1SelectionUpdate::decode, Packet1SelectionUpdate::handler);
 		//NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
-        NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::encode, Packet3PlayerPermissions::decode);
+        NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::encode, Packet3PlayerPermissions::decode, Packet3PlayerPermissions::handler);
         //NetworkUtils.registerServerToClient(2, Packet4Economy.class, Packet4Economy::decode); old times
-        NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::encode, Packet5Noclip::decode);
+        NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::encode, Packet5Noclip::decode, Packet5Noclip::handler);
         // Packet6Auth is registered in the Auth Module
-        NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::encode, Packet7Remote::decode);
+        NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::encode, Packet7Remote::decode, Packet7Remote::handler);
 
     }
     

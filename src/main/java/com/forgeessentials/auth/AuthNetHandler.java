@@ -1,7 +1,9 @@
 package com.forgeessentials.auth;
 
 import java.util.UUID;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -11,10 +13,16 @@ import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
 
 public class AuthNetHandler extends Packet6AuthLogin
 {
-    @Override
-    public void handle(Context context)
-    {
+    public AuthNetHandler(int mode, String hash) {
+        super(mode, hash);
+    }
 
+    public static AuthNetHandler decode(PacketBuffer buf) {
+        return new AuthNetHandler(buf.readInt(), buf.readUtf());
+    }
+
+    @Override
+    public void handle(NetworkEvent.Context context) {
         if (!ModuleAuth.allowAutoLogin)
             // return null;
             switch (mode)
@@ -33,6 +41,5 @@ public class AuthNetHandler extends Packet6AuthLogin
                 break;
 
             }
-        context.setPacketHandled(true);
     }
 }
