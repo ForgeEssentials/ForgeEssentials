@@ -2,9 +2,12 @@ package com.forgeessentials.commons.network.packets;
 
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 import com.forgeessentials.commons.network.IFEPacket;
+import com.forgeessentials.commons.network.NetworkUtils;
 
 
 public class Packet6AuthLogin implements IFEPacket
@@ -19,27 +22,29 @@ public class Packet6AuthLogin implements IFEPacket
 
     public String hash;
 
-    // dummy ctor
-    public Packet6AuthLogin() {}
-
-    public Packet6AuthLogin(int mode, String hash)
-    {
+    public Packet6AuthLogin(int mode, String hash) {
         this.mode = mode;
         this.hash = hash;
     }
 
-    public static Packet6AuthLogin decode(PacketBuffer buf)
-    {
-    	return new Packet6AuthLogin(buf.readInt(),buf.readUtf());
+    public static Packet6AuthLogin decode(PacketBuffer buf) {
+    	return new Packet6AuthLogin(buf.readInt(), buf.readUtf());
     }
 
     @Override
-    public void encode(PacketBuffer buf)
-    {
+    public void encode(PacketBuffer buf) {
         buf.writeInt(mode);
         buf.writeUtf(hash);
     }
 
-	@Override
-	public void handle(Context context) {}
+    @Override
+    public void handle(NetworkEvent.Context context) {
+        NetworkUtils.feletworklog.warn("Packet6AuthLogin was not handled properly");
+    }
+
+    public static void handler(final Packet6AuthLogin message, Supplier<NetworkEvent.Context> ctx)
+    {
+        ctx.get().enqueueWork(() -> message.handle(ctx.get()));
+        ctx.get().setPacketHandled(true);
+    }
 }

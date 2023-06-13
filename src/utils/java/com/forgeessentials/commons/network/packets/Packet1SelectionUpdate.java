@@ -1,20 +1,23 @@
 package com.forgeessentials.commons.network.packets;
 
+import java.util.function.Supplier;
+
 import com.forgeessentials.commons.network.IFEPacket;
+import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 public class Packet1SelectionUpdate implements IFEPacket
 {
-    protected Selection sel;
+    protected Selection selection;
 
     public Packet1SelectionUpdate() {}
 
     public Packet1SelectionUpdate(Selection sel)
     {
-        this.sel = sel;
+        this.selection = sel;
     }
 
     public static Packet1SelectionUpdate decode(PacketBuffer byteBuf)
@@ -29,32 +32,32 @@ public class Packet1SelectionUpdate implements IFEPacket
     @Override
     public void encode(PacketBuffer byteBuf)
     {
-        if (sel == null)
+        if (selection == null)
         {
             byteBuf.writeBoolean(false);
             byteBuf.writeBoolean(false);
             return;
         }
-        byteBuf.writeUtf(sel.getDimension());
+        byteBuf.writeUtf(selection.getDimension());
 
-        if (sel.getStart() != null)
+        if (selection.getStart() != null)
         {
             byteBuf.writeBoolean(true);
-            byteBuf.writeDouble(sel.getStart().getX());
-            byteBuf.writeDouble(sel.getStart().getY());
-            byteBuf.writeDouble(sel.getStart().getZ());
+            byteBuf.writeDouble(selection.getStart().getX());
+            byteBuf.writeDouble(selection.getStart().getY());
+            byteBuf.writeDouble(selection.getStart().getZ());
         }
         else
         {
             byteBuf.writeBoolean(false);
         }
 
-        if (sel.getEnd() != null)
+        if (selection.getEnd() != null)
         {
             byteBuf.writeBoolean(true);
-            byteBuf.writeDouble(sel.getEnd().getX());
-            byteBuf.writeDouble(sel.getEnd().getY());
-            byteBuf.writeDouble(sel.getEnd().getZ());
+            byteBuf.writeDouble(selection.getEnd().getX());
+            byteBuf.writeDouble(selection.getEnd().getY());
+            byteBuf.writeDouble(selection.getEnd().getZ());
         }
         else
         {
@@ -64,9 +67,17 @@ public class Packet1SelectionUpdate implements IFEPacket
 
     public Selection getSelection()
     {
-        return sel;
+        return selection;
     }
 
-	@Override
-	public void handle(Context context) {}
+    @Override
+    public void handle(NetworkEvent.Context context) {
+        NetworkUtils.feletworklog.warn("Packet1SelectionUpdate was not handled properly");
+    }
+
+    public static void handler(final Packet1SelectionUpdate message, Supplier<NetworkEvent.Context> ctx)
+    {
+        ctx.get().enqueueWork(() -> message.handle(ctx.get()));
+        ctx.get().setPacketHandled(true);
+    }
 }

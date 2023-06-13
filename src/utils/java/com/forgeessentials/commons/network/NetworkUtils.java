@@ -2,15 +2,16 @@ package com.forgeessentials.commons.network;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -41,42 +42,47 @@ public class NetworkUtils
     /**
      * Registered network massages.
      */
-    private static Map<Integer, NetworkDirection> registeredMessages = new HashMap<>();
+    private static Map<Integer, String> registeredMessages = new HashMap<>();
 
 	/**
 	 * Register a network packet.<br> Registers a packet that will be sent to the server from the client.
 	 */
-    public static <MSG extends IFEPacket> void registerClientToServer(int index, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder) {
-		registerMessage(index, type, encoder, decoder, NetworkDirection.PLAY_TO_SERVER);
+    public static <MSG extends IFEPacket> void registerClientToServer(int index, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG,Supplier<NetworkEvent.Context>> handler) {
+		registerMessage(index, type, encoder, decoder, handler, NetworkDirection.PLAY_TO_SERVER);
 	}
 
     /**
 	 * Register a network packet.<br> Registers a packet that will be sent to the client from the server.
 	 */
-	public static <MSG extends IFEPacket> void registerServerToClient(int index, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder) {
-		registerMessage(index, type, encoder, decoder, NetworkDirection.PLAY_TO_CLIENT);
+	public static <MSG extends IFEPacket> void registerServerToClient(int index, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG,Supplier<NetworkEvent.Context>> handler) {
+		registerMessage(index, type, encoder, decoder, handler, NetworkDirection.PLAY_TO_CLIENT);
 	}
 
 	/**
      * Register a network packet.<br> Registers a packet that can be sent from both the client or the server.
      */
-    public static <MSG extends IFEPacket> void registerBiDirectional(int index, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder) {
-        registerMessage(index, type, encoder, decoder, NetworkDirection.PLAY_TO_SERVER);
-        registerMessage(index, type, encoder, decoder, NetworkDirection.PLAY_TO_CLIENT);
+    public static <MSG extends IFEPacket> void registerBiDirectional(int index, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG,Supplier<NetworkEvent.Context>> handler) {
+        registerMessage(index, type, encoder, decoder, handler, NetworkDirection.PLAY_TO_SERVER);
+        registerMessage(index, type, encoder, decoder, handler, NetworkDirection.PLAY_TO_CLIENT);
     }
 
 	/**
 	 * INTERNAL METHOD, DO NOT CALL.
 	 */
-	private static <MSG extends IFEPacket> void registerMessage(int index, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, NetworkDirection networkDirection) {
-		if(registeredMessages.containsKey(index) && registeredMessages.get(index).equals(networkDirection)) {
+	private static <MSG extends IFEPacket> void registerMessage(int index, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG,Supplier<NetworkEvent.Context>> handler, NetworkDirection networkDirection) {
+		if(registeredMessages.containsKey(index) && registeredMessages.get(index).equals(networkDirection.toString())) {
 			feletworklog.error("Tried registering Network Message id:"+Integer.toString(index)+", Class:"+type.getSimpleName()+", Direction:"+networkDirection.toString()+" Twice!");
 			return;
 		}
 		else {
 			feletworklog.info("Registering Network Message id:"+Integer.toString(index)+", Class:"+type.getSimpleName()+", Direction:"+networkDirection.toString());
-	        INSTANCE.registerMessage(index, type, encoder, decoder, IFEPacket::handle, Optional.of(networkDirection));
-			registeredMessages.put(index, networkDirection);
+			INSTANCE.messageBuilder(type, index, networkDirection).
+			decoder(decoder).
+            encoder(encoder).
+            consumer(handler).
+            add();
+	        //INSTANCE.registerMessage(index, type, encoder, decoder, IFEPacket::handler, Optional.of(networkDirection));
+			registeredMessages.put(index, networkDirection.toString());
 		}
 	}
 	/**

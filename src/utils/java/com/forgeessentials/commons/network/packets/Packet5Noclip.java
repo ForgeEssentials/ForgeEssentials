@@ -1,17 +1,16 @@
 package com.forgeessentials.commons.network.packets;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 import com.forgeessentials.commons.network.IFEPacket;
+import com.forgeessentials.commons.network.NetworkUtils;
 
 public class Packet5Noclip implements IFEPacket
 {
     public boolean noclip;
-
-    public Packet5Noclip()
-    {
-    }
 
     public Packet5Noclip(boolean noclip)
     {
@@ -35,5 +34,13 @@ public class Packet5Noclip implements IFEPacket
     }
 
     @Override
-    public void handle(Context context) {}
+    public void handle(NetworkEvent.Context context) {
+        NetworkUtils.feletworklog.warn("Packet5Noclip was not handled properly");
+    }
+
+    public static void handler(final Packet5Noclip message, Supplier<NetworkEvent.Context> ctx)
+    {
+        ctx.get().enqueueWork(() -> message.handle(ctx.get()));
+        ctx.get().setPacketHandled(true);
+    }
 }
