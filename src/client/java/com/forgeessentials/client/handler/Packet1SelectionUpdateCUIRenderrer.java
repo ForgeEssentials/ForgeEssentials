@@ -3,7 +3,6 @@ package com.forgeessentials.client.handler;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
 import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.Selection;
 
@@ -13,17 +12,13 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-@OnlyIn(Dist.CLIENT)
-public class CUIRenderrer extends Packet1SelectionUpdate
+public class Packet1SelectionUpdateCUIRenderrer
 {
     private static final float ALPHA = .25f;
-    private static Selection selection;
+    public Selection selection;
 
     @SubscribeEvent
     public void render(RenderWorldLastEvent event)
@@ -166,11 +161,4 @@ public class CUIRenderrer extends Packet1SelectionUpdate
         
         Tessellator.getInstance().end();
     }
-
-    @Override
-	public void handle(Context context) {
-    	Packet1SelectionUpdate packet1 = new Packet1SelectionUpdate();
-    	selection = packet1.getSelection();
-    	context.setPacketHandled(true);
-	}
 }

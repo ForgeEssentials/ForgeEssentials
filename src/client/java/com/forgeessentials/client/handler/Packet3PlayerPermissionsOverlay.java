@@ -21,7 +21,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class PermissionOverlay extends AbstractGui
+public class Packet3PlayerPermissionsOverlay extends AbstractGui
 {
 
     protected ResourceLocation deniedPlaceTexture;
@@ -32,7 +32,7 @@ public class PermissionOverlay extends AbstractGui
 
     private int zLevel = 100;
     
-    public PermissionOverlay()
+    public Packet3PlayerPermissionsOverlay()
     {
         deniedPlaceTexture = new ResourceLocation(ForgeEssentialsClient.MODID.toLowerCase(), "textures/gui/denied_place.png");
         deniedBreakTexture = new ResourceLocation(ForgeEssentialsClient.MODID.toLowerCase(), "textures/gui/denied_break.png");

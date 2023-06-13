@@ -8,9 +8,9 @@ import com.forgeessentials.client.commands.CommandInit;
 import com.forgeessentials.client.config.ClientConfig;
 import com.forgeessentials.client.config.FEModConfig;
 import com.forgeessentials.client.config.IFEConfig;
-import com.forgeessentials.client.handler.CUIRenderrer;
-import com.forgeessentials.client.handler.PermissionOverlay;
-import com.forgeessentials.client.handler.QRRenderer;
+import com.forgeessentials.client.handler.Packet1SelectionUpdateCUIRenderrer;
+import com.forgeessentials.client.handler.Packet3PlayerPermissionsOverlay;
+import com.forgeessentials.client.handler.Packet7RemoteQRRenderer;
 import com.forgeessentials.client.handler.QuestionerKeyHandler;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
@@ -81,11 +81,11 @@ public class ForgeEssentialsClient
 
     /* ------------------------------------------------------------ */
 
-    private static CUIRenderrer cuiRenderer = new CUIRenderrer();
+    public static Packet1SelectionUpdateCUIRenderrer cuiRenderer = new Packet1SelectionUpdateCUIRenderrer();
 
-    private static QRRenderer qrCodeRenderer = new QRRenderer();
+    public static Packet3PlayerPermissionsOverlay permissionOverlay = new Packet3PlayerPermissionsOverlay();
 
-    private static PermissionOverlay permissionOverlay = new PermissionOverlay();
+    public static Packet7RemoteQRRenderer qrCodeRenderer = new Packet7RemoteQRRenderer();
 
     /* ------------------------------------------------------------ */
     
@@ -104,6 +104,9 @@ public class ForgeEssentialsClient
     	//Register our config files
     	registerConfig();
     	MinecraftForge.EVENT_BUS.register(this);
+    	MinecraftForge.EVENT_BUS.register(cuiRenderer);
+    	MinecraftForge.EVENT_BUS.register(qrCodeRenderer);
+    	MinecraftForge.EVENT_BUS.register(permissionOverlay);
     }
     /* ------------------------------------------------------------ */
     

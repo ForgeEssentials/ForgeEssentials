@@ -22,21 +22,21 @@ public class QuestionerKeyHandler
         ClientRegistry.registerKeyBinding(no);
         MinecraftForge.EVENT_BUS.register(this);
     }
-    @SuppressWarnings("resource")
 	@SubscribeEvent
     public void onKeyPress(ClickInputEvent e)
     {
-        if (!Minecraft.getInstance().isWindowActive())
+	    Minecraft minecraft = Minecraft.getInstance();
+        if (!minecraft.isWindowActive())
         {
             return;
         }
         if (yes.isDown())
         {
-        	Minecraft.getInstance().player.chat("/yes");
+            minecraft.player.chat("/yes");
         }
         else if (no.isDown())
         {
-        	Minecraft.getInstance().player.chat("/no");
+            minecraft.player.chat("/no");
         }
     }
 }
