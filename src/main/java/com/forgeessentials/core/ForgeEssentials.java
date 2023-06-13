@@ -260,7 +260,7 @@ public class ForgeEssentials
     {
         LoggingHandler.felog.info("ForgeEssentials Regestering network Packets");
         // Load network packages
-        NetworkUtils.registerServerToClient(0, Packet0Handshake.class, Packet0Handshake::encode, Packet0Handshake::decode);
+        NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::encode, Packet0Handshake::decode);
         NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::encode, Packet1SelectionUpdate::decode);
 		//NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
         NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::encode, Packet3PlayerPermissions::decode);
