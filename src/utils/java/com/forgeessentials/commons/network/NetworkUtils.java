@@ -1,7 +1,7 @@
 package com.forgeessentials.commons.network;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -42,7 +42,7 @@ public class NetworkUtils
     /**
      * Registered network massages.
      */
-    private static Map<Integer, String> registeredMessages = new HashMap<>();
+    private static Set<String> registeredMessages = new HashSet<>();
 
 	/**
 	 * Register a network packet.<br> Registers a packet that will be sent to the server from the client.
@@ -70,7 +70,7 @@ public class NetworkUtils
 	 * INTERNAL METHOD, DO NOT CALL.
 	 */
 	private static <MSG extends IFEPacket> void registerMessage(int index, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG,Supplier<NetworkEvent.Context>> handler, NetworkDirection networkDirection) {
-		if(registeredMessages.containsKey(index) && registeredMessages.get(index).equals(networkDirection.toString())) {
+		if(registeredMessages.contains(index+networkDirection.toString())) {
 			feletworklog.error("Tried registering Network Message id:"+Integer.toString(index)+", Class:"+type.getSimpleName()+", Direction:"+networkDirection.toString()+" Twice!");
 			return;
 		}
@@ -82,7 +82,7 @@ public class NetworkUtils
             consumer(handler).
             add();
 	        //INSTANCE.registerMessage(index, type, encoder, decoder, IFEPacket::handler, Optional.of(networkDirection));
-			registeredMessages.put(index, networkDirection.toString());
+			registeredMessages.add(index+networkDirection.toString());
 		}
 	}
 	/**
