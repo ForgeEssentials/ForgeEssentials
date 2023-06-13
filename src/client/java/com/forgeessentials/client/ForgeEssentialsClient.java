@@ -161,14 +161,14 @@ public class ForgeEssentialsClient
     private static void registerNetworkMessages()
     {
         // Register network messages
-        NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::decode);
-        NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::decode);
+        NetworkUtils.registerClientToServer(0, Packet0Handshake.class, Packet0Handshake::encode, Packet0Handshake::decode);
+        NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::encode, Packet1SelectionUpdate::decode);
 		//NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
-        NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::decode);
+        NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::encode, Packet3PlayerPermissions::decode);
 		//NetworkUtils.registerServerToClient(2, Packet4Economy.class, Packet4Economy::decode); //heck why not add something to space 4
-        NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::decode);
-        NetworkUtils.registerBiDirectional(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
-        NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::decode);
+        NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::encode, Packet5Noclip::decode);
+        NetworkUtils.registerBiDirectional(6, Packet6AuthLogin.class, Packet6AuthLogin::encode, Packet6AuthLogin::decode);
+        NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::encode, Packet7Remote::decode);
     }
     private void onConfigLoad(ModConfigEvent configEvent) {
 		//Note: We listen to both the initial load and the reload, so as to make sure that we fix any accidentally

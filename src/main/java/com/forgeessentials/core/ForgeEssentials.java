@@ -260,14 +260,14 @@ public class ForgeEssentials
     {
         LoggingHandler.felog.info("ForgeEssentials Regestering network Packets");
         // Load network packages
-        NetworkUtils.registerServerToClient(0, Packet0Handshake.class, Packet0Handshake::decode);
-        NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::decode);
+        NetworkUtils.registerServerToClient(0, Packet0Handshake.class, Packet0Handshake::encode, Packet0Handshake::decode);
+        NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::encode, Packet1SelectionUpdate::decode);
 		//NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
-        NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::decode);
+        NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::encode, Packet3PlayerPermissions::decode);
         //NetworkUtils.registerServerToClient(2, Packet4Economy.class, Packet4Economy::decode); old times
-        NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::decode);
+        NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::encode, Packet5Noclip::decode);
         // Packet6Auth is registered in the Auth Module
-        NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::decode);
+        NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::encode, Packet7Remote::decode);
 
     }
     

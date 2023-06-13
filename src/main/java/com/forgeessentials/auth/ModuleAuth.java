@@ -74,7 +74,7 @@ public class ModuleAuth extends ConfigLoaderBase
     }
 
     public ModuleAuth() {
-        NetworkUtils.registerBiDirectional(6, Packet6AuthLogin.class, Packet6AuthLogin::decode);
+        NetworkUtils.registerBiDirectional(6, Packet6AuthLogin.class, Packet6AuthLogin::encode, Packet6AuthLogin::decode);
     }
 
     @SubscribeEvent
