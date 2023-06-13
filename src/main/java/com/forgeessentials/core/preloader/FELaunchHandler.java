@@ -94,6 +94,8 @@ public class FELaunchHandler implements ITweaker
         {
             tweaks.add("org.spongepowered.asm.launch.MixinTweaker");
         }
+
+        tweaks.add("com.forgeessentials.core.preloader.FELaunchHandler");
         
         MixinBootstrap.init();
 
