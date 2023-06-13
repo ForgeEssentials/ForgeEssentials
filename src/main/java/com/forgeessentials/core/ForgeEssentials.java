@@ -163,6 +163,7 @@ public class ForgeEssentials
 
     public ForgeEssentials()
     {
+    	LoggingHandler.init();
         LoggingHandler.felog.info("ForgeEssentialsInt");
         instance = this;
         //Set mod as server only
@@ -171,7 +172,6 @@ public class ForgeEssentials
         // new TestClass().test();
         modMain = FMLJavaModLoadingContext.get().getModEventBus();
         tasks = new TaskRegistry();
-        LoggingHandler.init();
         jarLocation = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
         initConfiguration();
         BuildInfo.getBuildInfo(jarLocation);
@@ -197,10 +197,8 @@ public class ForgeEssentials
         registerNetworkMessages();
 
         // Set up logger level
-        if (debugMode)
-        	LoggingHandler.setLevel(Level.DEBUG);
-        else
-        	LoggingHandler.setLevel(Level.INFO);
+        toggleDebug();
+
         // Register core submodules
         factory = new ForgeEssentialsEventFactory();
         teleportHelper = new TeleportHelper();
@@ -230,7 +228,6 @@ public class ForgeEssentials
         }
 
         isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
-
     }
 
     public void postLoad(FMLLoadCompleteEvent e)
@@ -254,6 +251,13 @@ public class ForgeEssentials
         ConfigBase.getModuleConfig().loadModuleConfig();
         ConfigBase.getModuleConfig().saveConfig();
         configManager.registerSpecs(new FEConfig());
+    }
+
+    private void toggleDebug() {
+        if (isDebug())
+        	LoggingHandler.setLevel(Level.DEBUG);
+        else
+        	LoggingHandler.setLevel(Level.INFO);
     }
 
     private void registerNetworkMessages()
