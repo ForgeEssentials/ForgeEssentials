@@ -1,6 +1,7 @@
 package com.forgeessentials.core;
 
 import java.io.File;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,6 +35,7 @@ import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.fml.network.FMLNetworkConstants;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -169,12 +171,20 @@ public class ForgeEssentials
         //Set mod as server only
         MOD_CONTAINER = ModLoadingContext.get().getActiveContainer();
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
-        // new TestClass().test();
         modMain = FMLJavaModLoadingContext.get().getModEventBus();
         tasks = new TaskRegistry();
-        jarLocation = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-        initConfiguration();
+        
+        List<ModInfo> mods = ModList.get().getMods();
+        for (ModInfo mod : mods)
+        {
+            if(mod.getModId().equals("forgeessentials")) {
+                jarLocation = mod.getOwningFile().getFile().getFilePath().toFile();
+                break;
+            }
+        }
         BuildInfo.getBuildInfo(jarLocation);
+
+        initConfiguration();
         Environment.check();
         MinecraftForge.EVENT_BUS.register(this);
         modMain.addListener(this::preInit);
@@ -445,9 +455,7 @@ public class ForgeEssentials
 
             // Show version notification
             if (BuildInfo.isOutdated() && UserIdent.get(player).checkPermission(PERM_VERSIONINFO))
-                ChatOutputHandler.chatWarning(player.createCommandSourceStack(),
-                        String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", //
-                                BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
+                ChatOutputHandler.chatWarning(player, String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
         }
     }
 
@@ -540,8 +548,7 @@ public class ForgeEssentials
     	if (reload)
             Translator.translations.clear();
         Translator.load();
-        if (!FEcheckVersion.get())
-            BuildInfo.checkVersion = false;
+        BuildInfo.checkVersion = FEcheckVersion.get();
         //configManager.setUseCanonicalConfig(SERVER_BUILDER.comment("For modules that support it, place their configs in this file.").define("canonicalConfigs", false).get());
         debugMode = FEdebugMode.get();
         safeMode = FEsafeMode.get();

@@ -55,7 +55,6 @@ public class BlockModListFile
                     out.println("Modfile:     "+mod.getOwningFile().getFile());
                     out.println("IssueURL:    "+mod.getOwningFile().getIssueURL());
                     out.println("UpdateURL:   "+mod.getUpdateURL());
-                    
                 }
             }
         }
