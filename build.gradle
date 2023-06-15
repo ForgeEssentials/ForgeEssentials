@@ -120,7 +120,7 @@ archivesBaseName = "forgeessentials"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-ext.set 'srcFile',file("./build/libs/$archivesBaseName-$minecraftVersion-$baseVersion.$buildNumber-server.jar")
+ext.set 'srcFile',file("./tmp/$archivesBaseName-$minecraftVersion-$baseVersion.$buildNumber-server.jar")
 
 curseforge {
     apiKey = System.getenv("CF_APIKEY")
