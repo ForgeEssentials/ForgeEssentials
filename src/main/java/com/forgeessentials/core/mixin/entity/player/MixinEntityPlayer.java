@@ -5,8 +5,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.At;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.util.PlayerInfo;
 import com.mojang.authlib.GameProfile;
 
 @Mixin(PlayerEntity.class)
@@ -38,15 +41,11 @@ public abstract class MixinEntityPlayer
      * @author Maximuslotro
      * @reason stuff
      */
-    /*
-    @Inject(
-            method = "tick",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()V")
-            )
-    public void onUpdate_NoClip(CallbackInfoReturnable<Boolean> callback)
-    {
-    	callback.setReturnValue(isSpectator() || PlayerInfo.get(gameProfile.getId()).isNoClip());
-    }*/
+    @Redirect(method = "tick",
+            at = @At(value = "INVOKE", 
+            target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z")
+    )
+    public boolean onUpdate_NoClip(PlayerEntity _this) {
+        return isSpectator() || PlayerInfo.get(_this).isNoClip();
+    }
 }
