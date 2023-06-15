@@ -571,7 +571,6 @@ task annotations(type: Jar) {
                 include "**annotations.jar"
             }
             into "misc"
-            rename 'forgeessentials-'+project.minecraftVersion+"-"+project.version+'-annotations.jar', 'forgeessentials-'+project.minecraftVersion+'-annotations.jar'
         }
         delete fileTree(dir:'build/libs/', include: '**annotations.jar')
         }
