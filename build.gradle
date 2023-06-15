@@ -327,7 +327,7 @@ project.compileUtilsJava {
     doFirst {
         copy {
             from ('src/utils/replaceJava') {
-                filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.mod_version])
+                filter(ReplaceTokens, tokens: ['_MCVERSION_':project.minecraftVersion, '_BASEVERSION_': project.mod_base, '_MAJORVERSION_': project.mod_major])
             }
             into 'src/utils/java'
         }

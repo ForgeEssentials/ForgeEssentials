@@ -26,7 +26,6 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -188,7 +187,6 @@ public class ForgeEssentials
         Environment.check();
         MinecraftForge.EVENT_BUS.register(this);
         modMain.addListener(this::preInit);
-        modMain.addListener(this::loadServer);
         modMain.addListener(this::postLoad);
         moduleLauncher = new ModuleLauncher();
         // Load submodules
@@ -222,28 +220,12 @@ public class ForgeEssentials
 
     }
 
-    public void loadServer(FMLDedicatedServerSetupEvent e)
-    {
-        LoggingHandler.felog.info("ForgeEssentials DedicatedServerSetup Event");
-
-        LoggingHandler.felog
-                .info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
-        if (BuildInfo.isOutdated())
-        {
-            LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
-            LoggingHandler.felog.warn(Translator.format("WARNING! Using ForgeEssentials build #%s, latest build is #%s", //
-                    BuildInfo.getCurrentVersion(), BuildInfo.getLatestVersion()));
-            LoggingHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
-            LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
-        }
-
-        isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
-    }
-
     public void postLoad(FMLLoadCompleteEvent e)
     {
         LoggingHandler.felog.info("ForgeEssentials LoadCompleteEvent");
         commandManager = new FECommandManager();
+        isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
+
     }
 
     /* ------------------------------------------------------------ */
