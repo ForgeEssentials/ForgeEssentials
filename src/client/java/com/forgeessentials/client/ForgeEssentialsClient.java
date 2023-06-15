@@ -17,6 +17,7 @@ import com.forgeessentials.client.handler.Packet6AuthLoginHandler;
 import com.forgeessentials.client.handler.Packet7RemoteHandler;
 import com.forgeessentials.client.handler.Packet7RemoteQRRenderer;
 import com.forgeessentials.client.handler.QuestionerKeyHandler;
+import com.forgeessentials.client.mixin.FEClientMixinConfig;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
@@ -24,7 +25,6 @@ import com.forgeessentials.commons.network.packets.Packet0Handshake;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -78,6 +78,8 @@ public class ForgeEssentialsClient
     allowAuthAutoLogin;
 
     public static float reachDistance;
+
+    public static Boolean noClip = false;
 
     /* ------------------------------------------------------------ */
 
@@ -191,35 +193,31 @@ public class ForgeEssentialsClient
     public void fecommandevent(ClientChatEvent event) {
     	if(event.getOriginalMessage().equals("feclient")) {
     		Minecraft instance = Minecraft.getInstance();
-    		TextComponent msg = new StringTextComponent("/feclient info: Get FE client info");
-        	instance.gui.getChat().addMessage(msg);
-        	TextComponent msg2 = new StringTextComponent("/feclient reinit: Redo server handshake");
-        	instance.gui.getChat().addMessage(msg2);
-        	TextComponent msg3 = new StringTextComponent("/feclient reinit force: Force send server handshake");
-        	instance.gui.getChat().addMessage(msg3);
+    		instance.gui.getChat().addMessage(new StringTextComponent("/feclient info: Get FE client info"));
+        	instance.gui.getChat().addMessage(new StringTextComponent("/feclient reinit: Redo server handshake"));
+        	instance.gui.getChat().addMessage(new StringTextComponent("/feclient reinit force: Force send server handshake"));
         	event.setCanceled(true);
     	}
     	if(event.getOriginalMessage().equals("feclient reinit")) {
     		Minecraft instance = Minecraft.getInstance();
     		ForgeEssentialsClient.resendHandshake();
-        	TextComponent msg = new StringTextComponent("Resent handshake packet to server.");
-        	instance.gui.getChat().addMessage(msg);
+    		instance.gui.getChat().addMessage(new StringTextComponent("Resent handshake packet to server."));
         	event.setCanceled(true);
     	}
     	if(event.getOriginalMessage().equals("feclient info")) {
     		Minecraft instance = Minecraft.getInstance();
-    		TextComponent msg = new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
-        	instance.gui.getChat().addMessage(msg);
-        	TextComponent msg2 = new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
-        	instance.gui.getChat().addMessage(msg2);
+    		instance.gui.getChat().addMessage(new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash())));
+        	instance.gui.getChat().addMessage(new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers."));
+        	instance.gui.getChat().addMessage(new StringTextComponent("Injected patches:"));
+            for (String patch : FEClientMixinConfig.getInjectedPatches())
+                instance.gui.getChat().addMessage(new StringTextComponent("- " + patch));
         	event.setCanceled(true);
     	}
     	if(event.getOriginalMessage().equals("feclient reinit force")) {
     		Minecraft instance = Minecraft.getInstance();
     		sentHandshake = true;
     		NetworkUtils.sendToServer(new Packet0Handshake());
-        	TextComponent msg = new StringTextComponent("Force Sent handshake packet to server.");
-        	instance.gui.getChat().addMessage(msg);
+    		instance.gui.getChat().addMessage(new StringTextComponent("Force Sent handshake packet to server."));
         	event.setCanceled(true);
     	}
     }
@@ -252,15 +250,13 @@ public class ForgeEssentialsClient
         if (ForgeEssentialsClient.serverHasFE())
         {
     		Minecraft instance = Minecraft.getInstance();
-        	TextComponent msg = new StringTextComponent("Sending Handshake Packet to FE Server");
-        	instance.gui.getChat().addMessage(msg);
+    		instance.gui.getChat().addMessage(new StringTextComponent("Sending Handshake Packet to FE Server"));
             NetworkUtils.sendToServer(new Packet0Handshake());
         }
         else
         {
     		Minecraft instance = Minecraft.getInstance();
-        	TextComponent msg = new StringTextComponent("Server Does not have FE, can't send initialization Packet");
-        	instance.gui.getChat().addMessage(msg);
+    		instance.gui.getChat().addMessage(new StringTextComponent("Server Does not have FE, can't send initialization Packet"));
             ForgeEssentialsClient.feclientlog.warn("Server Does not have FE, can't send initialization Packet");
         }
     }
