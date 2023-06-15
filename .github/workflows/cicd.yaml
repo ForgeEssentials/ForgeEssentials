@@ -47,5 +47,7 @@ jobs:
           CHANGE_LOG: ${{ github.event.release.body }}
         if: ${{ github.event.release }}
         run: |
+          mkdir ./tmp
+          cp ./build/libs/*-server.jar ./tmp
           chmod +x gradlew
           ./gradlew curseforge
