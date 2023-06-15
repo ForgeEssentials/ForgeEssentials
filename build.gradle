@@ -38,9 +38,8 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-// MixinGradle:
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'eclipse'
 apply plugin: 'jacoco'
 
 sonarqube {
@@ -233,7 +232,7 @@ dependencies {
 
     minecraft "net.minecraftforge:forge:$project.minecraftVersion-$project.forgeVersion"
 	 // IRC
-	compile "org.pircbotx:pircbotx:2.1"
+	implementation "org.pircbotx:pircbotx:2.1"
 	shadowLib("org.pircbotx:pircbotx:2.1") {
         // these are all packaged with the minecraft server jar
         exclude module: 'guava'
@@ -254,8 +253,8 @@ dependencies {
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
-    compile "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
-    compile ("com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5") {
+    implementation "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
+    implementation ("com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5") {
 		exclude group: "net.minecraftforge", module: "forge"
 	}
     compile "baubles:baubles:1.8.7.1:1.16.5"
@@ -285,9 +284,12 @@ dependencies {
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
-    compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
-    compile 'org.apache.commons:commons-text:1.10.0'
-	compile 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
+    implementation 'org.apache.commons:commons-text:1.10.0'
+    //implementation 'javax.persistence:persistence-api:2.2'
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
+	implementation 'org.eclipse.jgit:org.eclipse.jgit:6.6.0.202305301015-r'
 }
 
 /************************************************************
