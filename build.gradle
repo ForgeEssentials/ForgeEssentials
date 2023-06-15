@@ -253,8 +253,8 @@ dependencies {
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
 	
 	// WorldEdit
-    implementation "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
-    implementation ("com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5") {
+    compile "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
+    compile ("com.sk89q.worldedit:worldedit-forge-mc1.16.3:7.2.5") {
 		exclude group: "net.minecraftforge", module: "forge"
 	}
     compile "baubles:baubles:1.8.7.1:1.16.5"
@@ -284,10 +284,9 @@ dependencies {
 
 	// TOOLS.jar from jdk for javadoc support
     // compile files("$jdkHome/lib/tools.jar")
-    implementation files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
-    implementation 'org.apache.commons:commons-text:1.10.0'
-    //implementation 'javax.persistence:persistence-api:2.2'
-	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
+    compile 'org.apache.commons:commons-text:1.10.0'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
 	implementation 'org.eclipse.jgit:org.eclipse.jgit:6.6.0.202305301015-r'
 }
