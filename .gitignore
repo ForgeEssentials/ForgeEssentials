@@ -38,3 +38,5 @@ modlist.txt
 /jscripting/tsconfig.json
 *.launch
 /.apt_generated_tests/
+/src/utils/java/com/forgeessentials/commons/BuildInfo.java
+src/utils/java/com/forgeessentials/commons/BuildInfo.java

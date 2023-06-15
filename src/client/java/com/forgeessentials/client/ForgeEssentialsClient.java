@@ -131,7 +131,7 @@ public class ForgeEssentialsClient
         if (FMLEnvironment.dist.isClient()) {
         	registerNetworkMessages();
         	BuildInfo.getBuildInfo(null/*event.getSourceFile()*/);
-        	feclientlog.info(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
+        	feclientlog.info(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash()));
         	
         	// Initialize with configuration options
         	ClientConfig c = new ClientConfig();
@@ -141,7 +141,7 @@ public class ForgeEssentialsClient
             allowQuestionerShortcuts = c.allowQuestionerShortcuts.get();
             allowAuthAutoLogin = c.allowAuthAutoLogin.get();
             if (!c.versioncheck.get())
-                BuildInfo.checkVersion = false;
+                BuildInfo.needCheckVersion = false;
 
             if (allowCUI)
                 MinecraftForge.EVENT_BUS.register(cuiRenderer);
@@ -206,7 +206,7 @@ public class ForgeEssentialsClient
     	}
     	if(event.getOriginalMessage().equals("feclient info")) {
     		Minecraft instance = Minecraft.getInstance();
-    		instance.gui.getChat().addMessage(new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash())));
+    		instance.gui.getChat().addMessage(new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash())));
         	instance.gui.getChat().addMessage(new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers."));
         	instance.gui.getChat().addMessage(new StringTextComponent("Injected patches:"));
             for (String patch : FEClientMixinConfig.getInjectedPatches())

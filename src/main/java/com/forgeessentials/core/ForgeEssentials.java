@@ -198,7 +198,7 @@ public class ForgeEssentials
     public void preInit(FMLCommonSetupEvent event)
     {
         LoggingHandler.felog.info("ForgeEssentials Common Setup");
-        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildHash()));
+        LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash()));
         if (safeMode)
         {
             LoggingHandler.felog.warn("You are running FE in safe mode. Please only do so if requested to by the ForgeEssentials team.");
@@ -227,12 +227,12 @@ public class ForgeEssentials
         LoggingHandler.felog.info("ForgeEssentials DedicatedServerSetup Event");
 
         LoggingHandler.felog
-                .info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getFullVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
+                .info(String.format("Running ForgeEssentials %s-%s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildType(), BuildInfo.getBuildHash()));
         if (BuildInfo.isOutdated())
         {
             LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
-            LoggingHandler.felog.warn(String.format("WARNING! Using ForgeEssentials build #%d, latest build is #%d", //
-                    BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
+            LoggingHandler.felog.warn(Translator.format("WARNING! Using ForgeEssentials build #%s, latest build is #%s", //
+                    BuildInfo.getCurrentVersion(), BuildInfo.getLatestVersion()));
             LoggingHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
             LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
         }
@@ -455,7 +455,7 @@ public class ForgeEssentials
 
             // Show version notification
             if (BuildInfo.isOutdated() && UserIdent.get(player).checkPermission(PERM_VERSIONINFO))
-                ChatOutputHandler.chatWarning(player, String.format("ForgeEssentials build #%d outdated. Current build is #%d. Consider updating to get latest security and bug fixes.", BuildInfo.getBuildNumber(), BuildInfo.getBuildNumberLatest()));
+                ChatOutputHandler.chatWarning(player, Translator.format("ForgeEssentials build #%s outdated. Current build is #%s. Consider updating to get latest security and bug fixes.", BuildInfo.getCurrentVersion(), BuildInfo.getLatestVersion()));
         }
     }
 
@@ -548,7 +548,7 @@ public class ForgeEssentials
     	if (reload)
             Translator.translations.clear();
         Translator.load();
-        BuildInfo.checkVersion = FEcheckVersion.get();
+        BuildInfo.needCheckVersion = FEcheckVersion.get();
         //configManager.setUseCanonicalConfig(SERVER_BUILDER.comment("For modules that support it, place their configs in this file.").define("canonicalConfigs", false).get());
         debugMode = FEdebugMode.get();
         safeMode = FEsafeMode.get();

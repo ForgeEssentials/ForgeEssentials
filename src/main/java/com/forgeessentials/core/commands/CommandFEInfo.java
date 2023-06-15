@@ -74,9 +74,9 @@ public class CommandFEInfo extends ForgeEssentialsCommandBuilder
     {
         if (params.equals("blank"))
         {
-            ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("Running ForgeEssentials %s-%s", BuildInfo.getFullVersion(), BuildInfo.getBuildType()));
+            ChatOutputHandler.chatNotification(ctx.getSource(), Translator.format("Running ForgeEssentials %s (%s)-%s", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash(), BuildInfo.getBuildType()));
             if (BuildInfo.isOutdated())
-                ChatOutputHandler.chatError(ctx.getSource(), String.format("Outdated! Latest build is #%d", BuildInfo.getBuildNumberLatest()));
+                ChatOutputHandler.chatError(ctx.getSource(), String.format("Outdated! Latest build is #%d", BuildInfo.getLatestVersion()));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feinfo reload: Reload FE configs");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feinfo modules: Show loaded modules");
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "/feinfo mixin: Show loaded mixin patches");

@@ -289,6 +289,7 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
 	implementation 'org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r'
+	shadowLib group: 'org.eclipse.jgit', 	name: 'org.eclipse.jgit', 					version: '5.13.0.202109080827-r'
 }
 
 /************************************************************
@@ -321,7 +322,7 @@ sourceSets {
     //    compileClasspath += files deps
     //}
 }
-/*
+
 project.compileUtilsJava {
     doFirst {
         copy {
@@ -331,7 +332,7 @@ project.compileUtilsJava {
             into 'src/utils/java'
         }
     }
-}*/
+} 
 // Configure server resource processing
 project.processResources {
 	from (sourceSets.main.resources.srcDirs) {
@@ -402,11 +403,12 @@ jar.doLast {
 }
 
 shadowJar {
-	relocate  'org.jboss','com.forgeessentials.thirdparty.org.jboss'
+	relocate  'org.dom4j','com.forgeessentials.thirdparty.org.dom4j'
+	relocate  'org.eclipse.jgit','com.forgeessentials.thirdparty.org.eclipse.jgit'
+	relocate  'org.gjt','com.forgeessentials.thirdparty.org.gjt'
 	relocate  'org.hibernate','com.forgeessentials.thirdparty.org.hibernate'
 	relocate  'org.h2','com.forgeessentials.thirdparty.org.h2'
-	relocate  'org.gjt','com.forgeessentials.thirdparty.org.gjt'
-	relocate  'org.dom4j','com.forgeessentials.thirdparty.org.dom4j'
+	relocate  'org.jboss','com.forgeessentials.thirdparty.org.jboss'
 	relocate  'org.pircbotx','com.forgeessentials.thirdparty.org.pircbotx'
 	relocate  'org.slf4j','com.forgeessentials.thirdparty.org.slf4j'
 	relocate  'javax.persistence','com.forgeessentials.thirdparty.javax.persistence'
