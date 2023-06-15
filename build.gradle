@@ -106,7 +106,7 @@ if (System.getenv("BUILD_NUMBER") != null) {
 }
 
 ext.set 'changelog', System.getenv("CHANGE_LOG")
-ext.set 'releaseType', 'release'
+ext.set 'releaseType', 'alpha'
 
 // Get commit hash
 
