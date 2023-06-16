@@ -212,13 +212,13 @@ public class CallableMap
             return method.invoke(instance, args);
         }
 
-        @SuppressWarnings("rawtypes")
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         public Annotation getAnnotation(Class annot)
         {
             return method.getAnnotation(annot);
         }
 
-        @SuppressWarnings("rawtypes")
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         public Annotation getClassAnnotation(Class annot)
         {
             return method.getDeclaringClass().getAnnotation(annot);

@@ -338,15 +338,20 @@ public class UserIdent
             {
                 try
                 {
+                	boolean found = false;
                 	for (World world : ServerLifecycleHooks.getCurrentServer().getAllLevels())
                 	{
                 	    for (Entity entity : world.players()) {
                 	        if (entity.equals(sender.getEntity())) {
-                	            return get(sender);
+                	        	found = true;
+                	        	break;
                 	        }
                 	    }
+                	    if(found) {break;}
                 	}
-                    //return get(sender);
+                	if(found) {
+                		return get(sender);
+                	}
                 }
                 catch (Exception ignored)
                 {
