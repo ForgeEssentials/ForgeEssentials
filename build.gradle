@@ -216,12 +216,13 @@ ext.serverManifest = manifest {
 
 // Create dependency configurations
 configurations {
-	shade
-	shadeClient
-	serverLib
+	//shade
+	//shadeClient
+	//serverLib
 	buildDep
 	shadowLib
-	compile.extendsFrom buildDep, shade, shadeClient, serverLib, shadowLib
+	shadowClientLib
+	compile.extendsFrom buildDep, shadowLib, shadowClientLib//, serverLib, shade, shadeClient
     mavenDeps
 }
 
@@ -389,14 +390,6 @@ task tsd(type: JavaExec) {
     }
 }*/
 
-// Pack libraries as zip file to include them in the jar file
-//task serverLibArchive(type: Zip) {
-//	archiveName = "libraries.zip"
-//	destinationDir = jar.destinationDir
-//
-//	from (configurations.serverLib.copyRecursive()) { into("ForgeEssentials/lib") }
-//}
-
 jar.doLast {
 	///delete (serverLibArchive.archivePath)
 	delete (shadowJar.archivePath)
@@ -434,7 +427,6 @@ shadowJar {
 // Configure server jar (default)
 jar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
-	//dependsOn "serverLibArchive"
 	dependsOn shadowJar
     //dependsOn "tsd"
 	classifier = "server"
@@ -443,15 +435,7 @@ jar {
 	from sourceSets.main.output
 	from sourceSets.utils.output
     exclude('com/forgeessentials/client/**')
-    //from fileTree(serverLibArchive.archivePath)
-	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
-		from (zipTree(artifact))
 
-        exclude 'META-INF/*.SF'
-        exclude 'META-INF/*.RSA'
-        exclude 'META-INF/*.MF'
-        exclude 'LICENSE.txt'
-	}
 	from (zipTree(shadowJar.archivePath)) {
 		exclude 'META-INF','META-INF/**'
 	}
@@ -484,10 +468,11 @@ task clientJar (dependsOn: "clientClasses", type: Jar) {
 	
 	from sourceSets.client.output
 	from sourceSets.utils.output
-	configurations.shadeClient.copyRecursive().setTransitive(false).each { artifact ->
-		from (zipTree(artifact))
+	//configurations.shadeClient.copyRecursive().setTransitive(false).each { artifact ->
+	//	from (zipTree(artifact))
+	//}
 	}
-	
+
 	manifest {
 		from sharedManifest
 		attributes (
