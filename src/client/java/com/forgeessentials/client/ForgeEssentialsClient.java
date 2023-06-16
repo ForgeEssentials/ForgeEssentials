@@ -19,6 +19,7 @@ import com.forgeessentials.client.handler.Packet7RemoteQRRenderer;
 import com.forgeessentials.client.handler.QuestionerKeyHandler;
 import com.forgeessentials.client.mixin.FEClientMixinConfig;
 import com.forgeessentials.commons.BuildInfo;
+import com.forgeessentials.commons.events.NewVersionEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
 
@@ -111,7 +112,11 @@ public class ForgeEssentialsClient
     	MinecraftForge.EVENT_BUS.register(permissionOverlay);
     }
     /* ------------------------------------------------------------ */
-    
+
+    @SubscribeEvent
+    public void newVersion(NewVersionEvent e) {
+    }
+
     @SubscribeEvent
     public void getServerMods(NetworkEvent.LoginPayloadEvent e)
     {

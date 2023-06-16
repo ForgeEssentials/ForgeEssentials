@@ -48,6 +48,7 @@ import org.apache.logging.log4j.Level;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.BuildInfo;
+import com.forgeessentials.commons.events.NewVersionEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
@@ -292,6 +293,13 @@ public class ForgeEssentials
         }
     }
 
+    @SubscribeEvent
+    public void newVersion(NewVersionEvent e) {
+    	LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
+        LoggingHandler.felog.warn(Translator.format("WARNING! Using ForgeEssentials build #%s, latest build is #%s", BuildInfo.getCurrentVersion(), BuildInfo.getLatestVersion()));
+        LoggingHandler.felog.warn("We highly recommend updating asap to get the latest security and bug fixes");
+        LoggingHandler.felog.warn("-------------------------------------------------------------------------------------");
+    }
     /* ------------------------------------------------------------ */
 
     @SubscribeEvent
@@ -330,6 +338,7 @@ public class ForgeEssentials
 
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
         // CommandSetChecker.remove();
+
         FECommandManager.registerLoadedCommands();
 
         // Do permission registration in first server tick.

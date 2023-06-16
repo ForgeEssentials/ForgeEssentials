@@ -16,6 +16,10 @@ import org.eclipse.jgit.internal.storage.dfs.InMemoryRepository;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.RefSpec;
 
+import com.forgeessentials.commons.events.NewVersionEvent;
+
+import net.minecraftforge.common.MinecraftForge;
+
 public abstract class BuildInfo
 {
 
@@ -216,6 +220,9 @@ public abstract class BuildInfo
     public static void cancelVersionCheck()
     {
         checkVersionThread = null;
+        if(majorNumberLatest!=0) {
+        	MinecraftForge.EVENT_BUS.post(new NewVersionEvent());
+        }
     }
 
     public static String getCurrentVersion()
