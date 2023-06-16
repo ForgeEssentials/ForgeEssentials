@@ -156,7 +156,7 @@ public class ForgeEssentialsClient
                 MinecraftForge.EVENT_BUS.register(permissionOverlay);
             if (allowQuestionerShortcuts)
                 new QuestionerKeyHandler();
-            BuildInfo.startVersionChecks();
+            //BuildInfo.startVersionChecks();
 
         } else {
             System.err.println("ForgeEssentials client does nothing on servers. You should remove it!");

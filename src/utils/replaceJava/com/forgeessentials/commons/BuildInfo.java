@@ -137,7 +137,7 @@ public abstract class BuildInfo
                 febuildinfo.error("Unable to retrieve version info from API");
                 git.close();
                 repo.close();
-                cancelVersionCheck();
+                cancelVersionCheck(false);
                 return;
             }
             for (Ref ref : call) {
@@ -159,7 +159,7 @@ public abstract class BuildInfo
             }
             git.close();
             repo.close();
-            cancelVersionCheck();
+            cancelVersionCheck(false);
         }
         catch (GitAPIException e)
         {
@@ -217,10 +217,10 @@ public abstract class BuildInfo
     /**
      * Set to null, which will disable joining of the thread and kill any possible delay
      **/
-    public static void cancelVersionCheck()
+    public static void cancelVersionCheck(boolean stopping)
     {
         checkVersionThread = null;
-        if(majorNumberLatest!=0) {
+        if(majorNumberLatest!=0 && !stopping) {
         	MinecraftForge.EVENT_BUS.post(new NewVersionEvent());
         }
     }
