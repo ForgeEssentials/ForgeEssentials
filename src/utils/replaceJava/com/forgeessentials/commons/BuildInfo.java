@@ -25,7 +25,7 @@ public abstract class BuildInfo
 
     public static final Logger febuildinfo = LogManager.getLogger("FEUpdateChecker");
 
-    private static final String BUILD_TYPE_NIGHTLY = "nightly";
+    private static final String BUILD_TYPE = "alpha";
 
     private static String buildHash = "N/A";
 
@@ -256,7 +256,7 @@ public abstract class BuildInfo
     {
         //joinBuildTypeThread();
         //return buildTypes.getProperty(Integer.toString(buildNumber), BUILD_TYPE_NIGHTLY);
-        return BUILD_TYPE_NIGHTLY;
+        return BUILD_TYPE;
     }
 
 }
