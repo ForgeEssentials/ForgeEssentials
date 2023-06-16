@@ -6,16 +6,20 @@ import java.util.List;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.internal.storage.dfs.DfsRepositoryDescription;
 import org.eclipse.jgit.internal.storage.dfs.InMemoryRepository;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.transport.RefSpec;
 
 public abstract class BuildInfo
 {
+
+    public static final Logger febuildinfo = LogManager.getLogger("FEUpdateChecker");
 
     private static final String BUILD_TYPE_NIGHTLY = "nightly";
 
@@ -103,12 +107,12 @@ public abstract class BuildInfo
             }
             else
             {
-                System.err.println(String.format("Unable to get FE version information (dev env / %s)", BASE_VERSION));
+                febuildinfo.error(String.format("Unable to get FE version information (dev env / %s)", BASE_VERSION));
             }
         }
         catch (IOException e1)
         {
-            System.err.println(String.format("Unable to get FE version information (%s)", BASE_VERSION));
+            febuildinfo.error(String.format("Unable to get FE version information (%s)", BASE_VERSION));
         }
     }
 
@@ -120,37 +124,42 @@ public abstract class BuildInfo
             Git git = new Git(repo);
             git.fetch()
                     .setRemote("https://github.com/ForgeEssentials/ForgeEssentials")
+                    .setRefSpecs(new RefSpec("+refs/tags/*:refs/tags/*"))
+                    .setInitialBranch("HEAD")
                     .call();
-//            Git git = Git.cloneRepository()
-//                    .setURI("https://github.com/eclipse/jgit.git")
-//                    .setDirectory("/path/to/repo")
-//                    .call();
             repo.getObjectDatabase();
             List<Ref> call = git.tagList().call();
+            if(call.isEmpty()) {
+                febuildinfo.error("Unable to retrieve version info from API");
+                git.close();
+                repo.close();
+                cancelVersionCheck();
+                return;
+            }
             for (Ref ref : call) {
-                System.out.println("Tag: " + ref + " " + ref.getName() + " " + ref.getObjectId().getName() +
-                        (ref.getPeeledObjectId() == null ? "" : ", peeled: " + ref.getPeeledObjectId().getName()));
-    
-                // fetch all commits for this tag
-                LogCommand log = git.log();
-    
-                Ref peeledRef = repo.getRefDatabase().peel(ref);
-                if(peeledRef.getPeeledObjectId() != null) {
-                    log.add(peeledRef.getPeeledObjectId());
-                } else {
-                    log.add(ref.getObjectId());
+                String[] values = StringUtils.split(StringUtils.remove(ref.getName(), "refs/tags/"), '.');
+                if(values.length!=3 ||!values[0].matches("[0-9]+")||!values[1].matches("[0-9]+")||!values[2].matches("[0-9]+")||!values[0].equals(BASE_VERSION)) {
+                    continue;
                 }
-    
-                Iterable<RevCommit> logs = log.call();
-                for (RevCommit rev : logs) {
-                    System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
+                febuildinfo.debug("Found valid update tag: "+StringUtils.remove(ref.getName(), "refs/tags/"));
+                if(Integer.parseInt(values[1])>Integer.parseInt(MAJOR_VERSION)&&Integer.parseInt(values[1])>majorNumberLatest) {
+                    majorNumberLatest=Integer.parseInt(values[1]);
+                    minorNumberLatest=Integer.parseInt(values[2]);
+                    continue;
+                }
+                if(Integer.parseInt(values[2])>MINOR_VERSION&&Integer.parseInt(values[1])>minorNumberLatest) {
+                    majorNumberLatest=Integer.parseInt(values[1]);
+                    minorNumberLatest=Integer.parseInt(values[2]);
+                    continue;
                 }
             }
             git.close();
+            repo.close();
+            cancelVersionCheck();
         }
-        catch (IOException | GitAPIException e)
+        catch (GitAPIException e)
         {
-            System.err.println("Unable to retrieve version info");
+            febuildinfo.error("Unable to retrieve version info from API");
         }
     }
 
