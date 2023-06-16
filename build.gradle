@@ -290,7 +290,8 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
 	implementation 'org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r'
-	shadowLib group: 'org.eclipse.jgit', 	name: 'org.eclipse.jgit', 					version: '5.13.0.202109080827-r'
+	shadowLib group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
+	shadowClientLib group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
 }
 
 /************************************************************
@@ -369,7 +370,7 @@ mixin {
 }
 
 /************************************************************
- * Configure server jar (default)
+ * Configure shadow jars
  */
 
  // JavaExec task for generating tsd
@@ -391,7 +392,6 @@ task tsd(type: JavaExec) {
 }*/
 
 jar.doLast {
-	///delete (serverLibArchive.archivePath)
 	delete (shadowJar.archivePath)
 	delete fileTree(dir:'src/utils/java/com/forgeessentials/commons/', include: 'BuildInfo.java')
 }
@@ -424,10 +424,47 @@ shadowJar {
 	from sourceSets.utils.output
 	exclude('com/forgeessentials/client/**')
 }
-// Configure server jar (default)
+task clientshadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    description = "ShadowJar for client code"
+    classifier = 'shadow'
+    from sourceSets.client.output
+    from sourceSets.utils.output
+    configurations = [project.configurations.shadowClientLib]
+}
+
+/************************************************************
+ * Configure client jar
+ */
+
+task clientJar (dependsOn: ["clientClasses", "clientshadowJar"], type: Jar) {
+	classifier = "client"
+	appendix = project.minecraftVersion
+	
+	from sourceSets.client.output
+	from sourceSets.utils.output
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+	from (zipTree(shadowJar.archivePath)) {
+		exclude 'META-INF','META-INF/**'
+		exclude 'assets/**'
+	}
+
+	manifest {
+		from sharedManifest
+		attributes (
+			"MixinConfigs": "mixins.forgeessentials.client.json"
+		)
+	}
+}
+
+/************************************************************
+ * Configure server jar (default)
+ */
+ 
 jar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
 	dependsOn shadowJar
+	dependsOn clientJar
     //dependsOn "tsd"
 	classifier = "server"
 	appendix = project.minecraftVersion
@@ -438,6 +475,7 @@ jar {
 
 	from (zipTree(shadowJar.archivePath)) {
 		exclude 'META-INF','META-INF/**'
+		exclude 'assets/**'
 	}
 
 	from (zipTree(shadowJar.archivePath)) {
@@ -455,29 +493,6 @@ jar {
 
 	manifest {
 		from serverManifest
-	}
-}
-
-/************************************************************
- * Configure client jar
- */
-
-task clientJar (dependsOn: "clientClasses", type: Jar) {
-	classifier = "client"
-	appendix = project.minecraftVersion
-	
-	from sourceSets.client.output
-	from sourceSets.utils.output
-	//configurations.shadeClient.copyRecursive().setTransitive(false).each { artifact ->
-	//	from (zipTree(artifact))
-	//}
-	}
-
-	manifest {
-		from sharedManifest
-		attributes (
-			"MixinConfigs": "mixins.forgeessentials.client.json"
-		)
 	}
 }
 
