@@ -400,6 +400,7 @@ task tsd(type: JavaExec) {
 jar.doLast {
 	///delete (serverLibArchive.archivePath)
 	delete (shadowJar.archivePath)
+	delete fileTree(dir:'src/utils/java/com/forgeessentials/commons/', include: 'BuildInfo.java')
 }
 
 shadowJar {
