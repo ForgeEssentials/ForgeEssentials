@@ -397,6 +397,7 @@ jar.doLast {
 }
 
 shadowJar {
+	minimize()
 	relocate  'org.dom4j','com.forgeessentials.thirdparty.org.dom4j'
 	relocate  'org.eclipse.jgit','com.forgeessentials.thirdparty.org.eclipse.jgit'
 	relocate  'org.gjt','com.forgeessentials.thirdparty.org.gjt'
@@ -425,6 +426,7 @@ shadowJar {
 	exclude('com/forgeessentials/client/**')
 }
 task clientshadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+	minimize()
     description = "ShadowJar for client code"
     classifier = 'shadow'
     from sourceSets.client.output
