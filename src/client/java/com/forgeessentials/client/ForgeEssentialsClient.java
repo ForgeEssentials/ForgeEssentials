@@ -1,5 +1,8 @@
 package com.forgeessentials.client;
 
+import java.io.File;
+import java.util.List;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,6 +39,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -44,6 +48,7 @@ import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import net.minecraftforge.fml.network.FMLHandshakeMessages;
 import net.minecraftforge.fml.network.FMLHandshakeMessages.S2CModList;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -60,7 +65,9 @@ public class ForgeEssentialsClient
     //@SidedProxy(clientSide = "com.forgeessentialsclientclient.core.ClientProxy", serverSide = "com.forgeessentialsclientclient.core.CommonProxy")
 
     public static ModContainer MOD_CONTAINER;
-    
+
+    private static File jarLocation;
+
     protected static boolean serverHasFE;
     /* ------------------------------------------------------------ */
 
@@ -135,7 +142,16 @@ public class ForgeEssentialsClient
     public void commonsetup(FMLCommonSetupEvent event) {
         if (FMLEnvironment.dist.isClient()) {
         	registerNetworkMessages();
-        	BuildInfo.getBuildInfo(null/*event.getSourceFile()*/);
+
+        	List<ModInfo> mods = ModList.get().getMods();
+            for (ModInfo mod : mods)
+            {
+                if(mod.getModId().equals("forgeessentials")) {
+                    jarLocation = mod.getOwningFile().getFile().getFilePath().toFile();
+                    break;
+                }
+            }
+        	BuildInfo.getBuildInfo(jarLocation);
         	feclientlog.info(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash()));
         	
         	// Initialize with configuration options
