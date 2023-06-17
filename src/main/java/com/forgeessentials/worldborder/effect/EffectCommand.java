@@ -1,16 +1,17 @@
 package com.forgeessentials.worldborder.effect;
 
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import java.util.List;
-
 import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.scripting.ScriptArguments;
-import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 
 /**
  * Expected syntax: <interval> <command>
@@ -23,14 +24,10 @@ public class EffectCommand extends WorldBorderEffect
     public int interval = 0;
 
     @Override
-    public void provideArguments(List<String> args) throws FECommandParsingException
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
     {
-        if (args.isEmpty())
-            throw new FECommandParsingException("Missing interval argument");
-        interval = CommandUtils.parseInt(args.remove(0));
-        if (args.isEmpty())
-            throw new FECommandParsingException("Missing command argument");
-        command = args.toString();
+        interval = IntegerArgumentType.getInteger(ctx, "interval");
+        command = StringArgumentType.getString(ctx, "command");
     }
 
     @Override

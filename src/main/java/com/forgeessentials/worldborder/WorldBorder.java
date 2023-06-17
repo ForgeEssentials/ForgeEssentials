@@ -118,14 +118,8 @@ public class WorldBorder implements Loadable
 
     public void updateArea()
     {
-        Point minP = new Point( //
-                center.getX() - size.getX(), //
-                center.getY() - size.getY(), //
-                center.getZ() - size.getZ());
-        Point maxP = new Point( //
-                center.getX() + size.getX(), //
-                center.getY() + size.getY(), //
-                center.getZ() + size.getZ());
+        Point minP = new Point(center.getX() - size.getX(), center.getY() - size.getY(), center.getZ() - size.getZ());
+        Point maxP = new Point( center.getX() + size.getX(), center.getY() + size.getY(), center.getZ() + size.getZ());
         area = new AreaBase(minP, maxP);
     }
 
@@ -147,14 +141,12 @@ public class WorldBorder implements Loadable
 
     public void save()
     {
-        // TODO: Better way to identify dimensions
         String key = dimID;
         DataManager.getInstance().save(this, key.replace(":", "-"));
     }
 
     public static WorldBorder load(World world)
     {
-        // TODO: Better way to identify dimensions
         String key = world.dimension().location().toString();
         return DataManager.getInstance().load(WorldBorder.class, key.replace(":", "-"));
     }

@@ -1,18 +1,18 @@
 package com.forgeessentials.worldborder.effect;
 
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.TranslationTextComponent;
 
-import java.util.List;
-
 import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 
 /**
  * Expected syntax: <interval> (in seconds)
@@ -23,11 +23,9 @@ public class EffectKick extends WorldBorderEffect
     private int timeout = 0;
 
     @Override
-    public void provideArguments(List<String> args) throws FECommandParsingException
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
     {
-        if (args.isEmpty())
-            throw new FECommandParsingException("Missing interval argument");
-        timeout = CommandUtils.parseInt(args.remove(0));
+        timeout = IntegerArgumentType.getInteger(ctx, "timeout");
     }
 
     @Override

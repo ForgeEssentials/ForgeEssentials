@@ -1,6 +1,6 @@
 package com.forgeessentials.worldborder.effect;
 
-import java.util.List;
+import net.minecraft.command.CommandSource;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.FECommandParsingException;
@@ -8,6 +8,7 @@ import com.forgeessentials.util.WorldUtil;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
+import com.mojang.brigadier.context.CommandContext;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 
@@ -15,9 +16,7 @@ public class EffectKnockback extends WorldBorderEffect
 {
 
     @Override
-    public void provideArguments(List<String> args) throws FECommandParsingException
-    {
-    }
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException {}
 
     @Override
     public void playerMove(WorldBorder border, PlayerMoveEvent event)

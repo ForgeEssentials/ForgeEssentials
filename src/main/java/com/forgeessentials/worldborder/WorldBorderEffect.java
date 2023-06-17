@@ -1,11 +1,11 @@
 package com.forgeessentials.worldborder;
 
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-
-import java.util.List;
 
 import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.util.events.PlayerMoveEvent;
+import com.mojang.brigadier.context.CommandContext;
 
 public abstract class WorldBorderEffect
 {
@@ -26,7 +26,7 @@ public abstract class WorldBorderEffect
         return triggerDistance;
     }
 
-    public abstract void provideArguments(List<String> args) throws FECommandParsingException;
+    public abstract void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException;
 
     public abstract String getSyntax();
 

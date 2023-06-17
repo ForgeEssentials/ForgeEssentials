@@ -1,25 +1,26 @@
 package com.forgeessentials.worldborder.effect;
 
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.arguments.PotionArgument;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 
-import java.util.List;
-
 import com.forgeessentials.core.misc.FECommandParsingException;
-import com.forgeessentials.data.v2.Loadable;
-import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 /**
  * Expected syntax: <interval> <effect> <seconds> <amplifier>
  */
-public class EffectPotion extends WorldBorderEffect implements Loadable
+public class EffectPotion extends WorldBorderEffect
 {
 
-    public int id;
+    public Effect id;
 
     public int duration;
 
@@ -27,46 +28,24 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
 
     public int interval;
 
-    public EffectPotion()
-    {
-    }
-
     @Override
-    public void provideArguments(List<String> args) throws FECommandParsingException
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
     {
-        if (args.isEmpty())
-            throw new FECommandParsingException("Missing interval argument");
-        interval = CommandUtils.parseInt(args.remove(0));
-
-        if (args.isEmpty())
-            throw new FECommandParsingException("Missing potion id argument");
-        id = CommandUtils.parseInt(args.remove(0));;
-
-        if (args.isEmpty())
-            throw new FECommandParsingException("Missing duration id argument");
-        duration = CommandUtils.parseInt(args.remove(0));
-
-        if (args.isEmpty())
-            throw new FECommandParsingException("Missing modifier id argument");
-        modifier =CommandUtils.parseInt(args.remove(0));
-    }
-
-    @Override
-    public void afterLoad()
-    {
-        if (id == 0)
-        {
-            id = 9;
-            duration = 5;
-            modifier = 0;
-        }
+    	interval = IntegerArgumentType.getInteger(ctx, "interval");
+        try {
+			id = PotionArgument.getEffect(ctx, "effect");
+		} catch (CommandSyntaxException e) {
+			throw new FECommandParsingException("Bad effect argument");
+		}
+        duration = IntegerArgumentType.getInteger(ctx, "seconds");
+        modifier = IntegerArgumentType.getInteger(ctx, "amplifier");
     }
 
     @Override
     public void activate(WorldBorder border, ServerPlayerEntity player)
     {
-        if (interval <= 0)
-            player.addEffect(new EffectInstance(Effect.byId(id), duration, modifier, false, true, true));
+        if (interval <= 0) {}
+            player.addEffect(new EffectInstance(id, duration, modifier, false, true, true));
     }
 
     @Override
@@ -77,7 +56,7 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.addEffect(new EffectInstance(Effect.byId(id), duration, modifier, false, true, true));
+            player.addEffect(new EffectInstance(id, duration, modifier, false, true, true));
             pi.startTimeout(this.getClass().getName(), interval * 1000);
         }
     }
@@ -93,5 +72,4 @@ public class EffectPotion extends WorldBorderEffect implements Loadable
     {
         return String.format("potion interval: %d1 id: %d2 duration: %d3 amplifier: %d4", interval, id, duration, modifier);
     }
-
 }

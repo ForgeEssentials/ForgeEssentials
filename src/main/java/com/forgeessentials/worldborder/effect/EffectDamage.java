@@ -1,15 +1,15 @@
 package com.forgeessentials.worldborder.effect;
 
+import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.DamageSource;
 
-import java.util.List;
-
 import com.forgeessentials.core.misc.FECommandParsingException;
-import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.worldborder.WorldBorder;
 import com.forgeessentials.worldborder.WorldBorderEffect;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 
 /**
  * Expected syntax: <interval> <damage>
@@ -24,15 +24,10 @@ public class EffectDamage extends WorldBorderEffect
     private int damage = 1;
 
     @Override
-    public void provideArguments(List<String> args) throws FECommandParsingException
+    public void provideArguments(CommandContext<CommandSource> ctx) throws FECommandParsingException
     {
-        if (args.isEmpty())
-            throw new FECommandParsingException("Missing interval argument");
-        interval = CommandUtils.parseInt(args.remove(0));
-
-        if (args.isEmpty())
-            throw new FECommandParsingException("Missing damage argument");
-        damage = CommandUtils.parseInt(args.remove(0));
+        interval = IntegerArgumentType.getInteger(ctx, "interval");
+        damage = IntegerArgumentType.getInteger(ctx, "damage");
     }
 
     @Override
