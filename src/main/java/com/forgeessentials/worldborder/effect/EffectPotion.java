@@ -70,6 +70,6 @@ public class EffectPotion extends WorldBorderEffect
     @Override
     public String toString()
     {
-        return String.format("potion interval: %d1 id: %d2 duration: %d3 amplifier: %d4", interval, id, duration, modifier);
+        return String.format("potion interval: %d id: %d duration: %d amplifier: %d", interval, id, duration, modifier);
     }
 }
