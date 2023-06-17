@@ -23,7 +23,6 @@ import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -42,10 +41,6 @@ public class ModuleTickets implements ConfigSaver
     public static List<String> categories = new ArrayList<String>();
 
     public static int currentID;
-
-    public ModuleTickets() {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
 
     @SubscribeEvent
     public void registerCommands(FERegisterCommandsEvent event)

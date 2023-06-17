@@ -41,19 +41,9 @@ public class ModulePlayerLogger implements ConfigSaver
     public static final String PERM_WAND = PERM + ".wand";
     public static final String PERM_COMMAND = PERM + ".cmd";
 
-    private static PlayerLogger logger;
+    private static PlayerLogger logger = new PlayerLogger();
 
-    private PlayerLoggerEventHandler eventHandler;
-
-    public ModulePlayerLogger()
-    {
-        DataManager.addDataType(new WorldDataType());
-        DataManager.addDataType(new PlayerDataType());
-        DataManager.addDataType(new BlockDataType());
-        
-        logger = new PlayerLogger();
-        eventHandler = new PlayerLoggerEventHandler();
-    }
+    private PlayerLoggerEventHandler eventHandler= new PlayerLoggerEventHandler();
 
     @SubscribeEvent
     public void registerCommands(FERegisterCommandsEvent event)
@@ -70,6 +60,9 @@ public class ModulePlayerLogger implements ConfigSaver
     @SubscribeEvent
     public void serverPreInit(FEModuleServerAboutToStartEvent e)
     {
+        DataManager.addDataType(new WorldDataType());
+        DataManager.addDataType(new PlayerDataType());
+        DataManager.addDataType(new BlockDataType());
         registerPermissions();
         logger.loadDatabase();
     }

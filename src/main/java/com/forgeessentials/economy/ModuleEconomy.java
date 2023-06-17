@@ -92,9 +92,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     /* ------------------------------------------------------------ */
 
-    protected PlotManager plotManager;
+    protected PlotManager plotManager = new PlotManager();
 
-    protected ShopManager shopManager;
+    protected ShopManager shopManager = new ShopManager();
 
     protected HashMap<UserIdent, PlayerWallet> wallets = new HashMap<>();
 
@@ -103,8 +103,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     public ModuleEconomy() {
     	APIRegistry.economy = this;
-        plotManager = new PlotManager();
-        shopManager = new ShopManager();
     }
 
     @SubscribeEvent

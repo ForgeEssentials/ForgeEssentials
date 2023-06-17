@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import net.minecraft.command.CommandSource;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
@@ -64,12 +63,6 @@ public class ModuleFactions
     }
 
     /* ------------------------------------------------------------ */
-
-    public ModuleFactions()
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-        //APIRegistry.FE_EVENTBUS.register(this);
-    }
 
     @SubscribeEvent
     public void load(FEModuleServerStartingEvent event)

@@ -113,7 +113,7 @@ public class ZonedPermissionHelper extends ServerEventHandler implements IPermis
 
     public ZonedPermissionHelper()
     {
-        LoggingHandler.felog.info("Creating new ZonedPermissionHelper");
+        LoggingHandler.felog.debug("Creating new ZonedPermissionHelper");
         rootZone = new RootZone(this);
         rootZone.setPermissionDebugger(this);
 

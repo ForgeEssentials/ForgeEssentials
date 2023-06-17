@@ -6,7 +6,6 @@ import java.io.IOException;
 import net.minecraft.command.CommandSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -90,8 +89,6 @@ public class ModulePermissions extends ConfigLoaderBase
         }
         itemPermissionManager = new ItemPermissionManager();
         permissionScheduler = new PermissionScheduler();
-        MinecraftForge.EVENT_BUS.register(this);
-
     }
 
     @SubscribeEvent

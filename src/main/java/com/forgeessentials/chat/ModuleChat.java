@@ -24,7 +24,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -107,26 +106,19 @@ public class ModuleChat implements ConfigSaver
 
     private PrintWriter logWriter;
 
-    public static Censor censor;
+    public static Censor censor = new Censor();
 
-    public Mailer mailer;
+    public Mailer mailer = new Mailer();
 
-    public static TimedMessages timedMessages;
+    public static TimedMessages timedMessages = new TimedMessages();
 
-    public IrcHandler ircHandler;
+    public IrcHandler ircHandler = new IrcHandler();
 
-    public DiscordHandler discordHandler;
+    public DiscordHandler discordHandler = new DiscordHandler();
 
     /* ------------------------------------------------------------ */
 
     public ModuleChat() {
-    	ircHandler = new IrcHandler();
-        discordHandler = new DiscordHandler();
-        censor = new Censor();
-        timedMessages = new TimedMessages();
-        mailer = new Mailer();
-        MinecraftForge.EVENT_BUS.register(this);
-
         setupChatReplacements();
     }
 

@@ -30,7 +30,6 @@ import net.minecraft.util.text.TextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -115,11 +114,6 @@ public class ModuleBackup extends ConfigLoaderBase
     public static File baseFolder;
 
     /* ------------------------------------------------------------ */
-
-    public ModuleBackup() {
-        MinecraftForge.EVENT_BUS.register(this);
-
-    }
 
     @SubscribeEvent
     public void registerCommands(FERegisterCommandsEvent event)

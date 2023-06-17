@@ -13,7 +13,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.ChatType;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -45,11 +44,6 @@ public class ModuleServerVote extends ConfigLoaderBase
     public static final String scriptKey = "servervote";
 
     private HashMap<String, VoteEvent> offlineList = new HashMap<>();
-
-    public ModuleServerVote()
-    {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
 
     @SubscribeEvent
     public void serverStarting(FEModuleServerStartingEvent event)

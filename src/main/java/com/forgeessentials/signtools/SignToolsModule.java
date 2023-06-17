@@ -11,7 +11,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fe.event.world.SignEditEvent;
@@ -43,10 +42,6 @@ public class SignToolsModule extends ConfigLoaderBase
     private static final String signeditKey = "signedit";
 
     private static boolean allowSignCommands, allowSignEdit;
-
-    public SignToolsModule() {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
 
     @SubscribeEvent
     public void registerPerms(FEModuleServerStartingEvent e)
