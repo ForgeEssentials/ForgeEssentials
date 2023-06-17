@@ -53,7 +53,7 @@ public class EffectSmite extends WorldBorderEffect
 
         LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(player.level);
         lightningboltentity.moveTo(Vector3d.atBottomCenterOf(new BlockPos(player.position().x, player.position().y, player.position().z)));
-        lightningboltentity.setVisualOnly(false);
+        lightningboltentity.setVisualOnly(true);
         player.getLevel().addFreshEntity(lightningboltentity);
     }
 

@@ -20,7 +20,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 public class EffectPotion extends WorldBorderEffect
 {
 
-    public Effect id;
+    public int id;
 
     public int duration;
 
@@ -33,7 +33,7 @@ public class EffectPotion extends WorldBorderEffect
     {
     	interval = IntegerArgumentType.getInteger(ctx, "interval");
         try {
-			id = PotionArgument.getEffect(ctx, "effect");
+			id = Effect.getId(PotionArgument.getEffect(ctx, "effect"));
 		} catch (CommandSyntaxException e) {
 			throw new FECommandParsingException("Bad effect argument");
 		}
@@ -45,7 +45,7 @@ public class EffectPotion extends WorldBorderEffect
     public void activate(WorldBorder border, ServerPlayerEntity player)
     {
         if (interval <= 0) {}
-            player.addEffect(new EffectInstance(id, duration, modifier, false, true, true));
+            player.addEffect(new EffectInstance(Effect.byId(id), duration, modifier, false, true, true));
     }
 
     @Override
@@ -56,7 +56,7 @@ public class EffectPotion extends WorldBorderEffect
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.addEffect(new EffectInstance(id, duration, modifier, false, true, true));
+            player.addEffect(new EffectInstance(Effect.byId(id), duration, modifier, false, true, true));
             pi.startTimeout(this.getClass().getName(), interval * 1000);
         }
     }

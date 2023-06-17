@@ -378,13 +378,10 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
                 ChatOutputHandler.chatError(ctx.getSource(),"Try using /wb effect to view all available effects.");
                 ChatOutputHandler.chatError(ctx.getSource(),"Each one is identified by a number, use that to identify the effect you want to remove.");
             }
-            return;
         }
         else if(params.startsWith("effect-add")) {
             addEffect(ctx, border, params);
-            return;
         }
-        ChatOutputHandler.chatError(ctx.getSource(),"Wrong syntax! Try /wb effect <add [command|damage|kick|knockback|message|potion|smite|block] <trigger> | remove <index>");
         border.save();
         return;
     }
