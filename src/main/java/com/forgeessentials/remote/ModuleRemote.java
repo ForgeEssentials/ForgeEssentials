@@ -38,6 +38,9 @@ import com.forgeessentials.api.permissions.Zone;
 import com.forgeessentials.api.remote.FERemoteHandler;
 import com.forgeessentials.api.remote.RemoteHandler;
 import com.forgeessentials.api.remote.RemoteManager;
+import com.forgeessentials.commons.events.RegisterPacketEvent;
+import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.packets.Packet7Remote;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.config.ConfigData;
 import com.forgeessentials.core.config.ConfigLoaderBase;
@@ -138,6 +141,11 @@ public class ModuleRemote extends ConfigLoaderBase implements RemoteManager
     {
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         FECommandManager.registerCommand(new CommandRemote(true), dispatcher);
+    }
+
+    @SubscribeEvent
+    public void registerPacket(RegisterPacketEvent event) {
+        NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::encode, Packet7Remote::decode, Packet7Remote::handler);
     }
 
     /**

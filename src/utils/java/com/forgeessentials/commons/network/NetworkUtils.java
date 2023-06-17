@@ -39,6 +39,7 @@ public class NetworkUtils
         NetworkRegistry.acceptMissingOr(PROTOCOL_VERSION)
     );
 
+    public static void init() {}
     /**
      * Registered network massages.
      */

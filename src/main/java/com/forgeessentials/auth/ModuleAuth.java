@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
 
 import com.forgeessentials.api.APIRegistry;
+import com.forgeessentials.commons.events.RegisterPacketEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet0Handshake;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
@@ -73,16 +74,17 @@ public class ModuleAuth extends ConfigLoaderBase
         return true;
     }
 
-    public ModuleAuth() {
-        NetworkUtils.registerBiDirectional(6, AuthNetHandler.class, AuthNetHandler::encode, AuthNetHandler::decode, AuthNetHandler::handler);
-    }
-
     @SubscribeEvent
     public void registerCommands(FERegisterCommandsEvent event)
     {
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         FECommandManager.registerCommand(new CommandAuth(true), dispatcher);
         FECommandManager.registerCommand(new CommandVIP(true), dispatcher);
+    }
+
+    @SubscribeEvent
+    public void registerPacket(RegisterPacketEvent event) {
+        NetworkUtils.registerBiDirectional(6, AuthNetHandler.class, AuthNetHandler::encode, AuthNetHandler::decode, AuthNetHandler::handler);
     }
 
     @SubscribeEvent

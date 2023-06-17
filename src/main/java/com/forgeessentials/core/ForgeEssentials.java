@@ -49,11 +49,11 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.BuildInfo;
 import com.forgeessentials.commons.events.NewVersionEvent;
+import com.forgeessentials.commons.events.RegisterPacketEvent;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet1SelectionUpdate;
 import com.forgeessentials.commons.network.packets.Packet3PlayerPermissions;
 import com.forgeessentials.commons.network.packets.Packet5Noclip;
-import com.forgeessentials.commons.network.packets.Packet7Remote;
 import com.forgeessentials.compat.BaublesCompat;
 import com.forgeessentials.compat.CompatReiMinimap;
 import com.forgeessentials.compat.HelpFixer;
@@ -66,7 +66,7 @@ import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.misc.BlockModListFile;
 import com.forgeessentials.core.misc.FECommandManager;
-import com.forgeessentials.core.misc.Packet0Handler;
+import com.forgeessentials.core.misc.Packet0HandshakeHandler;
 import com.forgeessentials.core.misc.PermissionManager;
 import com.forgeessentials.core.misc.RespawnHandler;
 import com.forgeessentials.core.misc.TaskRegistry;
@@ -192,18 +192,17 @@ public class ForgeEssentials
         moduleLauncher = new ModuleLauncher();
         // Load submodules
         //moduleLauncher.init();
+        NetworkUtils.init();
     }
 
     public void preInit(FMLCommonSetupEvent event)
     {
-        LoggingHandler.felog.info("ForgeEssentials Common Setup");
+        LoggingHandler.felog.info("ForgeEssentials CommonSetup");
         LoggingHandler.felog.info(String.format("Running ForgeEssentials %s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash()));
         if (safeMode)
         {
             LoggingHandler.felog.warn("You are running FE in safe mode. Please only do so if requested to by the ForgeEssentials team.");
         }
-
-        registerNetworkMessages();
 
         // Set up logger level
         toggleDebug();
@@ -218,7 +217,6 @@ public class ForgeEssentials
 
         // Load submodules
         moduleLauncher.init();
-
     }
 
     public void postLoad(FMLLoadCompleteEvent e)
@@ -226,7 +224,6 @@ public class ForgeEssentials
         LoggingHandler.felog.info("ForgeEssentials LoadCompleteEvent");
         commandManager = new FECommandManager();
         isCubicChunksInstalled = ModList.get().isLoaded("cubicchunks");
-
     }
 
     /* ------------------------------------------------------------ */
@@ -255,23 +252,24 @@ public class ForgeEssentials
 
     private void registerNetworkMessages()
     {
-        LoggingHandler.felog.info("ForgeEssentials Regestering network Packets");
+        LoggingHandler.felog.info("ForgeEssentials registering network Packets");
         // Load network packages
-        NetworkUtils.registerClientToServer(0, Packet0Handler.class, Packet0Handler::encode, Packet0Handler::decode, Packet0Handler::handler);
+        NetworkUtils.registerClientToServer(0, Packet0HandshakeHandler.class, Packet0HandshakeHandler::encode, Packet0HandshakeHandler::decode, Packet0HandshakeHandler::handler);
         NetworkUtils.registerServerToClient(1, Packet1SelectionUpdate.class, Packet1SelectionUpdate::encode, Packet1SelectionUpdate::decode, Packet1SelectionUpdate::handler);
 		//NetworkUtils.registerServerToClient(2, Packet2Reach.class, Packet2Reach::decode);
         NetworkUtils.registerServerToClient(3, Packet3PlayerPermissions.class, Packet3PlayerPermissions::encode, Packet3PlayerPermissions::decode, Packet3PlayerPermissions::handler);
         //NetworkUtils.registerServerToClient(2, Packet4Economy.class, Packet4Economy::decode); old times
         NetworkUtils.registerServerToClient(5, Packet5Noclip.class, Packet5Noclip::encode, Packet5Noclip::decode, Packet5Noclip::handler);
-        // Packet6Auth is registered in the Auth Module
-        NetworkUtils.registerServerToClient(7, Packet7Remote.class, Packet7Remote::encode, Packet7Remote::decode, Packet7Remote::handler);
+        //Packet6Auth is registered in the Auth Module
+        //Packet7Remote is registered in the Remote Module
+        MinecraftForge.EVENT_BUS.post(new RegisterPacketEvent());
 
     }
     
     @SubscribeEvent
     public void registerCommands(FERegisterCommandsEvent event)
     {
-        LoggingHandler.felog.info("ForgeEssentials Regestering commands");
+        LoggingHandler.felog.info("ForgeEssentials registering commands");
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         FECommandManager.registerCommand(new CommandFEInfo(true), dispatcher);
         FECommandManager.registerCommand(new CommandFeReload(true), dispatcher);
@@ -305,7 +303,8 @@ public class ForgeEssentials
     @SubscribeEvent
     public void serverPreInit(FMLServerAboutToStartEvent e)
     {
-        LoggingHandler.felog.info("ForgeEssentials Server About to start");
+        LoggingHandler.felog.info("ForgeEssentials ServerAboutToStart");
+        registerNetworkMessages();
         ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs(false);//any config baking needing to be done after here must use getConfigManager().loadNBuildNBakeSpec();
         //ConfigBase.registerConfigManual(FEAliasesManager.returnData().getSpecBuilder().build(), FEAliasesManager.returnData().getName(), true);
         // Initialize data manager once server begins to start
@@ -317,7 +316,7 @@ public class ForgeEssentials
     @SubscribeEvent
     public void serverStarting(FMLServerStartingEvent e)
     {
-        LoggingHandler.felog.info("ForgeEssentials Server starting");
+        LoggingHandler.felog.info("ForgeEssentials ServerStarting");
         BlockModListFile.makeModList();
         BlockModListFile.dumpFMLRegistries();
         //TODO REIMPLEMENT
@@ -333,7 +332,7 @@ public class ForgeEssentials
     @SubscribeEvent
     public void serverStarted(FMLServerStartedEvent e)
     {
-        LoggingHandler.felog.info("ForgeEssentials Server started");
+        LoggingHandler.felog.info("ForgeEssentials ServerStarted");
         MinecraftForge.EVENT_BUS.post(new FEModuleServerStartedEvent(e));
 
         // TODO: what the fuck? I don't think we should just go and delete all commands colliding with ours!
@@ -359,7 +358,7 @@ public class ForgeEssentials
     @SubscribeEvent
     public void serverStopping(FMLServerStoppingEvent e)
     {
-        LoggingHandler.felog.info("ForgeEssentials Server stopping");
+        LoggingHandler.felog.info("ForgeEssentials ServerStopping");
         MinecraftForge.EVENT_BUS.post(new FEModuleServerStoppingEvent(e));
         PlayerInfo.discardAll();
         BuildInfo.cancelVersionCheck(true);
@@ -368,7 +367,7 @@ public class ForgeEssentials
     @SubscribeEvent
     public void serverStopped(FMLServerStoppedEvent e)
     {
-        LoggingHandler.felog.info("ForgeEssentials server stopped");
+        LoggingHandler.felog.info("ForgeEssentials ServerStopped");
         try
         {
         	MinecraftForge.EVENT_BUS.post(new FEModuleServerStoppedEvent(e));
@@ -383,7 +382,7 @@ public class ForgeEssentials
     @SubscribeEvent
     public void registerCommandEvent(final RegisterCommandsEvent event) 
     {
-        LoggingHandler.felog.info("ForgeEssentials register command event");
+        LoggingHandler.felog.debug("ForgeEssentials Register Commands Event");
         MinecraftForge.EVENT_BUS.post(new FERegisterCommandsEvent(event));
     }
 
