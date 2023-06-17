@@ -15,6 +15,7 @@ import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.output.ChatOutputHandler;
+import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -65,6 +66,10 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
     {
         return baseBuilder
         		.then(Commands.argument("world", DimensionArgument.dimension())
+        		        .then(Commands.literal("info")
+                                .executes(CommandContext -> execute(CommandContext, "info")
+                                        )
+                                )
         				.then(Commands.literal("enable")
                                 .executes(CommandContext -> execute(CommandContext, "enable")
                                         )
@@ -80,7 +85,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
                                         )
                 				.then(Commands.literal("set")
                 						.then(Commands.argument("location", BlockPosArgument.blockPos())
-                                                .executes(CommandContext -> execute(CommandContext, "senter-set")
+                                                .executes(CommandContext -> execute(CommandContext, "center-set")
                                                         )
                                                 )
                                         )
@@ -178,7 +183,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
                 														.then(Commands.argument("effect", PotionArgument.effect())
                 																.then(Commands.argument("seconds", IntegerArgumentType.integer())
                 																		.then(Commands.argument("amplifier", IntegerArgumentType.integer())
-                		                		                                                .executes(CommandContext -> execute(CommandContext, "effect-add-smite")
+                		                		                                                .executes(CommandContext -> execute(CommandContext, "effect-add-potion")
                 		                		                                                        )
                 		                		                                                )
                                 		                                                )
@@ -306,13 +311,14 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
         int zSize;
         if (params.equals("size-radius")) {
         	xSize = IntegerArgumentType.getInteger(ctx, "radius");
+        	zSize = xSize;
         }
         else {
         	xSize = IntegerArgumentType.getInteger(ctx, "x-radius");
             zSize = IntegerArgumentType.getInteger(ctx, "z-radius");
         }
         border.getSize().setX(xSize);
-        border.getSize().setZ(xSize);
+        border.getSize().setZ(zSize);
         border.updateArea();
         border.save();
         ChatOutputHandler.chatConfirmation(ctx.getSource(),Translator.format("Worldborder size set to %d x %d", border.getSize().getX(), border.getSize().getZ()));
@@ -345,7 +351,7 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
 
     public static void parseEffect(CommandContext<CommandSource> ctx, WorldBorder border, String params) throws CommandSyntaxException
     {
-        if (params.equals("info"))
+        if (params.equals("effect-info"))
         {
             if (!border.getEffects().isEmpty())
             {
@@ -375,19 +381,8 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
             return;
         }
         else if(params.startsWith("effect-add")) {
-        	int index = IntegerArgumentType.getInteger(ctx, "index");
-            if (border.getEffects().size() >= index && border.getEffects().remove(border.getEffects().get(index)))
-                ChatOutputHandler.chatConfirmation(ctx.getSource(),"Removed effect");
-            else
-            {
-                ChatOutputHandler.chatError(ctx.getSource(),"No such effect!");
-                ChatOutputHandler.chatError(ctx.getSource(),"Try using /wb effect to view all available effects.");
-                ChatOutputHandler.chatError(ctx.getSource(),"Each one is identified by a number, use that to identify the effect you want to remove.");
-            }
+            addEffect(ctx, border, params);
             return;
-        }
-        else {
-            ChatOutputHandler.chatError(ctx.getSource(),"Wrong syntax! Try /wb effect <add [command|damage|kick|knockback|message|potion|smite|block] <trigger> | remove <index>");
         }
         ChatOutputHandler.chatError(ctx.getSource(),"Wrong syntax! Try /wb effect <add [command|damage|kick|knockback|message|potion|smite|block] <trigger> | remove <index>");
         border.save();
@@ -407,7 +402,11 @@ public class CommandWorldBorder extends ForgeEssentialsCommandBuilder
         int trigger = IntegerArgumentType.getInteger(ctx, "TriggerDistance");
 
         String type = params.split("-")[2];
-        WorldBorderEffect effect = WorldBorderEffects.valueOf(type).get();
+        LoggingHandler.felog.error(params.split("-")[0]);
+        LoggingHandler.felog.error(params.split("-")[1]);
+        LoggingHandler.felog.error(params.split("-")[2]);
+
+        WorldBorderEffect effect = WorldBorderEffects.valueOf(type.toUpperCase()).get();
         if (effect == null)
         {
             ChatOutputHandler.chatError(ctx.getSource(),String.format("Could not find an effect with name %s, how about trying one of these:", type));
