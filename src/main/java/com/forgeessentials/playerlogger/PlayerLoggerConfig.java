@@ -62,7 +62,7 @@ public class PlayerLoggerConfig
 		FEdatabaseType.set(databaseType);
 		FEdatabaseUrl.set(databaseUrl);
 		FEdatabaseUsername.set(databaseUsername);
-		FEdatabaseUsername.set(databasePassword);
+		FEdatabasePassword.set(databasePassword);
 		FElogDuration.set(logDuration);
     }
 
