@@ -43,7 +43,8 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
     static private Map<UUID, RollbackInfo> rollbacks = new HashMap<>();
 
-    private Timer playbackTimer = new Timer("FERollbackTimer");
+    static private Map<UUID, Timer> playbackTimers = new HashMap<>();
+
 
     @Override
     public String getPrimaryAlias()
@@ -274,11 +275,15 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
 
         RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getUUID());
+        Timer playbackTimer = playbackTimers.get(getServerPlayer(ctx.getSource()).getUUID());
         if (rb == null) {
         	ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
         	return;
         }
-
+        if(playbackTimer != null) {
+            playbackTimer.cancel();
+            playbackTimer = null;
+        }
         if (rb.task != null)
         {
             rb.task.cancel();
@@ -288,6 +293,7 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
         else
         {
             rb.task = new RollbackInfo.PlaybackTask(rb, (int) (Math.signum(speed)));
+            playbackTimer = new Timer("FERollbackTimer");
             playbackTimer.schedule(rb.task, 1000, 1000 / Math.abs(speed));
             ChatOutputHandler.chatConfirmation(ctx.getSource(), "Started playback");
         }
@@ -302,6 +308,12 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
 
 
         RollbackInfo rb = rollbacks.get(getServerPlayer(ctx.getSource()).getUUID());
+        Timer playbackTimer = playbackTimers.get(getServerPlayer(ctx.getSource()).getUUID());
+
+        if(playbackTimer != null) {
+            playbackTimer.cancel();
+            playbackTimer = null;
+        }
         if (rb == null) {
         	ChatOutputHandler.chatError(ctx.getSource(), "No rollback in progress. Start with /rollback first.");
         	return;

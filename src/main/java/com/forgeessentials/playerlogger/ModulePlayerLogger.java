@@ -41,9 +41,14 @@ public class ModulePlayerLogger implements ConfigSaver
     public static final String PERM_WAND = PERM + ".wand";
     public static final String PERM_COMMAND = PERM + ".cmd";
 
-    private static PlayerLogger logger = new PlayerLogger();
+    private static PlayerLogger logger = null;
 
-    private PlayerLoggerEventHandler eventHandler= new PlayerLoggerEventHandler();
+    private static PlayerLoggerEventHandler eventHandler = null;
+
+    public ModulePlayerLogger() {
+        logger=new PlayerLogger();
+        eventHandler=new PlayerLoggerEventHandler();
+    }
 
     @SubscribeEvent
     public void registerCommands(FERegisterCommandsEvent event)
@@ -51,7 +56,7 @@ public class ModulePlayerLogger implements ConfigSaver
         CommandDispatcher<CommandSource> dispatcher = event.getRegisterCommandsEvent().getDispatcher();
         FECommandManager.registerCommand(new CommandRollback(true), dispatcher);
         FECommandManager.registerCommand(new CommandPlayerlogger(true), dispatcher);
-        
+
         CommandTestPlayerlogger test = new CommandTestPlayerlogger(true);
         FECommandManager.registerCommand(test, dispatcher);
         MinecraftForge.EVENT_BUS.register(test);
