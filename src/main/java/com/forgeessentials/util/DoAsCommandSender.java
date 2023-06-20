@@ -6,6 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.UUID;
 
+import javax.annotation.Nullable;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -29,35 +31,26 @@ public class DoAsCommandSender extends FakePlayer
 
     protected boolean hideChatMessages;
 
-    public DoAsCommandSender(ServerWorld world, GameProfile name, UserIdent user)
+    public DoAsCommandSender(ServerWorld world, GameProfile name, UserIdent ident)
     {
         super(world, name);
-        this.ident = user;
+        this.ident = ident;
     }
     public DoAsCommandSender()
     {
-        this(ServerLifecycleHooks.getCurrentServer().getLevel(ServerWorld.OVERWORLD),
-                new GameProfile(DOAS_UUID, "@SERVER"),
-                APIRegistry.IDENT_SERVER);
-        this.ident = APIRegistry.IDENT_SERVER;
+        this(ServerLifecycleHooks.getCurrentServer().getLevel(ServerWorld.OVERWORLD), new GameProfile(DOAS_UUID, "@SERVER"), APIRegistry.IDENT_SERVER);
         this.sender = getServer().createCommandSourceStack();
     }
 
     public DoAsCommandSender(UserIdent ident)
     {
-        this(ident.getPlayerMP().getLevel(),
-                new GameProfile(DOAS_UUID, "@" + ident.getUsername()),
-                ident);
-        this.ident = ident;
+        this(ident.getPlayerMP().getLevel(), new GameProfile(DOAS_UUID, "@" + ident.getUsername()), ident);
         this.sender = ident.getPlayerMP().createCommandSourceStack();
     }
 
     public DoAsCommandSender(UserIdent ident, CommandSource sender)
     {
-        this(sender.getLevel(),
-                new GameProfile(DOAS_UUID, "@" + ident.getUsername()),
-                ident);
-        this.ident = ident;
+        this(sender.getLevel(), new GameProfile(DOAS_UUID, "@" + ident.getUsername()), ident);
         this.sender = sender;
     }
 
@@ -74,7 +67,7 @@ public class DoAsCommandSender extends FakePlayer
     @Override
     public ITextComponent getDisplayName()
     {
-        return sender.getDisplayName();
+        return new StringTextComponent(ident.getUsername());
     }
 
 	@Override
@@ -103,6 +96,7 @@ public class DoAsCommandSender extends FakePlayer
     }
 
     @Override
+    @Nullable
     public Entity getEntity()
     {
         return sender.getEntity();
