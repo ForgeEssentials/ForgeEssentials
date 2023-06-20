@@ -68,7 +68,7 @@ public class CommandUnmute extends ForgeEssentialsCommandBuilder
 
         PlayerUtil.getPersistedTag(receiver, false).remove("mute");
         ChatOutputHandler.chatError(ctx.getSource(), Translator.format("You unmuted %s.", receiver.getDisplayName().getString()));
-        ChatOutputHandler.chatError(receiver, Translator.format("You were unmuted by %s.", ctx.getSource().getEntity().getDisplayName().getString()));
+        ChatOutputHandler.chatError(receiver, Translator.format("You were unmuted by %s.", ctx.getSource().getDisplayName().getString()));
         return Command.SINGLE_SUCCESS;
     }
 }

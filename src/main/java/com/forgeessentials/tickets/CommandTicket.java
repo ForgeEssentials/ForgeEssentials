@@ -170,7 +170,7 @@ public class CommandTicket extends ForgeEssentialsCommandBuilder
             ChatOutputHandler.chatNotification(ctx.getSource(), c + Translator.format("Your ticket with ID %d has been posted.", t.id));
 
             // notify any ticket-admins that are online
-            TextComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", ctx.getSource().getEntity().getDisplayName().getString()));
+            TextComponent messageComponent = ChatOutputHandler.notification(Translator.format("Player %s has filed a ticket.", ctx.getSource().getDisplayName().getString()));
             if (!ctx.getSource().getServer().isStopped())
                 for (ServerPlayerEntity player : ServerUtil.getPlayerList())
                     if (UserIdent.get(player).checkPermission(ModuleTickets.PERMBASE + ".admin"))
