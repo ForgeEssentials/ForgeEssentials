@@ -70,10 +70,10 @@ public class ModulePlayerLogger implements ConfigSaver
     @SubscribeEvent
     public void serverPostInit(FEModuleServerStartedEvent e)
     {
-        if (PlayerLoggerConfig.logDuration > 0)
+        if (PlayerLoggerConfig.getLogDuration() > 0)
         {
             final Date startTime = new Date();
-            startTime.setTime(startTime.getTime() - TimeUnit.DAYS.toMillis(PlayerLoggerConfig.logDuration));
+            startTime.setTime(startTime.getTime() - TimeUnit.DAYS.toMillis(PlayerLoggerConfig.getLogDuration()));
             final String startTimeStr = startTime.toString();
 
             LoggingHandler.felog.info(String.format("Purging all playerlogger log data before %s. The server may lag while this is being done.", startTimeStr));
@@ -98,6 +98,11 @@ public class ModulePlayerLogger implements ConfigSaver
     {
         return logger;
     }
+    public static PlayerLoggerEventHandler getEventHandler()
+    {
+        return eventHandler;
+    }
+
 	@Override
 	public void load(Builder BUILDER, boolean isReload) {
 		PlayerLoggerConfig.load(BUILDER, isReload);

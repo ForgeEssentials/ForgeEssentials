@@ -139,34 +139,34 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
 
         Properties properties = new Properties();
-        switch (PlayerLoggerConfig.databaseType)
+        switch (PlayerLoggerConfig.getDatabaseType())
         {
         case "h2":
-            if (!PlayerLoggerConfig.databaseUrl.startsWith("./"))
-                PlayerLoggerConfig.databaseUrl = "./" + PlayerLoggerConfig.databaseUrl;
+            if (!PlayerLoggerConfig.getDatabaseUrl().startsWith("./"))
+                PlayerLoggerConfig.setDatabaseUrl("./" + PlayerLoggerConfig.getDatabaseUrl());
 
-            properties.setProperty("hibernate.connection.url", "jdbc:h2:" + PlayerLoggerConfig.databaseUrl);
+            properties.setProperty("hibernate.connection.url", "jdbc:h2:" + PlayerLoggerConfig.getDatabaseUrl());
             break;
         case "mysql":
             // e.g.: jdbc:mysql://localhost:3306/forgeessentials
-            properties.setProperty("hibernate.connection.url", "jdbc:mysql://" + PlayerLoggerConfig.databaseUrl);
+            properties.setProperty("hibernate.connection.url", "jdbc:mysql://" + PlayerLoggerConfig.getDatabaseUrl());
             break;
         default:
             throw new RuntimeException("PlayerLogger database type must be either h2 or mysql.");
         }
-        properties.setProperty("hibernate.connection.username", PlayerLoggerConfig.databaseUsername);
-        properties.setProperty("hibernate.connection.password", PlayerLoggerConfig.databasePassword);
+        properties.setProperty("hibernate.connection.username", PlayerLoggerConfig.getDatabaseUsername());
+        properties.setProperty("hibernate.connection.password", PlayerLoggerConfig.getDatabasePassword());
         // properties.setProperty("hibernate.hbm2ddl.auto", "update");
         // properties.setProperty("hibernate.format_sql", "false");
         // properties.setProperty("hibernate.show_sql", "true");
 
-        entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_" + PlayerLoggerConfig.databaseType, properties);
+        entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_" + PlayerLoggerConfig.getDatabaseType(), properties);
         // entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_eclipselink_" +
         // PlayerLoggerConfig.databaseType, properties);
         em = entityManagerFactory.createEntityManager();
 
-        if (PlayerLoggerConfig.playerPositionInterval > 0)
-            TaskRegistry.scheduleRepeated(playerPositionTimer, (int) (PlayerLoggerConfig.playerPositionInterval * 1000));
+        if (PlayerLoggerConfig.getPlayerPositionInterval() > 0)
+            TaskRegistry.scheduleRepeated(playerPositionTimer, (int) (PlayerLoggerConfig.getPlayerPositionInterval() * 1000));
         LoggingHandler.felog.info("PLAYERLOGGER created Database");
 
     }
