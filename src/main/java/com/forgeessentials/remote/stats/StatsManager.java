@@ -12,7 +12,7 @@ public class StatsManager extends ServerEventHandler
 
     protected static final Map<String, StatTracker<?>> stats = new HashMap<>();
 
-    protected static Timer timer = new Timer();
+    protected static Timer timer = new Timer("FEstatsManager");
 
     public StatsManager()
     {

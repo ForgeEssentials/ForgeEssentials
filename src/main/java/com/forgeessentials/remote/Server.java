@@ -34,7 +34,7 @@ public class Server implements Runnable
     public Server(ServerSocket socket)
     {
         serverSocket = socket;
-        serverThread = new Thread(this);
+        serverThread = new Thread(this, "RemoteServer");
         serverThread.start();
     }
 

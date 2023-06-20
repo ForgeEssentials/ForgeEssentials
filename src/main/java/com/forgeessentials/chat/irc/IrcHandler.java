@@ -172,7 +172,7 @@ public class IrcHandler extends ListenerAdapter
                 }
 
             }
-        });
+        }, "FEircHandler");
 
         connectionThread.start();
 

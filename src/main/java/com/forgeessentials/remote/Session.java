@@ -42,7 +42,7 @@ public class Session implements Runnable, RemoteSession
     public Session(Socket socket)
     {
         this.socket = socket;
-        this.thread = new Thread(this);
+        this.thread = new Thread(this, "FEremoteSession");
         this.thread.start();
     }
 

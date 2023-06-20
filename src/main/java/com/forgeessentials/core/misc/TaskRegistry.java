@@ -66,7 +66,7 @@ public class TaskRegistry extends ServerEventHandler
 
     protected static ConcurrentLinkedQueue<Runnable> runLater = new ConcurrentLinkedQueue<>();
 
-    protected static Timer timer = new Timer();
+    protected static Timer timer = new Timer("FEtaskRegistry");
 
     protected static Map<Runnable, TimerTask> runnableTasks = new WeakHashMap<>();
 
@@ -89,7 +89,7 @@ public class TaskRegistry extends ServerEventHandler
         tickTasks.clear();
         runnableTasks.clear();
         timer.cancel();
-        timer = new Timer(true);
+        //timer = new Timer(true);
     }
 
     /* ------------------------------------------------------------ */

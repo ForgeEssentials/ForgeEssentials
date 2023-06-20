@@ -41,9 +41,9 @@ public class CommandRollback extends ForgeEssentialsCommandBuilder
     public static final String PERM_ALL = PERM + Zone.ALL_PERMS;
     public static final String PERM_PREVIEW = PERM + ".preview";
 
-    private Map<UUID, RollbackInfo> rollbacks = new HashMap<>();
+    static private Map<UUID, RollbackInfo> rollbacks = new HashMap<>();
 
-    private Timer playbackTimer = new Timer();
+    private Timer playbackTimer = new Timer("FERollbackTimer");
 
     @Override
     public String getPrimaryAlias()

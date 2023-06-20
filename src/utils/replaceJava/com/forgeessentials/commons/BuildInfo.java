@@ -77,7 +77,7 @@ public abstract class BuildInfo
                 {
                     doCheckLatestVersion();
                 }
-            });
+            }, "FEversionCheckThread");
             checkVersionThread.start();
 
 //            checkBuildTypesThread = new Thread(new Runnable() {

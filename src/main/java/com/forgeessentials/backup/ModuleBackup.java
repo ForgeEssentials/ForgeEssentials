@@ -152,7 +152,7 @@ public class ModuleBackup extends ConfigLoaderBase
                 {
                     backup(world, true);
                 }
-            });
+            }, "FEbackup1");
             thread.start();
         }
     }
@@ -171,7 +171,7 @@ public class ModuleBackup extends ConfigLoaderBase
                 {
                     backup(world, true);
                 }
-            });
+            }, "FEbackup2");
             thread.start();
         }
     }
@@ -292,7 +292,7 @@ public class ModuleBackup extends ConfigLoaderBase
                     backupThread = null;
                 }
             }
-        });
+        }, "FEbackup3");
         backupThread.start();
     }
 
@@ -323,7 +323,7 @@ public class ModuleBackup extends ConfigLoaderBase
                     backupThread = null;
                 }
             }
-        });
+        }, "FEbackup4");
         backupThread.start();
     }
 
