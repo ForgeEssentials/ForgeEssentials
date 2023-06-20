@@ -50,6 +50,7 @@ public class ModuleWorldBorder extends ServerEventHandler
     {
         super();
         instance = this;
+        DataManager.addDataType(new WorldBorderEffectType());
     }
 
     public static ModuleWorldBorder getInstance()
@@ -67,7 +68,6 @@ public class ModuleWorldBorder extends ServerEventHandler
     @SubscribeEvent
     public void serverStartingEvent(FEModuleServerStartingEvent event)
     {
-        DataManager.addDataType(new WorldBorderEffectType());
         APIRegistry.perms.registerPermissionDescription(PERM, "Worldborder permissions");
         APIRegistry.perms.registerPermission(PERM_BYPASS, DefaultPermissionLevel.NONE, "Ignore worldborders if granted");
     }
