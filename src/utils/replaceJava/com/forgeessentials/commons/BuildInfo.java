@@ -62,6 +62,8 @@ public abstract class BuildInfo
      * */
     private static int MINOR_VERSION = 0;
 
+    private static boolean continueRunning = true;
+
     /* ------------------------------------------------------------ */
 
     public static void startVersionChecks()
@@ -126,6 +128,7 @@ public abstract class BuildInfo
             DfsRepositoryDescription repoDesc = new DfsRepositoryDescription();
             InMemoryRepository repo = new InMemoryRepository(repoDesc);
             Git git = new Git(repo);
+            if(!continueRunning) {git.close();repo.close();return;}
             git.fetch()
                     .setRemote("https://github.com/ForgeEssentials/ForgeEssentials")
                     .setRefSpecs(new RefSpec("+refs/tags/*:refs/tags/*"))
@@ -140,22 +143,26 @@ public abstract class BuildInfo
                 cancelVersionCheck(false);
                 return;
             }
+            if(!continueRunning) {git.close();repo.close();return;}
             for (Ref ref : call) {
                 String[] values = StringUtils.split(StringUtils.remove(ref.getName(), "refs/tags/"), '.');
                 if(values.length!=3 ||!values[0].matches("[0-9]+")||!values[1].matches("[0-9]+")||!values[2].matches("[0-9]+")||!values[0].equals(BASE_VERSION)) {
                     continue;
                 }
+                if(!continueRunning) {git.close();repo.close();return;}
                 febuildinfo.debug("Found valid update tag: "+StringUtils.remove(ref.getName(), "refs/tags/"));
                 if(Integer.parseInt(values[1])>Integer.parseInt(MAJOR_VERSION)&&Integer.parseInt(values[1])>majorNumberLatest) {
                     majorNumberLatest=Integer.parseInt(values[1]);
                     minorNumberLatest=Integer.parseInt(values[2]);
                     continue;
                 }
+                if(!continueRunning) {git.close();repo.close();return;}
                 if(Integer.parseInt(values[2])>MINOR_VERSION&&Integer.parseInt(values[1])>minorNumberLatest) {
                     majorNumberLatest=Integer.parseInt(values[1]);
                     minorNumberLatest=Integer.parseInt(values[2]);
                     continue;
                 }
+                if(!continueRunning) {git.close();repo.close();return;}
             }
             git.close();
             repo.close();
@@ -217,10 +224,10 @@ public abstract class BuildInfo
     /**
      * Set to null, which will disable joining of the thread and kill any possible delay
      **/
-    public static void cancelVersionCheck(boolean stopping)
+    public static void cancelVersionCheck(boolean isStopping)
     {
-        checkVersionThread = null;
-        if(majorNumberLatest!=0 && !stopping) {
+        continueRunning=false;
+        if(majorNumberLatest!=0 && !isStopping) {
         	MinecraftForge.EVENT_BUS.post(new NewVersionEvent());
         }
     }
