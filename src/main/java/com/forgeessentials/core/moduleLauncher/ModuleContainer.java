@@ -56,7 +56,7 @@ public class ModuleContainer implements Comparable<Object>
         }
         catch (Throwable e)
         {
-            LoggingHandler.felog.info("Error trying to load " + (String)data.getAnnotationData().get("value") + " as a FEModule!");
+            LoggingHandler.felog.info("Error trying to load " + data.getMemberName() + " as a FEModule!");
             e.printStackTrace();
 
             isCore = false;

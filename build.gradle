@@ -478,6 +478,7 @@ jar {
 	from (zipTree(shadowJar.archivePath)) {
 		exclude 'META-INF','META-INF/**'
 		exclude 'assets/**'
+		exclude 'natives','natives/**'
 	}
 
 	from (zipTree(shadowJar.archivePath)) {
