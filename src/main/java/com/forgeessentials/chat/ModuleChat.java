@@ -543,8 +543,7 @@ public class ModuleChat implements ConfigSaver
         }
         catch (CommandSyntaxException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ChatOutputHandler.chatError(sender, "Failed to send message");
         }
     }
 

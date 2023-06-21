@@ -174,7 +174,6 @@ public class ModuleLauncher
 
     public void reloadConfigs()
     {
-        // TODO Check if this works
         ForgeEssentials.getConfigManager().bakeAllRegisteredConfigs(true);
         APIRegistry.getFEEventBus().post(new ConfigReloadEvent());
     }
@@ -183,6 +182,9 @@ public class ModuleLauncher
     {
         ModuleContainer container = containerMap.get(moduleName);
         try {
+            if(container==null||container.module==null) {
+                LoggingHandler.felog.error("Module "+moduleName+" has a null containerMap entry!");
+            }
         	MinecraftForge.EVENT_BUS.unregister(container.module);
         	LoggingHandler.felog.error("Un-Registered module:  " + moduleName);
         }catch(NullPointerException e) {
