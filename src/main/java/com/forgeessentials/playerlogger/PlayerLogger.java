@@ -16,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -104,6 +105,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     /* ------------------------------------------------------------ */
 
+    public PlayerLogger() {}
+
     /**
      * Closes any existing database connection and frees resources
      */
@@ -160,7 +163,13 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         // properties.setProperty("hibernate.format_sql", "false");
         // properties.setProperty("hibernate.show_sql", "true");
 
-        entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_" + PlayerLoggerConfig.getDatabaseType(), properties);
+        try {
+        	entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_" + PlayerLoggerConfig.getDatabaseType(), properties);
+        } catch (PersistenceException e) {
+        	e.printStackTrace();
+        	LoggingHandler.felog.error("PLAYERLOGGER failed to create Database");
+        	return;
+		}
         // entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_eclipselink_" +
         // PlayerLoggerConfig.databaseType, properties);
         em = entityManagerFactory.createEntityManager();
