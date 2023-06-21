@@ -26,7 +26,7 @@ public class LoggingHandler
     // TODO: Make STDERR appear in log!
     public static final QueueLogAppender logCache = new QueueLogAppender("fe_server_log_queue", null, MC_PATTERN, true, MAX_LOG_LENGTH);
 
-    public static final org.apache.logging.log4j.Logger feloger = LogManager.getLogger(ForgeEssentials.MODID);
+    protected static final org.apache.logging.log4j.Logger feloger = LogManager.getLogger(ForgeEssentials.MODID);
 
     public static final FEConfigurableLogger felog = new FEConfigurableLogger();
     
