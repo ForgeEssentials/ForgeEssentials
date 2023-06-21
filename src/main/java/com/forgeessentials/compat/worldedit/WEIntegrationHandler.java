@@ -5,8 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.forgeessentials.api.APIRegistry;
-import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
-import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.selections.SelectionHandler;
@@ -21,8 +19,7 @@ public class WEIntegrationHandler
 
     private CUIComms cuiComms;
 
-    @SubscribeEvent
-    public void postLoad(FEModuleServerAboutToStartEvent e)
+    public boolean postLoad()
     {
         if (WEIntegration.disable)
         {
@@ -34,28 +31,28 @@ public class WEIntegrationHandler
 					MinecraftForge.EVENT_BUS.unregister(field.get(cls)); //forces worldedit forge NOT to load
 				} catch (ClassNotFoundException | SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e1) {
 	                LoggingHandler.felog.error("WorldEdit not found, unregistering WEIntegrationTools");
-                    ModuleLauncher.instance.unregister("WEIntegrationTools");
-				    e1.printStackTrace();
+                    return true;
 				}
             }
-            ModuleLauncher.instance.unregister("WEIntegrationTools");
+            return true;
         }
         else
         {
         	if (ModList.get().isLoaded("worldedit")) {
-            SelectionHandler.selectionProvider = new WESelectionHandler();
-            }else {
+        		SelectionHandler.selectionProvider = new WESelectionHandler();
+            }
+        	else 
+        	{
                 LoggingHandler.felog.error("WorldEdit not found, unregistering WEIntegrationTools");
-                ModuleLauncher.instance.unregister("WEIntegrationTools");
-
+                return true;
             }
         }
+        return false;
     }
 
     @SubscribeEvent
     public void serverStart(FEModuleServerStartingEvent e)
     {
-        cuiComms = new CUIComms();
         if(!WEIntegration.stop) {
             try {
                 Class<?> callingClass = Class.forName("com.sk89q.worldedit.forge.ForgeWorldEdit");
@@ -66,6 +63,7 @@ public class WEIntegrationHandler
 
                 Method instanceMethod = instance.getMethod("setPermissionsProvider", provider);
                 instanceMethod.invoke(instance, new PermissionsHandler());
+                cuiComms = new CUIComms();
             } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchFieldException e1) {
                 e1.printStackTrace();
             }

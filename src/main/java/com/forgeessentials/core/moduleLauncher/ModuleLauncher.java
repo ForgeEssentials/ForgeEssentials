@@ -182,8 +182,11 @@ public class ModuleLauncher
     {
         ModuleContainer container = containerMap.get(moduleName);
         try {
-            if(container==null||container.module==null) {
+            if(container==null) {
                 LoggingHandler.felog.error("Module "+moduleName+" has a null containerMap entry!");
+            }
+            if(container.module==null) {
+                LoggingHandler.felog.error("Module "+moduleName+" has a null module entry in the containerMap entry!");
             }
         	MinecraftForge.EVENT_BUS.unregister(container.module);
         	LoggingHandler.felog.error("Un-Registered module:  " + moduleName);

@@ -3,10 +3,13 @@ package com.forgeessentials.compat.worldedit;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.core.environment.Environment;
 import com.forgeessentials.core.moduleLauncher.FEModule;
+import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.core.moduleLauncher.FEModule.Preconditions;
+import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 // separate class from the main WEIntegration stuff so as to avoid nasty errors
 @FEModule(name = "WEIntegrationTools", parentMod = ForgeEssentials.class)
@@ -16,8 +19,17 @@ public class WEIntegration
     protected static boolean disable;
     public static boolean stop;
 
-    public WEIntegration()
+    WEIntegrationHandler handler;
+
+    @SubscribeEvent
+    public void postLoad(FEModuleServerAboutToStartEvent e)
     {
+    	handler=new WEIntegrationHandler();
+    	if(handler.postLoad()) {
+    		handler = null;
+            ModuleLauncher.instance.unregister("WEIntegrationTools");
+            return;
+    	}
         MinecraftForge.EVENT_BUS.register(new WEIntegrationHandler());
     }
 
