@@ -11,8 +11,7 @@ import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
-
-import javax.xml.bind.DatatypeConverter;
+import java.util.Base64;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -107,12 +106,12 @@ public class ConfigServerVote
 
                 X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(publicKey.getEncoded());
                 FileOutputStream out = new FileOutputStream(publicFile);
-                out.write(DatatypeConverter.printBase64Binary(publicSpec.getEncoded()).getBytes());
+                out.write(Base64.getEncoder().encode(publicSpec.getEncoded()));
                 out.close();
 
                 PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privateKey.getEncoded());
                 out = new FileOutputStream(privateFile);
-                out.write(DatatypeConverter.printBase64Binary(privateSpec.getEncoded()).getBytes());
+                out.write(Base64.getEncoder().encode(privateSpec.getEncoded()));
                 out.close();
 
                 LoggingHandler.felog.info("RSA key pair made!");
@@ -131,13 +130,13 @@ public class ConfigServerVote
                 FileInputStream in = new FileInputStream(publicFile);
                 byte[] encodedPublicKey = new byte[(int) publicFile.length()];
                 in.read(encodedPublicKey);
-                encodedPublicKey = DatatypeConverter.parseBase64Binary(new String(encodedPublicKey));
+                encodedPublicKey = Base64.getDecoder().decode(new String(encodedPublicKey));
                 in.close();
 
                 in = new FileInputStream(privateFile);
                 byte[] encodedPrivateKey = new byte[(int) privateFile.length()];
                 in.read(encodedPrivateKey);
-                encodedPrivateKey = DatatypeConverter.parseBase64Binary(new String(encodedPrivateKey));
+                encodedPrivateKey = Base64.getDecoder().decode(new String(encodedPrivateKey));
                 in.close();
 
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");

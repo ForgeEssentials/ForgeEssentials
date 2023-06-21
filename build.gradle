@@ -287,7 +287,6 @@ dependencies {
     // compile files("$jdkHome/lib/tools.jar")
     compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
     compile 'org.apache.commons:commons-text:1.10.0'
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
 	implementation 'org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r'
 	shadowLib group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
