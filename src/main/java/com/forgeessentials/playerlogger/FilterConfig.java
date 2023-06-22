@@ -25,7 +25,7 @@ public class FilterConfig
         blockPlace, blockBreak, blockDetonate, blockUse_Left, blockUse_Right, blockBurn, command, playerLogin, playerLogout, playerRespawn, playerChangeDim, playerPosition, other
     }
 
-    public static HashMap<UserIdent, FilterConfig> perPlayerFilters = new HashMap<>();
+    private static HashMap<UserIdent, FilterConfig> perPlayerFilters = new HashMap<>();
 
     public static FilterConfig globalConfig = new FilterConfig();
 
@@ -87,7 +87,7 @@ public class FilterConfig
     {
         if (perPlayerFilters.containsKey(ident))
             return perPlayerFilters.get(ident);
-        return globalConfig;
+        return null;
     }
 
     public final static long default_after = 365L*24*60*60*1000;
@@ -298,7 +298,11 @@ public class FilterConfig
         }
     }
 
-    public String toReadableString()
+	public static void setPerPlayerFilters(UserIdent user, FilterConfig PlayerFilter) {
+		FilterConfig.perPlayerFilters.put(user, PlayerFilter);
+	}
+
+	public String toReadableString()
     {
         return "Before: " + before + "\nAfter: " + after + "\nActions: " + actions + "\nBlocks: " + blocks + "\nWhitelist: " + Awhitelist;
     }

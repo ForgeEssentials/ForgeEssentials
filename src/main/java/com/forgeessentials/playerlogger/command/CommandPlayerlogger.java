@@ -371,12 +371,12 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                 return Command.SINGLE_SUCCESS;
             }
             global = getServerPlayer(ctx.getSource()) == null || global;
-            fc = global ? FilterConfig.globalConfig : new FilterConfig();
+            fc = global ? FilterConfig.globalConfig : (FilterConfig.getDefaultPlayerConfig(getIdent(ctx.getSource()))!=null ? FilterConfig.getDefaultPlayerConfig(getIdent(ctx.getSource())):new FilterConfig());
             List<String> arg1 = new ArrayList<String>(Arrays.asList(subCmd)); 
             arg1.remove(0);
             fc.parse(ctx, arg1);
             if (!global)
-                FilterConfig.perPlayerFilters.put(getIdent(ctx.getSource()), fc);
+                FilterConfig.setPerPlayerFilters(getIdent(ctx.getSource()), fc);
 
             ChatOutputHandler.sendMessage(ctx.getSource(),
                     ChatOutputHandler.formatColors((global ? "Global" : getIdent(ctx.getSource()).getUsername() + "'s") + " Picker set: \n" + fc.toReadableString()));
@@ -430,11 +430,12 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             else
             {
                 ChatOutputHandler.chatWarning(ctx.getSource(), "This subCommand has not been ported yet!");
-                fc = new FilterConfig();
-                List<String> arg2 = new ArrayList<String>(Arrays.asList(subCmd)); 
-                arg2.remove(0);
-                arg2.remove(1);
-                fc.parse(ctx, arg2);
+                return Command.SINGLE_SUCCESS;
+                //fc = new FilterConfig();
+                //List<String> arg2 = new ArrayList<String>(Arrays.asList(subCmd)); 
+                //arg2.remove(0);
+                //arg2.remove(1);
+                //fc.parse(ctx, arg2);
             }
             ChatOutputHandler.sendMessage(ctx.getSource(), ChatOutputHandler.formatColors("Looking up: \n" + fc.toReadableString()));
             PlayerLoggerChecker.instance.CheckBlock(p, fc, ctx.getSource(), pageSize, newCheck);
@@ -446,6 +447,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             if (subCmd[1]=="help")
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl purge <duration>: Purge all PL data that is older than <duration> in days");
+                return Command.SINGLE_SUCCESS;
             }
             else
             {

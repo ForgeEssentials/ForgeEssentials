@@ -42,7 +42,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
         else
             point = new WorldPoint(event.getPlayer().level, event.getPos());
 
-        PlayerLoggerChecker.instance.CheckBlock(point, FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getPlayer())),
+        PlayerLoggerChecker.instance.CheckBlock(point, FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getPlayer()))!=null?FilterConfig.getDefaultPlayerConfig(UserIdent.get(event.getPlayer())): FilterConfig.globalConfig,
                 event.getPlayer().createCommandSourceStack());
     }
 
