@@ -25,6 +25,8 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
     @Override
     public void process(EntityManager em)
     {
+    	if(event.getParseResults().getContext().getNodes().isEmpty())
+            return;
         Action02Command action = new Action02Command();
         action.time = date;
         action.command = event.getParseResults().getContext().getNodes().get(0).toString();

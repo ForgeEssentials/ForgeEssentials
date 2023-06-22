@@ -1,7 +1,5 @@
-package com.forgeessentials.playerlogger;
+package com.forgeessentials.playerlogger.PersistenceProviders;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -43,13 +41,7 @@ public class HibernatePersistenceUnitInfo implements PersistenceUnitInfo {
 
 	@Override
 	public List<URL> getJarFileUrls() {
-		try {
-            return Collections.list(this.getClass()
-                                        .getClassLoader()
-                                        .getResources(""));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+		return Collections.emptyList();
 	}
 
 	@Override
