@@ -75,6 +75,7 @@ import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
+import com.forgeessentials.playerlogger.TestClass;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
@@ -165,6 +166,7 @@ public class ForgeEssentials
 
     public ForgeEssentials()
     {
+    	TestClass.get();
     	LoggingHandler.init();
         LoggingHandler.felog.info("ForgeEssentialsInt");
         instance = this;

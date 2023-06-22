@@ -164,7 +164,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         // properties.setProperty("hibernate.show_sql", "true");
 
         try {
-        	entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_" + PlayerLoggerConfig.getDatabaseType(), properties);
+        	entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_h2", properties);
         } catch (PersistenceException e) {
         	e.printStackTrace();
         	LoggingHandler.felog.error("PLAYERLOGGER failed to create Database");

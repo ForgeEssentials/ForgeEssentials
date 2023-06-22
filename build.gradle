@@ -248,8 +248,10 @@ dependencies {
 	shadowLib group: 'mysql', 			name: 'mysql-connector-java', 	version: '5.1.22'
 	//org.hibernate
 	shadowLib group: 'org.hibernate', 	  name: 'hibernate-core', 		version: '5.6.15.Final'
+	//shadowLib group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+	//shadowLib group: 'org.hibernate', 	  name: 'hibernate-entitymanager', 		version: '5.2.12.Final'
 	buildDep  group: 'org.hibernate', 	  name: 'hibernate-jpamodelgen',version: '5.6.15.Final'
-    annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.6.14.Final'
+    annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.6.15.Final'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     //clientannotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
@@ -288,6 +290,8 @@ dependencies {
 	// compile files("$jdkHome/lib/tools.jar")
 	compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
 	compile 'org.apache.commons:commons-text:1.10.0'
+	//implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+	//shadowLib group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
 
 	//jGit library
 	implementation 'org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r'
@@ -340,6 +344,7 @@ project.compileUtilsJava {
 project.processResources {
 	from (sourceSets.main.resources.srcDirs) {
 		include 'META-INF/mods.toml'
+		include "META-INF/persistence.xml"
 		duplicatesStrategy = DuplicatesStrategy.INCLUDE
 		expand (
 			'version': "$mod_version",
@@ -348,6 +353,9 @@ project.processResources {
 			'buildHash': gitCommitHash,
 			'buildNumber': buildNumber,
 		)
+		filter {
+			//line ->line.replaceAll('org.hibernate','com.forgeessentials.thirdparty.org.hibernate').replaceAll('org.h2', 'com.forgeessentials.thirdparty.org.h2')
+		}
 	}
 }
 
@@ -393,19 +401,17 @@ task tsd(type: JavaExec) {
 }*/
 
 jar.doLast {
-	delete (shadowJar.archivePath)
+	//delete (shadowJar.archivePath)
 	delete fileTree(dir:'src/utils/java/com/forgeessentials/commons/', include: 'BuildInfo.java')
 }
 
 shadowJar {
-	minimize {
- 	   exclude(dependency('org.hibernate:.*:.*'))
- 	   //exclude(dependency('com.forgeessentials.thirdparty.org.hibernate:.*:.*'))
- 	   exclude(dependency('mysql:.*:.*'))
- 	   //exclude(dependency('com.forgeessentials.thirdparty.com.mysql:.*:.*'))
- 	   exclude(dependency('com.h2database:.*:.*'))
- 	   //exclude(dependency('com.forgeessentials.thirdparty.org.h2:.*:.*'))
-  	}
+//	minimize {
+// 	   exclude(dependency('org.hibernate:.*:.*'))
+// 	   exclude(dependency('mysql:.*:.*'))
+// 	   exclude(dependency('com.h2database:.*:.*'))
+// 	   exclude(dependency('javax:.*:.*'))
+// 	}
 	//relocate  'org.dom4j','com.forgeessentials.thirdparty.org.dom4j'
 	//relocate  'org.eclipse.jgit','com.forgeessentials.thirdparty.org.eclipse.jgit'
 	//relocate  'org.gjt','com.forgeessentials.thirdparty.org.gjt'
@@ -422,6 +428,8 @@ shadowJar {
 	//relocate  'javax.el','com.forgeessentials.thirdparty.javax.el'
 	//relocate  'javax.decorator','com.forgeessentials.thirdparty.javax.decorator'
 	//relocate  'javax.annotation','com.forgeessentials.thirdparty.javax.annotation'
+	//relocate  'javax.activation','com.forgeessentials.thirdparty.javax.activation'
+	//relocate  'javax.xml','com.forgeessentials.thirdparty.javax.xml'
 	//relocate  'javassist','com.forgeessentials.thirdparty.javassist'
 	//relocate  'antlr','com.forgeessentials.thirdparty.antlr'
 	//relocate  'com.fasterxml','com.forgeessentials.thirdparty.com.fasterxml'
@@ -497,12 +505,6 @@ jar {
 		//}
 		//filter {
 		//	line -> line.replaceAll('org.h2','com.forgeessentials.thirdparty.org.h2')
-		//}
-		//filter {
-		//	line -> line.replaceAll('org.pircbotx','com.forgeessentials.thirdparty.org.pircbotx')
-		//}
-		//filter {
-		//	line -> line.replaceAll('com.mysql','com.forgeessentials.thirdparty.com.mysql')
 		//}
 		//rename {
 		//	name -> "com.forgeessentials.thirdparty.$name"
