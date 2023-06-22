@@ -138,6 +138,7 @@ public class FilterConfig
                 case "player":
                     try {
 						player = CommandUtils.parsePlayer(args.remove(0),ctx.getSource(), true, false);
+		                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set Player To: "+player.getUsername());
 					} catch (FECommandParsingException e) {
 						ChatOutputHandler.chatError(ctx.getSource(), e.error);
 						return;
@@ -170,10 +171,12 @@ public class FilterConfig
             if (name.equalsIgnoreCase("actions"))
             {
                 Awhitelist = enabled;
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), (enabled? "Enabled":"Disabled")+" Action Whitelist");
             }
             else if (name.equalsIgnoreCase("blocks"))
             {
                 Bwhitelist = enabled;
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), (enabled? "Enabled":"Disabled")+" Block Whitelist");
             }
         }
     }
@@ -209,6 +212,7 @@ public class FilterConfig
                 try
                 {
                     actions.add(ActionEnum.valueOf(arg));
+                    ChatOutputHandler.chatConfirmation(ctx.getSource(), "Added Action: "+arg);
                 }
                 catch (IllegalArgumentException e)
                 {
@@ -232,6 +236,7 @@ public class FilterConfig
             else
             {
                 blocks.add(BlockStateArgument.getBlock(ctx, "block").getState().getBlock());
+                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Added Block: "+BlockStateArgument.getBlock(ctx, "block").getState().getBlock().getRegistryName());
             }
         }
     }
@@ -249,6 +254,7 @@ public class FilterConfig
                 before = 0;
                 try {
 					before += CommandUtils.parseTimeReadable(args.remove(0));
+	                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set Before To: "+before);
 				} catch (FECommandParsingException e) {
 					ChatOutputHandler.chatError(ctx.getSource(), e.error);
 					return;
@@ -274,6 +280,7 @@ public class FilterConfig
                 after = 0;
                 try {
 					after += CommandUtils.parseTimeReadable(args.remove(0));
+	                ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set After To: "+after);
 				} catch (FECommandParsingException e) {
 					ChatOutputHandler.chatError(ctx.getSource(), e.error);
 					return;
@@ -291,6 +298,7 @@ public class FilterConfig
         if (!args.isEmpty())
         {
             pickerRange = CommandUtils.parseInt(args.remove(0));
+            ChatOutputHandler.chatConfirmation(ctx.getSource(), "Set PickerRange To: "+pickerRange);
         }
         else {
         	ChatOutputHandler.chatError(ctx.getSource(), "A integer must be specified here!");
