@@ -12,7 +12,6 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
-import com.forgeessentials.playerlogger.entity.WorldData;
 
 public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate>
 {
@@ -29,14 +28,13 @@ public class LogEventExplosion extends PlayerLoggerEvent<ExplosionEvent.Detonate
     @Override
     public void process(EntityManager em)
     {
-        WorldData worldData = getWorld(event.getWorld().dimension().location().toString());
         for (CachedBlockData blockData : blocks)
         {
             if (blockData.block.getBlock() != Blocks.AIR)
             {
                 Action01Block action = new Action01Block();
                 action.time = date;
-                action.world = worldData;
+                action.world = getWorld(event.getWorld().dimension().location().toString());
                 action.block = getBlock(blockData.block);
                 action.entity = blockData.tileEntityBlob;
                 action.type = ActionBlockType.DETONATE;
