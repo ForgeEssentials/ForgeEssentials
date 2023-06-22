@@ -344,7 +344,6 @@ project.compileUtilsJava {
 project.processResources {
 	from (sourceSets.main.resources.srcDirs) {
 		include 'META-INF/mods.toml'
-		include "META-INF/persistence.xml"
 		duplicatesStrategy = DuplicatesStrategy.INCLUDE
 		expand (
 			'version': "$mod_version",
@@ -353,9 +352,10 @@ project.processResources {
 			'buildHash': gitCommitHash,
 			'buildNumber': buildNumber,
 		)
-		filter {
+		//include "META-INF/persistence.xml"
+		//filter {
 			//line ->line.replaceAll('org.hibernate','com.forgeessentials.thirdparty.org.hibernate').replaceAll('org.h2', 'com.forgeessentials.thirdparty.org.h2')
-		}
+		//}
 	}
 }
 
