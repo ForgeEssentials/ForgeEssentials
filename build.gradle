@@ -379,7 +379,7 @@ mixin {
 }
 
 /************************************************************
- * Configure shadow jars
+ * Configure tsd jar
  */
 
  // JavaExec task for generating tsd
@@ -400,6 +400,9 @@ task tsd(type: JavaExec) {
     }
 }*/
 
+/************************************************************
+ * Configure shadow jars
+ */
 jar.doLast {
 	//delete (shadowJar.archivePath)
 	delete fileTree(dir:'src/utils/java/com/forgeessentials/commons/', include: 'BuildInfo.java')
@@ -415,12 +418,12 @@ shadowJar {
 	//relocate  'org.dom4j','com.forgeessentials.thirdparty.org.dom4j'
 	//relocate  'org.eclipse.jgit','com.forgeessentials.thirdparty.org.eclipse.jgit'
 	//relocate  'org.gjt','com.forgeessentials.thirdparty.org.gjt'
-	//relocate  'org.hibernate','com.forgeessentials.thirdparty.org.hibernate'
-	//relocate  'org.h2','com.forgeessentials.thirdparty.org.h2'
+	relocate  'org.hibernate','com.forgeessentials.thirdparty.org.hibernate'
+	relocate  'org.h2','com.forgeessentials.thirdparty.org.h2'
 	//relocate  'org.jboss','com.forgeessentials.thirdparty.org.jboss'
 	//relocate  'org.pircbotx','com.forgeessentials.thirdparty.org.pircbotx'
 	//relocate  'org.slf4j','com.forgeessentials.thirdparty.org.slf4j'
-	//relocate  'javax.persistence','com.forgeessentials.thirdparty.javax.persistence'
+	relocate  'javax.persistence','com.forgeessentials.thirdparty.javax.persistence'
 	//relocate  'javax.transaction','com.forgeessentials.thirdparty.javax.transaction'
 	//relocate  'javax.interceptor','com.forgeessentials.thirdparty.javax.interceptor'
 	//relocate  'javax.inject','com.forgeessentials.thirdparty.javax.inject'

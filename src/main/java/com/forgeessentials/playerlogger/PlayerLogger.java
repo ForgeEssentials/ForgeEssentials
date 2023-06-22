@@ -1,6 +1,10 @@
 package com.forgeessentials.playerlogger;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URL;
 import java.sql.Blob;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +22,22 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.persistence.SharedCacheMode;
 import javax.persistence.TypedQuery;
+import javax.persistence.ValidationMode;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.persistence.spi.ClassTransformer;
+import javax.persistence.spi.PersistenceUnitInfo;
+import javax.persistence.spi.PersistenceUnitTransactionType;
+import javax.sql.DataSource;
 import javax.sql.rowset.serial.SerialBlob;
+
+import org.hibernate.dialect.H2Dialect;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -80,6 +93,7 @@ import com.forgeessentials.playerlogger.event.LogEventWorldLoad;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
+import com.google.common.collect.ImmutableMap;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -164,7 +178,19 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         // properties.setProperty("hibernate.show_sql", "true");
 
         try {
-        	entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_h2", properties);
+        	//entityManagerFactory = Persistence.createEntityManagerFactory("playerlogger_h2", properties);
+        	Properties props = new Properties();
+        	props.put("hibernate.connection.driver_class", "org.h2.Driver");
+        	props.put("hibernate.connection.url", "jdbc:h2:playerlogger");
+        	props.put("hibernate.dialect", H2Dialect.class);
+        	props.put("hibernate.connection.username", "forgeessentials");
+            props.put("hibernate.connection.password", "forgeessentials");
+            props.put("hibernate.hbm2ddl.auto", "update");
+            props.put("hibernate.order_inserts", true);
+            props.put("hibernate.order_updates", true);
+            props.put("hibernate.jdbc.batch_size", 30);
+            PersistenceUnitInfo info = new HibernatePersistenceUnitInfo("playerlogger_h2_new", Collections.emptyList(), props);
+        	entityManagerFactory = new HibernatePersistenceProvider().createContainerEntityManagerFactory(info, properties);
         } catch (PersistenceException e) {
         	e.printStackTrace();
         	LoggingHandler.felog.error("PLAYERLOGGER failed to create Database");
@@ -179,7 +205,6 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         LoggingHandler.felog.info("PLAYERLOGGER created Database");
 
     }
-
     @Override
     public void run()
     {
