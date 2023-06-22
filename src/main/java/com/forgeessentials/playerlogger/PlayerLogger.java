@@ -709,7 +709,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     {
         if (FMLEnvironment.dist.isClient() || em == null)
             return;
-        if (event instanceof EntityMultiPlaceEvent && event.getEntity() instanceof PlayerEntity)
+        if(!(event.getEntity() instanceof PlayerEntity))
+        	return;
+        if (event instanceof EntityMultiPlaceEvent)
         {
             // Get only last state of all changes
             Map<BlockPos, BlockSnapshot> changes = new HashMap<>();
@@ -728,7 +730,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void breakEvent(BlockEvent.BreakEvent event)
     {
-        logEvent(new LogEventBreak(event));
+        if(!(event.getPlayer() instanceof PlayerEntity))
+        	return;
+    	logEvent(new LogEventBreak(event));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
