@@ -172,13 +172,27 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                         .then(Commands.literal("Position")
                                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
                                         .then(Commands.argument("dim", DimensionArgument.dimension())
-                                                .then(Commands.argument("pageSize", IntegerArgumentType.integer())
-                                                        .then(Commands.literal("PersonalFilter")
-                                                                .executes(CommandContext -> execute(CommandContext, "lookup-loc:config")
+                                        		.then(Commands.literal("PersonalFilter")
+                                                		.then(Commands.literal("MaxPageSize")
+                                                                .executes(CommandContext -> execute(CommandContext, "lookup-loc:config:max")
                                                                         )
                                                                 )
-                                                        .then(Commands.literal("GlobalFilter")
-                                                                .executes(CommandContext -> execute(CommandContext, "lookup-loc:noconfig")
+                                                		.then(Commands.literal("PageSizeSelect")
+                                                				.then(Commands.argument("pageSize", IntegerArgumentType.integer())
+                                                						.executes(CommandContext -> execute(CommandContext, "lookup-loc:config:select")
+                                                                                )
+                                                                        )
+                                                                )
+                                                        )
+                                                .then(Commands.literal("GlobalFilter")
+                                                		.then(Commands.literal("MaxPageSize")
+                                                                .executes(CommandContext -> execute(CommandContext, "lookup-loc:noconfig:max")
+                                                                        )
+                                                                )
+                                                		.then(Commands.literal("PageSizeSelect")
+                                                				.then(Commands.argument("pageSize", IntegerArgumentType.integer())
+                                                						.executes(CommandContext -> execute(CommandContext, "lookup-loc:noconfig:select")
+                                                                                )
                                                                         )
                                                                 )
                                                         )
@@ -187,13 +201,27 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                                 )
                         .then(Commands.literal("Player")
                                 .then(Commands.argument("player", StringArgumentType.word())
-                                        .then(Commands.argument("pageSize", IntegerArgumentType.integer())
-                                                .then(Commands.literal("PersonalFilter")
-                                                        .executes(CommandContext -> execute(CommandContext, "lookup-player:config")
+                                		.then(Commands.literal("PersonalFilter")
+                                        		.then(Commands.literal("MaxPageSize")
+                                                        .executes(CommandContext -> execute(CommandContext, "lookup-player:config:max")
                                                                 )
                                                         )
-                                                .then(Commands.literal("GlobalFilter")
-                                                        .executes(CommandContext -> execute(CommandContext, "lookup-player:noconfig")
+                                        		.then(Commands.literal("PageSizeSelect")
+                                        				.then(Commands.argument("pageSize", IntegerArgumentType.integer())
+                                        						.executes(CommandContext -> execute(CommandContext, "lookup-player:config:select")
+                                                                        )
+                                                                )
+                                                        )
+                                                )
+                                        .then(Commands.literal("GlobalFilter")
+                                        		.then(Commands.literal("MaxPageSize")
+                                                        .executes(CommandContext -> execute(CommandContext, "lookup-player:noconfig:max")
+                                                                )
+                                                        )
+                                        		.then(Commands.literal("PageSizeSelect")
+                                        				.then(Commands.argument("pageSize", IntegerArgumentType.integer())
+                                        						.executes(CommandContext -> execute(CommandContext, "lookup-player:noconfig:select")
+                                                                        )
                                                                 )
                                                         )
                                                 )
@@ -307,9 +335,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             }
 
             int pageSize = 0;
-            boolean newCheck = true;
-            pageSize = IntegerArgumentType.getInteger(ctx, "pageSize");
-
+            boolean newCheck=false;
             if (subCmds[1].toLowerCase().equals("noconfig"))
             {
             	if(getServerPlayer(ctx.getSource()) == null)
@@ -322,9 +348,18 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                 	}
             	}
             }
-            else
+            else if(subCmds[1].toLowerCase().equals("config")){
             	fc = FilterConfig.globalConfig;
-
+            }
+            if (subCmds[2].toLowerCase().equals("select"))
+            {
+            	pageSize = IntegerArgumentType.getInteger(ctx, "pageSize");
+            	newCheck=true;
+            }
+            else if(subCmds[2].toLowerCase().equals("max")) {
+            	pageSize=0;
+            	newCheck=false;
+            }
             ChatOutputHandler.sendMessage(ctx.getSource(), ChatOutputHandler.formatColors("Looking up: \n" + fc.toReadableString()));
             PlayerLoggerChecker.instance.CheckBlock(p, fc, ctx.getSource(), pageSize, newCheck);
             break;
@@ -338,7 +373,7 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
             }
             break;
         case "purge":
-            if (subCmd[1]=="help")
+            if (subCmd[1].equals("help"))
             {
                 ChatOutputHandler.chatConfirmation(ctx.getSource(),"/pl purge <duration>: Purge all PL data that is older than <duration> in days");
                 return Command.SINGLE_SUCCESS;
