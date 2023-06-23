@@ -36,6 +36,7 @@ import net.minecraft.item.BedItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.SkullItem;
+import net.minecraft.item.TallBlockItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -761,7 +762,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         if (event.stack != null)
         {
             Item item = event.stack.getItem();
-            if (item instanceof BlockItem/* ||item instanceof ItemRedstone */ || item instanceof BedItem/* || item instanceof DoorItem*/
+            if (item instanceof BlockItem/* ||item instanceof ItemRedstone */ || item instanceof BedItem || item instanceof TallBlockItem
                     || item instanceof SkullItem)
                 return;
         }

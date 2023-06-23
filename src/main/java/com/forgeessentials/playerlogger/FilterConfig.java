@@ -312,7 +312,7 @@ public class FilterConfig
 
 	public String toReadableString()
     {
-        return "Before: " + before + "\nAfter: " + after + "\nActions: " + actions + "\nBlocks: " + blocks + "\nWhitelist: " + Awhitelist;
+        return "Before: " + before + "\nAfter: " + after + "\nActions: " + actions + "\nBlocks: " + blocks + "\nAWhitelist: " + Awhitelist+ "\nBWhitelist: " + Bwhitelist+ "\nPickerRange: " + pickerRange;
     }
 
 }
