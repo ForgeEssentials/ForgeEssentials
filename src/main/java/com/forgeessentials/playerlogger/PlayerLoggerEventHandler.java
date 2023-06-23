@@ -7,10 +7,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import java.util.TimerTask;
+
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
+import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class PlayerLoggerEventHandler extends ServerEventHandler
 {
@@ -19,9 +23,7 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
 
     // public static int pickerRange = 0;
 
-    public static int eventType = 0b1111;
-
-    public static String searchCriteria = "";
+    public static boolean disabled=false;
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerInteractEvent(PlayerInteractEvent event)
@@ -31,8 +33,17 @@ public class PlayerLoggerEventHandler extends ServerEventHandler
             return;
         if (!APIRegistry.perms.checkPermission(event.getPlayer(), ModulePlayerLogger.PERM_WAND))
             return;
+        if(disabled)
+        	return;
+        disabled=true;
         event.setCanceled(true);
-
+        TaskRegistry.schedule(new TimerTask() {
+            @Override
+            public void run()
+            {
+            	disabled=false;
+            }
+        }, 1000L);
         WorldPoint point;
         if (event instanceof RightClickBlock)
             point = new WorldPoint(event.getPlayer().level, //
