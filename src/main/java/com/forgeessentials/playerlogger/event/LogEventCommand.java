@@ -37,7 +37,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         action.arguments="";
         if(event.getParseResults().getContext().getNodes().size() > 1) {
         	List<String> arguments = new ArrayList<>();
-        	System.out.println(event.getParseResults().getReader().getString());
+        	//System.out.println(event.getParseResults().getReader().getString());
         	for(ParsedCommandNode<CommandSource> node :event.getParseResults().getContext().getNodes()) {
             	arguments.add(node.getNode().getName());
                 //System.out.println(node.getNode().getName());

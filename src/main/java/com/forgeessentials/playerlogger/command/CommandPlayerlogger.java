@@ -364,7 +364,11 @@ public class CommandPlayerlogger extends ForgeEssentialsCommandBuilder
                             @Override
                             public void run()
                             {
-                                ModulePlayerLogger.getLogger().purgeOldData(startTime);
+                            	if(getServerPlayer(ctx.getSource())!=null){
+                                    ModulePlayerLogger.getLogger().purgeOldData(startTime, getServerPlayer(ctx.getSource()));
+                            	}
+                            	else
+                            		ModulePlayerLogger.getLogger().purgeOldData(startTime, null);
                             }
                         });
                     }

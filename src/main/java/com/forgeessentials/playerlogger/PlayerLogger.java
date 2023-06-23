@@ -87,6 +87,7 @@ import com.forgeessentials.playerlogger.event.LogEventPostInteract;
 import com.forgeessentials.playerlogger.event.LogEventWorldLoad;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 import io.netty.buffer.ByteBuf;
@@ -278,7 +279,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     // ============================================================
 
-    public synchronized void purgeOldData(Date startTime)
+    public synchronized void purgeOldData(Date startTime, PlayerEntity player)
     {
         String hql = "delete from Action where time < :startTime";
         Query q = em.createQuery(hql).setParameter("startTime", startTime);
@@ -287,6 +288,9 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
             em.getTransaction().begin();
             int count = q.executeUpdate();
             LoggingHandler.felog.info(String.format("Purged %d old Playerlogger entries", count));
+            if(player!=null) {
+                ChatOutputHandler.chatConfirmation(player, String.format("Purged %d old Playerlogger entries", count));
+            }
         }
         finally
         {

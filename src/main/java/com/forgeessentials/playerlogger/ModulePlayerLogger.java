@@ -81,7 +81,7 @@ public class ModulePlayerLogger implements ConfigSaver
             final String startTimeStr = startTime.toString();
 
             LoggingHandler.felog.info(String.format("Purging all playerlogger log data before %s. The server may lag while this is being done.", startTimeStr));
-            getLogger().purgeOldData(startTime);
+            getLogger().purgeOldData(startTime, null);
         }
     }
 
