@@ -27,7 +27,7 @@ public class LogEventBurn extends PlayerLoggerEvent<FireEvent.Destroy>
     {
         Action01Block action = new Action01Block();
         action.time = date;
-        action.world = getWorld(((ServerWorld)event.getWorld()).getLevel().dimension().location().toString());
+        action.world = ((ServerWorld)event.getWorld()).getLevel().dimension().location().toString();
         action.block = getBlock(event.getState().getBlock());
         action.entity = tileEntityBlob;
         action.type = ActionBlockType.BURN;

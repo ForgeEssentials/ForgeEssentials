@@ -16,7 +16,6 @@ import com.forgeessentials.playerlogger.command.CommandRollback;
 import com.forgeessentials.playerlogger.command.CommandTestPlayerlogger;
 import com.forgeessentials.playerlogger.remote.serializer.BlockDataType;
 import com.forgeessentials.playerlogger.remote.serializer.PlayerDataType;
-import com.forgeessentials.playerlogger.remote.serializer.WorldDataType;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
@@ -65,7 +64,7 @@ public class ModulePlayerLogger implements ConfigSaver
     @SubscribeEvent
     public void serverPreInit(FEModuleServerAboutToStartEvent e)
     {
-        DataManager.addDataType(new WorldDataType());
+        //DataManager.addDataType(new WorldDataType());
         DataManager.addDataType(new PlayerDataType());
         DataManager.addDataType(new BlockDataType());
         registerPermissions();

@@ -74,7 +74,6 @@ import com.forgeessentials.playerlogger.entity.BlockData;
 import com.forgeessentials.playerlogger.entity.BlockData_;
 import com.forgeessentials.playerlogger.entity.PlayerData;
 import com.forgeessentials.playerlogger.entity.PlayerData_;
-import com.forgeessentials.playerlogger.entity.WorldData;
 import com.forgeessentials.playerlogger.event.LogEventBreak;
 import com.forgeessentials.playerlogger.event.LogEventBurn;
 import com.forgeessentials.playerlogger.event.LogEventCommand;
@@ -190,7 +189,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
     public List<String> getPersistanceClasses(){
     	return Arrays.asList(Action.class.getName(), Action01Block.class.getName(), Action02Command.class.getName(),
 				Action03PlayerEvent.class.getName(), Action04PlayerPosition.class.getName(), BlockData.class.getName(),
-				PlayerData.class.getName(), WorldData.class.getName());
+				PlayerData.class.getName()/*, WorldData.class.getName()*/);
     }
     @Override
     public void run()
@@ -361,10 +360,10 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         startThread();
     }
 
-    protected synchronized WorldData getWorld(String dimensionId)
-    {
-        return em.getReference(WorldData.class, dimensionId);
-    }
+//    protected synchronized WorldData getWorld(String dimensionId)
+//    {
+//        return em.getReference(WorldData.class, dimensionId);
+//    }
 
     protected synchronized PlayerData getPlayer(String uuid, String username)
     {
@@ -521,7 +520,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         Predicate predicate = cb.and();
         if (area != null)
         {
-            predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(area.getDimension())));
+            predicate.getExpressions().add(cb.equal(root.<String> get(Action_.world), cb.literal(area.getDimension())));
             Point lp = area.getLowPoint();
             Point hp = area.getHighPoint();
             predicate.getExpressions().add(cb.between(root.get(Action_.x), cb.literal(lp.getX()), cb.literal(hp.getX())));
@@ -554,7 +553,7 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         Predicate predicate = cb.and();
         if (point != null)
         {
-            predicate.getExpressions().add(cb.equal(root.<Integer> get(Action_.world.getName()), cb.literal(point.getDimension())));
+            predicate.getExpressions().add(cb.equal(root.<String> get(Action_.world), cb.literal(point.getDimension())));
             predicate.getExpressions().add(cb.equal(root.get(Action_.x), cb.literal(point.getX())));
             predicate.getExpressions().add(cb.equal(root.get(Action_.y), cb.literal(point.getY())));
             predicate.getExpressions().add(cb.equal(root.get(Action_.z), cb.literal(point.getZ())));

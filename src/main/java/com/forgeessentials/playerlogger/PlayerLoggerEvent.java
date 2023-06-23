@@ -12,7 +12,6 @@ import net.minecraft.tileentity.TileEntity;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.playerlogger.entity.BlockData;
 import com.forgeessentials.playerlogger.entity.PlayerData;
-import com.forgeessentials.playerlogger.entity.WorldData;
 
 public abstract class PlayerLoggerEvent<T>
 {
@@ -33,10 +32,10 @@ public abstract class PlayerLoggerEvent<T>
         return ModulePlayerLogger.getLogger().getBlock(block);
     }
 
-    public WorldData getWorld(String dimensionId)
-    {
-        return ModulePlayerLogger.getLogger().getWorld(dimensionId);
-    }
+//    public WorldData getWorld(String dimensionId)
+//    {
+//        return ModulePlayerLogger.getLogger().getWorld(dimensionId);
+//    }
 
     public PlayerData getPlayer(UserIdent ident)
     {

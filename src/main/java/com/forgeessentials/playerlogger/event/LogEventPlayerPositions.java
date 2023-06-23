@@ -35,7 +35,7 @@ public class LogEventPlayerPositions extends PlayerLoggerEvent<Object>
             Action04PlayerPosition action = new Action04PlayerPosition();
             action.time = date;
             action.player = getPlayer(player);
-            action.world = getWorld(player.level.dimension().location().toString());
+            action.world = player.level.dimension().location().toString();
             action.x = (int) player.position().x;
             action.y = (int) player.position().y;
             action.z = (int) player.position().z;

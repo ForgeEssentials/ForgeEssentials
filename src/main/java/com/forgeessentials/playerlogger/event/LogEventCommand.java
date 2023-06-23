@@ -40,7 +40,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         	System.out.println(event.getParseResults().getReader().getString());
         	for(ParsedCommandNode<CommandSource> node :event.getParseResults().getContext().getNodes()) {
             	arguments.add(node.getNode().getName());
-                System.out.println(node.getNode().getName());
+                //System.out.println(node.getNode().getName());
             }
         	arguments.remove(0);
         	action.arguments = String.join(" ", arguments);
@@ -49,7 +49,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         {
             PlayerEntity player = ((PlayerEntity) event.getParseResults().getContext().getSource().getEntity());
             action.player = getPlayer(player);
-            action.world = getWorld(player.level.dimension().location().toString());
+            action.world = player.level.dimension().location().toString();
             action.x = (int) player.position().x;
             action.y = (int) player.position().y;
             action.z = (int) player.position().z;
@@ -58,7 +58,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         {
             CommandBlockLogic block = ((CommandBlockLogic) CommandUtils.GetSource(event.getParseResults().getContext().getSource()));
             action.player = getPlayer(UserIdent.getVirtualPlayer("commandblock"));
-            action.world = getWorld(block.getLevel().dimension().location().toString());
+            action.world = block.getLevel().dimension().location().toString();
             BlockPos pos = new BlockPos(block.getPosition());
             action.x = pos.getX();
             action.y = pos.getY();
@@ -66,7 +66,7 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         }
         else {
             action.player = getPlayer(UserIdent.getVirtualPlayer("console"));
-            action.world = getWorld(ServerLifecycleHooks.getCurrentServer().overworld().dimension().location().toString());
+            action.world = ServerLifecycleHooks.getCurrentServer().overworld().dimension().location().toString();
             BlockPos pos = new BlockPos(0, 0, 0);
             action.x = pos.getX();
             action.y = pos.getY();

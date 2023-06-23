@@ -25,7 +25,7 @@ public class LogEventPlace extends PlayerLoggerEvent<BlockEvent.EntityPlaceEvent
         Action01Block action = new Action01Block();
         action.time = new Date();
         action.player = getPlayer((PlayerEntity)event.getEntity());
-        action.world = getWorld(event.getEntity().level.dimension().location().toString());
+        action.world = event.getEntity().level.dimension().location().toString();
         action.block = getBlock(event.getState().getBlock());
         action.type = ActionBlockType.PLACE;
         action.x = event.getPos().getX();

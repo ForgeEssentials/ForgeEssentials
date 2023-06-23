@@ -109,13 +109,13 @@ public class RollbackInfo
         {
             if (change.type == ActionBlockType.PLACE)
             {
-                ServerWorld world = ServerUtil.getWorldFromString(change.world.id);
+                ServerWorld world = ServerUtil.getWorldFromString(change.world);
                 world.setBlock(change.getBlockPos(), Blocks.AIR.defaultBlockState(), 11);
                 System.out.println(change.time + " REMOVED " + change.block.name);
             }
             else if (change.type == ActionBlockType.BREAK || change.type == ActionBlockType.DETONATE || change.type == ActionBlockType.BURN)
             {
-                ServerWorld world = ServerUtil.getWorldFromString(change.world.id);
+                ServerWorld world = ServerUtil.getWorldFromString(change.world);
                 Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(change.block.name));
                 world.setBlock(change.getBlockPos(), block.defaultBlockState(), 3);
                 world.setBlockEntity(change.getBlockPos(), PlayerLogger.blobToTileEntity(change.entity));
@@ -129,7 +129,7 @@ public class RollbackInfo
         if (task != null)
             task.cancel();
         for (Action01Block change : Lists.reverse(changes))
-            player.connection.send(new SChangeBlockPacket(ServerUtil.getWorldFromString(change.world.id), change.getBlockPos()));
+            player.connection.send(new SChangeBlockPacket(ServerUtil.getWorldFromString(change.world), change.getBlockPos()));
     }
 
     public Date getTime()
