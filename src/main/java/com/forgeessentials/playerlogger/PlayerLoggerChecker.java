@@ -53,7 +53,7 @@ public class PlayerLoggerChecker
 
     }
 
-    public Map<CommandSource, LoggerCheckInfo> playerInfo = new WeakHashMap<>();
+    public Map<String, LoggerCheckInfo> playerInfo = new WeakHashMap<>();
 
     public void CheckBlock(WorldPoint point, FilterConfig fc)
     {
@@ -78,14 +78,18 @@ public class PlayerLoggerChecker
     public void CheckBlock(WorldPoint point, FilterConfig fc, CommandSource sender, int pageSize, boolean newCheck,
             net.minecraftforge.event.entity.player.PlayerInteractEvent action)
     {
-        LoggerCheckInfo info = playerInfo.get(sender);
+        LoggerCheckInfo info = playerInfo.get(sender.getTextName());
         if (info == null)
         {
             info = new LoggerCheckInfo();
-            playerInfo.put(sender, info);
+            playerInfo.put(sender.getTextName(), info);
+            newCheck=true;
         }
-
-        newCheck |= !point.equals(info.checkPoint);
+        else {
+        	if(!point.equals(info.checkPoint)) {
+                newCheck=true;
+        	}
+        }
         if (newCheck)
         {
             info.checkPoint = point;
@@ -99,9 +103,6 @@ public class PlayerLoggerChecker
         ChatOutputHandler.chatNotification(sender, "Loading logs from database!  This may take a while.");
         List<Action> changes = ModulePlayerLogger.getLogger().getLoggedActions(getAreaAround(point, fc.pickerRange), fc.After(), fc.Before(), info.checkStartId,
                 pageSize);
-
-        // List<Action01Block> changes = ModulePlayerLogger.getLogger().getLoggedBlockChanges(getAreaAround(point, fc.pickerRange),fc.After(), fc.Before(), info.checkStartId,
-        // pageSize);
 
         if (changes.size() == 0 && !newCheck)
         {
@@ -118,7 +119,11 @@ public class PlayerLoggerChecker
             {
                 UserIdent player = UserIdent.get(change.player.uuid);
                 msg += " " + player.getUsernameOrUuid();
-                if (fc.player != null && fc.player != player)
+                if (fc.player == null)
+                {
+                    continue;
+                }
+                if (fc.player != player)
                 {
                     continue;
                 }
@@ -130,12 +135,12 @@ public class PlayerLoggerChecker
             msg += ": ";
             if (change instanceof Action01Block)
             {
+
                 Action01Block change2 = (Action01Block) change;
                 String blockName = change2.block != null ? change2.block.name : "";
-                Block block = (Block) ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName));
-                if (fc.hasBlock(block))
+                if (!fc.hasBlock((Block) ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockName)))) {
                     continue;
-
+                }
                 if (blockName.contains(":"))
                     blockName = blockName.split(":", 2)[1];
 
@@ -230,7 +235,7 @@ public class PlayerLoggerChecker
         }
 
         if (pageSize == 0)
-            playerInfo.remove(sender);
+            playerInfo.remove(sender.getTextName());
 
         // Add other Action events (Command, Player, Explosion, etc)
 
