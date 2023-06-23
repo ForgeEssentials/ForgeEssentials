@@ -208,7 +208,9 @@ public class VoteReceiver extends Thread
             }
             catch (SocketException ex)
             {
-                LoggingHandler.felog.fatal("Protocol error. Ignoring packet");
+            	if(running) {
+            		LoggingHandler.felog.fatal("Protocol error. Ignoring packet");
+            	}
             }
             catch (BadPaddingException ex)
             {
