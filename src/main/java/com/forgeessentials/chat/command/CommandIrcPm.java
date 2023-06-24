@@ -70,8 +70,10 @@ public class CommandIrcPm extends ForgeEssentialsCommandBuilder
 
     public static final SuggestionProvider<CommandSource> SUGGEST_USERS = (ctx, builder) -> {
         List<String> ircUsers = new ArrayList<>();
-        for (String users : IrcHandler.getInstance().getIrcUserNames())
-            ircUsers.add(users);
+        if(IrcHandler.getInstance().getIrcUserNames()!=null) {
+        	for (String users : IrcHandler.getInstance().getIrcUserNames())
+                ircUsers.add(users);
+        }
         return ISuggestionProvider.suggest(ircUsers, builder);
      };
 
