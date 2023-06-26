@@ -71,7 +71,7 @@ public class ChatConfig
         BUILDER.pop();
 
         BUILDER.push("Mute");
-        FEmutedCommands = BUILDER.comment(MUTEDCMD_HELP).defineList("mutedCommands", new ArrayList<String>(){{add("me");}},ConfigBase.stringValidator);
+        FEmutedCommands = BUILDER.comment(MUTEDCMD_HELP).defineList("mutedCommands", new ArrayList<String>(){{add("me");add("say");}},ConfigBase.stringValidator);
         BUILDER.pop();
     }
 
