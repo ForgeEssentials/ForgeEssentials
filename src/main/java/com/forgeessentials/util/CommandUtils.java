@@ -72,7 +72,7 @@ public class CommandUtils
         }
 
         public String getActualArgsString() {
-        	return commandRelativeArgs.isEmpty() ? "" : String.join(" ", commandRelativeArgs);
+        	return commandActualArgs.isEmpty() ? "" : String.join(" ", commandActualArgs);
         }
 
         public String getPermissionNode() {
