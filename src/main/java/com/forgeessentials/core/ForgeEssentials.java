@@ -58,6 +58,7 @@ import com.forgeessentials.core.commands.CommandFEInfo;
 import com.forgeessentials.core.commands.CommandFEWorldInfo;
 import com.forgeessentials.core.commands.CommandFeReload;
 import com.forgeessentials.core.commands.CommandFeSettings;
+import com.forgeessentials.core.commands.CommandTest;
 import com.forgeessentials.core.commands.CommandUuid;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.environment.Environment;
@@ -279,6 +280,7 @@ public class ForgeEssentials
         FECommandManager.registerCommand(settings, dispatcher);
         MinecraftForge.EVENT_BUS.register(settings);
 
+        FECommandManager.registerCommand(new CommandTest(true), dispatcher);
         FECommandManager.registerCommand(new CommandWand(true), dispatcher);
         FECommandManager.registerCommand(new CommandUuid(true), dispatcher);
         FECommandManager.registerCommand(new CommandFEWorldInfo(true), dispatcher);
@@ -499,7 +501,8 @@ public class ForgeEssentials
     }
 
     public boolean checkPerms(String commandPermissionNode, ServerPlayerEntity sender) {
-        return APIRegistry.perms.checkUserPermission(UserIdent.get(sender), commandPermissionNode);
+    	LoggingHandler.felog.debug("Checking command perm: "+commandPermissionNode);
+    	return APIRegistry.perms.checkUserPermission(UserIdent.get(sender), commandPermissionNode);
     }
 
    /* ------------------------------------------------------------ */
