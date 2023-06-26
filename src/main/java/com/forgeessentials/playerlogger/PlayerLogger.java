@@ -108,6 +108,8 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     private Map<UUID, Long> playerCache = new HashMap<>();
 
+    boolean purging=false;
+
     /* ------------------------------------------------------------ */
 
     private ConcurrentLinkedQueue<PlayerLoggerEvent<?>> eventQueue = new ConcurrentLinkedQueue<>();
@@ -200,60 +202,62 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
         {
             synchronized (this)
             {
-                if (em == null)
-                    return;
-                if (!em.isOpen())
-                {
-                    LoggingHandler.felog.error("[PL] Playerlogger database closed. Trying to reconnect...");
+                if(!purging) {
+                	if (em == null)
+                        return;
+                    if (!em.isOpen())
+                    {
+                        LoggingHandler.felog.error("[PL] Playerlogger database closed. Trying to reconnect...");
+                        try
+                        {
+                            em = entityManagerFactory.createEntityManager();
+                        }
+                        catch (IllegalStateException e)
+                        {
+                            LoggingHandler.felog.error("[PL] ------------------------------------------------------------------------");
+                            LoggingHandler.felog.error("[PL] Fatal error! Database connection was lost and could not be reestablished");
+                            LoggingHandler.felog.error("[PL] Stopping playerlogger!");
+                            LoggingHandler.felog.error("[PL] ------------------------------------------------------------------------");
+                            em = null;
+                            eventQueue.clear();
+                            return;
+                        }
+                    }
                     try
                     {
-                        em = entityManagerFactory.createEntityManager();
+                        em.getTransaction().begin();
+                        int count;
+                        for (count = 0; count < 1000; count++)
+                        {
+                            PlayerLoggerEvent<?> logEvent = eventQueue.poll();
+                            if (logEvent == null)
+                                break;
+                            logEvent.process(em);
+                        }
+                        em.getTransaction().commit();
+                        // System.out.println(String.format("%d: Wrote %d playerlogger entries", System.currentTimeMillis()
+                        // % (1000 * 60), count));
                     }
-                    catch (IllegalStateException e)
+                    catch (Exception e1)
                     {
-                        LoggingHandler.felog.error("[PL] ------------------------------------------------------------------------");
-                        LoggingHandler.felog.error("[PL] Fatal error! Database connection was lost and could not be reestablished");
-                        LoggingHandler.felog.error("[PL] Stopping playerlogger!");
-                        LoggingHandler.felog.error("[PL] ------------------------------------------------------------------------");
-                        em = null;
-                        eventQueue.clear();
-                        return;
+                        LoggingHandler.felog.error("[PL] Exception while persisting playerlogger entries");
+                        e1.printStackTrace();
+                        try
+                        {
+                            em.getTransaction().rollback();
+                        }
+                        catch (Exception e2)
+                        {
+                            LoggingHandler.felog.error("[PL] Exception while rolling back changes!");
+                            e2.printStackTrace();
+                            em.close();
+                            return;
+                        }
                     }
-                }
-                try
-                {
-                    em.getTransaction().begin();
-                    int count;
-                    for (count = 0; count < 1000; count++)
+                    finally
                     {
-                        PlayerLoggerEvent<?> logEvent = eventQueue.poll();
-                        if (logEvent == null)
-                            break;
-                        logEvent.process(em);
+                        em.clear();
                     }
-                    em.getTransaction().commit();
-                    // System.out.println(String.format("%d: Wrote %d playerlogger entries", System.currentTimeMillis()
-                    // % (1000 * 60), count));
-                }
-                catch (Exception e1)
-                {
-                    LoggingHandler.felog.error("[PL] Exception while persisting playerlogger entries");
-                    e1.printStackTrace();
-                    try
-                    {
-                        em.getTransaction().rollback();
-                    }
-                    catch (Exception e2)
-                    {
-                        LoggingHandler.felog.error("[PL] Exception while rolling back changes!");
-                        e2.printStackTrace();
-                        em.close();
-                        return;
-                    }
-                }
-                finally
-                {
-                    em.clear();
                 }
             }
             try
@@ -281,21 +285,45 @@ public class PlayerLogger extends ServerEventHandler implements Runnable
 
     public synchronized void purgeOldData(Date startTime, PlayerEntity player)
     {
-        String hql = "delete from Action where time < :startTime";
-        Query q = em.createQuery(hql).setParameter("startTime", startTime);
-        try
-        {
-            em.getTransaction().begin();
-            int count = q.executeUpdate();
-            LoggingHandler.felog.info(String.format("Purged %d old Playerlogger entries", count));
-            if(player!=null) {
-                ChatOutputHandler.chatConfirmation(player, String.format("Purged %d old Playerlogger entries", count));
+    	purging=true;
+        Thread purgeData = new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                String hql = "delete from Action where time < :startTime";
+                Query q = em.createQuery(hql).setParameter("startTime", startTime);
+                try
+                {
+                    em.getTransaction().begin();
+                    int count = q.executeUpdate();
+                    LoggingHandler.felog.info(String.format("Purged %d old Playerlogger entries", count));
+                    if(player!=null) {
+                        ChatOutputHandler.chatConfirmation(player, String.format("Purged %d old Playerlogger entries", count));
+                    }
+                }
+                finally
+                {
+                    em.getTransaction().commit();
+                    purging=false;
+                }
             }
-        }
-        finally
-        {
-            em.getTransaction().commit();
-        }
+        }, "FEPlayerLoggerPurgeThread");
+        purgeData.start();
+//        String hql = "delete from Action where time < :startTime";
+//        Query q = em.createQuery(hql).setParameter("startTime", startTime);
+//        try
+//        {
+//            em.getTransaction().begin();
+//            int count = q.executeUpdate();
+//            LoggingHandler.felog.info(String.format("Purged %d old Playerlogger entries", count));
+//            if(player!=null) {
+//                ChatOutputHandler.chatConfirmation(player, String.format("Purged %d old Playerlogger entries", count));
+//            }
+//        }
+//        finally
+//        {
+//            em.getTransaction().commit();
+//        }
     }
 
     // ============================================================
