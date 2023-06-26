@@ -39,7 +39,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.CommandEvent;
@@ -301,7 +300,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             if (!wallet.withdraw(price))
             {
                 event.setCanceled(true);
-                TranslationTextComponent textcomponenttranslation2 = new TranslationTextComponent("You do not have enough money to use this command.", new Object[0]);
                 info.source.sendFailure(new StringTextComponent("You do not have enough money to use this command."));
             }
             break;
