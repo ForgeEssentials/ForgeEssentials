@@ -5,7 +5,7 @@ import java.util.UUID;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -218,7 +218,7 @@ public class AuthEventHandler extends ServerEventHandler
             int availableSlots = ServerLifecycleHooks.getCurrentServer().getPlayerList().getMaxPlayers() - vipSlots - reservedSlots;
             if (onlinePlayers >= availableSlots)
             {
-                ((ServerPlayerEntity) event.getPlayer()).connection.disconnect(new TranslationTextComponent(nonVipKickMessage));
+                ((ServerPlayerEntity) event.getPlayer()).connection.disconnect(new StringTextComponent(nonVipKickMessage));
             }
         }
     }

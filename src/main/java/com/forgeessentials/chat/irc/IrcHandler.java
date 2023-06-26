@@ -16,7 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
@@ -352,7 +351,7 @@ public class IrcHandler extends ListenerAdapter
         String headerText = String.format(ircHeader, user.getNick());
         TextComponent header = ModuleChat.clickChatComponent(headerText, Action.SUGGEST_COMMAND, "/ircpm " + user.getNick() + " ");
         TextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
-        ChatOutputHandler.broadcast(new TranslationTextComponent("%s%s", header, messageComponent));
+        ChatOutputHandler.broadcast(header.append(messageComponent));
     }
 
     private void mcSendMessage(String message)
@@ -360,7 +359,7 @@ public class IrcHandler extends ListenerAdapter
         String filteredMessage = ModuleChat.censor.filterIRC(message);
         TextComponent header = ModuleChat.clickChatComponent(ircHeaderGlobal, Action.SUGGEST_COMMAND, "/irc ");
         TextComponent messageComponent = ModuleChat.filterChatLinks(ChatOutputHandler.formatColors(filteredMessage));
-        ChatOutputHandler.broadcast(new TranslationTextComponent("%s%s", header, messageComponent));
+        ChatOutputHandler.broadcast(header.append(messageComponent));
     }
 
     @SuppressWarnings("resource")

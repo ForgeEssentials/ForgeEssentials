@@ -37,7 +37,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -300,8 +300,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             {
                 event.setCanceled(true);
                 TranslationTextComponent textcomponenttranslation2 = new TranslationTextComponent("You do not have enough money to use this command.", new Object[0]);
-                textcomponenttranslation2.withStyle(TextFormatting.RED);
-                event.getParseResults().getContext().getSource().sendFailure(textcomponenttranslation2);
+                info.source.sendFailure(new StringTextComponent("You do not have enough money to use this command."));
             }
             break;
         }

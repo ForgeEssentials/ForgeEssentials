@@ -5,8 +5,8 @@ import java.util.Set;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -66,7 +66,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
 
         if (player.checkPermission(CommandAFK.PERM_AUTOKICK))
         {
-            player.getPlayerMP().connection.disconnect(new TranslationTextComponent(Translator.translate("You have been kicked for being AFK")));
+            player.getPlayerMP().connection.disconnect(new StringTextComponent(Translator.translate("You have been kicked for being AFK")));
             return;
         }
 
@@ -178,7 +178,7 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
         PlayerInfo pi = PlayerInfo.get(event.getPlayer());
         if (!pi.checkTimeout("tempban"))
         {
-            pi.ident.getPlayerMP().connection.disconnect(new TranslationTextComponent(Translator.format("You are still banned for %s",
+            pi.ident.getPlayerMP().connection.disconnect(new StringTextComponent(Translator.format("You are still banned for %s",
                     ChatOutputHandler.formatTimeDurationReadable(pi.getRemainingTimeout("tempban") / 1000, true))));
         }
     }

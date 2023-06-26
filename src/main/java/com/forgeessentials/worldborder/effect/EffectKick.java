@@ -2,7 +2,7 @@ package com.forgeessentials.worldborder.effect;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 import com.forgeessentials.core.misc.FECommandParsingException;
 import com.forgeessentials.core.misc.Translator;
@@ -48,7 +48,7 @@ public class EffectKick extends WorldBorderEffect
         PlayerInfo pi = PlayerInfo.get(player);
         if (pi.checkTimeout(this.getClass().getName()))
         {
-            player.connection.disconnect(new TranslationTextComponent("You left the world border"));
+            player.connection.disconnect(new StringTextComponent("You left the world border"));
             // For safety restart the timeout
             pi.startTimeout(this.getClass().getName(), timeout);
         }

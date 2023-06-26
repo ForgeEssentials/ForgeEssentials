@@ -2,7 +2,7 @@ package com.forgeessentials.commands.player;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
 
 import com.forgeessentials.api.APIRegistry;
@@ -93,7 +93,7 @@ public class CommandTempBan extends ForgeEssentialsCommandBuilder
 
         String durationString = ChatOutputHandler.formatTimeDurationReadable(duration / 1000, true);
         if (ident.hasPlayer())
-            ident.getPlayerMP().connection.disconnect(new TranslationTextComponent(Translator.format("You have been banned for %s", durationString)));
+            ident.getPlayerMP().connection.disconnect(new StringTextComponent(Translator.format("You have been banned for %s", durationString)));
 
         if (!reason.isEmpty())
         {

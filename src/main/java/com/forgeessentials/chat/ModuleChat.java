@@ -267,7 +267,7 @@ public class ModuleChat implements ConfigSaver
         }
 
         // Finish complete message
-        event.setComponent(new TranslationTextComponent("%s%s", header, messageComponent));
+        event.setComponent(header.append(messageComponent));
 
         // Handle chat range
         Double range = ServerUtil.tryParseDouble(ident.getPermissionProperty(PERM_RANGE));

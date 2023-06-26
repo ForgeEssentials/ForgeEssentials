@@ -11,8 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
@@ -426,7 +424,7 @@ public class ForgeEssentials
             try {
                 PlayerInfo.login(player.getUUID());
             } catch (JsonParseException e) {
-                player.connection.disconnect(new TranslationTextComponent("Unable to Parse PlayerInfo file, please contact your admin for assistance and ask them to check the log!"));
+                player.connection.disconnect(new StringTextComponent("Unable to Parse PlayerInfo file, please contact your admin for assistance and ask them to check the log!"));
                 LoggingHandler.felog.fatal("Unable to Parse PlayerInfo file!  If this is date related, please check S:format_gson_compat in your main.cfg file!", e);
             }
             if (FEConfig.checkSpacesInNames)

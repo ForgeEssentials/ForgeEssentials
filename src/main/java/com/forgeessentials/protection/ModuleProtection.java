@@ -80,8 +80,9 @@ import net.minecraft.entity.passive.horse.SkeletonHorseEntity;
 import net.minecraft.entity.passive.horse.ZombieHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -385,7 +386,7 @@ public class ModuleProtection
         if (cmdBase == null)
             return;
 
-        TranslationTextComponent msg = new TranslationTextComponent(permission);
+        TextComponent msg = new StringTextComponent(permission);
         ClickEvent click = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, cmdBase + permission);
         msg.withStyle((style) -> {
             return style.withClickEvent(click);});

@@ -44,7 +44,6 @@ public class RollbackInfo
         this.setTime(new Date());
     }
 
-    @SuppressWarnings("deprecation")
     public void step(int seconds)
     {
         getTime().setSeconds(getTime().getSeconds() + seconds);

@@ -8,7 +8,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.inventory.container.WorkbenchContainer;
 import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -80,7 +80,7 @@ public class CommandCraft extends ForgeEssentialsCommandBuilder
                     public boolean stillValid(PlayerEntity p_75145_1_) {
                         return true;
                      }
-                }, new TranslationTextComponent("FE Virtual Crafting")));
+                }, new StringTextComponent("FE Virtual Crafting")));
         return Command.SINGLE_SUCCESS;
     }
 }
