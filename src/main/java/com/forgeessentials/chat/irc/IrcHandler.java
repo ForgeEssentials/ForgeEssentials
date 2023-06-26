@@ -28,7 +28,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -479,13 +478,11 @@ public class IrcHandler extends ListenerAdapter
     	CommandInfo info = CommandUtils.getCommandInfo(event);
         if (info.getCommandName().equals("say"))
         {
-            ircSendMessage(Translator.format(mcSayHeader, info.getSource().getTextName(),
-                    StringUtils.join(event.getParseResults().getReader().toString().substring(5+event.getParseResults().getContext().getSource().getTextName().length()+1))));
+            ircSendMessage(Translator.format(mcSayHeader, info.getSource().getTextName(), info.getActualArgsString()));
         }
         else if (info.getCommandName().equals("me"))
         {
-            ircSendMessage(
-                    Translator.format("* %s %s", info.getSource().getTextName(), event.getParseResults().getReader().toString().substring(4+event.getParseResults().getContext().getSource().getTextName().length()+1)));
+            ircSendMessage( Translator.format("* %s %s", info.getSource().getTextName(), info.getActualArgsString()));
         }
     }
 

@@ -498,8 +498,8 @@ public class ForgeEssentials
         }
     }
 
-    public boolean checkPerms(String commandNode, ServerPlayerEntity sender) {
-        return APIRegistry.perms.checkUserPermission(UserIdent.get(sender), commandNode);
+    public boolean checkPerms(String commandPermissionNode, ServerPlayerEntity sender) {
+        return APIRegistry.perms.checkUserPermission(UserIdent.get(sender), commandPermissionNode);
     }
 
    /* ------------------------------------------------------------ */

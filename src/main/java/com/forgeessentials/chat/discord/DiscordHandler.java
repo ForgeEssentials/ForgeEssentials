@@ -27,7 +27,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.eventbus.api.EventPriority;
-import org.apache.commons.lang3.StringUtils;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.config.ConfigBase;
@@ -239,13 +238,11 @@ public class DiscordHandler
     	CommandInfo info = CommandUtils.getCommandInfo(event);
         if (info.getCommandName().equals("say"))
         {
-            sendMessage(Translator.format("[%s] %s", info.getSource().getTextName(), 
-            		StringUtils.join(event.getParseResults().getReader().toString().substring(5+event.getParseResults().getContext().getSource().getTextName().length()+1))));
+            sendMessage(Translator.format("[%s] %s", info.getSource().getTextName(), info.getActualArgsString()));
         }
         else if (info.getCommandName().equals("me"))
         {
-            sendMessage(Translator.format("* %s %s", info.getSource().getTextName(), StringUtils.join(event.getParseResults().getContext().getSource().getTextName(), 
-            		event.getParseResults().getReader().toString().substring(4+event.getParseResults().getContext().getSource().getTextName().length()+1))));
+            sendMessage(Translator.format("* %s %s", info.getSource().getTextName(), info.getActualArgsString()));
         }
     }
 

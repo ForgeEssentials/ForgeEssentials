@@ -49,7 +49,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -290,13 +289,12 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
         CommandInfo info = CommandUtils.getCommandInfo(event);
         UserIdent ident = UserIdent.get((ServerPlayerEntity) info.getSource().getEntity());
 
-        for (int i = event.getParseResults().getContext().getArguments().size(); i >= 0; i--)
-        {
-            String permission = PERM_COMMANDPRICE + '.' + event.getParseResults().getReader().getString() + //
-                    (i == 0 ? "" : ('.' + StringUtils.join(event.getParseResults().getContext().getNodes(), '.')));
+        if(event.getParseResults().getContext().getArguments().size()>=0) {
+        	String permission = PERM_COMMANDPRICE + '.' + info.getPermissionNode();
+            //System.out.println(permission);
             Long price = ServerUtil.tryParseLong(APIRegistry.perms.getUserPermissionProperty(ident, permission));
             if (price == null)
-                continue;
+                return;
 
             Wallet wallet = APIRegistry.economy.getWallet(ident);
             if (!wallet.withdraw(price))
@@ -304,7 +302,6 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
                 event.setCanceled(true);
                 info.getSource().sendFailure(new StringTextComponent("You do not have enough money to use this command."));
             }
-            break;
         }
     }
 

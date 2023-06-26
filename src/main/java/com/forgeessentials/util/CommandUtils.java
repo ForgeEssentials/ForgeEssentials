@@ -48,8 +48,7 @@ public class CommandUtils
 
         protected List<String> commandRelativeArgs;
 
-        //TODO parse the actual args given to the server
-        protected List<String> commandActualArgs;
+        protected String commandActualArgs;
 
         public String getCommandName() {
         	return commandName;
@@ -63,16 +62,13 @@ public class CommandUtils
         	return commandRelativeArgs;
         }
 
-        public List<String> getActualArgs() {
-        	return commandActualArgs;
-        }
 
         public String getRelativeArgsString() {
         	return commandRelativeArgs.isEmpty() ? "" : String.join(" ", commandRelativeArgs);
         }
 
         public String getActualArgsString() {
-        	return commandActualArgs.isEmpty() ? "" : String.join(" ", commandActualArgs);
+        	return commandActualArgs;
         }
 
         public String getPermissionNode() {
@@ -97,7 +93,16 @@ public class CommandUtils
             }
         	info.commandRelativeArgs.remove(0);
         }
-        //TODO parse the actual args given to the server
+        info.commandActualArgs= event.getParseResults().getReader().getString();
+        while(info.commandActualArgs.startsWith("/")) {
+        	info.commandActualArgs=info.commandActualArgs.substring(1);
+        }
+        if(info.commandActualArgs.startsWith(info.commandName)) {
+        	info.commandActualArgs=info.commandActualArgs.substring(info.commandName.length());
+        }
+        if(info.commandActualArgs.startsWith(" ")) {
+        	info.commandActualArgs=info.commandActualArgs.substring(1);
+        }
 		return info;
     }
     public static List<String> getAllPlayernames()
