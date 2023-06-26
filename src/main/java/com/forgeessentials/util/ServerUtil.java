@@ -19,7 +19,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerPropertiesProvider;
@@ -375,16 +374,6 @@ public abstract class ServerUtil
     }
 
     /* ------------------------------------------------------------ */
-
-    public static String getItemName(Item item)
-    {
-        return ForgeRegistries.ITEMS.getKey(item).toString();
-    }
-
-    public static String getItemName(ItemStack itemstack)
-    {
-        return getItemName(itemstack.getItem());
-    }
 
     public static String getItemPermission(Item item)
     {

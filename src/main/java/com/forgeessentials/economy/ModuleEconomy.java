@@ -341,7 +341,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 
     public static String getItemPricePermission(ItemStack itemStack)
     {
-        return PERM_PRICE + "." + ServerUtil.getItemName(itemStack);
+        return PERM_PRICE + "." + ItemUtil.getItemName(itemStack);
     }
 
     public static Long getItemPrice(ItemStack itemStack, UserIdent ident)
@@ -380,9 +380,9 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
 		    	LoggingHandler.felog.error("Incorrect Price value", e); 
 		    	price = DEFAULT_ITEM_PRICE;}
 		    for (Item item : ForgeRegistries.ITEMS)
-                if (values[0].equals(ServerUtil.getItemName(item)))
+                if (values[0].equals(ItemUtil.getItemName(item)))
                 {
-                    itemTables.put(ServerUtil.getItemName(item), price);
+                    itemTables.put(ItemUtil.getItemName(item), price);
                     break;
                 }
 		}

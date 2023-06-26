@@ -1,15 +1,18 @@
 package com.forgeessentials.util;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.StandingSignBlock;
 import net.minecraft.block.WallSignBlock;
 import net.minecraft.entity.item.HangingEntity;
 import net.minecraft.entity.item.ItemFrameEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.SignTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.util.output.logger.LoggingHandler;
@@ -47,7 +50,7 @@ public final class ItemUtil
 
     public static boolean isSign(Block block)
     {
-        return block instanceof WallSignBlock;
+        return block instanceof WallSignBlock || block instanceof StandingSignBlock;
     }
 
     public static ITextComponent[] getSignText(WorldPoint point)
@@ -80,4 +83,13 @@ public final class ItemUtil
         return subTag;
     }
 
+	public static String getItemName(Item item)
+	{
+	    return ForgeRegistries.ITEMS.getKey(item).toString();
+	}
+
+	public static String getItemName(ItemStack itemstack)
+	{
+	    return getItemName(itemstack.getItem());
+	}
 }
