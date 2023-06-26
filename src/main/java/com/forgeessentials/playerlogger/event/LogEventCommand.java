@@ -30,8 +30,8 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
         Action02Command action = new Action02Command();
         action.time = date;
         CommandInfo info =CommandUtils.getCommandInfo(event);
-        action.command = info.commandName;
-        action.arguments=info.commandRelativeArgsString;
+        action.command = info.getCommandName();
+        action.arguments=info.getActualArgsString();
         if (event.getParseResults().getContext().getSource().getEntity() instanceof PlayerEntity)
         {
             PlayerEntity player = ((PlayerEntity) event.getParseResults().getContext().getSource().getEntity());

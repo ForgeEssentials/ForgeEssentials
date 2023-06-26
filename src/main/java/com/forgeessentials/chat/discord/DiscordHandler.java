@@ -237,14 +237,14 @@ public class DiscordHandler
     	if(event.getParseResults().getContext().getNodes().isEmpty())
             return;
     	CommandInfo info = CommandUtils.getCommandInfo(event);
-        if (info.commandName.equals("say"))
+        if (info.getCommandName().equals("say"))
         {
-            sendMessage(Translator.format("[%s] %s", info.source.getTextName(), 
+            sendMessage(Translator.format("[%s] %s", info.getSource().getTextName(), 
             		StringUtils.join(event.getParseResults().getReader().toString().substring(5+event.getParseResults().getContext().getSource().getTextName().length()+1))));
         }
-        else if (info.commandName.equals("me"))
+        else if (info.getCommandName().equals("me"))
         {
-            sendMessage(Translator.format("* %s %s", info.source.getTextName(), StringUtils.join(event.getParseResults().getContext().getSource().getTextName(), 
+            sendMessage(Translator.format("* %s %s", info.getSource().getTextName(), StringUtils.join(event.getParseResults().getContext().getSource().getTextName(), 
             		event.getParseResults().getReader().toString().substring(4+event.getParseResults().getContext().getSource().getTextName().length()+1))));
         }
     }

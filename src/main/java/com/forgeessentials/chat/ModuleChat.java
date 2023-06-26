@@ -318,12 +318,12 @@ public class ModuleChat implements ConfigSaver
         if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity))
             return;
     	CommandInfo info = CommandUtils.getCommandInfo(event);
-        ServerPlayerEntity player = (ServerPlayerEntity) info.source.getEntity();
+        ServerPlayerEntity player = (ServerPlayerEntity) info.getSource().getEntity();
         if (!PlayerUtil.getPersistedTag(player, false).getBoolean("mute"))
             return;
-        if (!ChatConfig.mutedCommands.contains(info.commandName))
+        if (!ChatConfig.mutedCommands.contains(info.getCommandName()))
             return;
-        ChatOutputHandler.chatWarning(info.source, "You are currently muted.");
+        ChatOutputHandler.chatWarning(info.getSource(), "You are currently muted.");
         event.setCanceled(true);
     }
 

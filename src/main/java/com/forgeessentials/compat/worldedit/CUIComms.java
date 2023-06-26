@@ -43,9 +43,9 @@ public class CUIComms
             CommandInfo info = CommandUtils.getCommandInfo(e);
             for (String weCmd : worldEditSelectionCommands)
             {
-                if (info.commandName.equals(weCmd) && !(info.source.getEntity() instanceof FakePlayer))
+                if (info.getCommandName().equals(weCmd) && !(info.getSource().getEntity() instanceof FakePlayer))
                 {
-                    updatedSelectionPlayers.add((ServerPlayerEntity) info.source.getEntity());
+                    updatedSelectionPlayers.add((ServerPlayerEntity) info.getSource().getEntity());
                     return;
                 }
             }

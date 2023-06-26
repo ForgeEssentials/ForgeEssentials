@@ -183,10 +183,10 @@ public class ModuleAuth extends ConfigLoaderBase
      */
     public static boolean isGuestCommand(CommandInfo info)
     {
-        return info.commandName.equals("auth")|| 
-        		info.commandName.equals("FEauth") || 
-        		info.commandName.equals("help") || 
-        		info.commandName.equals("fehelp");
+        return info.getCommandName().equals("auth")|| 
+        		info.getCommandName().equals("FEauth") || 
+        		info.getCommandName().equals("help") || 
+        		info.getCommandName().equals("fehelp");
     }
 
     private static final String CFG_DESC_forceEnable = "Forces the authentication server to be loaded regardless of Minecraft auth services";

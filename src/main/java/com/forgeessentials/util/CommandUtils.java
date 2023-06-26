@@ -42,21 +42,52 @@ public class CommandUtils
     public static class CommandInfo
     {
 
-        public String commandName;
-        public CommandSource source;
+        protected String commandName;
 
-        public List<String> commandRelativeArgs;
-        public String commandRelativeArgsString;
+        protected CommandSource source;
+
+        protected List<String> commandRelativeArgs;
 
         //TODO parse the actual args given to the server
-        public List<String> commandActualArgs;
-        public String commandActualArgsString;
+        protected List<String> commandActualArgs;
+
+        public String getCommandName() {
+        	return commandName;
+        }
+
+        public CommandSource getSource() {
+        	return source;
+        }
+
+        public List<String> getRelativeArgs() {
+        	return commandRelativeArgs;
+        }
+
+        public List<String> getActualArgs() {
+        	return commandActualArgs;
+        }
+
+        public String getRelativeArgsString() {
+        	return commandRelativeArgs.isEmpty() ? "" : String.join(" ", commandRelativeArgs);
+        }
+
+        public String getActualArgsString() {
+        	return commandRelativeArgs.isEmpty() ? "" : String.join(" ", commandRelativeArgs);
+        }
+
+        public String getPermissionNode() {
+        	return commandName + (commandRelativeArgs.isEmpty() ? "" : "." + String.join(".", commandRelativeArgs));
+        }
     }
 
     public static CommandInfo getCommandInfo(CommandEvent event) {
     	CommandInfo info = new CommandInfo();
     	info.source= event.getParseResults().getContext().getSource();
-    	info.commandName = event.getParseResults().getContext().getNodes().get(0).getNode().getName();
+    	try {
+        	info.commandName = event.getParseResults().getContext().getNodes().get(0).getNode().getName();
+    	}catch(IndexOutOfBoundsException e) {
+    		throw new RuntimeException(e);
+    	}
     	info.commandRelativeArgs= new ArrayList<>();
         if(event.getParseResults().getContext().getNodes().size() > 1) {
         	//System.out.println(event.getParseResults().getReader().getString());
@@ -65,7 +96,6 @@ public class CommandUtils
                 //System.out.println(node.getNode().getName());
             }
         	info.commandRelativeArgs.remove(0);
-        	info.commandRelativeArgsString = String.join(" ", info.commandRelativeArgs);
         }
         //TODO parse the actual args given to the server
 		return info;

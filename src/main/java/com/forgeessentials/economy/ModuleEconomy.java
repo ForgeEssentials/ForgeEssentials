@@ -283,10 +283,12 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void commandEvent(CommandEvent event)
     {
+    	if(event.getParseResults().getContext().getNodes().isEmpty())
+            return;
         if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity))
             return;
         CommandInfo info = CommandUtils.getCommandInfo(event);
-        UserIdent ident = UserIdent.get((ServerPlayerEntity) info.source.getEntity());
+        UserIdent ident = UserIdent.get((ServerPlayerEntity) info.getSource().getEntity());
 
         for (int i = event.getParseResults().getContext().getArguments().size(); i >= 0; i--)
         {
@@ -300,7 +302,7 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
             if (!wallet.withdraw(price))
             {
                 event.setCanceled(true);
-                info.source.sendFailure(new StringTextComponent("You do not have enough money to use this command."));
+                info.getSource().sendFailure(new StringTextComponent("You do not have enough money to use this command."));
             }
             break;
         }

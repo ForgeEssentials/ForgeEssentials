@@ -20,10 +20,8 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.player.CommandAFK;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.events.FEPlayerEvent.PlayerAFKEvent;
 import com.forgeessentials.util.events.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
@@ -164,11 +162,8 @@ public class ModuleCommandsEventHandler extends ServerEventHandler implements Ru
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void commandEvent(CommandEvent event)
     {
-        CommandInfo info = CommandUtils.getCommandInfo(event);
-        if (info.commandName.equals("afk")||info.commandName.equals("feafk"))
-            return;
-        if (info.source.getEntity() instanceof ServerPlayerEntity)
-            playerActive((ServerPlayerEntity) info.source.getEntity());
+        if (event.getParseResults().getContext().getSource().getEntity() !=null && event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity)
+            playerActive((ServerPlayerEntity) event.getParseResults().getContext().getSource().getEntity());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

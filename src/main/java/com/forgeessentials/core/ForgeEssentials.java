@@ -6,6 +6,9 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.Level;
+
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,10 +41,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.permission.DefaultPermissionLevel;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.Level;
 
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
@@ -480,8 +479,8 @@ public class ForgeEssentials
             return;
         boolean perm = false;
         CommandInfo info = CommandUtils.getCommandInfo(event);
-        if(info.source.getEntity() instanceof ServerPlayerEntity) {
-            perm = checkPerms(StringUtils.replace(info.commandRelativeArgsString, " ", "."), CommandUtils.getServerPlayer(info.source));
+        if(info.getSource().getEntity() instanceof ServerPlayerEntity) {
+            perm = checkPerms(info.getPermissionNode(), CommandUtils.getServerPlayer(info.getSource()));
         }
         else {
             perm = true;
@@ -489,13 +488,13 @@ public class ForgeEssentials
 
         if (logCommandsToConsole)
         {
-            LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"%s %s\"", info.source.getTextName(),
-                    perm ? "used" : "tried to use", info.commandName, info.commandRelativeArgsString));
+            LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"%s %s\"", info.getSource().getTextName(),
+                    perm ? "used" : "tried to use", info.getCommandName(), info.getActualArgsString()));
         }
 
         if (!perm) {
             event.setCanceled(true);
-            info.source.sendFailure(new StringTextComponent("You dont have permission to use this command!"));
+            info.getSource().sendFailure(new StringTextComponent("You dont have permission to use this command!"));
         }
     }
 
