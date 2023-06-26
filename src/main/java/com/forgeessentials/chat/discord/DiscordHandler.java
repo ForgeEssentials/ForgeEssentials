@@ -32,6 +32,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.CommandUtils;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
@@ -234,14 +236,15 @@ public class DiscordHandler
     {
     	if(event.getParseResults().getContext().getNodes().isEmpty())
             return;
-        if (event.getParseResults().getContext().getNodes().get(0).toString().equals("say"))
+    	CommandInfo info = CommandUtils.getCommandInfo(event);
+        if (info.commandName.equals("say"))
         {
-            sendMessage(Translator.format("[%s] %s", event.getParseResults().getContext().getSource().getTextName(), 
+            sendMessage(Translator.format("[%s] %s", info.source.getTextName(), 
             		StringUtils.join(event.getParseResults().getReader().toString().substring(5+event.getParseResults().getContext().getSource().getTextName().length()+1))));
         }
-        else if (event.getParseResults().getContext().getNodes().get(0).toString().equals("me"))
+        else if (info.commandName.equals("me"))
         {
-            sendMessage(Translator.format("* %s %s", event.getParseResults().getContext().getSource().getTextName(), StringUtils.join(event.getParseResults().getContext().getSource().getTextName(), 
+            sendMessage(Translator.format("* %s %s", info.source.getTextName(), StringUtils.join(event.getParseResults().getContext().getSource().getTextName(), 
             		event.getParseResults().getReader().toString().substring(4+event.getParseResults().getContext().getSource().getTextName().length()+1))));
         }
     }

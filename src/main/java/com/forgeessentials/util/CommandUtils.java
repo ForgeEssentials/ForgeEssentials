@@ -10,6 +10,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.FECommandParsingException;
 import com.google.common.primitives.Doubles;
+import com.mojang.brigadier.context.ParsedCommandNode;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ICommandSource;
@@ -18,6 +19,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class CommandUtils 
@@ -35,6 +37,38 @@ public class CommandUtils
         else if (mustBeOnline && !ident.hasPlayer())
             throw new FECommandParsingException("Player %s is not online", name);
         return ident;
+    }
+
+    public static class CommandInfo
+    {
+
+        public String commandName;
+        public CommandSource source;
+
+        public List<String> commandRelativeArgs;
+        public String commandRelativeArgsString;
+
+        //TODO parse the actual args given to the server
+        public List<String> commandActualArgs;
+        public String commandActualArgsString;
+    }
+
+    public static CommandInfo getCommandInfo(CommandEvent event) {
+    	CommandInfo info = new CommandInfo();
+    	info.source= event.getParseResults().getContext().getSource();
+    	info.commandName = event.getParseResults().getContext().getNodes().get(0).getNode().getName();
+    	info.commandRelativeArgs= new ArrayList<>();
+        if(event.getParseResults().getContext().getNodes().size() > 1) {
+        	//System.out.println(event.getParseResults().getReader().getString());
+        	for(ParsedCommandNode<CommandSource> node :event.getParseResults().getContext().getNodes()) {
+        		info.commandRelativeArgs.add(node.getNode().getName());
+                //System.out.println(node.getNode().getName());
+            }
+        	info.commandRelativeArgs.remove(0);
+        	info.commandRelativeArgsString = String.join(" ", info.commandRelativeArgs);
+        }
+        //TODO parse the actual args given to the server
+		return info;
     }
     public static List<String> getAllPlayernames()
     {

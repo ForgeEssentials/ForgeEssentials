@@ -53,6 +53,8 @@ import com.forgeessentials.chat.irc.command.CommandMessage;
 import com.forgeessentials.chat.irc.command.CommandReply;
 import com.forgeessentials.core.config.ConfigBase;
 import com.forgeessentials.core.misc.Translator;
+import com.forgeessentials.util.CommandUtils;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
@@ -474,15 +476,16 @@ public class IrcHandler extends ListenerAdapter
     {
     	if(event.getParseResults().getContext().getNodes().isEmpty())
             return;
-        if (event.getParseResults().getContext().getNodes().get(0).getNode().getName().equals("say"))
+    	CommandInfo info = CommandUtils.getCommandInfo(event);
+        if (info.commandName.equals("say"))
         {
-            ircSendMessage(Translator.format(mcSayHeader, event.getParseResults().getContext().getSource().getTextName(),
+            ircSendMessage(Translator.format(mcSayHeader, info.source.getTextName(),
                     StringUtils.join(event.getParseResults().getReader().toString().substring(5+event.getParseResults().getContext().getSource().getTextName().length()+1))));
         }
-        else if (event.getParseResults().getContext().getNodes().get(0).getNode().getName().equals("me"))
+        else if (info.commandName.equals("me"))
         {
             ircSendMessage(
-                    Translator.format("* %s %s", event.getParseResults().getContext().getSource().getTextName(), event.getParseResults().getReader().toString().substring(4+event.getParseResults().getContext().getSource().getTextName().length()+1)));
+                    Translator.format("* %s %s", info.source.getTextName(), event.getParseResults().getReader().toString().substring(4+event.getParseResults().getContext().getSource().getTextName().length()+1)));
         }
     }
 

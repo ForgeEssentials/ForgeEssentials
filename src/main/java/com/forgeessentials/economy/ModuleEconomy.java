@@ -21,6 +21,7 @@ import com.forgeessentials.protection.ProtectionEventHandler;
 import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
@@ -285,7 +286,8 @@ public class ModuleEconomy extends ServerEventHandler implements Economy, Config
     {
         if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity))
             return;
-        UserIdent ident = UserIdent.get((ServerPlayerEntity) event.getParseResults().getContext().getSource().getEntity());
+        CommandInfo info = CommandUtils.getCommandInfo(event);
+        UserIdent ident = UserIdent.get((ServerPlayerEntity) info.source.getEntity());
 
         for (int i = event.getParseResults().getContext().getArguments().size(); i >= 0; i--)
         {

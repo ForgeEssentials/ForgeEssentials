@@ -57,8 +57,10 @@ import com.forgeessentials.core.config.ConfigSaver;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.scripting.ScriptArguments;
+import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.PlayerUtil;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
@@ -311,14 +313,17 @@ public class ModuleChat implements ConfigSaver
     @SubscribeEvent(priority = EventPriority.LOW)
     public void commandEvent(CommandEvent event)
     {
+    	if(event.getParseResults().getContext().getNodes().isEmpty())
+            return;
         if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity))
             return;
-        ServerPlayerEntity player = (ServerPlayerEntity) event.getParseResults().getContext().getSource().getEntity();
+    	CommandInfo info = CommandUtils.getCommandInfo(event);
+        ServerPlayerEntity player = (ServerPlayerEntity) info.source.getEntity();
         if (!PlayerUtil.getPersistedTag(player, false).getBoolean("mute"))
             return;
-        if (!ChatConfig.mutedCommands.contains(event.getParseResults().getContext().getCommand().toString()))
+        if (!ChatConfig.mutedCommands.contains(info.commandName))
             return;
-        ChatOutputHandler.chatWarning(event.getParseResults().getContext().getSource(), "You are currently muted.");
+        ChatOutputHandler.chatWarning(info.source, "You are currently muted.");
         event.setCanceled(true);
     }
 
@@ -562,7 +567,7 @@ public class ModuleChat implements ConfigSaver
 
         TextComponent msg;
         PlayerEntity player = sender.getEntity() instanceof PlayerEntity ? (PlayerEntity) sender.getEntity() : null;
-        msg = player != null ? getChatHeader(UserIdent.get((PlayerEntity) sender.getEntity())) : new TranslationTextComponent("SERVER ");
+        msg = player != null ? getChatHeader(UserIdent.get((PlayerEntity) sender.getEntity())) : new StringTextComponent("SERVER ");
         String censored = censor.filter(message, player);
         String formatted = processChatReplacements(sender, censored, formatColors);
 

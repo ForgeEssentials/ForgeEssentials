@@ -10,6 +10,8 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
+import com.forgeessentials.util.CommandUtils;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.selections.SelectionHandler;
 
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -26,8 +28,8 @@ public class CUIComms
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public static final String[] worldEditSelectionCommands = new String[] { "/pos1", "/pos2", "/sel", "/desel", "/hpos1", "/hpos2", "/chunk", "/expand",
-            "/contract", "/outset", "/inset", "/shift" };
+    public static final String[] worldEditSelectionCommands = new String[] { "pos1", "pos2", "sel", "desel", "hpos1", "hpos2", "/hunk", "expand",
+            "contract", "outset", "inset", "shift" };
 
     protected List<ServerPlayerEntity> updatedSelectionPlayers = new ArrayList<>();
 
@@ -38,12 +40,12 @@ public class CUIComms
         {
             if(e.getParseResults().getContext().getNodes().isEmpty())
                 return;
-            String cmd = e.getParseResults().getContext().getNodes().get(0).toString();
+            CommandInfo info = CommandUtils.getCommandInfo(e);
             for (String weCmd : worldEditSelectionCommands)
             {
-                if (cmd.equals(weCmd) && !(e.getParseResults().getContext().getSource().getEntity() instanceof FakePlayer))
+                if (info.commandName.equals(weCmd) && !(info.source.getEntity() instanceof FakePlayer))
                 {
-                    updatedSelectionPlayers.add((ServerPlayerEntity) e.getParseResults().getContext().getSource().getEntity());
+                    updatedSelectionPlayers.add((ServerPlayerEntity) info.source.getEntity());
                     return;
                 }
             }

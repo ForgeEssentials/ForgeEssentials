@@ -74,8 +74,10 @@ import com.forgeessentials.core.moduleLauncher.FEModule.Instance;
 import com.forgeessentials.core.moduleLauncher.ModuleLauncher;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.playerlogger.TestClass;
+import com.forgeessentials.util.CommandUtils;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerAboutToStartEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
@@ -477,16 +479,9 @@ public class ForgeEssentials
     	if(event.getParseResults().getContext().getNodes().isEmpty())
             return;
         boolean perm = false;
-        if(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity) {
-            try
-            {
-                perm = checkPerms(StringUtils.join(event.getParseResults().getContext().getNodes().iterator().toString(), "."), event.getParseResults().getContext().getSource());
-            }
-            catch (CommandSyntaxException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+        CommandInfo info = CommandUtils.getCommandInfo(event);
+        if(info.source.getEntity() instanceof ServerPlayerEntity) {
+            perm = checkPerms(StringUtils.replace(info.commandRelativeArgsString, " ", "."), CommandUtils.getServerPlayer(info.source));
         }
         else {
             perm = true;
@@ -494,20 +489,18 @@ public class ForgeEssentials
 
         if (logCommandsToConsole)
         {
-            LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"/%s %s\"", event.getParseResults().getContext().getSource().getPlayerOrException().getDisplayName().getString(),
-                    perm ? "used" : "tried to use", event.getParseResults().getContext().getNodes().get(0).getNode().getName(), StringUtils.join(event.getParseResults().getContext().getNodes().iterator().toString(), ".")));
+            LoggingHandler.felog.info(String.format("Player \"%s\" %s command \"%s %s\"", info.source.getTextName(),
+                    perm ? "used" : "tried to use", info.commandName, info.commandRelativeArgsString));
         }
 
         if (!perm) {
             event.setCanceled(true);
-            TranslationTextComponent textcomponenttranslation2 = new TranslationTextComponent("commands.generic.permission", new Object[0]);
-            textcomponenttranslation2.withStyle(TextFormatting.RED);
-            event.getParseResults().getContext().getSource().getPlayerOrException().sendMessage(textcomponenttranslation2, event.getParseResults().getContext().getSource().getPlayerOrException().getUUID());
+            info.source.sendFailure(new StringTextComponent("You dont have permission to use this command!"));
         }
     }
 
-    public boolean checkPerms(String commandNode, CommandSource sender) throws CommandSyntaxException {
-        return APIRegistry.perms.checkUserPermission(UserIdent.get(sender.getPlayerOrException().getGameProfile()), commandNode);
+    public boolean checkPerms(String commandNode, ServerPlayerEntity sender) {
+        return APIRegistry.perms.checkUserPermission(UserIdent.get(sender), commandNode);
     }
 
    /* ------------------------------------------------------------ */

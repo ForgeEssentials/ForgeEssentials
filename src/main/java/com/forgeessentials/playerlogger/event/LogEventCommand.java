@@ -1,11 +1,7 @@
 package com.forgeessentials.playerlogger.event;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.EntityManager;
 
-import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.CommandBlockLogic;
 import net.minecraft.util.math.BlockPos;
@@ -16,7 +12,7 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action02Command;
 import com.forgeessentials.util.CommandUtils;
-import com.mojang.brigadier.context.ParsedCommandNode;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
 
 public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
 {
@@ -33,18 +29,9 @@ public class LogEventCommand extends PlayerLoggerEvent<CommandEvent>
             return;
         Action02Command action = new Action02Command();
         action.time = date;
-        action.command = event.getParseResults().getContext().getNodes().get(0).getNode().getName();
-        action.arguments="";
-        if(event.getParseResults().getContext().getNodes().size() > 1) {
-        	List<String> arguments = new ArrayList<>();
-        	//System.out.println(event.getParseResults().getReader().getString());
-        	for(ParsedCommandNode<CommandSource> node :event.getParseResults().getContext().getNodes()) {
-            	arguments.add(node.getNode().getName());
-                //System.out.println(node.getNode().getName());
-            }
-        	arguments.remove(0);
-        	action.arguments = String.join(" ", arguments);
-        }
+        CommandInfo info =CommandUtils.getCommandInfo(event);
+        action.command = info.commandName;
+        action.arguments=info.commandRelativeArgsString;
         if (event.getParseResults().getContext().getSource().getEntity() instanceof PlayerEntity)
         {
             PlayerEntity player = ((PlayerEntity) event.getParseResults().getContext().getSource().getEntity());

@@ -23,6 +23,8 @@ import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.commons.network.NetworkUtils;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
 import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
+import com.forgeessentials.util.CommandUtils;
+import com.forgeessentials.util.CommandUtils.CommandInfo;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent;
 import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
 import com.forgeessentials.util.events.PlayerMoveEvent;
@@ -59,7 +61,7 @@ public class AuthEventHandler extends ServerEventHandler
 
     private static boolean notPlayer(Object player)
     {
-        return !(player instanceof PlayerEntity) || player instanceof FakePlayer;
+        return player == null || !(player instanceof PlayerEntity) || player instanceof FakePlayer;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -96,8 +98,9 @@ public class AuthEventHandler extends ServerEventHandler
     {
         if (!ModuleAuth.isEnabled() || notPlayer(event.getParseResults().getContext().getSource().getEntity()))
             return;
-        PlayerEntity player = (PlayerEntity) event.getParseResults().getContext().getSource().getEntity();
-        if (!ModuleAuth.isAuthenticated(player) && !ModuleAuth.isGuestCommand(event.getParseResults().getContext()))
+        CommandInfo info = CommandUtils.getCommandInfo(event);
+        PlayerEntity player = (PlayerEntity) info.source.getEntity();
+        if (!ModuleAuth.isAuthenticated(player) && !ModuleAuth.isGuestCommand(info))
         {
             event.setCanceled(true);
             ChatOutputHandler.chatError(player.createCommandSourceStack(), "Login required. Try /auth help.");
