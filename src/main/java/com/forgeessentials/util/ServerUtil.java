@@ -8,15 +8,12 @@ import java.lang.reflect.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,7 +29,6 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import com.forgeessentials.core.commands.ForgeEssentialsCommandBuilder;
 import com.forgeessentials.core.environment.Environment;
 
 public abstract class ServerUtil
@@ -121,21 +117,6 @@ public abstract class ServerUtil
         }
     }
 
-    public static double parseYLocation(CommandSource sender, double relative, String value) throws CommandException
-    {
-        boolean isRelative = value.startsWith("~");
-        if (isRelative && Double.isNaN(relative))
-            throw new NumberFormatException("commands.generic.num.invalid" + Double.valueOf(relative));
-        double d1 = isRelative ? relative : 0.0D;
-        if (!isRelative || value.length() > 1)
-        {
-            if (isRelative)
-                value = value.substring(1);
-            d1 += ForgeEssentialsCommandBuilder.parseDouble(value);
-        }
-        return d1;
-    }
-
     /**
      * Try to parse the string as integer or return null if failed
      * 
@@ -206,32 +187,6 @@ public abstract class ServerUtil
         {
             return null;
         }
-    }
-
-    public static boolean isNumeric(String string)
-    {
-        try
-        {
-            Integer.parseInt(string);
-            return true;
-        }
-        catch (NumberFormatException e)
-        {
-            return false;
-        }
-    }
-
-    /* ------------------------------------------------------------ */
-
-    /**
-     * Drops the first element of the array
-     * 
-     * @param array
-     * @return
-     */
-    public static <T> T[] dropFirst(T[] array)
-    {
-        return Arrays.copyOfRange(array, 1, array.length);
     }
 
     /* ------------------------------------------------------------ */
