@@ -16,6 +16,7 @@ buildscript {
         }
 		mavenCentral()
 		mavenLocal()
+		gradlePluginPortal()
 		maven {
 			name = "sonatype"
 			url = "https://oss.sonatype.org/content/repositories/snapshots/"
@@ -24,22 +25,20 @@ buildscript {
 
 	}
 	dependencies {
-		classpath "net.minecraftforge.gradle:ForgeGradle:5.+"
 		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1"
 		classpath "org.ajoberstar:gradle-git:0.12.0"
-        classpath "org.spongepowered:mixingradle:0.7.+"
 		classpath "com.discord4j:discord4j-core:3.2.1"
 	}
 }
 
 plugins {
+    id 'eclipse'
     id 'org.sonarqube' version '2.5'
     id "com.matthewprenger.cursegradle" version "1.4.0"
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'eclipse'
 apply plugin: 'jacoco'
 
 sonarqube {
