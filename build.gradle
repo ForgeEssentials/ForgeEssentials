@@ -273,19 +273,6 @@ dependencies {
 	//deobfProvided files('lib/worldedit-forge-mc1.10.2-6.1.4-dist.jar')
 	mavenDeps "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
 
-	// Shade Mixin library
-	//shade (group: "org.spongepowered", name: "mixin", version: "0.8.5", changing: true) {
-    //    exclude group: 'org.ow2.asm', module: 'asm-tree'
-    //    exclude module: 'launchwrapper'
-    //    exclude module: 'guava'
-    //    exclude module: 'gson'
-    //    exclude module: 'commons-io'
-    //    exclude module: 'log4j-core'
-    //}
-    //shadeClient (group: "org.spongepowered", name: "mixin", version: "0.8.5") {
-    //    exclude group: 'org.ow2.asm', module: 'asm-tree'
-    //}
-	//buildDep "org.spongepowered:spongeforge:3.1.0-BETA-1046:deobf"
 	compileOnly 'org.spongepowered:spongeapi:8.0.0'
 	implementation 'net.kyori:adventure-api:4.11.0'
 	compileOnly ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
@@ -298,8 +285,6 @@ dependencies {
 	// compile files("$jdkHome/lib/tools.jar")
 	compile files(System.getenv("JAVA_HOME") + "/lib/tools.jar")
 	compile 'org.apache.commons:commons-text:1.10.0'
-	//implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-	//shadowLib group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
 
 	//jGit library
 	implementation 'org.eclipse.jgit:org.eclipse.jgit:5.13.0.202109080827-r'
@@ -331,11 +316,6 @@ sourceSets {
 		compileClasspath += files deps
         refMap = "mixins.forgeessentials.client.refmap.json"
 	}
-
-    //test {
-    //    compileClasspath = files(configurations.compile, sourceSets.utils.output, sourceSets.main.output)
-    //    compileClasspath += files deps
-    //}
 }
 
 project.compileUtilsJava {
@@ -360,10 +340,6 @@ project.processResources {
 			'buildHash': gitCommitHash,
 			'buildNumber': buildNumber,
 		)
-		//include "META-INF/persistence.xml"
-		//filter {
-			//line ->line.replaceAll('org.hibernate','com.forgeessentials.thirdparty.org.hibernate').replaceAll('org.h2', 'com.forgeessentials.thirdparty.org.h2')
-		//}
 	}
 }
 
@@ -527,6 +503,8 @@ jar {
 		//}
 	}
 
+	exclude('mixins.forgeessentials.client.refmap.json')
+	exclude('mapper_colorscheme.txt')
 	manifest {
 		from serverManifest
 	}
