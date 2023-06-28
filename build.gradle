@@ -225,6 +225,8 @@ configurations {
 	//shade
 	//shadeClient
 	//serverLib
+	clientannotationProcessor
+	serverannotationProcessor
 	buildDep
 	shadowLib
 	shadowClientLib
@@ -257,11 +259,11 @@ dependencies {
 	//shadowLib group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
 	//shadowLib group: 'org.hibernate', 	  name: 'hibernate-entitymanager', 		version: '5.2.12.Final'
 	buildDep  group: 'org.hibernate', 	  name: 'hibernate-jpamodelgen',version: '5.6.15.Final'
-	annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.6.15.Final'
 
-	//Mixin annonations processor
-	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-	//clientannotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	//annonations processor
+	serverannotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	serverannotationProcessor 'org.hibernate:hibernate-jpamodelgen:5.6.15.Final'
+	clientannotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 	
 	// WorldEdit
 	compile "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
@@ -308,12 +310,12 @@ sourceSets {
 	main {
 		compileClasspath = files(configurations.compile, sourceSets.utils.output)
 		compileClasspath += files deps
-        refMap = "mixins.forgeessentials.refmap.json"
+        ext.refMap = "mixins.forgeessentials.refmap.json"
 	}
 	client {
 		compileClasspath = files(configurations.compile, sourceSets.utils.output)
 		compileClasspath += files deps
-        refMap = "mixins.forgeessentials.client.refmap.json"
+        ext.refMap = "mixins.forgeessentials.client.refmap.json"
 	}
 }
 
@@ -364,6 +366,12 @@ mixin {
     overwriteErrorLevel = 'error'
 }
 
+compileJava {
+    options.annotationProcessorPath = configurations.serverannotationProcessor
+}
+compileClientJava {
+    options.annotationProcessorPath = configurations.clientannotationProcessor
+}
 /************************************************************
  * Configure tsd jar
  */
