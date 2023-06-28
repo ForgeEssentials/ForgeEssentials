@@ -88,6 +88,7 @@ public class ForgeEssentialsClient
     public static float reachDistance;
 
     public static Boolean noClip = false;
+    public static Boolean noClipChanged = false;
 
     /* ------------------------------------------------------------ */
 
