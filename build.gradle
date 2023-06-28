@@ -210,6 +210,13 @@ ext.serverManifest = manifest {
 	)
 }
 
+ext.clientManifest = manifest {
+	from sharedManifest
+	attributes (
+		"MixinConfigs": "mixins.forgeessentials.client.json"
+	)
+}
+
 /************************************************************
  * Dependency configuration
  */
@@ -251,10 +258,11 @@ dependencies {
 	//shadowLib group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
 	//shadowLib group: 'org.hibernate', 	  name: 'hibernate-entitymanager', 		version: '5.2.12.Final'
 	buildDep  group: 'org.hibernate', 	  name: 'hibernate-jpamodelgen',version: '5.6.15.Final'
-    annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.6.15.Final'
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    //clientannotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-	/* serverLib "org.eclipse.persistence:eclipselink:2.6.0" */
+	annotationProcessor group: 'org.hibernate', 	name: 'hibernate-jpamodelgen', 	version: '5.6.15.Final'
+
+	//Mixin annonations processor
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	//clientannotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 	
 	// WorldEdit
 	compile "com.sk89q.worldedit:worldedit-core:7.2.0-SNAPSHOT"
@@ -281,7 +289,7 @@ dependencies {
 	compileOnly 'org.spongepowered:spongeapi:8.0.0'
 	implementation 'net.kyori:adventure-api:4.11.0'
 	compileOnly ("io.github.opencubicchunks:cubicchunks-api:1.12.2-0.0-SNAPSHOT") {
-        exclude group: "org.spongepowered", module: "mixin"
+		exclude group: "org.spongepowered", module: "mixin"
 	}
 	//compileOnly "com.feed_the_beast.mods:FTBLib:5.4.7.2"
 	//compileOnly "com.feed_the_beast.mods:FTBUtilities:5.4.1.131"
@@ -374,6 +382,9 @@ project.processClientResources {
 mixin {
     add sourceSets.main, "mixins.forgeessentials.refmap.json"
     add sourceSets.client, "mixins.forgeessentials.client.refmap.json"
+
+    config 'mixins.forgeessentials.json'
+    config 'mixins.forgeessentials.client.json'
     disableTargetValidator = false
     overwriteErrorLevel = 'error'
 }
@@ -401,14 +412,46 @@ task tsd(type: JavaExec) {
 }*/
 
 /************************************************************
- * Configure shadow jars
+ * Configure client jar
  */
-jar.doLast {
-	delete (shadowJar.archivePath)
-	delete fileTree(dir:'src/utils/java/com/forgeessentials/commons/', include: 'BuildInfo.java')
+
+task clientshadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+	minimize()
+    description = "ShadowJar for client code"
+    classifier = 'shadow'
+    from sourceSets.client.output
+    from sourceSets.utils.output
+    configurations = [project.configurations.shadowClientLib]
 }
 
+task clientJar (dependsOn: ["clientClasses", "clientshadowJar"], type: Jar) {
+	classifier = "client"
+	appendix = project.minecraftVersion
+	
+	from sourceSets.client.output
+	from sourceSets.utils.output
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+	from (zipTree(clientshadowJar.archivePath)) {
+		exclude 'META-INF','META-INF/**'
+		exclude 'assets/**'
+		exclude 'about.html'
+		exclude 'plugin.properties'
+	}
+	exclude 'mixins.forgeessentials.refmap.json'
+	manifest {
+		from clientManifest
+	}
+}
+clientJar.doLast {
+	delete (clientshadowJar.archivePath)
+}
+/************************************************************
+ * Configure shadow jar
+ */
+
 shadowJar {
+	dependsOn clientJar
 	minimize {
  	   exclude(dependency('org.hibernate:.*:.*'))
  	   exclude(dependency('mysql:.*:.*'))
@@ -444,39 +487,6 @@ shadowJar {
 	from sourceSets.utils.output
 	exclude('com/forgeessentials/client/**')
 }
-task clientshadowJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-	minimize()
-    description = "ShadowJar for client code"
-    classifier = 'shadow'
-    from sourceSets.client.output
-    from sourceSets.utils.output
-    configurations = [project.configurations.shadowClientLib]
-}
-
-/************************************************************
- * Configure client jar
- */
-
-task clientJar (dependsOn: ["clientClasses", "clientshadowJar"], type: Jar) {
-	classifier = "client"
-	appendix = project.minecraftVersion
-	
-	from sourceSets.client.output
-	from sourceSets.utils.output
-	duplicatesStrategy = DuplicatesStrategy.INCLUDE
-
-	from (zipTree(shadowJar.archivePath)) {
-		exclude 'META-INF','META-INF/**'
-		exclude 'assets/**'
-	}
-
-	manifest {
-		from sharedManifest
-		attributes (
-			"MixinConfigs": "mixins.forgeessentials.client.json"
-		)
-	}
-}
 
 /************************************************************
  * Configure server jar (default)
@@ -484,8 +494,8 @@ task clientJar (dependsOn: ["clientClasses", "clientshadowJar"], type: Jar) {
  
 jar {
 	duplicatesStrategy = DuplicatesStrategy.INCLUDE
-	dependsOn shadowJar
 	dependsOn clientJar
+	dependsOn shadowJar
     //dependsOn "tsd"
 	classifier = "server"
 	appendix = project.minecraftVersion
@@ -498,6 +508,9 @@ jar {
 		exclude 'META-INF','META-INF/**'
 		exclude 'assets/**'
 		exclude 'natives','natives/**'
+		exclude '.gitkeep'
+		exclude 'about.html'
+		exclude 'plugin.properties'
 	}
 
 	from (zipTree(shadowJar.archivePath)) {
@@ -517,6 +530,10 @@ jar {
 	manifest {
 		from serverManifest
 	}
+}
+jar.doLast {
+	delete (shadowJar.archivePath)
+	delete fileTree(dir:'src/utils/java/com/forgeessentials/commons/', include: 'BuildInfo.java')
 }
 
 /************************************************************

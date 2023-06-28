@@ -130,7 +130,7 @@ public class ForgeEssentialsClient
 		PacketBuffer payload= e.getPayload();
 		S2CModList list = FMLHandshakeMessages.S2CModList.decode(payload);
 		for(String mod :list.getModList()) {
-			feclientlog.info(mod);
+			feclientlog.info("Mod from server: "+mod);
 		}
 	
 		if (list.getModList().contains("forgeessentials")){
@@ -146,7 +146,7 @@ public class ForgeEssentialsClient
         	List<ModInfo> mods = ModList.get().getMods();
             for (ModInfo mod : mods)
             {
-                if(mod.getModId().equals("forgeessentials")) {
+                if(mod.getModId().equals("forgeessentialsclient")) {
                     jarLocation = mod.getOwningFile().getFile().getFilePath().toFile();
                     break;
                 }
@@ -285,6 +285,10 @@ public class ForgeEssentialsClient
     public static void resendHandshake()
     {
         sentHandshake = false;
+    }
+    public static void sentHandshake()
+    {
+        sentHandshake = true;
     }
     /* ------------------------------------------------------------ */
     public static void registerConfig() {

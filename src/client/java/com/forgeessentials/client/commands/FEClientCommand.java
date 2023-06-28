@@ -1,7 +1,10 @@
 package com.forgeessentials.client.commands;
 
 import com.forgeessentials.client.ForgeEssentialsClient;
+import com.forgeessentials.client.mixin.FEClientMixinConfig;
 import com.forgeessentials.commons.BuildInfo;
+import com.forgeessentials.commons.network.NetworkUtils;
+import com.forgeessentials.commons.network.packets.Packet0Handshake;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -38,7 +41,9 @@ public class FEClientCommand extends BaseCommand {
 	public LiteralArgumentBuilder<CommandSource> setExecution() {
 		return builder
 				.then(Commands.literal("reinit")
-						.executes(CommandContext -> execute(CommandContext, 1)))
+						.executes(CommandContext -> execute(CommandContext, 1))
+						.then(Commands.literal("force")
+								.executes(CommandContext -> execute(CommandContext, 3))))
 				.then(Commands.literal("info")
 						.executes(CommandContext -> execute(CommandContext, 2)))
 				.executes(CommandContext -> execute(CommandContext, 0));
@@ -52,24 +57,28 @@ public class FEClientCommand extends BaseCommand {
     	if (entity != null) {
     		if (num == 0)
             {
-            	TextComponent msg = new StringTextComponent("/feclient info: Get FE client info");
-            	instance.gui.getChat().addMessage(msg);
-            	TextComponent msg2 = new StringTextComponent("/feclient reinit: Redo server handshake");
-            	instance.gui.getChat().addMessage(msg2);
+        		instance.gui.getChat().addMessage(new StringTextComponent("/feclient info: Get FE client info"));
+            	instance.gui.getChat().addMessage(new StringTextComponent("/feclient reinit: Redo server handshake"));
+            	instance.gui.getChat().addMessage(new StringTextComponent("/feclient reinit force: Force send server handshake"));
             }
             if (num == 1)
             {
-            	ForgeEssentialsClient.resendHandshake();
-            	TextComponent msg = new StringTextComponent("Resent handshake packet to server.");
-            	instance.gui.getChat().addMessage(msg);
+        		ForgeEssentialsClient.resendHandshake();
+        		instance.gui.getChat().addMessage(new StringTextComponent("Resent handshake packet to server."));
             }
             if (num == 2)
             {
-            	TextComponent msg = new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash()));
-            	instance.gui.getChat().addMessage(msg);
-            	TextComponent msg2 = new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers.");
-            	instance.gui.getChat().addMessage(msg2);
+        		instance.gui.getChat().addMessage(new StringTextComponent(String.format("Running ForgeEssentials client %s (%s)", BuildInfo.getCurrentVersion(), BuildInfo.getBuildHash())));
+            	instance.gui.getChat().addMessage(new StringTextComponent("\"Please refer to https://github.com/ForgeEssentials/ForgeEssentialsMain/wiki/Team-Information if you would like more information about the FE developers."));
+            	instance.gui.getChat().addMessage(new StringTextComponent("Injected patches:"));
+                for (String patch : FEClientMixinConfig.getInjectedPatches())
+                    instance.gui.getChat().addMessage(new StringTextComponent("- " + patch));
             }
+        	if(num == 3) {
+        		ForgeEssentialsClient.sentHandshake();
+        		NetworkUtils.sendToServer(new Packet0Handshake());
+        		instance.gui.getChat().addMessage(new StringTextComponent("Force Sent handshake packet to server."));
+        	}
     	}
         return Command.SINGLE_SUCCESS;
     }

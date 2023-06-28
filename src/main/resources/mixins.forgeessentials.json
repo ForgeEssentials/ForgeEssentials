@@ -1,25 +1,25 @@
 {
-  "required": true,
-  "package": "com.forgeessentials.core.mixin",
-  "plugin": "com.forgeessentials.core.mixin.FEMixinConfig",
-  "refmap": "mixins.forgeessentials.refmap.json",
-  "compatibilityLevel": "JAVA_8",
-  "server": [
-        "block.MixinBlockPortal",
-        "block.MixinBlockFire",
-        //"command.MixinCommandHandler",//
-        //"command.MixinICommandSender",//
-        "entity.MixinEntity",
-        "entity.MixinItemFrameEntity",
-        "entity.player.MixinEntityPlayer",
-        //"item.crafting.MixinCraftingManager",//
-        "network.MixinNetHandlerPlayServer",
-        "network.MixinSimpleChannelHandlerWrapper"
-        //"MixinDimensionManager"//
-        //"tileentity.MixinMobSpawnerBaseLogic"//
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "minVersion": "0.8"
+	"required": true,
+	"package": "com.forgeessentials.core.mixin",
+	"plugin": "com.forgeessentials.core.mixin.FEMixinConfig",
+	"refmap": "mixins.forgeessentials.refmap.json",
+	"compatibilityLevel": "JAVA_8",
+	"server": [
+		"block.MixinBlockPortal",
+		"block.MixinBlockFire",
+		//"command.MixinCommandHandler",
+		//"command.MixinICommandSender",
+		"entity.MixinEntity",
+		"entity.MixinItemFrameEntity",
+		"entity.player.MixinEntityPlayer",
+		//"item.crafting.MixinCraftingManager",
+		"network.MixinNetHandlerPlayServer",
+		"network.MixinSimpleChannelHandlerWrapper"
+		//"MixinDimensionManager"
+		//"tileentity.MixinMobSpawnerBaseLogic"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"minVersion": "0.8"
 }

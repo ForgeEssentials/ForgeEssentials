@@ -1,8 +1,10 @@
 {
+	"required": true,
 	"package": "com.forgeessentials.client.mixin",
 	"plugin": "com.forgeessentials.client.mixin.FEClientMixinConfig",
-    "refmap": "mixins.forgeessentials.client.refmap.json",
-	"mixins": [
-      "MixinPlayerEntity"
-    ]
+	"refmap": "mixins.forgeessentials.client.refmap.json",
+	"compatibilityLevel": "JAVA_8",
+	"client": [
+		"MixinPlayerEntity"
+	]  
 }
