@@ -20,9 +20,9 @@ import com.forgeessentials.commons.selections.Point;
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.data.v2.Loadable;
-import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
-import com.forgeessentials.util.events.FEPlayerEvent.InventoryGroupChange;
-import com.forgeessentials.util.events.FEPlayerEvent.NoPlayerInfoEvent;
+import com.forgeessentials.util.events.player.FEPlayerEvent.ClientHandshakeEstablished;
+import com.forgeessentials.util.events.player.FEPlayerEvent.InventoryGroupChange;
+import com.forgeessentials.util.events.player.FEPlayerEvent.NoPlayerInfoEvent;
 import com.google.gson.annotations.Expose;
 
 public class PlayerInfo implements Loadable

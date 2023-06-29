@@ -83,8 +83,8 @@ import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppingEvent;
+import com.forgeessentials.util.events.player.PlayerPositionEventFactory;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
-import com.forgeessentials.util.events.ForgeEssentialsEventFactory;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.questioner.Questioner;
@@ -134,7 +134,7 @@ public class ForgeEssentials
 
     protected static TaskRegistry tasks;
 
-    protected static ForgeEssentialsEventFactory factory;
+    protected static PlayerPositionEventFactory factory;
 
     protected static TeleportHelper teleportHelper;
 
@@ -210,7 +210,7 @@ public class ForgeEssentials
         toggleDebug();
 
         // Register core submodules
-        factory = new ForgeEssentialsEventFactory();
+        factory = new PlayerPositionEventFactory();
         teleportHelper = new TeleportHelper();
         questioner = new Questioner();
         respawnHandler = new RespawnHandler();

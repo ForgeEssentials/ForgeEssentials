@@ -1,4 +1,4 @@
-package net.minecraftforge.fe.event.player;
+package com.forgeessentials.util.events.player;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;

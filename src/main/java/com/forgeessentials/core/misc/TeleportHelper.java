@@ -19,7 +19,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -31,8 +30,9 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.ForgeEssentials;
 import com.forgeessentials.util.PlayerInfo;
 import com.forgeessentials.util.ServerUtil;
-import com.forgeessentials.util.events.PlayerChangedZone;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.events.entity.EntityPortalEvent;
+import com.forgeessentials.util.events.player.PlayerChangedZone;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 

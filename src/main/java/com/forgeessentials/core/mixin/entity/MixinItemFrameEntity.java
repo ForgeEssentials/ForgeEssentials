@@ -5,10 +5,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.forgeessentials.util.events.entity.EntityAttackedEvent;
+
 import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fe.event.entity.EntityAttackedEvent;
 
 @Mixin(ItemFrameEntity.class)
 public class MixinItemFrameEntity

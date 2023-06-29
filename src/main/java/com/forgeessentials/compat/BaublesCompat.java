@@ -4,9 +4,9 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import com.forgeessentials.util.events.FEPlayerEvent.InventoryGroupChange;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.events.player.FEPlayerEvent.InventoryGroupChange;
 
 import lazy.baubles.api.BaublesAPI;
 

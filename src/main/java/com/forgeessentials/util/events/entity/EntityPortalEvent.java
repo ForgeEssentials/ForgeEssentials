@@ -1,4 +1,4 @@
-package net.minecraftforge.fe.event.entity;
+package com.forgeessentials.util.events.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;

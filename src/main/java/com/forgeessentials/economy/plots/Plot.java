@@ -30,8 +30,8 @@ import com.forgeessentials.economy.ModuleEconomy;
 import com.forgeessentials.protection.ModuleProtection;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.EventCancelledException;
-import com.forgeessentials.util.events.PlotEvent;
-import com.forgeessentials.util.events.PlotEvent.OwnerChanged;
+import com.forgeessentials.util.events.world.PlotEvent;
+import com.forgeessentials.util.events.world.PlotEvent.OwnerChanged;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 public class Plot

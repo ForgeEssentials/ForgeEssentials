@@ -13,7 +13,6 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.fe.event.world.SignEditEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -28,6 +27,7 @@ import com.forgeessentials.core.config.ConfigLoaderBase;
 import com.forgeessentials.core.moduleLauncher.FEModule;
 import com.forgeessentials.util.ItemUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStartingEvent;
+import com.forgeessentials.util.events.world.SignEditEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 
 @FEModule(name = "SignTools", parentMod = ForgeEssentials.class)

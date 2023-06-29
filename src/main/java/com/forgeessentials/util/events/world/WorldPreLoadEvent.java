@@ -1,4 +1,4 @@
-package net.minecraftforge.fe.event.world;
+package com.forgeessentials.util.events.world;
 
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;

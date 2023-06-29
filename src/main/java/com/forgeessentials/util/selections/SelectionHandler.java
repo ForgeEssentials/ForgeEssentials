@@ -15,8 +15,8 @@ import com.forgeessentials.commons.selections.WorldPoint;
 import com.forgeessentials.core.misc.TaskRegistry;
 import com.forgeessentials.core.misc.Translator;
 import com.forgeessentials.util.PlayerInfo;
-import com.forgeessentials.util.events.FEPlayerEvent.ClientHandshakeEstablished;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.events.player.FEPlayerEvent.ClientHandshakeEstablished;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 

@@ -1,4 +1,4 @@
-package com.forgeessentials.util.events;
+package com.forgeessentials.util.events.player;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 

@@ -51,8 +51,6 @@ import net.minecraftforge.event.world.BlockEvent.EntityMultiPlaceEvent;
 import net.minecraftforge.event.world.BlockEvent.EntityPlaceEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
-import net.minecraftforge.fe.event.world.FireEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -87,6 +85,8 @@ import com.forgeessentials.playerlogger.event.LogEventPostInteract;
 import com.forgeessentials.playerlogger.event.LogEventWorldLoad;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.ServerEventHandler;
+import com.forgeessentials.util.events.player.PlayerPostInteractEvent;
+import com.forgeessentials.util.events.world.FireEvent;
 import com.forgeessentials.util.output.ChatOutputHandler;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 

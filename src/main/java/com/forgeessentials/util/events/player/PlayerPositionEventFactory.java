@@ -1,4 +1,4 @@
-package com.forgeessentials.util.events;
+package com.forgeessentials.util.events.player;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -10,11 +10,12 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import com.forgeessentials.commons.selections.WarpPoint;
 import com.forgeessentials.core.misc.TeleportHelper;
+import com.forgeessentials.util.events.ServerEventHandler;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 
-public class ForgeEssentialsEventFactory extends ServerEventHandler
+public class PlayerPositionEventFactory extends ServerEventHandler
 {
 
     private HashMap<UUID, WarpPoint> lastPlayerPosition = new HashMap<>();

@@ -1,4 +1,4 @@
-package net.minecraftforge.fe.event.world;
+package com.forgeessentials.util.events.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraftforge.event.entity.EntityEvent;

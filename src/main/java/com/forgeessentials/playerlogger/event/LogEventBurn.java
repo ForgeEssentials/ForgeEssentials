@@ -5,11 +5,11 @@ import java.sql.Blob;
 import javax.persistence.EntityManager;
 
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fe.event.world.FireEvent;
 
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
+import com.forgeessentials.util.events.world.FireEvent;
 
 public class LogEventBurn extends PlayerLoggerEvent<FireEvent.Destroy>
 {

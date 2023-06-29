@@ -3,7 +3,6 @@ package com.forgeessentials.core.mixin.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fe.event.world.PressurePlateEvent;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -13,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commands.util.ModuleCommandsEventHandler;
+import com.forgeessentials.util.events.entity.PressurePlateEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 @Mixin(Entity.class)

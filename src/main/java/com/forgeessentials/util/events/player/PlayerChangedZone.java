@@ -1,4 +1,4 @@
-package com.forgeessentials.util.events;
+package com.forgeessentials.util.events.player;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.player.PlayerEvent;

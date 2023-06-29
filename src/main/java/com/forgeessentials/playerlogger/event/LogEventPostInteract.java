@@ -4,11 +4,10 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
-import net.minecraftforge.fe.event.player.PlayerPostInteractEvent;
-
 import com.forgeessentials.playerlogger.PlayerLoggerEvent;
 import com.forgeessentials.playerlogger.entity.Action01Block;
 import com.forgeessentials.playerlogger.entity.Action01Block.ActionBlockType;
+import com.forgeessentials.util.events.player.PlayerPostInteractEvent;
 
 public class LogEventPostInteract extends PlayerLoggerEvent<PlayerPostInteractEvent>
 {

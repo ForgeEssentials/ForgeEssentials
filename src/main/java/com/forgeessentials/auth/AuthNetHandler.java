@@ -8,8 +8,8 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import com.forgeessentials.api.APIRegistry;
 import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.commons.network.packets.Packet6AuthLogin;
-import com.forgeessentials.util.events.PlayerAuthLoginEvent;
-import com.forgeessentials.util.events.PlayerAuthLoginEvent.Success.Source;
+import com.forgeessentials.util.events.player.PlayerAuthLoginEvent;
+import com.forgeessentials.util.events.player.PlayerAuthLoginEvent.Success.Source;
 
 public class AuthNetHandler extends Packet6AuthLogin
 {

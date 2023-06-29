@@ -1,4 +1,4 @@
-package com.forgeessentials.util.events;
+package com.forgeessentials.util.events.world;
 
 import com.forgeessentials.api.permissions.Zone;
 

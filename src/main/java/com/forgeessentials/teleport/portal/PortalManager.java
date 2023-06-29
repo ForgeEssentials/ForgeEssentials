@@ -11,7 +11,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.fe.event.entity.EntityPortalEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,7 +20,8 @@ import com.forgeessentials.core.misc.TeleportHelper;
 import com.forgeessentials.data.v2.DataManager;
 import com.forgeessentials.util.ServerUtil;
 import com.forgeessentials.util.events.FEModuleEvent.FEModuleServerStoppedEvent;
-import com.forgeessentials.util.events.PlayerMoveEvent;
+import com.forgeessentials.util.events.entity.EntityPortalEvent;
+import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 
 public class PortalManager extends ServerEventHandler

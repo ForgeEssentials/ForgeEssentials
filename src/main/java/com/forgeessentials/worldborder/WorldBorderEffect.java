@@ -4,7 +4,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
 import com.forgeessentials.core.misc.FECommandParsingException;
-import com.forgeessentials.util.events.PlayerMoveEvent;
+import com.forgeessentials.util.events.player.PlayerMoveEvent;
 import com.mojang.brigadier.context.CommandContext;
 
 public abstract class WorldBorderEffect
