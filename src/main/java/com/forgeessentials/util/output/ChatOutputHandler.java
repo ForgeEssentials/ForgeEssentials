@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.forgeessentials.chat.ModuleChat;
 import com.forgeessentials.core.misc.Translator;
@@ -396,32 +393,32 @@ public final class ChatOutputHandler {
 		return message.copy().toString();
 	}
 
-	public static String formatHtml(String message) {
-		StringBuilder sb = new StringBuilder();
-		int pos = 0;
-		int tagCount = 0;
-		Matcher matcher = FORMAT_CODE_PATTERN.matcher(message);
-		while (matcher.find()) {
-			sb.append(StringEscapeUtils.escapeHtml4(message.substring(pos, matcher.start())));
-			pos = matcher.end();
-			char formatChar = matcher.group(1).charAt(0);
-			for (TextFormatting format : TextFormatting.values()) {
-				if (FORMAT_CHARACTERS[format.ordinal()] == formatChar) {
-					sb.append("<span class=\"mcf");
-					sb.append(formatChar);
-					sb.append("\">");
-					tagCount++;
-					break;
-				}
-			}
-		}
-		sb.append(StringEscapeUtils.escapeHtml4(message.substring(pos, message.length())));
-		// for (; pos < message.length(); pos++)
-		// sb.append(message.charAt(pos));
-		for (int i = 0; i < tagCount; i++)
-			sb.append("</span>");
-		return sb.toString();
-	}
+//	public static String formatHtml(String message) {
+//		StringBuilder sb = new StringBuilder();
+//		int pos = 0;
+//		int tagCount = 0;
+//		Matcher matcher = FORMAT_CODE_PATTERN.matcher(message);
+//		while (matcher.find()) {
+//			sb.append(StringEscapeUtils.escapeHtml4(message.substring(pos, matcher.start())));
+//			pos = matcher.end();
+//			char formatChar = matcher.group(1).charAt(0);
+//			for (TextFormatting format : TextFormatting.values()) {
+//				if (FORMAT_CHARACTERS[format.ordinal()] == formatChar) {
+//					sb.append("<span class=\"mcf");
+//					sb.append(formatChar);
+//					sb.append("\">");
+//					tagCount++;
+//					break;
+//				}
+//			}
+//		}
+//		sb.append(StringEscapeUtils.escapeHtml4(message.substring(pos, message.length())));
+//		// for (; pos < message.length(); pos++)
+//		// sb.append(message.charAt(pos));
+//		for (int i = 0; i < tagCount; i++)
+//			sb.append("</span>");
+//		return sb.toString();
+//	}
 
 	public static boolean isStyleEmpty(Style style) {
 		return !style.isBold() && !style.isItalic() && !style.isObfuscated() && !style.isStrikethrough()
@@ -430,12 +427,12 @@ public final class ChatOutputHandler {
 
 	public static enum ChatFormat {
 
-		PLAINTEXT, HTML, MINECRAFT, DETAIL;
+		PLAINTEXT/*, HTML*/, MINECRAFT, DETAIL;
 
 		public Object format(TextComponent message) {
 			switch (this) {
-			case HTML:
-				return ChatOutputHandler.formatHtml(message.getString());
+			//case HTML:
+			//	return ChatOutputHandler.formatHtml(message.getString());
 			case MINECRAFT:
 				return ChatOutputHandler.getFormattedMessage(message);
 			case DETAIL:
