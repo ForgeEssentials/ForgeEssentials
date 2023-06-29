@@ -1,3 +1,4 @@
+package com.forgeessentials.mapper;
 //package com.forgeessentials.mapper.command;
 //
 //import java.awt.image.BufferedImage;

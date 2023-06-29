@@ -7,7 +7,6 @@ import com.forgeessentials.api.UserIdent;
 import com.forgeessentials.api.permissions.PermissionEvent;
 import com.forgeessentials.core.misc.FECommandManager;
 import com.forgeessentials.core.misc.Translator;
-import com.forgeessentials.economy.plots.command.CommandPlot;
 import com.forgeessentials.util.events.FERegisterCommandsEvent;
 import com.forgeessentials.util.events.ServerEventHandler;
 import com.forgeessentials.util.events.player.PlayerChangedZone;

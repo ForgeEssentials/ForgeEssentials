@@ -16,7 +16,6 @@ import java.util.Base64;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 
-import com.forgeessentials.servervote.Votifier.VoteReceiver;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 public class ConfigServerVote

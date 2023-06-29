@@ -1,4 +1,4 @@
-package com.forgeessentials.chat.discord.command;
+package com.forgeessentials.chat.discord;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;

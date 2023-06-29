@@ -16,7 +16,7 @@
  * along with Votifier.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.forgeessentials.servervote.Votifier;
+package com.forgeessentials.servervote;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -38,8 +38,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import com.forgeessentials.core.ForgeEssentials;
-import com.forgeessentials.servervote.ConfigServerVote;
-import com.forgeessentials.servervote.VoteEvent;
 import com.forgeessentials.util.output.logger.LoggingHandler;
 
 /**
