@@ -24,6 +24,7 @@ public class PermissionManager {
 	 */
 	protected static Map<String, String> commandPermissions = new WeakHashMap<>();
 
+	@Deprecated
 	public static String getCommandPermission(String commandName) {
 		String permission = commandPermissions.get(commandName);
 		if (permission != null)
@@ -31,6 +32,7 @@ public class PermissionManager {
 		return "command." + commandName;
 	}
 
+	@Deprecated
 	public static DefaultPermissionLevel getCommandLevel(String commandName) {
 		CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands()
 				.getDispatcher();
@@ -60,6 +62,7 @@ public class PermissionManager {
 	 *
 	 * @param command
 	 */
+	@Deprecated
 	public static void registerCommandPermission(String commandName) {
 		commandPermissions.put(commandName, getCommandPermission(commandName));
 		APIRegistry.perms.registerNode(getCommandPermission(commandName), getCommandLevel(commandName), "");
@@ -73,6 +76,7 @@ public class PermissionManager {
 	 * @param permission
 	 * @param permissionLevel
 	 */
+	@Deprecated
 	public static void registerCommandPermission(String commandName, String permission,
 			DefaultPermissionLevel permissionLevel) {
 		commandPermissions.put(commandName, permission);
@@ -86,6 +90,7 @@ public class PermissionManager {
 	 * @param command
 	 * @param permission
 	 */
+	@Deprecated
 	public static void registerCommandPermission(String commandName, String permission) {
 		registerCommandPermission(commandName, permission, getCommandLevel(commandName));
 	}
@@ -96,6 +101,7 @@ public class PermissionManager {
 	 *
 	 * @param command a command
 	 */
+	@Deprecated
 	public static void registerCommandPermissions() {
 		CommandDispatcher<CommandSource> dispatcher = ServerLifecycleHooks.getCurrentServer().getCommands()
 				.getDispatcher();
@@ -112,6 +118,7 @@ public class PermissionManager {
 		}
 	}
 
+	@Deprecated
 	public static DefaultPermissionLevel fromIntegerLevel(int value) {
 		switch (value) {
 		case 0:
@@ -127,6 +134,7 @@ public class PermissionManager {
 
 	}
 
+	@Deprecated
 	public static int fromDefaultPermissionLevel(DefaultPermissionLevel level) {
 		switch (level) {
 		case ALL:
